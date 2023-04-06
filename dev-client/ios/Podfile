@@ -48,6 +48,7 @@ target 'DevClient' do
     # Pods for testing
   end
 
+  $RNMapboxMapsImpl = 'mapbox'
   pre_install do |installer|
     $RNMapboxMaps.pre_install(installer)
   end
