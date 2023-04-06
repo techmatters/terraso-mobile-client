@@ -47,7 +47,7 @@ target 'DevClient' do
     inherit! :complete
     # Pods for testing
   end
-
+  pod 'MapboxMaps', '10.12.0'
   $RNMapboxMapsImpl = 'mapbox'
   pre_install do |installer|
     $RNMapboxMaps.pre_install(installer)
