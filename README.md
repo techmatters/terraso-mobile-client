@@ -1,10 +1,35 @@
 # Terraso Mobile Client
 
-This repo contains the source code for Terraso's mobile client modules.
+This repo contains the source code for Terraso’s mobile client modules.
 
-# Installation
+### Install dependencies
+````sh
+$ brew install node watchman rbenv
+````
 
-1. Follow [React Native environment setup guide](https://reactnative.dev/docs/environment-setup) under "React Native CLI Quickstart" to set up your development environment for the desired platforms.
+### Configure rbenv
+````sh
+$ rbenv init
+$ echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
+$ cd dev-client
+$ rbenv install 2.7.6
+$ rbenv shell 2.7.6
+$ gem install bundler
+````
+
+bash users:
+```sh
+$ echo 'eval "$(rbenv init - bash)"' >> ~/.basrc
+````
+
+
+### Install packages
+````sh
+$ npm install
+$ bundle install
+$ bundle exec pod install
+````
+`
 
 ## Android
 
@@ -12,10 +37,19 @@ This repo contains the source code for Terraso's mobile client modules.
 
 ## iOS
 
-1. In the file $HOME/.netrc, add an entry
-   ```
-   machine api.mapbox.com
-   login mapbox
-   password YOUR_SECRET_MAPBOX_ACCESS_TOKEN
-   ```
-   as described in the [Mapbox IOS SDK install guide](https://docs.mapbox.com/ios/maps/guides/install/#configure-credentials)
+### Set up .netrc
+
+1.
+```sh
+cat << EOF > $HOME/.netrc
+machine api.mapbox.com
+login mapbox
+password YOUR_SECRET_MAPBOX_ACCESS_TOKEN
+```
+`
+1.
+```sh
+chmod 600 $HOME/.netrc
+```
+
+as described in the [Mapbox IOS SDK install guide](https://docs.mapbox.com/ios/maps/guides/install/#configure-credentials)
