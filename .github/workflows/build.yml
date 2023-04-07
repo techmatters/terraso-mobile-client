@@ -12,19 +12,6 @@ on:
       - synchronize
 
 jobs:
-  install-node-dependencies:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: '.tool-versions'
-          cache: 'npm'
-          cache-dependency-path: |
-            dev-client/package-lock.json
-      - name: Install dependences
-        working-directory: ./dev-client
-        run: npm ci
   build-android:
     runs-on: macos-latest
     needs: install-node-dependencies
@@ -36,6 +23,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: |
             dev-client/package-lock.json
+      - name: Install node dependencies
+        working-directory: ./dev-client
+        run: npm ci
       - name: Build android
         working-directory: ./dev-client/android
         run: ./gradlew build
