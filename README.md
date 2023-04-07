@@ -1,12 +1,12 @@
 # Terraso Mobile Client
 
-This repo contains the source code for Terraso's mobile client modules.
+This repo contains the source code for Terraso’s mobile client modules.
 
 # Installation
 
 ## Dependencies
 
-### MacOS
+### macOS
 
 Install dependencies:
 
