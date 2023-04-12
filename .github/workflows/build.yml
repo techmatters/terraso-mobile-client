@@ -31,6 +31,12 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: gradle
+      - name: Provide Mapbox secret key
+        env:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+        run: |
+          mkdir -p $HOME/.gradle
+          echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.local/gradle.properties
       - name: Build android
         working-directory: ./dev-client/android
         run: ./gradlew build
