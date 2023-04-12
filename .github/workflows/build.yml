@@ -30,7 +30,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-          cache: gradle
+          # cache: gradle
       - name: Provide Mapbox secret key
         env:
           MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
