@@ -13,6 +13,7 @@ on:
 
 jobs:
   build-android:
+    name: Build Android
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,6 +42,7 @@ jobs:
         working-directory: ./dev-client/android
         run: ./gradlew build
   build-ios:
+    name: Build iOS
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
