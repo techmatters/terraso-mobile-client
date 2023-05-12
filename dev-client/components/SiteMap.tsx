@@ -7,12 +7,11 @@ import {IconButton, Icon} from 'native-base';
 // TODO: This vector icons module appears to be missing types
 import VIcon from 'react-native-vector-icons/MaterialIcons';
 
-type SiteMapProps = {
+export type SiteMapProps = {
   sites: DisplaySite[];
   center: Position;
 };
 
-// REVIEW: This is a bad name, any suggestions?
 export default function SiteMap({sites, center}: SiteMapProps): JSX.Element {
   const camera = useRef<Camera>(null);
 

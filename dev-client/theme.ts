@@ -1,7 +1,10 @@
 import { extendTheme } from "native-base";
 
 const newColorTheme = {
-    primary: "#276749",
+    primary: {
+        main: "#276749",
+        contrast: "#FFFFFF"
+    },
     background: "#FFFFFF",
     secondary: {
         "main": "#C05621"

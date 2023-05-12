@@ -14,6 +14,7 @@ import {theme} from './theme';
 import LoginView from './components/Login';
 import SiteMap from './components/SiteMap';
 import {DisplaySite} from './datatypes/sites';
+import HomeView from './components/HomeView';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',
@@ -47,7 +48,7 @@ function App(): JSX.Element {
             justifyContent: 'center',
           },
         ]}>
-        <SiteMap
+        <HomeView
           sites={[new DisplaySite(0.1, 0.1, 'TEST SITE 1')]}
           center={[0, 0]}
         />
