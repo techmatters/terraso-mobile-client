@@ -1,5 +1,4 @@
-import { Button, VStack } from "native-base";
-
+import {Button, VStack} from 'native-base';
 
 export default function LoginView(): JSX.Element {
   return (
@@ -8,5 +7,5 @@ export default function LoginView(): JSX.Element {
         Login with Google
       </Button>
     </VStack>
-  )
+  );
 }

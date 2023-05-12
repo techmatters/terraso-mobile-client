@@ -170,3 +170,13 @@ dependencies {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+// NOTE: This is to add vector icons to our app
+// We can add more here if we ever needed to, but as we are using the Material UI, probably won't need to
+// See https://github.com/oblador/react-native-vector-icons#android
+// REVIEW: Will need to do the same process with iOS
+project.ext.vectoricons = [
+    iconFontNames: [ 'MaterialIcons.ttf' ] // Name of the font files you want to copy
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
