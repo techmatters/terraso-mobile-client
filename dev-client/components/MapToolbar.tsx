@@ -15,12 +15,16 @@ export default function MapToolbar({
   const iconButtonProps = {backgroundColor, size: iconSize};
   const iconProps = {color};
   const props = {iconProps, iconButtonProps};
+  const locationProps = {
+    iconProps,
+    iconButtonProps: {...iconButtonProps, borderRadius: 20},
+  };
 
   return (
     <VStack space={2}>
       <MaterialIcon name="search" {...props} />
       <MaterialIcon name="layers" {...props} />
-      <MaterialIcon name="my-location" {...props} />
+      <MaterialIcon name="my-location" {...locationProps} />
     </VStack>
   );
 }
