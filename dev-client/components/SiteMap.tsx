@@ -1,8 +1,12 @@
-import Mapbox, {Camera, MarkerView, UserLocation} from '@rnmapbox/maps';
-import React, {useEffect, useRef} from 'react';
+import Mapbox, {
+  Camera,
+  type Location,
+  MarkerView,
+  UserLocation,
+} from '@rnmapbox/maps';
+import React, {useEffect, useRef, useState} from 'react';
 import {type DisplaySite} from '../datatypes/sites';
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
-import {PermissionsAndroid} from 'react-native';
 import {IconButton, Icon, ZStack, Box, HStack, VStack} from 'native-base';
 // TODO: This vector icons module appears to be missing types
 import VIcon from 'react-native-vector-icons/MaterialIcons';
@@ -15,12 +19,15 @@ export type SiteMapProps = {
 
 export default function SiteMap({sites, center}: SiteMapProps): JSX.Element {
   const camera = useRef<Camera>(null);
+  const [location, setLocation] = useState<Location>(null);
 
   useEffect(() => {
-    camera.current?.setCamera({
-      centerCoordinate: center,
-    });
-  }, [center]);
+    if (camera && location) {
+      camera.current?.setCamera({
+        centerCoordinate: [location.coords.longitude, location.coords.latitude],
+      });
+    }
+  }, [center, location]);
 
   return (
     <Box
@@ -32,7 +39,7 @@ export default function SiteMap({sites, center}: SiteMapProps): JSX.Element {
           flex: 1,
         }}>
         <Camera ref={camera} />
-        <UserLocation />
+        <UserLocation onUpdate={setLocation} />
         {sites.map(site => {
           return (
             <MarkerView coordinate={[site.lon, site.lat]} key={site.key}>
