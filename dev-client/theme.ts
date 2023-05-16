@@ -8,6 +8,9 @@ const newColorTheme = {
     background: "#FFFFFF",
     secondary: {
         "main": "#C05621"
+    },
+    actions: {
+        "active": "#1A202C"
     }
 };
 

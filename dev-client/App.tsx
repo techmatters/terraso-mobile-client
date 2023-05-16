@@ -27,10 +27,10 @@ function App(): JSX.Element {
     )
       .then(granted => {
         if (granted == PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('You can use the camera');
+          console.log('You can location');
         } else {
           // TODO: What to do if rejected?
-          console.error('You cannot use the camera');
+          console.error('You cannot use the location');
         }
       })
       .catch(err => {

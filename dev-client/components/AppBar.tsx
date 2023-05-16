@@ -1,5 +1,6 @@
 import {Box, HStack, Icon, IconButton, StatusBar, Text} from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from './MaterialIcon';
 
 export default function AppBar(): JSX.Element {
   return (
@@ -15,23 +16,18 @@ export default function AppBar(): JSX.Element {
         width="100%"
         maxW="350">
         <HStack alignItems="center">
-          <IconButton
-            icon={
-              <Icon
-                size="sm"
-                as={MaterialIcons}
-                name="menu"
-                color="primary.contrast"
-              />
-            }
+          <MaterialIcon
+            size="sm"
+            iconName="menu"
+            themeColor="primary.contrast"
           />
           <Text color="primary.contrast">LandPKS</Text>
         </HStack>
         <HStack>
-          <IconButton
-            icon={<Icon as={MaterialIcons} name="help" />}
+          <MaterialIcon
             size="sm"
-            _icon={{color: 'primary.contrast'}}
+            iconName="help"
+            themeColor="primary.contrast"
           />
         </HStack>
       </HStack>
