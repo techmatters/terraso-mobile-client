@@ -17,17 +17,25 @@ export default function AppBar(): JSX.Element {
         maxW="350">
         <HStack alignItems="center">
           <MaterialIcon
-            size="sm"
-            iconName="menu"
-            themeColor="primary.contrast"
+            name="menu"
+            iconButtonProps={{
+              size: 'sm',
+            }}
+            iconProps={{
+              color: 'primary.contrast',
+            }}
           />
           <Text color="primary.contrast">LandPKS</Text>
         </HStack>
         <HStack>
           <MaterialIcon
-            size="sm"
-            iconName="help"
-            themeColor="primary.contrast"
+            name="help"
+            iconButtonProps={{
+              size: 'sm',
+            }}
+            iconProps={{
+              color: 'primary.contrast',
+            }}
           />
         </HStack>
       </HStack>
