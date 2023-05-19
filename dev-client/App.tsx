@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect} from 'react';
-import {PermissionsAndroid, StyleSheet, View} from 'react-native';
+import {PermissionsAndroid, Platform, StyleSheet, View} from 'react-native';
 
 import Mapbox from '@rnmapbox/maps';
 import {Button, NativeBaseProvider, Text} from 'native-base';
@@ -21,6 +21,10 @@ Mapbox.setAccessToken(
 
 function App(): JSX.Element {
   useEffect(() => {
+    if (Platform.OS !== 'android') {
+      // only need to request location permissions explicitly on Android
+      return;
+    }
     const locationGranted = PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     )
@@ -48,7 +52,10 @@ function App(): JSX.Element {
           },
         ]}>
         <SiteMap
-          sites={[new DisplaySite(0.1, 0.1, 'TEST SITE 1')]}
+          sites={[
+            {lat: 0.0, lon: 0.3, name: 'TEST SITE 1'},
+            {lat: 0.1, lon: 0.5, name: 'TEST SITE 2'},
+          ]}
           center={[0, 0]}
         />
         {/* <LoginView /> */}
