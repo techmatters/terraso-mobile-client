@@ -1,8 +1,17 @@
 import { extendTheme } from "native-base";
 
 const newColorTheme = {
-    primary: "#276749",
-    background: "#FFFFFF"
+    primary: {
+        main: "#276749",
+        contrast: "#FFFFFF"
+    },
+    background: "#FFFFFF",
+    secondary: {
+        "main": "#C05621"
+    },
+    actions: {
+        "active": "#1A202C"
+    }
 };
 
 export const theme = extendTheme({ colors: newColorTheme});
