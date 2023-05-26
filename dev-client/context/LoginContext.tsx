@@ -1,15 +1,9 @@
-import {
-  PropsWithChildren,
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-} from 'react';
+import {PropsWithChildren, createContext, useContext, useReducer} from 'react';
 
 type LoginInfo = {name: string};
 type State = {user: null | LoginInfo};
 
-const initialState = {user: null};
+const initialState = {user: {name: 'test'}};
 
 type ACTIONTYPE = {type: 'login'};
 

@@ -14,7 +14,6 @@ export default function LoginView({navigation}: Props) {
         color="primary.main"
         size="md"
         onPress={() => {
-          console.debug('dispatching');
           dispatch({type: 'login'});
         }}>
         Login with Google

@@ -7,13 +7,12 @@
 
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-
 import Mapbox from '@rnmapbox/maps';
 import {NativeBaseProvider} from 'native-base';
 import {theme} from './theme';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {LoginProvider} from './context/LoginContext';
 import ScreenDisplay from './screens/ScreenDisplay';
+import './translations';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',

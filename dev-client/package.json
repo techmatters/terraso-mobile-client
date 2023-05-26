@@ -13,12 +13,15 @@
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "@rnmapbox/maps": "^10.0.0",
+    "i18next": "^22.5.0",
     "native-base": "^3.4.28",
     "react": "18.2.0",
+    "react-i18next": "^12.3.1",
     "react-native": "0.71.6",
     "react-native-safe-area-context": "^3.4.1",
     "react-native-screens": "^3.20.0",
-    "react-native-svg": "^12.1.1"
+    "react-native-svg": "^12.1.1",
+    "react-native-vector-icons": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
