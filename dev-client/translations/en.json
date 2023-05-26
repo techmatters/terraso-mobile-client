@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "header": "Projects",
+    "no_projects_title": "You don't currently have any projects",
+    "project_info": "A project is a group of sites you can manage on your own or with a team. Projects allow you to configure data inputs, add team members and sites, and view audit logs. ",
+    "learn_more": "Learn more about using projects",
+    "create_button": "CREATE PROJECT"
+  }
+}
