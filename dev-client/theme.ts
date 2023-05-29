@@ -3,7 +3,8 @@ import { extendTheme } from "native-base";
 const newColorTheme = {
     primary: {
         main: "#276749",
-        contrast: "#FFFFFF"
+        contrast: "#FFFFFF",
+        lightest: "#9AE6B4"
     },
     background: {
         default: "#FFFFFF"

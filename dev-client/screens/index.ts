@@ -1,7 +1,7 @@
 import LoginScreen from "./LoginScreen";
 import ProjectListScreen from './ProjectListScreen';
 import { ScreenRoutes, RootStackParamList as PrivateRootStackParamList } from './constants';
-import type { ProjectDescription } from '../types';
+import type { ProjectPreview } from '../types';
 
 export type ScreenMap = Record<ScreenRoutes, any>;
 
