@@ -3,7 +3,7 @@ import {RootStackParamList, ScreenRoutes} from './constants';
 import {useLogin} from '../context/LoginContext';
 import SCREENS, {LoggedOut} from '.';
 import AppBar from '../components/AppBar';
-import { fetchProjects } from '../dataflow';
+import {fetchProjects} from '../dataflow';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -23,10 +23,18 @@ function mapScreens([name, component]: ScreenMapArgs) {
   );
 }
 
+const previews = fetchProjects();
+
+/* TODO: I don't think initial params are necesssary for all screens, let's figure out how to modify this*/
 const INITIAL_PARAMS: RootStackParamList = {
   LOGIN: undefined,
   PROJECT_LIST: {
-    projects: fetchProjects(),
+    projects: previews,
+  },
+  PROJECT_VIEW: {
+    project: {
+      meta: previews[0],
+    },
   },
 };
 

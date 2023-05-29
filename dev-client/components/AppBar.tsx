@@ -1,7 +1,11 @@
-import {Box, HStack, StatusBar, Text} from 'native-base';
+import {Box, HStack, Heading, StatusBar, Text} from 'native-base';
 import MaterialIcon from './MaterialIcon';
 
-export default function AppBar(): JSX.Element {
+type Props = {
+  title: string;
+};
+
+export default function AppBar({title}: Props): JSX.Element {
   return (
     <HStack>
       <StatusBar bg="primary.contrast" barStyle="light-content" />
@@ -9,7 +13,7 @@ export default function AppBar(): JSX.Element {
       <HStack
         bg="primary.main"
         px="2"
-        py="3"
+        py="2"
         justifyContent="space-between"
         alignItems="center"
         width="100%"
@@ -24,7 +28,9 @@ export default function AppBar(): JSX.Element {
               color: 'primary.contrast',
             }}
           />
-          <Text color="primary.contrast">LandPKS</Text>
+          <Heading size="xs" color="primary.contrast">
+            {title}
+          </Heading>
         </HStack>
         <HStack>
           <MaterialIcon

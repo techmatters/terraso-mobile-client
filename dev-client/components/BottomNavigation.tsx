@@ -8,10 +8,16 @@ type Props = {
 
 const LabeledIcon = ({name, label}: Props) => {
   return (
-    <Box p="2">
-      <MaterialIcon name={name} iconProps={{color: 'primary.contrast'}} />
+    <Box p="1">
+      <MaterialIcon
+        name={name}
+        iconProps={{color: 'primary.contrast'}}
+        iconButtonProps={{pb: 0}}
+      />
       <Center>
-        <Text color="primary.contrast">{label}</Text>
+        <Text color="primary.contrast" fontSize="xs">
+          {label}
+        </Text>
       </Center>
     </Box>
   );
@@ -19,7 +25,7 @@ const LabeledIcon = ({name, label}: Props) => {
 
 export default function BottomNavigation() {
   return (
-    <HStack bg="primary.main" justifyContent="center" space={12}>
+    <HStack bg="primary.main" justifyContent="center" space={10} pb={2}>
       <LabeledIcon name="home" label="Home" />
       <LabeledIcon name="sync" label="Sync" />
       <LabeledIcon name="settings" label="Settings" />
