@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Heading,
-  Icon,
-  Link,
-  Text,
-  VStack,
-} from 'native-base';
+import {Box, Heading, Link, Text, VStack} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import MaterialIcon from '../MaterialIcon';
 import CreateProjectButton from './CreateProjectButton';
@@ -22,10 +13,7 @@ export default function ProjectsEmptyView() {
       <Heading size="sm">{t('projects.none.header')}</Heading>
       <Text>{t('projects.none.info')}</Text>
       <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
-        <MaterialIcon
-          name="open-in-new"
-          iconProps={{color: 'actions.active'}}
-        />
+        <MaterialIcon name="open-in-new" iconProps={{color: 'action.active'}} />
         {t('projects.learn_more')}
       </Link>
       <Box alignItems="flex-start">

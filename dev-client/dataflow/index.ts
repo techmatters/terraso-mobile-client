@@ -27,6 +27,8 @@ export function fetchProjects(): ProjectPreview[] {
   ];
 }
 
+const projectSiteMap = {};
+
 export function fetchProject(projectId: number): Project {
   return {meta: fetchProjects()[projectId]};
 }

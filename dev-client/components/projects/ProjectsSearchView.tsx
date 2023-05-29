@@ -20,7 +20,7 @@ type Props = {
 export default function ProjectsSearchView({projects}: Props) {
   const {t} = useTranslation();
   return (
-    <VStack bg="grey.200" p={5} flexGrow={1}>
+    <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
       <Box alignItems="flex-start" pb={3}>
         <CreateProjectButton />
       </Box>
