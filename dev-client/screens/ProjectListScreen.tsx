@@ -1,6 +1,6 @@
 import {RootStackParamList, ScreenRoutes} from './constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import ProjectListView from '../components/ProjectListView';
+import ProjectListView from '../components/projects/ProjectListView';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -8,5 +8,5 @@ type Props = NativeStackScreenProps<
 >;
 
 export default function ProjectListScreen({route, navigation}: Props) {
-  return <ProjectListView />;
+    return <ProjectListView projects={route.params.projects}/>;
 }
