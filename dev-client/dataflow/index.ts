@@ -27,8 +27,118 @@ export function fetchProjects(): ProjectPreview[] {
   ];
 }
 
-const projectSiteMap = {};
+const projectSiteMap = new Map([
+  [
+    1,
+    [
+      {
+        id: 1,
+        name: 'site1',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+      {
+        id: 2,
+        name: 'site2',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+      {
+        id: 3,
+        name: 'site3',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+      {
+        id: 4,
+        name: 'site4',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+      {
+        id: 5,
+        name: 'site5',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+    ],
+  ],
+  [
+    2,
+    [
+      {
+        id: 6,
+        name: 'site6',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+      {
+        id: 7,
+        name: 'site7',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+      {
+        id: 8,
+        name: 'site8',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+      {
+        id: 9,
+        name: 'site9',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+      {
+        id: 10,
+        name: 'site10',
+        lastModified: {
+          date: '2010-05-01T01:25:23',
+          user: {name: 'alice', id: 1},
+        },
+        percentComplete: 60,
+      },
+    ],
+  ],
+]);
 
 export function fetchProject(projectId: number): Project {
-  return {meta: fetchProjects()[projectId]};
+  return {
+    meta: fetchProjects()[projectId],
+    sites: projectSiteMap.get(projectId) || [],
+    inputs: {
+      units: 'metric',
+      source: 'survey',
+    },
+    memberPermissions: 'view',
+    users: [{name: 'alice', id: 1}],
+  };
 }

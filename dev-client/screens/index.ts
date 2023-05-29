@@ -1,13 +1,14 @@
 import LoginScreen from "./LoginScreen";
 import ProjectListScreen from './ProjectListScreen';
 import { ScreenRoutes, RootStackParamList as PrivateRootStackParamList } from './constants';
-import type { ProjectPreview } from '../types';
+import ProjectViewScreen from "./ProjectViewScreen";
 
 export type ScreenMap = Record<ScreenRoutes, any>;
 
 export default {
     LOGIN: LoginScreen,
-    PROJECT_LIST: ProjectListScreen
+    PROJECT_LIST: ProjectListScreen,
+    PROJECT_VIEW: ProjectViewScreen,
 } as ScreenMap;
 
 export const LoggedOut : Set<ScreenRoutes> = new Set([ScreenRoutes.LOGIN]);
