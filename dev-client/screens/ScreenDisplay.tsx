@@ -3,6 +3,7 @@ import {RootStackParamList, ScreenRoutes} from './constants';
 import {useLogin} from '../context/LoginContext';
 import SCREENS, {LoggedOut} from '.';
 import AppBar from '../components/AppBar';
+import { fetchProjects } from '../dataflow';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -25,7 +26,7 @@ function mapScreens([name, component]: ScreenMapArgs) {
 const INITIAL_PARAMS: RootStackParamList = {
   LOGIN: undefined,
   PROJECT_LIST: {
-    projects: [{name: 'Test Project'}],
+    projects: fetchProjects(),
   },
 };
 

@@ -5,11 +5,16 @@ const newColorTheme = {
         main: "#276749",
         contrast: "#FFFFFF"
     },
-    background: "#FFFFFF",
+    background: {
+        default: "#FFFFFF"
+    },
     secondary: {
         "main": "#C05621"
     },
-    actions: {
+    grey: {
+        200: "#EEEEEE"
+    },
+    action: {
         "active": "#1A202C"
     }
 };

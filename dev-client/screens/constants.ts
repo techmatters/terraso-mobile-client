@@ -1,4 +1,4 @@
-import { Project } from "../types";
+import { ProjectDescription } from "../types";
 
 export const enum ScreenRoutes {
     LOGIN = "LOGIN",
@@ -7,5 +7,5 @@ export const enum ScreenRoutes {
 
 export type RootStackParamList = {
     [ScreenRoutes.LOGIN]: undefined;
-    [ScreenRoutes.PROJECT_LIST]: { projects: Project[] }
+    [ScreenRoutes.PROJECT_LIST]: { projects: ProjectDescription[] }
 }
