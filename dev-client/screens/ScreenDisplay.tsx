@@ -16,9 +16,6 @@ function mapScreens([name, component]: ScreenMapArgs) {
       component={component}
       initialParams={INITIAL_PARAMS[name]}
       key={name}
-      options={({route}) => ({
-        headerTitle: props => <AppBar />,
-      })}
     />
   );
 }

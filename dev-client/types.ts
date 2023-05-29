@@ -11,5 +11,11 @@ export type ProjectPreview = {
 };
 
 export type Project = {
-    meta: ProjectPreview
+    meta: ProjectPreview,
+    sites: SitePreview[]
 }
+
+export type SitePreview = {
+    id: number,
+    name: string,
+};

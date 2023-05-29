@@ -1,4 +1,4 @@
-import { ProjectPreview } from "../types";
+import { ProjectPreview, Project } from "../types";
 
 export const enum ScreenRoutes {
     LOGIN = "LOGIN",
