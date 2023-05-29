@@ -9,31 +9,21 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 type ScreenMapArgs = [ScreenRoutes, any];
 
+const previews = fetchProjects();
+
 function mapScreens([name, component]: ScreenMapArgs) {
+  // TODO: This is a stub that will be removed in connection with backend
+  const initialParams =
+    name === 'PROJECT_LIST' ? {projects: previews} : undefined;
   return (
     <Stack.Screen
       name={name}
       component={component}
-      initialParams={INITIAL_PARAMS[name]}
+      initialParams={initialParams}
       key={name}
     />
   );
 }
-
-const previews = fetchProjects();
-
-/* TODO: I don't think initial params are necesssary for all screens, let's figure out how to modify this*/
-const INITIAL_PARAMS: RootStackParamList = {
-  LOGIN: undefined,
-  PROJECT_LIST: {
-    projects: previews,
-  },
-  PROJECT_VIEW: {
-    project: {
-      meta: previews[0],
-    },
-  },
-};
 
 export default function ScreenDisplay() {
   const {user} = useLogin();
