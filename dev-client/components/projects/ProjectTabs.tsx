@@ -6,19 +6,16 @@ import ProjectInputTab from './ProjectInputTab';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Icon, useTheme} from 'native-base';
 import {RouteProp} from '@react-navigation/native';
-
-export const enum TabRoutes {
-  INPUTS = 'Inputs',
-}
-
-export type TabStackParamList = {
-  [TabRoutes.INPUTS]: undefined;
-};
+import ProjectTeamTab from './ProjectTeamTab';
+import {USER_PROFILES} from '../../dataflow';
+import {TabRoutes, TabStackParamList} from './constants';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 
 // TODO: There must be a better way
-type TabRouteProp = {route: RouteProp<TabStackParamList, TabRoutes.INPUTS>};
+type TabRouteProp = {
+  route: RouteProp<TabStackParamList, keyof TabStackParamList>;
+};
 
 export default function ProjectTabs() {
   const {colors} = useTheme(); //TODO: Is it better to use useToken?
@@ -28,9 +25,11 @@ export default function ProjectTabs() {
   }: TabRouteProp): MaterialTopTabNavigationOptions {
     let iconName = 'tune';
     switch (route.name) {
-      case 'Inputs':
+      case TabRoutes.INPUTS:
         iconName = 'tune';
         break;
+      case TabRoutes.TEAM:
+        iconName = 'people';
     }
 
     return {
@@ -41,13 +40,22 @@ export default function ProjectTabs() {
       tabBarInactiveTintColor: colors.secondary.main,
       tabBarItemStyle: {width: 100, flexDirection: 'row'},
       tabBarStyle: {
+        backgroundColor: colors.grey[200],
+      },
+      tabBarIndicatorStyle: {
         backgroundColor: colors.secondary.main,
+        height: '100%',
       },
     };
   }
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />
+      <Tab.Screen
+        name={TabRoutes.TEAM}
+        component={ProjectTeamTab}
+        initialParams={{users: USER_PROFILES}}
+      />
     </Tab.Navigator>
   );
 }

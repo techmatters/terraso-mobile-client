@@ -176,7 +176,7 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 // See https://github.com/oblador/react-native-vector-icons#android
 // REVIEW: Will need to do the same process with iOS
 project.ext.vectoricons = [
-    iconFontNames: [ 'MaterialIcons.ttf' ] // Name of the font files you want to copy
+    iconFontNames: [ 'MaterialIcons.ttf', 'MaterialCommunityIcons.ttf' ] // Name of the font files you want to copy
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

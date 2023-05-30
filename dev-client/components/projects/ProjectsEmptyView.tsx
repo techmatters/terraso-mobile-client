@@ -1,7 +1,7 @@
 import {Box, Heading, Link, Text, VStack} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import MaterialIcon from '../MaterialIcon';
-import CreateProjectButton from './CreateProjectButton';
+import AddButton from '../common/AddButton';
 
 /**
  * Component for displaying info when a user doesn't have any projects
@@ -17,7 +17,7 @@ export default function ProjectsEmptyView() {
         {t('projects.learn_more')}
       </Link>
       <Box alignItems="flex-start">
-        <CreateProjectButton />
+          <AddButton text={t('projects.create')} />
       </Box>
     </VStack>
   );

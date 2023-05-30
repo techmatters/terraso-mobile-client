@@ -13,10 +13,12 @@
     "create_button": "Create project",
     "go_to": "Go to Project",
     "inputs": {
-      "units": "Units of Measurement",
-      "units_a11y": "measurement units",
-      "imperial": "Imperial (in, ft, lb)",
-      "metric": "Metric (cm, m , kg)",
+      "units": {
+        "heading": "Units of Measurement",
+        "a11yLabel": "measurement units",
+        "imperial": "Imperial (in, ft, lb)",
+        "metric": "Metric (cm, m , kg)"
+      },
       "soil_source": {
         "heading": "Default Soil Information Source",
         "survey": "US/USDA/NRCS Soil Survey",
