@@ -10,4 +10,4 @@ export type RootStackParamList = {
     [ScreenRoutes.LOGIN]: undefined;
     [ScreenRoutes.PROJECT_LIST]: { projects: ProjectPreview[] };
     [ScreenRoutes.PROJECT_VIEW]: { project: Project };
-}
+};
