@@ -23,6 +23,15 @@ export type UserPreview = {
   id: number;
 };
 
+export type Role = 'member' | 'manager';
+
+export type UserProfile = {
+    firstName: string;
+    lastName?: string;
+    role: Role,
+    id: number
+};
+
 export type ProjectInputs = {
   units: 'imperial' | 'metric';
   source: 'survey' | 'soilgrids';

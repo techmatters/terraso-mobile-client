@@ -1,4 +1,4 @@
-import {ProjectPreview, Project} from '../types';
+import {ProjectPreview, Project, UserProfile} from '../types';
 
 export function fetchProjects(): ProjectPreview[] {
   return [
@@ -129,6 +129,26 @@ const projectSiteMap = new Map([
     ],
   ],
 ]);
+
+export const USER_PROFILES: UserProfile[] = [
+  {
+    firstName: 'John',
+    lastName: 'Adams',
+    role: 'manager',
+    id: 4,
+  },
+  {
+    firstName: 'Debbie',
+    lastName: 'Baker',
+    role: 'member',
+    id: 5,
+  },
+  {
+    firstName: 'Courtney',
+    role: 'member',
+    id: 6,
+  },
+];
 
 export function fetchProject(projectId: number): Project {
   return {

@@ -1,55 +1,21 @@
-import {Box, FormControl, Radio, Text, VStack} from 'native-base';
+import {Text, VStack} from 'native-base';
+import React from 'react';
 import {useTranslation} from 'react-i18next';
-
-type RadioOption = {
-  value: string;
-  text: string;
-};
-
-type Props = {
-  heading: string;
-  options: RadioOption[];
-  blockName: string;
-  a11yLabel?: string;
-};
-
-function RadioBlock({heading, options, blockName, a11yLabel}: Props) {
-  return (
-    <FormControl>
-      <FormControl.Label
-        _text={{
-          fontSize: 'md',
-          bold: true,
-          color: 'text.primary',
-        }}>
-        {heading}
-      </FormControl.Label>
-      <Radio.Group
-        name={blockName}
-        accessibilityLabel={a11yLabel}
-        colorScheme="primary">
-        {options.map(({value, text}) => (
-          <Radio value={value} my={1} size="sm" key={value}>
-            {text}
-          </Radio>
-        ))}
-      </Radio.Group>
-    </FormControl>
-  );
-}
+import RadioBlock from '../common/RadioBlock';
 
 export default function ProjectInputTab() {
   const {t} = useTranslation();
 
   const blocks = [
     {
-      heading: t('projects.inputs.units'),
+      heading: t('projects.inputs.units.heading'),
       options: [
-        {text: t('projects.inputs.imperial'), value: 'imperial'},
-        {text: t('projects.inputs.metric'), value: 'metric'},
+        {text: t('projects.inputs.units.imperial'), value: 'imperial'},
+        {text: t('projects.inputs.units.metric'), value: 'metric'},
       ],
       blockName: 'measurement-units',
-      a11yLabel: t('projects.inputs.units_a11y'),
+      a11yLabel: t('projects.inputs.units.a11yLabel'),
+      defaultValue: 'imperial',
     },
     {
       heading: t('projects.inputs.soil_source.heading'),
@@ -59,6 +25,7 @@ export default function ProjectInputTab() {
       ],
       blockName: 'information-source',
       a11yLabel: t('projects.inputs.soil_source.a11yLabel'),
+      defaultValue: 'soil-survey',
     },
   ];
   return (

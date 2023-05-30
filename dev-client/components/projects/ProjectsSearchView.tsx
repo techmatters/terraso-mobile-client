@@ -1,15 +1,7 @@
-import {
-  Badge,
-  Box,
-  FlatList,
-  HStack,
-  Input,
-  ScrollView,
-  VStack,
-} from 'native-base';
+import {Badge, Box, FlatList, HStack, Input, VStack} from 'native-base';
 import {ProjectPreview} from '../../types';
 import {useTranslation} from 'react-i18next';
-import CreateProjectButton from './CreateProjectButton';
+import AddButton from '../common/AddButton';
 import MaterialIcon from '../MaterialIcon';
 import ProjectPreviewCard from './ProjectPreviewCard';
 
@@ -22,7 +14,7 @@ export default function ProjectsSearchView({projects}: Props) {
   return (
     <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
       <Box alignItems="flex-start" pb={3}>
-        <CreateProjectButton />
+        <AddButton text={t('projects.create_button')} />
       </Box>
       <HStack alignContent="center">
         <VStack>
