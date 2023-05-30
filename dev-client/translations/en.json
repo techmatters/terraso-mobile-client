@@ -11,7 +11,19 @@
     },
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
-    "go_to": "Go to Project"
+    "go_to": "Go to Project",
+    "inputs": {
+      "units": "Units of Measurement",
+      "units_a11y": "measurement units",
+      "imperial": "Imperial (in, ft, lb)",
+      "metric": "Metric (cm, m , kg)",
+      "soil_source": {
+        "heading": "Default Soil Information Source",
+        "survey": "US/USDA/NRCS Soil Survey",
+        "grids": "SoilGrids",
+        "a11yLabel": "default soil information source"
+      }
+    }
   },
   "badge": {
     "new": "New"
