@@ -10,7 +10,7 @@ const newColorTheme = {
         default: "#FFFFFF"
     },
     secondary: {
-        "main": "#C05621"
+        main: "#C05621",
     },
     grey: {
         200: "#EEEEEE"
@@ -21,3 +21,9 @@ const newColorTheme = {
 };
 
 export const theme = extendTheme({ colors: newColorTheme});
+
+type CustomThemeType = typeof theme;
+
+declare module 'native-base' {
+    interface ICustomTheme extends CustomThemeType {}
+}

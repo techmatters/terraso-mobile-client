@@ -2,7 +2,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList, ScreenRoutes} from './constants';
 import {useLogin} from '../context/LoginContext';
 import SCREENS, {LoggedOut} from '.';
-import AppBar from '../components/AppBar';
 import {fetchProjects} from '../dataflow';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
