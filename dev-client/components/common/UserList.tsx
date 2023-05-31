@@ -1,7 +1,6 @@
-import {Badge, Box, Button, FlatList, HStack, Text} from 'native-base';
+import {Badge, Box, Button, FlatList, HStack, Icon, Text} from 'native-base';
 import {UserProfile} from '../../types';
-import MaterialCommunityIcon from './MaterialCommunityIcon';
-import MaterialIcon from '../MaterialIcon';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type ListProps = {
   users: UserProfile[];
@@ -13,15 +12,17 @@ type ItemProps = {
 
 function UserItem({user}: ItemProps) {
   return (
-    <Box borderBottomWidth="1" width={275}>
+    <Box borderBottomWidth="1" width={275} py={2}>
       <HStack justifyContent="space-between" alignItems="center">
-        <Box flexGrow={1} flexBasis="33%">
-          <MaterialCommunityIcon
+        <Box flexBasis="33%">
+          <Icon
+            as={MaterialCommunityIcons}
             name="account-cog"
-            iconProps={{color: 'action.active'}}
+            color="action.active"
+            size="md"
           />
         </Box>
-        <Text flexGrow={1} flexBasis="33%">
+        <Text flexBasis="33%">
           {user.lastName}
           {user.lastName && ', '}
           {user.firstName}

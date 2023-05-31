@@ -3,15 +3,18 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 type Props = {
   name: string;
+  // TODO: Figure out what this type is
   iconButtonProps?: any;
   iconProps?: any;
+  onPress?: () => void;
 };
 
 export default function MaterialCommunityIcon({
   name,
   iconButtonProps,
   iconProps,
+  onPress,
 }: Props) {
-  let icon = <Icon as={MaterialCommunityIcons} name={name} />;
+  let icon = <Icon as={MaterialCommunityIcons} name={name} onPress={onPress} />;
   return <IconButton icon={icon} {...iconButtonProps} _icon={iconProps} />;
 }

@@ -1,18 +1,28 @@
 import {Box, Center, HStack, Text} from 'native-base';
 import MaterialIcon from './MaterialIcon';
+import MaterialCommunityIcon from './common/MaterialCommunityIcon';
+import {useNavigation} from '@react-navigation/native';
+import {useCallback} from 'react';
+import {ScreenRoutes} from '../screens/constants';
+import {TopLevelNavigationProp} from '../screens';
+import {SITE_DISPLAYS, fetchProjects} from '../dataflow';
 
-type Props = {
+type IconProps = {
   name: string;
   label: string;
+  onPress?: () => void;
+  IconComponent?: any;
 };
 
-const LabeledIcon = ({name, label}: Props) => {
+const LabeledIcon = ({name, label, onPress, IconComponent}: IconProps) => {
+  const Button = IconComponent ?? MaterialIcon;
   return (
     <Box p="1">
-      <MaterialIcon
+      <Button
         name={name}
         iconProps={{color: 'primary.contrast'}}
         iconButtonProps={{pb: 0}}
+        onPress={onPress}
       />
       <Center>
         <Text color="primary.contrast" fontSize="xs">
@@ -24,14 +34,30 @@ const LabeledIcon = ({name, label}: Props) => {
 };
 
 export default function BottomNavigation() {
+  const navigation = useNavigation<TopLevelNavigationProp>();
+
+  const onMap = useCallback(
+    () => navigation.navigate(ScreenRoutes.SITES_MAP, {sites: SITE_DISPLAYS}),
+    [navigation],
+  );
+
+  const onProject = useCallback(
+    () =>
+      navigation.navigate(ScreenRoutes.PROJECT_LIST, {
+        projects: fetchProjects(),
+      }),
+    [navigation],
+  );
+
   return (
-    <HStack
-      bg="primary.main"
-      justifyContent="center"
-      space={10}
-      pb={2}>
-      <LabeledIcon name="home" label="Home" />
-      <LabeledIcon name="sync" label="Sync" />
+    <HStack bg="primary.main" justifyContent="center" space={10} pb={2}>
+      <LabeledIcon name="map" label="Map" onPress={onMap} />
+      <LabeledIcon
+        name="briefcase"
+        label="Projects"
+        onPress={onProject}
+        IconComponent={MaterialCommunityIcon}
+      />
       <LabeledIcon name="settings" label="Settings" />
     </HStack>
   );

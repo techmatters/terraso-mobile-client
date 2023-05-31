@@ -6,7 +6,7 @@ type Props = {
   text: string;
 };
 
-export default function CreateProjectButton({text}: Props) {
+export default function AddButton({text}: Props) {
   return (
     <Button bg="primary.main" size="xs">
       <HStack alignItems="center">
