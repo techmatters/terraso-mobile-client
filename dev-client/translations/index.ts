@@ -16,11 +16,9 @@ i18n.use(initReactI18next).init({
   debug: true,
   fallbackLng: 'en',
   interpolation: {
-    // react already escapes HTML characters by default
+    // react already escapes HTML tags by default
     escapeValue: false,
   },
 });
-
-console.debug(en);
 
 export default i18n;
