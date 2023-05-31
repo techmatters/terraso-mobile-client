@@ -29,8 +29,7 @@ export default function BottomNavigation() {
       bg="primary.main"
       justifyContent="center"
       space={10}
-      pb={2}
-      flex={1}>
+      pb={2}>
       <LabeledIcon name="home" label="Home" />
       <LabeledIcon name="sync" label="Sync" />
       <LabeledIcon name="settings" label="Settings" />

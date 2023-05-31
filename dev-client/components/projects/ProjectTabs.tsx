@@ -23,6 +23,7 @@ export default function ProjectTabs() {
   function screenOptions({
     route,
   }: TabRouteProp): MaterialTopTabNavigationOptions {
+    // TODO: Use a Record type
     let iconName = 'tune';
     switch (route.name) {
       case TabRoutes.INPUTS:
