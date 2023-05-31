@@ -2,18 +2,25 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList, ScreenRoutes} from './constants';
 import {useLogin} from '../context/LoginContext';
 import SCREENS, {LoggedOut} from '.';
-import {fetchProjects} from '../dataflow';
+import {fetchProjects, SITE_DISPLAYS} from '../dataflow';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 type ScreenMapArgs = [ScreenRoutes, any];
 
 const previews = fetchProjects();
+const sites = SITE_DISPLAYS;
 
 function mapScreens([name, component]: ScreenMapArgs) {
   // TODO: This is a stub that will be removed in connection with backend
-  const initialParams =
-    name === 'PROJECT_LIST' ? {projects: previews} : undefined;
+  let initialParams;
+  switch (name) {
+    case 'PROJECT_LIST':
+      initialParams = {projects: previews};
+      break;
+    case 'SITES_MAP':
+      initialParams = {sites: sites};
+  }
   return (
     <Stack.Screen
       name={name}
@@ -36,7 +43,7 @@ export default function ScreenDisplay() {
   }
   return (
     <Stack.Navigator
-      initialRouteName={ScreenRoutes.LOGIN}
+      initialRouteName={ScreenRoutes.SITES_MAP}
       screenOptions={{
         headerShown: false,
       }}>

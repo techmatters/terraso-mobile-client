@@ -37,6 +37,13 @@ export type ProjectInputs = {
   source: 'survey' | 'soilgrids';
 };
 
+export type SiteDisplay = {
+    lat: number;
+    lon: number;
+    name: string;
+    id: number;
+}
+
 export type SitePreview = {
   id: number;
   name: string;

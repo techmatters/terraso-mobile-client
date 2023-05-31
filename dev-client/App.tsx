@@ -13,12 +13,19 @@ import {theme} from './theme';
 import {LoginProvider} from './context/LoginContext';
 import ScreenDisplay from './screens/ScreenDisplay';
 import './translations';
+import {checkAndroidPermissions} from './native';
+import {PermissionsAndroid} from 'react-native';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',
 );
 
 function App(): JSX.Element {
+  useEffect(() =>
+    checkAndroidPermissions(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    ),
+  );
   return (
     <NativeBaseProvider theme={theme}>
       <NavigationContainer>
