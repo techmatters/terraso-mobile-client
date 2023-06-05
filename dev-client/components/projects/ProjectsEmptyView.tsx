@@ -1,6 +1,6 @@
 import {Box, Heading, Link, Text, VStack} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import MaterialIcon from '../MaterialIcon';
+import MaterialIcon from '../common/MaterialIconButton';
 import AddButton from '../common/AddButton';
 
 /**

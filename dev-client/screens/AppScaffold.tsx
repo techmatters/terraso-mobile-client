@@ -31,7 +31,7 @@ function mapScreens([name, component]: ScreenMapArgs) {
   );
 }
 
-export default function ScreenDisplay() {
+export default function AppScaffold() {
   const {user} = useLogin();
 
   function filterLogin([name, _]: ScreenMapArgs) {
