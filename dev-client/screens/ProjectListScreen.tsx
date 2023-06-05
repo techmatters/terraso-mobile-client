@@ -3,7 +3,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import ProjectListView from '../components/projects/ProjectListView';
 import {VStack} from 'native-base';
 import AppBar from '../components/AppBar';
-import BottomNavigation from '../components/BottomNavigation';
+import BottomNavigation from '../components/common/BottomNavigation';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 

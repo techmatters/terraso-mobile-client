@@ -27,3 +27,5 @@ export type SitesMapNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   ScreenRoutes.SITES_MAP
 >;
+
+export type TopLevelNavigationProp = NativeStackNavigationProp<RootStackParamList, keyof ScreenMap>;

@@ -3,7 +3,7 @@ import React, {memo, useEffect, useRef} from 'react';
 // TODO: Is it better to import type?
 import {type SiteDisplay} from '../../types';
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
-import MaterialIcon from '../MaterialIcon';
+import MaterialIconButton from '../common/MaterialIconButton';
 
 type SiteMapProps = {
   sites: SiteDisplay[];
@@ -25,7 +25,7 @@ const SiteMap = memo(({sites, center}: SiteMapProps): JSX.Element => {
         coordinate={[site.lon, site.lat]}
         key={[site.lon, site.lat, site.name].join('-')}
         allowOverlap={true}>
-        <MaterialIcon
+        <MaterialIconButton
           name="location-on"
           iconButtonProps={{size: 'sm'}}
           iconProps={{color: 'secondary.main'}}

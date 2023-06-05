@@ -1,5 +1,5 @@
 import {Box, HStack, Heading, StatusBar, Text} from 'native-base';
-import MaterialIcon from './MaterialIcon';
+import MaterialIcon from './common/MaterialIconButton';
 
 type Props = {
   title: string;

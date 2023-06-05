@@ -1,10 +1,10 @@
 import {Box, Center, HStack, Text} from 'native-base';
-import MaterialIcon from '../../MaterialIcon';
-import MaterialCommunityIcon from '../MaterialCommunityIcon';
+import MaterialIcon from '../common/MaterialIconButton';
+import MaterialCommunityIconButton from '../common/MaterialCommunityIconButton';
 import {useNavigation} from '@react-navigation/native';
 import {useCallback} from 'react';
-import {ScreenRoutes} from '../screens/constants';
-import {TopLevelNavigationProp} from '../screens';
+import {ScreenRoutes} from '../../screens/constants';
+import {TopLevelNavigationProp} from '../../screens';
 import {SITE_DISPLAYS, fetchProjects} from '../../dataflow';
 
 type IconProps = {
@@ -56,7 +56,7 @@ export default function BottomNavigation() {
         name="briefcase"
         label="Projects"
         onPress={onProject}
-        IconComponent={MaterialCommunityIcon}
+        IconComponent={MaterialCommunityIconButton}
       />
       <LabeledIcon name="settings" label="Settings" />
     </HStack>

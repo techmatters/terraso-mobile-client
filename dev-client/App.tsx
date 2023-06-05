@@ -11,7 +11,7 @@ import Mapbox from '@rnmapbox/maps';
 import {NativeBaseProvider} from 'native-base';
 import {theme} from './theme';
 import {LoginProvider} from './context/LoginContext';
-import ScreenDisplay from './screens/ScreenDisplay';
+import AppScaffold from './screens/AppScaffold';
 import './translations';
 import {checkAndroidPermissions} from './native';
 import {PermissionsAndroid} from 'react-native';
@@ -30,7 +30,7 @@ function App(): JSX.Element {
     <NativeBaseProvider theme={theme}>
       <NavigationContainer>
         <LoginProvider>
-          <ScreenDisplay />
+          <AppScaffold />
         </LoginProvider>
       </NavigationContainer>
     </NativeBaseProvider>

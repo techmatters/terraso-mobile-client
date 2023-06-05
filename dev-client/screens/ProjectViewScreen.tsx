@@ -3,7 +3,7 @@ import {RootStackParamList, ScreenRoutes} from './constants';
 import {Box, Text, VStack} from 'native-base';
 import AppBar from '../components/AppBar';
 import React from 'react';
-import BottomNavigation from '../components/BottomNavigation';
+import BottomNavigation from '../components/common/BottomNavigation';
 import ProjectTabs from '../components/projects/ProjectTabs';
 
 type Props = NativeStackScreenProps<

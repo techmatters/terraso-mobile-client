@@ -5,9 +5,9 @@ type State = {user: null | LoginInfo};
 
 const initialState = {user: {name: 'test'}};
 
-type ACTIONTYPE = {type: 'login'};
+type ACTION_TYPE = {type: 'login'};
 
-function loginReducer(state: State, action: ACTIONTYPE): State {
+function loginReducer(state: State, action: ACTION_TYPE): State {
   switch (action.type) {
     case 'login': {
       return {user: {name: 'userName'}};
@@ -16,7 +16,7 @@ function loginReducer(state: State, action: ACTIONTYPE): State {
 }
 
 export const LoginContext = createContext<State>(initialState);
-export const LoginDispatchContext = createContext((action: ACTIONTYPE) => {});
+export const LoginDispatchContext = createContext((action: ACTION_TYPE) => {});
 
 export function LoginProvider({children}: PropsWithChildren) {
   const [state, dispatch] = useReducer(loginReducer, initialState);

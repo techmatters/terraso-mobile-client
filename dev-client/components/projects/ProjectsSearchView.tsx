@@ -2,7 +2,7 @@ import {Badge, Box, FlatList, HStack, Input, VStack} from 'native-base';
 import {ProjectPreview} from '../../types';
 import {useTranslation} from 'react-i18next';
 import AddButton from '../common/AddButton';
-import MaterialIcon from '../MaterialIcon';
+import MaterialIcon from '../common/MaterialIconButton';
 import ProjectPreviewCard from './ProjectPreviewCard';
 
 type Props = {

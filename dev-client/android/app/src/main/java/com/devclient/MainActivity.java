@@ -10,6 +10,7 @@ public class MainActivity extends ReactActivity {
 
 
   // https://reactnavigation.org/docs/getting-started/#installing-dependencies-into-a-bare-react-native-project
+    // This change is required to avoid crashes related to View state being not persisted consistently across Activity restarts.
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(null);
