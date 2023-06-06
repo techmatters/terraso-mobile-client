@@ -5,34 +5,36 @@
  * @format
  */
 
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-
+import React, {useEffect} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
-import { Button, NativeBaseProvider, Text } from 'native-base';
-import { theme } from './theme';
-import LoginView from './components/Login';
-
-
+import {NativeBaseProvider} from 'native-base';
+import {theme} from './theme';
+import {LoginProvider} from './context/LoginContext';
+import AppScaffold from './screens/AppScaffold';
+import './translations';
+import {checkAndroidPermissions} from './native';
+import {PermissionsAndroid} from 'react-native';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',
 );
 
-
 function App(): JSX.Element {
+  useEffect(() =>
+    checkAndroidPermissions(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    ),
+  );
   return (
     <NativeBaseProvider theme={theme}>
-      <View style={[styles.container, {
-        justifyContent: "center"
-      }]}>
-        { /* <Mapbox.MapView style={styles.map} /> */}
-        <LoginView />
-      </View>
+      <NavigationContainer>
+        <LoginProvider>
+          <AppScaffold />
+        </LoginProvider>
+      </NavigationContainer>
     </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({ map: { flex: 1 }, container: { flex: 1 } });
 
 export default App;
