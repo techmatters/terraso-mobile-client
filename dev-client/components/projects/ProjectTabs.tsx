@@ -9,6 +9,7 @@ import {RouteProp} from '@react-navigation/native';
 import ProjectTeamTab from './ProjectTeamTab';
 import {USER_PROFILES} from '../../dataflow';
 import {TabRoutes, TabStackParamList} from './constants';
+import ProjectSettingsTab from './ProjectSettingsTab';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 
@@ -31,6 +32,10 @@ export default function ProjectTabs() {
         break;
       case TabRoutes.TEAM:
         iconName = 'people';
+        break;
+      case TabRoutes.SETTINGS:
+        iconName = 'settings';
+        break;
     }
 
     return {
@@ -56,6 +61,16 @@ export default function ProjectTabs() {
         name={TabRoutes.TEAM}
         component={ProjectTeamTab}
         initialParams={{users: USER_PROFILES}}
+      />
+      <Tab.Screen
+        name={TabRoutes.SETTINGS}
+        component={ProjectSettingsTab}
+        initialParams={{
+          name: 'Test Project',
+          description: 'A Test Project',
+          privacy: 'private',
+          downloadLink: 'https://s3.amazon.com/mydownload',
+        }}
       />
     </Tab.Navigator>
   );

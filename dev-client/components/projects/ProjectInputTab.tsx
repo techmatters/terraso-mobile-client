@@ -8,7 +8,7 @@ export default function ProjectInputTab() {
 
   const blocks = [
     {
-      heading: t('projects.inputs.units.heading'),
+      label: t('projects.inputs.units.heading'),
       options: [
         {text: t('projects.inputs.units.imperial'), value: 'imperial'},
         {text: t('projects.inputs.units.metric'), value: 'metric'},
@@ -18,7 +18,7 @@ export default function ProjectInputTab() {
       defaultValue: 'imperial',
     },
     {
-      heading: t('projects.inputs.soil_source.heading'),
+      label: t('projects.inputs.soil_source.heading'),
       options: [
         {text: t('projects.inputs.soil_source.survey'), value: 'soil-survey'},
         {text: t('projects.inputs.soil_source.grids'), value: 'soil-grids'},
