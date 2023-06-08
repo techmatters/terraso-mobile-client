@@ -1,17 +1,90 @@
-import {Box, Menu, Text, VStack} from 'native-base';
+import {
+  Box,
+  FlatList,
+  HStack,
+  Heading,
+  Icon,
+  Link,
+  Menu,
+  Text,
+  ThreeDotsIcon,
+  VStack,
+} from 'native-base';
 import AddButton from '../common/AddButton';
 import {useTranslation} from 'react-i18next';
+import {TabRoutes, TabStackParamList} from './constants';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import SearchBar from '../common/SearchBar';
+import {SiteDisplay, SitePreview} from '../../types';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React from 'react';
+import ProgressCircle from '../common/ProgressCircle';
+import MaterialCommunityIcon from '../common/MaterialCommunityIconButton';
 
-export default function ProjectSitesTab() {
+type SiteProps = {
+  site: SitePreview;
+};
+
+function SiteItem({site}: SiteProps) {
   const {t} = useTranslation();
   return (
-    <VStack m={5} space={3}>
+    <Box backgroundColor="background.default" px={1} py={3} m={1}>
+      <HStack>
+        <Box mt={-0.5}>
+          <Menu
+            trigger={(triggerProps): JSX.Element => {
+              return (
+                <MaterialCommunityIcon
+                  iconProps={{size: 'md', color: 'action.active'}}
+                  name="dots-vertical"
+                  iconButtonProps={{...triggerProps, mr: -1, ml: -3}}
+                />
+              );
+            }}>
+            <Menu.Item>Test</Menu.Item>
+          </Menu>
+        </Box>
+        <VStack>
+          <Heading>{site.name}</Heading>
+          <Text color="primary.main">
+            {t('general.modified_by', {
+              date: new Date(site.lastModified.date).toLocaleDateString(),
+              user: site.lastModified.user.name,
+            })}
+          </Text>
+          <HStack alignItems="center" space={2}>
+            <Icon size="4xl" as={MaterialIcons} name="photo" ml={-2} />
+            <ProgressCircle done={site.percentComplete} />
+            <Box flexGrow={1} flexDirection="row" justifyContent="flex-end">
+              <Link _text={{color: 'primary.main'}}>
+                {t('projects.sites.go_to')}
+              </Link>
+            </Box>
+          </HStack>
+        </VStack>
+      </HStack>
+    </Box>
+  );
+}
+
+type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SITES>;
+
+export default function ProjectSitesTab({
+  route: {
+    params: {sites},
+  },
+}: Props) {
+  const {t} = useTranslation();
+
+  const empty = (
+    <>
       <Text>{t('projects.sites.empty')}</Text>
       <Menu
         shouldOverlapWithTrigger={false}
         trigger={(props): JSX.Element => {
           return (
-            <Box flex={0} alignItems="flex-start">
+            <Box alignItems="flex-start">
               <AddButton text={t('projects.sites.add')} buttonProps={props} />
             </Box>
           );
@@ -19,6 +92,26 @@ export default function ProjectSitesTab() {
         <Menu.Item>{t('projects.sites.create') ?? ''}</Menu.Item>
         <Menu.Item>{t('projects.sites.transfer') ?? ''}</Menu.Item>
       </Menu>
+    </>
+  );
+
+  const full = (
+    <>
+      <Box alignItems="flex-start">
+        <AddButton text={t('projects.sites.add')} />
+      </Box>
+      <SearchBar selected={sites} />
+      <FlatList
+        data={sites}
+        renderItem={({item}) => <SiteItem site={item} />}
+        keyExtractor={site => String(site.id)}
+      />
+    </>
+  );
+
+  return (
+    <VStack m={3} pb={5} space={3} height="100%">
+      {sites.length === 0 ? empty : full}
     </VStack>
   );
 }

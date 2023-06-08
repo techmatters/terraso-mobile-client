@@ -8,7 +8,7 @@ type Props = {
   onPress?: () => void;
 };
 
-export default function MaterialIcon({
+export default function MaterialIconButton({
   name,
   iconButtonProps,
   iconProps,
