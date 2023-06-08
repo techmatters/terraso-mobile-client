@@ -1,5 +1,6 @@
-import {Badge, HStack, Input, VStack} from 'native-base';
+import {Badge, HStack, Icon, Input, VStack} from 'native-base';
 import MaterialIconButton from './MaterialIconButton';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useTranslation} from 'react-i18next';
 
 type SearchProps<T> = {
@@ -42,6 +43,7 @@ export default function SearchBar<T extends object>({
         ml={2}
         maxHeight={8}
         onChangeText={onChangeText}
+        InputLeftElement={<Icon as={MaterialIcons} name="search" ml={3} />}
       />
     </HStack>
   );
