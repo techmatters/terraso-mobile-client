@@ -25,6 +25,8 @@ export type UserPreview = {
 
 export type Role = 'member' | 'manager';
 
+export type ProjectPrivacy = "private" | "public";
+
 export type UserProfile = {
     firstName: string;
     lastName?: string;

@@ -25,6 +25,22 @@
         "grids": "SoilGrids",
         "a11yLabel": "default soil information source"
       }
+    },
+    "settings": {
+      "heading": "General Project Settings",
+      "name": {
+        "error": "Helper text"
+      },
+      "description": {
+        "error": "Helper text"
+      },
+      "privacy": {
+        "label": "Data Privacy",
+        "a11y_label": "Data privacy"
+      },
+      "copy_download_link": "Copy project download link",
+      "archive": "Archive this project",
+      "delete": "Delete this project"
     }
   },
   "badge": {
@@ -33,6 +49,9 @@
   "general": {
     "last_modified": "Last Modified",
     "sites": "sites",
-    "users": "users"
+    "users": "users",
+    "project_private": "Private",
+    "project_public": "Public",
+    "save": "Save"
   }
 }
