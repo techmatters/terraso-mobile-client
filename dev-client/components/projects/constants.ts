@@ -1,4 +1,4 @@
-import {ProjectPrivacy, SiteDisplay, UserProfile} from '../../types';
+import {ProjectPrivacy, SitePreview, UserProfile} from '../../types';
 
 export const enum TabRoutes {
   INPUTS = 'Inputs',
@@ -18,6 +18,6 @@ export type TabStackParamList = {
     downloadLink: string;
   };
   [TabRoutes.SITES]: {
-    sites: SiteDisplay[];
+    sites: SitePreview[];
   };
 };

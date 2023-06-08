@@ -7,7 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Icon, useTheme} from 'native-base';
 import {RouteProp} from '@react-navigation/native';
 import ProjectTeamTab from './ProjectTeamTab';
-import {USER_PROFILES} from '../../dataflow';
+import {USER_PROFILES, fetchProject} from '../../dataflow';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
@@ -81,7 +81,8 @@ export default function ProjectTabs() {
         name={TabRoutes.SITES}
         component={ProjectSitesTab}
         initialParams={{
-          sites: [],
+          sites: fetchProject(1).sites,
+          //sites: [],
         }}
       />
     </Tab.Navigator>
