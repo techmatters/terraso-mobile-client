@@ -1,9 +1,10 @@
-import {ProjectPrivacy, UserProfile} from '../../types';
+import {ProjectPrivacy, SiteDisplay, UserProfile} from '../../types';
 
 export const enum TabRoutes {
   INPUTS = 'Inputs',
   TEAM = 'Team',
   SETTINGS = 'Settings',
+  SITES = 'Sites',
 }
 
 export type TabStackParamList = {
@@ -15,5 +16,8 @@ export type TabStackParamList = {
     projectId: number;
     privacy: ProjectPrivacy;
     downloadLink: string;
+  };
+  [TabRoutes.SITES]: {
+    sites: SiteDisplay[];
   };
 };
