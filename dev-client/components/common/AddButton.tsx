@@ -4,11 +4,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   text: string;
+  buttonProps?: any;
 };
 
-export default function AddButton({text}: Props) {
+export default function AddButton({text, buttonProps}: Props) {
   return (
-    <Button bg="primary.main" size="xs">
+    <Button bg="primary.main" size="xs" {...buttonProps}>
       <HStack alignItems="center">
         {/* TODO: MaterialIcon needs to be renamed to MaterialIconButton */}
         <Icon

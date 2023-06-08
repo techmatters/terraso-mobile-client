@@ -41,6 +41,12 @@
       "copy_download_link": "Copy project download link",
       "archive": "Archive this project",
       "delete": "Delete this project"
+    },
+    "sites": {
+      "empty": "This project doesn't currently have any sites added to it. You can transfer existing LandPKS sites or create new sites.",
+      "add": "Add sites",
+      "transfer": "Transfer Sites",
+      "create": "Create Sites"
     }
   },
   "badge": {
