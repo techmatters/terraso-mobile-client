@@ -22,6 +22,22 @@ import React from 'react';
 import ProgressCircle from '../common/ProgressCircle';
 import MaterialCommunityIcon from '../common/MaterialCommunityIconButton';
 
+type SiteMenuProps = {
+  iconName: string;
+  text: string;
+};
+
+function SiteMenuItem({iconName, text}: SiteMenuProps) {
+  return (
+    <Menu.Item>
+      <HStack flexDirection="row" space={2} alignItems="center">
+        <Icon as={MaterialIcons} name={iconName} size="xs" />
+        <Text>{text}</Text>
+      </HStack>
+    </Menu.Item>
+  );
+}
+
 type SiteProps = {
   site: SitePreview;
 };
@@ -42,7 +58,18 @@ function SiteItem({site}: SiteProps) {
                 />
               );
             }}>
-            <Menu.Item>Test</Menu.Item>
+            <SiteMenuItem
+              iconName="list-alt"
+              text={t('projects.sites.audit_log')}
+            />
+            <SiteMenuItem
+              iconName="remove"
+              text={t('projects.sites.remove_site')}
+            />
+            <SiteMenuItem
+              iconName="delete"
+              text={t('projects.sites.delete_site')}
+            />
           </Menu>
         </Box>
         <VStack>

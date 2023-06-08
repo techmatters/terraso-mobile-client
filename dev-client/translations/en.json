@@ -47,7 +47,10 @@
       "add": "Add sites",
       "transfer": "Transfer Sites",
       "create": "Create Sites",
-      "go_to": "Go to Site"
+      "go_to": "Go to Site",
+      "audit_log": "Audit Log",
+      "remove_site": "Remove from Project",
+      "delete_site": "Delete Site"
     }
   },
   "badge": {
