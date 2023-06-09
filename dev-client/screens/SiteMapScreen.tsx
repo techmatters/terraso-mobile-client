@@ -11,10 +11,7 @@ type Props = NativeStackScreenProps<RootStackParamList, ScreenRoutes.SITES_MAP>;
 export default function SiteMapScreen({route}: Props) {
   return (
     <VStack>
-      <Box flexBasis="10%">
-        <AppBar title="LandPKS" />
-      </Box>
-      <Box flexBasis="80%">
+      <Box flexBasis="90%">
         <SiteMap sites={route.params.sites} />
       </Box>
       <Box flexBasis="10%">
