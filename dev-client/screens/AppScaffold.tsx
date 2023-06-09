@@ -8,6 +8,7 @@ import SCREENS, {ScreenConfig} from '.';
 import {fetchProjects, SITE_DISPLAYS} from '../dataflow';
 import {useTranslation} from 'react-i18next';
 import {TFunction} from 'i18next';
+import {useTheme} from 'native-base';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -60,6 +61,8 @@ function mapScreens(t: TFunction<'translation', undefined, 'translation'>) {
 export default function AppScaffold() {
   const {user} = useLogin();
   const {t} = useTranslation();
+  // using theme hook here because react-navigation doesn't take nativebase utility props
+  const {colors} = useTheme();
 
   function filterLogin([_name, config]: ScreenMapArgs) {
     if (user === null) {
@@ -70,7 +73,12 @@ export default function AppScaffold() {
   }
 
   return (
-    <Stack.Navigator initialRouteName={ScreenRoutes.SITES_MAP}>
+    <Stack.Navigator
+      initialRouteName={ScreenRoutes.SITES_MAP}
+      screenOptions={{
+        headerStyle: {backgroundColor: colors.primary.main},
+        headerTintColor: colors.primary.contrast,
+      }}>
       {(Object.entries(SCREENS) as ScreenMapArgs[])
         .filter(filterLogin)
         .map(mapScreens(t))}
