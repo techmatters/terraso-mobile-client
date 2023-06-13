@@ -13,6 +13,10 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3EA21FFED87585B06E4CAD0A /* Pods_DevClient_DevClientTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B017D0CE3A51889B91320AC /* Pods_DevClient_DevClientTests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		DA26A17B2A38EDC8003248A1 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = A77A52EE26C701884FDC0B0C /* Mapbox */; };
+		DA26A17C2A38EDC8003248A1 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = 5DA4D00C047877E1CDF04500 /* Mapbox */; };
+		DA26A1842A38F932003248A1 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA26A1822A38F932003248A1 /* MaterialCommunityIcons.ttf */; };
+		DA26A1852A38F932003248A1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA26A1832A38F932003248A1 /* MaterialIcons.ttf */; };
 		FE5798F1A55BE68ED9BAE54B /* Pods_DevClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D3D53002B5DAF578DF7A8E2 /* Pods_DevClient.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +47,8 @@
 		6D3D53002B5DAF578DF7A8E2 /* Pods_DevClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DevClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = DevClient/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-DevClient-DevClientTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DevClient-DevClientTests.release.xcconfig"; path = "Target Support Files/Pods-DevClient-DevClientTests/Pods-DevClient-DevClientTests.release.xcconfig"; sourceTree = "<group>"; };
+		DA26A1822A38F932003248A1 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		DA26A1832A38F932003248A1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -51,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA26A17C2A38EDC8003248A1 /* Mapbox in Frameworks */,
 				3EA21FFED87585B06E4CAD0A /* Pods_DevClient_DevClientTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -59,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA26A17B2A38EDC8003248A1 /* Mapbox in Frameworks */,
 				FE5798F1A55BE68ED9BAE54B /* Pods_DevClient.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -116,6 +124,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				DA26A1812A38F840003248A1 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* DevClient */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* DevClientTests */,
@@ -146,6 +155,15 @@
 				89C6BE57DB24E9ADA2F236DE /* Pods-DevClient-DevClientTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		DA26A1812A38F840003248A1 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DA26A1822A38F932003248A1 /* MaterialCommunityIcons.ttf */,
+				DA26A1832A38F932003248A1 /* MaterialIcons.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,7 +267,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA26A1852A38F932003248A1 /* MaterialIcons.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				DA26A1842A38F932003248A1 /* MaterialCommunityIcons.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -259,6 +279,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -353,6 +374,7 @@
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -459,6 +481,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = DevClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -486,6 +509,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				INFOPLIST_FILE = DevClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
