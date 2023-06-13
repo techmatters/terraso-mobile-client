@@ -379,8 +379,6 @@ PODS:
     - React-RCTImage
   - RNSVG (12.5.1):
     - React-Core
-  - RNVectorIcons (9.2.0):
-    - React-Core
   - Turf (2.6.1)
   - Yoga (1.14.0)
 
@@ -426,7 +424,6 @@ DEPENDENCIES:
   - "rnmapbox-maps (from `../node_modules/@rnmapbox/maps`)"
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
-  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -516,8 +513,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSVG:
     :path: "../node_modules/react-native-svg"
-  RNVectorIcons:
-    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -566,7 +561,6 @@ SPEC CHECKSUMS:
   rnmapbox-maps: 8511f8f351fbbfe6309d8d475ee9c80130b8d306
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNSVG: d7d7bc8229af3842c9cfc3a723c815a52cdd1105
-  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   Turf: 469ce2c3d22e5e8e4818d5a3b254699a5c89efa4
   Yoga: ba09b6b11e6139e3df8229238aa794205ca6a02a
 
