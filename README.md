@@ -36,6 +36,7 @@ Install packages:
 ```sh
 $ npm install
 $ bundle install
+$ cd ios
 $ bundle exec pod install
 ```
 
