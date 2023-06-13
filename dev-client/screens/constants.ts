@@ -13,5 +13,7 @@ export type RootStackParamList = {
   [ScreenRoutes.PROJECT_LIST]: {projects: ProjectPreview[]};
   [ScreenRoutes.PROJECT_VIEW]: {project: Project};
   [ScreenRoutes.SITES_MAP]: {sites: SiteDisplay[]};
-  [ScreenRoutes.SITE_TRANSFER_PROJECT]: {projectId: number};
+  [ScreenRoutes.SITE_TRANSFER_PROJECT]: {
+    projectId: number;
+  };
 };

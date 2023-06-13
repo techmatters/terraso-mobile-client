@@ -151,23 +151,24 @@ export const USER_PROFILES: UserProfile[] = [
 ];
 
 export const SITE_DISPLAYS: SiteDisplay[] = [
-    {
-        lat: 0,
-        lon: 0,
-        name: "TEST_SITE_1",
-        id: 1
-    },
-    {
-        lat: 0.5,
-        lon: 0.5,
-        name: "TEST_SITE_2",
-        id: 2
-    }, {
-        lat: 5,
-        lon: 3,
-        name: "TEST_SITE_3",
-        id: 3
-    }
+  {
+    lat: 0,
+    lon: 0,
+    name: 'TEST_SITE_1',
+    id: 1,
+  },
+  {
+    lat: 0.5,
+    lon: 0.5,
+    name: 'TEST_SITE_2',
+    id: 2,
+  },
+  {
+    lat: 5,
+    lon: 3,
+    name: 'TEST_SITE_3',
+    id: 3,
+  },
 ];
 
 export function fetchProject(projectId: number): Project {
@@ -182,3 +183,25 @@ export function fetchProject(projectId: number): Project {
     users: [{name: 'alice', id: 1}],
   };
 }
+
+export const SITES_BY_PROJECT = {
+  1: {
+    projectName: 'Project #1',
+    sites: [
+      {name: 'Site #1', id: 1},
+      {name: 'Site #2', id: 2},
+    ],
+  },
+  0: {
+    projectName: 'Project #2',
+    sites: [{name: 'Site #3', id: 3}],
+  },
+  3: {
+    projectName: 'Project #3',
+    sites: [
+      {name: 'Site #4', id: 4},
+      {name: 'Site #5', id: 5},
+      {name: 'Site #6', id: 6},
+    ],
+  },
+};
