@@ -125,7 +125,6 @@
 				0388CB724431F39D307EFD50 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */,
 				2358D23E0692BEB6646C5B13 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -491,7 +490,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 395DF5D3D872BFA6A2070A35 /* Pods-Terraso LandPKS.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon.png;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -522,7 +520,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B899DC5E3107D83032EE827D /* Pods-Terraso LandPKS.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon.png;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
