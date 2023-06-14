@@ -1,5 +1,5 @@
 import {Box, HStack, Heading, StatusBar, Text} from 'native-base';
-import MaterialIcon from './common/MaterialIconButton';
+import MaterialIconButton from './common/MaterialIconButton';
 
 type Props = {
   title: string;
@@ -19,7 +19,7 @@ export default function AppBar({title}: Props): JSX.Element {
         width="100%"
         maxW="350">
         <HStack alignItems="center">
-          <MaterialIcon
+          <MaterialIconButton
             name="menu"
             iconButtonProps={{
               size: 'sm',
@@ -33,7 +33,7 @@ export default function AppBar({title}: Props): JSX.Element {
           </Heading>
         </HStack>
         <HStack>
-          <MaterialIcon
+          <MaterialIconButton
             name="help"
             iconButtonProps={{
               size: 'sm',
