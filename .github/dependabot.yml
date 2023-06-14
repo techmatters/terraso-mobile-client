@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: "weekly"
 
-  - package-ecosystem: "ruby" # See documentation for possible values
+  - package-ecosystem: "bundler" # See documentation for possible values
     directory: "/dev-client" # Location of package manifests
     schedule:
       interval: "weekly"
