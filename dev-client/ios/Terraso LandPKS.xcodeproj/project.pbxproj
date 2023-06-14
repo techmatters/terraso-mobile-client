@@ -31,10 +31,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* DevClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DevClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* Terraso LandPKSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Terraso LandPKSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* DevClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DevClientTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* DevClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DevClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Terraso LandPKS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = DevClient/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = DevClient/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DevClient/Images.xcassets; sourceTree = "<group>"; };
@@ -140,8 +140,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* DevClient.app */,
-				00E356EE1AD99517003FC87E /* DevClientTests.xctest */,
+				13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */,
+				00E356EE1AD99517003FC87E /* Terraso LandPKSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -169,9 +169,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* DevClientTests */ = {
+		00E356ED1AD99517003FC87E /* Terraso LandPKSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "DevClientTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "Terraso LandPKSTests" */;
 			buildPhases = (
 				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -184,17 +184,17 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = DevClientTests;
+			name = "Terraso LandPKSTests";
 			packageProductDependencies = (
 				5DA4D00C047877E1CDF04500 /* Mapbox */,
 			);
 			productName = DevClientTests;
-			productReference = 00E356EE1AD99517003FC87E /* DevClientTests.xctest */;
+			productReference = 00E356EE1AD99517003FC87E /* Terraso LandPKSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* DevClient */ = {
+		13B07F861A680F5B00A75B9A /* Terraso LandPKS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "DevClient" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Terraso LandPKS" */;
 			buildPhases = (
 				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -208,12 +208,12 @@
 			);
 			dependencies = (
 			);
-			name = DevClient;
+			name = "Terraso LandPKS";
 			packageProductDependencies = (
 				A77A52EE26C701884FDC0B0C /* Mapbox */,
 			);
 			productName = DevClient;
-			productReference = 13B07F961A680F5B00A75B9A /* DevClient.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -233,7 +233,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "DevClient" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Terraso LandPKS" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -249,8 +249,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* DevClient */,
-				00E356ED1AD99517003FC87E /* DevClientTests */,
+				13B07F861A680F5B00A75B9A /* Terraso LandPKS */,
+				00E356ED1AD99517003FC87E /* Terraso LandPKSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -417,7 +417,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* DevClient */;
+			target = 13B07F861A680F5B00A75B9A /* Terraso LandPKS */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -446,7 +446,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DevClient.app/DevClient";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Terraso LandPKS.app/Terraso LandPKS";
 			};
 			name = Debug;
 		};
@@ -470,7 +470,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DevClient.app/DevClient";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Terraso LandPKS.app/Terraso LandPKS";
 			};
 			name = Release;
 		};
@@ -484,6 +484,8 @@
 				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = DevClient/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Terraso LandPKS";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -494,8 +496,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = DevClient;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = org.terraso.terraso.landpks;
+				PRODUCT_NAME = "Terraso LandPKS";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -511,6 +513,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				INFOPLIST_FILE = DevClient/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Terraso LandPKS";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -521,8 +525,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = DevClient;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = org.terraso.terraso.landpks;
+				PRODUCT_NAME = "Terraso LandPKS";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -668,7 +672,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "DevClientTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "Terraso LandPKSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -677,7 +681,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "DevClient" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Terraso LandPKS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -686,7 +690,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "DevClient" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Terraso LandPKS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
