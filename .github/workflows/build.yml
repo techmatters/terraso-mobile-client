@@ -43,13 +43,17 @@ jobs:
   build-ios:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout repository
+        uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
+          node-version: '18'
           node-version-file: '.tool-versions'
           cache: 'npm'
           cache-dependency-path: |
             dev-client/package-lock.json
+
       - name: Install node dependencies
         working-directory: ./dev-client
         run: npm ci
@@ -57,12 +61,14 @@ jobs:
         with:
           bundler-cache: true
           working-directory: ./dev-client
-      - uses: actions/cache@v2
+
+      - uses: actions/cache@v3
         with:
           path: dev-client/ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
+
       - name: Provide Mapbox secret key
         env:
           MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
@@ -71,9 +77,11 @@ jobs:
           echo "login mapbox" >> $HOME/.netrc
           echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
           chmod 600 $HOME/.netrc
+
       - name: CocoaPod Install
         working-directory: ./dev-client/ios
         run: pod install
+
       - name: Build ios
         working-directory: ./dev-client/ios
         run: |
