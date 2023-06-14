@@ -1,11 +1,11 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList, ScreenRoutes} from './constants';
-import {Box, Checkbox, HStack, Heading, Text, VStack} from 'native-base';
+import {HStack, Heading, Text, VStack} from 'native-base';
 import {SearchInput} from '../components/common/SearchBar';
 import {useTranslation} from 'react-i18next';
 import {SiteDisplay} from '../types';
 import {SITES_BY_PROJECT} from '../dataflow';
-import {useCallback, useState} from 'react';
+import {useCallback} from 'react';
 import SelectAllCheckboxes from '../components/common/SelectAllCheckboxes';
 import {Accordion} from '../components/common/Accordion';
 
@@ -30,7 +30,12 @@ function SiteTransferItem({projectName, projectId, sites}: ItemProps) {
     console.debug(items);
   }, []);
 
-  const head = <Heading>{projectName}</Heading>;
+  const head = (
+    <HStack space={2} alignItems="center">
+      <Heading>{projectName}</Heading>
+      <Text>({items.length})</Text>
+    </HStack>
+  );
   const body = <SelectAllCheckboxes items={items} onUpdate={updateSelected} />;
   return <Accordion Head={head} Body={body} />;
 }
