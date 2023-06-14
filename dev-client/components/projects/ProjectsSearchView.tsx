@@ -2,7 +2,7 @@ import {Badge, Box, FlatList, HStack, Input, VStack} from 'native-base';
 import {ProjectPreview} from '../../types';
 import {useTranslation} from 'react-i18next';
 import AddButton from '../common/AddButton';
-import MaterialIcon from '../common/MaterialIconButton';
+import MaterialIconButton from '../common/MaterialIconButton';
 import ProjectPreviewCard from './ProjectPreviewCard';
 
 type Props = {
@@ -28,7 +28,7 @@ export default function ProjectsSearchView({projects}: Props) {
             bg="none">
             {projects.length}
           </Badge>
-          <MaterialIcon
+          <MaterialIconButton
             name="filter-list"
             iconButtonProps={{color: 'grey.200'}}
             iconProps={{color: 'action.active', size: 'sm'}}

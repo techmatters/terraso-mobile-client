@@ -7,9 +7,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Icon, useTheme} from 'native-base';
 import {RouteProp} from '@react-navigation/native';
 import ProjectTeamTab from './ProjectTeamTab';
-import {USER_PROFILES} from '../../dataflow';
+import {USER_PROFILES, fetchProject} from '../../dataflow';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
+import ProjectSitesTab from './ProjectSitesTab';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 
@@ -36,9 +37,13 @@ export default function ProjectTabs() {
       case TabRoutes.SETTINGS:
         iconName = 'settings';
         break;
+      case TabRoutes.SITES:
+        iconName = 'location-on';
+        break;
     }
 
     return {
+      tabBarScrollEnabled: true,
       tabBarIcon: ({color}) => {
         return <Icon as={MaterialIcons} name={iconName} color={color} />;
       },
@@ -70,6 +75,14 @@ export default function ProjectTabs() {
           description: 'A Test Project',
           privacy: 'private',
           downloadLink: 'https://s3.amazon.com/mydownload',
+        }}
+      />
+      <Tab.Screen
+        name={TabRoutes.SITES}
+        component={ProjectSitesTab}
+        initialParams={{
+          sites: fetchProject(1).sites,
+          //sites: [],
         }}
       />
     </Tab.Navigator>

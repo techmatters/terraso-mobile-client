@@ -41,6 +41,16 @@
       "copy_download_link": "Copy project download link",
       "archive": "Archive this project",
       "delete": "Delete this project"
+    },
+    "sites": {
+      "empty": "This project doesn't currently have any sites added to it. You can transfer existing LandPKS sites or create new sites.",
+      "add": "Add sites",
+      "transfer": "Transfer Sites",
+      "create": "Create Sites",
+      "go_to": "Go to Site",
+      "audit_log": "Audit Log",
+      "remove_site": "Remove from Project",
+      "delete_site": "Delete Site"
     }
   },
   "badge": {
@@ -52,6 +62,7 @@
     "users": "users",
     "project_private": "Private",
     "project_public": "Public",
-    "save": "Save"
+    "save": "Save",
+    "modified_by": "Last modified {{date}} by {{user}}"
   }
 }
