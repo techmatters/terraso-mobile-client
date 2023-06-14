@@ -1,5 +1,5 @@
 import {Box, Center, HStack, Text} from 'native-base';
-import MaterialIcon from '../common/MaterialIconButton';
+import MaterialIconButton from '../common/MaterialIconButton';
 import MaterialCommunityIconButton from '../common/MaterialCommunityIconButton';
 import {useNavigation} from '@react-navigation/native';
 import {useCallback} from 'react';
@@ -15,7 +15,7 @@ type IconProps = {
 };
 
 const LabeledIcon = ({name, label, onPress, IconComponent}: IconProps) => {
-  const Button = IconComponent ?? MaterialIcon;
+  const Button = IconComponent ?? MaterialIconButton;
   return (
     <Box p="1">
       <Button
