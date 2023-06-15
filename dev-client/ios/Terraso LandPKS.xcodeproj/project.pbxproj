@@ -484,6 +484,7 @@
 				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Terraso LandPKS/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Terraso LandPKS";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -512,6 +513,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				INFOPLIST_FILE = "Terraso LandPKS/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Terraso LandPKS";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
