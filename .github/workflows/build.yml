@@ -86,4 +86,4 @@ jobs:
       - name: Build ios
         working-directory: ./dev-client/ios
         run: |
-          xcodebuild -workspace DevClient.xcworkspace -scheme DevClient -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12'
+          xcodebuild -workspace "Terraso LandPKS.xcworkspace" -scheme "Terraso LandPKS" -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12'
