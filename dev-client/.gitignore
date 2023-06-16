@@ -25,6 +25,7 @@ ios/.xcode.env.local
 # Android/IntelliJ
 #
 build/
+build-cache/
 .idea
 .gradle
 local.properties
