@@ -64,5 +64,10 @@
     "project_public": "Public",
     "save": "Save",
     "modified_by": "Last modified {{date}} by {{user}}"
+  },
+  "screens": {
+    "SITES_MAP": "LandPKS",
+    "PROJECT_LIST": "Projects",
+    "PROJECT_VIEW": "Project #{{id}}"
   }
 }
