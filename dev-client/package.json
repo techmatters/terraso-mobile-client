@@ -28,7 +28,8 @@
     "react-native-svg": "^13.9.0",
     "react-native-tab-view": "^3.5.1",
     "react-native-vector-icons": "^9.2.0",
-    "terraso-client-shared": "github:techmatters/terraso-client-shared#c759711"
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#c759711",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
@@ -40,6 +41,7 @@
     "@types/react": "^18.2.13",
     "@types/react-native-vector-icons": "^6.4.13",
     "@types/react-test-renderer": "^18.0.0",
+    "@types/uuid": "^9.0.2",
     "babel-jest": "^29.5.0",
     "eslint": "^8.43.0",
     "jest": "^29.5.0",
