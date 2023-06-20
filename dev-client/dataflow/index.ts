@@ -151,23 +151,24 @@ export const USER_PROFILES: UserProfile[] = [
 ];
 
 export const SITE_DISPLAYS: SiteDisplay[] = [
-    {
-        lat: 0,
-        lon: 0,
-        name: "TEST_SITE_1",
-        id: 1
-    },
-    {
-        lat: 0.5,
-        lon: 0.5,
-        name: "TEST_SITE_2",
-        id: 2
-    }, {
-        lat: 5,
-        lon: 3,
-        name: "TEST_SITE_3",
-        id: 3
-    }
+  {
+    lat: 0,
+    lon: 0,
+    name: 'TEST_SITE_1',
+    id: 1,
+  },
+  {
+    lat: 0.5,
+    lon: 0.5,
+    name: 'TEST_SITE_2',
+    id: 2,
+  },
+  {
+    lat: 5,
+    lon: 3,
+    name: 'TEST_SITE_3',
+    id: 3,
+  },
 ];
 
 export function fetchProject(projectId: number): Project {

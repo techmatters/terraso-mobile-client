@@ -1,4 +1,4 @@
-import {Box, HStack, Heading, StatusBar, Text} from 'native-base';
+import {Box, HStack, Heading, StatusBar} from 'native-base';
 import MaterialIconButton from './common/MaterialIconButton';
 
 type Props = {

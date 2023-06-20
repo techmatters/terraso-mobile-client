@@ -16,7 +16,7 @@ function loginReducer(state: State, action: ACTION_TYPE): State {
 }
 
 export const LoginContext = createContext<State>(initialState);
-export const LoginDispatchContext = createContext((action: ACTION_TYPE) => {});
+export const LoginDispatchContext = createContext((_: ACTION_TYPE) => {});
 
 export function LoginProvider({children}: PropsWithChildren) {
   const [state, dispatch] = useReducer(loginReducer, initialState);
