@@ -27,8 +27,12 @@ jobs:
         run: npm ci
 
       - name: Run lint checks
-        work-directory: ./dev-client
+        working-directory: ./dev-client
         run: npm run lint
+
+      - name: Type check
+        working-directory: ./dev-client
+        run: npm run check-ts
 
   build-android:
     runs-on: ubuntu-latest
