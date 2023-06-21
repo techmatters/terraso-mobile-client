@@ -1,4 +1,4 @@
-import {ProjectPreview} from '../../types';
+import {ProjectPreview} from '../../types/project.types';
 import ProjectsEmptyView from './ProjectsEmptyView';
 import React from 'react';
 import ProjectsSearchView from './ProjectsSearchView';

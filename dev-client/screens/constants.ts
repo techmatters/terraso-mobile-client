@@ -1,5 +1,5 @@
-import {ProjectPreview, Project, SiteDisplay} from '../types';
-
+import {ProjectPreview, Project} from '../types/project.types';
+import {SiteDisplay} from '../types/site.types';
 export const enum ScreenRoutes {
   LOGIN = 'LOGIN',
   PROJECT_LIST = 'PROJECT_LIST',

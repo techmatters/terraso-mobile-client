@@ -1,5 +1,5 @@
 import {Badge, Box, HStack, Heading, Link, Text, VStack} from 'native-base';
-import {ProjectPreview} from '../../types';
+import {ProjectPreview} from '../../types/project.types';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
 import {RootStackParamList, ScreenRoutes} from '../../screens/constants';

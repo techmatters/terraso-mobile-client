@@ -1,7 +1,7 @@
 import Mapbox, {Camera, MarkerView, UserLocation} from '@rnmapbox/maps';
 import React, {memo, useEffect, useRef} from 'react';
 // TODO: Is it better to import type?
-import {type SiteDisplay} from '../../types';
+import {type SiteDisplay} from '../../types/site.types';
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import MaterialIconButton from '../common/MaterialIconButton';
 

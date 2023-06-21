@@ -1,5 +1,6 @@
-import {ProjectPrivacy, SitePreview, UserProfile} from '../../types';
-
+import {ProjectPrivacy} from '../../types/project.types';
+import {SitePreview} from '../../types/site.types';
+import {UserProfile} from '../../types/user.types';
 export const enum TabRoutes {
   INPUTS = 'Inputs',
   TEAM = 'Team',

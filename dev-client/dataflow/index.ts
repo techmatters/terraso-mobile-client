@@ -1,5 +1,6 @@
-import {ProjectPreview, Project, UserProfile, SiteDisplay} from '../types';
-
+import {ProjectPreview, Project} from '../types/project.types';
+import {SiteDisplay} from '../types/site.types';
+import {UserProfile} from '../types/user.types';
 export function fetchProjects(): ProjectPreview[] {
   return [
     {

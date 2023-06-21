@@ -15,7 +15,7 @@ import {useTranslation} from 'react-i18next';
 import {TabRoutes, TabStackParamList} from './constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import SearchBar from '../common/SearchBar';
-import {SiteDisplay, SitePreview} from '../../types';
+import {SiteDisplay, SitePreview} from '../../types/site.types';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import React from 'react';

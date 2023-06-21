@@ -1,5 +1,5 @@
 import {Badge, Box, FlatList, HStack, Input, VStack} from 'native-base';
-import {ProjectPreview} from '../../types';
+import {ProjectPreview} from '../../types/project.types';
 import {useTranslation} from 'react-i18next';
 import AddButton from '../common/AddButton';
 import MaterialIconButton from '../common/MaterialIconButton';

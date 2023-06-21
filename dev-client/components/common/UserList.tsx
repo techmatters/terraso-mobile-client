@@ -1,5 +1,5 @@
 import {Badge, Box, Button, FlatList, HStack, Icon, Text} from 'native-base';
-import {UserProfile} from '../../types';
+import {UserProfile} from '../../types/user.types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type ListProps = {
