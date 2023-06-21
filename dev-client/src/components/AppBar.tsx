@@ -1,4 +1,4 @@
-import {Box, HStack, Heading, StatusBar, Text} from 'native-base';
+import {Box, HStack, Heading, StatusBar} from 'native-base';
 import MaterialIconButton from './common/MaterialIconButton';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 export default function AppBar({title}: Props): JSX.Element {
   return (
     <HStack flex={1}>
-      <StatusBar bg="primary.contrast" barStyle="light-content" />
+      <StatusBar backgroundColor="primary.contrast" barStyle="light-content" />
       <Box safeAreaTop bg="primary.main" />
       <HStack
         bg="primary.main"

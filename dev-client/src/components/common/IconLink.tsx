@@ -1,4 +1,4 @@
-import {HStack, Icon, Link} from 'native-base';
+import {Icon, Link} from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {

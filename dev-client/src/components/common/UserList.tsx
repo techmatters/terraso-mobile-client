@@ -1,4 +1,4 @@
-import {Badge, Box, Button, FlatList, HStack, Icon, Text} from 'native-base';
+import {Badge, Box, FlatList, HStack, Icon, Text} from 'native-base';
 import {UserProfile} from '../../types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 

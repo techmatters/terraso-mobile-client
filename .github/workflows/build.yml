@@ -12,6 +12,28 @@ on:
       - synchronize
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: |
+            dev-client/package-lock.json
+      - name: Install node dependencies
+        working-directory: ./dev-client
+        run: npm ci
+
+      - name: Run lint checks
+        working-directory: ./dev-client
+        run: npm run lint
+
+      - name: Type check
+        working-directory: ./dev-client
+        run: npm run check-ts
+
   build-android:
     runs-on: ubuntu-latest
     steps:

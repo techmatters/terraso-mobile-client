@@ -9,7 +9,7 @@ type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
 export default function ProjectSettingsTab({
   route: {
-    params: {projectId, name, description, privacy, downloadLink},
+    params: {name, description, privacy, downloadLink},
   },
 }: Props) {
   const {t} = useTranslation();

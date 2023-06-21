@@ -25,13 +25,13 @@ export type UserPreview = {
 
 export type Role = 'member' | 'manager';
 
-export type ProjectPrivacy = "private" | "public";
+export type ProjectPrivacy = 'private' | 'public';
 
 export type UserProfile = {
-    firstName: string;
-    lastName?: string;
-    role: Role,
-    id: number
+  firstName: string;
+  lastName?: string;
+  role: Role;
+  id: number;
 };
 
 export type ProjectInputs = {
@@ -40,11 +40,11 @@ export type ProjectInputs = {
 };
 
 export type SiteDisplay = {
-    lat: number;
-    lon: number;
-    name: string;
-    id: number;
-}
+  lat: number;
+  lon: number;
+  name: string;
+  id: number;
+};
 
 export type SitePreview = {
   id: number;

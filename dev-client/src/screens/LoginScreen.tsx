@@ -5,7 +5,7 @@ import {useLoginDispatch} from '../context/LoginContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, ScreenRoutes.LOGIN>;
 
-export default function LoginView({navigation}: Props) {
+export default function LoginView(_: Props) {
   const dispatch = useLoginDispatch();
 
   return (

@@ -1,3 +1,3 @@
 export default function ProjectView() {
-    return <></>;
+  return <></>;
 }

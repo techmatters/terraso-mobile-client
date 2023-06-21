@@ -2,7 +2,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '.';
 import {ScreenRoutes} from './constants';
 import SiteMap from '../components/map/SiteMap';
-import AppBar from '../components/AppBar';
 import BottomNavigation from '../components/common/BottomNavigation';
 import {Box, VStack} from 'native-base';
 

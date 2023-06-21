@@ -36,6 +36,7 @@ const SiteMap = memo(({sites, center}: SiteMapProps): JSX.Element => {
 
   return (
     <Mapbox.MapView
+      // eslint-disable-next-line react-native/no-inline-styles
       style={{
         flex: 1,
       }}>
