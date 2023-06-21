@@ -1,5 +1,4 @@
-import {Box, Button, HStack, Icon, Text} from 'native-base';
-import {useTranslation} from 'react-i18next';
+import {Button, HStack, Icon, Text} from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {

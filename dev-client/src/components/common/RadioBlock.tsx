@@ -1,4 +1,4 @@
-import {Box, FormControl, HStack, Radio, VStack} from 'native-base';
+import {Box, FormControl, HStack, Radio} from 'native-base';
 
 type RadioOption = {
   value: string;
