@@ -11,6 +11,7 @@
     "check-ts": "tsc --noEmit"
   },
   "dependencies": {
+    "@react-native/metro-config": "^0.72.6",
     "@react-navigation/material-top-tabs": "^6.6.2",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
