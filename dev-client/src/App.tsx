@@ -16,7 +16,7 @@ import './translations';
 import {checkAndroidPermissions} from './native';
 import {PermissionsAndroid} from 'react-native';
 import {Provider} from 'react-redux';
-import {createStore} from './model/store';
+import {createStore} from '../model/store';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',

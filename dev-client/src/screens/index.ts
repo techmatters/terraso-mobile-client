@@ -29,7 +29,7 @@ export type ScreenConfig<RouteName extends RoutePath> = {
   hideBack?: boolean;
   paramTitle?: (args: {
     route: RouteProp<RootStackParamList, RouteName>;
-    t: TFunction<'translation', null, 'translation'>;
+    t: TFunction;
   }) => string;
 };
 
