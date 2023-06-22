@@ -5,8 +5,9 @@ import AddButton from '../common/AddButton';
 import MaterialIconButton from '../common/MaterialIconButton';
 import ProjectPreviewCard from './ProjectPreviewCard';
 import {useNavigation} from "@react-navigation/native";
-import {TopLevelNavigationProp} from "../../screens";
+import screens, {TopLevelNavigationProp} from "../../screens";
 import {useCallback} from "react";
+import {ScreenRoutes} from "../../screens/constants";
 
 
 type Props = {
@@ -15,9 +16,9 @@ type Props = {
 
 export default function ProjectsSearchView({projects}: Props) {
   const {t} = useTranslation();
-  const {navigation} = useNavigation<TopLevelNavigationProp>();
+  const navigation = useNavigation<TopLevelNavigationProp>();
   const onPress = useCallback(
-    () => navigation.navigate('CreateProjectScreen'),
+    () => navigation.navigate(ScreenRoutes.CREATE_PROJECT),
     [navigation],
   );
   return (
