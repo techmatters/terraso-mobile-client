@@ -7,7 +7,6 @@ import {
   Link,
   Menu,
   Text,
-  ThreeDotsIcon,
   VStack,
 } from 'native-base';
 import AddButton from '../common/AddButton';
@@ -15,10 +14,8 @@ import {useTranslation} from 'react-i18next';
 import {TabRoutes, TabStackParamList} from './constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import SearchBar from '../common/SearchBar';
-import {SiteDisplay, SitePreview} from '../../types';
+import {SitePreview} from '../../types';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import React from 'react';
 import ProgressCircle from '../common/ProgressCircle';
 import MaterialCommunityIcon from '../common/MaterialCommunityIconButton';
 

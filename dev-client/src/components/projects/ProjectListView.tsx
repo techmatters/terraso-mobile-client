@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function ProjectListView({projects}: Props) {
-  if (projects.length == 0) {
+  if (projects.length === 0) {
     return <ProjectsEmptyView />;
   } else {
     return <ProjectsSearchView projects={projects} />;
