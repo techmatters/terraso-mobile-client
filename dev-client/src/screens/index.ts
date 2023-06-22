@@ -5,6 +5,7 @@ import {
   RootStackParamList as PrivateRootStackParamList,
 } from './constants';
 import ProjectViewScreen from './ProjectViewScreen';
+import CreateProjectScreen from './CreateProjectScreen';
 import SiteMapScreen from './SiteMapScreen';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
@@ -57,6 +58,9 @@ const SCREENS: ScreenMap = {
     screen: SiteMapScreen,
     leftIcon: MainMenuBar,
     rightIcon: MapInfoIcon,
+  },
+  CREATE_PROJECT: {
+    screen: CreateProjectScreen,
   },
 };
 
