@@ -27,7 +27,8 @@
     "react-native-screens": "^3.21.1",
     "react-native-svg": "^13.9.0",
     "react-native-tab-view": "^3.5.1",
-    "react-native-vector-icons": "^9.2.0"
+    "react-native-vector-icons": "^9.2.0",
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#c759711"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
