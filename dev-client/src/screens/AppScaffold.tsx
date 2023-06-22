@@ -17,7 +17,7 @@ type ScreenMapArgs = [ScreenRoutes, ScreenConfig<keyof RootStackParamList>];
 const previews = fetchProjects();
 const sites = SITE_DISPLAYS;
 
-function mapScreens(t: TFunction<'translation', undefined, 'translation'>) {
+function mapScreens(t: TFunction) {
   return ([name, config]: ScreenMapArgs) => {
     // TODO: initialParams are stubs, a stopgap for while we are not connected to the backend
     // This setup should be changed when we get to connecting the backend
