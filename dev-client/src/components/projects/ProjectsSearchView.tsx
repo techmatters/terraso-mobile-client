@@ -6,6 +6,7 @@ import MaterialIconButton from '../common/MaterialIconButton';
 import ProjectPreviewCard from './ProjectPreviewCard';
 import {useNavigation} from "@react-navigation/native";
 import {TopLevelNavigationProp} from "../../screens";
+import {useCallback} from "react";
 
 
 type Props = {
@@ -15,7 +16,10 @@ type Props = {
 export default function ProjectsSearchView({projects}: Props) {
   const {t} = useTranslation();
   const {navigation} = useNavigation<TopLevelNavigationProp>();
-  const onPress = () => navigation.navigate('CreateProjectScreen');
+  const onPress = useCallback(
+    () => navigation.navigate('CreateProjectScreen'),
+    [navigation],
+  );
   return (
     <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
       <Box alignItems="flex-start" pb={3}>
