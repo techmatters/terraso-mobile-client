@@ -73,14 +73,16 @@ as described in the [Mapbox IOS SDK install guide](https://docs.mapbox.com/ios/m
 
 # Releases
 
-## Initial setup
+## Android
 
-### Generate a keystore:
+### Initial setup
+
+#### Generate a keystore:
 ```
 keytool -genkey -v -keystore terraso-lpks-key.keystore -alias terraso-lpks -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-### Define confguration variables
+#### Define confguration variables
 
 Add this to `~/.gradle/gradle.properties`. Use the password you created in “generate a keystore.”
 ```
@@ -90,12 +92,12 @@ LPKS_UPLOAD_STORE_PASSWORD=XXXXX
 LPKS_UPLOAD_KEY_PASSWORD=XXXXXX
 ```
 
-### Move the keystore in to your development folder
+#### Move the keystore in to your development folder
 ```
 mv terraso-lpks-key.keystore mobile-client/dev-client/android/app
 ```
 
-## Releasing a build
+### Releasing a build
 
 From `mobile-client/dev-client/android`:
 
