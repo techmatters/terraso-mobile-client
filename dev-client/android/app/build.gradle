@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.devclient"
+    namespace "org.terraso.landpks"
     defaultConfig {
-        applicationId "com.devclient"
+        applicationId "org.terraso.landpks"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
