@@ -1,4 +1,4 @@
-package com.devclient;
+package org.terraso.landpks;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
@@ -22,7 +22,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "DevClient";
+    return "Terraso LandPKS";
   }
 
   /**
