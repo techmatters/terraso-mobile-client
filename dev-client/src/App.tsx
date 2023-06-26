@@ -30,11 +30,11 @@ function App(): JSX.Element {
     terrasoAPIURL: '',
     graphQLEndpoint: '',
     tokenStorage: {
-      getToken: name => '',
-      setToken: (name, token) => {},
-      removeToken: name => {},
+      getToken: _name => '',
+      setToken: (_name, _token) => {},
+      removeToken: _name => {},
     },
-    logger: severity => {},
+    logger: _severity => {},
   });
   const store = useMemo(createStore, []);
   useEffect(() =>
