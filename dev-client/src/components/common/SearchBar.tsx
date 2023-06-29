@@ -8,12 +8,30 @@ type SearchProps<T> = {
   onChangeText?: () => void;
 };
 
+type SearchInputProps = {
+  onChangeText?: () => void;
+};
+
+export function SearchInput({onChangeText}: SearchInputProps) {
+  const {t} = useTranslation();
+  return (
+    <Input
+      placeholder={t('search.placeholder') || undefined}
+      size="sm"
+      bg="background.default"
+      flexGrow={1}
+      ml={2}
+      maxHeight={8}
+      onChangeText={onChangeText}
+      InputLeftElement={<Icon as={MaterialIcons} name="search" ml={3} />}
+    />
+  );
+}
+
 export default function SearchBar<T extends object>({
   selected,
   onChangeText,
 }: SearchProps<T>) {
-  const {t} = useTranslation();
-
   return (
     <HStack alignContent="center">
       <VStack>
@@ -33,18 +51,7 @@ export default function SearchBar<T extends object>({
           iconProps={{color: 'action.active', size: 'sm'}}
         />
       </VStack>
-      {/* TODO: translation function returns null, but placeholder only accepts
-        undefined */}
-      <Input
-        placeholder={t('search.placeholder') || undefined}
-        size="sm"
-        bg="background.default"
-        flexGrow={1}
-        ml={2}
-        maxHeight={8}
-        onChangeText={onChangeText}
-        InputLeftElement={<Icon as={MaterialIcons} name="search" ml={3} />}
-      />
+      <SearchInput onChangeText={onChangeText} />
     </HStack>
   );
 }

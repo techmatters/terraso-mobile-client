@@ -183,3 +183,25 @@ export function fetchProject(projectId: number): Project {
     users: [{name: 'alice', id: 1}],
   };
 }
+
+export const SITES_BY_PROJECT = {
+  1: {
+    projectName: 'Project #1',
+    sites: [
+      {name: 'Site #1', id: 1},
+      {name: 'Site #2', id: 2},
+    ],
+  },
+  0: {
+    projectName: 'Project #2',
+    sites: [{name: 'Site #3', id: 3}],
+  },
+  3: {
+    projectName: 'Project #3',
+    sites: [
+      {name: 'Site #4', id: 4},
+      {name: 'Site #5', id: 5},
+      {name: 'Site #6', id: 6},
+    ],
+  },
+};
