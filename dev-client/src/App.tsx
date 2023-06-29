@@ -18,6 +18,8 @@ import {PermissionsAndroid} from 'react-native';
 import {Provider} from 'react-redux';
 import {createStore} from '../model/store';
 import {setAPIConfig} from 'terraso-client-shared/config';
+// needed for uuid - https://github.com/uuidjs/uuid#react-native--expo
+import 'react-native-get-random-values';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',
