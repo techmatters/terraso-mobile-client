@@ -24,15 +24,17 @@ Mapbox.setAccessToken(
 );
 
 function App(): JSX.Element {
+  // TODO: Integrate this with signup logic
+  // For now these are just defaults to prevent errors from being thrown
   setAPIConfig({
     terrasoAPIURL: '',
     graphQLEndpoint: '',
     tokenStorage: {
-      getToken: name => '',
-      setToken: (name, token) => {},
-      removeToken: name => {},
+      getToken: _name => '',
+      setToken: (_name, _token) => {},
+      removeToken: _name => {},
     },
-    logger: severity => {},
+    logger: _severity => {},
   });
   const store = useMemo(createStore, []);
   useEffect(() =>

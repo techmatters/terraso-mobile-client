@@ -1,4 +1,4 @@
-# OSX
+# macOS
 #
 .DS_Store
 
@@ -21,6 +21,9 @@ DerivedData
 *.ipa
 *.xcuserstate
 ios/.xcode.env.local
+
+# VS Code
+.vscode
 
 # Android/IntelliJ
 #

@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* DevClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* DevClientTests.m */; };
+		00E356F31AD99517003FC87E /* TerrasoLandPKSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* TerrasoLandPKSTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		BD54D3F4D536F925B48C1D42 /* Pods_Terraso_LandPKS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30F6C24F1BA6503BC24E8B72 /* Pods_Terraso_LandPKS.framework */; };
-		C2A0B609B209C2CB8AF80FB8 /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B9ABB076ED9262A2DB8A58A /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */; };
+		9593A4BCA49ADB6F36DBD38E /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E367045AEA3B522AF0BB61DD /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */; };
+		C61185A1D49303BBF1FC31E9 /* Pods_Terraso_LandPKS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B11C48E3D5248AFAB632513C /* Pods_Terraso_LandPKS.framework */; };
 		DA26A17B2A38EDC8003248A1 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = A77A52EE26C701884FDC0B0C /* Mapbox */; };
 		DA26A17C2A38EDC8003248A1 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = 5DA4D00C047877E1CDF04500 /* Mapbox */; };
 		DA26A1842A38F932003248A1 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA26A1822A38F932003248A1 /* MaterialCommunityIcons.ttf */; };
@@ -33,23 +33,27 @@
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* Terraso LandPKSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Terraso LandPKSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* DevClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DevClientTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Terraso LandPKS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356F21AD99517003FC87E /* TerrasoLandPKSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TerrasoLandPKSTests.m; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* TerrasoLandPKS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TerrasoLandPKS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "Terraso LandPKS/AppDelegate.h"; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = "Terraso LandPKS/AppDelegate.mm"; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Terraso LandPKS/Images.xcassets"; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Terraso LandPKS/Info.plist"; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "Terraso LandPKS/main.m"; sourceTree = "<group>"; };
-		17B32CC9F925D6BD9D5FC583 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		1B9ABB076ED9262A2DB8A58A /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		25A17028AA4139F05829E0C3 /* Pods-Terraso LandPKS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS.debug.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS.debug.xcconfig"; sourceTree = "<group>"; };
-		30F6C24F1BA6503BC24E8B72 /* Pods_Terraso_LandPKS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Terraso_LandPKS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6BF1862BD9C1F38B34354406 /* Pods-Terraso LandPKS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS.release.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS.release.xcconfig"; sourceTree = "<group>"; };
+		17B32CC9F925D6BD9D5FC583 /* Pods-TerrasoLandPKS-TerrasoLandPKSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TerrasoLandPKS-TerrasoLandPKSTests.debug.xcconfig"; path = "Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		25A17028AA4139F05829E0C3 /* Pods-TerrasoLandPKS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TerrasoLandPKS.debug.xcconfig"; path = "Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS.debug.xcconfig"; sourceTree = "<group>"; };
+		367165F6B7CF4F76C08E98C9 /* Pods-Terraso LandPKS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS.debug.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS.debug.xcconfig"; sourceTree = "<group>"; };
+		6BF1862BD9C1F38B34354406 /* Pods-TerrasoLandPKS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TerrasoLandPKS.release.xcconfig"; path = "Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS.release.xcconfig"; sourceTree = "<group>"; };
+		7195E38FD792E964194F519B /* Pods-Terraso LandPKS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS.release.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "Terraso LandPKS/LaunchScreen.storyboard"; sourceTree = "<group>"; };
-		BBEAA8284428C9D9E947A9B2 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig"; sourceTree = "<group>"; };
+		9B636DA2BF577EB074AE1958 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		B11C48E3D5248AFAB632513C /* Pods_Terraso_LandPKS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Terraso_LandPKS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BBEAA8284428C9D9E947A9B2 /* Pods-TerrasoLandPKS-TerrasoLandPKSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TerrasoLandPKS-TerrasoLandPKSTests.release.xcconfig"; path = "Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests.release.xcconfig"; sourceTree = "<group>"; };
 		DA26A1822A38F932003248A1 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		DA26A1832A38F932003248A1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		E367045AEA3B522AF0BB61DD /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FE1CE62AEB19A25D32A26A47 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +62,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA26A17C2A38EDC8003248A1 /* Mapbox in Frameworks */,
-				C2A0B609B209C2CB8AF80FB8 /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework in Frameworks */,
+				9593A4BCA49ADB6F36DBD38E /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,19 +71,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA26A17B2A38EDC8003248A1 /* Mapbox in Frameworks */,
-				BD54D3F4D536F925B48C1D42 /* Pods_Terraso_LandPKS.framework in Frameworks */,
+				C61185A1D49303BBF1FC31E9 /* Pods_Terraso_LandPKS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* Terraso LandPKSTests */ = {
+		00E356EF1AD99517003FC87E /* TerrasoLandPKSTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* DevClientTests.m */,
+				00E356F21AD99517003FC87E /* TerrasoLandPKSTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
+			name = TerrasoLandPKSTests;
 			path = "Terraso LandPKSTests";
 			sourceTree = "<group>";
 		};
@@ -108,8 +113,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				30F6C24F1BA6503BC24E8B72 /* Pods_Terraso_LandPKS.framework */,
-				1B9ABB076ED9262A2DB8A58A /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */,
+				B11C48E3D5248AFAB632513C /* Pods_Terraso_LandPKS.framework */,
+				E367045AEA3B522AF0BB61DD /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -127,7 +132,7 @@
 				DA26A1812A38F840003248A1 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* Terraso LandPKS */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* Terraso LandPKSTests */,
+				00E356EF1AD99517003FC87E /* TerrasoLandPKSTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
@@ -140,7 +145,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */,
+				13B07F961A680F5B00A75B9A /* TerrasoLandPKS.app */,
 				00E356EE1AD99517003FC87E /* Terraso LandPKSTests.xctest */,
 			);
 			name = Products;
@@ -149,10 +154,14 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				25A17028AA4139F05829E0C3 /* Pods-Terraso LandPKS.debug.xcconfig */,
-				6BF1862BD9C1F38B34354406 /* Pods-Terraso LandPKS.release.xcconfig */,
-				17B32CC9F925D6BD9D5FC583 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */,
-				BBEAA8284428C9D9E947A9B2 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */,
+				25A17028AA4139F05829E0C3 /* Pods-TerrasoLandPKS.debug.xcconfig */,
+				6BF1862BD9C1F38B34354406 /* Pods-TerrasoLandPKS.release.xcconfig */,
+				17B32CC9F925D6BD9D5FC583 /* Pods-TerrasoLandPKS-TerrasoLandPKSTests.debug.xcconfig */,
+				BBEAA8284428C9D9E947A9B2 /* Pods-TerrasoLandPKS-TerrasoLandPKSTests.release.xcconfig */,
+				367165F6B7CF4F76C08E98C9 /* Pods-Terraso LandPKS.debug.xcconfig */,
+				7195E38FD792E964194F519B /* Pods-Terraso LandPKS.release.xcconfig */,
+				9B636DA2BF577EB074AE1958 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */,
+				FE1CE62AEB19A25D32A26A47 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -213,7 +222,7 @@
 				A77A52EE26C701884FDC0B0C /* Mapbox */,
 			);
 			productName = DevClient;
-			productReference = 13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* TerrasoLandPKS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -399,7 +408,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* DevClientTests.m in Sources */,
+				00E356F31AD99517003FC87E /* TerrasoLandPKSTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,7 +434,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 17B32CC9F925D6BD9D5FC583 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */;
+			baseConfigurationReference = 9B636DA2BF577EB074AE1958 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -444,15 +453,15 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.terraso.landpks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Terraso LandPKS.app/Terraso LandPKS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TerrasoLandPKS.app/TerrasoLandPKS";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BBEAA8284428C9D9E947A9B2 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */;
+			baseConfigurationReference = FE1CE62AEB19A25D32A26A47 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -468,15 +477,15 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.terraso.landpks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Terraso LandPKS.app/Terraso LandPKS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TerrasoLandPKS.app/TerrasoLandPKS";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25A17028AA4139F05829E0C3 /* Pods-Terraso LandPKS.debug.xcconfig */;
+			baseConfigurationReference = 367165F6B7CF4F76C08E98C9 /* Pods-Terraso LandPKS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -496,9 +505,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.terraso.test.--PRODUCT-NAME-rfc1034identifier-";
+				PRODUCT_BUNDLE_IDENTIFIER = org.terraso.landpks;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "org.terraso.test.Terraso-LandPKS";
-				PRODUCT_NAME = "Terraso LandPKS";
+				PRODUCT_NAME = TerrasoLandPKS;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -507,7 +516,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6BF1862BD9C1F38B34354406 /* Pods-Terraso LandPKS.release.xcconfig */;
+			baseConfigurationReference = 7195E38FD792E964194F519B /* Pods-Terraso LandPKS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -526,9 +535,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.terraso.test.--PRODUCT-NAME-rfc1034identifier-";
+				PRODUCT_BUNDLE_IDENTIFIER = org.terraso.landpks;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "org.terraso.test.Terraso-LandPKS";
-				PRODUCT_NAME = "Terraso LandPKS";
+				PRODUCT_NAME = TerrasoLandPKS;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

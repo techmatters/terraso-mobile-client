@@ -1,4 +1,4 @@
-package com.devclient;
+package org.terraso.landpks;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
