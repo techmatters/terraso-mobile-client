@@ -5,12 +5,12 @@ type State = {user: null | LoginInfo};
 
 const initialState = {user: null};
 
-type ACTION_TYPE = {type: 'login'};
+type ACTION_TYPE = {type: 'login'; name: string};
 
 function loginReducer(state: State, action: ACTION_TYPE): State {
   switch (action.type) {
     case 'login': {
-      return {user: {name: 'userName'}};
+      return {user: {name: action.name}};
     }
   }
 }

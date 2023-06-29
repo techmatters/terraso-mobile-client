@@ -7,10 +7,8 @@ import Login from '../../components/Login';
 type Props = NativeStackScreenProps<RootStackParamList, ScreenRoutes.LOGIN>;
 
 export default function LoginView(_: Props) {
-  const dispatch = useLoginDispatch();
-
   return (
-    <Center>
+    <Center height="100%">
       <Login />
     </Center>
   );

@@ -68,6 +68,7 @@
   "screens": {
     "SITES_MAP": "LandPKS",
     "PROJECT_LIST": "Projects",
-    "PROJECT_VIEW": "Project #{{id}}"
+    "PROJECT_VIEW": "Project #{{id}}",
+    "LOGIN": "Login"
   }
 }
