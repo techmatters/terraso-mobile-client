@@ -12,8 +12,30 @@ on:
       - synchronize
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: |
+            dev-client/package-lock.json
+      - name: Install node dependencies
+        working-directory: ./dev-client
+        run: npm ci
+
+      - name: Run lint checks
+        working-directory: ./dev-client
+        run: npm run lint
+
+      - name: Type check
+        working-directory: ./dev-client
+        run: npm run check-ts
+
   build-android:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -31,6 +53,21 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
       - name: Provide Mapbox secret key
         env:
           MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
@@ -40,16 +77,22 @@ jobs:
       - name: Build android
         working-directory: ./dev-client/android
         run: ./gradlew build
+
   build-ios:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - uses: mikehardy/buildcache-action@v2
+
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
           cache-dependency-path: |
             dev-client/package-lock.json
+
       - name: Install node dependencies
         working-directory: ./dev-client
         run: npm ci
@@ -57,12 +100,14 @@ jobs:
         with:
           bundler-cache: true
           working-directory: ./dev-client
-      - uses: actions/cache@v2
+
+      - uses: actions/cache@v3
         with:
           path: dev-client/ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
+
       - name: Provide Mapbox secret key
         env:
           MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
@@ -71,10 +116,12 @@ jobs:
           echo "login mapbox" >> $HOME/.netrc
           echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
           chmod 600 $HOME/.netrc
+
       - name: CocoaPod Install
         working-directory: ./dev-client/ios
         run: pod install
+
       - name: Build ios
         working-directory: ./dev-client/ios
         run: |
-          xcodebuild -workspace DevClient.xcworkspace -scheme DevClient -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12'
+          xcodebuild -workspace "Terraso LandPKS.xcworkspace" -scheme "Terraso LandPKS" -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12'
