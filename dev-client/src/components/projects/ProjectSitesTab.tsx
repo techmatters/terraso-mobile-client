@@ -12,12 +12,17 @@ import {
 import AddButton from '../common/AddButton';
 import {useTranslation} from 'react-i18next';
 import {TabRoutes, TabStackParamList} from './constants';
+import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
+import type {CompositeScreenProps} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import SearchBar from '../common/SearchBar';
 import {SitePreview} from '../../types';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import React, {useCallback} from 'react';
 import ProgressCircle from '../common/ProgressCircle';
 import MaterialCommunityIcon from '../common/MaterialCommunityIconButton';
+import {ScreenRoutes} from '../../screens/constants';
+import {RootStackParamList} from '../../screens';
 
 type SiteMenuProps = {
   iconName: string;
@@ -92,38 +97,27 @@ function SiteItem({site}: SiteProps) {
   );
 }
 
-type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SITES>;
+type Props = CompositeScreenProps<
+  MaterialTopTabScreenProps<TabStackParamList, TabRoutes.SITES>,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 export default function ProjectSitesTab({
   route: {
-    params: {sites},
+    params: {projectId, sites},
   },
-}: Props) {
+  navigation,
+}: Props): JSX.Element {
   const {t} = useTranslation();
-
-  const empty = (
-    <>
-      <Text>{t('projects.sites.empty')}</Text>
-      <Menu
-        shouldOverlapWithTrigger={false}
-        trigger={(props): JSX.Element => {
-          return (
-            <Box alignItems="flex-start">
-              <AddButton text={t('projects.sites.add')} buttonProps={props} />
-            </Box>
-          );
-        }}>
-        <Menu.Item>{t('projects.sites.create') ?? ''}</Menu.Item>
-        <Menu.Item>{t('projects.sites.transfer') ?? ''}</Menu.Item>
-      </Menu>
-    </>
+  const transferCallback = useCallback(
+    () => navigation.navigate(ScreenRoutes.SITE_TRANSFER_PROJECT, {projectId}),
+    [navigation, projectId],
   );
+
+  const isEmpty = sites.length === 0;
 
   const full = (
     <>
-      <Box alignItems="flex-start">
-        <AddButton text={t('projects.sites.add')} />
-      </Box>
       <SearchBar selected={sites} />
       <FlatList
         data={sites}
@@ -135,7 +129,22 @@ export default function ProjectSitesTab({
 
   return (
     <VStack m={3} pb={5} space={3} height="100%">
-      {sites.length === 0 ? empty : full}
+      {isEmpty && <Text>{t('projects.sites.empty')}</Text>}
+      <Menu
+        shouldOverlapWithTrigger={false}
+        trigger={(props): JSX.Element => {
+          return (
+            <Box alignItems="flex-start">
+              <AddButton text={t('projects.sites.add')} buttonProps={props} />
+            </Box>
+          );
+        }}>
+        <Menu.Item>{t('projects.sites.create') ?? ''}</Menu.Item>
+        <Menu.Item onPress={transferCallback}>
+          {t('projects.sites.transfer') ?? ''}
+        </Menu.Item>
+      </Menu>
+      {!isEmpty && full}
     </VStack>
   );
 }

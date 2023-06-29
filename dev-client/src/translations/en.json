@@ -51,6 +51,10 @@
       "audit_log": "Audit Log",
       "remove_site": "Remove from Project",
       "delete_site": "Delete Site"
+    },
+    "transfer_sites": {
+      "heading": "Transfer existing sites",
+      "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project."
     }
   },
   "badge": {
@@ -63,12 +67,14 @@
     "project_private": "Private",
     "project_public": "Public",
     "save": "Save",
-    "modified_by": "Last modified {{date}} by {{user}}"
+    "modified_by": "Last modified {{date}} by {{user}}",
+    "select_all": "Select All"
   },
   "screens": {
     "SITES_MAP": "LandPKS",
     "PROJECT_LIST": "Projects",
     "PROJECT_VIEW": "Project #{{id}}",
-    "LOGIN": "Login"
+    "LOGIN": "Login",
+    "SITE_TRANSFER_PROJECT": "Project #{{id}}"
   }
 }
