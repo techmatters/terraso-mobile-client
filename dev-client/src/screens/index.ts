@@ -15,6 +15,7 @@ import {
 } from '@react-navigation/native-stack/lib/typescript/src/types';
 import {ReactNode} from 'react';
 import {TFunction} from 'i18next';
+import SiteTransferProject from './SiteTransferProject';
 
 export type RoutePath = keyof RootStackParamList;
 
@@ -57,6 +58,11 @@ const SCREENS: ScreenMap = {
     screen: SiteMapScreen,
     leftIcon: MainMenuBar,
     rightIcon: MapInfoIcon,
+  },
+  SITE_TRANSFER_PROJECT: {
+    screen: SiteTransferProject,
+    paramTitle: ({t, route}) =>
+      t(`screens.${route.name}`, {id: route.params.projectId} ?? undefined),
   },
 };
 

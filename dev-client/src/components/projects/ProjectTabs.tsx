@@ -81,6 +81,7 @@ export default function ProjectTabs() {
         name={TabRoutes.SITES}
         component={ProjectSitesTab}
         initialParams={{
+          projectId: 1,
           sites: fetchProject(1).sites,
           //sites: [],
         }}
