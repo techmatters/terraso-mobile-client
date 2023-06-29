@@ -20,14 +20,18 @@ type ItemProps = {
   sites: Pick<SiteDisplay, 'name' | 'id'>[];
 };
 
-function SiteTransferItem({projectName, projectId, sites}: ItemProps) {
+function SiteTransferItem({
+  projectName,
+  projectId: _projectId,
+  sites,
+}: ItemProps) {
   const items = sites.map(site => ({
     value: String(site.id),
     label: site.name,
     key: String(site.id),
   }));
-  const updateSelected = useCallback((items: string[]) => {
-    console.debug(items);
+  const updateSelected = useCallback((currentItems: string[]) => {
+    console.debug(currentItems);
   }, []);
 
   const head = (
@@ -57,11 +61,11 @@ export default function SiteTransferProject({
       <SearchInput />
       {Object.entries(sitesByProject)
         .filter(([aProjectId]) => aProjectId !== String(projectId))
-        .map(([projectId, {projectName, sites}]) => {
+        .map(([projId, {projectName, sites}]) => {
           return (
             <SiteTransferItem
               projectName={projectName}
-              projectId={projectId}
+              projectId={projId}
               sites={sites}
               key={projectId}
             />

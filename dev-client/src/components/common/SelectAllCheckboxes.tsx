@@ -1,4 +1,4 @@
-import {Box, Checkbox, Text, VStack} from 'native-base';
+import {Checkbox, Text, VStack} from 'native-base';
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {LogBox} from 'react-native';
