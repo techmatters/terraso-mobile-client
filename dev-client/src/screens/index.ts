@@ -16,7 +16,6 @@ import {
 } from '@react-navigation/native-stack/lib/typescript/src/types';
 import {ReactNode} from 'react';
 import {TFunction} from 'i18next';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CloseButton from '../components/common/CloseButton';
 
 export type RoutePath = keyof RootStackParamList;

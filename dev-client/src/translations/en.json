@@ -51,6 +51,12 @@
       "audit_log": "Audit Log",
       "remove_site": "Remove from Project",
       "delete_site": "Delete Site"
+    },
+    "add": {
+      "name": "Project Name",
+      "description": "Project Description (optional)",
+      "public": "Public",
+      "private": "Private"
     }
   },
   "badge": {
@@ -68,6 +74,7 @@
   "screens": {
     "SITES_MAP": "LandPKS",
     "PROJECT_LIST": "Projects",
-    "PROJECT_VIEW": "Project #{{id}}"
+    "PROJECT_VIEW": "Project #{{id}}",
+    "CREATE_PROJECT": "Create Project"
   }
 }

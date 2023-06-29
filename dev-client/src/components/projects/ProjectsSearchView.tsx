@@ -4,11 +4,10 @@ import {useTranslation} from 'react-i18next';
 import AddButton from '../common/AddButton';
 import MaterialIconButton from '../common/MaterialIconButton';
 import ProjectPreviewCard from './ProjectPreviewCard';
-import {useNavigation} from "@react-navigation/native";
-import screens, {TopLevelNavigationProp} from "../../screens";
-import {useCallback} from "react";
-import {ScreenRoutes} from "../../screens/constants";
-
+import {useNavigation} from '@react-navigation/native';
+import {TopLevelNavigationProp} from '../../screens';
+import {useCallback} from 'react';
+import {ScreenRoutes} from '../../screens/constants';
 
 type Props = {
   projects: ProjectPreview[];
