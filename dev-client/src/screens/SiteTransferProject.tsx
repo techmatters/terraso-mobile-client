@@ -67,7 +67,7 @@ export default function SiteTransferProject({
               projectName={projectName}
               projectId={projId}
               sites={sites}
-              key={projectId}
+              key={projId}
             />
           );
         })}
