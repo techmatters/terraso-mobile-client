@@ -6,6 +6,7 @@
     "android": "react-native run-android --list-devices",
     "ios": "react-native run-ios",
     "lint": "eslint .",
+    "format": "eslint . --fix",
     "start": "react-native start",
     "test": "jest",
     "check-ts": "tsc --noEmit"
