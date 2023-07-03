@@ -9,6 +9,7 @@ import {fetchProjects, SITE_DISPLAYS} from '../dataflow';
 import {useTranslation} from 'react-i18next';
 import {TFunction} from 'i18next';
 import {useTheme} from 'native-base';
+import {useSelector} from '../../model/store';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -61,11 +62,13 @@ function mapScreens(t: TFunction) {
 export default function AppScaffold() {
   const {user} = useLogin();
   const {t} = useTranslation();
+  const currentUser = useSelector(state => state.account.currentUser.data);
   // using theme hook here because react-navigation doesn't take nativebase utility props
   const {colors} = useTheme();
 
   function filterLogin([_name, config]: ScreenMapArgs) {
-    if (user === null) {
+    console.debug(currentUser);
+    if (currentUser === null) {
       return config.loggedOut === true;
     } else {
       return config.loggedOut !== true;
