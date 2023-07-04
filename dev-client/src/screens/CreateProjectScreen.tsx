@@ -12,7 +12,7 @@ type Props = NativeStackScreenProps<
   ScreenRoutes.CREATE_PROJECT
 >;
 
-export default function CreateProjectScreen({route}: Props) {
+export default function CreateProjectScreen({}: Props) {
   const {t} = useTranslation();
   const onPress = useCallback(() => {
     console.debug(' save was pressed');

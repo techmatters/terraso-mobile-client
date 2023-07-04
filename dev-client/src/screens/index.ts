@@ -64,7 +64,7 @@ const SCREENS: ScreenMap = {
   CREATE_PROJECT: {
     screen: CreateProjectScreen,
     leftIcon: CloseButton,
-  }
+  },
   SITE_TRANSFER_PROJECT: {
     screen: SiteTransferProject,
     paramTitle: ({t, route}) =>
