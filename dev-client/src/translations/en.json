@@ -80,7 +80,7 @@
     "SITES_MAP": "LandPKS",
     "PROJECT_LIST": "Projects",
     "PROJECT_VIEW": "Project #{{id}}",
-    "CREATE_PROJECT": "Create Project"
+    "CREATE_PROJECT": "Create Project",
     "SITE_TRANSFER_PROJECT": "Project #{{id}}"
   }
 }
