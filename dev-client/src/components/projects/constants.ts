@@ -18,6 +18,7 @@ export type TabStackParamList = {
     downloadLink: string;
   };
   [TabRoutes.SITES]: {
+    projectId: number;
     sites: SitePreview[];
   };
 };

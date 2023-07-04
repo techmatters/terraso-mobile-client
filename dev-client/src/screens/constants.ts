@@ -6,6 +6,7 @@ export const enum ScreenRoutes {
   PROJECT_VIEW = 'PROJECT_VIEW',
   SITES_MAP = 'SITES_MAP',
   CREATE_PROJECT = 'CREATE_PROJECT',
+  SITE_TRANSFER_PROJECT = 'SITE_TRANSFER_PROJECT',
 }
 
 export type RootStackParamList = {
@@ -14,4 +15,7 @@ export type RootStackParamList = {
   [ScreenRoutes.PROJECT_VIEW]: {project: Project};
   [ScreenRoutes.SITES_MAP]: {sites: SiteDisplay[]};
   [ScreenRoutes.CREATE_PROJECT]: undefined;
+  [ScreenRoutes.SITE_TRANSFER_PROJECT]: {
+    projectId: number;
+  };
 };
