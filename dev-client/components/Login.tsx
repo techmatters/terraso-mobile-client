@@ -4,15 +4,8 @@ import {authorize} from 'react-native-app-auth';
 
 import Config from 'react-native-config';
 import {exchangeToken} from '../src/auth';
-import {useLoginDispatch} from '../src/context/LoginContext';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {
-  fetchUser,
-  getInitialToken,
-  setHasToken,
-  setUser,
-} from 'terraso-client-shared/account/accountSlice';
-import {fetchUser as fetchUserService} from '../../../../../.emacs.d/backups/!home!work!code!terraso-mobile-client!dev-client!node_modules!terraso-client-shared!src!account!accountService.ts~';
+import {fetchUser} from 'terraso-client-shared/account/accountSlice';
 import {useDispatch} from '../model/store';
 
 // https://github.com/FormidableLabs/react-native-app-auth/blob/main/docs/config-examples/google.md
@@ -38,12 +31,6 @@ export default function LoginView(): JSX.Element {
       ])
         .then(() => dispatch(fetchUser()))
         .catch(e => console.error(e));
-
-      console.debug(
-        await EncryptedStorage.getItem('atoken'),
-        fetchUser(),
-        fetchUserService(),
-      );
     });
   }, [googleConfig, authorize]);
 

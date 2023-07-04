@@ -2,7 +2,8 @@ import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 
-const terrasoAPIURL = Config.TERRASO_URL ?? 'https://api.staging.terraso.net';
+const terrasoAPIURL =
+  Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
 
 const config = setAPIConfig({
   terrasoAPIURL: terrasoAPIURL,
