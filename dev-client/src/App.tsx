@@ -5,6 +5,9 @@
  * @format
  */
 
+// react-native-get-random-values needed for uuid - https://github.com/uuidjs/uuid#react-native--expo
+import 'react-native-get-random-values';
+
 import React, {useEffect, useMemo} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
