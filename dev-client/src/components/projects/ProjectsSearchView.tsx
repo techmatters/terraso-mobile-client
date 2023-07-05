@@ -4,6 +4,10 @@ import {useTranslation} from 'react-i18next';
 import AddButton from '../common/AddButton';
 import MaterialIconButton from '../common/MaterialIconButton';
 import ProjectPreviewCard from './ProjectPreviewCard';
+import {useNavigation} from '@react-navigation/native';
+import {TopLevelNavigationProp} from '../../screens';
+import {useCallback} from 'react';
+import {ScreenRoutes} from '../../screens/constants';
 
 type Props = {
   projects: ProjectPreview[];
@@ -11,10 +15,15 @@ type Props = {
 
 export default function ProjectsSearchView({projects}: Props) {
   const {t} = useTranslation();
+  const navigation = useNavigation<TopLevelNavigationProp>();
+  const onPress = useCallback(
+    () => navigation.navigate(ScreenRoutes.CREATE_PROJECT),
+    [navigation],
+  );
   return (
     <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
       <Box alignItems="flex-start" pb={3}>
-        <AddButton text={t('projects.create_button')} />
+        <AddButton text={t('projects.create_button')} buttonProps={{onPress}} />
       </Box>
       <HStack alignContent="center">
         <VStack>
