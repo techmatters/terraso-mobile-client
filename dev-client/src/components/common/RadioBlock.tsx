@@ -6,7 +6,7 @@ type RadioOption = {
 };
 
 type Props = {
-  label: string;
+  label: string | React.ReactNode;
   options: RadioOption[];
   blockName: string;
   a11yLabel?: string;

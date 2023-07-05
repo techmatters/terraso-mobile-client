@@ -20,7 +20,7 @@ const newColorTheme = {
     200: '#EEEEEE',
   },
   action: {
-    active: '#1A202C',
+    active: '#1A202CB2',
   },
   text: {
     primary: '#1A202C',
