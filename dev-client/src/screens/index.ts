@@ -70,6 +70,9 @@ const SCREENS: ScreenMap = {
     paramTitle: ({t, route}) =>
       t(`screens.${route.name}`, {id: route.params.projectId} ?? undefined),
   },
+  ADD_USER_TO_PROJECT: {
+    screen: AddUserToProjectScreen,
+  },
 };
 
 export default SCREENS;
