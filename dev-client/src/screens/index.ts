@@ -5,6 +5,7 @@ import {
   RootStackParamList as PrivateRootStackParamList,
 } from './constants';
 import ProjectViewScreen from './ProjectViewScreen';
+import CreateProjectScreen from './CreateProjectScreen';
 import SiteMapScreen from './SiteMapScreen';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
@@ -15,6 +16,7 @@ import {
 } from '@react-navigation/native-stack/lib/typescript/src/types';
 import {ReactNode} from 'react';
 import {TFunction} from 'i18next';
+import CloseButton from '../components/common/CloseButton';
 import SiteTransferProject from './SiteTransferProject';
 
 export type RoutePath = keyof RootStackParamList;
@@ -58,6 +60,10 @@ const SCREENS: ScreenMap = {
     screen: SiteMapScreen,
     leftIcon: MainMenuBar,
     rightIcon: MapInfoIcon,
+  },
+  CREATE_PROJECT: {
+    screen: CreateProjectScreen,
+    leftIcon: CloseButton,
   },
   SITE_TRANSFER_PROJECT: {
     screen: SiteTransferProject,

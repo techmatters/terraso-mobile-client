@@ -52,6 +52,12 @@
       "remove_site": "Remove from Project",
       "delete_site": "Delete Site"
     },
+    "add": {
+      "name": "Project Name",
+      "description": "Project Description (optional)",
+      "public": "Public",
+      "private": "Private"
+    },
     "transfer_sites": {
       "heading": "Transfer existing sites",
       "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project."
@@ -75,6 +81,7 @@
     "PROJECT_LIST": "Projects",
     "PROJECT_VIEW": "Project #{{id}}",
     "LOGIN": "Login",
+    "CREATE_PROJECT": "Create Project",
     "SITE_TRANSFER_PROJECT": "Project #{{id}}"
   }
 }
