@@ -1,40 +1,45 @@
-import Config from 'react-native-config';
+import {authorize} from 'react-native-app-auth';
+import {APP_CONFIG} from '../config';
 import {OAuthProvider} from '../types';
+import {request} from 'terraso-client-shared/terrasoApi/api';
+import {getAPIConfig} from 'terraso-client-shared/config';
 
-function checkFields(fields: string[], json: object) {
-  return fields.filter(key => !Object.hasOwn(json, key)).length > 0;
+// https://github.com/FormidableLabs/react-native-app-auth/blob/main/docs/config-examples/google.md
+const googleConfig = {
+  issuer: 'https://accounts.google.com',
+  clientId: APP_CONFIG.googleClientId,
+  redirectUrl: `${APP_CONFIG.packageName}:/oauth2redirect`,
+  scopes: ['openid', 'profile', 'email'],
+};
+
+interface AuthTokens {
+  atoken: string;
+  rtoken: string;
 }
 
 export async function exchangeToken(
   identityJwt: string,
   provider: OAuthProvider,
 ) {
-  const resp = await fetch(Config.TERRASO_BACKEND + '/auth/token-exchange', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({
-      provider,
-      jwt: identityJwt,
-    }),
+  const payload = await request<AuthTokens>({
+    path: '/auth/token-exchange',
+    body: {provider, jwt: identityJwt},
+    headers: {'content-type': 'application/json'},
   });
-  if (!resp.ok) {
-    // TODO: handle error
-    throw 'Error with token exchange';
-  }
-  const payload = await resp.json();
 
-  if (checkFields(['atoken', 'rtoken'], payload)) {
-    // TODO: handle error
-    console.error(payload);
-    throw 'Bad token JSON';
-  }
-
-  // TODO: Just doing this to get the right types, has to be a better way
   return {
-    atoken: String(payload.atoken),
-    rtoken: String(payload.rtoken),
+    atoken: payload.atoken,
+    rtoken: payload.rtoken,
   };
+}
+
+const apiConfig = getAPIConfig();
+
+export async function auth() {
+  let result = await authorize(googleConfig);
+  let {atoken, rtoken} = await exchangeToken(result.idToken, 'google');
+  return Promise.all([
+    apiConfig.tokenStorage.setToken('atoken', atoken),
+    apiConfig.tokenStorage.setToken('rtoken', rtoken),
+  ]);
 }
