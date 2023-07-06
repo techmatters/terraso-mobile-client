@@ -13,6 +13,7 @@ const config = setAPIConfig({
       EncryptedStorage.getItem(name).then(name => name ?? undefined),
     setToken: (name, token) => EncryptedStorage.setItem(name, token),
     removeToken: name => EncryptedStorage.removeItem(name),
+    initialToken: null,
   },
   // TODO: pick out logger
   logger: (_severity, args) => console.log(args),

@@ -26,10 +26,7 @@ export async function exchangeToken(
   }
   const payload = await resp.json();
 
-  if (
-    checkFields(['atoken', 'rtoken', 'user'], payload) ||
-    checkFields(['email', 'firstName'], payload.user)
-  ) {
+  if (checkFields(['atoken', 'rtoken'], payload)) {
     // TODO: handle error
     console.error(payload);
     throw 'Bad token JSON';
@@ -39,8 +36,5 @@ export async function exchangeToken(
   return {
     atoken: String(payload.atoken),
     rtoken: String(payload.rtoken),
-    email: String(payload.user.email),
-    firstName: String(payload.user.firstName),
-    lastName: String(payload.user.lastName),
   };
 }

@@ -3,13 +3,17 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import {RootStackParamList, ScreenRoutes} from './constants';
-import {useLogin} from '../context/LoginContext';
 import SCREENS, {ScreenConfig} from '.';
 import {fetchProjects, SITE_DISPLAYS} from '../dataflow';
 import {useTranslation} from 'react-i18next';
 import {TFunction} from 'i18next';
 import {useTheme} from 'native-base';
-import {useSelector} from '../../model/store';
+import {useDispatch, useSelector} from '../../model/store';
+import {useEffect} from 'react';
+import {
+  setHasAccessTokenAsync,
+  fetchUser,
+} from 'terraso-client-shared/account/accountSlice';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -60,20 +64,29 @@ function mapScreens(t: TFunction) {
 }
 
 export default function AppScaffold() {
-  const {user} = useLogin();
   const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const hasToken = useSelector(state => state.account.hasToken);
   const currentUser = useSelector(state => state.account.currentUser.data);
   // using theme hook here because react-navigation doesn't take nativebase utility props
   const {colors} = useTheme();
 
   function filterLogin([_name, config]: ScreenMapArgs) {
-    console.debug(currentUser);
     if (currentUser === null) {
       return config.loggedOut === true;
     } else {
       return config.loggedOut !== true;
     }
   }
+
+  useEffect(() => {
+    if (!hasToken) {
+      dispatch(setHasAccessTokenAsync());
+    }
+    if (hasToken && currentUser === null) {
+      dispatch(fetchUser());
+    }
+  }, [hasToken, currentUser]);
 
   return (
     <Stack.Navigator
