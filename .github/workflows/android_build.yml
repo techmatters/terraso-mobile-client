@@ -59,8 +59,7 @@ jobs:
           echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
 
       - name: Build Android app bundle
-        run: |
-          cd android && ./gradlew bundleRelease --no-daemon
+        run: ./gradlew bundleRelease --no-daemon
 
       - name: Sign Android app bundle
         id: sign_app
