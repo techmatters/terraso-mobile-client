@@ -65,7 +65,7 @@ jobs:
         id: sign_app
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: android/app/build/outputs/apk/release
+          releaseDirectory: dev-client/android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
           alias: ${{ secrets.ANDROID_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
@@ -76,7 +76,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
           packageName: org.terraso.landpks
-          releaseFiles: android/app/build/outputs/bundle/release/*.aab
+          releaseFiles: dev-client/android/app/build/outputs/bundle/release/*.aab
           track: alpha
           status: completed
           inAppUpdatePriority: 2
