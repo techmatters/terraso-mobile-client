@@ -18,6 +18,15 @@ jobs:
         working-directory: ios
 
     steps:
+      - name: Provide Mapbox secret key
+        env:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+        run: |
+          echo "machine api.mapbox.com" >> $HOME/.netrc
+          echo "login mapbox" >> $HOME/.netrc
+          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
+          chmod 600 $HOME/.netrc
+
       - name: Check out Git repository
         uses: actions/checkout@v3
 
@@ -49,15 +58,6 @@ jobs:
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
-
-      - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-        run: |
-          echo "machine api.mapbox.com" >> $HOME/.netrc
-          echo "login mapbox" >> $HOME/.netrc
-          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
-          chmod 600 $HOME/.netrc
 
       - name: CocoaPod Install
         working-directory: ./dev-client/ios
