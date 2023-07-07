@@ -3,7 +3,7 @@ import {useCallback} from 'react';
 
 import {auth} from '../src/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
-import {useDispatch} from '../model/store';
+import {useDispatch} from '../src/model/store';
 
 export default function LoginView(): JSX.Element {
   const dispatch = useDispatch();

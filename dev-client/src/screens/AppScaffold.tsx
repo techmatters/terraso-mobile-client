@@ -8,7 +8,7 @@ import {fetchProjects, SITE_DISPLAYS} from '../dataflow';
 import {useTranslation} from 'react-i18next';
 import {TFunction} from 'i18next';
 import {useTheme} from 'native-base';
-import {useDispatch, useSelector} from '../../model/store';
+import {useDispatch, useSelector} from '../model/store';
 import {useEffect} from 'react';
 import {
   setHasAccessTokenAsync,
