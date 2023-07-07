@@ -11,7 +11,7 @@ export default function LoginView(): JSX.Element {
     auth()
       .then(() => dispatch(setHasAccessTokenAsync()))
       .catch(e => console.error(e));
-  }, []);
+  }, [dispatch]);
 
   return (
     <Button bgColor="primary.main" size="lg" onPress={onPress}>

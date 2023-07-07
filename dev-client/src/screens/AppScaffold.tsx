@@ -86,7 +86,7 @@ export default function AppScaffold() {
     if (hasToken && currentUser === null) {
       dispatch(fetchUser());
     }
-  }, [hasToken, currentUser]);
+  }, [hasToken, currentUser, dispatch]);
 
   return (
     <Stack.Navigator

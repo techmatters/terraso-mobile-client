@@ -10,7 +10,7 @@ const apiConfig = setAPIConfig({
   graphQLEndpoint: terrasoAPIURL + '/graphql',
   tokenStorage: {
     getToken: name =>
-      EncryptedStorage.getItem(name).then(name => name ?? undefined),
+      EncryptedStorage.getItem(name).then(token => token ?? undefined),
     setToken: (name, token) => EncryptedStorage.setItem(name, token),
     removeToken: name => EncryptedStorage.removeItem(name),
     initialToken: null,
