@@ -1,0 +1,77 @@
+name: Android Build
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  android-build:
+    name: Android Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: |
+            dev-client/package-lock.json
+
+      - name: Install node dependencies
+        working-directory: dev-client
+        run: npm ci
+
+      - name: Set up our JDK environment
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          cache: gradle
+
+      ## configure cash for gradle : will help to reduce build time
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
+      - name: Provide Mapbox secret key
+        env:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+        run: |
+          mkdir -p $HOME/.gradle
+          echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
+
+      - name: Generate App APK
+        run: |
+          cd android && ./gradlew assembleRelease --no-daemon
+
+      - name: Sign APK
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: android/app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      ## Distribute app to Firebase App Distribution for testing / use google play internal track if you have a google play account
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
+          token: ${{secrets.ANDROID_FIREBASE_TOKEN}}
+          groups: testers
+          file: ${{steps.sign_app.outputs.signedReleaseFile}}
