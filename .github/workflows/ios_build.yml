@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   release:
     types: [published] # only run the workflow when a new release has been published
-  pull_request:
-    types:
-      - opened
-      - synchronize
 
 jobs:
   ios-build:
