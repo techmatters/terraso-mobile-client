@@ -13,20 +13,8 @@ jobs:
   ios-build:
     name: iOS Production Build
     runs-on: macOS-latest
-    defaults:
-      run:
-        working-directory: ios
 
     steps:
-      - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-        run: |
-          echo "machine api.mapbox.com" >> $HOME/.netrc
-          echo "login mapbox" >> $HOME/.netrc
-          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
-          chmod 600 $HOME/.netrc
-
       - name: Check out Git repository
         uses: actions/checkout@v3
 
@@ -41,14 +29,14 @@ jobs:
             dev-client/package-lock.json
 
       - name: Install node dependencies
-        working-directory: ./dev-client
+        working-directory: dev-client
         run: npm ci
 
       - name: Setup Ruby (bundle)
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-          working-directory: ./dev-client
+          working-directory: dev-client
 
       - name: Restore Pods cache
         uses: actions/cache@v2
@@ -59,26 +47,35 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pods-
 
+      - name: Provide Mapbox secret key
+        env:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+        run: |
+          echo "machine api.mapbox.com" >> $HOME/.netrc
+          echo "login mapbox" >> $HOME/.netrc
+          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
+          chmod 600 $HOME/.netrc
+
       - name: CocoaPod Install
-        working-directory: ./dev-client/ios
+        working-directory: dev-client/ios
         run: pod install
 
       - name: Bump Version
         uses: yanamura/ios-bump-version@v1
         with:
           version: '1.0.0'
-          project-path: ./dev-client/ios
+          project-path: dev-client/ios
 
       - name: Build IOS App
         uses: yukiarrr/ios-build-action@v1.4.0
         with:
-          project-path: ios/Terraso LandPKS.xcodeproj
+          project-path: dev-client/ios/Terraso LandPKS.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
           code-signing-identity: 'iPhone Distribution'
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          workspace-path: ios/Terraso LandPKS.xcworkspace
+          workspace-path: dev-client/ios/Terraso LandPKS.xcworkspace
           scheme: Terraso LandPKS
 
       - name: 'Upload app to TestFlight'
