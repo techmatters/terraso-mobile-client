@@ -62,6 +62,12 @@ jobs:
           version: '1.0'
           project-path: dev-client/ios
 
+      - name: Commit version bump
+        run: |
+          git add -A
+          git commit -m "build: bump version number"
+          git push
+
       - name: Build IOS App
         uses: yukiarrr/ios-build-action@v1.4.0
         with:
