@@ -508,8 +508,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.terraso.landpks;
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "org.terraso.test.Terraso-LandPKS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.terraso.test.Terraso-LandPKS";
 				PRODUCT_NAME = TerrasoLandPKS;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Terraso LandPKS Beta Profile";
@@ -543,8 +542,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.terraso.landpks;
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "org.terraso.test.Terraso-LandPKS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.terraso.test.Terraso-LandPKS";
 				PRODUCT_NAME = TerrasoLandPKS;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Terraso LandPKS Beta Profile";
