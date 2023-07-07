@@ -130,7 +130,7 @@ const SiteMap = memo(({center}: SiteMapProps): JSX.Element => {
       }}
       onLongPress={onLongPress}>
       <Camera ref={camera} centerCoordinate={[0, 0]} />
-      <Mapbox.Images>
+      <Mapbox.Images images={{sitePin: ''}}>
         <Mapbox.Image name="sitePin">
           <MaterialIconButton name="location-on" />
         </Mapbox.Image>
