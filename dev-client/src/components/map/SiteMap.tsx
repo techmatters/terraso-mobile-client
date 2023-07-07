@@ -80,7 +80,10 @@ const SiteMap = memo(({center}: SiteMapProps): JSX.Element => {
   }, [center]);
 
   const sitesFeature = useMemo(
-    () => siteFeatureCollection(Object.values(sites)),
+    () =>
+      siteFeatureCollection(
+        Object.values(sites).filter(site => !site.archived),
+      ),
     [sites],
   );
   console.log(sites, sitesFeature);
@@ -114,6 +117,7 @@ const SiteMap = memo(({center}: SiteMapProps): JSX.Element => {
       name: 'temporary site',
       latitude: lat,
       longitude: lon,
+      archived: false,
     };
     setTemporarySites({...temporarySites, [site.id]: site});
   };

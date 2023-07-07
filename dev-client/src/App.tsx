@@ -49,6 +49,7 @@ function App(): JSX.Element {
               name: 'site 1',
               latitude: 48.3820485,
               longitude: -123.5467687323,
+              archived: false,
             },
           },
         },
