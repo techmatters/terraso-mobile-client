@@ -63,7 +63,7 @@ jobs:
       - name: Bump Version
         uses: yanamura/ios-bump-version@v1
         with:
-          version: '1.0.0'
+          version: '1.0'
           project-path: dev-client/ios
 
       - name: Build IOS App
