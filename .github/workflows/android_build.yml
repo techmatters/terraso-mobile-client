@@ -36,7 +36,6 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      ## configure cash for gradle : will help to reduce build time
       - name: Cache Gradle Wrapper
         uses: actions/cache@v3
         with:
@@ -59,6 +58,7 @@ jobs:
           echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
 
       - name: Build Android app bundle
+        working-directory: ./dev-client/android
         run: ./gradlew bundleRelease --no-daemon
 
       - name: Sign Android app bundle
