@@ -1,18 +1,24 @@
 import Config from 'react-native-config';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import {MMKVLoader} from 'react-native-mmkv-storage';
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 
 const terrasoAPIURL =
   Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
 
+const MMKV = new MMKVLoader().withEncryption().initialize();
+
 const apiConfig = setAPIConfig({
   terrasoAPIURL: terrasoAPIURL,
   graphQLEndpoint: terrasoAPIURL + '/graphql',
   tokenStorage: {
-    getToken: name =>
-      EncryptedStorage.getItem(name).then(token => token ?? undefined),
-    setToken: (name, token) => EncryptedStorage.setItem(name, token),
-    removeToken: name => EncryptedStorage.removeItem(name),
+    getToken: async name => {
+      const value = await MMKV.getStringAsync(name);
+      return value === null ? undefined : value;
+    },
+    setToken: (name, value) => MMKV.setStringAsync(name, value),
+    removeToken: name => {
+      MMKV.removeItem(name);
+    },
     initialToken: null,
   },
   // TODO: pick out logger
