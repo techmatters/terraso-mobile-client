@@ -1,4 +1,5 @@
-import {ProjectPreview, Project, SiteDisplay} from '../types';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ProjectPreview, Project, SiteDisplay, ProjectName} from '../types';
 
 export const enum ScreenRoutes {
   LOGIN = 'LOGIN',
@@ -7,6 +8,7 @@ export const enum ScreenRoutes {
   SITES_MAP = 'SITES_MAP',
   CREATE_PROJECT = 'CREATE_PROJECT',
   SITE_TRANSFER_PROJECT = 'SITE_TRANSFER_PROJECT',
+  CREATE_SITE = 'CREATE_SITE',
 }
 
 export type RootStackParamList = {
@@ -18,4 +20,8 @@ export type RootStackParamList = {
   [ScreenRoutes.SITE_TRANSFER_PROJECT]: {
     projectId: number;
   };
+  [ScreenRoutes.CREATE_SITE]: undefined;
 };
+
+export type TopLevelScreenProps<R extends keyof RootStackParamList> =
+  NativeStackScreenProps<RootStackParamList, R>;

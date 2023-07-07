@@ -23,7 +23,8 @@ const newColorTheme = {
     active: '#1A202CB2',
   },
   text: {
-    primary: '#1A202C',
+    primary: '#1A202CC',
+    secondary: '#1A202CC',
   },
 };
 
