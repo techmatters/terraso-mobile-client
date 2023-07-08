@@ -1,9 +1,10 @@
 import CreateSiteView from '../components/sites/CreateSiteView';
-import {TopLevelScreenProps} from './constants';
-import {ScreenRoutes} from './constants';
+import {useSelector} from '../model/store';
+// import {ScreenRoutes, TopLevelScreenProps} from './constants';
 
-type Props = TopLevelScreenProps<ScreenRoutes.CREATE_SITE>;
+// type Props = TopLevelScreenProps<ScreenRoutes.CREATE_SITE>;
 
-export default function CreateSiteScreen(props: Props) {
-  return <CreateSiteView />;
+export default function CreateSiteScreen() {
+  const userLocation = useSelector(state => state.map.userLocation);
+  return <CreateSiteView projects={[]} userLocation={userLocation} />;
 }
