@@ -37,7 +37,7 @@ export default function BottomNavigation() {
   const navigation = useNavigation<TopLevelNavigationProp>();
 
   const onMap = useCallback(
-    () => navigation.navigate(ScreenRoutes.SITES_MAP, {sites: SITE_DISPLAYS}),
+    () => navigation.navigate(ScreenRoutes.SITES_MAP),
     [navigation],
   );
 

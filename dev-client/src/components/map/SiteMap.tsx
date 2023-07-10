@@ -12,7 +12,7 @@ import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 type SiteMapProps = {
   center?: Position;
   updateUserLocation?: (location: Location) => void;
-  sites: Site[];
+  sites: Record<string, Site>;
 };
 
 const siteFeatureCollection = (

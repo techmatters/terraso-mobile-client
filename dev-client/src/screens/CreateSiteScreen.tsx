@@ -11,9 +11,12 @@ export default function CreateSiteScreen() {
   const userLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
 
-  const createSiteCallback = useCallback((input: SiteAddMutationInput) => {
-    dispatch(addSite(input));
-  }, []);
+  const createSiteCallback = useCallback(
+    (input: SiteAddMutationInput) => {
+      dispatch(addSite(input));
+    },
+    [dispatch],
+  );
 
   return (
     <CreateSiteView

@@ -16,6 +16,9 @@ const newColorTheme = {
   secondary: {
     main: '#C05621',
   },
+  error: {
+    main: '#D32F2F',
+  },
   grey: {
     200: '#EEEEEE',
   },

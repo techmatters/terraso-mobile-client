@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ProjectPreview, Project, SiteDisplay} from '../types';
+import {ProjectPreview, Project} from '../types';
 
 export const enum ScreenRoutes {
   LOGIN = 'LOGIN',

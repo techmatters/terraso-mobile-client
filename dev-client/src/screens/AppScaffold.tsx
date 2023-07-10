@@ -31,8 +31,6 @@ function mapScreens(t: TFunction) {
       case 'PROJECT_LIST':
         initialParams = {projects: previews};
         break;
-      case 'SITES_MAP':
-        initialParams = {sites: sites};
     }
 
     let options: NativeStackNavigationOptions = {};

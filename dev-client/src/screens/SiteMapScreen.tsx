@@ -28,7 +28,7 @@ export default function SiteMapScreen(_: Props) {
   return (
     <VStack>
       <Box flexBasis="90%">
-        <SiteMap updateUserLocation={updateUserLocation} sites={sites} />
+        <SiteMap updateUserLocation={updateUserLocation} sites={sitesMap} />
       </Box>
       <Box flexBasis="10%">
         <BottomNavigation />
