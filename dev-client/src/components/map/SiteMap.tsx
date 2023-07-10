@@ -5,7 +5,6 @@ import {memo, useEffect, useMemo, useRef, useState} from 'react';
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import MaterialIconButton from '../common/MaterialIconButton';
 import {v4 as uuidv4} from 'uuid';
-import {useSelector} from '../../model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Box, Heading, Text} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
@@ -13,6 +12,7 @@ import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 type SiteMapProps = {
   center?: Position;
   updateUserLocation?: (location: Location) => void;
+  sites: Site[];
 };
 
 const siteFeatureCollection = (
@@ -60,8 +60,7 @@ const TemporarySiteCallout = ({site}: {site: Site}): JSX.Element => {
 };
 
 const SiteMap = memo(
-  ({center, updateUserLocation}: SiteMapProps): JSX.Element => {
-    const sites = useSelector(state => state.site.sites);
+  ({center, updateUserLocation, sites}: SiteMapProps): JSX.Element => {
     const [temporarySites, setTemporarySites] = useState<Record<string, Site>>(
       {},
     );

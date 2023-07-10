@@ -15,7 +15,7 @@ export type RootStackParamList = {
   [ScreenRoutes.LOGIN]: undefined;
   [ScreenRoutes.PROJECT_LIST]: {projects: ProjectPreview[]};
   [ScreenRoutes.PROJECT_VIEW]: {project: Project};
-  [ScreenRoutes.SITES_MAP]: {sites: SiteDisplay[]};
+  [ScreenRoutes.SITES_MAP]: undefined;
   [ScreenRoutes.CREATE_PROJECT]: undefined;
   [ScreenRoutes.SITE_TRANSFER_PROJECT]: {
     projectId: number;

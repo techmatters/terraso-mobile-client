@@ -12,6 +12,7 @@ type Props = {
   a11yLabel?: string;
   defaultValue?: string;
   oneLine?: boolean;
+  onChange?: (string) => void;
 };
 
 type WrapperProps = {
@@ -37,6 +38,7 @@ export default function RadioBlock({
   a11yLabel,
   defaultValue,
   oneLine = false,
+  onChange,
 }: Props) {
   return (
     <FormControl>
@@ -52,7 +54,8 @@ export default function RadioBlock({
         name={blockName}
         accessibilityLabel={a11yLabel}
         colorScheme="primary"
-        defaultValue={defaultValue}>
+        defaultValue={defaultValue}
+        onChange={onChange}>
         <OptionWrapper oneLine={oneLine}>
           {options.map(({value, text}) => (
             <Box key={value} flexGrow={1}>
