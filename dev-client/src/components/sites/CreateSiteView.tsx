@@ -10,6 +10,7 @@ import {ScreenRoutes} from '../../screens/constants';
 import {siteValidationSchema} from './validation';
 import {ValidationError} from 'yup';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SaveFAB from '../common/SaveFAB';
 
 type LatLongString = {latitude: string; longitude: string};
 
@@ -35,11 +36,14 @@ type Error = Partial<
   Omit<Record<keyof SiteAddMutationInput, string[]>, 'clientMutationId'>
 >;
 
+type LocationInputOptions = 'coords' | 'gps' | 'pin';
+
 export default function CreateSiteView({
   userLocation,
   createSiteCallback,
   sitePin,
 }: Props) {
+  /** We store the form state in mutationInput */
   const [mutationInput, setMutationInput] = useState<Args>({
     latitude: userLocation && String(userLocation.coords.latitude),
     longitude: userLocation && String(userLocation.coords.longitude),
@@ -49,6 +53,9 @@ export default function CreateSiteView({
 
   const {navigate} = useNavigation<TopLevelNavigationProp>();
 
+  /**
+   * Checks the form status with the yup library, and posts to backend
+   */
   const onSave = useCallback(async () => {
     if (createSiteCallback === undefined) {
       return;
@@ -74,18 +81,20 @@ export default function CreateSiteView({
     return navigate(ScreenRoutes.SITES_MAP);
   }, [mutationInput, createSiteCallback, navigate]);
 
+  /* calculates the associated location for a given location input option
+   * For example, for 'pin', it grabs and formats the value from the sitepin */
   const locationOptions = useMemo(() => {
-    const options: Record<'gps' | 'pin' | 'coords', LatLongString | undefined> =
-      {
-        coords: {latitude: '', longitude: ''},
-        gps: userLocation && fromLocation(userLocation),
-        pin: sitePin && fromLocation(sitePin),
-      };
+    const options: Record<LocationInputOptions, LatLongString | undefined> = {
+      coords: {latitude: '', longitude: ''},
+      gps: userLocation && fromLocation(userLocation),
+      pin: sitePin && fromLocation(sitePin),
+    };
     return options;
   }, [userLocation, sitePin]);
 
+  /** Callback passed to RadioBlock to update the value of the location input */
   const updateLocationSource = useCallback(
-    (key: 'gps' | 'pin' | 'coords') => {
+    (key: LocationInputOptions) => {
       const newLocation = locationOptions[key];
       if (newLocation === undefined) {
         console.error(
@@ -117,7 +126,7 @@ export default function CreateSiteView({
             </Text>
           ))}
       </FormControl>
-      <RadioBlock<'gps' | 'pin' | 'coords'>
+      <RadioBlock<LocationInputOptions>
         label="Site Location"
         blockName="location"
         options={{
@@ -170,7 +179,7 @@ export default function CreateSiteView({
         defaultValue="private"
         oneLine={true}
       />
-      <Fab label="SAVE" borderRadius={4} py={0} px={0} onPress={onSave} />
+      <SaveFAB title="SAVE" onPress={onSave} />
     </VStack>
   );
 }
