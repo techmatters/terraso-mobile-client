@@ -4,11 +4,12 @@ import {ScreenRoutes} from './constants';
 import SiteMap from '../components/map/SiteMap';
 import BottomNavigation from '../components/common/BottomNavigation';
 import {Box, VStack} from 'native-base';
-import {useCallback} from 'react';
+import {useCallback, useEffect} from 'react';
 import {Location} from '@rnmapbox/maps';
 import {updateLocation} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
+import {fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
 // import {useFetchData} from 'terraso-client-shared/store/utils';
 // import {fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
 
@@ -17,6 +18,11 @@ type Props = NativeStackScreenProps<RootStackParamList, ScreenRoutes.SITES_MAP>;
 export default function SiteMapScreen(_: Props) {
   const sitesMap = useSelector(state => state.site.sites);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // load sites on mount
+    dispatch(fetchSitesForUser());
+  }, [dispatch]);
 
   const updateUserLocation = useCallback(
     (location: Location) => {
