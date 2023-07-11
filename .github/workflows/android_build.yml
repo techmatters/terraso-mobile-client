@@ -78,5 +78,5 @@ jobs:
           packageName: org.terraso.landpks
           releaseFiles: ./dev-client/android/app/build/outputs/bundle/release/*.aab
           track: internal
-          status: completed
+          status: draft
           inAppUpdatePriority: 2
