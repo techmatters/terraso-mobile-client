@@ -57,6 +57,15 @@ jobs:
           mkdir -p $HOME/.gradle
           echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
 
+      - name: Bump Android version
+        run: ./gradlew bumpCodeVersion
+
+      - name: Commit version bump
+        run: |
+          git add -A
+          git commit -m "build: bump version number"
+          git push
+
       - name: Build Android app bundle
         working-directory: ./dev-client/android
         run: ./gradlew bundleRelease --no-daemon
