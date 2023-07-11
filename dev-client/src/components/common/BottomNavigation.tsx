@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useCallback} from 'react';
 import {ScreenRoutes} from '../../screens/constants';
 import {TopLevelNavigationProp} from '../../screens';
-import {SITE_DISPLAYS, fetchProjects} from '../../dataflow';
+import {fetchProjects} from '../../dataflow';
 
 type IconProps = {
   name: string;

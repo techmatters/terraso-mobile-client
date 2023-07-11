@@ -4,7 +4,7 @@ import {
 } from '@react-navigation/native-stack';
 import {RootStackParamList, ScreenRoutes} from './constants';
 import SCREENS, {ScreenConfig} from '.';
-import {fetchProjects, SITE_DISPLAYS} from '../dataflow';
+import {fetchProjects} from '../dataflow';
 import {useTranslation} from 'react-i18next';
 import {TFunction} from 'i18next';
 import {useTheme} from 'native-base';
@@ -20,7 +20,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 type ScreenMapArgs = [ScreenRoutes, ScreenConfig<keyof RootStackParamList>];
 
 const previews = fetchProjects();
-const sites = SITE_DISPLAYS;
 
 function mapScreens(t: TFunction) {
   return ([name, config]: ScreenMapArgs) => {

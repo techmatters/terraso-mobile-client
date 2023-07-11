@@ -1,7 +1,7 @@
 import {Location} from '@rnmapbox/maps';
 import {ProjectName} from '../../types';
 import RadioBlock from '../common/RadioBlock';
-import {Fab, FormControl, Icon, Input, Text, VStack} from 'native-base';
+import {FormControl, Icon, Input, Text, VStack} from 'native-base';
 import {useCallback, useMemo, useState} from 'react';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from '@react-navigation/native';
