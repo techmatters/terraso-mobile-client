@@ -1,4 +1,4 @@
-name: check-commits
+name: Conventional Commits
 
 on:
   push:
