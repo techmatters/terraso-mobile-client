@@ -1,4 +1,4 @@
-name: Android Build
+name: Android Release
 
 on:
   workflow_dispatch:
@@ -6,12 +6,12 @@ on:
     types: [published]
 
 jobs:
-  android-build:
-    name: Android Build
+  android-build-and-sign:
+    name: Android Build and Sign
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out Git repository
+      - name: Check out git repository
         uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3

@@ -1,6 +1,9 @@
-name: check-commits
+name: Conventional Commits
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -13,7 +16,7 @@ jobs:
   check-for-cc:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Check out git repository
         uses: actions/checkout@v3
 
       - name: Check for Conventional Commits
