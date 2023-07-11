@@ -58,6 +58,7 @@ jobs:
           echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
 
       - name: Bump Android version
+        working-directory: ./dev-client/android
         run: ./gradlew bumpCodeVersion
 
       - name: Commit version bump
