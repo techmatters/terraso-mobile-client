@@ -1,4 +1,5 @@
-use_frameworks!
+use_frameworks! :linkage => :static
+
 $RNMapboxMapsImpl = 'mapbox'
 
 require_relative '../node_modules/react-native/scripts/react_native_pods'
@@ -25,7 +26,7 @@ if linkage != nil
 end
 
 target 'Terraso LandPKS' do
-  pod 'MapboxMaps', '10.13.1'
+  pod 'MapboxMaps', '10.14.0'
 
   config = use_native_modules!
 
