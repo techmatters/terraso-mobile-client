@@ -1,4 +1,4 @@
-name: iOS Build
+name: iOS Release
 
 on:
   workflow_dispatch:
@@ -6,8 +6,8 @@ on:
     types: [published]
 
 jobs:
-  ios-build:
-    name: iOS Build
+  ios-build-and-sign:
+    name: iOS Build and Sign
     runs-on: macOS-latest
 
     steps:
