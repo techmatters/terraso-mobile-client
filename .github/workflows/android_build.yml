@@ -1,0 +1,91 @@
+name: Android Build
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  android-build:
+    name: Android Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: |
+            dev-client/package-lock.json
+
+      - name: Install node dependencies
+        working-directory: dev-client
+        run: npm ci
+
+      - name: Set up our JDK environment
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
+      - name: Provide Mapbox secret key
+        env:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+        run: |
+          mkdir -p $HOME/.gradle
+          echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
+
+      - name: Bump Android version
+        working-directory: ./dev-client/android
+        run: ./gradlew bumpCodeVersion
+
+      # - name: Commit version bump
+      #   run: |
+      #     git config user.name "GitHub Actions"
+      #     git config user.email "actions@users.noreply.github.com"
+      #     git add -A
+      #     git commit -m "build: bump version number"
+      #     git push
+
+      - name: Build Android app bundle
+        working-directory: ./dev-client/android
+        run: ./gradlew bundleRelease
+
+      - name: Sign Android app bundle
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: ./dev-client/android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Upload App to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
+          releaseName: Terraso LandPKS
+          packageName: org.terraso.landpks
+          releaseFiles: ./dev-client/android/app/build/outputs/bundle/release/*.aab
+          track: internal
+          status: draft
+          inAppUpdatePriority: 2

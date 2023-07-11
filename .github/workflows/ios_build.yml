@@ -1,4 +1,4 @@
-name: iOS Production Build
+name: iOS Build
 
 on:
   workflow_dispatch:
@@ -64,6 +64,8 @@ jobs:
 
       - name: Commit version bump
         run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@users.noreply.github.com"
           git add -A
           git commit -m "build: bump version number"
           git push
