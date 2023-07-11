@@ -71,7 +71,7 @@ jobs:
 
       - name: Build Android app bundle
         working-directory: ./dev-client/android
-        run: ./gradlew bundleRelease --no-daemon
+        run: ./gradlew bundleRelease
 
       - name: Sign Android app bundle
         id: sign_app
