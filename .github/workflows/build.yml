@@ -1,13 +1,20 @@
-name: iOS Release
+name: Build
 
 on:
-  workflow_dispatch:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - edited
+      - synchronize
 
 jobs:
-  ios-build-and-sign:
-    name: iOS Build and Sign
+  ios-build:
+    name: iOS Build
     runs-on: macOS-latest
 
     steps:
@@ -56,20 +63,6 @@ jobs:
         working-directory: dev-client/ios
         run: pod install
 
-      - name: Bump Version
-        uses: yanamura/ios-bump-version@v1
-        with:
-          version: '1.0'
-          project-path: dev-client/ios
-
-      - name: Commit version bump
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@users.noreply.github.com"
-          git add -A
-          git commit -m "build: bump version number"
-          git push
-
       - name: Build IOS App
         uses: yukiarrr/ios-build-action@v1.11.0
         with:
@@ -82,10 +75,53 @@ jobs:
           workspace-path: dev-client/ios/Terraso LandPKS.xcworkspace
           scheme: Terraso LandPKS
 
-      - name: Upload app to TestFlight
-        uses: apple-actions/upload-testflight-build@v1
+  android-build:
+    name: Android Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
         with:
-          app-path: 'output.ipa'
-          issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
-          api-key-id: ${{ secrets.APPLE_KEY_ID }}
-          api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
+          node-version-file: '.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: |
+            dev-client/package-lock.json
+
+      - name: Install node dependencies
+        working-directory: dev-client
+        run: npm ci
+
+      - name: Set up our JDK environment
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
+      - name: Provide Mapbox secret key
+        env:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+        run: |
+          mkdir -p $HOME/.gradle
+          echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
+
+      - name: Build Android app bundle
+        working-directory: ./dev-client/android
+        run: ./gradlew bundleRelease
