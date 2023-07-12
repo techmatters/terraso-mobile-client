@@ -77,7 +77,7 @@
     "select_all": "Select All"
   },
   "screens": {
-    "SITES_MAP": "LandPKS",
+    "HOME": "LandPKS",
     "PROJECT_LIST": "Projects",
     "PROJECT_VIEW": "Project #{{id}}",
     "LOGIN": "Login",

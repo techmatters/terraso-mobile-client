@@ -27,6 +27,7 @@ export async function exchangeToken(
     headers: {'content-type': 'application/json'},
   });
 
+  console.log(payload);
   return {
     atoken: payload.atoken,
     rtoken: payload.rtoken,
