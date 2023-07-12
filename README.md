@@ -118,9 +118,9 @@ jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256  -keystore ~/terraso
 
 Once all of the dependencies are installed, the first barrier to running the project locally is getting past the login screen. In order to do so, you'll need to do the following:
 
-1. Set up a Google OAuth project for Android or iOS
+1. Set up a Google OAuth project for Android or iOS if it doesn't already exist
 - See [Google Cloud Console](https://console.cloud.google.com/)
-2. Copy `.env.sample` to `.env`. You need to change the `GOOGLE_OAUTH_APP_CLIENT_ID` variable to match
+2. Copy `.env.sample` to `.env`. You need to change the `GOOGLE_OAUTH_APP_CLIENT_ID` variable to match the value of your OAuth App client id
 3. Get an instance of the Terraso backend running locally
 4. Set up the instance config to use the OAuth client
 - See the `settings.py` value `JWT_EXCHANGE_PROVIDERS`. You will need to set the environment variable `GOOGLE_MOBILE_CLIENT_ID`
