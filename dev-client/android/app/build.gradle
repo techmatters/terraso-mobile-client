@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
 
@@ -98,8 +99,11 @@ android {
         applicationId "org.terraso.landpks"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0"
+        versionCode 4
+        versionName "1.0.0"
+        manifestPlaceholders = [
+            appAuthRedirectScheme: "org.terraso.landpks"
+        ]
     }
     splits {
         abi {
@@ -126,16 +130,11 @@ android {
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             if (project.hasProperty('LPKS_UPLOAD_STORE_FILE')) {
               signingConfig signingConfigs.release
-            } else {
-              signingConfig signingConfigs.debug
             }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -178,6 +177,84 @@ dependencies {
     }
 
     implementation 'com.mapbox.maps:android:10.12.1'
+}
+
+class Version {
+
+    private int major
+    private int minor
+    private int patch
+    private int code
+
+    Version(int code, String version) {
+        this.code = code
+
+        def (major, minor, patch) = version.tokenize('.')
+        this.major = major.toInteger()
+        this.minor = minor.toInteger()
+        this.patch = patch.toInteger()
+    }
+
+    @SuppressWarnings("unused")
+    void bumpMajor() {
+        major += 1
+        minor = 0
+        patch = 0
+
+        code += 1
+    }
+
+    @SuppressWarnings("unused")
+    void bumpMinor() {
+        minor += 1
+        patch = 0
+
+        code += 1
+    }
+
+    @SuppressWarnings("unused")
+    void bumpPatch() {
+        patch += 1
+        code += 1
+    }
+
+    @SuppressWarnings("unused")
+    void bumpCode() {
+        code += 1
+    }
+
+    String getName() { "$major.$minor.$patch" }
+
+    int getCode() { code }
+}
+
+tasks.addRule("Pattern: bump<TYPE>Version") { String taskName ->
+    if (taskName.matches("bump(Major|Minor|Patch|Code)Version")) {
+        task(taskName) {
+            doLast {
+                String type = (taskName - 'bump' - 'Version')
+
+                println "Bumping ${type.toLowerCase()} version…"
+
+                int oldVersionCode = android.defaultConfig.versionCode
+                String oldVersionName = android.defaultConfig.versionName
+
+                version = new Version(oldVersionCode, oldVersionName)
+                version."bump$type"()
+
+                String newVersionName = version.getName()
+                String newVersionCode = version.getCode()
+
+                println "$oldVersionName ($oldVersionCode) → $newVersionName ($newVersionCode)"
+
+                def updated = buildFile.getText()
+                updated = updated.replaceFirst("versionName '$oldVersionName'", "versionName '$newVersionName'")
+                updated = updated.replaceFirst("versionCode $oldVersionCode", "versionCode $newVersionCode")
+
+                buildFile.setText(updated)
+            }
+        }
+    }
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

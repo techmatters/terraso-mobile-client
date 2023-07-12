@@ -19,27 +19,31 @@ import './translations';
 import {checkAndroidPermissions} from './native';
 import {PermissionsAndroid} from 'react-native';
 import {Provider} from 'react-redux';
-import {createStore} from '../model/store';
-import {setAPIConfig} from 'terraso-client-shared/config';
+import './config';
+import {createStore} from './model/store';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',
 );
 
 function App(): JSX.Element {
-  // TODO: Integrate this with signup logic
-  // For now these are just defaults to prevent errors from being thrown
-  setAPIConfig({
-    terrasoAPIURL: '',
-    graphQLEndpoint: '',
-    tokenStorage: {
-      getToken: _name => '',
-      setToken: (_name, _token) => {},
-      removeToken: _name => {},
-    },
-    logger: _severity => {},
-  });
-  const store = useMemo(createStore, []);
+  const store = useMemo(
+    () =>
+      createStore({
+        site: {
+          sites: {
+            id1: {
+              id: 'id1',
+              name: 'site 1',
+              latitude: 48.3820485,
+              longitude: -123.5467687323,
+              archived: false,
+            },
+          },
+        },
+      }),
+    [],
+  );
   useEffect(() =>
     checkAndroidPermissions(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
