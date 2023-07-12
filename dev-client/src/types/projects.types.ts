@@ -26,3 +26,8 @@ export type ProjectInputs = {
   units: 'imperial' | 'metric';
   source: 'survey' | 'soilgrids';
 };
+
+export type UserNameEmail = {
+  email: string;
+  name: string;
+};
