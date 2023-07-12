@@ -1,9 +1,9 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {Location} from '@rnmapbox/maps';
 
-interface MapState {
+type MapState = {
   userLocation?: Location;
-}
+};
 
 const initialState = {} as MapState;
 

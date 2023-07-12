@@ -55,9 +55,9 @@ export default function RadioBlock<T extends string>({
         accessibilityLabel={a11yLabel}
         colorScheme="primary"
         defaultValue={defaultValue}
-        onChange={onChange as (arg0: string) => void}>
+        onChange={onChange as (_: string) => void}>
         <OptionWrapper oneLine={oneLine}>
-          {(Object.entries(options) as [T, RadioOption][]).map(
+          {Object.entries<RadioOption>(options).map(
             ([value, {text, isDisabled}]) => (
               <Box key={value} flexGrow={1}>
                 <Radio value={value} my={1} size="sm" isDisabled={isDisabled}>
