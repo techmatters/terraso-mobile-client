@@ -116,7 +116,7 @@ jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256  -keystore ~/terraso
 
 ## Logging In
 
-Once all of the dependencies are installed, the first barrier to running the project locally is getting past the login screen. In order to do so, you'll need to do the following:
+Once all of the dependencies are installed, you'll need to do the following to enable logins:
 
 1. Set up a Google OAuth project for Android or iOS if it doesn't already exist
 - See [Google Cloud Console](https://console.cloud.google.com/)
