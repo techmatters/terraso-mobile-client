@@ -36,6 +36,5 @@ type AppConfig = {
 
 export const APP_CONFIG: AppConfig = {
   packageName: 'org.terraso.landpks',
-  googleClientId:
-    (Config.GOOGLE_OAUTH_APP_GUID ?? '') + '.apps.googleusercontent.com',
+  googleClientId: Config.GOOGLE_OAUTH_APP_CLIENT_ID ?? '',
 };
