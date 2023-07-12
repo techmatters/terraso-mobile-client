@@ -59,8 +59,8 @@ const TemporarySiteCallout = ({site}: {site: Site}): JSX.Element => {
   );
 };
 
-const SiteMap = memo(
-  ({center, updateUserLocation, sites}: SiteMapProps): JSX.Element => {
+const SiteMap = memo((props: SiteMapProps): JSX.Element => {
+  const {center, updateUserLocation, sites} = props;
     const [temporarySites, setTemporarySites] = useState<Record<string, Site>>(
       {},
     );
