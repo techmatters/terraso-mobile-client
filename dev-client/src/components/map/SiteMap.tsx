@@ -1,16 +1,18 @@
-import Mapbox, {Camera, UserLocation} from '@rnmapbox/maps';
+import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {memo, useEffect, useMemo, useRef, useState} from 'react';
 // TODO: Is it better to import type?
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import MaterialIconButton from '../common/MaterialIconButton';
 import {v4 as uuidv4} from 'uuid';
-import {useSelector} from '../../model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Box, Heading, Text} from 'native-base';
+import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 
 type SiteMapProps = {
   center?: Position;
+  updateUserLocation?: (location: Location) => void;
+  sites: Record<string, Site>;
 };
 
 const siteFeatureCollection = (
@@ -57,8 +59,8 @@ const TemporarySiteCallout = ({site}: {site: Site}): JSX.Element => {
   );
 };
 
-const SiteMap = memo(({center}: SiteMapProps): JSX.Element => {
-  const sites = useSelector(state => state.site.sites);
+const SiteMap = memo((props: SiteMapProps): JSX.Element => {
+  const {center, updateUserLocation, sites} = props;
   const [temporarySites, setTemporarySites] = useState<Record<string, Site>>(
     {},
   );
@@ -86,7 +88,6 @@ const SiteMap = memo(({center}: SiteMapProps): JSX.Element => {
       ),
     [sites],
   );
-  console.log(sites, sitesFeature);
 
   const temporarySitesFeature = useMemo(
     () => siteFeatureCollection(Object.values(temporarySites)),
@@ -147,7 +148,10 @@ const SiteMap = memo(({center}: SiteMapProps): JSX.Element => {
         onPress={onTemporarySitePress}>
         <Mapbox.SymbolLayer id="temporarySitesLayer" style={styles.siteLayer} />
       </Mapbox.ShapeSource>
-      <UserLocation />
+      <UserLocation
+        onUpdate={updateUserLocation}
+        minDisplacement={USER_DISPLACEMENT_MIN_DISTANCE_M}
+      />
       {selectedSite && <SiteCallout site={selectedSite} />}
       {selectedTemporarySite && (
         <TemporarySiteCallout site={selectedTemporarySite} />

@@ -30,6 +30,7 @@ function App(): JSX.Element {
   const store = useMemo(
     () =>
       createStore({
+        map: {userLocation: undefined},
         site: {
           sites: {
             id1: {

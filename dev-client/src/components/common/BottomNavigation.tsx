@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useCallback} from 'react';
 import {ScreenRoutes} from '../../screens/constants';
 import {TopLevelNavigationProp} from '../../screens';
-import {SITE_DISPLAYS, fetchProjects} from '../../dataflow';
+import {fetchProjects} from '../../dataflow';
 
 type IconProps = {
   name: string;
@@ -37,7 +37,7 @@ export default function BottomNavigation() {
   const navigation = useNavigation<TopLevelNavigationProp>();
 
   const onMap = useCallback(
-    () => navigation.navigate(ScreenRoutes.SITES_MAP, {sites: SITE_DISPLAYS}),
+    () => navigation.navigate(ScreenRoutes.SITES_MAP),
     [navigation],
   );
 
