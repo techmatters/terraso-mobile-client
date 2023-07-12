@@ -1,13 +1,13 @@
-name: iOS Production Build
+name: iOS Release
 
 on:
   workflow_dispatch:
   release:
-    types: [published] # only run the workflow when a new release has been published
+    types: [published]
 
 jobs:
-  ios-build:
-    name: iOS Production Build
+  ios-build-and-sign:
+    name: iOS Build and Sign
     runs-on: macOS-latest
 
     steps:
@@ -64,6 +64,8 @@ jobs:
 
       - name: Commit version bump
         run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@users.noreply.github.com"
           git add -A
           git commit -m "build: bump version number"
           git push
@@ -80,7 +82,7 @@ jobs:
           workspace-path: dev-client/ios/Terraso LandPKS.xcworkspace
           scheme: Terraso LandPKS
 
-      - name: 'Upload app to TestFlight'
+      - name: Upload app to TestFlight
         uses: apple-actions/upload-testflight-build@v1
         with:
           app-path: 'output.ipa'
