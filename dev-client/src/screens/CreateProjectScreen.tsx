@@ -23,7 +23,7 @@ export default function CreateProjectScreen({}: Props) {
       <VStack space={6} mx={5}>
         <Input placeholder={t('projects.add.name')} />
         <Input placeholder={t('projects.add.description')} />
-        <RadioBlock
+        <RadioBlock<'public' | 'private'>
           label={
             <HStack alignItems="center">
               <Text>Data Privacy</Text>
@@ -33,10 +33,10 @@ export default function CreateProjectScreen({}: Props) {
               />
             </HStack>
           }
-          options={[
-            {text: t('projects.add.public'), value: 'public'},
-            {text: t('projects.add.private'), value: 'private'},
-          ]}
+          options={{
+            public: {text: t('projects.add.public')},
+            private: {text: t('projects.add.private')},
+          }}
           blockName="data-privacy"
         />
       </VStack>

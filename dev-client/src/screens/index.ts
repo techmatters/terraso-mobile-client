@@ -18,6 +18,7 @@ import {ReactNode} from 'react';
 import {TFunction} from 'i18next';
 import CloseButton from '../components/common/CloseButton';
 import SiteTransferProject from './SiteTransferProject';
+import CreateSiteScreen from './CreateSiteScreen';
 
 export type RoutePath = keyof RootStackParamList;
 
@@ -69,6 +70,10 @@ const SCREENS: ScreenMap = {
     screen: SiteTransferProject,
     paramTitle: ({t, route}) =>
       t(`screens.${route.name}`, {id: route.params.projectId} ?? undefined),
+  },
+  CREATE_SITE: {
+    screen: CreateSiteScreen,
+    leftIcon: CloseButton,
   },
 };
 

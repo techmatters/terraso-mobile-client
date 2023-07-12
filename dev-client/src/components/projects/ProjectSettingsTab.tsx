@@ -35,12 +35,12 @@ export default function ProjectSettingsTab({
           {t('projects.settings.description.error')}
         </FormControl.ErrorMessage>
       </FormControl>
-      <RadioBlock
+      <RadioBlock<'private' | 'public'>
         label={t('projects.settings.privacy.label')}
-        options={[
-          {value: 'private', text: t('general.project_private')},
-          {value: 'public', text: t('general.project_public')},
-        ]}
+        options={{
+          private: {text: t('general.project_private')},
+          public: {text: t('general.project_public')},
+        }}
         blockName={'project_privacy'}
         a11yLabel={t('projects.settings.privacy.a11y_label') ?? undefined}
         defaultValue={privacy}

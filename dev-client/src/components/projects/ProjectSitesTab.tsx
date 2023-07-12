@@ -113,6 +113,9 @@ export default function ProjectSitesTab({
     () => navigation.navigate(ScreenRoutes.SITE_TRANSFER_PROJECT, {projectId}),
     [navigation, projectId],
   );
+  const addSiteCallback = useCallback(() => {
+    navigation.navigate(ScreenRoutes.CREATE_SITE);
+  }, [navigation]);
 
   const isEmpty = sites.length === 0;
 
@@ -139,7 +142,9 @@ export default function ProjectSitesTab({
             </Box>
           );
         }}>
-        <Menu.Item>{t('projects.sites.create') ?? ''}</Menu.Item>
+        <Menu.Item onPress={addSiteCallback}>
+          {t('projects.sites.create') ?? ''}
+        </Menu.Item>
         <Menu.Item onPress={transferCallback}>
           {t('projects.sites.transfer') ?? ''}
         </Menu.Item>

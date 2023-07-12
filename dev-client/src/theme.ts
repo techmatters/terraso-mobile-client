@@ -16,6 +16,9 @@ const newColorTheme = {
   secondary: {
     main: '#C05621',
   },
+  error: {
+    main: '#D32F2F',
+  },
   grey: {
     200: '#EEEEEE',
   },
@@ -23,7 +26,8 @@ const newColorTheme = {
     active: '#1A202CB2',
   },
   text: {
-    primary: '#1A202C',
+    primary: '#1A202CCC',
+    secondary: '#1A202CCC',
   },
 };
 

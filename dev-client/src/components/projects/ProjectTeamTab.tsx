@@ -10,12 +10,12 @@ type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 export default function ProjectTeamTab({route}: Props) {
   return (
     <VStack alignItems="flex-start" p={4} space={3}>
-      <RadioBlock
+      <RadioBlock<'add-and-edit' | 'view'>
         label="Member Permissions"
-        options={[
-          {text: 'Can add sites and edit site data', value: 'add-and-edit'},
-          {text: 'View only', value: 'view'},
-        ]}
+        options={{
+          'add-and-edit': {text: 'Can add sites and edit site data'},
+          view: {text: 'View only'},
+        }}
         blockName="member-permissions"
         a11yLabel="member permissions"
         defaultValue="add-and-edit"
