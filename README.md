@@ -120,7 +120,7 @@ Once all of the dependencies are installed, you'll need to do the following to e
 
 1. Set up a Google OAuth project for Android or iOS if it doesn't already exist
 - See [Google Cloud Console](https://console.cloud.google.com/)
-2. Copy `.env.sample` to `.env`. You need to change the `GOOGLE_OAUTH_APP_CLIENT_ID` variable to match the value of your OAuth App client id
+2. Copy `.env.sample` to `.env`. Change `GOOGLE_OAUTH_APP_CLIENT_ID` variable to match the value of your OAuth App client ID in Google Cloud Console.
 3. Get an instance of the Terraso backend running locally
 4. Set up the instance config to use the OAuth client
 - See the `settings.py` value `JWT_EXCHANGE_PROVIDERS`. You will need to set the environment variable `GOOGLE_MOBILE_CLIENT_ID`
