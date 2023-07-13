@@ -6,45 +6,65 @@ import {Site} from 'terraso-client-shared/site/siteSlice';
 import {ScreenRoutes} from '../../screens/constants';
 import {TopLevelNavigationProp} from '../../screens';
 import {useSelector} from '../../model/store';
+import {useTranslation} from 'react-i18next';
+
+type SiteListSiteProps = {
+  site: Site;
+  showSiteOnMap: (site: Site) => void;
+};
+const SiteListSite = ({site, showSiteOnMap}: SiteListSiteProps) => {
+  const {t} = useTranslation();
+  const project = useSelector(state =>
+    site.projectId === undefined
+      ? undefined
+      : state.project.sites[site.projectId],
+  );
+
+  return (
+    <Box bg="grey.200" padding="4">
+      <Heading size="lg">{site.name}</Heading>
+      {project && <Heading size="md">{project.name}</Heading>}
+      <Flex direction="row" align="top">
+        <Box height="100px" width="100px" bg="background.default" />
+        <Box width="4" />
+        <Box flexGrow="1">
+          <Text>
+            {t('site.list_updated', {
+              date: 'dd-mm-yyyy',
+            })}
+          </Text>
+          <Text>{t('site.progress', {progress: '??'})}</Text>
+          <Flex
+            direction="row"
+            align="center"
+            padding="2"
+            justify="space-between">
+            <Text>{t('site.members', {members: 'x'})}</Text>
+            <Button variant="ghost" onPress={() => showSiteOnMap(site)}>
+              {t('site.show_on_map')}
+            </Button>
+          </Flex>
+        </Box>
+      </Flex>
+    </Box>
+  );
+};
 
 type Props = {
   sites: Record<string, Site>;
   showSiteOnMap: (site: Site) => void;
 };
 const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
+  const {t} = useTranslation();
   const navigation = useNavigation<TopLevelNavigationProp>();
 
   const siteList = useMemo(() => Object.values(sites), [sites]);
-  const projects = useSelector(state => state.project.sites);
 
   const renderSite = useCallback(
-    ({item: site}: {item: Site}) => (
-      <Box bg="grey.200" padding="4">
-        <Heading size="lg">{site.name}</Heading>
-        {site.projectId && (
-          <Heading size="md">{projects[site.projectId].name}</Heading>
-        )}
-        <Flex direction="row" align="top">
-          <Box height="100px" width="100px" bg="background.default" />
-          <Box width="4" />
-          <Box flexGrow="1">
-            <Text>Last Updated: dd-mm-yy</Text>
-            <Text>Progress: ??</Text>
-            <Flex
-              direction="row"
-              align="center"
-              padding="2"
-              justify="space-between">
-              <Text>x Members</Text>
-              <Button variant="ghost" onPress={() => showSiteOnMap(site)}>
-                SHOW ON MAP
-              </Button>
-            </Flex>
-          </Box>
-        </Flex>
-      </Box>
+    ({item}: {item: Site}) => (
+      <SiteListSite site={item} showSiteOnMap={showSiteOnMap} />
     ),
-    [showSiteOnMap, projects],
+    [showSiteOnMap],
   );
 
   const snapPoints = useMemo(
@@ -64,22 +84,16 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
           justify="space-between"
           align="center"
           paddingBottom="4">
-          <Heading size="xl">Sites</Heading>
+          <Heading size="xl">{t('site.list_title')}</Heading>
           <Button size="lg" onPress={addSiteCallback}>
-            CREATE SITE
+            {t('site.create')}
           </Button>
         </Flex>
         {siteList.length === 0 && (
           <>
-            <Text fontSize="md">
-              You don’t currently have any saved sites. Create a site by using
-              the button above or by finding the site location on the map.
-            </Text>
+            <Text fontSize="md">{t('site.none_existing_p1')}</Text>
             <Text />
-            <Text fontSize="md">
-              A site allows you to collect data, learn more about your land, and
-              share with others. Learn more about using LandPKS...
-            </Text>
+            <Text fontSize="md">{t('site.none_existing_p2')}</Text>
           </>
         )}
       </Box>
