@@ -3,7 +3,7 @@ import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {memo, useEffect, useMemo, useRef, useState} from 'react';
 // TODO: Is it better to import type?
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
-import MaterialIconButton from '../common/MaterialIconButton';
+import {Icon} from '../common/Icons';
 import {v4 as uuidv4} from 'uuid';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Box, Heading, Text} from 'native-base';
@@ -133,7 +133,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       <Camera ref={camera} centerCoordinate={[0, 0]} />
       <Mapbox.Images images={{sitePin: ''}}>
         <Mapbox.Image name="sitePin">
-          <MaterialIconButton name="location-on" />
+          <Icon name="location-on" />
         </Mapbox.Image>
       </Mapbox.Images>
       <Mapbox.ShapeSource
