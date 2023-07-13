@@ -1,5 +1,5 @@
 import {Box, HStack, Heading, StatusBar} from 'native-base';
-import MaterialIconButton from './common/MaterialIconButton';
+import {IconButton} from './common/Icons';
 
 type Props = {
   title: string;
@@ -19,12 +19,10 @@ export default function AppBar({title}: Props): JSX.Element {
         width="100%"
         maxW="350">
         <HStack alignItems="center">
-          <MaterialIconButton
+          <IconButton
             name="menu"
-            iconButtonProps={{
-              size: 'sm',
-            }}
-            iconProps={{
+            size="sm"
+            _icon={{
               color: 'primary.contrast',
             }}
           />
@@ -33,12 +31,10 @@ export default function AppBar({title}: Props): JSX.Element {
           </Heading>
         </HStack>
         <HStack>
-          <MaterialIconButton
+          <IconButton
             name="help"
-            iconButtonProps={{
-              size: 'sm',
-            }}
-            iconProps={{
+            size="sm"
+            _icon={{
               color: 'primary.contrast',
             }}
           />

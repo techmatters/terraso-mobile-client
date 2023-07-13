@@ -2,7 +2,7 @@ import {Badge, Box, FlatList, HStack, Input, VStack} from 'native-base';
 import {ProjectPreview} from '../../types';
 import {useTranslation} from 'react-i18next';
 import AddButton from '../common/AddButton';
-import MaterialIconButton from '../common/MaterialIconButton';
+import {IconButton} from '../common/Icons';
 import ProjectPreviewCard from './ProjectPreviewCard';
 import {useNavigation} from '@react-navigation/native';
 import {TopLevelNavigationProp} from '../../screens';
@@ -37,10 +37,10 @@ export default function ProjectsSearchView({projects}: Props) {
             bg="none">
             {projects.length}
           </Badge>
-          <MaterialIconButton
+          <IconButton
             name="filter-list"
-            iconButtonProps={{color: 'grey.200'}}
-            iconProps={{color: 'action.active', size: 'sm'}}
+            color="grey.200"
+            _icon={{color: 'action.active', size: 'sm'}}
           />
         </VStack>
         {/* TODO: translation function returns null, but placeholder only accepts
