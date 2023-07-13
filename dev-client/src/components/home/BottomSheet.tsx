@@ -1,6 +1,6 @@
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {useNavigation} from '@react-navigation/native';
-import {Box, Button, Flex, Heading, Text} from 'native-base';
+import {Box, Button, Flex, Heading, Text, Badge} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {ScreenRoutes} from '../../screens/constants';
@@ -39,7 +39,7 @@ const SiteListSite = ({site, showSiteOnMap}: SiteListSiteProps) => {
             align="center"
             padding="2"
             justify="space-between">
-            <Text>{t('site.members', {members: 'x'})}</Text>
+            <Badge>{t('site.members', {members: 'x'})}</Badge>
             <Button variant="ghost" onPress={() => showSiteOnMap(site)}>
               {t('site.show_on_map')}
             </Button>
