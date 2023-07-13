@@ -458,6 +458,8 @@ PODS:
     - React-jsi (= 0.72.2)
     - React-logger (= 0.72.2)
     - React-perflogger (= 0.72.2)
+  - RNGestureHandler (2.12.0):
+    - React-Core
   - rnmapbox-maps (10.0.9):
     - MapboxMaps (~> 10.14.0)
     - React
@@ -469,6 +471,35 @@ PODS:
     - React
     - React-Core
     - Turf
+  - RNReanimated (3.3.0):
+    - DoubleConversion
+    - FBLazyVector
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-callinvoker
+    - React-Core
+    - React-Core/DevSupport
+    - React-Core/RCTWebSocket
+    - React-CoreModules
+    - React-cxxreact
+    - React-hermes
+    - React-jsi
+    - React-jsiexecutor
+    - React-jsinspector
+    - React-RCTActionSheet
+    - React-RCTAnimation
+    - React-RCTAppDelegate
+    - React-RCTBlob
+    - React-RCTImage
+    - React-RCTLinking
+    - React-RCTNetwork
+    - React-RCTSettings
+    - React-RCTText
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNScreens (3.22.1):
     - React-Core
     - React-RCTImage
@@ -526,7 +557,9 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "rnmapbox-maps (from `../node_modules/@rnmapbox/maps`)"
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -635,8 +668,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   rnmapbox-maps:
     :path: "../node_modules/@rnmapbox/maps"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNSVG:
@@ -669,7 +706,7 @@ SPEC CHECKSUMS:
   React-Core: 6129608e7c77f8773698b20c6cca12634554260a
   React-CoreModules: 71ec00d0d243ccff3074f4284839d7714232d8dd
   React-cxxreact: 4859b005b43ca1148458f35a2eecffc8b571e30d
-  React-debug: d63e374099cd138472a8bd186aaa1740a7f51080
+  React-debug: 0b3afd55bb7c76f948003b2a3f148a383139e7eb
   React-hermes: 923a854f14915777d15c786665cf0496ed8876c8
   React-jsi: 69e43d4531fe8be6c292bd1f1e5465b8142a5cca
   React-jsiexecutor: 2c53849838b096599bd04cbbf11a6b67a1781e7b
@@ -681,7 +718,7 @@ SPEC CHECKSUMS:
   react-native-mmkv-storage: cfb6854594cfdc5f7383a9e464bb025417d1721c
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-safe-area-context: 9697629f7b2cda43cf52169bb7e0767d330648c2
-  React-NativeModulesApple: 32cd34bea46aebefeadd1f9a2ec815357b21d868
+  React-NativeModulesApple: 630e48281bcb35432c6709eabd0fdaad7ec18516
   React-perflogger: e7006abd30efeebef143702550063ca3415e267a
   React-RCTActionSheet: 017232a203ef82e42e54b15673e26489c2797745
   React-RCTAnimation: f3e45f2e174ecf417f013429edaac271332b1691
@@ -695,10 +732,12 @@ SPEC CHECKSUMS:
   React-RCTVibration: 51bb331f8069908ddaa4f05e673e59e4f91d6d43
   React-rncore: 0220cbe4f898d37b9286402d55ac6597eec164ce
   React-runtimeexecutor: b716a0ade3de6bab90b2daa4e003425bfd1c059b
-  React-runtimescheduler: ee8dc4afb7d8ba56022a67b9a50c497235a97017
-  React-utils: 6dceb6e180ff30ae1bded5487e78f4ca3bbb8f5c
-  ReactCommon: a1ab2fc1c6edd63b1d6e99613a84519e73d6df2d
+  React-runtimescheduler: e822933e8fd7aeb4e790abdfe884e0fd171c0ddf
+  React-utils: 5dc4ce70fdb71aa2701e062b67497c831f2cc48f
+  ReactCommon: 398f3f0c11d1ad47eeda7b2daf2d170493575665
+  RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
   rnmapbox-maps: 0d5ef518a237cb01d8e5b78324661a1eaf31f70c
+  RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   RNSVG: 80584470ff1ffc7994923ea135a3e5ad825546b9
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
