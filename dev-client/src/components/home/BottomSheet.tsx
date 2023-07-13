@@ -90,11 +90,7 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
           </Button>
         </Flex>
         {siteList.length === 0 && (
-          <>
-            <Text fontSize="md">{t('site.none_existing_p1')}</Text>
-            <Text />
-            <Text fontSize="md">{t('site.none_existing_p2')}</Text>
-          </>
+          <Text fontSize="md">{t('site.none_in_list')}</Text>
         )}
       </Box>
       <BottomSheetFlatList
