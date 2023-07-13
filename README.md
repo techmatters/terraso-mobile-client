@@ -20,8 +20,8 @@ Configure rbenv:
 $ rbenv init
 $ echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
 $ cd dev-client
-$ rbenv install 2.7.6
-$ rbenv shell 2.7.6
+$ rbenv install 3.2.2
+$ rbenv shell 3.2.2
 $ gem install bundler
 ```
 
