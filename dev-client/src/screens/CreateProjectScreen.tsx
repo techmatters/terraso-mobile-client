@@ -2,7 +2,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList, ScreenRoutes} from './constants';
 import {Box, HStack, Input, Text, VStack} from 'native-base';
 import RadioBlock from '../components/common/RadioBlock';
-import MaterialIconButton from '../components/common/MaterialIconButton';
+import {IconButton} from '../components/common/Icons';
 import SaveFAB from '../components/common/SaveFAB';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -27,10 +27,7 @@ export default function CreateProjectScreen({}: Props) {
           label={
             <HStack alignItems="center">
               <Text>Data Privacy</Text>
-              <MaterialIconButton
-                name="info"
-                iconProps={{color: 'action.active'}}
-              />
+              <IconButton name="info" _icon={{color: 'action.active'}} />
             </HStack>
           }
           options={{

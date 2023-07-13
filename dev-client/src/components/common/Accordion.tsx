@@ -1,6 +1,6 @@
 import {Box, HStack} from 'native-base';
 import {ReactNode, useCallback, useState} from 'react';
-import MaterialIconButton from './MaterialIconButton';
+import {IconButton} from './Icons';
 
 type Props = {
   Head: ReactNode;
@@ -15,10 +15,10 @@ export function Accordion({Head, Body}: Props) {
 
   const name = open ? 'expand-less' : 'expand-more';
   const icon = (
-    <MaterialIconButton
+    <IconButton
       name={name}
       onPress={onPress}
-      iconProps={{color: 'action.active'}}
+      _icon={{color: 'action.active'}}
     />
   );
   return (

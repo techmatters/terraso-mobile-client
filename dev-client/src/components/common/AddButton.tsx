@@ -1,5 +1,5 @@
-import {Button, HStack, Icon, Text} from 'native-base';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {Button, HStack, Text} from 'native-base';
+import {Icon} from './Icons';
 
 type Props = {
   text: string;
@@ -10,14 +10,7 @@ export default function AddButton({text, buttonProps}: Props) {
   return (
     <Button bg="primary.main" size="xs" {...buttonProps}>
       <HStack alignItems="center">
-        {/* TODO: MaterialIcon needs to be renamed to MaterialIconButton */}
-        <Icon
-          as={MaterialIcons}
-          name="add"
-          color="primary.contrast"
-          size="sm"
-          mr="1"
-        />
+        <Icon name="add" color="primary.contrast" size="sm" mr="1" />
         <Text color="primary.contrast" fontSize="xs" alignContent="center">
           {text.toUpperCase()}
         </Text>

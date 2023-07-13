@@ -1,13 +1,9 @@
-import MaterialIconButton from '../components/common/MaterialIconButton';
+import {IconButton} from '../components/common/Icons';
 
-export function MainMenuBar() {
-  return (
-    <MaterialIconButton name="menu" iconProps={{color: 'primary.contrast'}} />
-  );
-}
+export const MainMenuBar = () => (
+  <IconButton name="menu" _icon={{color: 'primary.contrast'}} />
+);
 
-export function MapInfoIcon() {
-  return (
-    <MaterialIconButton name="info" iconProps={{color: 'primary.contrast'}} />
-  );
-}
+export const MapInfoIcon = () => (
+  <IconButton name="info" _icon={{color: 'primary.contrast'}} />
+);

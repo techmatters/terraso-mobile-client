@@ -1,7 +1,7 @@
 import {Location} from '@rnmapbox/maps';
 import {ProjectName} from '../../types';
 import RadioBlock from '../common/RadioBlock';
-import {FormControl, Icon, Input, Text, VStack} from 'native-base';
+import {FormControl, Input, Text, VStack} from 'native-base';
 import {useCallback, useMemo, useState} from 'react';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from '@react-navigation/native';
@@ -9,8 +9,8 @@ import {TopLevelNavigationProp} from '../../screens';
 import {ScreenRoutes} from '../../screens/constants';
 import {siteValidationSchema} from './validation';
 import {ValidationError} from 'yup';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SaveFAB from '../common/SaveFAB';
+import {Icon} from '../common/Icons';
 
 type LatLongString = {latitude: string; longitude: string};
 
@@ -149,7 +149,7 @@ export default function CreateSiteView({
             setMutationInput({...mutationInput, latitude})
           }
           value={mutationInput.latitude}
-          leftElement={<Icon mr={2} as={MaterialIcons} name="edit" />}
+          leftElement={<Icon mr={2} name="edit" />}
         />
       </FormControl>
       <FormControl>
@@ -161,7 +161,7 @@ export default function CreateSiteView({
           onChangeText={longitude =>
             setMutationInput({...mutationInput, longitude})
           }
-          leftElement={<Icon mr={2} as={MaterialIcons} name="edit" />}
+          leftElement={<Icon mr={2} name="edit" />}
         />
       </FormControl>
       <FormControl>

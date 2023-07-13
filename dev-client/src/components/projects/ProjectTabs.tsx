@@ -3,14 +3,14 @@ import {
   createMaterialTopTabNavigator,
 } from '@react-navigation/material-top-tabs';
 import ProjectInputTab from './ProjectInputTab';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Icon, useTheme} from 'native-base';
+import {useTheme} from 'native-base';
 import {RouteProp} from '@react-navigation/native';
 import ProjectTeamTab from './ProjectTeamTab';
 import {USER_PROFILES, fetchProject} from '../../dataflow';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
+import {Icon} from '../common/Icons';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 
@@ -45,7 +45,7 @@ export default function ProjectTabs() {
     return {
       tabBarScrollEnabled: true,
       tabBarIcon: ({color}) => {
-        return <Icon as={MaterialIcons} name={iconName} color={color} />;
+        return <Icon name={iconName} color={color} />;
       },
       tabBarActiveTintColor: colors.primary.contrast,
       tabBarInactiveTintColor: colors.secondary.main,
