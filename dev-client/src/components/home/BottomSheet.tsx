@@ -29,7 +29,7 @@ const SiteListSite = ({site, showSiteOnMap}: SiteListSiteProps) => {
         <Box width="4" />
         <Box flexGrow="1">
           <Text>
-            {t('site.list_updated', {
+            {t('site.last_updated', {
               date: 'dd-mm-yyyy',
             })}
           </Text>

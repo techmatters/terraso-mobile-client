@@ -3,7 +3,7 @@
     "placeholder": "Search"
   },
   "site": {
-    "list_title": "sites",
+    "list_title": "Sites",
     "last_updated": "Last Updated: {{date}}",
     "progress": "Progress: {{progress}}",
     "members": "{{members}} Members",
