@@ -87,7 +87,7 @@ export default function AppScaffold() {
 
   return (
     <Stack.Navigator
-      initialRouteName={ScreenRoutes.SITES_MAP}
+      initialRouteName={ScreenRoutes.HOME}
       screenOptions={{
         headerStyle: {backgroundColor: colors.primary.main},
         headerTintColor: colors.primary.contrast,

@@ -78,7 +78,7 @@ export default function CreateSiteView({
     }
     const {name, latitude, longitude} = validationResults;
     createSiteCallback({name, latitude, longitude});
-    return navigate(ScreenRoutes.SITES_MAP);
+    return navigate(ScreenRoutes.HOME);
   }, [mutationInput, createSiteCallback, navigate]);
 
   /* calculates the associated location for a given location input option

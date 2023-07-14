@@ -61,18 +61,9 @@ const TemporarySiteCallout = ({site}: {site: Site}): JSX.Element => {
 
 const SiteMap = memo((props: SiteMapProps): JSX.Element => {
   const {center, updateUserLocation, sites} = props;
-  const [temporarySites, setTemporarySites] = useState<Record<string, Site>>(
-    {},
-  );
+  const [temporarySite, setTemporarySite] = useState<Site | null>(null);
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
-  const [selectedTemporarySiteID, setSelectedTemporarySiteID] = useState<
-    string | null
-  >(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
-  const selectedTemporarySite =
-    selectedTemporarySiteID === null
-      ? null
-      : temporarySites[selectedTemporarySiteID];
   const camera = useRef<Camera>(null);
 
   useEffect(() => {
@@ -90,18 +81,13 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
   );
 
   const temporarySitesFeature = useMemo(
-    () => siteFeatureCollection(Object.values(temporarySites)),
-    [temporarySites],
+    () => siteFeatureCollection(temporarySite === null ? [] : [temporarySite]),
+    [temporarySite],
   );
 
   const onSitePress = (event: OnPressEvent) => {
     setSelectedSiteID(event.features[0].id as string);
-    setSelectedTemporarySiteID(null);
-  };
-
-  const onTemporarySitePress = (event: OnPressEvent) => {
-    setSelectedTemporarySiteID(event.features[0].id as string);
-    setSelectedSiteID(null);
+    setTemporarySite(null);
   };
 
   const onLongPress = (feature: GeoJSON.Feature) => {
@@ -113,14 +99,14 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       return;
     }
     const [lon, lat] = feature.geometry.coordinates;
-    const site: Site = {
+    setTemporarySite({
       id: uuidv4(),
       name: 'temporary site',
       latitude: lat,
       longitude: lon,
       archived: false,
-    };
-    setTemporarySites({...temporarySites, [site.id]: site});
+    });
+    setSelectedSiteID(null);
   };
 
   return (
@@ -144,8 +130,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       </Mapbox.ShapeSource>
       <Mapbox.ShapeSource
         id="temporarySitesSource"
-        shape={temporarySitesFeature}
-        onPress={onTemporarySitePress}>
+        shape={temporarySitesFeature}>
         <Mapbox.SymbolLayer id="temporarySitesLayer" style={styles.siteLayer} />
       </Mapbox.ShapeSource>
       <UserLocation
@@ -153,9 +138,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
         minDisplacement={USER_DISPLACEMENT_MIN_DISTANCE_M}
       />
       {selectedSite && <SiteCallout site={selectedSite} />}
-      {selectedTemporarySite && (
-        <TemporarySiteCallout site={selectedTemporarySite} />
-      )}
+      {temporarySite && <TemporarySiteCallout site={temporarySite} />}
     </Mapbox.MapView>
   );
 });

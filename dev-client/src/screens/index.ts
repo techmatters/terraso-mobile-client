@@ -6,7 +6,7 @@ import {
 } from './constants';
 import ProjectViewScreen from './ProjectViewScreen';
 import CreateProjectScreen from './CreateProjectScreen';
-import SiteMapScreen from './SiteMapScreen';
+import HomeScreen from './HomeScreen';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {RouteProp} from '@react-navigation/native';
@@ -57,8 +57,8 @@ const SCREENS: ScreenMap = {
       t(`screens.${route.name}`, {id: route.params.project.meta.id}) ??
       undefined,
   },
-  SITES_MAP: {
-    screen: SiteMapScreen,
+  HOME: {
+    screen: HomeScreen,
     leftIcon: MainMenuBar,
     rightIcon: MapInfoIcon,
   },
@@ -82,12 +82,6 @@ export default SCREENS;
 export const LoggedOut: Set<ScreenRoutes> = new Set([ScreenRoutes.LOGIN]);
 
 export type RootStackParamList = PrivateRootStackParamList;
-
-// see https://reactnavigation.org/docs/typescript/#annotating-usenavigation
-export type SitesMapNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  ScreenRoutes.SITES_MAP
->;
 
 export type TopLevelNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

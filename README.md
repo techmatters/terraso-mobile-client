@@ -63,6 +63,7 @@ cat << EOF > $HOME/.netrc
 machine api.mapbox.com
 login mapbox
 password YOUR_SECRET_MAPBOX_ACCESS_TOKEN
+EOF
 ```
 
 ```sh
