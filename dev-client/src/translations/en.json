@@ -2,6 +2,15 @@
   "search": {
     "placeholder": "Search"
   },
+  "site": {
+    "list_title": "Sites",
+    "last_updated": "Last Updated: {{date}}",
+    "progress": "Progress: {{progress}}",
+    "members": "{{members}} Members",
+    "show_on_map": "SHOW ON MAP",
+    "create": "CREATE SITE",
+    "none_in_list": "You don’t currently have any saved sites. Create a site by using the button above or by finding the site location on the map.\n\nA site allows you to collect data, learn more about your land, and share with others. Learn more about using LandPKS..."
+  },
   "projects": {
     "title": "Projects",
     "header": "Projects",
@@ -77,7 +86,7 @@
     "select_all": "Select All"
   },
   "screens": {
-    "SITES_MAP": "LandPKS",
+    "HOME": "LandPKS",
     "PROJECT_LIST": "Projects",
     "PROJECT_VIEW": "Project #{{id}}",
     "LOGIN": "Login",
