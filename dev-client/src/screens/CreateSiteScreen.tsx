@@ -1,13 +1,18 @@
 import {useCallback} from 'react';
 import CreateSiteView from '../components/sites/CreateSiteView';
 import {useDispatch, useSelector} from '../model/store';
-import {addSite} from 'terraso-client-shared/site/siteSlice';
+import {Site, addSite} from 'terraso-client-shared/site/siteSlice';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {ScreenRoutes, TopLevelScreenProps} from './constants';
+import {ScreenDefinition} from './AppScaffold';
+import CloseButton from '../components/common/CloseButton';
 
-type Props = TopLevelScreenProps<ScreenRoutes.CREATE_SITE>;
+type Props =
+  | {
+      mapCoords?: Pick<Site, 'latitude' | 'longitude'>;
+    }
+  | undefined;
 
-export default function CreateSiteScreen({route}: Props) {
+const CreateSiteScaffold = ({mapCoords}: Props = {}) => {
   const userLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
 
@@ -23,9 +28,12 @@ export default function CreateSiteScreen({route}: Props) {
       projects={[]}
       userLocation={userLocation}
       createSiteCallback={createSiteCallback}
-      sitePin={
-        route.params?.mapCoords ? {coords: route.params.mapCoords} : undefined
-      }
+      sitePin={mapCoords ? {coords: mapCoords} : undefined}
     />
   );
-}
+};
+
+export const CreateSiteScreen: ScreenDefinition<Props> = {
+  View: CreateSiteScaffold,
+  options: () => ({headerLeft: CloseButton}),
+};
