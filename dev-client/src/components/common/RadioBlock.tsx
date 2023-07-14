@@ -13,6 +13,7 @@ type Props<Keys extends string> = {
   defaultValue?: Keys;
   oneLine?: boolean;
   onChange?: (value: Keys) => void;
+  value?: Keys;
 };
 
 type WrapperProps = {
@@ -39,6 +40,7 @@ export default function RadioBlock<T extends string>({
   defaultValue,
   oneLine = false,
   onChange,
+  value,
 }: Props<T>) {
   return (
     <FormControl>
@@ -55,6 +57,7 @@ export default function RadioBlock<T extends string>({
         accessibilityLabel={a11yLabel}
         colorScheme="primary"
         defaultValue={defaultValue}
+        value={value ?? undefined}
         onChange={onChange as (_: string) => void}>
         <OptionWrapper oneLine={oneLine}>
           {Object.entries<RadioOption>(options).map(

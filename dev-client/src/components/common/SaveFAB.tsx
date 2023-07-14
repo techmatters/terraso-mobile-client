@@ -3,14 +3,16 @@ import {Fab} from 'native-base';
 type Props = {
   title: string;
   onPress?: () => void;
+  disabled?: boolean;
 };
-export default function SaveFAB(props: Props) {
+export default function SaveFAB({onPress, title, disabled}: Props) {
   return (
     <Fab
-      label={props.title.toUpperCase()}
+      label={title.toUpperCase()}
       px={5}
       borderRadius={3}
-      onPress={props.onPress}
+      onPress={onPress}
+      disabled={disabled}
     />
   );
 }

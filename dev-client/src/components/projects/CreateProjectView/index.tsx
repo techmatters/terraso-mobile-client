@@ -1,31 +1,21 @@
-import {Box, HStack, Input, Text, VStack} from 'native-base';
-import RadioBlock from '../../common/RadioBlock';
-import SaveFAB from '../../common/SaveFAB';
-import {IconButton} from '../../common/Icons';
-import {useTranslation} from 'react-i18next';
+import {Box, ScrollView} from 'native-base';
+import InnerForm, {FormValues} from './InnerForm';
+import {addProject} from 'terraso-client-shared/project/projectSlice';
+import {useDispatch} from '../../../model/store';
+import {useNavigation} from '../../../screens';
 
 export default function CreateProjectView() {
-  const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const navigate = useNavigation();
+  const onSubmit = async (values: FormValues) => {
+    await dispatch(addProject(values));
+    navigate.goBack();
+  };
   return (
-    <Box height="100%" pt="20%" bgColor="background.default">
-      <VStack space={6} mx={5}>
-        <Input placeholder={t('projects.add.name')} />
-        <Input placeholder={t('projects.add.description')} />
-        <RadioBlock<'public' | 'private'>
-          label={
-            <HStack alignItems="center">
-              <Text>Data Privacy</Text>
-              <IconButton name="info" _icon={{color: 'action.active'}} />
-            </HStack>
-          }
-          options={{
-            public: {text: t('projects.add.public')},
-            private: {text: t('projects.add.private')},
-          }}
-          blockName="data-privacy"
-        />
-      </VStack>
-      <SaveFAB title={t('general.save')} onPress={console.debug} />
-    </Box>
+    <ScrollView bg="background.default">
+      <Box pt="20%">
+        <InnerForm onSubmit={onSubmit} />
+      </Box>
+    </ScrollView>
   );
 }
