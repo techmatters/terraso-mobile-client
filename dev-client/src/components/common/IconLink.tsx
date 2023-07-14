@@ -1,5 +1,5 @@
-import {Icon, Link} from 'native-base';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {Link} from 'native-base';
+import {Icon} from './Icons';
 
 type Props = {
   children?: React.ReactNode;
@@ -23,13 +23,7 @@ export default function IconLink({
       alignContent="flex-start"
       href={href}
       isUnderlined={underlined}>
-      <Icon
-        as={MaterialIcons}
-        name={iconName}
-        color="primary.main"
-        size="md"
-        mr={3}
-      />
+      <Icon name={iconName} color="primary.main" size="md" mr={3} />
       {children}
     </Link>
   );

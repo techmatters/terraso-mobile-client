@@ -20,8 +20,8 @@ Configure rbenv:
 $ rbenv init
 $ echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
 $ cd dev-client
-$ rbenv install 2.7.6
-$ rbenv shell 2.7.6
+$ rbenv install 3.2.2
+$ rbenv shell 3.2.2
 $ gem install bundler
 ```
 
@@ -63,6 +63,7 @@ cat << EOF > $HOME/.netrc
 machine api.mapbox.com
 login mapbox
 password YOUR_SECRET_MAPBOX_ACCESS_TOKEN
+EOF
 ```
 
 ```sh
@@ -111,3 +112,18 @@ Sign the app bundle:
 ```
 jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256  -keystore ~/terraso-lpks-key.keystore -signedjar app/build/outputs/bundle/release/terraso-landpks.aab  app/build/outputs/bundle/release/app-release.aab terraso-lpks
 ```
+
+# Env Setup
+
+## Logging In
+
+Once all of the dependencies are installed, you'll need to do the following to enable logins:
+
+1. Set up a Google OAuth project for Android or iOS if it doesn't already exist
+- See [Google Cloud Console](https://console.cloud.google.com/)
+2. Copy `.env.sample` to `.env`. Change `GOOGLE_OAUTH_APP_CLIENT_ID` variable to match the value of your OAuth App client ID in Google Cloud Console.
+3. Get an instance of the Terraso backend running locally
+4. Set up the instance config to use the OAuth client
+- See the `settings.py` value `JWT_EXCHANGE_PROVIDERS`. You will need to set the environment variable `GOOGLE_MOBILE_CLIENT_ID`
+5. Set up mobile config to connect to backend
+- See [Android emulator networking](https://developer.android.com/studio/run/emulator-networking.html) for details on how to connect to your backend instance

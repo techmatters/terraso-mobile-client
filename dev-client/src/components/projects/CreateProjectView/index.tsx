@@ -1,7 +1,7 @@
 import {Box, HStack, Input, Text, VStack} from 'native-base';
 import RadioBlock from '../../common/RadioBlock';
-import MaterialIconButton from '../../common/MaterialIconButton';
 import SaveFAB from '../../common/SaveFAB';
+import {IconButton} from '../../common/Icons';
 import {useTranslation} from 'react-i18next';
 
 export default function CreateProjectView() {
@@ -15,10 +15,7 @@ export default function CreateProjectView() {
           label={
             <HStack alignItems="center">
               <Text>Data Privacy</Text>
-              <MaterialIconButton
-                name="info"
-                iconProps={{color: 'action.active'}}
-              />
+              <IconButton name="info" _icon={{color: 'action.active'}} />
             </HStack>
           }
           options={{

@@ -1,4 +1,4 @@
-name: build
+name: Build
 
 on:
   push:
@@ -9,48 +9,95 @@ on:
       - main
     types:
       - opened
+      - edited
       - synchronize
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
+  ios-build:
+    name: iOS Build
+    runs-on: macOS-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Enable build cache
+        uses: mikehardy/buildcache-action@v2
+
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
           cache-dependency-path: |
             dev-client/package-lock.json
+
       - name: Install node dependencies
-        working-directory: ./dev-client
+        working-directory: dev-client
         run: npm ci
 
-      - name: Run lint checks
-        working-directory: ./dev-client
-        run: npm run lint
+      - name: Setup Ruby (bundle)
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: dev-client
 
-      - name: Type check
-        working-directory: ./dev-client
-        run: npm run check-ts
+      - name: Restore Pods cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            dev-client/ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
 
-  build-android:
+      - name: Provide Mapbox secret key
+        env:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+        run: |
+          echo "machine api.mapbox.com" >> $HOME/.netrc
+          echo "login mapbox" >> $HOME/.netrc
+          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
+          chmod 600 $HOME/.netrc
+
+      - name: CocoaPod Install
+        working-directory: dev-client/ios
+        run: pod install
+
+      - name: Build IOS App
+        uses: yukiarrr/ios-build-action@v1.11.0
+        with:
+          project-path: dev-client/ios/Terraso LandPKS.xcodeproj
+          p12-base64: ${{ secrets.IOS_P12_BASE64 }}
+          mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
+          code-signing-identity: 'iPhone Distribution'
+          team-id: ${{ secrets.IOS_TEAM_ID }}
+          certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          workspace-path: dev-client/ios/Terraso LandPKS.xcworkspace
+          scheme: Terraso LandPKS
+
+  android-build:
+    name: Android Build
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out git repository
+        uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
           cache-dependency-path: |
             dev-client/package-lock.json
+
       - name: Install node dependencies
-        working-directory: ./dev-client
+        working-directory: dev-client
         run: npm ci
-      - name: set up JDK 11
+
+      - name: Set up our JDK environment
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: 11
           distribution: 'temurin'
           cache: gradle
 
@@ -74,6 +121,7 @@ jobs:
         run: |
           mkdir -p $HOME/.gradle
           echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
-      - name: Build android
+
+      - name: Build Android app bundle
         working-directory: ./dev-client/android
-        run: ./gradlew build
+        run: ./gradlew bundleRelease
