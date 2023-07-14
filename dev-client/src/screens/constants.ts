@@ -1,5 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProjectPreview, Project} from '../types';
+import {Site} from 'terraso-client-shared/site/siteSlice';
 
 export const enum ScreenRoutes {
   LOGIN = 'LOGIN',
@@ -20,7 +21,11 @@ export type RootStackParamList = {
   [ScreenRoutes.SITE_TRANSFER_PROJECT]: {
     projectId: number;
   };
-  [ScreenRoutes.CREATE_SITE]: undefined;
+  [ScreenRoutes.CREATE_SITE]:
+    | {
+        mapCoords: Pick<Site, 'latitude' | 'longitude'>;
+      }
+    | undefined;
 };
 
 export type TopLevelScreenProps<R extends keyof RootStackParamList> =

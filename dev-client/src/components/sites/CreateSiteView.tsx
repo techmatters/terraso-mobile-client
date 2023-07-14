@@ -110,6 +110,16 @@ export default function CreateSiteView({
     [locationOptions, mutationInput],
   );
 
+  const defaultLocationSource = useMemo(() => {
+    if (sitePin) {
+      return 'pin';
+    }
+    if (userLocation) {
+      return 'gps';
+    }
+    return 'coords';
+  }, [sitePin, userLocation]);
+
   return (
     <VStack p={5} space={3}>
       <FormControl>
@@ -137,7 +147,7 @@ export default function CreateSiteView({
           },
           coords: {text: 'Enter coordinates'},
         }}
-        defaultValue="gps"
+        defaultValue={defaultLocationSource}
         onChange={updateLocationSource}
       />
       <FormControl>
