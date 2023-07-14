@@ -3,11 +3,11 @@ import CreateSiteView from '../components/sites/CreateSiteView';
 import {useDispatch, useSelector} from '../model/store';
 import {addSite} from 'terraso-client-shared/site/siteSlice';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-// import {ScreenRoutes, TopLevelScreenProps} from './constants';
+import {ScreenRoutes, TopLevelScreenProps} from './constants';
 
-// type Props = TopLevelScreenProps<ScreenRoutes.CREATE_SITE>;
+type Props = TopLevelScreenProps<ScreenRoutes.CREATE_SITE>;
 
-export default function CreateSiteScreen() {
+export default function CreateSiteScreen({route}: Props) {
   const userLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
 
@@ -23,6 +23,9 @@ export default function CreateSiteScreen() {
       projects={[]}
       userLocation={userLocation}
       createSiteCallback={createSiteCallback}
+      sitePin={
+        route.params?.mapCoords ? {coords: route.params.mapCoords} : undefined
+      }
     />
   );
 }
