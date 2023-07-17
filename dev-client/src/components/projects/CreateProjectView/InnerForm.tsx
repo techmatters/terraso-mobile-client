@@ -1,16 +1,11 @@
 import {HStack, Input, Text, VStack} from 'native-base';
-import {
-  ErrorMessage,
-  Formik,
-  FormikBag,
-  FormikConfig,
-  FormikProps,
-} from 'formik';
+import {Formik, FormikConfig, FormikProps} from 'formik';
 import RadioBlock from '../../common/RadioBlock';
 import validationSchema from './validation';
 import {IconButton} from '../../common/Icons';
 import {useTranslation} from 'react-i18next';
 import SaveFAB from '../../common/SaveFAB';
+import ErrorMessage from '../../common/ErrorMessage';
 
 export interface FormValues {
   name: string;
@@ -21,10 +16,6 @@ export interface FormValues {
 interface Props {
   onSubmit?: FormikConfig<FormValues>['onSubmit'];
 }
-
-type ErrorProps = {
-  field: keyof FormValues;
-};
 
 export default function InnerForm({
   onSubmit = values => console.debug(values),
@@ -48,13 +39,6 @@ export default function InnerForm({
           onBlur: handleBlur(field),
         });
 
-        const LandPKSError = ({field}: ErrorProps) => {
-          return (
-            <ErrorMessage name={field}>
-              {msg => <Text color="error.main">{msg}</Text>}
-            </ErrorMessage>
-          );
-        };
         return (
           <>
             <VStack space={3} mx={5}>
@@ -62,12 +46,12 @@ export default function InnerForm({
                 placeholder={t('projects.add.name')}
                 {...inputParams('name')}
               />
-              <LandPKSError field="name" />
+              <ErrorMessage fieldName="name" />
               <Input
                 placeholder={t('projects.add.description')}
                 {...inputParams('description')}
               />
-              <LandPKSError field="description" />
+              <ErrorMessage fieldName="description" />
               <RadioBlock<'PUBLIC' | 'PRIVATE'>
                 label={
                   <HStack alignItems="center">
@@ -83,7 +67,7 @@ export default function InnerForm({
                 onChange={handleChange('privacy')}
                 blockName="data-privacy"
               />
-              <LandPKSError field="privacy" />
+              <ErrorMessage fieldName="privacy" />
             </VStack>
             <SaveFAB
               title={t('general.save')}
