@@ -17,7 +17,8 @@ jobs:
       - name: Enable build cache
         uses: mikehardy/buildcache-action@v2
 
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
