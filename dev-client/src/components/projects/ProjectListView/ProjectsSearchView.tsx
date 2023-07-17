@@ -1,16 +1,16 @@
 import {Badge, Box, FlatList, HStack, Input, VStack} from 'native-base';
-import {ProjectPreview} from '../../types';
 import {useTranslation} from 'react-i18next';
-import AddButton from '../common/AddButton';
-import {IconButton} from '../common/Icons';
-import ProjectPreviewCard from './ProjectPreviewCard';
+import AddButton from '../../common/AddButton';
+import {IconButton} from '../../common/Icons';
+import ProjectPreviewCard from '../ProjectPreviewCard';
 import {useNavigation} from '@react-navigation/native';
-import {TopLevelNavigationProp} from '../../screens';
+import {TopLevelNavigationProp} from '../../../screens';
 import {useCallback} from 'react';
-import {ScreenRoutes} from '../../screens/constants';
+import {ScreenRoutes} from '../../../screens/constants';
+import {Project} from 'terraso-client-shared/project/projectSlice';
 
 type Props = {
-  projects: ProjectPreview[];
+  projects: Project[];
 };
 
 export default function ProjectsSearchView({projects}: Props) {

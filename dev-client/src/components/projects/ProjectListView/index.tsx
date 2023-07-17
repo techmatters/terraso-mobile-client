@@ -1,10 +1,9 @@
-import {ProjectPreview} from '../../types';
+import {Project} from 'terraso-client-shared/project/projectSlice';
 import ProjectsEmptyView from './ProjectsEmptyView';
-import React from 'react';
 import ProjectsSearchView from './ProjectsSearchView';
 
 type Props = {
-  projects: ProjectPreview[];
+  projects: Project[];
 };
 
 export default function ProjectListView({projects}: Props) {

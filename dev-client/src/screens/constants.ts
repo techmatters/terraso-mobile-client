@@ -15,7 +15,7 @@ export const enum ScreenRoutes {
 export type RootStackParamList = {
   [ScreenRoutes.LOGIN]: undefined;
   [ScreenRoutes.PROJECT_LIST]: {projects: ProjectPreview[]};
-  [ScreenRoutes.PROJECT_VIEW]: {project: Project};
+  [ScreenRoutes.PROJECT_VIEW]: undefined;
   [ScreenRoutes.HOME]: undefined;
   [ScreenRoutes.CREATE_PROJECT]: undefined;
   [ScreenRoutes.SITE_TRANSFER_PROJECT]: {
