@@ -1,11 +1,26 @@
 import {HStack, Input, Text, VStack} from 'native-base';
 import {Formik, FormikConfig, FormikProps} from 'formik';
 import RadioBlock from '../../common/RadioBlock';
-import validationSchema from './validation';
 import {IconButton} from '../../common/Icons';
 import {useTranslation} from 'react-i18next';
 import SaveFAB from '../../common/SaveFAB';
 import ErrorMessage from '../../common/ErrorMessage';
+import * as yup from 'yup';
+import {
+  PROJECT_DESCRIPTION_MAX_LENGTH,
+  PROJECT_NAME_MAX_LENGTH,
+  PROJECT_NAME_MIN_LENGTH,
+} from '../../../constants';
+
+const validationSchema = yup.object().shape({
+  name: yup
+    .string()
+    .min(PROJECT_NAME_MIN_LENGTH)
+    .max(PROJECT_NAME_MAX_LENGTH)
+    .required(),
+  description: yup.string().max(PROJECT_DESCRIPTION_MAX_LENGTH),
+  privacy: yup.string().oneOf(['PRIVATE', 'PUBLIC']).required(),
+});
 
 export interface FormValues {
   name: string;
@@ -14,12 +29,10 @@ export interface FormValues {
 }
 
 interface Props {
-  onSubmit?: FormikConfig<FormValues>['onSubmit'];
+  onSubmit: FormikConfig<FormValues>['onSubmit'];
 }
 
-export default function InnerForm({
-  onSubmit = values => console.debug(values),
-}: Props) {
+export default function Form({onSubmit}: Props) {
   const {t} = useTranslation();
   return (
     <Formik
