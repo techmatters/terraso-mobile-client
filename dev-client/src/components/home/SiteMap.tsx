@@ -42,9 +42,7 @@ type SiteCalloutProps = {
 const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
   const {t} = useTranslation();
   const project = useSelector(state =>
-    site.projectId === undefined
-      ? undefined
-      : state.project.sites[site.projectId],
+    site.projectId === undefined ? undefined : state.site.sites[site.projectId],
   );
 
   return (

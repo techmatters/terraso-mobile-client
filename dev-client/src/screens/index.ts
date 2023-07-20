@@ -57,8 +57,7 @@ const SCREENS: ScreenMap = {
     screen: ProjectViewScreen,
     hideBack: true,
     paramTitle: ({t, route}) =>
-      t(`screens.${route.name}`, {id: route.params.project.meta.id}) ??
-      undefined,
+      t(`screens.${route.name}`, {id: 'TO CHANGE'}) ?? undefined,
   },
   HOME: {
     screen: HomeScreen,
