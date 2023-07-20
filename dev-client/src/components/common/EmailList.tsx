@@ -1,11 +1,16 @@
+import React, {useCallback, useState} from 'react';
 import {Box, FlatList, HStack, Text, VStack} from 'native-base';
 import {UserNameEmail} from '../../types';
-import React from 'react';
+import MaterialIconButton from './MaterialIconButton';
+import {useNavigation} from '@react-navigation/native';
+import {TopLevelNavigationProp} from '../../screens';
 
 type Props = {
   Users: UserNameEmail[];
 };
 export function EmailList({Users}: Props) {
+    const state,  = useState();
+  const onPress = useCallback(() => {}, []);
   return (
     <Box>
       <FlatList
@@ -21,6 +26,11 @@ export function EmailList({Users}: Props) {
             pr={['0', '5']}
             py="2">
             <HStack space={[2, 3]} justifyContent="space-between">
+              <MaterialIconButton
+                name="close"
+                iconProps={{color: 'primary.contrast'}}
+                onPress={onPress}
+              />
               <VStack>
                 <Text
                   _dark={{
