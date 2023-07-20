@@ -1,6 +1,3 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '.';
-import {ScreenRoutes} from './constants';
 import SiteMap from '../components/home/SiteMap';
 import BottomNavigation from '../components/common/BottomNavigation';
 import {Box, VStack} from 'native-base';
@@ -11,11 +8,11 @@ import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
 import {fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
 import BottomSheet from '../components/home/BottomSheet';
+import {ScreenDefinition} from './AppScaffold';
+import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 
-type Props = NativeStackScreenProps<RootStackParamList, ScreenRoutes.HOME>;
-
-export default function HomeScreen(_: Props) {
+const HomeView = () => {
   const [mapCenter, setMapCenter] = useState<Position | undefined>(undefined);
   const sites = useSelector(state => state.site.sites);
   const dispatch = useDispatch();
@@ -49,4 +46,12 @@ export default function HomeScreen(_: Props) {
       </Box>
     </VStack>
   );
-}
+};
+
+export const HomeScreen: ScreenDefinition = {
+  View: HomeView,
+  options: () => ({
+    headerLeft: MainMenuBar,
+    headerRight: MapInfoIcon,
+  }),
+};

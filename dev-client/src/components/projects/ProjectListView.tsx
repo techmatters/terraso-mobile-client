@@ -1,16 +1,13 @@
-import {ProjectPreview} from '../../types';
 import ProjectsEmptyView from './ProjectsEmptyView';
-import React from 'react';
 import ProjectsSearchView from './ProjectsSearchView';
+import {fetchProjects} from '../../dataflow';
 
-type Props = {
-  projects: ProjectPreview[];
-};
+const projects = fetchProjects();
 
-export default function ProjectListView({projects}: Props) {
+export const ProjectListView = () => {
   if (projects.length === 0) {
     return <ProjectsEmptyView />;
   } else {
     return <ProjectsSearchView projects={projects} />;
   }
-}
+};

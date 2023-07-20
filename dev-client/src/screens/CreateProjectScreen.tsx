@@ -1,12 +1,8 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList, ScreenRoutes} from './constants';
 import CreateProjectView from '../components/projects/CreateProjectView';
+import CloseButton from '../components/common/CloseButton';
+import {ScreenDefinition} from './AppScaffold';
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  ScreenRoutes.CREATE_PROJECT
->;
-
-export default function CreateProjectScreen({}: Props) {
-  return <CreateProjectView />;
-}
+export const CreateProjectScreen: ScreenDefinition = {
+  View: CreateProjectView,
+  options: () => ({headerLeft: CloseButton}),
+};

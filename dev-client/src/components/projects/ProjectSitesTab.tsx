@@ -13,14 +13,12 @@ import {useTranslation} from 'react-i18next';
 import {TabRoutes, TabStackParamList} from './constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import SearchBar from '../common/SearchBar';
 import {SitePreview} from '../../types';
 import {useCallback} from 'react';
 import ProgressCircle from '../common/ProgressCircle';
-import {ScreenRoutes} from '../../screens/constants';
-import {RootStackParamList} from '../../screens';
 import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
+import {RootStackScreenProps} from '../../screens/AppScaffold';
 
 type SiteMenuProps = {
   iconName: string;
@@ -98,7 +96,7 @@ function SiteItem({site}: SiteProps) {
 
 type Props = CompositeScreenProps<
   MaterialTopTabScreenProps<TabStackParamList, TabRoutes.SITES>,
-  NativeStackScreenProps<RootStackParamList>
+  RootStackScreenProps
 >;
 
 export default function ProjectSitesTab({
@@ -109,11 +107,14 @@ export default function ProjectSitesTab({
 }: Props): JSX.Element {
   const {t} = useTranslation();
   const transferCallback = useCallback(
-    () => navigation.navigate(ScreenRoutes.SITE_TRANSFER_PROJECT, {projectId}),
+    () =>
+      navigation.navigate('SITE_TRANSFER_PROJECT', {
+        projectId: String(projectId),
+      }),
     [navigation, projectId],
   );
   const addSiteCallback = useCallback(() => {
-    navigation.navigate(ScreenRoutes.CREATE_SITE);
+    navigation.navigate('CREATE_SITE');
   }, [navigation]);
 
   const isEmpty = sites.length === 0;

@@ -2,7 +2,7 @@ import {Box, ScrollView} from 'native-base';
 import Form, {FormValues} from './Form';
 import {addProject} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch} from '../../../model/store';
-import {useNavigation} from '../../../screens';
+import {useNavigation} from '../../../screens/AppScaffold';
 
 export default function CreateProjectView() {
   const dispatch = useDispatch();

@@ -1,31 +1,19 @@
 import {Badge, Box, HStack, Heading, Link, Text} from 'native-base';
-import {ProjectPreview} from '../../types';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from '@react-navigation/native';
-import {RootStackParamList, ScreenRoutes} from '../../screens/constants';
+import {useNavigation} from '../../screens/AppScaffold';
 import {useCallback} from 'react';
-import {fetchProject} from '../../dataflow';
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {ProjectPreview} from '../../types';
 
 type Props = {
   project: ProjectPreview;
 };
 
-// see https://reactnavigation.org/docs/typescript/#type-checking-screens
-type ProjectListProp = NativeStackNavigationProp<
-  RootStackParamList,
-  ScreenRoutes.PROJECT_LIST
->;
-
 export default function ProjectPreviewCard({project}: Props) {
   const {t} = useTranslation();
-  // see https://reactnavigation.org/docs/typescript/#annotating-usenavigation
-  // TODO: Wrap this in our own custom hook?
-  const navigation = useNavigation<ProjectListProp>();
+  const navigation = useNavigation();
 
   const goToProject = useCallback(() => {
-    const p = fetchProject(project.id);
-    return navigation.navigate(ScreenRoutes.PROJECT_VIEW, {project: p});
+    return navigation.navigate('PROJECT_VIEW', {projectId: project.id});
   }, [project, navigation]);
 
   return (
