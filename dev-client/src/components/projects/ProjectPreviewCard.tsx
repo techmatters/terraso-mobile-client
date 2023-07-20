@@ -1,4 +1,4 @@
-import {Badge, Box, HStack, Heading, Link, Text} from 'native-base';
+import {Box, HStack, Heading, Link, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {ScreenRoutes} from '../../screens/constants';
 import {useCallback} from 'react';
@@ -8,6 +8,7 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from '../../screens';
 import {useDispatch} from '../../model/store';
+import IconChip from '../common/IconChip';
 
 type Props = {
   project: Project;
@@ -41,13 +42,8 @@ export default function ProjectPreviewCard({project}: Props) {
       <HStack space={2} alignItems="center">
         {/* TODO: Progress still not stored on backend */}
         <Text>30%</Text>
-        {/* TODO: Figure out how to parametrize translations */}
-        <Badge bg="primary.lightest" borderRadius={10}>
-          {project.siteSet.totalCount + ' ' + t('general.sites')}
-        </Badge>
-        <Badge bg="primary.lightest" borderRadius={10}>
-          {project.group.memberships.totalCount + ' ' + t('general.users')}
-        </Badge>
+        <IconChip iconName="location-on" label={project.siteCount} />
+        <IconChip iconName="people-alt" label={project.userCount} />
       </HStack>
       <Link
         _text={{color: 'primary.main'}}

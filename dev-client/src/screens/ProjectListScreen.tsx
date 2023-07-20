@@ -8,12 +8,12 @@ import {useDispatch, useSelector} from '../model/store';
 
 type Props = TopLevelScreenProps<ScreenRoutes.PROJECT_LIST>;
 
-export default function ProjectListScreen({route}: Props) {
+export default function ProjectListScreen({}: Props) {
   const dispatch = useDispatch();
   const projects = useSelector(state => state.project.projects);
   useEffect(() => {
     dispatch(fetchProjectsForUser());
-  }, []);
+  }, [dispatch]);
   return (
     <VStack height="100%">
       <ProjectListView projects={Object.values(projects)} />

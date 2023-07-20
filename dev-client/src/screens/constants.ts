@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ProjectPreview, Project} from '../types';
+import {ProjectPreview} from '../types';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 
 export const enum ScreenRoutes {
