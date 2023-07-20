@@ -9,7 +9,10 @@ import CreateProjectScreen from './CreateProjectScreen';
 import HomeScreen from './HomeScreen';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
-import {RouteProp} from '@react-navigation/native';
+import {
+  RouteProp,
+  useNavigation as useNavigationBase,
+} from '@react-navigation/native';
 import {
   HeaderBackButtonProps,
   HeaderButtonProps,
@@ -87,3 +90,5 @@ export type TopLevelNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   keyof ScreenMap
 >;
+
+export const useNavigation = () => useNavigationBase<TopLevelNavigationProp>();

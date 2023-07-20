@@ -17,6 +17,7 @@
     "@react-navigation/material-top-tabs": "^6.6.3",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
+    "formik": "^2.4.2",
     "@rnmapbox/maps": "^10.0.10",
     "i18next": "^23.2.11",
     "native-base": "^3.4.28",
@@ -35,8 +36,8 @@
     "react-native-screens": "^3.22.1",
     "react-native-svg": "^13.10.0",
     "react-native-tab-view": "^3.5.2",
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#284db6e",
     "react-native-vector-icons": "^10.0.0",
-    "terraso-client-shared": "github:techmatters/terraso-client-shared#804f014",
     "uuid": "^9.0.0",
     "yup": "^1.2.0"
   },
