@@ -4,29 +4,20 @@ import {
   IconButtonProps,
   MaterialCommunityIcons,
 } from '../common/Icons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation} from '../../screens/AppScaffold';
 import {useCallback} from 'react';
-import {ScreenRoutes} from '../../screens/constants';
-import {TopLevelNavigationProp} from '../../screens';
-import {fetchProjects} from '../../dataflow';
 
 const BottomNavIconButton = (props: IconButtonProps & {label: string}) => (
   <IconButton pb={0} _icon={{color: 'primary.contrast'}} {...props} />
 );
 
 export default function BottomNavigation() {
-  const navigation = useNavigation<TopLevelNavigationProp>();
+  const navigation = useNavigation();
 
-  const onMap = useCallback(
-    () => navigation.navigate(ScreenRoutes.HOME),
-    [navigation],
-  );
+  const onMap = useCallback(() => navigation.navigate('HOME'), [navigation]);
 
   const onProject = useCallback(
-    () =>
-      navigation.navigate(ScreenRoutes.PROJECT_LIST, {
-        projects: fetchProjects(),
-      }),
+    () => navigation.navigate('PROJECT_LIST'),
     [navigation],
   );
 
