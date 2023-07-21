@@ -3,10 +3,8 @@ import {useTranslation} from 'react-i18next';
 import AddButton from '../../common/AddButton';
 import {IconButton} from '../../common/Icons';
 import ProjectPreviewCard from '../ProjectPreviewCard';
-import {useNavigation} from '@react-navigation/native';
-import {TopLevelNavigationProp} from '../../../screens';
+import {useNavigation} from '../../../screens/AppScaffold';
 import {useCallback} from 'react';
-import {ScreenRoutes} from '../../../screens/constants';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 
 type Props = {
@@ -15,9 +13,9 @@ type Props = {
 
 export default function ProjectsSearchView({projects}: Props) {
   const {t} = useTranslation();
-  const navigation = useNavigation<TopLevelNavigationProp>();
+  const navigation = useNavigation();
   const onPress = useCallback(
-    () => navigation.navigate(ScreenRoutes.CREATE_PROJECT),
+    () => navigation.navigate('CREATE_PROJECT'),
     [navigation],
   );
   return (

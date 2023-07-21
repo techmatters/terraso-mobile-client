@@ -10,9 +10,7 @@ import {Box, Heading, Text, Flex, Badge, Divider, Button} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 import {useSelector} from '../../model/store';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from '@react-navigation/native';
-import {TopLevelNavigationProp} from '../../screens';
-import {ScreenRoutes} from '../../screens/constants';
+import {useNavigation} from '../../screens/AppScaffold';
 
 type SiteMapProps = {
   center?: Position;
@@ -42,7 +40,9 @@ type SiteCalloutProps = {
 const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
   const {t} = useTranslation();
   const project = useSelector(state =>
-    site.projectId === undefined ? undefined : state.site.sites[site.projectId],
+    site.projectId === undefined
+      ? undefined
+      : state.project.projects[site.projectId],
   );
 
   return (
@@ -88,10 +88,10 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
 
 const TemporarySiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
   const {t} = useTranslation();
-  const {navigate} = useNavigation<TopLevelNavigationProp>();
+  const {navigate} = useNavigation();
 
   const onCreate = useCallback(
-    () => navigate(ScreenRoutes.CREATE_SITE, {mapCoords: site}),
+    () => navigate('CREATE_SITE', {mapCoords: site}),
     [site, navigate],
   );
 

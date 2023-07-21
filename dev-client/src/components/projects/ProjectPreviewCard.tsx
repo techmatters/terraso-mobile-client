@@ -1,14 +1,13 @@
 import {Box, HStack, Heading, Link, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {ScreenRoutes} from '../../screens/constants';
 import {useCallback} from 'react';
 import {
   Project,
   fetchProject,
 } from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from '../../screens';
 import {useDispatch} from '../../model/store';
 import IconChip from '../common/IconChip';
+import {useNavigation} from '../../screens/AppScaffold';
 
 type Props = {
   project: Project;
@@ -21,7 +20,7 @@ export default function ProjectPreviewCard({project}: Props) {
 
   const goToProject = useCallback(async () => {
     await dispatch(fetchProject(project.id));
-    return navigation.navigate(ScreenRoutes.PROJECT_VIEW);
+    return navigation.navigate('PROJECT_VIEW', {projectName: project.name});
   }, [project, navigation, dispatch]);
 
   return (

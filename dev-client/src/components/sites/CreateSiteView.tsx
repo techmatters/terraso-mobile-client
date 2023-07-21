@@ -4,9 +4,7 @@ import RadioBlock from '../common/RadioBlock';
 import {FormControl, Input, Text, VStack} from 'native-base';
 import {useCallback, useMemo, useState} from 'react';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {useNavigation} from '@react-navigation/native';
-import {TopLevelNavigationProp} from '../../screens';
-import {ScreenRoutes} from '../../screens/constants';
+import {useNavigation} from '../../screens/AppScaffold';
 import {siteValidationSchema} from './validation';
 import {ValidationError} from 'yup';
 import SaveFAB from '../common/SaveFAB';
@@ -51,7 +49,7 @@ export default function CreateSiteView({
 
   const [errors, setErrors] = useState<Error>({});
 
-  const {navigate} = useNavigation<TopLevelNavigationProp>();
+  const {navigate} = useNavigation();
 
   /**
    * Checks the form status with the yup library, and posts to backend
@@ -78,7 +76,7 @@ export default function CreateSiteView({
     }
     const {name, latitude, longitude} = validationResults;
     createSiteCallback({name, latitude, longitude});
-    return navigate(ScreenRoutes.HOME);
+    navigate('HOME');
   }, [mutationInput, createSiteCallback, navigate]);
 
   /* calculates the associated location for a given location input option

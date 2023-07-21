@@ -1,16 +1,12 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList, ScreenRoutes} from './constants';
 import {Box, VStack} from 'native-base';
-import React from 'react';
 import BottomNavigation from '../components/common/BottomNavigation';
 import ProjectTabs from '../components/projects/ProjectTabs';
+import {ScreenDefinition} from './AppScaffold';
+import {HeaderTitle} from '@react-navigation/elements';
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  ScreenRoutes.PROJECT_VIEW
->;
+type Props = {projectName: string};
 
-export default function ProjectViewScreen(_: Props) {
+const ProjectView = (_: Props) => {
   return (
     <VStack height="100%">
       <Box flexGrow={2} flexBasis="90%">
@@ -19,4 +15,14 @@ export default function ProjectViewScreen(_: Props) {
       <BottomNavigation />
     </VStack>
   );
-}
+};
+
+export const ProjectViewScreen: ScreenDefinition<Props> = {
+  View: ProjectView,
+  options: () => ({
+    headerBackVisible: false,
+    HeaderTitle: ({projectName, ...props}) => {
+      return <HeaderTitle {...props}>{projectName}</HeaderTitle>;
+    },
+  }),
+};

@@ -1,14 +1,12 @@
-import {ScreenRoutes, TopLevelScreenProps} from './constants';
 import ProjectListView from '../components/projects/ProjectListView';
 import {VStack} from 'native-base';
 import BottomNavigation from '../components/common/BottomNavigation';
 import {useEffect} from 'react';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch, useSelector} from '../model/store';
+import {ScreenDefinition} from './AppScaffold';
 
-type Props = TopLevelScreenProps<ScreenRoutes.PROJECT_LIST>;
-
-export default function ProjectListScreen({}: Props) {
+const ProjectListScaffold = () => {
   const dispatch = useDispatch();
   const projects = useSelector(state => state.project.projects);
   useEffect(() => {
@@ -20,4 +18,9 @@ export default function ProjectListScreen({}: Props) {
       <BottomNavigation />
     </VStack>
   );
-}
+};
+
+export const ProjectListScreen: ScreenDefinition = {
+  View: ProjectListScaffold,
+  options: () => ({headerBackVisible: false}),
+};

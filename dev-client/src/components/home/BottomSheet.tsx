@@ -1,12 +1,11 @@
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation} from '../../screens/AppScaffold';
 import {Box, Button, Flex, Heading, Text, Badge} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {ScreenRoutes} from '../../screens/constants';
-import {TopLevelNavigationProp} from '../../screens';
 import {useSelector} from '../../model/store';
 import {useTranslation} from 'react-i18next';
+import {Pressable} from 'react-native';
 
 type SiteListSiteProps = {
   site: Site;
@@ -14,13 +13,23 @@ type SiteListSiteProps = {
 };
 const SiteListSite = ({site, showSiteOnMap}: SiteListSiteProps) => {
   const {t} = useTranslation();
+  const navigation = useNavigation();
   const project = useSelector(state =>
-    site.projectId === undefined ? undefined : state.site.sites[site.projectId],
+    site.projectId === undefined
+      ? undefined
+      : state.project.projects[site.projectId],
+  );
+
+  const onTitlePress = useCallback(
+    () => navigation.navigate('SITE_DASHBOARD', {siteId: site.id}),
+    [navigation, site.id],
   );
 
   return (
     <Box bg="grey.200" padding="4">
-      <Heading size="lg">{site.name}</Heading>
+      <Pressable onPress={onTitlePress}>
+        <Heading size="lg">{site.name}</Heading>
+      </Pressable>
       {project && <Heading size="md">{project.name}</Heading>}
       <Flex direction="row" align="top">
         <Box height="100px" width="100px" bg="background.default" />
@@ -54,7 +63,7 @@ type Props = {
 };
 const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
   const {t} = useTranslation();
-  const navigation = useNavigation<TopLevelNavigationProp>();
+  const navigation = useNavigation();
 
   const siteList = useMemo(() => Object.values(sites), [sites]);
 
@@ -71,7 +80,7 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
   );
 
   const addSiteCallback = useCallback(() => {
-    navigation.navigate(ScreenRoutes.CREATE_SITE);
+    navigation.navigate('CREATE_SITE');
   }, [navigation]);
 
   return (
