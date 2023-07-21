@@ -4,7 +4,7 @@ import ProjectTabs from '../components/projects/ProjectTabs';
 import {ScreenDefinition} from './AppScaffold';
 import {HeaderTitle} from '@react-navigation/elements';
 
-type Props = {projectId: number};
+type Props = {projectName: string};
 
 const ProjectView = (_: Props) => {
   return (
@@ -21,9 +21,8 @@ export const ProjectViewScreen: ScreenDefinition<Props> = {
   View: ProjectView,
   options: () => ({
     headerBackVisible: false,
-    HeaderTitle: ({projectId, ...props}) => {
-      // const {name} = useSelector(state => state.project.projects[projectId]);
-      return <HeaderTitle {...props}>{'Project #' + projectId}</HeaderTitle>;
+    HeaderTitle: ({projectName, ...props}) => {
+      return <HeaderTitle {...props}>{projectName}</HeaderTitle>;
     },
   }),
 };
