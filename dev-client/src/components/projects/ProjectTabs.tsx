@@ -1,46 +1,33 @@
-import {
-  MaterialTopTabNavigationOptions,
-  createMaterialTopTabNavigator,
-} from '@react-navigation/material-top-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import ProjectInputTab from './ProjectInputTab';
 import {useTheme} from 'native-base';
-import {RouteProp} from '@react-navigation/native';
 import ProjectTeamTab from './ProjectTeamTab';
 import {USER_PROFILES, fetchProject} from '../../dataflow';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
 import {Icon} from '../common/Icons';
+import {Project} from 'terraso-client-shared/project/projectSlice';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
+type ScreenOptions = React.ComponentProps<
+  (typeof Tab)['Navigator']
+>['screenOptions'];
 
-// TODO: There must be a better way
-type TabRouteProp = {
-  route: RouteProp<TabStackParamList, keyof TabStackParamList>;
-};
+type Props = {project: Project};
 
-export default function ProjectTabs() {
-  const {colors} = useTheme(); //TODO: Is it better to use useToken?
+export default function ProjectTabs({project}: Props) {
+  const {colors} = useTheme();
 
-  function screenOptions({
-    route,
-  }: TabRouteProp): MaterialTopTabNavigationOptions {
-    // TODO: Use a Record type
-    let iconName = 'tune';
-    switch (route.name) {
-      case TabRoutes.INPUTS:
-        iconName = 'tune';
-        break;
-      case TabRoutes.TEAM:
-        iconName = 'people';
-        break;
-      case TabRoutes.SETTINGS:
-        iconName = 'settings';
-        break;
-      case TabRoutes.SITES:
-        iconName = 'location-on';
-        break;
-    }
+  const tabIconNames: Record<keyof TabStackParamList, string> = {
+    Inputs: 'tune',
+    Team: 'people',
+    Settings: 'settings',
+    Sites: 'location-on',
+  };
+
+  const screenOptions: ScreenOptions = ({route}) => {
+    let iconName = tabIconNames[route.name];
 
     return {
       tabBarScrollEnabled: true,
@@ -58,7 +45,7 @@ export default function ProjectTabs() {
         height: '100%',
       },
     };
-  }
+  };
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />
@@ -71,9 +58,9 @@ export default function ProjectTabs() {
         name={TabRoutes.SETTINGS}
         component={ProjectSettingsTab}
         initialParams={{
-          name: 'Test Project',
-          description: 'A Test Project',
-          privacy: 'private',
+          name: project.name,
+          description: project.description,
+          privacy: project.privacy,
           downloadLink: 'https://s3.amazon.com/mydownload',
         }}
       />

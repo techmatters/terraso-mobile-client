@@ -26,7 +26,7 @@ export type Project = {
   users: UserPreview[];
 };
 
-export type ProjectPrivacy = 'private' | 'public';
+export type ProjectPrivacy = 'PRIVATE' | 'PUBLIC';
 
 export type ProjectInputs = {
   units: 'imperial' | 'metric';

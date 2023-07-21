@@ -20,7 +20,7 @@ export default function ProjectPreviewCard({project}: Props) {
 
   const goToProject = useCallback(async () => {
     await dispatch(fetchProject(project.id));
-    return navigation.navigate('PROJECT_VIEW', {projectName: project.name});
+    return navigation.navigate('PROJECT_VIEW', {project: project});
   }, [project, navigation, dispatch]);
 
   return (

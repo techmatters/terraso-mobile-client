@@ -4,6 +4,7 @@ import {TabRoutes, TabStackParamList} from './constants';
 import {useTranslation} from 'react-i18next';
 import RadioBlock from '../common/RadioBlock';
 import IconLink from '../common/IconLink';
+import {ProjectPrivacy} from '../../types';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
@@ -35,11 +36,11 @@ export default function ProjectSettingsTab({
           {t('projects.settings.description.error')}
         </FormControl.ErrorMessage>
       </FormControl>
-      <RadioBlock<'private' | 'public'>
+      <RadioBlock<ProjectPrivacy>
         label={t('projects.settings.privacy.label')}
         options={{
-          private: {text: t('general.project_private')},
-          public: {text: t('general.project_public')},
+          PRIVATE: {text: t('general.project_private')},
+          PUBLIC: {text: t('general.project_public')},
         }}
         blockName={'project_privacy'}
         a11yLabel={t('projects.settings.privacy.a11y_label') ?? undefined}
