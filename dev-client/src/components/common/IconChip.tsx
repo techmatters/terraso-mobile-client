@@ -3,7 +3,7 @@ import {Icon} from './Icons';
 
 type Props = {
   iconName: string;
-  label: any;
+  label: string | number;
 };
 
 export default function IconChip({iconName, label}: Props) {
