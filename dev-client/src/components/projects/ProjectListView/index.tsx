@@ -1,13 +1,15 @@
+import {Project} from 'terraso-client-shared/project/projectSlice';
 import ProjectsEmptyView from './ProjectsEmptyView';
 import ProjectsSearchView from './ProjectsSearchView';
-import {fetchProjects} from '../../dataflow';
 
-const projects = fetchProjects();
+type Props = {
+  projects: Project[];
+};
 
-export const ProjectListView = () => {
+export default function ProjectListView({projects}: Props) {
   if (projects.length === 0) {
     return <ProjectsEmptyView />;
   } else {
     return <ProjectsSearchView projects={projects} />;
   }
-};
+}

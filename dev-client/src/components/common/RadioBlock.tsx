@@ -61,9 +61,13 @@ export default function RadioBlock<T extends string>({
         onChange={onChange as (_: string) => void}>
         <OptionWrapper oneLine={oneLine}>
           {Object.entries<RadioOption>(options).map(
-            ([value, {text, isDisabled}]) => (
-              <Box key={value} flexGrow={1}>
-                <Radio value={value} my={1} size="sm" isDisabled={isDisabled}>
+            ([elemValue, {text, isDisabled}]) => (
+              <Box key={elemValue} flexGrow={1}>
+                <Radio
+                  value={elemValue}
+                  my={1}
+                  size="sm"
+                  isDisabled={isDisabled}>
                   {text}
                 </Radio>
               </Box>

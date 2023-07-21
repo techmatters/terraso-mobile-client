@@ -4,5 +4,5 @@ import {ScreenDefinition} from './AppScaffold';
 
 export const CreateProjectScreen: ScreenDefinition = {
   View: CreateProjectView,
-  options: () => ({headerLeft: CloseButton}),
+  options: () => ({headerLeft: CloseButton, headerBackVisible: false}),
 };
