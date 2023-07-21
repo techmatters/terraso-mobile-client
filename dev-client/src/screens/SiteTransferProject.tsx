@@ -1,5 +1,3 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList, ScreenRoutes} from './constants';
 import {HStack, Heading, Text, VStack} from 'native-base';
 import {SearchInput} from '../components/common/SearchBar';
 import {useTranslation} from 'react-i18next';
@@ -8,11 +6,9 @@ import {SITES_BY_PROJECT} from '../dataflow';
 import {useCallback} from 'react';
 import SelectAllCheckboxes from '../components/common/SelectAllCheckboxes';
 import {Accordion} from '../components/common/Accordion';
-
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  ScreenRoutes.SITE_TRANSFER_PROJECT
->;
+import {ScreenDefinition} from './AppScaffold';
+import {HeaderTitle} from '@react-navigation/elements';
+import {useSelector} from '../model/store';
 
 type ItemProps = {
   projectName: string;
@@ -20,11 +16,11 @@ type ItemProps = {
   sites: Pick<SiteDisplay, 'name' | 'id'>[];
 };
 
-function SiteTransferItem({
+const SiteTransferItem = ({
   projectName,
   projectId: _projectId,
   sites,
-}: ItemProps) {
+}: ItemProps) => {
   const items = sites.map(site => ({
     value: String(site.id),
     label: site.name,
@@ -42,13 +38,11 @@ function SiteTransferItem({
   );
   const body = <SelectAllCheckboxes items={items} onUpdate={updateSelected} />;
   return <Accordion Head={head} Body={body} />;
-}
+};
 
-export default function SiteTransferProject({
-  route: {
-    params: {projectId},
-  },
-}: Props) {
+type Props = {projectId: string};
+
+const SiteTransferProjectView = ({projectId}: Props) => {
   const {t} = useTranslation();
 
   // TODO: Replace with data fetched from backend
@@ -73,4 +67,14 @@ export default function SiteTransferProject({
         })}
     </VStack>
   );
-}
+};
+
+export const SiteTransferProjectScreen: ScreenDefinition<Props> = {
+  View: SiteTransferProjectView,
+  options: () => ({
+    HeaderTitle: ({projectId, ...props}) => {
+      const name = useSelector(state => state.project.projects[projectId].name);
+      return <HeaderTitle {...props}>{name}</HeaderTitle>;
+    },
+  }),
+};

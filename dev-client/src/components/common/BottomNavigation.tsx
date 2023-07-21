@@ -1,64 +1,36 @@
-import {Box, Center, HStack, Text} from 'native-base';
-import MaterialIconButton from '../common/MaterialIconButton';
-import MaterialCommunityIconButton from '../common/MaterialCommunityIconButton';
-import {useNavigation} from '@react-navigation/native';
+import {HStack} from 'native-base';
+import {
+  IconButton,
+  IconButtonProps,
+  MaterialCommunityIcons,
+} from '../common/Icons';
+import {useNavigation} from '../../screens/AppScaffold';
 import {useCallback} from 'react';
-import {ScreenRoutes} from '../../screens/constants';
-import {TopLevelNavigationProp} from '../../screens';
-import {SITE_DISPLAYS, fetchProjects} from '../../dataflow';
 
-type IconProps = {
-  name: string;
-  label: string;
-  onPress?: () => void;
-  IconComponent?: any;
-};
-
-const LabeledIcon = ({name, label, onPress, IconComponent}: IconProps) => {
-  const Button = IconComponent ?? MaterialIconButton;
-  return (
-    <Box p="1">
-      <Button
-        name={name}
-        iconProps={{color: 'primary.contrast'}}
-        iconButtonProps={{pb: 0}}
-        onPress={onPress}
-      />
-      <Center>
-        <Text color="primary.contrast" fontSize="xs">
-          {label}
-        </Text>
-      </Center>
-    </Box>
-  );
-};
+const BottomNavIconButton = (props: IconButtonProps & {label: string}) => (
+  <IconButton pb={0} _icon={{color: 'primary.contrast'}} {...props} />
+);
 
 export default function BottomNavigation() {
-  const navigation = useNavigation<TopLevelNavigationProp>();
+  const navigation = useNavigation();
 
-  const onMap = useCallback(
-    () => navigation.navigate(ScreenRoutes.SITES_MAP, {sites: SITE_DISPLAYS}),
-    [navigation],
-  );
+  const onMap = useCallback(() => navigation.navigate('HOME'), [navigation]);
 
   const onProject = useCallback(
-    () =>
-      navigation.navigate(ScreenRoutes.PROJECT_LIST, {
-        projects: fetchProjects(),
-      }),
+    () => navigation.navigate('PROJECT_LIST'),
     [navigation],
   );
 
   return (
     <HStack bg="primary.main" justifyContent="center" space={10} pb={2}>
-      <LabeledIcon name="map" label="Map" onPress={onMap} />
-      <LabeledIcon
+      <BottomNavIconButton name="map" label="Map" onPress={onMap} />
+      <BottomNavIconButton
+        as={MaterialCommunityIcons}
         name="briefcase"
         label="Projects"
         onPress={onProject}
-        IconComponent={MaterialCommunityIconButton}
       />
-      <LabeledIcon name="settings" label="Settings" />
+      <BottomNavIconButton name="settings" label="Settings" />
     </HStack>
   );
 }

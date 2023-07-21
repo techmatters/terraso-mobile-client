@@ -1,17 +1,19 @@
 import {Box, FormControl, HStack, Radio} from 'native-base';
 
 type RadioOption = {
-  value: string;
   text: string;
+  isDisabled?: boolean;
 };
 
-type Props = {
+type Props<Keys extends string> = {
   label: string | React.ReactNode;
-  options: RadioOption[];
+  options: Record<Keys, RadioOption>;
   blockName: string;
   a11yLabel?: string;
-  defaultValue?: string;
+  defaultValue?: Keys;
   oneLine?: boolean;
+  onChange?: (value: Keys) => void;
+  value?: Keys;
 };
 
 type WrapperProps = {
@@ -30,14 +32,16 @@ function OptionWrapper({children, oneLine}: WrapperProps) {
   return <>{children}</>;
 }
 
-export default function RadioBlock({
+export default function RadioBlock<T extends string>({
   label,
   options,
   blockName,
   a11yLabel,
   defaultValue,
   oneLine = false,
-}: Props) {
+  onChange,
+  value,
+}: Props<T>) {
   return (
     <FormControl>
       <FormControl.Label
@@ -52,15 +56,19 @@ export default function RadioBlock({
         name={blockName}
         accessibilityLabel={a11yLabel}
         colorScheme="primary"
-        defaultValue={defaultValue}>
+        defaultValue={defaultValue}
+        value={value ?? undefined}
+        onChange={onChange as (_: string) => void}>
         <OptionWrapper oneLine={oneLine}>
-          {options.map(({value, text}) => (
-            <Box key={value} flexGrow={1}>
-              <Radio value={value} my={1} size="sm">
-                {text}
-              </Radio>
-            </Box>
-          ))}
+          {Object.entries<RadioOption>(options).map(
+            ([value, {text, isDisabled}]) => (
+              <Box key={value} flexGrow={1}>
+                <Radio value={value} my={1} size="sm" isDisabled={isDisabled}>
+                  {text}
+                </Radio>
+              </Box>
+            ),
+          )}
         </OptionWrapper>
       </Radio.Group>
     </FormControl>

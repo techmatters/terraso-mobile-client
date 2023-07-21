@@ -1,6 +1,5 @@
-import {Badge, HStack, Icon, Input, VStack} from 'native-base';
-import MaterialIconButton from './MaterialIconButton';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {Badge, HStack, Input, VStack} from 'native-base';
+import {IconButton, Icon} from './Icons';
 import {useTranslation} from 'react-i18next';
 
 type SearchProps<T> = {
@@ -23,7 +22,7 @@ export function SearchInput({onChangeText}: SearchInputProps) {
       ml={2}
       maxHeight={8}
       onChangeText={onChangeText}
-      InputLeftElement={<Icon as={MaterialIcons} name="search" ml={3} />}
+      InputLeftElement={<Icon name="search" ml={3} />}
     />
   );
 }
@@ -45,10 +44,10 @@ export default function SearchBar<T extends object>({
           bg="none">
           {selected.length}
         </Badge>
-        <MaterialIconButton
+        <IconButton
           name="filter-list"
-          iconButtonProps={{color: 'grey.200'}}
-          iconProps={{color: 'action.active', size: 'sm'}}
+          color="grey.200"
+          _icon={{color: 'action.active', size: 'sm'}}
         />
       </VStack>
       <SearchInput onChangeText={onChangeText} />

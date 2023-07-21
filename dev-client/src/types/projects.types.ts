@@ -1,5 +1,11 @@
 import {UserPreview} from './users.types';
 import {SitePreview} from './sites.types';
+
+export interface ProjectName {
+  name: string;
+  id: string;
+}
+
 export type ProjectPreview = {
   id: number;
   name: string;

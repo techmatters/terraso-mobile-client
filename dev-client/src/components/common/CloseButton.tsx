@@ -1,17 +1,16 @@
-import MaterialIconButton from './MaterialIconButton';
+import {IconButton} from './Icons';
 import {useCallback} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {TopLevelNavigationProp} from '../../screens';
+import {useNavigation} from '../../screens/AppScaffold';
 
 export default function CloseButton() {
-  const navigation = useNavigation<TopLevelNavigationProp>();
+  const navigation = useNavigation();
   const onPress = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
   return (
-    <MaterialIconButton
+    <IconButton
       name="close"
-      iconProps={{color: 'primary.contrast'}}
+      _icon={{color: 'primary.contrast'}}
       onPress={onPress}
     />
   );

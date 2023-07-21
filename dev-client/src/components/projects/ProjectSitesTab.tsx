@@ -3,7 +3,6 @@ import {
   FlatList,
   HStack,
   Heading,
-  Icon,
   Link,
   Menu,
   Text,
@@ -14,15 +13,12 @@ import {useTranslation} from 'react-i18next';
 import {TabRoutes, TabStackParamList} from './constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import SearchBar from '../common/SearchBar';
 import {SitePreview} from '../../types';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import ProgressCircle from '../common/ProgressCircle';
-import MaterialCommunityIcon from '../common/MaterialCommunityIconButton';
-import {ScreenRoutes} from '../../screens/constants';
-import {RootStackParamList} from '../../screens';
+import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
+import {RootStackScreenProps} from '../../screens/AppScaffold';
 
 type SiteMenuProps = {
   iconName: string;
@@ -33,7 +29,7 @@ function SiteMenuItem({iconName, text}: SiteMenuProps) {
   return (
     <Menu.Item>
       <HStack flexDirection="row" space={2} alignItems="center">
-        <Icon as={MaterialIcons} name={iconName} size="xs" />
+        <Icon name={iconName} size="xs" />
         <Text>{text}</Text>
       </HStack>
     </Menu.Item>
@@ -51,15 +47,16 @@ function SiteItem({site}: SiteProps) {
       <HStack>
         <Box mt={-0.5}>
           <Menu
-            trigger={(triggerProps): JSX.Element => {
-              return (
-                <MaterialCommunityIcon
-                  iconProps={{size: 'md', color: 'action.active'}}
-                  name="dots-vertical"
-                  iconButtonProps={{...triggerProps, mr: -1, ml: -3}}
-                />
-              );
-            }}>
+            trigger={triggerProps => (
+              <IconButton
+                as={MaterialCommunityIcons}
+                _icon={{size: 'md', color: 'action.active'}}
+                name="dots-vertical"
+                mr={-1}
+                ml={-3}
+                {...triggerProps}
+              />
+            )}>
             <SiteMenuItem
               iconName="list-alt"
               text={t('projects.sites.audit_log')}
@@ -83,7 +80,7 @@ function SiteItem({site}: SiteProps) {
             })}
           </Text>
           <HStack alignItems="center" space={2}>
-            <Icon size="4xl" as={MaterialIcons} name="photo" ml={-2} />
+            <Icon size="4xl" name="photo" ml={-2} />
             <ProgressCircle done={site.percentComplete} />
             <Box flexGrow={1} flexDirection="row" justifyContent="flex-end">
               <Link _text={{color: 'primary.main'}}>
@@ -99,7 +96,7 @@ function SiteItem({site}: SiteProps) {
 
 type Props = CompositeScreenProps<
   MaterialTopTabScreenProps<TabStackParamList, TabRoutes.SITES>,
-  NativeStackScreenProps<RootStackParamList>
+  RootStackScreenProps
 >;
 
 export default function ProjectSitesTab({
@@ -110,9 +107,15 @@ export default function ProjectSitesTab({
 }: Props): JSX.Element {
   const {t} = useTranslation();
   const transferCallback = useCallback(
-    () => navigation.navigate(ScreenRoutes.SITE_TRANSFER_PROJECT, {projectId}),
+    () =>
+      navigation.navigate('SITE_TRANSFER_PROJECT', {
+        projectId: String(projectId),
+      }),
     [navigation, projectId],
   );
+  const addSiteCallback = useCallback(() => {
+    navigation.navigate('CREATE_SITE');
+  }, [navigation]);
 
   const isEmpty = sites.length === 0;
 
@@ -139,7 +142,9 @@ export default function ProjectSitesTab({
             </Box>
           );
         }}>
-        <Menu.Item>{t('projects.sites.create') ?? ''}</Menu.Item>
+        <Menu.Item onPress={addSiteCallback}>
+          {t('projects.sites.create') ?? ''}
+        </Menu.Item>
         <Menu.Item onPress={transferCallback}>
           {t('projects.sites.transfer') ?? ''}
         </Menu.Item>
