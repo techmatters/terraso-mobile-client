@@ -48,21 +48,22 @@ export default function ProjectTabs({project}: Props) {
   };
   return (
     <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />
-      <Tab.Screen
-        name={TabRoutes.TEAM}
-        component={ProjectTeamTab}
-        initialParams={{users: USER_PROFILES}}
-      />
       <Tab.Screen
         name={TabRoutes.SETTINGS}
         component={ProjectSettingsTab}
         initialParams={{
+          projectId: project.id,
           name: project.name,
           description: project.description,
           privacy: project.privacy,
           downloadLink: 'https://s3.amazon.com/mydownload',
         }}
+      />
+      <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />
+      <Tab.Screen
+        name={TabRoutes.TEAM}
+        component={ProjectTeamTab}
+        initialParams={{users: USER_PROFILES}}
       />
       <Tab.Screen
         name={TabRoutes.SITES}

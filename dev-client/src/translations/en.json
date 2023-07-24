@@ -40,18 +40,10 @@
         "a11yLabel": "default soil information source"
       }
     },
+    "edit": {
+      "inputHeader": "General Project Settings"
+    },
     "settings": {
-      "heading": "General Project Settings",
-      "name": {
-        "error": "Helper text"
-      },
-      "description": {
-        "error": "Helper text"
-      },
-      "privacy": {
-        "label": "Data Privacy",
-        "a11y_label": "Data privacy"
-      },
       "copy_download_link": "Copy project download link",
       "archive": "Archive this project",
       "delete": "Delete this project"
