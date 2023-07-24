@@ -1,8 +1,12 @@
 {
   "depcheck": {
     "ignoreMatches": [
+        "eslint-plugin-prettier",
+        "@tsconfig/react-native",
         "react-redux",
-        "@reduxjs/toolkit"
+        "@reduxjs/toolkit",
+        "uuid",
+        "@types/uuid"
     ]
   }
 }
