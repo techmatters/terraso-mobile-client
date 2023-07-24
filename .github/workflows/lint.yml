@@ -38,3 +38,7 @@ jobs:
       - name: Typecheck TypeScript
         working-directory: ./dev-client
         run: npm run check-ts
+
+      - name: Check NPM module usage
+        working-directory: ./dev-client
+        run: npm run check-modules
