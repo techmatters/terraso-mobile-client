@@ -9,7 +9,8 @@
     "format": "eslint . --fix",
     "start": "react-native start",
     "test": "jest",
-    "check-ts": "tsc --noEmit"
+    "check-ts": "tsc --noEmit",
+    "check-modules": "npm-check"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.4.7",
