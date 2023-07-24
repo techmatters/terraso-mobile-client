@@ -1,0 +1,8 @@
+{
+  "depcheck": {
+    "ignoreMatches": [
+        "react-redux",
+        "@reduxjs/toolkit"
+    ]
+  }
+}
