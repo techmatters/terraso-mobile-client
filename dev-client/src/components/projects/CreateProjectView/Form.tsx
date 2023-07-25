@@ -1,9 +1,8 @@
-import {HStack, Input, Text, VStack} from 'native-base';
+import {Fab, HStack, Input, Text, VStack} from 'native-base';
 import {Formik, FormikConfig, FormikProps} from 'formik';
 import RadioBlock from '../../common/RadioBlock';
 import {IconButton} from '../../common/Icons';
 import {useTranslation} from 'react-i18next';
-import SaveFAB from '../../common/SaveFAB';
 import ErrorMessage from '../../common/ErrorMessage';
 import * as yup from 'yup';
 import {
@@ -82,9 +81,9 @@ export default function Form({onSubmit}: Props) {
               />
               <ErrorMessage fieldName="privacy" />
             </VStack>
-            <SaveFAB
-              title={t('general.save')}
-              onPress={handleSubmit as () => void}
+            <Fab
+              label={t('general.save_fab')}
+              onPress={() => handleSubmit()}
               disabled={isSubmitting}
             />
           </>

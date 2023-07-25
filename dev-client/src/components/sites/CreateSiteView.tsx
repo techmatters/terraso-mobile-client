@@ -1,14 +1,14 @@
 import {Location} from '@rnmapbox/maps';
 import {ProjectName} from '../../types';
 import RadioBlock from '../common/RadioBlock';
-import {FormControl, Input, Text, VStack} from 'native-base';
+import {Fab, FormControl, Input, Text, VStack} from 'native-base';
 import {useCallback, useMemo, useState} from 'react';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from '../../screens/AppScaffold';
 import {siteValidationSchema} from './validation';
 import {ValidationError} from 'yup';
-import SaveFAB from '../common/SaveFAB';
 import {Icon} from '../common/Icons';
+import {useTranslation} from 'react-i18next';
 
 type LatLongString = {latitude: string; longitude: string};
 
@@ -41,6 +41,8 @@ export default function CreateSiteView({
   createSiteCallback,
   sitePin,
 }: Props) {
+  const {t} = useTranslation();
+
   /** We store the form state in mutationInput */
   const [mutationInput, setMutationInput] = useState<Args>({
     latitude: userLocation && String(userLocation.coords.latitude),
@@ -187,7 +189,7 @@ export default function CreateSiteView({
         defaultValue="private"
         oneLine={true}
       />
-      <SaveFAB title="SAVE" onPress={onSave} />
+      <Fab label={t('general.save_fab')} onPress={onSave} />
     </VStack>
   );
 }

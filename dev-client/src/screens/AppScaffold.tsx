@@ -1,11 +1,12 @@
 import {
   NativeStackNavigationOptions,
   NativeStackScreenProps,
+  NativeStackNavigationProp,
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import {useTheme} from 'native-base';
 import {useDispatch, useSelector} from '../model/store';
-import {useEffect} from 'react';
+import {useEffect, useMemo} from 'react';
 import {
   setHasAccessTokenAsync,
   fetchUser,
@@ -19,13 +20,12 @@ import {useTranslation} from 'react-i18next';
 import {HeaderTitle as NavigationHeaderTitle} from '@react-navigation/elements';
 import {SiteTransferProjectScreen} from './SiteTransferProject';
 import {CreateSiteScreen} from './CreateSiteScreen';
-import {
-  NavigationProp,
-  useNavigation as useNavigationNative,
-} from '@react-navigation/native';
-import {SiteDashboardScreen} from './SiteDashboardScreen';
+import {useNavigation as useNavigationNative} from '@react-navigation/native';
+import {LocationDashboardScreen} from '../components/sites/LocationDashboardScreen';
+import {SiteSettingsScreen} from '../components/sites/SiteSettingsScreen';
+import {SiteTeamSettingsScreen} from '../components/sites/SiteTeamSettings';
 
-const screens = {
+const screenDefinitions = {
   LOGIN: LoginScreen,
   PROJECT_LIST: ProjectListScreen,
   PROJECT_VIEW: ProjectViewScreen,
@@ -33,34 +33,26 @@ const screens = {
   CREATE_PROJECT: CreateProjectScreen,
   SITE_TRANSFER_PROJECT: SiteTransferProjectScreen,
   CREATE_SITE: CreateSiteScreen,
-  SITE_DASHBOARD: SiteDashboardScreen,
+  LOCATION_DASHBOARD: LocationDashboardScreen,
+  SITE_SETTINGS: SiteSettingsScreen,
+  SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
 };
 
-type ScreenName = keyof typeof screens;
+type ScreenName = keyof typeof screenDefinitions;
 type RootStackParamList = {
-  [K in ScreenName]: Parameters<(typeof screens)[K]['View']>[0];
+  [K in ScreenName]: Parameters<(typeof screenDefinitions)[K]['View']>[0];
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
+
 export type RootStackScreenProps = NativeStackScreenProps<
   RootStackParamList,
   ScreenName
 >;
 
-type HeaderTitleType<Props> = (
-  _: Props & React.ComponentProps<typeof NavigationHeaderTitle>,
-) => React.ReactNode;
-
-type RootStackNavigationOptions<Props> = Omit<
-  NativeStackNavigationOptions,
-  'headerTitle'
-> & {
-  HeaderTitle?: HeaderTitleType<Props>;
-};
-
 export type ScreenDefinition<Props = undefined> = {
   View: (T: Props) => React.ReactNode;
-  options?: (_: Props) => RootStackNavigationOptions<Props>;
+  options?: (_: Props) => NativeStackNavigationOptions;
 };
 
 const DefaultHeader = ({
@@ -80,48 +72,28 @@ const defineScreen = <
   Props extends RootStackParamList[Name],
 >(
   name: Name,
-  {options, View}: ScreenDefinition<Props>,
+  {options = () => ({}), View: ScreenView}: ScreenDefinition<Props>,
 ) => {
-  const wrappedOptions = (
-    props: RootStackScreenProps,
-  ): NativeStackNavigationOptions => {
-    const {HeaderTitle = undefined, ...origOptions} =
-      options === undefined ? {} : options(props.route.params as Props);
-    const CastTitle = HeaderTitle as HeaderTitleType<object> | undefined;
-    return {
-      ...origOptions,
-      headerTitle: ({tintColor}) =>
-        CastTitle !== undefined ? (
-          <CastTitle {...props.route.params} tintColor={tintColor} />
-        ) : (
-          <DefaultHeader name={name} tintColor={tintColor} />
-        ),
-    };
-  };
-
   const Component = (props: RootStackScreenProps) => (
-    <View {...((props.route.params ?? {}) as Props & object)} />
+    <ScreenView {...((props.route.params ?? {}) as Props & object)} />
   );
 
-  return [
-    name,
+  return (
     <RootStack.Screen
       name={name}
       key={name}
       component={Component}
-      options={wrappedOptions}
-    />,
-  ];
+      options={({route: {params}}) => options(params as Props)}
+    />
+  );
 };
 
-const definedScreens = Object.fromEntries(
-  Object.entries(screens).map(([name, screen]) =>
-    defineScreen(name as ScreenName, screen as ScreenDefinition),
-  ),
+const screens = Object.entries(screenDefinitions).map(([name, screen]) =>
+  defineScreen(name as ScreenName, screen as ScreenDefinition),
 );
 
 export const useNavigation = <Name extends ScreenName = ScreenName>() =>
-  useNavigationNative<NavigationProp<RootStackParamList, Name>>();
+  useNavigationNative<NativeStackNavigationProp<RootStackParamList, Name>>();
 
 export default function AppScaffold() {
   const dispatch = useDispatch();
@@ -130,8 +102,16 @@ export default function AppScaffold() {
   // using theme hook here because react-navigation doesn't take nativebase utility props
   const {colors} = useTheme();
 
-  const filterLogin = (name: ScreenName) =>
-    (currentUser === null) === (name === 'LOGIN');
+  const defaultScreenOptions = useMemo<NativeStackNavigationOptions>(
+    () => ({
+      headerStyle: {backgroundColor: colors.primary.main},
+      headerTintColor: colors.primary.contrast,
+      headerTitle: ({children: name, ...props}) => (
+        <DefaultHeader name={name} {...props} />
+      ),
+    }),
+    [colors],
+  );
 
   useEffect(() => {
     if (!hasToken) {
@@ -142,18 +122,11 @@ export default function AppScaffold() {
     }
   }, [hasToken, currentUser, dispatch]);
 
-  const filteredScreens = (Object.keys(definedScreens) as ScreenName[])
-    .filter(filterLogin)
-    .map(name => definedScreens[name]);
-
   return (
     <RootStack.Navigator
-      initialRouteName="HOME"
-      screenOptions={{
-        headerStyle: {backgroundColor: colors.primary.main},
-        headerTintColor: colors.primary.contrast,
-      }}>
-      {filteredScreens}
+      initialRouteName={currentUser === null ? 'LOGIN' : 'HOME'}
+      screenOptions={defaultScreenOptions}>
+      {screens}
     </RootStack.Navigator>
   );
 }

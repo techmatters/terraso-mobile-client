@@ -1,4 +1,5 @@
-import {Box, FormControl, HStack, Radio} from 'native-base';
+import {FormControl, Radio, Row, Spacer, Text, useTheme} from 'native-base';
+import {View} from 'react-native';
 
 type RadioOption = {
   text: string;
@@ -11,26 +12,43 @@ type Props<Keys extends string> = {
   blockName: string;
   a11yLabel?: string;
   defaultValue?: Keys;
-  oneLine?: boolean;
   onChange?: (value: Keys) => void;
   value?: Keys;
-};
+} & WrapperProps;
 
 type WrapperProps = {
   children?: React.ReactNode;
-  oneLine: boolean;
+  oneLine?: boolean;
+  gap?: number;
 };
 
-function OptionWrapper({children, oneLine}: WrapperProps) {
+function OptionWrapper({children, oneLine = false, gap}: WrapperProps) {
   if (oneLine) {
     return (
-      <HStack alignContent="space-around" mx={4}>
-        {children}
-      </HStack>
+      // eslint-disable-next-line react-native/no-inline-styles
+      <View style={{gap: gap ?? 26, flexDirection: 'row'}}>{children}</View>
     );
   }
   return <>{children}</>;
 }
+
+type IconLabelProps = {
+  label: string;
+  icon: React.ReactNode;
+};
+export const IconLabel = ({label, icon}: IconLabelProps) => {
+  const {
+    components: {FormControlLabel},
+  } = useTheme();
+
+  return (
+    <Row alignItems="center">
+      <Text {...FormControlLabel.baseStyle()._text}>{label}</Text>
+      <Spacer size="4px" />
+      {icon}
+    </Row>
+  );
+};
 
 export default function RadioBlock<T extends string>({
   label,
@@ -38,20 +56,14 @@ export default function RadioBlock<T extends string>({
   blockName,
   a11yLabel,
   defaultValue,
-  oneLine = false,
+  oneLine,
   onChange,
   value,
+  gap,
 }: Props<T>) {
   return (
     <FormControl>
-      <FormControl.Label
-        _text={{
-          fontSize: 'sm',
-          bold: true,
-          color: 'text.primary',
-        }}>
-        {label}
-      </FormControl.Label>
+      <FormControl.Label>{label}</FormControl.Label>
       <Radio.Group
         name={blockName}
         accessibilityLabel={a11yLabel}
@@ -59,19 +71,18 @@ export default function RadioBlock<T extends string>({
         defaultValue={defaultValue}
         value={value ?? undefined}
         onChange={onChange as (_: string) => void}>
-        <OptionWrapper oneLine={oneLine}>
-          {Object.entries<RadioOption>(options).map(
-            ([elemValue, {text, isDisabled}]) => (
-              <Box key={elemValue} flexGrow={1}>
-                <Radio
-                  value={elemValue}
-                  my={1}
-                  size="sm"
-                  isDisabled={isDisabled}>
-                  {text}
-                </Radio>
-              </Box>
-            ),
+        <OptionWrapper oneLine={oneLine} gap={gap}>
+          {Object.entries<RadioOption>(options).flatMap(
+            ([value, {text, isDisabled}]) => [
+              <Radio
+                key={value}
+                value={value}
+                my={1}
+                size="sm"
+                isDisabled={isDisabled}>
+                {text}
+              </Radio>,
+            ],
           )}
         </OptionWrapper>
       </Radio.Group>

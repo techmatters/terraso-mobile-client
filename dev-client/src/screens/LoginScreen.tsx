@@ -1,13 +1,26 @@
 import {Center} from 'native-base';
 import Login from '../../components/Login';
-import {ScreenDefinition} from './AppScaffold';
+import {ScreenDefinition, useNavigation} from './AppScaffold';
+import {useSelector} from '../model/store';
+import {useEffect} from 'react';
 
-// export const LoginScreen = (props: ScreenProps) => ScreenScaffold(props);
+const LoginView = () => {
+  const navigation = useNavigation();
+  const loggedIn = useSelector(
+    state => state.account.currentUser.data !== null,
+  );
 
-const LoginView = () => (
-  <Center height="100%">
-    <Login />
-  </Center>
-);
+  useEffect(() => {
+    if (loggedIn) {
+      navigation.replace('HOME');
+    }
+  });
+
+  return (
+    <Center height="100%">
+      <Login />
+    </Center>
+  );
+};
 
 export const LoginScreen: ScreenDefinition = {View: LoginView};
