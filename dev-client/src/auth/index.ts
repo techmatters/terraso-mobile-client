@@ -28,7 +28,6 @@ export async function exchangeToken(
     body: {provider, jwt: identityJwt},
     headers: {'content-type': 'application/json'},
   });
-  console.log("asdasdas");
   console.log(payload);
 
   return {
