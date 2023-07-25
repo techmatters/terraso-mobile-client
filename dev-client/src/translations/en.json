@@ -40,6 +40,9 @@
         "a11yLabel": "default soil information source"
       }
     },
+    "team": {
+      "add": "Add team members"
+    },
     "edit": {
       "inputHeader": "General Project Settings"
     },
@@ -80,7 +83,8 @@
     "project_public": "Public",
     "save": "Save",
     "modified_by": "Last modified {{date}} by {{user}}",
-    "select_all": "Select All"
+    "select_all": "Select All",
+    "you": "you"
   },
   "screens": {
     "HOME": "LandPKS",

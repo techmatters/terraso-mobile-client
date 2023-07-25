@@ -63,8 +63,9 @@ export default function ProjectTabs({project}: Props) {
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamTab}
-        initialParams={{users: USER_PROFILES}}
+        initialParams={{memberships: project.members}}
       />
+
       <Tab.Screen
         name={TabRoutes.SITES}
         component={ProjectSitesTab}
