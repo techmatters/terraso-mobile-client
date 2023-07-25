@@ -27,14 +27,18 @@ jobs:
           cache-dependency-path: |
             dev-client/package-lock.json
 
-      - name: Install node dependencies
+      - name: Install Node dependencies
         working-directory: ./dev-client
         run: npm ci
 
-      - name: Run lint checks
+      - name: Lint JavaScript
         working-directory: ./dev-client
         run: npm run lint
 
-      - name: Type check
+      - name: Typecheck TypeScript
         working-directory: ./dev-client
         run: npm run check-ts
+
+      - name: Check NPM module usage
+        working-directory: ./dev-client
+        run: npm run check-modules
