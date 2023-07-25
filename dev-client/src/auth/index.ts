@@ -22,7 +22,6 @@ export async function exchangeToken(
   identityJwt: string,
   provider: OAuthProvider,
 ) {
-  console.log("EXCHANEE!!!");
   console.log(provider);
   const payload = await request<AuthTokens>({
     path: '/auth/token-exchange',
