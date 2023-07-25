@@ -38,8 +38,6 @@ export async function exchangeToken(
 
 const apiConfig = getAPIConfig();
 
-console.log(apiConfig);
-
 export async function auth() {
   let result = await authorize(googleConfig);
   let {atoken, rtoken} = await exchangeToken(
