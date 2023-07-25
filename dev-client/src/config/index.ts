@@ -1,6 +1,7 @@
 import Config from 'react-native-config';
 import {MMKVLoader} from 'react-native-mmkv-storage';
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
+import {Platform} from 'react-native';
 
 const terrasoAPIURL =
   Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
@@ -32,9 +33,17 @@ export const getConfig = apiConfig;
 type AppConfig = {
   packageName: string;
   googleClientId: string;
+  googleRedirectURI: string;
 };
 
 export const APP_CONFIG: AppConfig = {
   packageName: 'org.terraso.landpks',
-  googleClientId: Config.GOOGLE_OAUTH_APP_CLIENT_ID ?? '',
+  googleClientId:
+    Platform.OS === 'android'
+      ? Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? ''
+      : Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '',
+  googleRedirectURI:
+    Platform.OS === 'android'
+      ? `${Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID}:/oauth2redirect` ?? ''
+      : `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '',
 };
