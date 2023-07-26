@@ -22,15 +22,11 @@ export async function exchangeToken(
   identityJwt: string,
   provider: OAuthProvider,
 ) {
-  console.log("EXCHANEE!!!");
-  console.log(provider);
   const payload = await request<AuthTokens>({
     path: '/auth/token-exchange',
     body: {provider, jwt: identityJwt},
     headers: {'content-type': 'application/json'},
   });
-  console.log("asdasdas");
-  console.log(payload);
 
   return {
     atoken: payload.atoken,
@@ -39,8 +35,6 @@ export async function exchangeToken(
 }
 
 const apiConfig = getAPIConfig();
-
-console.log(apiConfig);
 
 export async function auth() {
   let result = await authorize(googleConfig);
