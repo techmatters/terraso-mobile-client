@@ -1,4 +1,5 @@
-import {ProjectPrivacy, SitePreview} from '../../types';
+import {Site} from 'terraso-client-shared/site/siteSlice';
+import {ProjectPrivacy} from '../../types';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 
 export const enum TabRoutes {
@@ -19,7 +20,7 @@ export type TabStackParamList = {
     downloadLink: string;
   };
   [TabRoutes.SITES]: {
-    projectId: number;
-    sites: SitePreview[];
+    projectId: string;
+    sites: Site[];
   };
 };

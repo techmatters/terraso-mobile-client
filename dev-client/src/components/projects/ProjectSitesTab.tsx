@@ -14,11 +14,11 @@ import {TabRoutes, TabStackParamList} from './constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import SearchBar from '../common/SearchBar';
-import {SitePreview} from '../../types';
 import {useCallback} from 'react';
 import ProgressCircle from '../common/ProgressCircle';
 import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
 import {RootStackScreenProps} from '../../screens/AppScaffold';
+import {Site} from 'terraso-client-shared/site/siteSlice';
 
 type SiteMenuProps = {
   iconName: string;
@@ -37,7 +37,7 @@ function SiteMenuItem({iconName, text}: SiteMenuProps) {
 }
 
 type SiteProps = {
-  site: SitePreview;
+  site: Site;
 };
 
 function SiteItem({site}: SiteProps) {
@@ -75,13 +75,13 @@ function SiteItem({site}: SiteProps) {
           <Heading>{site.name}</Heading>
           <Text color="primary.main">
             {t('general.modified_by', {
-              date: new Date(site.lastModified.date).toLocaleDateString(),
-              user: site.lastModified.user.name,
+              date: 'TBD',
+              user: 'TBD',
             })}
           </Text>
           <HStack alignItems="center" space={2}>
             <Icon size="4xl" name="photo" ml={-2} />
-            <ProgressCircle done={site.percentComplete} />
+            <ProgressCircle done={0} />
             <Box flexGrow={1} flexDirection="row" justifyContent="flex-end">
               <Link _text={{color: 'primary.main'}}>
                 {t('projects.sites.go_to')}

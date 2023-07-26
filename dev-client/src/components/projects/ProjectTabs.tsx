@@ -2,7 +2,6 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import ProjectInputTab from './ProjectInputTab';
 import {useTheme} from 'native-base';
 import ProjectTeamTab from './ProjectTeamTab';
-import {fetchProject} from '../../dataflow';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
@@ -70,9 +69,8 @@ export default function ProjectTabs({project}: Props) {
         name={TabRoutes.SITES}
         component={ProjectSitesTab}
         initialParams={{
-          projectId: 1,
-          sites: fetchProject(1).sites,
-          //sites: [],
+          projectId: project.id,
+          sites: [],
         }}
       />
     </Tab.Navigator>
