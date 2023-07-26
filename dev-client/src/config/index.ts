@@ -39,11 +39,15 @@ type AppConfig = {
 export const APP_CONFIG: AppConfig = {
   packageName: 'org.terraso.landpks',
   googleClientId:
-    Platform.OS === 'android'
+    Platform.OS === 'ios'
+      ? Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? ''
+      : Platform.OS === 'android'
       ? Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? ''
-      : Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '',
+      : '',
   googleRedirectURI:
-    Platform.OS === 'android'
+    Platform.OS === 'ios'
+      ? `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? ''
+      : Platform.OS === 'android'
       ? `${Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID}:/oauth2redirect` ?? ''
-      : `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '',
+      : '',
 };
