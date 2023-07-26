@@ -1,4 +1,4 @@
-import {ProjectPrivacy, SitePreview, UserProfile} from '../../types';
+import {ProjectPrivacy, SitePreview} from '../../types';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 
 export const enum TabRoutes {
@@ -10,7 +10,7 @@ export const enum TabRoutes {
 
 export type TabStackParamList = {
   [TabRoutes.INPUTS]: undefined;
-  [TabRoutes.TEAM]: {memberships: Project['members']};
+  [TabRoutes.TEAM]: {memberships: Project['members']; projectId: string};
   [TabRoutes.SETTINGS]: {
     name: string;
     description: string;

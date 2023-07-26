@@ -44,7 +44,7 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
       name += ` (${t('general.you')})`;
     }
     return name;
-  }, [user, currentUserId]);
+  }, [user, isCurrentUser, t]);
 
   return (
     <Box borderBottomWidth="1" width={275} py={2}>

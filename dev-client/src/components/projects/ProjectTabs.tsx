@@ -2,7 +2,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import ProjectInputTab from './ProjectInputTab';
 import {useTheme} from 'native-base';
 import ProjectTeamTab from './ProjectTeamTab';
-import {USER_PROFILES, fetchProject} from '../../dataflow';
+import {fetchProject} from '../../dataflow';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
@@ -63,7 +63,7 @@ export default function ProjectTabs({project}: Props) {
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamTab}
-        initialParams={{memberships: project.members}}
+        initialParams={{memberships: project.members, projectId: project.id}}
       />
 
       <Tab.Screen
