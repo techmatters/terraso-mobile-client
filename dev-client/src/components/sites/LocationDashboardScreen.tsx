@@ -24,7 +24,7 @@ const LocationDashboardView = ({siteId}: Props) => {
   );
 
   const onSitePrivacyChanged = useCallback(
-    (privacy: SitePrivacy) => dispatch(updateSite({...site, privacy})),
+    (privacy: SitePrivacy) => dispatch(updateSite({id: site.id, privacy})),
     [site, dispatch],
   );
 

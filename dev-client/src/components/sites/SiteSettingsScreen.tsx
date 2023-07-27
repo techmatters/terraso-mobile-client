@@ -38,7 +38,7 @@ const SiteSettingsView = ({siteId}: Props) => {
   );
 
   const onSave = useCallback(
-    () => dispatch(updateSite({...site, name})),
+    () => dispatch(updateSite({id: site.id, name})),
     [dispatch, site, name],
   );
 
