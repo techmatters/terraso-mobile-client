@@ -1,9 +1,8 @@
-import {HStack, Input, Text, VStack} from 'native-base';
+import {Fab, HStack, Input, Text, VStack} from 'native-base';
 import {Formik, FormikConfig, FormikProps} from 'formik';
 import RadioBlock from '../../common/RadioBlock';
 import {IconButton} from '../../common/Icons';
 import {useTranslation} from 'react-i18next';
-import SaveFAB from '../../common/SaveFAB';
 import ErrorMessage from '../../common/ErrorMessage';
 import * as yup from 'yup';
 import {
@@ -65,7 +64,7 @@ export default function Form({onSubmit}: Props) {
                 {...inputParams('description')}
               />
               <ErrorMessage fieldName="description" />
-              <RadioBlock<'PUBLIC' | 'PRIVATE'>
+              <RadioBlock
                 label={
                   <HStack alignItems="center">
                     <Text>Data Privacy</Text>
@@ -76,15 +75,17 @@ export default function Form({onSubmit}: Props) {
                   PUBLIC: {text: t('projects.add.public')},
                   PRIVATE: {text: t('projects.add.private')},
                 }}
-                value={values.privacy}
-                onChange={handleChange('privacy')}
-                blockName="data-privacy"
+                groupProps={{
+                  value: values.privacy,
+                  onChange: handleChange('privacy'),
+                  name: 'data-privacy',
+                }}
               />
               <ErrorMessage fieldName="privacy" />
             </VStack>
-            <SaveFAB
-              title={t('general.save')}
-              onPress={handleSubmit as () => void}
+            <Fab
+              label={t('general.save_fab')}
+              onPress={() => handleSubmit()}
               disabled={isSubmitting}
             />
           </>

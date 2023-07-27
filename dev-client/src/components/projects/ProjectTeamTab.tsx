@@ -16,9 +16,11 @@ export default function ProjectTeamTab({route}: Props) {
           'add-and-edit': {text: 'Can add sites and edit site data'},
           view: {text: 'View only'},
         }}
-        blockName="member-permissions"
-        a11yLabel="member permissions"
-        defaultValue="add-and-edit"
+        groupProps={{
+          name: 'member-permissions',
+          accessibilityLabel: 'member permissions',
+          defaultValue: 'add-and-edit',
+        }}
       />
       <AddButton text="Add Team Members" />
       <UserList users={route.params.users} />

@@ -1,27 +1,24 @@
-import {Box, VStack} from 'native-base';
-import BottomNavigation from '../components/common/BottomNavigation';
 import ProjectTabs from '../components/projects/ProjectTabs';
 import {ScreenDefinition} from './AppScaffold';
 import {HeaderTitle} from '@react-navigation/elements';
+import {ScreenScaffold} from './ScreenScaffold';
 
 type Props = {projectName: string};
 
 const ProjectView = (_: Props) => {
   return (
-    <VStack height="100%">
-      <Box flexGrow={2} flexBasis="90%">
-        <ProjectTabs />
-      </Box>
-      <BottomNavigation />
-    </VStack>
+    <ScreenScaffold>
+      <ProjectTabs />
+    </ScreenScaffold>
   );
 };
 
 export const ProjectViewScreen: ScreenDefinition<Props> = {
   View: ProjectView,
-  options: () => ({
+  options: ({projectName}) => ({
     headerBackVisible: false,
-    HeaderTitle: ({projectName, ...props}) => {
+    headerTitle: props => {
+      // const {name} = useSelector(state => state.project.projects[projectId]);
       return <HeaderTitle {...props}>{projectName}</HeaderTitle>;
     },
   }),
