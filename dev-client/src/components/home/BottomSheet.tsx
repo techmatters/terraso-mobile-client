@@ -21,7 +21,7 @@ const SiteListSite = ({site, showSiteOnMap}: SiteListSiteProps) => {
   );
 
   const onTitlePress = useCallback(
-    () => navigation.navigate('SITE_DASHBOARD', {siteId: site.id}),
+    () => navigation.navigate('LOCATION_DASHBOARD', {siteId: site.id}),
     [navigation, site.id],
   );
 
@@ -31,7 +31,7 @@ const SiteListSite = ({site, showSiteOnMap}: SiteListSiteProps) => {
         <Heading size="lg">{site.name}</Heading>
       </Pressable>
       {project && <Heading size="md">{project.name}</Heading>}
-      <Flex direction="row" align="top">
+      <Flex direction="row" align="start">
         <Box height="100px" width="100px" bg="background.default" />
         <Box width="4" />
         <Box flexGrow="1">

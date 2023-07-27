@@ -5,7 +5,7 @@ type MapState = {
   userLocation?: Location;
 };
 
-const initialState = {} as MapState;
+const initialState: MapState = {};
 
 const mapSlice = createSlice({
   name: 'map',

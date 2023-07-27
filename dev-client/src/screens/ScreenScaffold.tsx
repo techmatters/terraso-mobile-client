@@ -1,17 +1,17 @@
-import {HStack} from 'native-base';
+import {Box, Flex, HStack} from 'native-base';
 import {
   IconButton,
   IconButtonProps,
   MaterialCommunityIcons,
-} from '../common/Icons';
-import {useNavigation} from '../../screens/AppScaffold';
+} from '../components/common/Icons';
+import {useNavigation} from './AppScaffold';
 import {useCallback} from 'react';
 
 const BottomNavIconButton = (props: IconButtonProps & {label: string}) => (
   <IconButton pb={0} _icon={{color: 'primary.contrast'}} {...props} />
 );
 
-export default function BottomNavigation() {
+export const BottomNavigation = () => {
   const navigation = useNavigation();
 
   const onMap = useCallback(() => navigation.navigate('HOME'), [navigation]);
@@ -33,4 +33,15 @@ export default function BottomNavigation() {
       <BottomNavIconButton name="settings" label="Settings" />
     </HStack>
   );
-}
+};
+
+type Props = React.ComponentProps<typeof Box>;
+
+export const ScreenScaffold = ({children, ...props}: Props) => (
+  <Flex flex={1}>
+    <Box flex={1} {...props}>
+      {children}
+    </Box>
+    <BottomNavigation />
+  </Flex>
+);

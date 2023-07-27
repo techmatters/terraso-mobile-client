@@ -41,10 +41,12 @@ export default function ProjectSettingsTab({
           private: {text: t('general.project_private')},
           public: {text: t('general.project_public')},
         }}
-        blockName={'project_privacy'}
-        a11yLabel={t('projects.settings.privacy.a11y_label') ?? undefined}
-        defaultValue={privacy}
-        oneLine={true}
+        groupProps={{
+          variant: 'oneLine',
+          name: 'project_privacy',
+          accessibilityLabel: t('projects.settings.privacy.a11y_label'),
+          defaultValue: privacy,
+        }}
       />
       <VStack space={2}>
         <IconLink
