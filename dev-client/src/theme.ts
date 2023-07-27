@@ -87,6 +87,23 @@ export const theme = extendTheme({
         size: 'lg',
       },
     },
+    RadioGroup: {
+      baseStyle: {
+        colorScheme: 'primary',
+      },
+      variants: {
+        oneLine: {
+          direction: 'row',
+          space: '26px',
+        },
+      },
+    },
+    Radio: {
+      baseStyle: {
+        size: 'sm',
+        my: 1,
+      },
+    },
   },
 });
 

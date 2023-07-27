@@ -42,10 +42,12 @@ const LocationDashboardView = ({siteId}: Props) => {
             PUBLIC: {text: t('privacy.PUBLIC.title')},
             PRIVATE: {text: t('privacy.PRIVATE.title')},
           }}
-          blockName="site-privacy"
-          onChange={onSitePrivacyChanged}
-          value={site.privacy}
-          oneLine
+          groupProps={{
+            name: 'site-privacy',
+            variant: 'oneLine',
+            onChange: onSitePrivacyChanged,
+            value: site.privacy,
+          }}
         />
       )}
       {project && (

@@ -1,5 +1,12 @@
-import {FormControl, Radio, Row, Spacer, Text, useTheme} from 'native-base';
-import {View} from 'react-native';
+import {
+  FormControl,
+  IRadioGroupProps,
+  Radio,
+  Row,
+  Spacer,
+  Text,
+  useTheme,
+} from 'native-base';
 
 type RadioOption = {
   text: string;
@@ -9,28 +16,12 @@ type RadioOption = {
 type Props<Keys extends string> = {
   label: string | React.ReactNode;
   options: Record<Keys, RadioOption>;
-  blockName: string;
-  a11yLabel?: string;
-  defaultValue?: Keys;
-  onChange?: (value: Keys) => void;
-  value?: Keys;
-} & WrapperProps;
-
-type WrapperProps = {
-  children?: React.ReactNode;
-  oneLine?: boolean;
-  gap?: number;
+  groupProps: Omit<IRadioGroupProps, 'onChange'> & {
+    value?: Keys;
+    defaultValue?: Keys;
+    onChange?: (value: Keys) => void;
+  };
 };
-
-function OptionWrapper({children, oneLine = false, gap}: WrapperProps) {
-  if (oneLine) {
-    return (
-      // eslint-disable-next-line react-native/no-inline-styles
-      <View style={{gap: gap ?? 26, flexDirection: 'row'}}>{children}</View>
-    );
-  }
-  return <>{children}</>;
-}
 
 type IconLabelProps = {
   label: string;
@@ -53,38 +44,21 @@ export const IconLabel = ({label, icon}: IconLabelProps) => {
 export default function RadioBlock<T extends string>({
   label,
   options,
-  blockName,
-  a11yLabel,
-  defaultValue,
-  oneLine,
-  onChange,
-  value,
-  gap,
+  groupProps: {onChange, ...radioGroupProps},
 }: Props<T>) {
   return (
     <FormControl>
       <FormControl.Label>{label}</FormControl.Label>
       <Radio.Group
-        name={blockName}
-        accessibilityLabel={a11yLabel}
-        colorScheme="primary"
-        defaultValue={defaultValue}
-        value={value ?? undefined}
-        onChange={onChange as (_: string) => void}>
-        <OptionWrapper oneLine={oneLine} gap={gap}>
-          {Object.entries<RadioOption>(options).flatMap(
-            ([value, {text, isDisabled}]) => [
-              <Radio
-                key={value}
-                value={value}
-                my={1}
-                size="sm"
-                isDisabled={isDisabled}>
-                {text}
-              </Radio>,
-            ],
-          )}
-        </OptionWrapper>
+        onChange={onChange as (_: string) => void}
+        {...radioGroupProps}>
+        {Object.entries<RadioOption>(options).flatMap(
+          ([value, {text, isDisabled}]) => [
+            <Radio key={value} value={value} isDisabled={isDisabled}>
+              {text}
+            </Radio>,
+          ],
+        )}
       </Radio.Group>
     </FormControl>
   );

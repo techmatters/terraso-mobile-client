@@ -93,7 +93,7 @@ const SiteSettingsView = ({siteId}: Props) => {
             endIcon={<Icon name="info" />}>
             {t('site.dashboard.archive_button')}
           </Button>
-          <FormControl.HelperText ml="24px" mt={0}>
+          <FormControl.HelperText ml="26px" mt={0}>
             {t('site.dashboard.archive_button_help_text')}
           </FormControl.HelperText>
         </FormControl>

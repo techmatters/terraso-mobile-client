@@ -3,7 +3,7 @@ import {useEffect} from 'react';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch, useSelector} from '../model/store';
 import {ScreenDefinition} from './AppScaffold';
-import { ScreenScaffold } from './ScreenScaffold';
+import {ScreenScaffold} from './ScreenScaffold';
 
 const ProjectListScaffold = () => {
   const dispatch = useDispatch();

@@ -138,7 +138,6 @@ export default function CreateSiteView({
       </FormControl>
       <RadioBlock<LocationInputOptions>
         label="Site Location"
-        blockName="location"
         options={{
           gps: {text: 'Use my current location (GPS)'},
           pin: {
@@ -147,8 +146,11 @@ export default function CreateSiteView({
           },
           coords: {text: 'Enter coordinates'},
         }}
-        defaultValue={defaultLocationSource}
-        onChange={updateLocationSource}
+        groupProps={{
+          name: 'location',
+          defaultValue: defaultLocationSource,
+          onChange: updateLocationSource,
+        }}
       />
       <FormControl>
         <FormControl.Label>Latitude</FormControl.Label>
@@ -181,13 +183,15 @@ export default function CreateSiteView({
       {/* TODO: Site privacy is not integrated on backend yet */}
       <RadioBlock<'public' | 'private'>
         label="Data Privacy"
-        blockName="data-privacy"
         options={{
           public: {text: 'Public'},
           private: {text: 'Private'},
         }}
-        defaultValue="private"
-        oneLine={true}
+        groupProps={{
+          variant: 'oneLine',
+          name: 'data-privacy',
+          defaultValue: 'private',
+        }}
       />
       <Fab label={t('general.save_fab')} onPress={onSave} />
     </VStack>

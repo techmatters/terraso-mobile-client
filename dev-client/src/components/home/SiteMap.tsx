@@ -4,13 +4,13 @@ import {memo, useEffect, useMemo, useRef, useState, useCallback} from 'react';
 // TODO: Is it better to import type?
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {Icon, IconButton} from '../common/Icons';
-import {v4 as uuidv4} from 'uuid';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Box, Heading, Text, Flex, Badge, Divider, Button} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 import {useSelector} from '../../model/store';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
+import {Pressable} from 'react-native';
 
 type SiteMapProps = {
   center?: Position;
@@ -19,7 +19,7 @@ type SiteMapProps = {
 };
 
 const siteFeatureCollection = (
-  sites: Site[],
+  sites: Pick<Site, 'id' | 'latitude' | 'longitude'>[],
 ): GeoJSON.FeatureCollection<GeoJSON.Geometry> => ({
   type: 'FeatureCollection',
   features: sites.map(site => ({
@@ -39,10 +39,16 @@ type SiteCalloutProps = {
 };
 const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
   const {t} = useTranslation();
+  const navigation = useNavigation();
   const project = useSelector(state =>
     site.projectId === undefined
       ? undefined
       : state.project.projects[site.projectId],
+  );
+
+  const onPress = useCallback(
+    () => navigation.navigate('LOCATION_DASHBOARD', {siteId: site.id}),
+    [site.id, navigation],
   );
 
   return (
@@ -52,7 +58,9 @@ const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
       allowOverlap={true}>
       <Box bg="grey.200" padding="4">
         <Flex direction="row" align="top" justify="space-between">
-          <Heading size="lg">{site.name}</Heading>
+          <Pressable onPress={onPress}>
+            <Heading size="lg">{site.name}</Heading>
+          </Pressable>
           <IconButton
             name="close"
             onPress={closeCallout}
@@ -86,7 +94,14 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
   );
 };
 
-const TemporarySiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
+type TemporarySiteCalloutProps = {
+  site: Pick<Site, 'latitude' | 'longitude'>;
+  closeCallout: () => void;
+};
+const TemporarySiteCallout = ({
+  site,
+  closeCallout,
+}: TemporarySiteCalloutProps) => {
   const {t} = useTranslation();
   const {navigate} = useNavigation();
 
@@ -126,7 +141,10 @@ const TemporarySiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
 
 const SiteMap = memo((props: SiteMapProps): JSX.Element => {
   const {center, updateUserLocation, sites} = props;
-  const [temporarySite, setTemporarySite] = useState<Site | null>(null);
+  const [temporarySite, setTemporarySite] = useState<Pick<
+    Site,
+    'latitude' | 'longitude'
+  > | null>(null);
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
   const camera = useRef<Camera>(null);
@@ -146,7 +164,10 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
   );
 
   const temporarySitesFeature = useMemo(
-    () => siteFeatureCollection(temporarySite === null ? [] : [temporarySite]),
+    () =>
+      siteFeatureCollection(
+        temporarySite === null ? [] : [{...temporarySite, id: 'temp'}],
+      ),
     [temporarySite],
   );
 
@@ -170,12 +191,8 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
     }
     const [lon, lat] = feature.geometry.coordinates;
     setTemporarySite({
-      id: uuidv4(),
-      name: 'temporary site',
       latitude: lat,
       longitude: lon,
-      archived: false,
-      privacy: 'PRIVATE',
     });
     setSelectedSiteID(null);
   }, []);

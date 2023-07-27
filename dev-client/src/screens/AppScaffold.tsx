@@ -72,10 +72,10 @@ const defineScreen = <
   Props extends RootStackParamList[Name],
 >(
   name: Name,
-  {options = () => ({}), View: ScreenView}: ScreenDefinition<Props>,
+  {options = () => ({}), View}: ScreenDefinition<Props>,
 ) => {
   const Component = (props: RootStackScreenProps) => (
-    <ScreenView {...((props.route.params ?? {}) as Props & object)} />
+    <View {...((props.route.params ?? {}) as Props & object)} />
   );
 
   return (

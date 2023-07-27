@@ -10,6 +10,9 @@ const LoginView = () => {
     state => state.account.currentUser.data !== null,
   );
 
+  // note: we intentionally run this on every render,
+  // so we can't accidentally get stuck on this view because
+  // it was navigated to while there is already user data
   useEffect(() => {
     if (loggedIn) {
       navigation.replace('HOME');

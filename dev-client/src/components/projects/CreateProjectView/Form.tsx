@@ -64,7 +64,7 @@ export default function Form({onSubmit}: Props) {
                 {...inputParams('description')}
               />
               <ErrorMessage fieldName="description" />
-              <RadioBlock<'PUBLIC' | 'PRIVATE'>
+              <RadioBlock
                 label={
                   <HStack alignItems="center">
                     <Text>Data Privacy</Text>
@@ -75,9 +75,11 @@ export default function Form({onSubmit}: Props) {
                   PUBLIC: {text: t('projects.add.public')},
                   PRIVATE: {text: t('projects.add.private')},
                 }}
-                value={values.privacy}
-                onChange={handleChange('privacy')}
-                blockName="data-privacy"
+                groupProps={{
+                  value: values.privacy,
+                  onChange: handleChange('privacy'),
+                  name: 'data-privacy',
+                }}
               />
               <ErrorMessage fieldName="privacy" />
             </VStack>
