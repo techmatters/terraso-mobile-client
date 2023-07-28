@@ -4,7 +4,7 @@ import AddButton from '../../common/AddButton';
 import {IconButton} from '../../common/Icons';
 import ProjectPreviewCard from '../ProjectPreviewCard';
 import {useNavigation} from '../../../screens/AppScaffold';
-import {useCallback} from 'react';
+import {useCallback, useEffect} from 'react';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 
 type Props = {
@@ -18,6 +18,11 @@ export default function ProjectsSearchView({projects}: Props) {
     () => navigation.navigate('CREATE_PROJECT'),
     [navigation],
   );
+
+  useEffect(() => {
+    console.debug(projects);
+  }, [projects]);
+
   return (
     <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
       <Box alignItems="flex-start" pb={3}>
@@ -55,7 +60,7 @@ export default function ProjectsSearchView({projects}: Props) {
       <FlatList
         data={projects}
         renderItem={({item}) => <ProjectPreviewCard project={item} />}
-        keyExtractor={project => String(project.id)}
+        keyExtractor={project => project.id}
       />
     </VStack>
   );

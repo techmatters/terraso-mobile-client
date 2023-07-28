@@ -175,6 +175,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       latitude: lat,
       longitude: lon,
       archived: false,
+      updatedAt: '',
     });
     setSelectedSiteID(null);
   }, []);

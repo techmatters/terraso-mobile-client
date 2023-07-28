@@ -50,18 +50,24 @@ export default function ProjectTabs({project}: Props) {
     };
   };
 
-  const projectMemberships = useSelector(state =>
-    Object.entries<Membership | undefined>(
-      state.memberships.members.list || [],
-    ).reduce(
-      (acc, [id, membership]) => {
-        if (id in project.membershipIds && membership !== undefined) {
-          acc[id] = membership;
-        }
-        return acc;
-      },
-      {} as Record<string, Membership>,
-    ),
+  const projectMembershipsList = useSelector(
+    state => state.memberships.members.list,
+  );
+
+  const projectMemberships = useMemo(
+    () =>
+      Object.entries<Membership | undefined>(
+        projectMembershipsList || [],
+      ).reduce(
+        (acc, [id, membership]) => {
+          if (id in project.membershipIds && membership !== undefined) {
+            acc[id] = membership;
+          }
+          return acc;
+        },
+        {} as Record<string, Membership>,
+      ),
+    [projectMembershipsList, project],
   );
 
   const projectUserIds: [Membership, string][] = useMemo(
@@ -75,16 +81,26 @@ export default function ProjectTabs({project}: Props) {
     [project, projectMemberships],
   );
 
-  const projectUsers = useSelector(state =>
-    Object.entries<User>(state.account.users).reduce(
-      (acc, [id, user]) => {
-        if (id in projectUserIds) {
-          acc[id] = user;
-        }
-        return acc;
-      },
-      {} as Record<string, User>,
-    ),
+  // lol
+  const userIdsInProject = useMemo(
+    () => new Set(Object.values(project.membershipIds).map(m => m.user)),
+    [project],
+  );
+
+  const projectUsersState = useSelector(state => state.account.users);
+
+  const projectUsers = useMemo(
+    () =>
+      Object.entries<User>(projectUsersState).reduce(
+        (acc, [id, user]) => {
+          if (userIdsInProject.has(id)) {
+            acc[id] = user;
+          }
+          return acc;
+        },
+        {} as Record<string, User>,
+      ),
+    [projectUsersState, userIdsInProject],
   );
 
   const projectMembers: [Membership, User][] = useMemo(
@@ -96,8 +112,14 @@ export default function ProjectTabs({project}: Props) {
     [projectUsers, projectUserIds],
   );
 
-  const projectSites = useSelector(state =>
-    Object.values(state.site.sites).filter(site => site.id in project.siteIds),
+  const projectSitesState = useSelector(state => state.site.sites);
+
+  const projectSites = useMemo(
+    () =>
+      Object.values(projectSitesState).filter(
+        site => site.id in project.siteIds,
+      ),
+    [projectSitesState, project],
   );
 
   return (

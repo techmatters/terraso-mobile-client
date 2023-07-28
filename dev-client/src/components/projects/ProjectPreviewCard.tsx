@@ -1,11 +1,7 @@
 import {Box, HStack, Heading, Link, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
-import {
-  Project,
-  fetchProject,
-} from 'terraso-client-shared/project/projectSlice';
-import {useDispatch} from '../../model/store';
+import {Project} from 'terraso-client-shared/project/projectSlice';
 import IconChip from '../common/IconChip';
 import {useNavigation} from '../../screens/AppScaffold';
 
@@ -16,12 +12,10 @@ type Props = {
 export default function ProjectPreviewCard({project}: Props) {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   const goToProject = useCallback(async () => {
-    await dispatch(fetchProject(project.id));
     return navigation.navigate('PROJECT_VIEW', {project: project});
-  }, [project, navigation, dispatch]);
+  }, [project, navigation]);
 
   return (
     <Box bg="background.default" p={2} m={2}>
