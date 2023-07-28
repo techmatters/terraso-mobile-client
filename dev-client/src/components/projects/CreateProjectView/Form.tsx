@@ -107,6 +107,7 @@ export default function Form({
               label={t('general.save_fab')}
               onPress={() => handleSubmit()}
               disabled={isSubmitting}
+              renderInPortal={false}
             />
           </>
         );

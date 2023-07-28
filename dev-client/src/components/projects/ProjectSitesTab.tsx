@@ -5,6 +5,7 @@ import {
   Heading,
   Link,
   Menu,
+  Pressable,
   Text,
   VStack,
 } from 'native-base';
@@ -18,29 +19,35 @@ import {useCallback} from 'react';
 import ProgressCircle from '../common/ProgressCircle';
 import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
 import {RootStackScreenProps} from '../../screens/AppScaffold';
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site, deleteSite} from 'terraso-client-shared/site/siteSlice';
+import {useDispatch} from '../../model/store';
+import {removeSiteFromAllProjects} from 'terraso-client-shared/project/projectSlice';
 
 type SiteMenuProps = {
   iconName: string;
   text: string;
+  onPress?: () => void;
 };
 
-function SiteMenuItem({iconName, text}: SiteMenuProps) {
+function SiteMenuItem({iconName, text, onPress}: SiteMenuProps) {
   return (
     <Menu.Item>
-      <HStack flexDirection="row" space={2} alignItems="center">
-        <Icon name={iconName} size="xs" />
-        <Text>{text}</Text>
-      </HStack>
+      <Pressable onPress={onPress}>
+        <HStack flexDirection="row" space={2} alignItems="center">
+          <Icon name={iconName} size="xs" />
+          <Text>{text}</Text>
+        </HStack>
+      </Pressable>
     </Menu.Item>
   );
 }
 
 type SiteProps = {
   site: Site;
+  deleteCallback: () => void;
 };
 
-function SiteItem({site}: SiteProps) {
+function SiteItem({site, deleteCallback}: SiteProps) {
   const {t} = useTranslation();
   return (
     <Box backgroundColor="background.default" px={1} py={3} m={1}>
@@ -58,15 +65,12 @@ function SiteItem({site}: SiteProps) {
               />
             )}>
             <SiteMenuItem
-              iconName="list-alt"
-              text={t('projects.sites.audit_log')}
-            />
-            <SiteMenuItem
               iconName="remove"
               text={t('projects.sites.remove_site')}
             />
             <SiteMenuItem
               iconName="delete"
+              onPress={deleteCallback}
               text={t('projects.sites.delete_site')}
             />
           </Menu>
@@ -106,6 +110,7 @@ export default function ProjectSitesTab({
   navigation,
 }: Props): JSX.Element {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
   const transferCallback = useCallback(
     () =>
       navigation.navigate('SITE_TRANSFER_PROJECT', {
@@ -117,6 +122,19 @@ export default function ProjectSitesTab({
     navigation.navigate('CREATE_SITE');
   }, [navigation]);
 
+  const deleteSiteCallback = (site: Site) => {
+    return async () => {
+      await dispatch(deleteSite(site));
+      dispatch(removeSiteFromAllProjects(site.id));
+      let index = sites.indexOf(site);
+      if (index >= -1) {
+        let otherSites = [...sites];
+        otherSites.splice(index, 1);
+        navigation.setParams({projectId, sites: otherSites});
+      }
+    };
+  };
+
   const isEmpty = sites.length === 0;
 
   const full = (
@@ -124,8 +142,10 @@ export default function ProjectSitesTab({
       <SearchBar selected={sites} />
       <FlatList
         data={sites}
-        renderItem={({item}) => <SiteItem site={item} />}
-        keyExtractor={site => String(site.id)}
+        renderItem={({item}) => (
+          <SiteItem site={item} deleteCallback={deleteSiteCallback(item)} />
+        )}
+        keyExtractor={site => site.id}
       />
     </>
   );
