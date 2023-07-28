@@ -14,7 +14,19 @@
     "ecological_site_prediction": "ECOLOGICAL SITE PREDICTION",
     "annual_precip_avg": "ANNUAL PRECIPITATION AVG",
     "elevation": "ELEVATION",
-    "none_in_list": "You don’t currently have any saved sites. Create a site by using the button above or by finding the site location on the map.\n\nA site allows you to collect data, learn more about your land, and share with others. Learn more about using LandPKS..."
+    "none_in_list": "You don’t currently have any saved sites. Create a site by using the button above or by finding the site location on the map.\n\nA site allows you to collect data, learn more about your land, and share with others. Learn more about using LandPKS...",
+    "dashboard": {
+      "privacy": {
+        "project": "Project ({{privacy}}): ",
+        "site": "Data Privacy"
+      },
+      "team_button": "Team",
+      "transfer_label": "Transfer to Project",
+      "copy_download_link_button": "COPY SITE DOWNLOAD LINK",
+      "archive_button": "ARCHIVE THIS SITE",
+      "archive_button_help_text": "Mark this site read-only",
+      "delete_button": "DELETE THIS SITE"
+    }
   },
   "projects": {
     "title": "Projects",
@@ -82,6 +94,7 @@
     "project_private": "Private",
     "project_public": "Public",
     "save": "Save",
+    "save_fab": "SAVE",
     "modified_by": "Last modified {{date}} by {{user}}",
     "select_all": "Select All",
     "you": "you"
@@ -94,5 +107,15 @@
     "CREATE_PROJECT": "Create Project",
     "SITE_TRANSFER_PROJECT": "Project #{{id}}",
     "CREATE_SITE": "Create Site"
+  },
+  "privacy": {
+    "PUBLIC": {
+      "inline": "public",
+      "title": "Public"
+    },
+    "PRIVATE": {
+      "inline": "private",
+      "title": "Private"
+    }
   }
 }

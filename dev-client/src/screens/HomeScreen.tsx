@@ -1,6 +1,4 @@
 import SiteMap from '../components/home/SiteMap';
-import BottomNavigation from '../components/common/BottomNavigation';
-import {Box, VStack} from 'native-base';
 import {useCallback, useEffect, useState} from 'react';
 import {Location} from '@rnmapbox/maps';
 import {updateLocation} from '../model/map/mapSlice';
@@ -11,6 +9,7 @@ import BottomSheet from '../components/home/BottomSheet';
 import {ScreenDefinition} from './AppScaffold';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
+import {ScreenScaffold} from './ScreenScaffold';
 
 const HomeView = () => {
   const [mapCenter, setMapCenter] = useState<Position | undefined>(undefined);
@@ -29,22 +28,17 @@ const HomeView = () => {
     [dispatch],
   );
   return (
-    <VStack>
-      <Box flexBasis="90%">
-        <SiteMap
-          updateUserLocation={updateUserLocation}
-          sites={sites}
-          center={mapCenter}
-        />
-        <BottomSheet
-          sites={sites}
-          showSiteOnMap={site => setMapCenter([site.longitude, site.latitude])}
-        />
-      </Box>
-      <Box flexBasis="10%">
-        <BottomNavigation />
-      </Box>
-    </VStack>
+    <ScreenScaffold>
+      <SiteMap
+        updateUserLocation={updateUserLocation}
+        sites={sites}
+        center={mapCenter}
+      />
+      <BottomSheet
+        sites={sites}
+        showSiteOnMap={site => setMapCenter([site.longitude, site.latitude])}
+      />
+    </ScreenScaffold>
   );
 };
 

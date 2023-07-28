@@ -28,25 +28,7 @@ Mapbox.setAccessToken(
 );
 
 function App(): JSX.Element {
-  const store = useMemo(
-    () =>
-      createStore({
-        map: {userLocation: undefined},
-        site: {
-          sites: {
-            id1: {
-              id: 'id1',
-              name: 'site 1',
-              latitude: 48.3820485,
-              longitude: -123.5467687323,
-              archived: false,
-              updatedAt: '',
-            },
-          },
-        },
-      }),
-    [],
-  );
+  const store = useMemo(createStore, []);
   useEffect(() =>
     checkAndroidPermissions(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,

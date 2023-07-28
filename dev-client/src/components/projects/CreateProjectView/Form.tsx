@@ -1,9 +1,8 @@
-import {HStack, Heading, Input, VStack} from 'native-base';
+import {Fab, HStack, Heading, Input, VStack} from 'native-base';
 import {Formik, FormikConfig, FormikProps} from 'formik';
 import RadioBlock from '../../common/RadioBlock';
 import {Icon, IconButton} from '../../common/Icons';
 import {useTranslation} from 'react-i18next';
-import SaveFAB from '../../common/SaveFAB';
 import ErrorMessage from '../../common/ErrorMessage';
 import * as yup from 'yup';
 import {
@@ -11,7 +10,6 @@ import {
   PROJECT_NAME_MAX_LENGTH,
   PROJECT_NAME_MIN_LENGTH,
 } from '../../../constants';
-import {ProjectPrivacy} from '../../../types';
 
 const validationSchema = yup.object().shape({
   name: yup
@@ -85,7 +83,7 @@ export default function Form({
                 {...inputParams('description')}
               />
               <ErrorMessage fieldName="description" />
-              <RadioBlock<ProjectPrivacy>
+              <RadioBlock
                 label={
                   <HStack alignItems="center">
                     <Heading size="sm">Data Privacy</Heading>
@@ -96,17 +94,19 @@ export default function Form({
                   PUBLIC: {text: t('projects.add.public')},
                   PRIVATE: {text: t('projects.add.private')},
                 }}
-                value={values.privacy}
-                onChange={handleChange('privacy')}
-                blockName="data-privacy"
+                groupProps={{
+                  value: values.privacy,
+                  variant: 'oneLine',
+                  onChange: handleChange('privacy'),
+                  name: 'data-privacy',
+                }}
               />
               <ErrorMessage fieldName="privacy" />
             </VStack>
-            <SaveFAB
-              title={t('general.save')}
-              onPress={handleSubmit as () => void}
+            <Fab
+              label={t('general.save_fab')}
+              onPress={() => handleSubmit()}
               disabled={isSubmitting}
-              aboveNavBar={editForm}
             />
           </>
         );

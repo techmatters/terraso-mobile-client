@@ -12,6 +12,7 @@ import {
 import {removeMembershipFromProject} from 'terraso-client-shared/project/projectSlice';
 import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';
+import RadioBlock from '../common/RadioBlock';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 
@@ -47,6 +48,18 @@ export default function ProjectTeamTab({route}: Props) {
 
   return (
     <VStack alignItems="flex-start" p={4} space={3}>
+      <RadioBlock<'add-and-edit' | 'view'>
+        label="Member Permissions"
+        options={{
+          'add-and-edit': {text: 'Can add sites and edit site data'},
+          view: {text: 'View only'},
+        }}
+        groupProps={{
+          name: 'member-permissions',
+          accessibilityLabel: 'member permissions',
+          defaultValue: 'add-and-edit',
+        }}
+      />
       <AddButton text={t('projects.team.add')} />
       <UserList
         memberships={Object.entries(members)}

@@ -13,9 +13,11 @@ export default function ProjectInputTab() {
           imperial: {text: t('projects.inputs.units.imperial')},
           metric: {text: t('projects.inputs.units.metric')},
         }}
-        blockName="measurement-units"
-        a11yLabel={t('projects.inputs.units.a11yLabel')}
-        defaultValue="imperial"
+        groupProps={{
+          name: 'measurement-units',
+          accessibilityLabel: t('projects.inputs.units.a11yLabel'),
+          defaultValue: 'imperial',
+        }}
       />
       <RadioBlock<'soil-survey' | 'soil-grids'>
         label={t('projects.inputs.soil_source.heading')}
@@ -25,9 +27,11 @@ export default function ProjectInputTab() {
             text: t('projects.inputs.soil_source.grids'),
           },
         }}
-        blockName="information-source"
-        a11yLabel={t('projects.inputs.soil_source.a11yLabel')}
-        defaultValue="soil-survey"
+        groupProps={{
+          name: 'information-source',
+          accessibilityLabel: t('projects.inputs.soil_source.a11yLabel'),
+          defaultValue: 'soil-survey',
+        }}
       />
       <Text>Input methods TBD</Text>
     </VStack>
