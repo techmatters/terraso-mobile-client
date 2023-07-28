@@ -9,8 +9,9 @@ import {
   Membership,
   removeMember,
 } from 'terraso-client-shared/memberships/membershipsSlice';
-import {removeUserFromProject} from 'terraso-client-shared/project/projectSlice';
+import {removeMembershipFromProject} from 'terraso-client-shared/project/projectSlice';
 import {useTranslation} from 'react-i18next';
+import {User} from 'terraso-client-shared/account/accountSlice';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 
@@ -18,31 +19,37 @@ export default function ProjectTeamTab({route}: Props) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.account.currentUser);
-  const projects = useSelector(state => state.project.projects);
-  const project = projects[route.params.projectId];
-  let [members, setMembers] = useState(Object.entries(project.members));
+  let [members, setMembers] = useState(
+    route.params.memberships.reduce(
+      (x, y) => ({...x, [y[0].membershipId]: y}),
+      {} as Record<string, [Membership, User]>,
+    ),
+  );
 
   const removeMembership = useCallback(
-    (membership: Membership, userId: string) => {
+    (membership: Membership) => {
       return async () => {
         await dispatch(removeMember(membership));
         dispatch(
-          removeUserFromProject({userId, projectId: route.params.projectId}),
+          removeMembershipFromProject({
+            membershipId: membership.membershipId,
+            projectId: route.params.projectId,
+          }),
         );
         // TODO: This is just to get the project to update
-        let newMembers = {...project.members};
+        let newMembers = {...members};
         delete newMembers[membership.membershipId];
-        setMembers(Object.entries(newMembers));
+        setMembers(newMembers);
       };
     },
-    [dispatch, project.members, route.params.projectId],
+    [dispatch, members, route.params.projectId],
   );
 
   return (
     <VStack alignItems="flex-start" p={4} space={3}>
       <AddButton text={t('projects.team.add')} />
       <UserList
-        memberships={members}
+        memberships={Object.entries(members)}
         currentUserId={currentUser.data?.id}
         userAction={removeMembership}
       />

@@ -7,6 +7,10 @@ import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
 import {Icon} from '../common/Icons';
 import {Project} from 'terraso-client-shared/project/projectSlice';
+import {useSelector} from '../../model/store';
+import {useMemo} from 'react';
+import {Membership} from 'terraso-client-shared/memberships/membershipsSlice';
+import {User} from 'terraso-client-shared/account/accountSlice';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 type ScreenOptions = React.ComponentProps<
@@ -45,6 +49,57 @@ export default function ProjectTabs({project}: Props) {
       },
     };
   };
+
+  const projectMemberships = useSelector(state =>
+    Object.entries<Membership | undefined>(
+      state.memberships.members.list || [],
+    ).reduce(
+      (acc, [id, membership]) => {
+        if (id in project.membershipIds && membership !== undefined) {
+          acc[id] = membership;
+        }
+        return acc;
+      },
+      {} as Record<string, Membership>,
+    ),
+  );
+
+  const projectUserIds: [Membership, string][] = useMemo(
+    () =>
+      Object.entries(project.membershipIds).map(
+        ([membershipId, {user: userId}]) => [
+          projectMemberships[membershipId],
+          userId,
+        ],
+      ),
+    [project, projectMemberships],
+  );
+
+  const projectUsers = useSelector(state =>
+    Object.entries<User>(state.account.users).reduce(
+      (acc, [id, user]) => {
+        if (id in projectUserIds) {
+          acc[id] = user;
+        }
+        return acc;
+      },
+      {} as Record<string, User>,
+    ),
+  );
+
+  const projectMembers: [Membership, User][] = useMemo(
+    () =>
+      projectUserIds.map(([membership, userId]) => [
+        membership,
+        projectUsers[userId],
+      ]),
+    [projectUsers, projectUserIds],
+  );
+
+  const projectSites = useSelector(state =>
+    Object.values(state.site.sites).filter(site => site.id in project.siteIds),
+  );
+
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
@@ -62,7 +117,7 @@ export default function ProjectTabs({project}: Props) {
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamTab}
-        initialParams={{memberships: project.members, projectId: project.id}}
+        initialParams={{memberships: projectMembers, projectId: project.id}}
       />
 
       <Tab.Screen
@@ -70,7 +125,7 @@ export default function ProjectTabs({project}: Props) {
         component={ProjectSitesTab}
         initialParams={{
           projectId: project.id,
-          sites: [],
+          sites: projectSites,
         }}
       />
     </Tab.Navigator>

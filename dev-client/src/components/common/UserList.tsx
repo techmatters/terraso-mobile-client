@@ -15,14 +15,14 @@ import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 
 type ListProps = {
-  memberships: [string, [Membership, Omit<User, 'preferences'>]][];
+  memberships: [string, [Membership, User]][];
   currentUserId?: string;
-  userAction: (membership: Membership, userId: string) => () => void;
+  userAction: (membership: Membership) => () => void;
 };
 
 type ItemProps = {
   membership: Membership;
-  user: Omit<User, 'preferences'>;
+  user: User;
   currentUserId?: string;
   onPress?: () => void;
 };
@@ -102,7 +102,7 @@ export default function UserList({
           membership={membership}
           user={user}
           currentUserId={currentUserId}
-          onPress={userAction(membership, user.id)}
+          onPress={userAction(membership)}
         />
       )}
       keyExtractor={([id, _]) => id}

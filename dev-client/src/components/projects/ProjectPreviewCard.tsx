@@ -41,8 +41,14 @@ export default function ProjectPreviewCard({project}: Props) {
       <HStack space={2} alignItems="center">
         {/* TODO: Progress still not stored on backend */}
         <Text>30%</Text>
-        <IconChip iconName="location-on" label={project.siteCount} />
-        <IconChip iconName="people-alt" label={project.userCount} />
+        <IconChip
+          iconName="location-on"
+          label={Object.keys(project.siteIds).length}
+        />
+        <IconChip
+          iconName="people-alt"
+          label={Object.keys(project.membershipIds).length}
+        />
       </HStack>
       <Link
         _text={{color: 'primary.main'}}
