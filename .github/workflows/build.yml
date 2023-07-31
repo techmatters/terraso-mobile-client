@@ -29,8 +29,7 @@ jobs:
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
-          cache-dependency-path: |
-            dev-client/package-lock.json
+          cache-dependency-path: dev-client/package-lock.json
 
       - name: Install Node dependencies
         working-directory: dev-client
@@ -45,11 +44,9 @@ jobs:
       - name: Restore Pods cache
         uses: actions/cache@v3
         with:
-          path: |
-            dev-client/ios/Pods
+          path: dev-client/ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
+          restore-keys: ${{ runner.os }}-pods-
 
       - name: Provide Mapbox secret key
         env:
@@ -89,8 +86,7 @@ jobs:
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
-          cache-dependency-path: |
-            dev-client/package-lock.json
+          cache-dependency-path: dev-client/package-lock.json
 
       - name: Install Node dependencies
         working-directory: dev-client
