@@ -19,8 +19,7 @@ jobs:
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
-          cache-dependency-path: |
-            dev-client/package-lock.json
+          cache-dependency-path: dev-client/package-lock.json
 
       - name: Install Node dependencies
         working-directory: dev-client

@@ -22,8 +22,7 @@ jobs:
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
-          cache-dependency-path: |
-            dev-client/package-lock.json
+          cache-dependency-path: dev-client/package-lock.json
 
       - name: Install Node dependencies
         working-directory: dev-client
@@ -71,7 +70,7 @@ jobs:
           git commit -m "build: bump version number"
           git push
 
-      - name: Build IOS App
+      - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.0
         with:
           project-path: dev-client/ios/Terraso LandPKS.xcodeproj
