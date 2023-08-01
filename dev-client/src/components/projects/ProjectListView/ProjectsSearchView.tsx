@@ -19,10 +19,6 @@ export default function ProjectsSearchView({projects}: Props) {
     [navigation],
   );
 
-  useEffect(() => {
-    console.debug(projects);
-  }, [projects]);
-
   return (
     <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
       <Box alignItems="flex-start" pb={3}>
