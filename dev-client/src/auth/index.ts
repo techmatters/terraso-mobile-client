@@ -38,9 +38,15 @@ const apiConfig = getAPIConfig();
 
 export async function auth() {
   let result = await authorize(googleConfig);
+  var platforOs = '';
+  if (Platform.OS === 'android') {
+    platforOs = 'google-android';
+  } else if (Platform.OS === 'ios') {
+    platforOs = 'google-ios';
+  }
   let {atoken, rtoken} = await exchangeToken(
     result.idToken,
-    Platform.OS === 'android' ? 'google-android' : 'google-ios',
+    platforOs as OAuthProvider,
   );
   return Promise.all([
     apiConfig.tokenStorage.setToken('atoken', atoken),

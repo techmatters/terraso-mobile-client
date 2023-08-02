@@ -36,18 +36,19 @@ type AppConfig = {
   googleRedirectURI: string;
 };
 
+var googleClientId = '';
+var googleRedirectURI = '';
+if (Platform.OS === 'ios') {
+  googleClientId = Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '';
+  googleRedirectURI =
+    `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
+} else if (Platform.OS === 'android') {
+  googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
+  googleRedirectURI =
+    `${Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID}:/oauth2redirect` ?? '';
+}
 export const APP_CONFIG: AppConfig = {
   packageName: 'org.terraso.landpks',
-  googleClientId:
-    Platform.OS === 'ios'
-      ? Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? ''
-      : Platform.OS === 'android'
-      ? Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? ''
-      : '',
-  googleRedirectURI:
-    Platform.OS === 'ios'
-      ? `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? ''
-      : Platform.OS === 'android'
-      ? `${Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID}:/oauth2redirect` ?? ''
-      : '',
+  googleClientId: googleClientId,
+  googleRedirectURI: googleRedirectURI,
 };
