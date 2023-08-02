@@ -10,12 +10,13 @@ import {ValidationError} from 'yup';
 import SaveFAB from '../common/SaveFAB';
 import {Icon} from '../common/Icons';
 
-type LatLongString = {latitude: string; longitude: string};
+type LatLongString = {latitude: string; longitude: string; accuracy?: number};
 
 function fromLocation(location: Location): LatLongString {
   return {
     longitude: String(location.coords.longitude),
     latitude: String(location.coords.latitude),
+    accuracy: location.coords.accuracy,
   };
 }
 
@@ -83,7 +84,7 @@ export default function CreateSiteView({
    * For example, for 'pin', it grabs and formats the value from the sitepin */
   const locationOptions = useMemo(() => {
     const options: Record<LocationInputOptions, LatLongString | undefined> = {
-      coords: {latitude: '', longitude: ''},
+      coords: {latitude: '', longitude: '', accuracy: undefined},
       gps: userLocation && fromLocation(userLocation),
       pin: sitePin && fromLocation(sitePin),
     };
