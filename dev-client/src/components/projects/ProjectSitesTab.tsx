@@ -15,13 +15,17 @@ import {TabRoutes, TabStackParamList} from './constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import SearchBar from '../common/SearchBar';
-import {useCallback} from 'react';
+import {useCallback, useEffect} from 'react';
+import {createSelector} from '@reduxjs/toolkit';
 import ProgressCircle from '../common/ProgressCircle';
 import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
 import {RootStackScreenProps} from '../../screens/AppScaffold';
 import {Site, deleteSite} from 'terraso-client-shared/site/siteSlice';
-import {useDispatch} from '../../model/store';
-import {removeSiteFromAllProjects} from 'terraso-client-shared/project/projectSlice';
+import {useDispatch, useSelector, AppState} from '../../model/store';
+import {
+  Project,
+  removeSiteFromAllProjects,
+} from 'terraso-client-shared/project/projectSlice';
 
 type SiteMenuProps = {
   iconName: string;
@@ -103,9 +107,25 @@ type Props = CompositeScreenProps<
   RootStackScreenProps
 >;
 
+const selectProjectSites = createSelector(
+  (state: AppState) => state.project.projects,
+  (state: AppState) => state.site.sites,
+  (_: AppState, projectId: string) => projectId,
+  (
+    projects: Record<string, Project>,
+    sites: Record<string, Site>,
+    projectId: string,
+  ) => {
+    let project = projects[projectId];
+    console.debug('project site length', Object.keys(project.siteIds));
+    console.debug(Object.keys(sites));
+    return Object.keys(project.siteIds).map(id => sites[id]);
+  },
+);
+
 export default function ProjectSitesTab({
   route: {
-    params: {projectId, sites},
+    params: {projectId},
   },
   navigation,
 }: Props): JSX.Element {
@@ -118,20 +138,21 @@ export default function ProjectSitesTab({
       }),
     [navigation, projectId],
   );
+
+  const sites = useSelector(state => selectProjectSites(state, projectId));
+
+  useEffect(() => {
+    console.debug('project tab sites', sites.length);
+  }, [sites]);
+
   const addSiteCallback = useCallback(() => {
-    navigation.navigate('CREATE_SITE');
+    navigation.navigate('CREATE_SITE', {projectId: projectId});
   }, [navigation]);
 
   const deleteSiteCallback = (site: Site) => {
     return async () => {
       await dispatch(deleteSite(site));
       dispatch(removeSiteFromAllProjects(site.id));
-      let index = sites.indexOf(site);
-      if (index >= -1) {
-        let otherSites = [...sites];
-        otherSites.splice(index, 1);
-        navigation.setParams({projectId, sites: otherSites});
-      }
     };
   };
 

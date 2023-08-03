@@ -22,6 +22,5 @@ export type TabStackParamList = {
   };
   [TabRoutes.SITES]: {
     projectId: string;
-    sites: Site[];
   };
 };

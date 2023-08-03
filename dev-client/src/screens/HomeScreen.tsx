@@ -24,6 +24,9 @@ const HomeView = () => {
   const updateUserLocation = useCallback(
     (location: Location) => {
       dispatch(updateLocation(location));
+      if (mapCenter === undefined) {
+        setMapCenter([location.coords.longitude, location.coords.latitude]);
+      }
     },
     [dispatch],
   );

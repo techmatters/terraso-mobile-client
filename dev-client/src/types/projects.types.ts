@@ -4,6 +4,7 @@ import {SitePreview} from './sites.types';
 export interface ProjectName {
   name: string;
   id: string;
+  privacy: ProjectPrivacy;
 }
 
 export type ProjectPreview = {

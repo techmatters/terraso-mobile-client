@@ -58,15 +58,12 @@ export default function ProjectTabs({project}: Props) {
     () =>
       Object.entries<Membership | undefined>(
         projectMembershipsList || [],
-      ).reduce(
-        (acc, [id, membership]) => {
-          if (id in project.membershipIds && membership !== undefined) {
-            acc[id] = membership;
-          }
-          return acc;
-        },
-        {} as Record<string, Membership>,
-      ),
+      ).reduce((acc, [id, membership]) => {
+        if (id in project.membershipIds && membership !== undefined) {
+          acc[id] = membership;
+        }
+        return acc;
+      }, {} as Record<string, Membership>),
     [projectMembershipsList, project],
   );
 
@@ -91,15 +88,12 @@ export default function ProjectTabs({project}: Props) {
 
   const projectUsers = useMemo(
     () =>
-      Object.entries<User>(projectUsersState).reduce(
-        (acc, [id, user]) => {
-          if (userIdsInProject.has(id)) {
-            acc[id] = user;
-          }
-          return acc;
-        },
-        {} as Record<string, User>,
-      ),
+      Object.entries<User>(projectUsersState).reduce((acc, [id, user]) => {
+        if (userIdsInProject.has(id)) {
+          acc[id] = user;
+        }
+        return acc;
+      }, {} as Record<string, User>),
     [projectUsersState, userIdsInProject],
   );
 
@@ -147,7 +141,6 @@ export default function ProjectTabs({project}: Props) {
         component={ProjectSitesTab}
         initialParams={{
           projectId: project.id,
-          sites: projectSites,
         }}
       />
     </Tab.Navigator>
