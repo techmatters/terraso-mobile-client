@@ -61,6 +61,17 @@ export default function CreateSiteView({
     projectId: defaultProject,
   });
 
+  const sitePrivacy = useMemo(() => {
+    if (!mutationInput.projectId) {
+      return undefined;
+    }
+    let projs = projects.filter(({id}) => id === mutationInput.projectId);
+    if (projs.length !== 1) {
+      return undefined;
+    }
+    return projs[0].privacy;
+  }, [mutationInput, projects]);
+
   const [errors, setErrors] = useState<Error>({});
 
   const {navigate, goBack} = useNavigation();
@@ -209,16 +220,18 @@ export default function CreateSiteView({
             ))}
           </Select>
         </FormControl>
-        <RadioBlock<'public' | 'private'>
+        <RadioBlock<'PUBLIC' | 'PRIVATE'>
           label="Data Privacy"
           options={{
-            public: {text: 'Public'},
-            private: {text: 'Private'},
+            PUBLIC: {text: 'Public'},
+            PRIVATE: {text: 'Private'},
           }}
+          allDisabled={sitePrivacy ? true : undefined}
           groupProps={{
             variant: 'oneLine',
             name: 'data-privacy',
-            defaultValue: 'private',
+            defaultValue: 'PRIVATE',
+            value: sitePrivacy ? sitePrivacy : undefined,
           }}
         />
         <Fab label={t('general.save_fab')} onPress={onSave} />
