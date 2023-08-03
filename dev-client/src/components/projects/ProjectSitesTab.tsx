@@ -15,7 +15,7 @@ import {TabRoutes, TabStackParamList} from './constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import SearchBar from '../common/SearchBar';
-import {useCallback, useEffect} from 'react';
+import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
 import ProgressCircle from '../common/ProgressCircle';
 import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
@@ -83,7 +83,7 @@ function SiteItem({site, deleteCallback}: SiteProps) {
           <Heading>{site.name}</Heading>
           <Text color="primary.main">
             {t('general.modified_by', {
-              date: 'TBD',
+              date: new Date(site.updatedAt).toLocaleDateString(),
               user: 'TBD',
             })}
           </Text>
@@ -117,9 +117,9 @@ const selectProjectSites = createSelector(
     projectId: string,
   ) => {
     let project = projects[projectId];
-    console.debug('project site length', Object.keys(project.siteIds));
-    console.debug(Object.keys(sites));
-    return Object.keys(project.siteIds).map(id => sites[id]);
+    return Object.keys(project.siteIds)
+      .map(id => sites[id])
+      .filter(site => site);
   },
 );
 
@@ -140,10 +140,6 @@ export default function ProjectSitesTab({
   );
 
   const sites = useSelector(state => selectProjectSites(state, projectId));
-
-  useEffect(() => {
-    console.debug('project tab sites', sites.length);
-  }, [sites]);
 
   const addSiteCallback = useCallback(() => {
     navigation.navigate('CREATE_SITE', {projectId: projectId});
