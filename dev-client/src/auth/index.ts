@@ -3,12 +3,13 @@ import {APP_CONFIG} from '../config';
 import {OAuthProvider} from '../types';
 import {request} from 'terraso-client-shared/terrasoApi/api';
 import {getAPIConfig} from 'terraso-client-shared/config';
+import {Platform} from 'react-native';
 
 // https://github.com/FormidableLabs/react-native-app-auth/blob/main/docs/config-examples/google.md
 const googleConfig = {
   issuer: 'https://accounts.google.com',
   clientId: APP_CONFIG.googleClientId,
-  redirectUrl: `${APP_CONFIG.packageName}:/oauth2redirect`,
+  redirectUrl: APP_CONFIG.googleRedirectURI,
   scopes: ['openid', 'profile', 'email'],
 };
 
@@ -37,7 +38,16 @@ const apiConfig = getAPIConfig();
 
 export async function auth() {
   let result = await authorize(googleConfig);
-  let {atoken, rtoken} = await exchangeToken(result.idToken, 'google');
+  var platformOs = '';
+  if (Platform.OS === 'android') {
+    platformOs = 'google-android';
+  } else if (Platform.OS === 'ios') {
+    platformOs = 'google-ios';
+  }
+  let {atoken, rtoken} = await exchangeToken(
+    result.idToken,
+    platformOs as OAuthProvider,
+  );
   return Promise.all([
     apiConfig.tokenStorage.setToken('atoken', atoken),
     apiConfig.tokenStorage.setToken('rtoken', rtoken),
