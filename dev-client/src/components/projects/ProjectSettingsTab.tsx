@@ -15,6 +15,7 @@ import IconLink from '../common/IconLink';
 import {useRef, useState} from 'react';
 import { useDispatch } from '../../model/store';
 import { deleteProject } from 'terraso-client-shared/project/projectSlice';
+import { useNavigation } from '../../screens/AppScaffold';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
@@ -25,6 +26,7 @@ export default function ProjectSettingsTab({
 }: Props) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const cancelRef = useRef(null);
   const closeDeleteProject = () => {
@@ -34,7 +36,9 @@ export default function ProjectSettingsTab({
     setIsDeleteModalOpen(true);
   };
   const triggerDeleteProject = () => {
+    setIsDeleteModalOpen(false);
     dispatch(deleteProject({id: projectId}));
+    navigation.navigate('PROJECT_LIST');
   };
 
   return (
