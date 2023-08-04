@@ -1,5 +1,4 @@
 import {Location} from '@rnmapbox/maps';
-import {ProjectName} from '../../types';
 import RadioBlock from '../common/RadioBlock';
 import {
   Fab,
@@ -11,12 +10,16 @@ import {
   VStack,
 } from 'native-base';
 import {useCallback, useMemo, useState} from 'react';
-import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  ProjectPrivacy,
+  SiteAddMutationInput,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from '../../screens/AppScaffold';
 import {siteValidationSchema} from './validation';
 import {ValidationError} from 'yup';
 import {Icon} from '../common/Icons';
 import {useTranslation} from 'react-i18next';
+import {useSelector} from '../../model/store';
 
 type LatLongString = {latitude: string; longitude: string};
 
@@ -29,14 +32,15 @@ function fromLocation(location: Location): LatLongString {
 
 type Props = {
   defaultProject?: string;
-  projects: ProjectName[];
   userLocation?: Location;
   sitePin?: Location;
   createSiteCallback?: (input: SiteAddMutationInput) => void;
 };
 
 type Args = Partial<
-  Omit<Record<keyof SiteAddMutationInput, string>, 'clientMutationId'>
+  Omit<Record<keyof SiteAddMutationInput, string>, 'clientMutationId'> & {
+    privacy: ProjectPrivacy;
+  }
 >;
 
 type Error = Partial<
@@ -50,29 +54,29 @@ export default function CreateSiteView({
   userLocation,
   createSiteCallback,
   sitePin,
-  projects,
 }: Props) {
   const {t} = useTranslation();
 
+  const projectMap = useSelector(state => state.project.projects);
+  const projects = useMemo(() => Object.values(projectMap), [projectMap]);
+
+  const {latitude: defaultLat, longitude: defaultLon} = useMemo(() => {
+    if (sitePin) {
+      return {...sitePin.coords};
+    }
+    if (userLocation) {
+      return {...userLocation.coords};
+    }
+    return {latitude: '0', longitude: '0'};
+  }, [userLocation, sitePin]);
+
   /** We store the form state in mutationInput */
   const [mutationInput, setMutationInput] = useState<Args>({
-    latitude: userLocation && String(userLocation.coords.latitude),
-    longitude: userLocation && String(userLocation.coords.longitude),
-    projectId: defaultProject,
+    latitude: String(defaultLat),
+    longitude: String(defaultLon),
+    projectId: defaultProject ? projectMap[defaultProject]?.id : undefined,
+    privacy: defaultProject ? projectMap[defaultProject].privacy : 'PRIVATE',
   });
-
-  /** undefined if user has not selected a project. If project selected, reflects
-        value of project */
-  const sitePrivacy = useMemo(() => {
-    if (!mutationInput.projectId) {
-      return undefined;
-    }
-    let projs = projects.filter(({id}) => id === mutationInput.projectId);
-    if (projs.length !== 1) {
-      return undefined;
-    }
-    return projs[0].privacy;
-  }, [mutationInput, projects]);
 
   const [errors, setErrors] = useState<Error>({});
 
@@ -108,7 +112,7 @@ export default function CreateSiteView({
       return;
     }
     navigate('HOME');
-  }, [mutationInput, createSiteCallback, navigate, defaultProject]);
+  }, [mutationInput, createSiteCallback, navigate, goBack, defaultProject]);
 
   /* calculates the associated location for a given location input option
    * For example, for 'pin', it grabs and formats the value from the sitepin */
@@ -131,12 +135,12 @@ export default function CreateSiteView({
         );
         return;
       }
-      setMutationInput({
-        ...mutationInput,
+      setMutationInput(current => ({
+        ...current,
         ...newLocation,
-      });
+      }));
     },
-    [locationOptions, mutationInput],
+    [locationOptions],
   );
 
   const defaultLocationSource = useMemo(() => {
@@ -222,18 +226,22 @@ export default function CreateSiteView({
             ))}
           </Select>
         </FormControl>
-        <RadioBlock<'PUBLIC' | 'PRIVATE'>
+        <RadioBlock<ProjectPrivacy>
           label="Data Privacy"
           options={{
             PUBLIC: {text: 'Public'},
             PRIVATE: {text: 'Private'},
           }}
-          allDisabled={sitePrivacy ? true : undefined}
+          allDisabled={mutationInput.projectId ? true : undefined}
           groupProps={{
             variant: 'oneLine',
             name: 'data-privacy',
-            defaultValue: 'PRIVATE',
-            value: sitePrivacy ? sitePrivacy : undefined,
+            value: mutationInput.privacy,
+            onChange: (privacy: ProjectPrivacy) =>
+              setMutationInput({
+                ...mutationInput,
+                privacy,
+              }),
           }}
         />
         <Fab label={t('general.save_fab')} onPress={onSave} />

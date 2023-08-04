@@ -143,7 +143,7 @@ export default function ProjectSitesTab({
 
   const addSiteCallback = useCallback(() => {
     navigation.navigate('CREATE_SITE', {projectId: projectId});
-  }, [navigation]);
+  }, [navigation, projectId]);
 
   const deleteSiteCallback = (site: Site) => {
     return async () => {

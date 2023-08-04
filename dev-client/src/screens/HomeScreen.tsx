@@ -10,6 +10,7 @@ import {ScreenDefinition} from './AppScaffold';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {ScreenScaffold} from './ScreenScaffold';
+import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 
 const HomeView = () => {
   const [mapCenter, setMapCenter] = useState<Position | undefined>(undefined);
@@ -19,6 +20,7 @@ const HomeView = () => {
   useEffect(() => {
     // load sites on mount
     dispatch(fetchSitesForUser());
+    dispatch(fetchProjectsForUser());
   }, [dispatch]);
 
   const updateUserLocation = useCallback(
@@ -28,7 +30,7 @@ const HomeView = () => {
         setMapCenter([location.coords.longitude, location.coords.latitude]);
       }
     },
-    [dispatch],
+    [dispatch, mapCenter],
   );
   return (
     <ScreenScaffold>

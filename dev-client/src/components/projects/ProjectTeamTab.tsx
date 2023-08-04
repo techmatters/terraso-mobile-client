@@ -12,7 +12,6 @@ import {
 import {removeMembershipFromProject} from 'terraso-client-shared/project/projectSlice';
 import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';
-import RadioBlock from '../common/RadioBlock';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 

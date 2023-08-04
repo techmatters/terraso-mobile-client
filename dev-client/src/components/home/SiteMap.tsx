@@ -96,19 +96,15 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
 
 type TemporarySiteCalloutProps = {
   site: Pick<Site, 'latitude' | 'longitude'>;
+  onCreate: () => void;
   closeCallout: () => void;
 };
 const TemporarySiteCallout = ({
   site,
   closeCallout,
+  onCreate,
 }: TemporarySiteCalloutProps) => {
   const {t} = useTranslation();
-  const {navigate} = useNavigation();
-
-  const onCreate = useCallback(
-    () => navigate('CREATE_SITE', {mapCoords: site}),
-    [site, navigate],
-  );
 
   return (
     <Mapbox.MarkerView
@@ -148,6 +144,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
   const camera = useRef<Camera>(null);
+  const {navigate} = useNavigation();
 
   useEffect(() => {
     camera.current?.setCamera({
@@ -170,6 +167,20 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       ),
     [temporarySite],
   );
+
+  const temporaryCreateCallback = useCallback(() => {
+    const siteToCreate = {...temporarySite};
+    setTemporarySite(null);
+    if (
+      siteToCreate &&
+      siteToCreate.latitude !== undefined &&
+      siteToCreate.longitude !== undefined
+    ) {
+      navigate('CREATE_SITE', {
+        mapCoords: siteToCreate as Pick<Site, 'longitude' | 'latitude'>,
+      });
+    }
+  }, [navigate, temporarySite, setTemporarySite]);
 
   const closeCallout = useCallback(() => {
     setSelectedSiteID(null);
@@ -232,6 +243,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
         <TemporarySiteCallout
           site={temporarySite}
           closeCallout={closeCallout}
+          onCreate={temporaryCreateCallback}
         />
       )}
     </Mapbox.MapView>
