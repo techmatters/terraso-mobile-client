@@ -61,6 +61,8 @@ export default function CreateSiteView({
     projectId: defaultProject,
   });
 
+  /** undefined if user has not selected a project. If project selected, reflects
+        value of project */
   const sitePrivacy = useMemo(() => {
     if (!mutationInput.projectId) {
       return undefined;
