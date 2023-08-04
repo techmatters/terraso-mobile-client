@@ -3,9 +3,19 @@ import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {memo, useEffect, useMemo, useRef, useState, useCallback} from 'react';
 // TODO: Is it better to import type?
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
-import {Icon, IconButton} from '../common/Icons';
+import {IconButton} from '../common/Icons';
+import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Box, Heading, Text, Flex, Badge, Divider, Button} from 'native-base';
+import {
+  Box,
+  Heading,
+  Text,
+  Flex,
+  Badge,
+  Divider,
+  Button,
+  useTheme,
+} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 import {useSelector} from '../../model/store';
 import {useTranslation} from 'react-i18next';
@@ -145,6 +155,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
   const camera = useRef<Camera>(null);
   const {navigate} = useNavigation();
+  const {colors} = useTheme();
 
   useEffect(() => {
     camera.current?.setCamera({
@@ -216,11 +227,15 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       }}
       onLongPress={onLongPress}>
       <Camera ref={camera} />
-      <Mapbox.Images images={{sitePin: ''}}>
-        <Mapbox.Image name="sitePin">
-          <Icon name="location-on" />
-        </Mapbox.Image>
-      </Mapbox.Images>
+      <Mapbox.Images
+        onImageMissing={console.debug}
+        images={{
+          sitePin: MapIcon.getImageSourceSync(
+            'location-on',
+            25,
+            colors.secondary.main,
+          ),
+        }}></Mapbox.Images>
       <Mapbox.ShapeSource
         id="sitesSource"
         shape={sitesFeature}
