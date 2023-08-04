@@ -1,18 +1,42 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Box, Button, FormControl, Input, VStack} from 'native-base';
+import {
+  AlertDialog,
+  Box,
+  Button,
+  Center,
+  FormControl,
+  Input,
+  VStack,
+} from 'native-base';
 import {TabRoutes, TabStackParamList} from './constants';
 import {useTranslation} from 'react-i18next';
 import RadioBlock from '../common/RadioBlock';
 import IconLink from '../common/IconLink';
+import {useRef, useState} from 'react';
+import { useDispatch } from '../../model/store';
+import { deleteProject } from 'terraso-client-shared/project/projectSlice';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
 export default function ProjectSettingsTab({
   route: {
-    params: {name, description, privacy, downloadLink},
+    params: {name, description, privacy, downloadLink, projectId},
   },
 }: Props) {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const cancelRef = useRef(null);
+  const closeDeleteProject = () => {
+    setIsDeleteModalOpen(false);
+  };
+  const openDeleteProject = () => {
+    setIsDeleteModalOpen(true);
+  };
+  const triggerDeleteProject = () => {
+    dispatch(deleteProject({id: projectId}));
+  };
+
   return (
     <VStack p={4} space={3} height="100%">
       <FormControl>
@@ -56,9 +80,38 @@ export default function ProjectSettingsTab({
         <IconLink iconName="archive" underlined={false}>
           {t('projects.settings.archive').toUpperCase()}
         </IconLink>
-        <IconLink iconName="delete-forever" underlined={false}>
+        <IconLink
+          iconName="delete-forever"
+          underlined={false}
+          onPress={openDeleteProject}>
           {t('projects.settings.delete').toUpperCase()}
         </IconLink>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteProject}>
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>Delete Customer</AlertDialog.Header>
+            <AlertDialog.Body>
+              This will remove all data relating to Alex. This action cannot be
+              reversed. Deleted data can not be recovered.
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="unstyled"
+                  colorScheme="coolGray"
+                  onPress={closeDeleteProject}>
+                  Cancel
+                </Button>
+                <Button colorScheme="danger" onPress={triggerDeleteProject}>
+                  Delete
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
       </VStack>
       <Box flexGrow={3} justifyContent="flex-end">
         <Button alignSelf="flex-end">

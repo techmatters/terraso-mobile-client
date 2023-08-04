@@ -11,7 +11,8 @@ import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
 import {Icon} from '../common/Icons';
-
+import {Project} from 'terraso-client-shared/project/projectSlice';
+type Props = {project: Project};
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 
 // TODO: There must be a better way
@@ -19,7 +20,7 @@ type TabRouteProp = {
   route: RouteProp<TabStackParamList, keyof TabStackParamList>;
 };
 
-export default function ProjectTabs() {
+export default function ProjectTabs({project}: Props) {
   const {colors} = useTheme(); //TODO: Is it better to use useToken?
 
   function screenOptions({
@@ -71,9 +72,10 @@ export default function ProjectTabs() {
         name={TabRoutes.SETTINGS}
         component={ProjectSettingsTab}
         initialParams={{
-          name: 'Test Project',
-          description: 'A Test Project',
-          privacy: 'private',
+          projectId: project.id,
+          name: project.name,
+          description: project.description,
+          privacy: project.privacy,
           downloadLink: 'https://s3.amazon.com/mydownload',
         }}
       />

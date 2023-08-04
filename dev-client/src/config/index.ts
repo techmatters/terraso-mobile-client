@@ -52,3 +52,4 @@ export const APP_CONFIG: AppConfig = {
   googleClientId: googleClientId,
   googleRedirectURI: googleRedirectURI,
 };
+console.log(APP_CONFIG);
