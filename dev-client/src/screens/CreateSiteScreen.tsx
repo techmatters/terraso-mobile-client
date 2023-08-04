@@ -16,18 +16,17 @@ type Props =
     }
   | {
       projectId: string;
-    };
+    }
+  | undefined;
 
 const CreateSiteScaffold = (props: Props = {}) => {
   const userLocation = useSelector(state => state.map.userLocation);
-  const projects = useSelector(state => state.project.projects);
   const dispatch = useDispatch();
 
   const createSiteCallback = useCallback(
     async (input: SiteAddMutationInput) => {
       await dispatch(addSite(input));
       if (input.projectId) {
-        console.debug('dispatching');
         dispatch(fetchSitesForProject(input.projectId));
       }
     },
@@ -36,11 +35,6 @@ const CreateSiteScaffold = (props: Props = {}) => {
 
   return (
     <CreateSiteView
-      projects={Object.values(projects).map(({id, name, privacy}) => ({
-        id,
-        name,
-        privacy,
-      }))}
       userLocation={userLocation}
       createSiteCallback={createSiteCallback}
       defaultProject={('projectId' in props && props.projectId) || undefined}

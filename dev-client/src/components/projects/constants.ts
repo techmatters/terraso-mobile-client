@@ -1,4 +1,3 @@
-import {Site} from 'terraso-client-shared/site/siteSlice';
 import {ProjectPrivacy} from '../../types';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {Membership} from 'terraso-client-shared/memberships/membershipsSlice';
