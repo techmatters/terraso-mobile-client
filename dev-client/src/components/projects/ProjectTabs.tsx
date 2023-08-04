@@ -1,46 +1,36 @@
-import {
-  MaterialTopTabNavigationOptions,
-  createMaterialTopTabNavigator,
-} from '@react-navigation/material-top-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import ProjectInputTab from './ProjectInputTab';
 import {useTheme} from 'native-base';
-import {RouteProp} from '@react-navigation/native';
 import ProjectTeamTab from './ProjectTeamTab';
-import {USER_PROFILES, fetchProject} from '../../dataflow';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
 import {Icon} from '../common/Icons';
+import {Project} from 'terraso-client-shared/project/projectSlice';
+import {useSelector} from '../../model/store';
+import {useMemo} from 'react';
+import {Membership} from 'terraso-client-shared/memberships/membershipsSlice';
+import {User} from 'terraso-client-shared/account/accountSlice';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
+type ScreenOptions = React.ComponentProps<
+  (typeof Tab)['Navigator']
+>['screenOptions'];
 
-// TODO: There must be a better way
-type TabRouteProp = {
-  route: RouteProp<TabStackParamList, keyof TabStackParamList>;
-};
+type Props = {project: Project};
 
-export default function ProjectTabs() {
-  const {colors} = useTheme(); //TODO: Is it better to use useToken?
+export default function ProjectTabs({project}: Props) {
+  const {colors} = useTheme();
 
-  function screenOptions({
-    route,
-  }: TabRouteProp): MaterialTopTabNavigationOptions {
-    // TODO: Use a Record type
-    let iconName = 'tune';
-    switch (route.name) {
-      case TabRoutes.INPUTS:
-        iconName = 'tune';
-        break;
-      case TabRoutes.TEAM:
-        iconName = 'people';
-        break;
-      case TabRoutes.SETTINGS:
-        iconName = 'settings';
-        break;
-      case TabRoutes.SITES:
-        iconName = 'location-on';
-        break;
-    }
+  const tabIconNames: Record<keyof TabStackParamList, string> = {
+    Inputs: 'tune',
+    Team: 'people',
+    Settings: 'settings',
+    Sites: 'location-on',
+  };
+
+  const screenOptions: ScreenOptions = ({route}) => {
+    let iconName = tabIconNames[route.name];
 
     return {
       tabBarScrollEnabled: true,
@@ -58,32 +48,106 @@ export default function ProjectTabs() {
         height: '100%',
       },
     };
-  }
+  };
+
+  const projectMembershipsList = useSelector(
+    state => state.memberships.members.list,
+  );
+
+  const projectMemberships = useMemo(
+    () =>
+      Object.entries<Membership | undefined>(
+        projectMembershipsList || [],
+      ).reduce(
+        (acc, [id, membership]) => {
+          if (id in project.membershipIds && membership !== undefined) {
+            acc[id] = membership;
+          }
+          return acc;
+        },
+        {} as Record<string, Membership>,
+      ),
+    [projectMembershipsList, project],
+  );
+
+  const projectUserIds: [Membership, string][] = useMemo(
+    () =>
+      Object.entries(project.membershipIds).map(
+        ([membershipId, {user: userId}]) => [
+          projectMemberships[membershipId],
+          userId,
+        ],
+      ),
+    [project, projectMemberships],
+  );
+
+  // lol
+  const userIdsInProject = useMemo(
+    () => new Set(Object.values(project.membershipIds).map(m => m.user)),
+    [project],
+  );
+
+  const projectUsersState = useSelector(state => state.account.users);
+
+  const projectUsers = useMemo(
+    () =>
+      Object.entries<User>(projectUsersState).reduce(
+        (acc, [id, user]) => {
+          if (userIdsInProject.has(id)) {
+            acc[id] = user;
+          }
+          return acc;
+        },
+        {} as Record<string, User>,
+      ),
+    [projectUsersState, userIdsInProject],
+  );
+
+  const projectMembers: [Membership, User][] = useMemo(
+    () =>
+      projectUserIds.map(([membership, userId]) => [
+        membership,
+        projectUsers[userId],
+      ]),
+    [projectUsers, projectUserIds],
+  );
+
+  const projectSitesState = useSelector(state => state.site.sites);
+
+  const projectSites = useMemo(
+    () =>
+      Object.values(projectSitesState).filter(
+        site => site.id in project.siteIds,
+      ),
+    [projectSitesState, project],
+  );
+
   return (
     <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />
-      <Tab.Screen
-        name={TabRoutes.TEAM}
-        component={ProjectTeamTab}
-        initialParams={{users: USER_PROFILES}}
-      />
       <Tab.Screen
         name={TabRoutes.SETTINGS}
         component={ProjectSettingsTab}
         initialParams={{
-          name: 'Test Project',
-          description: 'A Test Project',
-          privacy: 'private',
+          projectId: project.id,
+          name: project.name,
+          description: project.description,
+          privacy: project.privacy,
           downloadLink: 'https://s3.amazon.com/mydownload',
         }}
       />
+      <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />
+      <Tab.Screen
+        name={TabRoutes.TEAM}
+        component={ProjectTeamTab}
+        initialParams={{memberships: projectMembers, projectId: project.id}}
+      />
+
       <Tab.Screen
         name={TabRoutes.SITES}
         component={ProjectSitesTab}
         initialParams={{
-          projectId: 1,
-          sites: fetchProject(1).sites,
-          //sites: [],
+          projectId: project.id,
+          sites: projectSites,
         }}
       />
     </Tab.Navigator>
