@@ -40,14 +40,12 @@ export default function Index({projects}: Props) {
           </Link>
         </>
       )}
+      <Box alignItems="flex-start" pb={3}>
+        <AddButton text={t('projects.create_button')} buttonProps={{onPress}} />
+      </Box>
+
       {projects.length > 0 && (
         <>
-          <Box alignItems="flex-start" pb={3}>
-            <AddButton
-              text={t('projects.create_button')}
-              buttonProps={{onPress}}
-            />
-          </Box>
           <HStack alignContent="center">
             <VStack>
               <Badge
