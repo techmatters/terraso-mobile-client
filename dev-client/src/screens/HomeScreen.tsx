@@ -11,6 +11,7 @@ import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {ScreenScaffold} from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
+import MapSearch from '../components/home/MapSearch';
 
 const HomeView = () => {
   const [mapCenter, setMapCenter] = useState<Position | undefined>(undefined);
@@ -34,6 +35,7 @@ const HomeView = () => {
   );
   return (
     <ScreenScaffold>
+      <MapSearch />
       <SiteMap
         updateUserLocation={updateUserLocation}
         sites={sites}
