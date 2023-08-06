@@ -22,10 +22,9 @@ import {Provider} from 'react-redux';
 import './config';
 import {createStore} from './model/store';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {APP_CONFIG} from './config';
 
-Mapbox.setAccessToken(
-  'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',
-);
+Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
 function App(): JSX.Element {
   const store = useMemo(createStore, []);
