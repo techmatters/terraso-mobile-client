@@ -1,19 +1,34 @@
 import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
-import {memo, useEffect, useMemo, useRef, useState, useCallback} from 'react';
-// TODO: Is it better to import type?
-import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
-import {Icon, IconButton} from '../common/Icons';
+import {
+  memo,
+  useMemo,
+  useState,
+  useCallback,
+  forwardRef,
+  ForwardedRef,
+} from 'react';
+import {IconButton} from '../common/Icons';
+import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Box, Heading, Text, Flex, Badge, Divider, Button} from 'native-base';
+import {
+  Box,
+  Heading,
+  Text,
+  Flex,
+  Badge,
+  Divider,
+  Button,
+  useTheme,
+} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 import {useSelector} from '../../model/store';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {Pressable} from 'react-native';
+import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 
 type SiteMapProps = {
-  center?: Position;
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
 };
@@ -96,19 +111,15 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
 
 type TemporarySiteCalloutProps = {
   site: Pick<Site, 'latitude' | 'longitude'>;
+  onCreate: () => void;
   closeCallout: () => void;
 };
 const TemporarySiteCallout = ({
   site,
   closeCallout,
+  onCreate,
 }: TemporarySiteCalloutProps) => {
   const {t} = useTranslation();
-  const {navigate} = useNavigation();
-
-  const onCreate = useCallback(
-    () => navigate('CREATE_SITE', {mapCoords: site}),
-    [site, navigate],
-  );
 
   return (
     <Mapbox.MarkerView
@@ -139,21 +150,19 @@ const TemporarySiteCallout = ({
   );
 };
 
-const SiteMap = memo((props: SiteMapProps): JSX.Element => {
-  const {center, updateUserLocation, sites} = props;
+const SiteMap = (
+  props: SiteMapProps,
+  ref: ForwardedRef<CameraRef>,
+): JSX.Element => {
+  const {updateUserLocation, sites} = props;
   const [temporarySite, setTemporarySite] = useState<Pick<
     Site,
     'latitude' | 'longitude'
   > | null>(null);
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
-  const camera = useRef<Camera>(null);
-
-  useEffect(() => {
-    camera.current?.setCamera({
-      centerCoordinate: center,
-    });
-  }, [center]);
+  const {navigate} = useNavigation();
+  const {colors} = useTheme();
 
   const sitesFeature = useMemo(
     () =>
@@ -170,6 +179,20 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       ),
     [temporarySite],
   );
+
+  const temporaryCreateCallback = useCallback(() => {
+    const siteToCreate = {...temporarySite};
+    setTemporarySite(null);
+    if (
+      siteToCreate &&
+      siteToCreate.latitude !== undefined &&
+      siteToCreate.longitude !== undefined
+    ) {
+      navigate('CREATE_SITE', {
+        mapCoords: siteToCreate as Pick<Site, 'longitude' | 'latitude'>,
+      });
+    }
+  }, [navigate, temporarySite, setTemporarySite]);
 
   const closeCallout = useCallback(() => {
     setSelectedSiteID(null);
@@ -204,12 +227,17 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
         flex: 1,
       }}
       onLongPress={onLongPress}>
-      <Camera ref={camera} centerCoordinate={[0, 0]} />
-      <Mapbox.Images images={{sitePin: ''}}>
-        <Mapbox.Image name="sitePin">
-          <Icon name="location-on" />
-        </Mapbox.Image>
-      </Mapbox.Images>
+      <Camera ref={ref} />
+      <Mapbox.Images
+        onImageMissing={console.debug}
+        images={{
+          sitePin: MapIcon.getImageSourceSync(
+            'location-on',
+            25,
+            colors.secondary.main,
+          ),
+        }}
+      />
       <Mapbox.ShapeSource
         id="sitesSource"
         shape={sitesFeature}
@@ -232,11 +260,12 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
         <TemporarySiteCallout
           site={temporarySite}
           closeCallout={closeCallout}
+          onCreate={temporaryCreateCallback}
         />
       )}
     </Mapbox.MapView>
   );
-});
+};
 
 const styles = {
   siteLayer: {
@@ -247,4 +276,4 @@ const styles = {
   } satisfies Mapbox.SymbolLayerStyle,
 };
 
-export default SiteMap;
+export default memo(forwardRef<CameraRef, SiteMapProps>(SiteMap));
