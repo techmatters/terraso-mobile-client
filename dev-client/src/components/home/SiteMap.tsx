@@ -2,15 +2,12 @@ import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {
   memo,
-  useEffect,
   useMemo,
-  useRef,
   useState,
   useCallback,
   forwardRef,
+  ForwardedRef,
 } from 'react';
-// TODO: Is it better to import type?
-import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {IconButton} from '../common/Icons';
 import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
@@ -153,7 +150,10 @@ const TemporarySiteCallout = ({
   );
 };
 
-const SiteMap = (props: SiteMapProps, ref): JSX.Element => {
+const SiteMap = (
+  props: SiteMapProps,
+  ref: ForwardedRef<CameraRef>,
+): JSX.Element => {
   const {updateUserLocation, sites} = props;
   const [temporarySite, setTemporarySite] = useState<Pick<
     Site,
@@ -236,7 +236,8 @@ const SiteMap = (props: SiteMapProps, ref): JSX.Element => {
             25,
             colors.secondary.main,
           ),
-        }}></Mapbox.Images>
+        }}
+      />
       <Mapbox.ShapeSource
         id="sitesSource"
         shape={sitesFeature}

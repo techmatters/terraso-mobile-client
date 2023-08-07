@@ -1,5 +1,5 @@
 import Autocomplete from 'react-native-autocomplete-input';
-import {useEffect, useMemo, useState} from 'react';
+import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Box, HStack, Input, Pressable, Text, VStack} from 'native-base';
 import {Suggestion, initMapSearch} from './mapSearch';
@@ -67,7 +67,7 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
               </Pressable>
             ),
           }}
-          inputContainerStyle={{borderWidth: 0}}
+          inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
           renderTextInput={() => (
             <Input
               borderRadius={10}

@@ -27,23 +27,6 @@ const HomeView = () => {
     dispatch(fetchProjectsForUser());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (mapInitialized !== null && camera.current !== undefined) {
-      moveToPoint(mapInitialized.coords);
-    }
-  }, [mapInitialized, camera]);
-
-  const updateUserLocation = useCallback(
-    (location: Location) => {
-      dispatch(updateLocation(location));
-      // only set map center at start for now
-      if (mapInitialized === null) {
-        setMapInitialized(location);
-      }
-    },
-    [dispatch, mapInitialized, setMapInitialized, camera],
-  );
-
   const moveToPoint = useCallback(
     ({longitude, latitude}: Location['coords']) => {
       // TODO: flyTo, zoomTo don't seem to work, find out why
@@ -57,11 +40,28 @@ const HomeView = () => {
     [camera],
   );
 
+  useEffect(() => {
+    if (mapInitialized !== null && camera.current !== undefined) {
+      moveToPoint(mapInitialized.coords);
+    }
+  }, [mapInitialized, camera, moveToPoint]);
+
+  const updateUserLocation = useCallback(
+    (location: Location) => {
+      dispatch(updateLocation(location));
+      // only set map center at start for now
+      if (mapInitialized === null) {
+        setMapInitialized(location);
+      }
+    },
+    [dispatch, mapInitialized, setMapInitialized],
+  );
+
   const moveToUser = useCallback(() => {
     if (currentUserLocation?.coords !== undefined) {
       moveToPoint(currentUserLocation.coords);
     }
-  }, [currentUserLocation]);
+  }, [currentUserLocation, moveToPoint]);
 
   return (
     <ScreenScaffold>
