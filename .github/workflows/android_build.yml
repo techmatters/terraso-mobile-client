@@ -72,7 +72,7 @@ jobs:
           PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
         run: |
           mv .env.sample .env
-          for env_var in $(echo GOOGLE_OAUTH_APP_ANDROID_CLIENT_ID, PUBLIC_MAPBOX_TOKEN)
+          for env_var in $(echo GOOGLE_OAUTH_APP_ANDROID_CLIENT_ID PUBLIC_MAPBOX_TOKEN)
           do
             sed -i -E "s/^($env_var=).*/${!env_var}/" .env
           done
