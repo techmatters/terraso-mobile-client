@@ -17,6 +17,7 @@ const STARTING_ZOOM_LEVEL = 5;
 const HomeView = () => {
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
   const sites = useSelector(state => state.site.sites);
+  const currentUserLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
   const camera = useRef<Camera | null>(null);
 
@@ -56,9 +57,15 @@ const HomeView = () => {
     [camera],
   );
 
+  const moveToUser = useCallback(() => {
+    if (currentUserLocation?.coords !== undefined) {
+      moveToPoint(currentUserLocation.coords);
+    }
+  }, [currentUserLocation]);
+
   return (
     <ScreenScaffold>
-      <MapSearch zoomTo={moveToPoint} />
+      <MapSearch zoomTo={moveToPoint} zoomToUser={moveToUser} />
       <SiteMap
         updateUserLocation={updateUserLocation}
         sites={sites}
