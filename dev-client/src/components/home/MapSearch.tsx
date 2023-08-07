@@ -9,7 +9,7 @@ import {Location} from '@rnmapbox/maps';
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
 type Props = {
-  zoomTo?: (latLon: Location['coords']) => void;
+  zoomTo?: (coords: Location['coords']) => void;
 };
 
 export default function MapSearch({zoomTo}: Props) {
@@ -20,8 +20,11 @@ export default function MapSearch({zoomTo}: Props) {
   const [hideResults, setHideResults] = useState(false);
 
   async function querySuggestions() {
-    const {suggestions: newSuggestions} = await getSuggestions(query);
-    setSuggestions(newSuggestions);
+    if (query.length > 2) {
+      const {suggestions: newSuggestions} = await getSuggestions(query);
+
+      setSuggestions(newSuggestions);
+    }
   }
 
   async function lookupFeature(mapboxId: string) {

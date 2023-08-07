@@ -1,6 +1,14 @@
 import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
-import {memo, useEffect, useMemo, useRef, useState, useCallback} from 'react';
+import {
+  memo,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+  forwardRef,
+} from 'react';
 // TODO: Is it better to import type?
 import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {IconButton} from '../common/Icons';
@@ -21,9 +29,9 @@ import {useSelector} from '../../model/store';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {Pressable} from 'react-native';
+import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 
 type SiteMapProps = {
-  center?: Position;
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
 };
@@ -145,23 +153,16 @@ const TemporarySiteCallout = ({
   );
 };
 
-const SiteMap = memo((props: SiteMapProps): JSX.Element => {
-  const {center, updateUserLocation, sites} = props;
+const SiteMap = (props: SiteMapProps, ref): JSX.Element => {
+  const {updateUserLocation, sites} = props;
   const [temporarySite, setTemporarySite] = useState<Pick<
     Site,
     'latitude' | 'longitude'
   > | null>(null);
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
-  const camera = useRef<Camera>(null);
   const {navigate} = useNavigation();
   const {colors} = useTheme();
-
-  useEffect(() => {
-    camera.current?.setCamera({
-      centerCoordinate: center,
-    });
-  }, [center]);
 
   const sitesFeature = useMemo(
     () =>
@@ -226,7 +227,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
         flex: 1,
       }}
       onLongPress={onLongPress}>
-      <Camera ref={camera} />
+      <Camera ref={ref} />
       <Mapbox.Images
         onImageMissing={console.debug}
         images={{
@@ -263,7 +264,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       )}
     </Mapbox.MapView>
   );
-});
+};
 
 const styles = {
   siteLayer: {
@@ -274,4 +275,4 @@ const styles = {
   } satisfies Mapbox.SymbolLayerStyle,
 };
 
-export default SiteMap;
+export default memo(forwardRef<CameraRef, SiteMapProps>(SiteMap));
