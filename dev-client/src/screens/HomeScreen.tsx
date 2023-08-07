@@ -35,7 +35,9 @@ const HomeView = () => {
   );
   return (
     <ScreenScaffold>
-      <MapSearch />
+      <MapSearch
+        zoomTo={({latitude, longitude}) => setMapCenter([longitude, latitude])}
+      />
       <SiteMap
         updateUserLocation={updateUserLocation}
         sites={sites}

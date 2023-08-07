@@ -6,7 +6,7 @@ interface SuggestionResponse {
   attribution: string;
 }
 
-interface Suggestion {
+export interface Suggestion {
   name: string;
   name_preferred: string;
   mapbox_id: string;
@@ -53,7 +53,7 @@ const BASE_URI = 'https://api.mapbox.com/search/searchbox/v1';
 /**
  * Interface to mapbox Search API: https://docs.mapbox.com/api/search/search-box/
  */
-export function mapSearchInit() {
+export function initMapSearch() {
   let session = initSession();
 
   /**
