@@ -9,4 +9,5 @@ export const siteValidationSchema = yup.object().shape({
     .required('Site name is required'),
   latitude: yup.number().min(-90).max(90).required('Latitude is required'),
   longitude: yup.number().min(-180).max(180).required('Longitude is required'),
+  projectId: yup.string(),
 });

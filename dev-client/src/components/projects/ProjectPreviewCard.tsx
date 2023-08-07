@@ -1,11 +1,7 @@
 import {Box, HStack, Heading, Link, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
-import {
-  Project,
-  fetchProject,
-} from 'terraso-client-shared/project/projectSlice';
-import {useDispatch} from '../../model/store';
+import {Project} from 'terraso-client-shared/project/projectSlice';
 import IconChip from '../common/IconChip';
 import {useNavigation} from '../../screens/AppScaffold';
 
@@ -16,12 +12,10 @@ type Props = {
 export default function ProjectPreviewCard({project}: Props) {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   const goToProject = useCallback(async () => {
-    await dispatch(fetchProject(project.id));
-    return navigation.navigate('PROJECT_VIEW', {projectName: project.name});
-  }, [project, navigation, dispatch]);
+    return navigation.navigate('PROJECT_VIEW', {project: project});
+  }, [project, navigation]);
 
   return (
     <Box bg="background.default" p={2} m={2}>
@@ -41,8 +35,14 @@ export default function ProjectPreviewCard({project}: Props) {
       <HStack space={2} alignItems="center">
         {/* TODO: Progress still not stored on backend */}
         <Text>30%</Text>
-        <IconChip iconName="location-on" label={project.siteCount} />
-        <IconChip iconName="people-alt" label={project.userCount} />
+        <IconChip
+          iconName="location-on"
+          label={Object.keys(project.siteIds).length}
+        />
+        <IconChip
+          iconName="people-alt"
+          label={Object.keys(project.membershipIds).length}
+        />
       </HStack>
       <Link
         _text={{color: 'primary.main'}}

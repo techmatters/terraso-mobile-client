@@ -34,6 +34,7 @@ type AppConfig = {
   packageName: string;
   googleClientId: string;
   googleRedirectURI: string;
+  mapboxAccessToken: string;
 };
 
 var googleClientId = '';
@@ -47,8 +48,14 @@ if (Platform.OS === 'ios') {
   googleRedirectURI =
     `${Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID}:/oauth2redirect` ?? '';
 }
+
+if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
+  throw new Error('Config setting PUBLIC_MAPBOX_TOKEN not set');
+}
+
 export const APP_CONFIG: AppConfig = {
   packageName: 'org.terraso.landpks',
   googleClientId: googleClientId,
   googleRedirectURI: googleRedirectURI,
+  mapboxAccessToken: Config.PUBLIC_MAPBOX_TOKEN,
 };

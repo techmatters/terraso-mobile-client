@@ -52,18 +52,13 @@
         "a11yLabel": "default soil information source"
       }
     },
+    "team": {
+      "add": "Add team members"
+    },
+    "edit": {
+      "inputHeader": "General Project Settings"
+    },
     "settings": {
-      "heading": "General Project Settings",
-      "name": {
-        "error": "Helper text"
-      },
-      "description": {
-        "error": "Helper text"
-      },
-      "privacy": {
-        "label": "Data Privacy",
-        "a11y_label": "Data privacy"
-      },
       "copy_download_link": "Copy project download link",
       "archive": "Archive this project",
       "delete": "Delete this project"
@@ -101,7 +96,8 @@
     "save": "Save",
     "save_fab": "SAVE",
     "modified_by": "Last modified {{date}} by {{user}}",
-    "select_all": "Select All"
+    "select_all": "Select All",
+    "you": "you"
   },
   "screens": {
     "HOME": "LandPKS",

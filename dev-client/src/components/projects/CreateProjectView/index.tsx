@@ -13,7 +13,7 @@ export default function CreateProjectView() {
   };
   return (
     <ScrollView bg="background.default">
-      <Box pt="20%">
+      <Box pt="20%" mx={5}>
         <Form onSubmit={onSubmit} />
       </Box>
     </ScrollView>

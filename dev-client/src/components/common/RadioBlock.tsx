@@ -16,6 +16,7 @@ type RadioOption = {
 type Props<Keys extends string> = {
   label: string | React.ReactNode;
   options: Record<Keys, RadioOption>;
+  allDisabled?: boolean;
   groupProps: Omit<IRadioGroupProps, 'onChange'> & {
     value?: Keys;
     defaultValue?: Keys;
@@ -44,6 +45,7 @@ export const IconLabel = ({label, icon}: IconLabelProps) => {
 export default function RadioBlock<T extends string>({
   label,
   options,
+  allDisabled = false,
   groupProps: {onChange, ...radioGroupProps},
 }: Props<T>) {
   return (
@@ -54,7 +56,10 @@ export default function RadioBlock<T extends string>({
         {...radioGroupProps}>
         {Object.entries<RadioOption>(options).flatMap(
           ([value, {text, isDisabled}]) => [
-            <Radio key={value} value={value} isDisabled={isDisabled}>
+            <Radio
+              key={value}
+              value={value}
+              isDisabled={isDisabled || allDisabled}>
               {text}
             </Radio>,
           ],
