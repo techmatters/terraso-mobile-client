@@ -1,19 +1,34 @@
 import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
-import {memo, useEffect, useMemo, useRef, useState, useCallback} from 'react';
-// TODO: Is it better to import type?
-import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
-import {Icon, IconButton} from '../common/Icons';
+import {
+  memo,
+  useMemo,
+  useState,
+  useCallback,
+  forwardRef,
+  ForwardedRef,
+} from 'react';
+import {IconButton} from '../common/Icons';
+import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Box, Heading, Text, Flex, Badge, Divider, Button} from 'native-base';
+import {
+  Box,
+  Heading,
+  Text,
+  Flex,
+  Badge,
+  Divider,
+  Button,
+  useTheme,
+} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 import {useSelector} from '../../model/store';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {Pressable} from 'react-native';
+import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 
 type SiteMapProps = {
-  center?: Position;
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
 };
@@ -135,22 +150,19 @@ const TemporarySiteCallout = ({
   );
 };
 
-const SiteMap = memo((props: SiteMapProps): JSX.Element => {
-  const {center, updateUserLocation, sites} = props;
+const SiteMap = (
+  props: SiteMapProps,
+  ref: ForwardedRef<CameraRef>,
+): JSX.Element => {
+  const {updateUserLocation, sites} = props;
   const [temporarySite, setTemporarySite] = useState<Pick<
     Site,
     'latitude' | 'longitude'
   > | null>(null);
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
-  const camera = useRef<Camera>(null);
   const {navigate} = useNavigation();
-
-  useEffect(() => {
-    camera.current?.setCamera({
-      centerCoordinate: center,
-    });
-  }, [center]);
+  const {colors} = useTheme();
 
   const sitesFeature = useMemo(
     () =>
@@ -215,12 +227,17 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
         flex: 1,
       }}
       onLongPress={onLongPress}>
-      <Camera ref={camera} />
-      <Mapbox.Images images={{sitePin: ''}}>
-        <Mapbox.Image name="sitePin">
-          <Icon name="location-on" />
-        </Mapbox.Image>
-      </Mapbox.Images>
+      <Camera ref={ref} />
+      <Mapbox.Images
+        onImageMissing={console.debug}
+        images={{
+          sitePin: MapIcon.getImageSourceSync(
+            'location-on',
+            25,
+            colors.secondary.main,
+          ),
+        }}
+      />
       <Mapbox.ShapeSource
         id="sitesSource"
         shape={sitesFeature}
@@ -248,7 +265,7 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       )}
     </Mapbox.MapView>
   );
-});
+};
 
 const styles = {
   siteLayer: {
@@ -259,4 +276,4 @@ const styles = {
   } satisfies Mapbox.SymbolLayerStyle,
 };
 
-export default SiteMap;
+export default memo(forwardRef<CameraRef, SiteMapProps>(SiteMap));

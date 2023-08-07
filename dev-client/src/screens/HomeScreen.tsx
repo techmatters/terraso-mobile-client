@@ -1,6 +1,6 @@
 import SiteMap from '../components/home/SiteMap';
-import {useCallback, useEffect, useState} from 'react';
-import {Location} from '@rnmapbox/maps';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {Camera, Location} from '@rnmapbox/maps';
 import {updateLocation} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
@@ -8,14 +8,18 @@ import {fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
 import BottomSheet from '../components/home/BottomSheet';
 import {ScreenDefinition} from './AppScaffold';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
-import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {ScreenScaffold} from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
+import MapSearch from '../components/home/MapSearch';
+
+const STARTING_ZOOM_LEVEL = 5;
 
 const HomeView = () => {
-  const [mapCenter, setMapCenter] = useState<Position | undefined>(undefined);
+  const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
   const sites = useSelector(state => state.site.sites);
+  const currentUserLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
+  const camera = useRef<Camera | null>(null);
 
   useEffect(() => {
     // load sites on mount
@@ -23,26 +27,51 @@ const HomeView = () => {
     dispatch(fetchProjectsForUser());
   }, [dispatch]);
 
+  const moveToPoint = useCallback(
+    ({longitude, latitude}: Location['coords']) => {
+      // TODO: flyTo, zoomTo don't seem to work, find out why
+      //camera.current?.flyTo([longitude, latitude]);
+      //camera.current?.zoomTo(STARTING_ZOOM_LEVEL);
+      camera.current?.setCamera({
+        centerCoordinate: [longitude, latitude],
+        zoomLevel: STARTING_ZOOM_LEVEL,
+      });
+    },
+    [camera],
+  );
+
+  useEffect(() => {
+    if (mapInitialized !== null && camera.current !== undefined) {
+      moveToPoint(mapInitialized.coords);
+    }
+  }, [mapInitialized, camera, moveToPoint]);
+
   const updateUserLocation = useCallback(
     (location: Location) => {
       dispatch(updateLocation(location));
-      if (mapCenter === undefined) {
-        setMapCenter([location.coords.longitude, location.coords.latitude]);
+      // only set map center at start for now
+      if (mapInitialized === null) {
+        setMapInitialized(location);
       }
     },
-    [dispatch, mapCenter],
+    [dispatch, mapInitialized, setMapInitialized],
   );
+
+  const moveToUser = useCallback(() => {
+    if (currentUserLocation?.coords !== undefined) {
+      moveToPoint(currentUserLocation.coords);
+    }
+  }, [currentUserLocation, moveToPoint]);
+
   return (
     <ScreenScaffold>
+      <MapSearch zoomTo={moveToPoint} zoomToUser={moveToUser} />
       <SiteMap
         updateUserLocation={updateUserLocation}
         sites={sites}
-        center={mapCenter}
+        ref={camera}
       />
-      <BottomSheet
-        sites={sites}
-        showSiteOnMap={site => setMapCenter([site.longitude, site.latitude])}
-      />
+      <BottomSheet sites={sites} showSiteOnMap={moveToPoint} />
     </ScreenScaffold>
   );
 };
