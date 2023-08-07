@@ -118,6 +118,10 @@ jobs:
         env:
           MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
         run: |
+          if [ -z "$MAPBOX_DOWNLOADS_TOKEN" ]; then
+            echo "blank MAPBOX_DOWNLOADS_TOKEN"
+            exit 1
+          fi
           mkdir -p $HOME/.gradle
           echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
 
