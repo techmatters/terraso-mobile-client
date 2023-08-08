@@ -99,7 +99,7 @@ android {
         applicationId "org.terraso.landpks"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
+        versionCode 11
         versionName "1.0.0"
         manifestPlaceholders = [
             appAuthRedirectScheme: "org.terraso.landpks"
