@@ -21,6 +21,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: dev-client/package-lock.json
 
+      - name: Set up config values
+        working-directory: ./dev-client
+        run: |
+          echo "GOOGLE_OAUTH_ANDROID_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}" >> .env
+          echo "PUBLIC_MAPBOX_TOKEN =${{ secrets. PUBLIC_MAPBOX_TOKEN }}" >> .env
+
       - name: Install Node dependencies
         working-directory: dev-client
         run: npm ci
@@ -64,12 +70,6 @@ jobs:
           git add dev-client/android
           git commit -m "build: bump version number"
           git push
-
-      - name: Set up config values
-        working-directory: ./dev-client
-        run: |
-          echo "GOOGLE_OAUTH_ANDROID_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}" >> .env
-          echo "PUBLIC_MAPBOX_TOKEN =${{ secrets. PUBLIC_MAPBOX_TOKEN }}" >> .env
 
       - name: Build Android app bundle
         working-directory: ./dev-client/android
