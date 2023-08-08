@@ -55,12 +55,12 @@ jobs:
       - name: Set up config values
         working-directory: ./dev-client
         env:
-          GOOGLE_OAUTH_APP_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_APP_IOS_CLIENT_ID }}
+          GOOGLE_OAUTH_IOS_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}
           GOOGLE_OAUTH_IOS_URI_SCHEME: ${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}
           PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
         run: |
           mv .env.sample .env
-          for env_var in $(echo GOOGLE_OAUTH_APP_CLIENT_ID secrets.GOOGLE_OAUTH_IOS_URI_SCHEME PUBLIC_MAPBOX_TOKEN);
+          for env_var in $(echo GOOGLE_OAUTH_IOS_CLIENT_ID secrets.GOOGLE_OAUTH_IOS_URI_SCHEME PUBLIC_MAPBOX_TOKEN);
           do
             sed -i -E "s/^($env_var=).*/${!env_var}/" .env
           done
