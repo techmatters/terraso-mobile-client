@@ -59,7 +59,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           file_pattern: "dev-client/android"
-          commit_message "build: bump Android version number"
+          commit_message: "build: bump Android version number"
           commit_user_name: "GitHub Actions"
           commit_user_email: actions@users.noreply.github.com
 

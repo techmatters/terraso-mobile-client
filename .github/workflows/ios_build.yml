@@ -71,7 +71,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           file_pattern: "dev-client/ios"
-          commit_message "build: bump iOS version number"
+          commit_message: "build: bump iOS version number"
           commit_user_name: "GitHub Actions"
           commit_user_email: actions@users.noreply.github.com
 
