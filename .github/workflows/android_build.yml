@@ -47,11 +47,9 @@ jobs:
             ${{ runner.os }}-gradle-caches-
 
       - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
         run: |
           mkdir -p $HOME/.gradle
-          echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
+          echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.gradle/gradle.properties
 
       - name: Bump Android version
         working-directory: ./dev-client/android

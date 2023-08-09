@@ -44,12 +44,10 @@ jobs:
             ${{ runner.os }}-pods-
 
       - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
         run: |
           echo "machine api.mapbox.com" >> $HOME/.netrc
           echo "login mapbox" >> $HOME/.netrc
-          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
+          echo "password ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.netrc
           chmod 600 $HOME/.netrc
 
       - name: Set up config values
