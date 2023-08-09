@@ -44,12 +44,10 @@ jobs:
             ${{ runner.os }}-pods-
 
       - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
         run: |
           echo "machine api.mapbox.com" >> $HOME/.netrc
           echo "login mapbox" >> $HOME/.netrc
-          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
+          echo "password ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.netrc
           chmod 600 $HOME/.netrc
 
       - name: Set up config values
@@ -70,12 +68,12 @@ jobs:
           project-path: dev-client/ios
 
       - name: Commit version bump
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@users.noreply.github.com"
-          git add dev-client/ios
-          git commit -m "build: bump version number"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: "dev-client/ios"
+          commit_message: "build: bump iOS version number"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: actions@users.noreply.github.com
 
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.0

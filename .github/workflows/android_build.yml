@@ -47,23 +47,21 @@ jobs:
             ${{ runner.os }}-gradle-caches-
 
       - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
         run: |
           mkdir -p $HOME/.gradle
-          echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
+          echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.gradle/gradle.properties
 
       - name: Bump Android version
         working-directory: ./dev-client/android
         run: ./gradlew bumpCodeVersion
 
       - name: Commit version bump
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@users.noreply.github.com"
-          git add dev-client/android
-          git commit -m "build: bump version number"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: "dev-client/android"
+          commit_message: "build: bump Android version number"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: actions@users.noreply.github.com
 
       - name: Set up config values
         working-directory: ./dev-client/android
