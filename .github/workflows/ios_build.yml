@@ -52,6 +52,13 @@ jobs:
           echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
           chmod 600 $HOME/.netrc
 
+      - name: Set up config values
+        working-directory: ./dev-client
+        run: |
+           echo "GOOGLE_OAUTH_IOS_CLIENT_ID =${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}" >> .env
+           echo "GOOGLE_OAUTH_IOS_URI_SCHEME =${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}" >> .env
+           echo "PUBLIC_MAPBOX_TOKEN =${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
+
       - name: CocoaPod Install
         working-directory: dev-client/ios
         run: pod install
@@ -66,7 +73,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@users.noreply.github.com"
-          git add -A
+          git add dev-client/ios
           git commit -m "build: bump version number"
           git push
 

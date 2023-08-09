@@ -458,20 +458,20 @@ PODS:
     - React-jsi (= 0.72.3)
     - React-logger (= 0.72.3)
     - React-perflogger (= 0.72.3)
-  - RNGestureHandler (2.12.0):
+  - RNGestureHandler (2.12.1):
     - React-Core
-  - rnmapbox-maps (10.0.10):
+  - rnmapbox-maps (10.0.11):
     - MapboxMaps (~> 10.14.0)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.0.10)
+    - rnmapbox-maps/DynamicLibrary (= 10.0.11)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.0.10):
+  - rnmapbox-maps/DynamicLibrary (10.0.11):
     - MapboxMaps (~> 10.14.0)
     - React
     - React-Core
     - Turf
-  - RNReanimated (3.3.0):
+  - RNReanimated (3.4.2):
     - DoubleConversion
     - FBLazyVector
     - glog
@@ -500,7 +500,7 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.22.1):
+  - RNScreens (3.24.0):
     - React-Core
     - React-RCTImage
   - RNSVG (13.10.0):
@@ -706,7 +706,7 @@ SPEC CHECKSUMS:
   React-Core: aaacca67f9ca54f142827e67f44bfbd815875eb6
   React-CoreModules: 32fab1d62416849a3b6dac6feff9d54e5ddc2d1e
   React-cxxreact: 37765b4975541105b2a3322a4b473417c158c869
-  React-debug: b194590540bbfdf1a9ca77338e3db742e9d5834f
+  React-debug: eb1dca87bbce48cb83e2e3350ec8206cd33dc4fb
   React-hermes: 935ae71fb3d7654e947beba8498835cd5e479707
   React-jsi: ec628dc7a15ffea969f237b0ea6d2fde212b19dd
   React-jsiexecutor: 59d1eb03af7d30b7d66589c410f13151271e8006
@@ -718,7 +718,7 @@ SPEC CHECKSUMS:
   react-native-mmkv-storage: cfb6854594cfdc5f7383a9e464bb025417d1721c
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-safe-area-context: 9697629f7b2cda43cf52169bb7e0767d330648c2
-  React-NativeModulesApple: 0cbf4e9a6344e40c3e5fda90696ec4ba7ca6ff88
+  React-NativeModulesApple: 96ec8f7056d5467e696006743d40f64c2458973b
   React-perflogger: 6bd153e776e6beed54c56b0847e1220a3ff92ba5
   React-RCTActionSheet: c0b62af44e610e69d9a2049a682f5dba4e9dff17
   React-RCTAnimation: fe7005136b58f58871cab2f70732343b6e330d30
@@ -732,13 +732,13 @@ SPEC CHECKSUMS:
   React-RCTVibration: ea3a68a49873a54ced927c90923fc6932baf344a
   React-rncore: 9672a017af4a7da7495d911f0b690cbcae9dd18d
   React-runtimeexecutor: 369ae9bb3f83b65201c0c8f7d50b72280b5a1dbc
-  React-runtimescheduler: d03104a94ef70b084bf02b6513d7f19705c089f3
-  React-utils: 755d30a2123ac0ef6a8dd8dd61e17fe7566a185f
-  ReactCommon: 59e77bc2ee0277a6299e2edf6b9d7799c3291460
-  RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
-  rnmapbox-maps: de67407973410cb0159c8cee4544c6ba59f6154a
-  RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
-  RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
+  React-runtimescheduler: e1a9c6406318e2cf2af49a96cfbc324a1b5b74dc
+  React-utils: fa918920e89b14bfdf260e45ee7a916de7cf8435
+  ReactCommon: e5382cf0d3a8ece592bc16f3b6818de98951087e
+  RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
+  rnmapbox-maps: 6f638ec002aa6e906a6f766d69cd45f968d98e64
+  RNReanimated: 726395a2fa2f04cea340274ba57a4e659bc0d9c1
+  RNScreens: b21dc57dfa2b710c30ec600786a3fc223b1b92e7
   RNSVG: 80584470ff1ffc7994923ea135a3e5ad825546b9
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Turf: 469ce2c3d22e5e8e4818d5a3b254699a5c89efa4

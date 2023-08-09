@@ -2,6 +2,7 @@ import Config from 'react-native-config';
 import {MMKVLoader} from 'react-native-mmkv-storage';
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
+import {PACKAGE_NAME} from '../constants';
 
 const terrasoAPIURL =
   Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
@@ -45,8 +46,7 @@ if (Platform.OS === 'ios') {
     `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
 } else if (Platform.OS === 'android') {
   googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
-  googleRedirectURI =
-    `${Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID}:/oauth2redirect` ?? '';
+  googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
 }
 
 if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
@@ -54,7 +54,7 @@ if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
 }
 
 export const APP_CONFIG: AppConfig = {
-  packageName: 'org.terraso.landpks',
+  packageName: PACKAGE_NAME,
   googleClientId: googleClientId,
   googleRedirectURI: googleRedirectURI,
   mapboxAccessToken: Config.PUBLIC_MAPBOX_TOKEN,
