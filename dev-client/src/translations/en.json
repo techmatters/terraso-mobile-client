@@ -4,10 +4,9 @@
   },
   "site": {
     "list_title": "Sites",
-    "last_updated": "Last Updated: {{date}}",
+    "last_updated": "Last Modified: {{date}} by {{name}}",
     "progress": "Progress: {{progress}}",
     "members": "{{members}} Members",
-    "show_on_map": "SHOW ON MAP",
     "create": "CREATE SITE",
     "more_info": "MORE INFO",
     "soil_id_prediction": "SOIL ID PREDICTION",
