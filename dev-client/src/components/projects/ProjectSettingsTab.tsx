@@ -3,7 +3,6 @@ import {
   AlertDialog,
   Box,
   Button,
-  Center,
   FormControl,
   Input,
   VStack,
@@ -13,9 +12,9 @@ import {useTranslation} from 'react-i18next';
 import RadioBlock from '../common/RadioBlock';
 import IconLink from '../common/IconLink';
 import {useRef, useState} from 'react';
-import { useDispatch } from '../../model/store';
-import { deleteProject } from 'terraso-client-shared/project/projectSlice';
-import { useNavigation } from '../../screens/AppScaffold';
+import {useDispatch} from '../../model/store';
+import {deleteProject} from 'terraso-client-shared/project/projectSlice';
+import {useNavigation} from '../../screens/AppScaffold';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
@@ -96,10 +95,11 @@ export default function ProjectSettingsTab({
           onClose={closeDeleteProject}>
           <AlertDialog.Content>
             <AlertDialog.CloseButton />
-            <AlertDialog.Header>Delete Customer</AlertDialog.Header>
+            <AlertDialog.Header>
+              {t('projects.settings.delete_button_prompt')}
+            </AlertDialog.Header>
             <AlertDialog.Body>
-              This will remove all data relating to Alex. This action cannot be
-              reversed. Deleted data can not be recovered.
+              {t('projects.settings.delete_description')}
             </AlertDialog.Body>
             <AlertDialog.Footer>
               <Button.Group space={2}>
@@ -107,10 +107,10 @@ export default function ProjectSettingsTab({
                   variant="unstyled"
                   colorScheme="coolGray"
                   onPress={closeDeleteProject}>
-                  Cancel
+                  {t('projects.settings.cancel')}
                 </Button>
                 <Button colorScheme="danger" onPress={triggerDeleteProject}>
-                  Delete
+                  {t('projects.settings.delete_button')}
                 </Button>
               </Button.Group>
             </AlertDialog.Footer>
