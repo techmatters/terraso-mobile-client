@@ -16,8 +16,6 @@
 		C61185A1D49303BBF1FC31E9 /* Pods_Terraso_LandPKS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B11C48E3D5248AFAB632513C /* Pods_Terraso_LandPKS.framework */; };
 		DA26A17B2A38EDC8003248A1 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = A77A52EE26C701884FDC0B0C /* Mapbox */; };
 		DA26A17C2A38EDC8003248A1 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = 5DA4D00C047877E1CDF04500 /* Mapbox */; };
-		DA26A1842A38F932003248A1 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA26A1822A38F932003248A1 /* MaterialCommunityIcons.ttf */; };
-		DA26A1852A38F932003248A1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA26A1832A38F932003248A1 /* MaterialIcons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -278,9 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA26A1852A38F932003248A1 /* MaterialIcons.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				DA26A1842A38F932003248A1 /* MaterialCommunityIcons.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
