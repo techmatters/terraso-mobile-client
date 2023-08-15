@@ -11,7 +11,7 @@ import {
 import {IconButton} from '../common/Icons';
 import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Box, Text, Flex, Divider, Button, useTheme} from 'native-base';
+import {Box, Text, Flex, Divider, Button, useTheme, Column} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
@@ -61,8 +61,8 @@ const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
 const CalloutDetail = ({label, value}: {label: string; value: string}) => {
   return (
     <Box>
-      <Text bold>{label}:</Text>
-      <Text>{value}</Text>
+      <Text>{label}</Text>
+      <Text bold>{value}</Text>
     </Box>
   );
 };
@@ -84,25 +84,37 @@ const TemporarySiteCallout = ({
       coordinate={[site.longitude, site.latitude]}
       anchor={{x: 0.5, y: 0}}
       allowOverlap={true}>
-      <Box backgroundColor="background.default" padding="4">
-        <Flex direction="row" align="top" justify="space-between">
-          <CalloutDetail label={t('site.soil_id_prediction')} value="???" />
-          <IconButton name="close" onPress={closeCallout} />
-        </Flex>
-        <Divider />
-        <CalloutDetail
-          label={t('site.ecological_site_prediction')}
-          value="???"
+      <Box variant="card">
+        <Column space="12px">
+          <CalloutDetail label={t('site.soil_id_prediction')} value="CLIFTON" />
+          <Divider />
+          <CalloutDetail
+            label={t('site.ecological_site_prediction')}
+            value="LOAMY UPLAND"
+          />
+          <Divider />
+          <CalloutDetail
+            label={t('site.annual_precip_avg')}
+            value="28 INCHES"
+          />
+          <Divider />
+          <CalloutDetail label={t('site.elevation')} value="2800 FEET" />
+          <Divider />
+          <Flex direction="row" justify="flex-end">
+            <Button onPress={onCreate} size="sm" variant="outline">
+              {t('site.create')}
+            </Button>
+            <Box width="24px" />
+            <Button size="sm">{t('site.more_info')}</Button>
+          </Flex>
+        </Column>
+        <IconButton
+          position="absolute"
+          top="8px"
+          right="8px"
+          name="close"
+          onPress={closeCallout}
         />
-        <Divider />
-        <CalloutDetail label={t('site.annual_precip_avg')} value="???" />
-        <Divider />
-        <CalloutDetail label={t('site.elevation')} value="???" />
-        <Divider />
-        <Flex direction="row" justify="space-between">
-          <Button onPress={onCreate}>{t('site.create')}</Button>
-          <Button>{t('site.more_info')}</Button>
-        </Flex>
       </Box>
     </Mapbox.MarkerView>
   );
@@ -191,8 +203,13 @@ const SiteMap = (
         images={{
           sitePin: MapIcon.getImageSourceSync(
             'location-on',
-            25,
+            35,
             colors.secondary.main,
+          ),
+          temporarySitePin: MapIcon.getImageSourceSync(
+            'location-on',
+            35,
+            colors.action.active,
           ),
         }}
       />
@@ -205,7 +222,10 @@ const SiteMap = (
       <Mapbox.ShapeSource
         id="temporarySitesSource"
         shape={temporarySitesFeature}>
-        <Mapbox.SymbolLayer id="temporarySitesLayer" style={styles.siteLayer} />
+        <Mapbox.SymbolLayer
+          id="temporarySitesLayer"
+          style={styles.temporarySiteLayer}
+        />
       </Mapbox.ShapeSource>
       <UserLocation
         onUpdate={updateUserLocation}
@@ -229,8 +249,14 @@ const styles = {
   siteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
-    iconSize: 1.0,
+    iconSize: 3.0,
     iconImage: 'sitePin',
+  } satisfies Mapbox.SymbolLayerStyle,
+  temporarySiteLayer: {
+    iconAllowOverlap: true,
+    iconAnchor: 'bottom',
+    iconSize: 3.0,
+    iconImage: 'temporarySitePin',
   } satisfies Mapbox.SymbolLayerStyle,
 };
 
