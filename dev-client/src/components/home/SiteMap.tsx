@@ -70,12 +70,14 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
 type TemporarySiteCalloutProps = {
   site: Pick<Site, 'latitude' | 'longitude'>;
   onCreate: () => void;
+  onLearnMore: () => void;
   closeCallout: () => void;
 };
 const TemporarySiteCallout = ({
   site,
   closeCallout,
   onCreate,
+  onLearnMore,
 }: TemporarySiteCalloutProps) => {
   const {t} = useTranslation();
 
@@ -105,7 +107,9 @@ const TemporarySiteCallout = ({
               {t('site.create')}
             </Button>
             <Box width="24px" />
-            <Button size="sm">{t('site.more_info')}</Button>
+            <Button onPress={onLearnMore} size="sm">
+              {t('site.more_info')}
+            </Button>
           </Flex>
         </Column>
         <IconButton
@@ -160,6 +164,15 @@ const SiteMap = (
     ) {
       navigate('CREATE_SITE', {
         mapCoords: siteToCreate as Pick<Site, 'longitude' | 'latitude'>,
+      });
+    }
+  }, [navigate, temporarySite, setTemporarySite]);
+
+  const temporaryLearnMoreCallback = useCallback(() => {
+    setTemporarySite(null);
+    if (temporarySite) {
+      navigate('LOCATION_DASHBOARD', {
+        coords: temporarySite,
       });
     }
   }, [navigate, temporarySite, setTemporarySite]);
@@ -239,6 +252,7 @@ const SiteMap = (
           site={temporarySite}
           closeCallout={closeCallout}
           onCreate={temporaryCreateCallback}
+          onLearnMore={temporaryLearnMoreCallback}
         />
       )}
     </Mapbox.MapView>
