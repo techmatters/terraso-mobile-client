@@ -46,7 +46,7 @@
       },
       "soil_source": {
         "heading": "Default Soil Information Source",
-        "survey": "US/USDA/NRCS Soil Survey",
+        "survey": "USDA NRCS Soil Survey",
         "grids": "SoilGrids",
         "a11yLabel": "default soil information source"
       }
