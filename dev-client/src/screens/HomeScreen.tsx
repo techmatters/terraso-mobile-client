@@ -16,6 +16,9 @@ const STARTING_ZOOM_LEVEL = 5;
 
 const HomeView = () => {
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
+  const currentUserID = useSelector(
+    state => state.account.currentUser?.data?.id,
+  );
   const sites = useSelector(state => state.site.sites);
   const currentUserLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
@@ -25,7 +28,7 @@ const HomeView = () => {
     // load sites on mount
     dispatch(fetchSitesForUser());
     dispatch(fetchProjectsForUser());
-  }, [dispatch]);
+  }, [dispatch, currentUserID]);
 
   const moveToPoint = useCallback(
     ({longitude, latitude}: Location['coords']) => {
