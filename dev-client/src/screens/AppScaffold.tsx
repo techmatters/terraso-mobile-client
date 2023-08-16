@@ -124,7 +124,7 @@ export default function AppScaffold() {
 
   return (
     <RootStack.Navigator
-      initialRouteName={currentUser === null ? 'LOGIN' : 'HOME'}
+      initialRouteName={!hasToken ? 'LOGIN' : 'HOME'}
       screenOptions={defaultScreenOptions}>
       {screens}
     </RootStack.Navigator>

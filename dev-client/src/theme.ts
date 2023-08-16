@@ -22,6 +22,8 @@ export const theme = extendTheme({
     },
     grey: {
       200: '#EEEEEE',
+      300: '#E0E0E0',
+      800: '#424242',
     },
     action: {
       active: '#1A202CB2',
@@ -35,11 +37,39 @@ export const theme = extendTheme({
     md: 4,
   },
   components: {
+    Box: {
+      variants: {
+        card: {
+          borderRadius: '4px',
+          backgroundColor: 'background.default',
+          padding: '16px',
+          shadow: 1,
+        },
+      },
+    },
+    Badge: {
+      variants: {
+        chip: {
+          borderRadius: '100px',
+          padding: '4px',
+        },
+      },
+    },
     Button: {
       sizes: {
         md: {
           _icon: {
             size: 'md',
+          },
+        },
+        sm: {
+          px: '10px',
+          py: '4px',
+          _text: {
+            fontSize: '13px',
+            fontWeight: 500,
+            lineHeight: '22px',
+            letterSpacing: '0.46px',
           },
         },
       },
@@ -102,6 +132,37 @@ export const theme = extendTheme({
       baseStyle: {
         size: 'sm',
         my: 1,
+      },
+    },
+    Text: {
+      variants: {
+        body1: {
+          fontSize: '16px',
+          fontWeight: 400,
+          lineHeight: '24px',
+        },
+        body2: {},
+        subtitle1: {},
+        subtitle2: {
+          fontSize: '16px',
+          fontWeight: 500,
+          lineHeight: '22px',
+          letterSpacing: '0.1px',
+        },
+      },
+    },
+    Heading: {
+      variants: {
+        h1: {},
+        h2: {},
+        h3: {},
+        h4: {},
+        h5: {},
+        h6: {
+          fontSize: '20px',
+          fontWeight: 500,
+          lineHeight: '32px',
+        },
       },
     },
   },
