@@ -6,7 +6,7 @@ import {useNavigation} from '../../screens/AppScaffold';
 import {
   Box,
   Button,
-  Flex,
+  Row,
   Heading,
   Text,
   VStack,
@@ -109,7 +109,7 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
   }, [navigation]);
 
   const {colors} = useTheme();
-  const style = useMemo(() => ({paddingHorizontal: 16}), []);
+  const listStyle = useMemo(() => ({paddingHorizontal: 16}), []);
   const backgroundStyle = useMemo(
     () => ({backgroundColor: colors.grey[300]}),
     [colors],
@@ -119,31 +119,30 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
     <BottomSheet
       snapPoints={snapPoints}
       backgroundStyle={backgroundStyle}
-      style={style}
       handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
-      <Box paddingX="4px">
-        <Flex
-          direction="row"
-          justify="space-between"
-          align="center"
-          paddingBottom="4">
-          <Heading variant="h6">{t('site.list_title')}</Heading>
-          <Button
-            size="sm"
-            onPress={addSiteCallback}
-            startIcon={<Icon name="add" />}>
-            {t('site.create')}
-          </Button>
-        </Flex>
-      </Box>
+      <Row
+        justifyContent="space-between"
+        alignItems="center"
+        paddingBottom="4"
+        paddingX="16px">
+        <Heading variant="h6">{t('site.list_title')}</Heading>
+        <Button
+          size="sm"
+          onPress={addSiteCallback}
+          startIcon={<Icon name="add" />}>
+          {t('site.create')}
+        </Button>
+      </Row>
       {siteList.length === 0 ? (
         <LandPKSInfo />
       ) : (
         <BottomSheetFlatList
+          style={listStyle}
           data={siteList}
           keyExtractor={site => site.id}
           renderItem={renderSite}
           ItemSeparatorComponent={() => <Box height="8px" />}
+          ListFooterComponent={<Box height="10px" />}
         />
       )}
     </BottomSheet>

@@ -196,7 +196,8 @@ const SiteMap = (
       style={{
         flex: 1,
       }}
-      onLongPress={onLongPress}>
+      onLongPress={onLongPress}
+      scaleBarEnabled={false}>
       <Camera ref={ref} />
       <Mapbox.Images
         onImageMissing={console.debug}
