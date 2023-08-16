@@ -62,6 +62,16 @@ export const theme = extendTheme({
             size: 'md',
           },
         },
+        sm: {
+          px: '10px',
+          py: '4px',
+          _text: {
+            fontSize: '13px',
+            fontWeight: 500,
+            lineHeight: '22px',
+            letterSpacing: '0.46px',
+          },
+        },
       },
     },
     FAB: {
