@@ -13,7 +13,26 @@
     "ecological_site_prediction": "ECOLOGICAL SITE PREDICTION",
     "annual_precip_avg": "ANNUAL PRECIPITATION AVG",
     "elevation": "ELEVATION",
-    "none_in_list": "You don’t currently have any saved sites. Create a site by using the button above or by finding the site location on the map.\n\nA site allows you to collect data, learn more about your land, and share with others. Learn more about using LandPKS...",
+    "empty": {
+      "title": "Soil Science in Your Hands",
+      "intro_image_alt": "",
+      "description": {
+        "lead": "Discover the potential use and value of your land.",
+        "body": "Accurately determine the soil type and other features of your land to gain insights for grazing and farming options, carbon sequestration, and more."
+      },
+      "location": {
+        "lead": "To find a specific location,",
+        "body": "enter a search term or coordinates in the search bar, or tap the location icon <icon /> on the map to use your GPS."
+      },
+      "search": {
+        "lead": "Search sites you have created",
+        "body": "in the site list by name or notes."
+      },
+      "learn_more": {
+        "lead": "Find more information and guides",
+        "body": "in the side menu to the left or at <landpks href=\"https://landpotential.org\">landpotential.org</landpks>"
+      }
+    },
     "dashboard": {
       "privacy": {
         "project": "Project ({{privacy}}): ",
