@@ -107,6 +107,12 @@
     "SITE_TRANSFER_PROJECT": "Project #{{id}}",
     "CREATE_SITE": "Create Site"
   },
+  "login": {
+    "title": "LandPKS",
+    "subtitle": "Discover the potential\nof your land",
+    "google_button": "CONTINUE WITH GOOGLE",
+    "description": "LandPKS is a Terraso soil science tool."
+  },
   "privacy": {
     "PUBLIC": {
       "inline": "public",

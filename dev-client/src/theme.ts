@@ -57,11 +57,6 @@ export const theme = extendTheme({
     },
     Button: {
       sizes: {
-        md: {
-          _icon: {
-            size: 'md',
-          },
-        },
         sm: {
           px: '10px',
           py: '4px',
@@ -69,6 +64,19 @@ export const theme = extendTheme({
             fontSize: '13px',
             fontWeight: 500,
             lineHeight: '22px',
+            letterSpacing: '0.46px',
+          },
+        },
+        md: {
+          _icon: {
+            size: 'md',
+          },
+        },
+        lg: {
+          _text: {
+            fontSize: '15px',
+            fontWeight: 500,
+            lineHeight: '26px',
             letterSpacing: '0.46px',
           },
         },
@@ -149,15 +157,29 @@ export const theme = extendTheme({
           lineHeight: '22px',
           letterSpacing: '0.1px',
         },
+        caption: {
+          fontSize: '12px',
+          fontWeight: 400,
+          lineHeight: '20px',
+          letterSpacing: '0.4px',
+        },
       },
     },
     Heading: {
       variants: {
         h1: {},
         h2: {},
-        h3: {},
+        h3: {
+          fontSize: '48px',
+          fontWeight: 400,
+          lineHeight: '56px',
+        },
         h4: {},
-        h5: {},
+        h5: {
+          fontSize: '24px',
+          fontWeight: 400,
+          lineHeight: '32px',
+        },
         h6: {
           fontSize: '20px',
           fontWeight: 500,
