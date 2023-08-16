@@ -6,6 +6,7 @@ import {
   Box,
 } from 'native-base';
 import React from 'react';
+import {Pressable} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 export {default as MaterialCommunityIcons} from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -32,14 +33,16 @@ export const IconButton = React.forwardRef(
       return icon;
     }
     return (
-      <Box p="1">
-        {icon}
-        <Center>
-          <Text color="primary.contrast" fontSize="xs">
-            {label}
-          </Text>
-        </Center>
-      </Box>
+      <Pressable onPress={props.onPress}>
+        <Box p="1">
+          {icon}
+          <Center>
+            <Text color="primary.contrast" fontSize="xs">
+              {label}
+            </Text>
+          </Center>
+        </Box>
+      </Pressable>
     );
   },
 );
