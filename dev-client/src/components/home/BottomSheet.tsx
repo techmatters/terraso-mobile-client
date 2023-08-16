@@ -25,7 +25,7 @@ const LandPKSInfo = () => {
 
   return (
     <BottomSheetScrollView>
-      <VStack space={3} pb="60%" px={5}>
+      <VStack space={3} pb="65%" px={5}>
         <Heading>{t('site.empty.title')}</Heading>
         <Image
           source={require('../../assets/landpks_intro_image.png')}
