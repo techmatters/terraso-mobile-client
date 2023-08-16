@@ -116,5 +116,10 @@
       "inline": "private",
       "title": "Private"
     }
+  },
+  "bottom_navigation": {
+    "home": "Home",
+    "projects": "Projects",
+    "settings": "Settings"
   }
 }
