@@ -6,6 +6,7 @@ import {auth} from '../auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {Image} from 'react-native';
+import {Icon, MaterialCommunityIcons} from '../components/common/Icons';
 
 const LoginView = () => {
   const {t} = useTranslation();
@@ -33,7 +34,8 @@ const LoginView = () => {
 
   return (
     <Column bgColor="primary.main" alignItems="center" height="100%">
-      <Column height="50%" justifyContent="flex-end" alignItems="center">
+      <Box flexGrow={2} />
+      <Column justifyContent="flex-end" alignItems="center">
         <Heading variant="h3" fontSize="40px" color="primary.contrast">
           {t('login.title')}
         </Heading>
@@ -46,12 +48,19 @@ const LoginView = () => {
           bgColor="primary.contrast"
           _text={{color: 'primary.main'}}
           size="lg"
-          onPress={onPress}>
+          onPress={onPress}
+          startIcon={
+            <Icon
+              as={MaterialCommunityIcons}
+              name="google"
+              color="primary.main"
+            />
+          }>
           {t('login.google_button')}
         </Button>
       </Column>
+      <Box flexGrow={3} />
       <Column
-        flexGrow={1}
         paddingBottom="60px"
         alignItems="center"
         justifyContent="flex-end">
