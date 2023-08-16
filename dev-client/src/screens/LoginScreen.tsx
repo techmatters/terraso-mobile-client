@@ -5,8 +5,8 @@ import {useEffect, useCallback} from 'react';
 import {auth} from '../auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
-import {Image} from 'react-native';
 import {Icon, MaterialCommunityIcons} from '../components/common/Icons';
+import TerrasoLogo from '../../assets/terraso-logo.svg';
 
 const LoginView = () => {
   const {t} = useTranslation();
@@ -64,7 +64,7 @@ const LoginView = () => {
         paddingBottom="60px"
         alignItems="center"
         justifyContent="flex-end">
-        <Image source={require('../../assets/terraso-logo.png')} />
+        <TerrasoLogo width="122px" height="39px" />
         <Box height="12px" />
         <Text variant="caption" color="primary.contrast">
           {t('login.description')}
