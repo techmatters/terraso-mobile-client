@@ -13,8 +13,8 @@ const apiConfig = setAPIConfig({
   terrasoAPIURL: terrasoAPIURL,
   graphQLEndpoint: terrasoAPIURL + '/graphql',
   tokenStorage: {
-    getToken: async name => {
-      const value = await MMKV.getStringAsync(name);
+    getToken: name => {
+      const value = MMKV.getString(name);
       return value === null ? undefined : value;
     },
     setToken: (name, value) => MMKV.setStringAsync(name, value),
