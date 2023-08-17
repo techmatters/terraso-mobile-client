@@ -5,10 +5,11 @@ import {IconButton} from './Icons';
 type Props = {
   Head: ReactNode;
   children: ReactNode;
+  initiallyOpen?: boolean;
 };
 
-export function Accordion({Head, children}: Props) {
-  const [open, setOpen] = useState(false);
+export function Accordion({Head, children, initiallyOpen = false}: Props) {
+  const [open, setOpen] = useState(initiallyOpen);
   const onPress = useCallback(() => {
     setOpen(!open);
   }, [open, setOpen]);
