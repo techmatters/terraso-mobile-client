@@ -17,10 +17,12 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
+import {StyleSheet} from 'react-native';
 
 type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
+  styleURL?: string;
 };
 
 const siteFeatureCollection = (
@@ -128,7 +130,7 @@ const SiteMap = (
   props: SiteMapProps,
   ref: ForwardedRef<CameraRef>,
 ): JSX.Element => {
-  const {updateUserLocation, sites} = props;
+  const {updateUserLocation, sites, styleURL} = props;
   const [temporarySite, setTemporarySite] = useState<Pick<
     Site,
     'latitude' | 'longitude'
@@ -205,12 +207,10 @@ const SiteMap = (
 
   return (
     <Mapbox.MapView
-      // eslint-disable-next-line react-native/no-inline-styles
-      style={{
-        flex: 1,
-      }}
+      style={styles.mapView}
       onLongPress={onLongPress}
-      scaleBarEnabled={false}>
+      scaleBarEnabled={false}
+      styleURL={styleURL}>
       <Camera ref={ref} />
       <Mapbox.Images
         onImageMissing={console.debug}
@@ -231,14 +231,14 @@ const SiteMap = (
         id="sitesSource"
         shape={sitesFeature}
         onPress={onSitePress}>
-        <Mapbox.SymbolLayer id="sitesLayer" style={styles.siteLayer} />
+        <Mapbox.SymbolLayer id="sitesLayer" style={mapStyles.siteLayer} />
       </Mapbox.ShapeSource>
       <Mapbox.ShapeSource
         id="temporarySitesSource"
         shape={temporarySitesFeature}>
         <Mapbox.SymbolLayer
           id="temporarySitesLayer"
-          style={styles.temporarySiteLayer}
+          style={mapStyles.temporarySiteLayer}
         />
       </Mapbox.ShapeSource>
       <UserLocation
@@ -260,7 +260,13 @@ const SiteMap = (
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
+  mapView: {
+    flex: 1,
+  },
+});
+
+const mapStyles = {
   siteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
