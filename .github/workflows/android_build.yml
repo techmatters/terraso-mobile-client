@@ -53,15 +53,7 @@ jobs:
 
       - name: Bump Android version
         working-directory: ./dev-client/android
-        run: ./gradlew bumpCodeVersion
-
-      - name: Commit version bump
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          file_pattern: "dev-client/android"
-          commit_message: "build: bump Android version number"
-          commit_user_name: "GitHub Actions"
-          commit_user_email: actions@users.noreply.github.com
+        run: ./gradlew bumpPatchVersion
 
       - name: Set up config values
         working-directory: ./dev-client/android
@@ -93,3 +85,11 @@ jobs:
           track: internal
           status: draft
           inAppUpdatePriority: 2
+
+      - name: Commit version bump
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: 'dev-client/android/app/build.gradle'
+          commit_message: 'build: bump Android version number'
+          commit_user_name: 'GitHub Actions'
+          commit_user_email: actions@users.noreply.github.com
