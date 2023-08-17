@@ -17,10 +17,13 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
+import {TempSite, TempSiteDisplay} from '../../screens/HomeScreen';
 
 type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
+  temporarySite: null | TempSiteDisplay;
+  setTemporarySite: (site: TempSite | null) => void;
 };
 
 const siteFeatureCollection = (
@@ -124,11 +127,7 @@ const SiteMap = (
   props: SiteMapProps,
   ref: ForwardedRef<CameraRef>,
 ): JSX.Element => {
-  const {updateUserLocation, sites} = props;
-  const [temporarySite, setTemporarySite] = useState<Pick<
-    Site,
-    'latitude' | 'longitude'
-  > | null>(null);
+  const {updateUserLocation, sites, setTemporarySite, temporarySite} = props;
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
   const {navigate} = useNavigation();
@@ -145,23 +144,18 @@ const SiteMap = (
   const temporarySitesFeature = useMemo(
     () =>
       siteFeatureCollection(
-        temporarySite === null ? [] : [{...temporarySite, id: 'temp'}],
+        temporarySite === null ? [] : [{...temporarySite.site, id: 'temp'}],
       ),
     [temporarySite],
   );
 
   const temporaryCreateCallback = useCallback(() => {
-    const siteToCreate = {...temporarySite};
+    const siteToCreate: Pick<Site, 'longitude' | 'latitude'> | undefined =
+      temporarySite !== null ? {...temporarySite.site} : undefined;
     setTemporarySite(null);
-    if (
-      siteToCreate &&
-      siteToCreate.latitude !== undefined &&
-      siteToCreate.longitude !== undefined
-    ) {
-      navigate('CREATE_SITE', {
-        mapCoords: siteToCreate as Pick<Site, 'longitude' | 'latitude'>,
-      });
-    }
+    navigate('CREATE_SITE', {
+      mapCoords: siteToCreate,
+    });
   }, [navigate, temporarySite, setTemporarySite]);
 
   const closeCallout = useCallback(() => {
@@ -234,9 +228,9 @@ const SiteMap = (
       {selectedSite && (
         <SiteCallout site={selectedSite} closeCallout={closeCallout} />
       )}
-      {temporarySite && (
+      {temporarySite && temporarySite.showCallback && (
         <TemporarySiteCallout
-          site={temporarySite}
+          site={temporarySite.site}
           closeCallout={closeCallout}
           onCreate={temporaryCreateCallback}
         />

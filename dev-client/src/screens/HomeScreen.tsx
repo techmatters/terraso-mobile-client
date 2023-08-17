@@ -12,10 +12,23 @@ import {ScreenScaffold} from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
 
-const STARTING_ZOOM_LEVEL = 5;
+export interface TempSite {
+  longitude: number;
+  latitude: number;
+}
+
+export type TempSiteDisplay = {
+  site: TempSite;
+  showCallback: boolean;
+};
+
+const STARTING_ZOOM_LEVEL = 8;
 
 const HomeView = () => {
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
+  const [temporarySite, setTemporarySite] = useState<TempSiteDisplay | null>(
+    null,
+  );
   const currentUserID = useSelector(
     state => state.account.currentUser?.data?.id,
   );
@@ -43,6 +56,14 @@ const HomeView = () => {
     [camera],
   );
 
+  const searchFunction = useCallback(
+    (site: TempSite) => {
+      setTemporarySite({site, showCallback: false});
+      moveToPoint(site);
+    },
+    [setTemporarySite],
+  );
+
   useEffect(() => {
     if (mapInitialized !== null && camera.current !== undefined) {
       moveToPoint(mapInitialized.coords);
@@ -68,11 +89,15 @@ const HomeView = () => {
 
   return (
     <ScreenScaffold>
-      <MapSearch zoomTo={moveToPoint} zoomToUser={moveToUser} />
+      <MapSearch zoomTo={searchFunction} zoomToUser={moveToUser} />
       <SiteMap
         updateUserLocation={updateUserLocation}
         sites={sites}
         ref={camera}
+        temporarySite={temporarySite}
+        setTemporarySite={site =>
+          setTemporarySite(site !== null ? {site, showCallback: true} : null)
+        }
       />
       <BottomSheet sites={sites} showSiteOnMap={moveToPoint} />
     </ScreenScaffold>

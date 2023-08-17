@@ -3,13 +3,13 @@ import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Box, HStack, Input, Pressable, Text, VStack} from 'native-base';
 import {Suggestion, initMapSearch} from './mapSearch';
-import {Location} from '@rnmapbox/maps';
 import {Icon, IconButton} from '../common/Icons';
+import {TempSite} from '../../screens/HomeScreen';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
 type Props = {
-  zoomTo?: (coords: Location['coords']) => void;
+  zoomTo?: (site: TempSite) => void;
   zoomToUser?: () => void;
 };
 
@@ -56,13 +56,16 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
             renderItem: ({item}) => (
               <Pressable
                 width="100%"
+                py={1}
+                px={3}
                 onPress={() => {
                   setQuery(item.name);
                   setHideResults(true);
                   if (zoomTo) {
                     lookupFeature(item.mapbox_id);
                   }
-                }}>
+                }}
+                _hover={{bgColor: 'blue', color: 'blue'}}>
                 <Text>{item.name}</Text>
               </Pressable>
             ),
