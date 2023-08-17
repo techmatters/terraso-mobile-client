@@ -11,6 +11,7 @@ import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {ScreenScaffold} from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
+import {Box} from 'native-base';
 
 const STARTING_ZOOM_LEVEL = 5;
 
@@ -68,12 +69,14 @@ const HomeView = () => {
 
   return (
     <ScreenScaffold>
-      <MapSearch zoomTo={moveToPoint} zoomToUser={moveToUser} />
-      <SiteMap
-        updateUserLocation={updateUserLocation}
-        sites={sites}
-        ref={camera}
-      />
+      <Box flex={1} zIndex={-1}>
+        <MapSearch zoomTo={moveToPoint} zoomToUser={moveToUser} />
+        <SiteMap
+          updateUserLocation={updateUserLocation}
+          sites={sites}
+          ref={camera}
+        />
+      </Box>
       <BottomSheet sites={sites} showSiteOnMap={moveToPoint} />
     </ScreenScaffold>
   );
