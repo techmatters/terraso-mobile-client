@@ -36,8 +36,11 @@ const SiteTransferItem = ({
       <Text>({items.length})</Text>
     </HStack>
   );
-  const body = <SelectAllCheckboxes items={items} onUpdate={updateSelected} />;
-  return <Accordion Head={head} Body={body} />;
+  return (
+    <Accordion Head={head}>
+      <SelectAllCheckboxes items={items} onUpdate={updateSelected} />
+    </Accordion>
+  );
 };
 
 type Props = {projectId: string};

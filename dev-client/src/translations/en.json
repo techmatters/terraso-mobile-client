@@ -34,19 +34,23 @@
       }
     },
     "dashboard": {
-      "privacy": {
-        "project": "Project ({{privacy}}): ",
-        "site": "Data Privacy"
-      },
+      "privacy": "Data Privacy",
       "team_button": "Team",
       "transfer_label": "Transfer to Project",
       "copy_download_link_button": "COPY SITE DOWNLOAD LINK",
       "archive_button": "ARCHIVE THIS SITE",
       "archive_button_help_text": "Mark this site read-only",
-      "delete_button": "DELETE THIS SITE"
+      "delete_button": "DELETE THIS SITE",
+      "location_accuracy": "Location Accuracy",
+      "last_modified": {
+        "label": "Last Modified",
+        "value": "{{date}} {{name}}"
+      },
+      "default_title": "Location Information"
     }
   },
   "projects": {
+    "label": "Project",
     "title": "Projects",
     "header": "Projects",
     "none": {
@@ -115,7 +119,8 @@
     "save_fab": "SAVE",
     "modified_by": "Last modified {{date}} by {{user}}",
     "select_all": "Select All",
-    "you": "you"
+    "you": "you",
+    "details": "Details"
   },
   "screens": {
     "HOME": "LandPKS",
@@ -146,5 +151,27 @@
     "home": "Home",
     "projects": "Projects",
     "settings": "Settings"
+  },
+  "geo": {
+    "latitude": {
+      "inline": "latitude",
+      "title": "Latitude"
+    },
+    "longitude": {
+      "inline": "longitude",
+      "title": "Longitude"
+    },
+    "elevation": {
+      "inline": "elevation",
+      "title": "Elevation"
+    }
+  },
+  "soil": {
+    "bedrock": "Bedrock",
+    "prediction": "Prediction",
+    "confidence": "Confidence",
+    "soil_id": "SOIL ID",
+    "ecological_site_id": "ECOLOGICAL SITE ID",
+    "land_capability_classification": "LAND CAPABILITY CLASSIFICATION"
   }
 }

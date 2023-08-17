@@ -148,8 +148,14 @@ export const theme = extendTheme({
           fontSize: '16px',
           fontWeight: 400,
           lineHeight: '24px',
+          letterSpacing: '0.15px',
         },
-        body2: {},
+        body2: {
+          fontSize: '14px',
+          fontWeight: 400,
+          lineHeight: '20px',
+          letterSpacing: '0.17px',
+        },
         subtitle1: {},
         subtitle2: {
           fontSize: '16px',
