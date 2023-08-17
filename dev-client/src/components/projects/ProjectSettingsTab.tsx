@@ -1,17 +1,22 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScrollView, VStack} from 'native-base';
+import {AlertDialog, Button, VStack, ScrollView} from 'native-base';
 import {TabRoutes, TabStackParamList} from './constants';
 import {useTranslation} from 'react-i18next';
 import IconLink from '../common/IconLink';
-import ProjectSettingsForm, {FormValues} from './CreateProjectView/Form';
+import {useRef, useState} from 'react';
 import {useDispatch} from '../../model/store';
-import {updateProject} from 'terraso-client-shared/project/projectSlice';
+import {
+  deleteProject,
+  updateProject,
+} from 'terraso-client-shared/project/projectSlice';
+import {useNavigation} from '../../screens/AppScaffold';
+import ProjectSettingsForm, {FormValues} from './CreateProjectView/Form';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
 export default function ProjectSettingsTab({
   route: {
-    params: {name, description, privacy, projectId, downloadLink},
+    params: {name, description, privacy, downloadLink, projectId},
   },
 }: Props) {
   const {t} = useTranslation();
@@ -22,6 +27,20 @@ export default function ProjectSettingsTab({
   const onSubmit = async (values: FormValues) => {
     await dispatch(updateProject({...values, id: projectId}));
   };
+  const navigation = useNavigation();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const cancelRef = useRef(null);
+  const closeDeleteProject = () => {
+    setIsDeleteModalOpen(false);
+  };
+  const openDeleteProject = () => {
+    setIsDeleteModalOpen(true);
+  };
+  const triggerDeleteProject = () => {
+    setIsDeleteModalOpen(false);
+    dispatch(deleteProject({id: projectId}));
+    navigation.navigate('PROJECT_LIST');
+  };
 
   return (
     <ScrollView>
@@ -31,20 +50,48 @@ export default function ProjectSettingsTab({
           initialValues={formInitialValues}
           editForm={true}
         />
-        <VStack space={2}>
-          <IconLink
-            iconName="content-copy"
-            underlined={false}
-            href={downloadLink}>
-            {t('projects.settings.copy_download_link').toUpperCase()}
-          </IconLink>
-          <IconLink iconName="archive" underlined={false}>
-            {t('projects.settings.archive').toUpperCase()}
-          </IconLink>
-          <IconLink iconName="delete-forever" underlined={false}>
-            {t('projects.settings.delete').toUpperCase()}
-          </IconLink>
-        </VStack>
+        <IconLink
+          iconName="content-copy"
+          underlined={false}
+          href={downloadLink}>
+          {t('projects.settings.copy_download_link').toUpperCase()}
+        </IconLink>
+        <IconLink iconName="archive" underlined={false}>
+          {t('projects.settings.archive').toUpperCase()}
+        </IconLink>
+        <IconLink
+          iconName="delete-forever"
+          underlined={false}
+          onPress={openDeleteProject}>
+          {t('projects.settings.delete').toUpperCase()}
+        </IconLink>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteProject}>
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>
+              {t('projects.settings.delete_button_prompt')}
+            </AlertDialog.Header>
+            <AlertDialog.Body>
+              {t('projects.settings.delete_description')}
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="unstyled"
+                  colorScheme="coolGray"
+                  onPress={closeDeleteProject}>
+                  {t('projects.settings.cancel')}
+                </Button>
+                <Button colorScheme="danger" onPress={triggerDeleteProject}>
+                  {t('projects.settings.delete_button')}
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
       </VStack>
     </ScrollView>
   );
