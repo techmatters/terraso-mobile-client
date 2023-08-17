@@ -83,7 +83,7 @@ jobs:
           packageName: org.terraso.landpks
           releaseFiles: ./dev-client/android/app/build/outputs/bundle/release/*.aab
           track: internal
-          status: draft
+          status: completed
           inAppUpdatePriority: 2
 
       - name: Commit version bump
