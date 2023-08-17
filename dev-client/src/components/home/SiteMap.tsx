@@ -17,13 +17,14 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
-import {TempSite, TempSiteDisplay} from '../../screens/HomeScreen';
+import {TempSiteDisplay} from '../../screens/HomeScreen';
 
 type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
   temporarySite: null | TempSiteDisplay;
-  setTemporarySite: (site: TempSite | null) => void;
+  setTemporarySite: (site: TempSiteDisplay | null) => void;
+  showCallout: () => void;
 };
 
 const siteFeatureCollection = (
@@ -127,7 +128,13 @@ const SiteMap = (
   props: SiteMapProps,
   ref: ForwardedRef<CameraRef>,
 ): JSX.Element => {
-  const {updateUserLocation, sites, setTemporarySite, temporarySite} = props;
+  const {
+    updateUserLocation,
+    sites,
+    setTemporarySite,
+    temporarySite,
+    showCallout,
+  } = props;
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
   const {navigate} = useNavigation();
@@ -168,6 +175,10 @@ const SiteMap = (
     setTemporarySite(null);
   }, []);
 
+  const onTempSitePress = useCallback(() => {
+    showCallout();
+  }, []);
+
   const onLongPress = useCallback((feature: GeoJSON.Feature) => {
     if (feature.geometry === null || feature.geometry.type !== 'Point') {
       console.error(
@@ -178,8 +189,11 @@ const SiteMap = (
     }
     const [lon, lat] = feature.geometry.coordinates;
     setTemporarySite({
-      latitude: lat,
-      longitude: lon,
+      site: {
+        latitude: lat,
+        longitude: lon,
+      },
+      showCallout: true,
     });
     setSelectedSiteID(null);
   }, []);
@@ -215,7 +229,8 @@ const SiteMap = (
       </Mapbox.ShapeSource>
       <Mapbox.ShapeSource
         id="temporarySitesSource"
-        shape={temporarySitesFeature}>
+        shape={temporarySitesFeature}
+        onPress={onTempSitePress}>
         <Mapbox.SymbolLayer
           id="temporarySitesLayer"
           style={styles.temporarySiteLayer}
@@ -228,7 +243,7 @@ const SiteMap = (
       {selectedSite && (
         <SiteCallout site={selectedSite} closeCallout={closeCallout} />
       )}
-      {temporarySite && temporarySite.showCallback && (
+      {temporarySite && temporarySite.showCallout && (
         <TemporarySiteCallout
           site={temporarySite.site}
           closeCallout={closeCallout}

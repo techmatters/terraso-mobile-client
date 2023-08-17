@@ -19,7 +19,7 @@ export interface TempSite {
 
 export type TempSiteDisplay = {
   site: TempSite;
-  showCallback: boolean;
+  showCallout: boolean;
 };
 
 const STARTING_ZOOM_LEVEL = 8;
@@ -58,7 +58,7 @@ const HomeView = () => {
 
   const searchFunction = useCallback(
     (site: TempSite) => {
-      setTemporarySite({site, showCallback: false});
+      setTemporarySite({site, showCallout: false});
       moveToPoint(site);
     },
     [setTemporarySite],
@@ -95,9 +95,15 @@ const HomeView = () => {
         sites={sites}
         ref={camera}
         temporarySite={temporarySite}
-        setTemporarySite={site =>
-          setTemporarySite(site !== null ? {site, showCallback: true} : null)
-        }
+        setTemporarySite={site => {
+          setTemporarySite(site !== null ? {...site, showCallout: true} : null);
+        }}
+        showCallout={() => {
+          temporarySite !== null &&
+            setTemporarySite(site =>
+              site !== null ? {...site, showCallout: true} : null,
+            );
+        }}
       />
       <BottomSheet sites={sites} showSiteOnMap={moveToPoint} />
     </ScreenScaffold>
