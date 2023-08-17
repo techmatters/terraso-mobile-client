@@ -6,6 +6,7 @@ type Props = {
   href?: string;
   iconName: string;
   underlined?: boolean;
+  onPress?: () => void;
 };
 
 // TODO: There is going to be (at least) two different types of IconLinks
@@ -15,6 +16,7 @@ export default function IconLink({
   href,
   iconName,
   underlined,
+  onPress,
 }: Props) {
   return (
     <Link
@@ -22,7 +24,8 @@ export default function IconLink({
       alignItems="center"
       alignContent="flex-start"
       href={href}
-      isUnderlined={underlined}>
+      isUnderlined={underlined}
+      onPress={onPress}>
       <Icon name={iconName} color="primary.main" size="md" mr={3} />
       {children}
     </Link>
