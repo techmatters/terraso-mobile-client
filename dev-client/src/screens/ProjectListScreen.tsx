@@ -1,10 +1,9 @@
 import ProjectListView from '../components/projects/ProjectListView';
-import {VStack} from 'native-base';
-import BottomNavigation from '../components/common/BottomNavigation';
 import {useEffect} from 'react';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch, useSelector} from '../model/store';
 import {ScreenDefinition} from './AppScaffold';
+import {ScreenScaffold} from './ScreenScaffold';
 
 const ProjectListScaffold = () => {
   const dispatch = useDispatch();
@@ -13,10 +12,9 @@ const ProjectListScaffold = () => {
     dispatch(fetchProjectsForUser());
   }, [dispatch]);
   return (
-    <VStack height="100%">
+    <ScreenScaffold>
       <ProjectListView projects={Object.values(projects)} />
-      <BottomNavigation />
-    </VStack>
+    </ScreenScaffold>
   );
 };
 

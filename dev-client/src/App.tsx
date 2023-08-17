@@ -22,30 +22,12 @@ import {Provider} from 'react-redux';
 import './config';
 import {createStore} from './model/store';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {APP_CONFIG} from './config';
 
-Mapbox.setAccessToken(
-  'pk.eyJ1Ijoic2hyb3V4bSIsImEiOiJjbGY4bW8wbGEwbDJnM3FsN3I1ZzBqd2kzIn0.2Alc4o911ooGEtnObLpOUQ',
-);
+Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
 function App(): JSX.Element {
-  const store = useMemo(
-    () =>
-      createStore({
-        map: {userLocation: undefined},
-        site: {
-          sites: {
-            id1: {
-              id: 'id1',
-              name: 'site 1',
-              latitude: 48.3820485,
-              longitude: -123.5467687323,
-              archived: false,
-            },
-          },
-        },
-      }),
-    [],
-  );
+  const store = useMemo(createStore, []);
   useEffect(() =>
     checkAndroidPermissions(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,

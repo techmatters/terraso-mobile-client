@@ -22,8 +22,7 @@ jobs:
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
-          cache-dependency-path: |
-            dev-client/package-lock.json
+          cache-dependency-path: dev-client/package-lock.json
 
       - name: Install Node dependencies
         working-directory: dev-client
@@ -45,13 +44,18 @@ jobs:
             ${{ runner.os }}-pods-
 
       - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
         run: |
           echo "machine api.mapbox.com" >> $HOME/.netrc
           echo "login mapbox" >> $HOME/.netrc
-          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
+          echo "password ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.netrc
           chmod 600 $HOME/.netrc
+
+      - name: Set up config values
+        working-directory: ./dev-client
+        run: |
+           echo "GOOGLE_OAUTH_IOS_CLIENT_ID =${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}" >> .env
+           echo "GOOGLE_OAUTH_IOS_URI_SCHEME =${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}" >> .env
+           echo "PUBLIC_MAPBOX_TOKEN =${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
 
       - name: CocoaPod Install
         working-directory: dev-client/ios
@@ -64,14 +68,14 @@ jobs:
           project-path: dev-client/ios
 
       - name: Commit version bump
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@users.noreply.github.com"
-          git add -A
-          git commit -m "build: bump version number"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: "dev-client/ios"
+          commit_message: "build: bump iOS version number"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: actions@users.noreply.github.com
 
-      - name: Build IOS App
+      - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.0
         with:
           project-path: dev-client/ios/Terraso LandPKS.xcodeproj

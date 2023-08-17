@@ -68,3 +68,7 @@ dev-client/vendor/bundle/
 
 # You shouldn't store secrets in this file, but it can be used to manage different builds
 .env
+
+# Build
+.buildcache/
+buildcache/

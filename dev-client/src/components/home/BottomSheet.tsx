@@ -1,59 +1,84 @@
-import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetFlatList,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
 import {useNavigation} from '../../screens/AppScaffold';
-import {Box, Button, Flex, Heading, Text, Badge} from 'native-base';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+  Link,
+  Image,
+  useTheme,
+} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {useSelector} from '../../model/store';
-import {useTranslation} from 'react-i18next';
-import {Pressable} from 'react-native';
+import {Trans, useTranslation} from 'react-i18next';
+import {Icon} from '../common/Icons';
+import {SiteCard} from '../sites/SiteCard';
 
-type SiteListSiteProps = {
-  site: Site;
-  showSiteOnMap: (site: Site) => void;
-};
-const SiteListSite = ({site, showSiteOnMap}: SiteListSiteProps) => {
+const LandPKSInfo = () => {
   const {t} = useTranslation();
-  const navigation = useNavigation();
-  const project = useSelector(state =>
-    site.projectId === undefined
-      ? undefined
-      : state.project.projects[site.projectId],
-  );
-
-  const onTitlePress = useCallback(
-    () => navigation.navigate('SITE_DASHBOARD', {siteId: site.id}),
-    [navigation, site.id],
-  );
 
   return (
-    <Box bg="grey.200" padding="4">
-      <Pressable onPress={onTitlePress}>
-        <Heading size="lg">{site.name}</Heading>
-      </Pressable>
-      {project && <Heading size="md">{project.name}</Heading>}
-      <Flex direction="row" align="top">
-        <Box height="100px" width="100px" bg="background.default" />
-        <Box width="4" />
-        <Box flexGrow="1">
-          <Text>
-            {t('site.last_updated', {
-              date: 'dd-mm-yyyy',
-            })}
-          </Text>
-          <Text>{t('site.progress', {progress: '??'})}</Text>
-          <Flex
-            direction="row"
-            align="center"
-            padding="2"
-            justify="space-between">
-            <Badge>{t('site.members', {members: 'x'})}</Badge>
-            <Button variant="ghost" onPress={() => showSiteOnMap(site)}>
-              {t('site.show_on_map')}
-            </Button>
-          </Flex>
-        </Box>
-      </Flex>
-    </Box>
+    <BottomSheetScrollView>
+      <VStack space={3} pb="65%" px={5}>
+        <Heading>{t('site.empty.title')}</Heading>
+        <Image
+          source={require('../../assets/landpks_intro_image.png')}
+          width="100%"
+          height="30%"
+          resizeMode="contain"
+          alt={t('site.empty.intro_image_alt')}
+        />
+        <Text>
+          <Text bold>{t('site.empty.description.lead')} </Text>
+          {t('site.empty.description.body')}
+        </Text>
+        <Text alignItems="center">
+          <Text bold>{t('site.empty.location.lead')} </Text>
+          <Trans
+            i18nKey="site.empty.location.body"
+            components={{
+              icon: (
+                <Icon
+                  name="my-location"
+                  color="action.active"
+                  position="relative"
+                />
+              ),
+            }}
+          />
+        </Text>
+        <Text>
+          <Text bold>{t('site.empty.search.lead')} </Text>
+          {t('site.empty.search.body')}
+        </Text>
+        <Text>
+          <Text bold>{t('site.empty.learn_more.lead')} </Text>
+          <Trans
+            i18nKey="site.empty.learn_more.body"
+            components={{
+              // note: "link" is a reserved word for the Trans component, cannot use as key here
+              // see https://react.i18next.com/latest/trans-component#alternative-usage-which-lists-the-components-v11.6.0
+              landpks: (
+                <Link
+                  _text={{
+                    color: 'primary.main',
+                    fontSize: 'sm',
+                  }}
+                  isExternal
+                  pt={2}
+                />
+              ),
+            }}
+          />
+        </Text>
+      </VStack>
+    </BottomSheetScrollView>
   );
 };
 
@@ -69,7 +94,7 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
 
   const renderSite = useCallback(
     ({item}: {item: Site}) => (
-      <SiteListSite site={item} showSiteOnMap={showSiteOnMap} />
+      <SiteCard site={item} onShowSiteOnMap={showSiteOnMap} />
     ),
     [showSiteOnMap],
   );
@@ -83,28 +108,44 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
     navigation.navigate('CREATE_SITE');
   }, [navigation]);
 
+  const {colors} = useTheme();
+  const style = useMemo(() => ({paddingHorizontal: 16}), []);
+  const backgroundStyle = useMemo(
+    () => ({backgroundColor: colors.grey[300]}),
+    [colors],
+  );
+
   return (
-    <BottomSheet snapPoints={snapPoints}>
-      <Box padding="4">
+    <BottomSheet
+      snapPoints={snapPoints}
+      backgroundStyle={backgroundStyle}
+      style={style}
+      handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
+      <Box paddingX="4px">
         <Flex
           direction="row"
           justify="space-between"
           align="center"
           paddingBottom="4">
-          <Heading size="xl">{t('site.list_title')}</Heading>
-          <Button size="lg" onPress={addSiteCallback}>
+          <Heading variant="h6">{t('site.list_title')}</Heading>
+          <Button
+            size="sm"
+            onPress={addSiteCallback}
+            startIcon={<Icon name="add" />}>
             {t('site.create')}
           </Button>
         </Flex>
-        {siteList.length === 0 && (
-          <Text fontSize="md">{t('site.none_in_list')}</Text>
-        )}
       </Box>
-      <BottomSheetFlatList
-        data={siteList}
-        keyExtractor={site => site.id}
-        renderItem={renderSite}
-      />
+      {siteList.length === 0 ? (
+        <LandPKSInfo />
+      ) : (
+        <BottomSheetFlatList
+          data={siteList}
+          keyExtractor={site => site.id}
+          renderItem={renderSite}
+          ItemSeparatorComponent={() => <Box height="8px" />}
+        />
+      )}
     </BottomSheet>
   );
 };

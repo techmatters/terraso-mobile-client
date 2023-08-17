@@ -1,29 +1,26 @@
-import {Box, VStack} from 'native-base';
-import BottomNavigation from '../components/common/BottomNavigation';
 import ProjectTabs from '../components/projects/ProjectTabs';
 import {ScreenDefinition} from './AppScaffold';
 import {HeaderTitle} from '@react-navigation/elements';
 import {Project} from 'terraso-client-shared/project/projectSlice';
+import {ScreenScaffold} from './ScreenScaffold';
 
 type Props = {project: Project};
 
 const ProjectView = ({project}: Props) => {
   return (
-    <VStack height="100%">
-      <Box flexGrow={2} flexBasis="90%">
-        <ProjectTabs project={project} />
-      </Box>
-      <BottomNavigation />
-    </VStack>
+    <ScreenScaffold>
+      <ProjectTabs project={project} />
+    </ScreenScaffold>
   );
 };
 
 export const ProjectViewScreen: ScreenDefinition<Props> = {
   View: ProjectView,
-  options: () => ({
+  options: ({project: {name}}) => ({
     headerBackVisible: false,
-    HeaderTitle: ({projectName, ...props}) => {
-      return <HeaderTitle {...props}>{projectName}</HeaderTitle>;
+    headerTitle: props => {
+      // const {name} = useSelector(state => state.project.projects[projectId]);
+      return <HeaderTitle {...props}>{name}</HeaderTitle>;
     },
   }),
 };

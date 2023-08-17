@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -29,8 +30,7 @@ jobs:
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
-          cache-dependency-path: |
-            dev-client/package-lock.json
+          cache-dependency-path: dev-client/package-lock.json
 
       - name: Install Node dependencies
         working-directory: dev-client
@@ -45,26 +45,22 @@ jobs:
       - name: Restore Pods cache
         uses: actions/cache@v3
         with:
-          path: |
-            dev-client/ios/Pods
+          path: dev-client/ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
+          restore-keys: ${{ runner.os }}-pods-
 
       - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
         run: |
           echo "machine api.mapbox.com" >> $HOME/.netrc
           echo "login mapbox" >> $HOME/.netrc
-          echo "password $MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.netrc
+          echo "password ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.netrc
           chmod 600 $HOME/.netrc
 
       - name: CocoaPod Install
         working-directory: dev-client/ios
         run: pod install
 
-      - name: Build IOS App
+      - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.0
         with:
           project-path: dev-client/ios/Terraso LandPKS.xcodeproj
@@ -89,8 +85,7 @@ jobs:
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
-          cache-dependency-path: |
-            dev-client/package-lock.json
+          cache-dependency-path: dev-client/package-lock.json
 
       - name: Install Node dependencies
         working-directory: dev-client
@@ -118,11 +113,9 @@ jobs:
             ${{ runner.os }}-gradle-caches-
 
       - name: Provide Mapbox secret key
-        env:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
         run: |
           mkdir -p $HOME/.gradle
-          echo "MAPBOX_DOWNLOADS_TOKEN=$MAPBOX_DOWNLOADS_TOKEN" >> $HOME/.gradle/gradle.properties
+          echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.gradle/gradle.properties
 
       - name: Build Android app bundle
         working-directory: ./dev-client/android

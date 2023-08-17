@@ -1,25 +1,30 @@
 import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
-import {memo, useEffect, useMemo, useRef, useState, useCallback} from 'react';
-// TODO: Is it better to import type?
-import {type Position} from '@rnmapbox/maps/lib/typescript/types/Position';
-import {Icon, IconButton} from '../common/Icons';
-import {v4 as uuidv4} from 'uuid';
+import {
+  memo,
+  useMemo,
+  useState,
+  useCallback,
+  forwardRef,
+  ForwardedRef,
+} from 'react';
+import {IconButton} from '../common/Icons';
+import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Box, Heading, Text, Flex, Badge, Divider, Button} from 'native-base';
+import {Box, Text, Flex, Divider, Button, useTheme, Column} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
-import {useSelector} from '../../model/store';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
+import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
+import {SiteCard} from '../sites/SiteCard';
 
 type SiteMapProps = {
-  center?: Position;
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
 };
 
 const siteFeatureCollection = (
-  sites: Site[],
+  sites: Pick<Site, 'id' | 'latitude' | 'longitude'>[],
 ): GeoJSON.FeatureCollection<GeoJSON.Geometry> => ({
   type: 'FeatureCollection',
   features: sites.map(site => ({
@@ -38,41 +43,17 @@ type SiteCalloutProps = {
   closeCallout: () => void;
 };
 const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
-  const {t} = useTranslation();
-  const project = useSelector(state =>
-    site.projectId === undefined
-      ? undefined
-      : state.project.projects[site.projectId],
-  );
-
   return (
     <Mapbox.MarkerView
       coordinate={[site.longitude, site.latitude]}
       anchor={{x: 0.5, y: 0}}
       allowOverlap={true}>
-      <Box bg="grey.200" padding="4">
-        <Flex direction="row" align="top" justify="space-between">
-          <Heading size="lg">{site.name}</Heading>
-          <IconButton
-            name="close"
-            onPress={closeCallout}
-            _icon={{size: 'md'}}
-          />
-        </Flex>
-        {project && <Heading size="md">{project.name}</Heading>}
-        <Box height="4" />
-        <Box>
-          <Text>
-            {t('site.last_updated', {
-              date: 'dd-mm-yyyy',
-            })}
-          </Text>
-          <Text>{t('site.progress', {progress: '??'})}</Text>
-          <Flex direction="row">
-            <Badge>{t('site.members', {members: 'x'})}</Badge>
-          </Flex>
-        </Box>
-      </Box>
+      <SiteCard
+        site={site}
+        topRightButton={
+          <IconButton name="close" variant="filled" onPress={closeCallout} />
+        }
+      />
     </Mapbox.MarkerView>
   );
 };
@@ -80,62 +61,78 @@ const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
 const CalloutDetail = ({label, value}: {label: string; value: string}) => {
   return (
     <Box>
-      <Text bold>{label}:</Text>
-      <Text>{value}</Text>
+      <Text>{label}</Text>
+      <Text bold>{value}</Text>
     </Box>
   );
 };
 
-const TemporarySiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
+type TemporarySiteCalloutProps = {
+  site: Pick<Site, 'latitude' | 'longitude'>;
+  onCreate: () => void;
+  closeCallout: () => void;
+};
+const TemporarySiteCallout = ({
+  site,
+  closeCallout,
+  onCreate,
+}: TemporarySiteCalloutProps) => {
   const {t} = useTranslation();
-  const {navigate} = useNavigation();
-
-  const onCreate = useCallback(
-    () => navigate('CREATE_SITE', {mapCoords: site}),
-    [site, navigate],
-  );
 
   return (
     <Mapbox.MarkerView
       coordinate={[site.longitude, site.latitude]}
       anchor={{x: 0.5, y: 0}}
       allowOverlap={true}>
-      <Box backgroundColor="background.default" padding="4">
-        <Flex direction="row" align="top" justify="space-between">
-          <CalloutDetail label={t('site.soil_id_prediction')} value="???" />
-          <IconButton name="close" onPress={closeCallout} />
-        </Flex>
-        <Divider />
-        <CalloutDetail
-          label={t('site.ecological_site_prediction')}
-          value="???"
+      <Box variant="card">
+        <Column space="12px">
+          <CalloutDetail label={t('site.soil_id_prediction')} value="CLIFTON" />
+          <Divider />
+          <CalloutDetail
+            label={t('site.ecological_site_prediction')}
+            value="LOAMY UPLAND"
+          />
+          <Divider />
+          <CalloutDetail
+            label={t('site.annual_precip_avg')}
+            value="28 INCHES"
+          />
+          <Divider />
+          <CalloutDetail label={t('site.elevation')} value="2800 FEET" />
+          <Divider />
+          <Flex direction="row" justify="flex-end">
+            <Button onPress={onCreate} size="sm" variant="outline">
+              {t('site.create')}
+            </Button>
+            <Box width="24px" />
+            <Button size="sm">{t('site.more_info')}</Button>
+          </Flex>
+        </Column>
+        <IconButton
+          position="absolute"
+          top="8px"
+          right="8px"
+          name="close"
+          onPress={closeCallout}
         />
-        <Divider />
-        <CalloutDetail label={t('site.annual_precip_avg')} value="???" />
-        <Divider />
-        <CalloutDetail label={t('site.elevation')} value="???" />
-        <Divider />
-        <Flex direction="row" justify="space-between">
-          <Button onPress={onCreate}>{t('site.create')}</Button>
-          <Button>{t('site.more_info')}</Button>
-        </Flex>
       </Box>
     </Mapbox.MarkerView>
   );
 };
 
-const SiteMap = memo((props: SiteMapProps): JSX.Element => {
-  const {center, updateUserLocation, sites} = props;
-  const [temporarySite, setTemporarySite] = useState<Site | null>(null);
+const SiteMap = (
+  props: SiteMapProps,
+  ref: ForwardedRef<CameraRef>,
+): JSX.Element => {
+  const {updateUserLocation, sites} = props;
+  const [temporarySite, setTemporarySite] = useState<Pick<
+    Site,
+    'latitude' | 'longitude'
+  > | null>(null);
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
-  const camera = useRef<Camera>(null);
-
-  useEffect(() => {
-    camera.current?.setCamera({
-      centerCoordinate: center,
-    });
-  }, [center]);
+  const {navigate} = useNavigation();
+  const {colors} = useTheme();
 
   const sitesFeature = useMemo(
     () =>
@@ -146,9 +143,26 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
   );
 
   const temporarySitesFeature = useMemo(
-    () => siteFeatureCollection(temporarySite === null ? [] : [temporarySite]),
+    () =>
+      siteFeatureCollection(
+        temporarySite === null ? [] : [{...temporarySite, id: 'temp'}],
+      ),
     [temporarySite],
   );
+
+  const temporaryCreateCallback = useCallback(() => {
+    const siteToCreate = {...temporarySite};
+    setTemporarySite(null);
+    if (
+      siteToCreate &&
+      siteToCreate.latitude !== undefined &&
+      siteToCreate.longitude !== undefined
+    ) {
+      navigate('CREATE_SITE', {
+        mapCoords: siteToCreate as Pick<Site, 'longitude' | 'latitude'>,
+      });
+    }
+  }, [navigate, temporarySite, setTemporarySite]);
 
   const closeCallout = useCallback(() => {
     setSelectedSiteID(null);
@@ -170,11 +184,8 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
     }
     const [lon, lat] = feature.geometry.coordinates;
     setTemporarySite({
-      id: uuidv4(),
-      name: 'temporary site',
       latitude: lat,
       longitude: lon,
-      archived: false,
     });
     setSelectedSiteID(null);
   }, []);
@@ -186,12 +197,22 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
         flex: 1,
       }}
       onLongPress={onLongPress}>
-      <Camera ref={camera} centerCoordinate={[0, 0]} />
-      <Mapbox.Images images={{sitePin: ''}}>
-        <Mapbox.Image name="sitePin">
-          <Icon name="location-on" />
-        </Mapbox.Image>
-      </Mapbox.Images>
+      <Camera ref={ref} />
+      <Mapbox.Images
+        onImageMissing={console.debug}
+        images={{
+          sitePin: MapIcon.getImageSourceSync(
+            'location-on',
+            35,
+            colors.secondary.main,
+          ),
+          temporarySitePin: MapIcon.getImageSourceSync(
+            'location-on',
+            35,
+            colors.action.active,
+          ),
+        }}
+      />
       <Mapbox.ShapeSource
         id="sitesSource"
         shape={sitesFeature}
@@ -201,7 +222,10 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
       <Mapbox.ShapeSource
         id="temporarySitesSource"
         shape={temporarySitesFeature}>
-        <Mapbox.SymbolLayer id="temporarySitesLayer" style={styles.siteLayer} />
+        <Mapbox.SymbolLayer
+          id="temporarySitesLayer"
+          style={styles.temporarySiteLayer}
+        />
       </Mapbox.ShapeSource>
       <UserLocation
         onUpdate={updateUserLocation}
@@ -214,19 +238,26 @@ const SiteMap = memo((props: SiteMapProps): JSX.Element => {
         <TemporarySiteCallout
           site={temporarySite}
           closeCallout={closeCallout}
+          onCreate={temporaryCreateCallback}
         />
       )}
     </Mapbox.MapView>
   );
-});
+};
 
 const styles = {
   siteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
-    iconSize: 1.0,
+    iconSize: 3.0,
     iconImage: 'sitePin',
+  } satisfies Mapbox.SymbolLayerStyle,
+  temporarySiteLayer: {
+    iconAllowOverlap: true,
+    iconAnchor: 'bottom',
+    iconSize: 3.0,
+    iconImage: 'temporarySitePin',
   } satisfies Mapbox.SymbolLayerStyle,
 };
 
-export default SiteMap;
+export default memo(forwardRef<CameraRef, SiteMapProps>(SiteMap));

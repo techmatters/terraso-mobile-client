@@ -1,9 +1,8 @@
-import {HStack, Input, Text, VStack} from 'native-base';
+import {Fab, HStack, Heading, Input, VStack} from 'native-base';
 import {Formik, FormikConfig, FormikProps} from 'formik';
 import RadioBlock from '../../common/RadioBlock';
-import {IconButton} from '../../common/Icons';
+import {Icon, IconButton} from '../../common/Icons';
 import {useTranslation} from 'react-i18next';
-import SaveFAB from '../../common/SaveFAB';
 import ErrorMessage from '../../common/ErrorMessage';
 import * as yup from 'yup';
 import {
@@ -30,13 +29,21 @@ export interface FormValues {
 
 interface Props {
   onSubmit: FormikConfig<FormValues>['onSubmit'];
+  initialValues?: FormValues;
+  editForm?: boolean;
 }
 
-export default function Form({onSubmit}: Props) {
+export default function Form({
+  onSubmit,
+  initialValues,
+  editForm = false,
+}: Props) {
   const {t} = useTranslation();
   return (
     <Formik
-      initialValues={{name: '', description: '', privacy: 'PRIVATE'}}
+      initialValues={
+        initialValues ?? {name: '', description: '', privacy: 'PRIVATE'}
+      }
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
       {({
@@ -52,23 +59,34 @@ export default function Form({onSubmit}: Props) {
           onBlur: handleBlur(field),
         });
 
+        const EditHeader = editForm ? (
+          <Heading size="sm">{t('projects.edit.inputHeader')}</Heading>
+        ) : (
+          <></>
+        );
+
+        const pencilIcon = editForm ? <Icon name="edit" ml={2} /> : undefined;
+
         return (
           <>
-            <VStack space={3} mx={5}>
+            <VStack space={3}>
+              {EditHeader}
               <Input
                 placeholder={t('projects.add.name')}
+                InputLeftElement={pencilIcon}
                 {...inputParams('name')}
               />
               <ErrorMessage fieldName="name" />
               <Input
                 placeholder={t('projects.add.description')}
+                InputLeftElement={pencilIcon}
                 {...inputParams('description')}
               />
               <ErrorMessage fieldName="description" />
-              <RadioBlock<'PUBLIC' | 'PRIVATE'>
+              <RadioBlock
                 label={
                   <HStack alignItems="center">
-                    <Text>Data Privacy</Text>
+                    <Heading size="sm">Data Privacy</Heading>
                     <IconButton name="info" _icon={{color: 'action.active'}} />
                   </HStack>
                 }
@@ -76,16 +94,20 @@ export default function Form({onSubmit}: Props) {
                   PUBLIC: {text: t('projects.add.public')},
                   PRIVATE: {text: t('projects.add.private')},
                 }}
-                value={values.privacy}
-                onChange={handleChange('privacy')}
-                blockName="data-privacy"
+                groupProps={{
+                  value: values.privacy,
+                  variant: 'oneLine',
+                  onChange: handleChange('privacy'),
+                  name: 'data-privacy',
+                }}
               />
               <ErrorMessage fieldName="privacy" />
             </VStack>
-            <SaveFAB
-              title={t('general.save')}
-              onPress={handleSubmit as () => void}
+            <Fab
+              label={t('general.save_fab')}
+              onPress={() => handleSubmit()}
               disabled={isSubmitting}
+              renderInPortal={false}
             />
           </>
         );

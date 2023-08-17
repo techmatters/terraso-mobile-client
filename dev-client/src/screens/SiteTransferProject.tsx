@@ -71,8 +71,9 @@ const SiteTransferProjectView = ({projectId}: Props) => {
 
 export const SiteTransferProjectScreen: ScreenDefinition<Props> = {
   View: SiteTransferProjectView,
-  options: () => ({
-    HeaderTitle: ({projectId, ...props}) => {
+  options: ({projectId}) => ({
+    /* eslint-disable react-hooks/rules-of-hooks */
+    headerTitle: props => {
       const name = useSelector(state => state.project.projects[projectId].name);
       return <HeaderTitle {...props}>{name}</HeaderTitle>;
     },

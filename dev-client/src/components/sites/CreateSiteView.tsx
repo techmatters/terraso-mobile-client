@@ -1,14 +1,25 @@
 import {Location} from '@rnmapbox/maps';
-import {ProjectName} from '../../types';
 import RadioBlock from '../common/RadioBlock';
-import {FormControl, Input, Text, VStack} from 'native-base';
+import {
+  Fab,
+  FormControl,
+  Input,
+  ScrollView,
+  Select,
+  Text,
+  VStack,
+} from 'native-base';
 import {useCallback, useMemo, useState} from 'react';
-import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  ProjectPrivacy,
+  SiteAddMutationInput,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from '../../screens/AppScaffold';
 import {siteValidationSchema} from './validation';
 import {ValidationError} from 'yup';
-import SaveFAB from '../common/SaveFAB';
 import {Icon} from '../common/Icons';
+import {useTranslation} from 'react-i18next';
+import {useSelector} from '../../model/store';
 
 type LatLongString = {latitude: string; longitude: string};
 
@@ -20,14 +31,16 @@ function fromLocation(location: Location): LatLongString {
 }
 
 type Props = {
-  projects: ProjectName[];
+  defaultProject?: string;
   userLocation?: Location;
   sitePin?: Location;
   createSiteCallback?: (input: SiteAddMutationInput) => void;
 };
 
 type Args = Partial<
-  Omit<Record<keyof SiteAddMutationInput, string>, 'clientMutationId'>
+  Omit<Record<keyof SiteAddMutationInput, string>, 'clientMutationId'> & {
+    privacy: ProjectPrivacy;
+  }
 >;
 
 type Error = Partial<
@@ -37,19 +50,37 @@ type Error = Partial<
 type LocationInputOptions = 'coords' | 'gps' | 'pin';
 
 export default function CreateSiteView({
+  defaultProject,
   userLocation,
   createSiteCallback,
   sitePin,
 }: Props) {
+  const {t} = useTranslation();
+
+  const projectMap = useSelector(state => state.project.projects);
+  const projects = useMemo(() => Object.values(projectMap), [projectMap]);
+
+  const {latitude: defaultLat, longitude: defaultLon} = useMemo(() => {
+    if (sitePin) {
+      return {...sitePin.coords};
+    }
+    if (userLocation) {
+      return {...userLocation.coords};
+    }
+    return {latitude: '0', longitude: '0'};
+  }, [userLocation, sitePin]);
+
   /** We store the form state in mutationInput */
   const [mutationInput, setMutationInput] = useState<Args>({
-    latitude: userLocation && String(userLocation.coords.latitude),
-    longitude: userLocation && String(userLocation.coords.longitude),
+    latitude: String(defaultLat),
+    longitude: String(defaultLon),
+    projectId: defaultProject ? projectMap[defaultProject]?.id : undefined,
+    privacy: defaultProject ? projectMap[defaultProject].privacy : 'PRIVATE',
   });
 
   const [errors, setErrors] = useState<Error>({});
 
-  const {navigate} = useNavigation();
+  const {navigate, goBack} = useNavigation();
 
   /**
    * Checks the form status with the yup library, and posts to backend
@@ -74,10 +105,14 @@ export default function CreateSiteView({
         throw validationError;
       }
     }
-    const {name, latitude, longitude} = validationResults;
-    createSiteCallback({name, latitude, longitude});
+    const {name, latitude, longitude, projectId} = validationResults;
+    createSiteCallback({name, latitude, longitude, projectId});
+    if (defaultProject) {
+      goBack();
+      return;
+    }
     navigate('HOME');
-  }, [mutationInput, createSiteCallback, navigate]);
+  }, [mutationInput, createSiteCallback, navigate, goBack, defaultProject]);
 
   /* calculates the associated location for a given location input option
    * For example, for 'pin', it grabs and formats the value from the sitepin */
@@ -100,12 +135,12 @@ export default function CreateSiteView({
         );
         return;
       }
-      setMutationInput({
-        ...mutationInput,
+      setMutationInput(current => ({
+        ...current,
         ...newLocation,
-      });
+      }));
     },
-    [locationOptions, mutationInput],
+    [locationOptions],
   );
 
   const defaultLocationSource = useMemo(() => {
@@ -119,75 +154,98 @@ export default function CreateSiteView({
   }, [sitePin, userLocation]);
 
   return (
-    <VStack p={5} space={3}>
-      <FormControl>
-        <Input
-          placeholder="Site name"
-          value={mutationInput.name}
-          onChangeText={name => setMutationInput({...mutationInput, name})}
+    <ScrollView>
+      <VStack p={5} space={3}>
+        <FormControl>
+          <Input
+            placeholder="Site name"
+            value={mutationInput.name}
+            onChangeText={name => setMutationInput({...mutationInput, name})}
+          />
+          {/* TODO: FormControl.ErrorMessage does not seem to work :( */}
+          {errors.name &&
+            errors.name.map(msg => (
+              <Text color="error.main" key={msg}>
+                {msg}
+              </Text>
+            ))}
+        </FormControl>
+        <RadioBlock<LocationInputOptions>
+          label="Site Location"
+          options={{
+            gps: {text: 'Use my current location (GPS)'},
+            pin: {
+              text: 'Use map pin',
+              isDisabled: sitePin === undefined,
+            },
+            coords: {text: 'Enter coordinates'},
+          }}
+          groupProps={{
+            name: 'location',
+            defaultValue: defaultLocationSource,
+            onChange: updateLocationSource,
+          }}
         />
-        {/* TODO: FormControl.ErrorMessage does not seem to work :( */}
-        {errors.name &&
-          errors.name.map(msg => (
-            <Text color="error.main" key={msg}>
-              {msg}
-            </Text>
-          ))}
-      </FormControl>
-      <RadioBlock<LocationInputOptions>
-        label="Site Location"
-        blockName="location"
-        options={{
-          gps: {text: 'Use my current location (GPS)'},
-          pin: {
-            text: 'Use map pin',
-            isDisabled: sitePin === undefined,
-          },
-          coords: {text: 'Enter coordinates'},
-        }}
-        defaultValue={defaultLocationSource}
-        onChange={updateLocationSource}
-      />
-      <FormControl>
-        <FormControl.Label>Latitude</FormControl.Label>
-        <Input
-          variant="underlined"
-          size="sm"
-          onChangeText={latitude =>
-            setMutationInput({...mutationInput, latitude})
-          }
-          value={mutationInput.latitude}
-          leftElement={<Icon mr={2} name="edit" />}
+        <FormControl>
+          <FormControl.Label>Latitude</FormControl.Label>
+          <Input
+            variant="underlined"
+            size="sm"
+            onChangeText={latitude =>
+              setMutationInput({...mutationInput, latitude})
+            }
+            value={mutationInput.latitude}
+            leftElement={<Icon mr={2} name="edit" />}
+          />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Longitude</FormControl.Label>
+          <Input
+            size="sm"
+            variant="underlined"
+            value={mutationInput.longitude}
+            onChangeText={longitude =>
+              setMutationInput({...mutationInput, longitude})
+            }
+            leftElement={<Icon mr={2} name="edit" />}
+          />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Add to Project</FormControl.Label>
+          <Select
+            selectedValue={mutationInput.projectId}
+            onValueChange={projectId =>
+              setMutationInput({...mutationInput, projectId})
+            }>
+            {projects.map(project => (
+              <Select.Item
+                label={project.name}
+                value={project.id}
+                key={project.id}
+              />
+            ))}
+          </Select>
+        </FormControl>
+        <RadioBlock<ProjectPrivacy>
+          label="Data Privacy"
+          options={{
+            PUBLIC: {text: 'Public'},
+            PRIVATE: {text: 'Private'},
+          }}
+          allDisabled={mutationInput.projectId ? true : undefined}
+          groupProps={{
+            variant: 'oneLine',
+            name: 'data-privacy',
+            value: mutationInput.privacy,
+            onChange: (privacy: ProjectPrivacy) =>
+              setMutationInput({
+                ...mutationInput,
+                privacy,
+              }),
+          }}
         />
-      </FormControl>
-      <FormControl>
-        <FormControl.Label>Longitude</FormControl.Label>
-        <Input
-          size="sm"
-          variant="underlined"
-          value={mutationInput.longitude}
-          onChangeText={longitude =>
-            setMutationInput({...mutationInput, longitude})
-          }
-          leftElement={<Icon mr={2} name="edit" />}
-        />
-      </FormControl>
-      <FormControl>
-        <FormControl.Label>Add to Project</FormControl.Label>
-        <Input variant="underlined" />
-      </FormControl>
-      {/* TODO: Site privacy is not integrated on backend yet */}
-      <RadioBlock<'public' | 'private'>
-        label="Data Privacy"
-        blockName="data-privacy"
-        options={{
-          public: {text: 'Public'},
-          private: {text: 'Private'},
-        }}
-        defaultValue="private"
-        oneLine={true}
-      />
-      <SaveFAB title="SAVE" onPress={onSave} />
-    </VStack>
+        <Fab label={t('general.save_fab')} onPress={onSave} />
+      </VStack>
+    </ScrollView>
   );
 }

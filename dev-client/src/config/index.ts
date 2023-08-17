@@ -2,6 +2,7 @@ import Config from 'react-native-config';
 import {MMKVLoader} from 'react-native-mmkv-storage';
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
+import {PACKAGE_NAME} from '../constants';
 
 const terrasoAPIURL =
   Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
@@ -12,8 +13,8 @@ const apiConfig = setAPIConfig({
   terrasoAPIURL: terrasoAPIURL,
   graphQLEndpoint: terrasoAPIURL + '/graphql',
   tokenStorage: {
-    getToken: async name => {
-      const value = await MMKV.getStringAsync(name);
+    getToken: name => {
+      const value = MMKV.getString(name);
       return value === null ? undefined : value;
     },
     setToken: (name, value) => MMKV.setStringAsync(name, value),
@@ -34,6 +35,7 @@ type AppConfig = {
   packageName: string;
   googleClientId: string;
   googleRedirectURI: string;
+  mapboxAccessToken: string;
 };
 
 var googleClientId = '';
@@ -44,12 +46,16 @@ if (Platform.OS === 'ios') {
     `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
 } else if (Platform.OS === 'android') {
   googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
-  googleRedirectURI =
-    `${Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID}:/oauth2redirect` ?? '';
+  googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
 }
+
+if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
+  throw new Error('Config setting PUBLIC_MAPBOX_TOKEN not set');
+}
+
 export const APP_CONFIG: AppConfig = {
-  packageName: 'org.terraso.landpks',
+  packageName: PACKAGE_NAME,
   googleClientId: googleClientId,
   googleRedirectURI: googleRedirectURI,
+  mapboxAccessToken: Config.PUBLIC_MAPBOX_TOKEN,
 };
-console.log(APP_CONFIG);
