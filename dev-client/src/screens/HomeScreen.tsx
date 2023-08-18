@@ -81,6 +81,12 @@ const HomeView = () => {
     [dispatch, mapInitialized, setMapInitialized],
   );
 
+  const showCallout = useCallback(() => {
+    setTemporarySite(site =>
+      site !== null ? {...site, showCallout: true} : null,
+    );
+  }, [temporarySite]);
+
   const moveToUser = useCallback(() => {
     if (currentUserLocation?.coords !== undefined) {
       moveToPoint(currentUserLocation.coords);
@@ -98,12 +104,7 @@ const HomeView = () => {
         setTemporarySite={site => {
           setTemporarySite(site !== null ? {...site, showCallout: true} : null);
         }}
-        showCallout={() => {
-          temporarySite !== null &&
-            setTemporarySite(site =>
-              site !== null ? {...site, showCallout: true} : null,
-            );
-        }}
+        showCallout={showCallout}
       />
       <BottomSheet sites={sites} showSiteOnMap={moveToPoint} />
     </ScreenScaffold>
