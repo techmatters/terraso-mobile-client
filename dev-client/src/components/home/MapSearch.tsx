@@ -44,7 +44,7 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
   const [hideResults, setHideResults] = useState(false);
 
   async function querySuggestions() {
-    if (query.length > 2) {
+    if (query.length > 2 || suggestions.length !== 0) {
       const {suggestions: newSuggestions} = await getSuggestions(query);
 
       setSuggestions(newSuggestions);
@@ -100,8 +100,13 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
               bgColor="white"
               onChangeText={newText => {
                 setQuery(newText);
-                setHideResults(false);
                 querySuggestions();
+              }}
+              onFocus={() => {
+                setHideResults(false);
+              }}
+              onBlur={() => {
+                setHideResults(true);
               }}
               value={query}
               placeholder={t('search.placeholder')}

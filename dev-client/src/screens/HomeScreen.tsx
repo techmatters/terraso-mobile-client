@@ -22,7 +22,7 @@ export type TempSiteDisplay = {
   showCallout: boolean;
 };
 
-const STARTING_ZOOM_LEVEL = 8;
+const STARTING_ZOOM_LEVEL = 12;
 
 const HomeView = () => {
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);

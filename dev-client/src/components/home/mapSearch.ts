@@ -67,7 +67,7 @@ export function initMapSearch() {
     try {
       const resp = await fetch(
         `${BASE_URI}/suggest?` +
-          `q=${query}&access_token=${ACCESS_TOKEN}&session_token=${session.token}`,
+          `q=${query}&access_token=${ACCESS_TOKEN}&session_token=${session.token}&types=place,address,street,block,poi`,
       );
       const payload = (await checkResponse(resp)) as SuggestionResponse;
       return payload;
