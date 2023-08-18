@@ -1,4 +1,3 @@
-import Mapbox from '@rnmapbox/maps';
 import {ScreenDefinition, useNavigation} from '../../screens/AppScaffold';
 import {useDispatch, useSelector} from '../../model/store';
 import {HeaderTitle} from '@react-navigation/elements';
@@ -11,10 +10,12 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {useCallback} from 'react';
 import {Box, Divider, Text, Column} from 'native-base';
-import {Icon, IconButton} from '../common/Icons';
+import {IconButton} from '../common/Icons';
 import {ScreenScaffold} from '../../screens/ScreenScaffold';
 import {Accordion} from '../common/Accordion';
 import CloseButton from '../common/CloseButton';
+import {StaticMapView} from '../common/Map';
+import {StyleSheet} from 'react-native';
 
 type Props = {siteId?: string; coords?: Pick<Site, 'latitude' | 'longitude'>};
 
@@ -64,7 +65,6 @@ const LocationDashboardView = ({siteId, coords}: Props) => {
   if (coords === undefined) {
     coords = site!;
   }
-  const position = [coords.longitude, coords.latitude];
   const project = useSelector(state =>
     site?.projectId === undefined
       ? undefined
@@ -78,17 +78,13 @@ const LocationDashboardView = ({siteId, coords}: Props) => {
 
   return (
     <ScreenScaffold>
-      <Mapbox.MapView
-        scaleBarEnabled={false}
-        // eslint-disable-next-line react-native/no-inline-styles
-        style={{height: 170}}
-        styleURL={Mapbox.StyleURL.Satellite}>
-        <Mapbox.Camera centerCoordinate={position} zoomLevel={15} />
-        <Mapbox.MarkerView coordinate={position} anchor={{x: 0.5, y: 0}}>
-          <Icon name="location-on" color="secondary.main" />
-        </Mapbox.MarkerView>
-      </Mapbox.MapView>
+      <StaticMapView
+        coords={coords}
+        style={styles.mapView}
+        displayCenterMarker={true}
+      />
       <Accordion
+        initiallyOpen
         Head={
           <Text variant="body1" color="primary.contrast">
             {t('general.details')}
@@ -207,3 +203,5 @@ export const LocationDashboardScreen: ScreenDefinition<Props> = {
     },
   }),
 };
+
+const styles = StyleSheet.create({mapView: {height: 170}});
