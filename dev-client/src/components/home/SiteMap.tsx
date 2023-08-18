@@ -8,10 +8,10 @@ import {
   forwardRef,
   ForwardedRef,
 } from 'react';
-import {IconButton} from '../common/Icons';
+import {Card, CardCloseButton} from '../common/Card';
 import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Box, Text, Flex, Divider, Button, useTheme, Column} from 'native-base';
+import {Box, Row, Text, Divider, Button, useTheme, Column} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
@@ -50,9 +50,7 @@ const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
       allowOverlap={true}>
       <SiteCard
         site={site}
-        topRightButton={
-          <IconButton name="close" variant="filled" onPress={closeCallout} />
-        }
+        topRightButton={<CardCloseButton onPress={closeCallout} />}
       />
     </Mapbox.MarkerView>
   );
@@ -86,7 +84,7 @@ const TemporarySiteCallout = ({
       coordinate={[site.longitude, site.latitude]}
       anchor={{x: 0.5, y: 0}}
       allowOverlap={true}>
-      <Box variant="card">
+      <Card topRightButton={<CardCloseButton onPress={closeCallout} />}>
         <Column space="12px">
           <CalloutDetail label={t('site.soil_id_prediction')} value="CLIFTON" />
           <Divider />
@@ -102,7 +100,7 @@ const TemporarySiteCallout = ({
           <Divider />
           <CalloutDetail label={t('site.elevation')} value="2800 FEET" />
           <Divider />
-          <Flex direction="row" justify="flex-end">
+          <Row justifyContent="flex-end">
             <Button onPress={onCreate} size="sm" variant="outline">
               {t('site.create')}
             </Button>
@@ -110,16 +108,9 @@ const TemporarySiteCallout = ({
             <Button onPress={onLearnMore} size="sm">
               {t('site.more_info')}
             </Button>
-          </Flex>
+          </Row>
         </Column>
-        <IconButton
-          position="absolute"
-          top="8px"
-          right="8px"
-          name="close"
-          onPress={closeCallout}
-        />
-      </Box>
+      </Card>
     </Mapbox.MarkerView>
   );
 };

@@ -100,8 +100,8 @@ const SiteSettingsView = ({siteId}: Props) => {
         <Button
           pl={0}
           variant="link"
-          color={colors.error.main}
-          startIcon={<Icon name="delete-forever" />}>
+          _text={{color: 'error.main'}}
+          startIcon={<Icon color="error.main" name="delete-forever" />}>
           {t('site.dashboard.delete_button')}
         </Button>
       </Column>

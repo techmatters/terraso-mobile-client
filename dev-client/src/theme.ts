@@ -121,8 +121,29 @@ export const theme = extendTheme({
       },
     },
     Icon: {
+      sizes: {
+        sm: '20px',
+        md: '24px',
+        lg: '35px',
+      },
       defaultProps: {
-        size: 'lg',
+        size: 'md',
+      },
+    },
+    IconButton: {
+      sizes: {
+        sm: {
+          padding: '4px',
+        },
+        md: {
+          padding: '12px',
+        },
+      },
+      defaultProps: {
+        size: 'sm',
+        _icon: {
+          size: 'md',
+        },
       },
     },
     RadioGroup: {
