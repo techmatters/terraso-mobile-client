@@ -8,10 +8,10 @@ import {
   forwardRef,
   ForwardedRef,
 } from 'react';
-import {IconButton} from '../common/Icons';
+import {Card, CardCloseButton} from '../common/Card';
 import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Box, Text, Flex, Divider, Button, useTheme, Column} from 'native-base';
+import {Box, Row, Text, Divider, Button, useTheme, Column} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
@@ -54,9 +54,7 @@ const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
       allowOverlap={true}>
       <SiteCard
         site={site}
-        topRightButton={
-          <IconButton name="close" variant="filled" onPress={closeCallout} />
-        }
+        topRightButton={<CardCloseButton onPress={closeCallout} />}
       />
     </Mapbox.MarkerView>
   );
@@ -74,12 +72,14 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
 type TemporarySiteCalloutProps = {
   site: Pick<Site, 'latitude' | 'longitude'>;
   onCreate: () => void;
+  onLearnMore: () => void;
   closeCallout: () => void;
 };
 const TemporarySiteCallout = ({
   site,
   closeCallout,
   onCreate,
+  onLearnMore,
 }: TemporarySiteCalloutProps) => {
   const {t} = useTranslation();
 
@@ -88,7 +88,7 @@ const TemporarySiteCallout = ({
       coordinate={[site.longitude, site.latitude]}
       anchor={{x: 0.5, y: 0}}
       allowOverlap={true}>
-      <Box variant="card">
+      <Card topRightButton={<CardCloseButton onPress={closeCallout} />}>
         <Column space="12px">
           <CalloutDetail label={t('site.soil_id_prediction')} value="CLIFTON" />
           <Divider />
@@ -104,22 +104,17 @@ const TemporarySiteCallout = ({
           <Divider />
           <CalloutDetail label={t('site.elevation')} value="2800 FEET" />
           <Divider />
-          <Flex direction="row" justify="flex-end">
+          <Row justifyContent="flex-end">
             <Button onPress={onCreate} size="sm" variant="outline">
               {t('site.create')}
             </Button>
             <Box width="24px" />
-            <Button size="sm">{t('site.more_info')}</Button>
-          </Flex>
+            <Button onPress={onLearnMore} size="sm">
+              {t('site.more_info')}
+            </Button>
+          </Row>
         </Column>
-        <IconButton
-          position="absolute"
-          top="8px"
-          right="8px"
-          name="close"
-          onPress={closeCallout}
-        />
-      </Box>
+      </Card>
     </Mapbox.MarkerView>
   );
 };
@@ -165,38 +160,53 @@ const SiteMap = (
     });
   }, [navigate, temporarySite, setTemporarySite]);
 
+  const temporaryLearnMoreCallback = useCallback(() => {
+    setTemporarySite(null);
+    if (temporarySite) {
+      navigate('LOCATION_DASHBOARD', {
+        coords: temporarySite.site,
+      });
+    }
+  }, [navigate, temporarySite, setTemporarySite]);
+
   const closeCallout = useCallback(() => {
     setSelectedSiteID(null);
     setTemporarySite(null);
-  }, []);
+  }, [setTemporarySite]);
 
-  const onSitePress = useCallback((event: OnPressEvent) => {
-    setSelectedSiteID(event.features[0].id as string);
-    setTemporarySite(null);
-  }, []);
+  const onSitePress = useCallback(
+    (event: OnPressEvent) => {
+      setSelectedSiteID(event.features[0].id as string);
+      setTemporarySite(null);
+    },
+    [setTemporarySite],
+  );
 
   const onTempSitePress = useCallback(() => {
     showCallout();
-  }, []);
+  }, [showCallout]);
 
-  const onLongPress = useCallback((feature: GeoJSON.Feature) => {
-    if (feature.geometry === null || feature.geometry.type !== 'Point') {
-      console.error(
-        'received long press with no feature geometry or non-Point geometry',
-        feature.geometry,
-      );
-      return;
-    }
-    const [lon, lat] = feature.geometry.coordinates;
-    setTemporarySite({
-      site: {
-        latitude: lat,
-        longitude: lon,
-      },
-      showCallout: true,
-    });
-    setSelectedSiteID(null);
-  }, []);
+  const onLongPress = useCallback(
+    (feature: GeoJSON.Feature) => {
+      if (feature.geometry === null || feature.geometry.type !== 'Point') {
+        console.error(
+          'received long press with no feature geometry or non-Point geometry',
+          feature.geometry,
+        );
+        return;
+      }
+      const [lon, lat] = feature.geometry.coordinates;
+      setTemporarySite({
+        site: {
+          latitude: lat,
+          longitude: lon,
+        },
+        showCallout: true,
+      });
+      setSelectedSiteID(null);
+    },
+    [setTemporarySite],
+  );
 
   return (
     <Mapbox.MapView
@@ -204,7 +214,8 @@ const SiteMap = (
       style={{
         flex: 1,
       }}
-      onLongPress={onLongPress}>
+      onLongPress={onLongPress}
+      scaleBarEnabled={false}>
       <Camera ref={ref} />
       <Mapbox.Images
         onImageMissing={console.debug}
@@ -248,6 +259,7 @@ const SiteMap = (
           site={temporarySite.site}
           closeCallout={closeCallout}
           onCreate={temporaryCreateCallback}
+          onLearnMore={temporaryLearnMoreCallback}
         />
       )}
     </Mapbox.MapView>

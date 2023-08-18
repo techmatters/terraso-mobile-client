@@ -4,30 +4,32 @@ import {IconButton} from './Icons';
 
 type Props = {
   Head: ReactNode;
-  Body: ReactNode;
+  children: ReactNode;
+  initiallyOpen?: boolean;
 };
 
-export function Accordion({Head, Body}: Props) {
-  const [open, setOpen] = useState(false);
+export function Accordion({Head, children, initiallyOpen = false}: Props) {
+  const [open, setOpen] = useState(initiallyOpen);
   const onPress = useCallback(() => {
     setOpen(!open);
   }, [open, setOpen]);
 
   const name = open ? 'expand-less' : 'expand-more';
-  const icon = (
-    <IconButton
-      name={name}
-      onPress={onPress}
-      _icon={{color: 'action.active'}}
-    />
-  );
   return (
     <Box>
-      <HStack>
-        <Box>{Head}</Box>
-        {icon}
+      <HStack
+        backgroundColor="primary.main"
+        alignItems="center"
+        justifyContent="space-between"
+        px="16px">
+        {Head}
+        <IconButton
+          name={name}
+          onPress={onPress}
+          _icon={{color: 'primary.contrast'}}
+        />
       </HStack>
-      {open && <Box ml={3}>{Body}</Box>}
+      {open && children}
     </Box>
   );
 }

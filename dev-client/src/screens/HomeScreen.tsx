@@ -11,6 +11,7 @@ import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {ScreenScaffold} from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
+import {Box} from 'native-base';
 
 export interface TempSite {
   longitude: number;
@@ -61,7 +62,7 @@ const HomeView = () => {
       setTemporarySite({site, showCallout: false});
       moveToPoint(site);
     },
-    [setTemporarySite],
+    [setTemporarySite, moveToPoint],
   );
 
   useEffect(() => {
@@ -85,7 +86,7 @@ const HomeView = () => {
     setTemporarySite(site =>
       site !== null ? {...site, showCallout: true} : null,
     );
-  }, [temporarySite]);
+  }, []);
 
   const moveToUser = useCallback(() => {
     if (currentUserLocation?.coords !== undefined) {
@@ -95,17 +96,21 @@ const HomeView = () => {
 
   return (
     <ScreenScaffold>
-      <MapSearch zoomTo={searchFunction} zoomToUser={moveToUser} />
-      <SiteMap
-        updateUserLocation={updateUserLocation}
-        sites={sites}
-        ref={camera}
-        temporarySite={temporarySite}
-        setTemporarySite={site => {
-          setTemporarySite(site !== null ? {...site, showCallout: true} : null);
-        }}
-        showCallout={showCallout}
-      />
+      <Box flex={1} zIndex={-1}>
+        <MapSearch zoomTo={searchFunction} zoomToUser={moveToUser} />
+        <SiteMap
+          updateUserLocation={updateUserLocation}
+          sites={sites}
+          ref={camera}
+          temporarySite={temporarySite}
+          setTemporarySite={site => {
+            setTemporarySite(
+              site !== null ? {...site, showCallout: true} : null,
+            );
+          }}
+          showCallout={showCallout}
+        />
+      </Box>
       <BottomSheet sites={sites} showSiteOnMap={moveToPoint} />
     </ScreenScaffold>
   );

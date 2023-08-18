@@ -19,7 +19,7 @@ type SuggestionProps = {
 function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
   const selectSuggestion = useCallback(
     () => onPress(name, mapboxId),
-    [name, mapboxId],
+    [name, mapboxId, onPress],
   );
 
   return (
