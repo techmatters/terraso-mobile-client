@@ -1,5 +1,5 @@
 import Autocomplete from 'react-native-autocomplete-input';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Box, HStack, Input, Pressable, Text, VStack} from 'native-base';
 import {Suggestion, initMapSearch} from './mapSearch';
@@ -7,6 +7,29 @@ import {Icon, IconButton} from '../common/Icons';
 import {TempSite} from '../../screens/HomeScreen';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
+
+type SuggestionProps = {
+  name: string;
+  address: string;
+  mapboxId: string;
+  onPress: (name: string, mapboxId: string) => void;
+};
+
+function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
+  const selectSuggestion = useCallback(
+    () => onPress(name, mapboxId),
+    [name, mapboxId],
+  );
+
+  return (
+    <Pressable width="100%" py={1} px={3} onPress={selectSuggestion}>
+      <VStack>
+        <Text>{name}</Text>
+        <Text>{address}</Text>
+      </VStack>
+    </Pressable>
+  );
+}
 
 type Props = {
   zoomTo?: (site: TempSite) => void;
@@ -27,6 +50,14 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
       setSuggestions(newSuggestions);
     }
   }
+
+  const selectQuery = (name: string, mapboxId: string) => {
+    setQuery(name);
+    setHideResults(true);
+    if (zoomTo) {
+      lookupFeature(mapboxId);
+    }
+  };
 
   async function lookupFeature(mapboxId: string) {
     let {features} = await retrieveFeature(mapboxId);
@@ -54,20 +85,12 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
           flatListProps={{
             keyExtractor: suggestion => suggestion.mapbox_id,
             renderItem: ({item}) => (
-              <Pressable
-                width="100%"
-                py={1}
-                px={3}
-                onPress={() => {
-                  setQuery(item.name);
-                  setHideResults(true);
-                  if (zoomTo) {
-                    lookupFeature(item.mapbox_id);
-                  }
-                }}
-                _hover={{bgColor: 'blue', color: 'blue'}}>
-                <Text>{item.name}</Text>
-              </Pressable>
+              <SuggestionBox
+                name={item.name}
+                address={item.place_formatted}
+                mapboxId={item.mapbox_id}
+                onPress={selectQuery}
+              />
             ),
           }}
           inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
