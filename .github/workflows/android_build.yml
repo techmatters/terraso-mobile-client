@@ -65,6 +65,15 @@ jobs:
         working-directory: ./dev-client/android
         run: ./gradlew bundleRelease
 
+      - name: Commit version bump
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: github.event_name == 'pull_request'
+        with:
+          file_pattern: 'dev-client/android/app/build.gradle'
+          commit_message: 'build: bump Android version number'
+          commit_user_name: 'GitHub Actions'
+          commit_user_email: actions@users.noreply.github.com
+
       - name: Sign Android app bundle
         id: sign_app
         uses: r0adkll/sign-android-release@v1
@@ -85,11 +94,3 @@ jobs:
           track: internal
           status: draft
           inAppUpdatePriority: 2
-
-      - name: Commit version bump
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          file_pattern: 'dev-client/android/app/build.gradle'
-          commit_message: 'build: bump Android version number'
-          commit_user_name: 'GitHub Actions'
-          commit_user_email: actions@users.noreply.github.com
