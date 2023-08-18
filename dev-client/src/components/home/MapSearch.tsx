@@ -5,6 +5,7 @@ import {Box, HStack, Input, Pressable, Text, VStack} from 'native-base';
 import {Suggestion, initMapSearch} from './mapSearch';
 import {Icon, IconButton} from '../common/Icons';
 import {TempSite} from '../../screens/HomeScreen';
+import {Keyboard} from 'react-native';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
@@ -57,6 +58,8 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
     if (zoomTo) {
       lookupFeature(mapboxId);
     }
+    // close keyboard
+    Keyboard.dismiss();
   };
 
   async function lookupFeature(mapboxId: string) {
@@ -83,6 +86,7 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
           data={suggestions}
           hideResults={hideResults}
           flatListProps={{
+            keyboardShouldPersistTaps: 'always',
             keyExtractor: suggestion => suggestion.mapbox_id,
             renderItem: ({item}) => (
               <SuggestionBox
@@ -104,9 +108,6 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
               }}
               onFocus={() => {
                 setHideResults(false);
-              }}
-              onBlur={() => {
-                setHideResults(true);
               }}
               value={query}
               placeholder={t('search.placeholder')}
