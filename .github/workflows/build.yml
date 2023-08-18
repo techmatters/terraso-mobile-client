@@ -60,6 +60,9 @@ jobs:
         working-directory: dev-client/ios
         run: pod install
 
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_14.3.1.app
+
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.0
         with:
