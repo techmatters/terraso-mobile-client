@@ -69,6 +69,7 @@ jobs:
 
       - name: Commit version bump
         uses: stefanzweifel/git-auto-commit-action@v4
+        if: github.event_name == 'pull_request'
         with:
           file_pattern: "dev-client/ios"
           commit_message: "build: bump iOS version number"
