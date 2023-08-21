@@ -50,9 +50,9 @@ jobs:
   ios-upload:
     name: iOS upload build
     runs-on: macos-latest
+    needs: ios-build-sign
     steps:
       - name: Upload app to TestFlight
-        needs: ios-build-sign
         uses: apple-actions/upload-testflight-build@v1
         with:
           app-path: 'output.ipa'
