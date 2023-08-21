@@ -8,7 +8,7 @@ on:
 jobs:
   ios-build-and-sign:
     name: iOS Build and Sign
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
       - name: Set up config values
