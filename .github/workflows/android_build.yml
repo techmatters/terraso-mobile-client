@@ -69,12 +69,12 @@ jobs:
 
       - name: Commit version bump
         uses: stefanzweifel/git-auto-commit-action@v4
-        if: github.event_name == 'pull_request'
         with:
           file_pattern: 'dev-client/android/app/build.gradle'
           commit_message: 'build: bump Android version number'
           commit_user_name: 'GitHub Actions'
           commit_user_email: actions@users.noreply.github.com
+          push_options: '--force'
 
       - name: Sign Android app bundle
         id: sign_app
