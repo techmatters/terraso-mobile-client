@@ -1,5 +1,10 @@
 on:
   workflow_call:
+    inputs:
+      checkout:
+        required: false
+        type: string
+        default: 'false'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
