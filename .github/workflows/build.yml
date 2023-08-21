@@ -14,21 +14,10 @@ on:
       - synchronize
 
 jobs:
-  checkout-ios:
-    runs-on: macos-latest
-    steps:
-      - name: Check out git repository
-        uses: actions/checkout@v3
-
-  checkout-android:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out git repository
-        uses: actions/checkout@v3
-
   ios-build:
-    needs: checkout-ios
     uses: ./.github/workflows/build-shared-ios.yml
+    with:
+      checkout: 'true'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
@@ -37,7 +26,8 @@ jobs:
       IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
 
   android-build:
-    needs: checkout-android
     uses: ./.github/workflows/build-shared-android.yml
+    with:
+      checkout: 'true'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}

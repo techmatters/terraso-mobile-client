@@ -1,5 +1,10 @@
 on:
   workflow_call:
+    inputs:
+      checkout:
+        required: false
+        type: string
+        default: 'false'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
@@ -18,13 +23,17 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        if: ${{ inputs.checkout == 'true' }}
+
       - name: Enable build cache
         uses: mikehardy/buildcache-action@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version-file: '/.tool-versions'
+          node-version-file: '.tool-versions'
           cache: 'npm'
           cache-dependency-path: dev-client/package-lock.json
 
