@@ -52,7 +52,6 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Upload app to TestFlight
-        runs-on: macos-latest
         needs: ios-build-sign
         uses: apple-actions/upload-testflight-build@v1
         with:
