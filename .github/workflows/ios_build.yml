@@ -37,23 +37,25 @@ jobs:
           commit_user_email: actions@users.noreply.github.com
 
   ios-build-sign:
-    - name: Build and sign iOS app
-      needs: ios-build-setup
-      uses: ./.github/workflows/build-shared-ios.yml
-      secrets:
-        MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-        IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
-        IOS_MOBILE_PROVISION_BASE64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
-        IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
-        IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+    steps:
+      - name: Build and sign iOS app
+        needs: ios-build-setup
+        uses: ./.github/workflows/build-shared-ios.yml
+        secrets:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+          IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+          IOS_MOBILE_PROVISION_BASE64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
+          IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
 
   ios-upload:
-    - name: Upload app to TestFlight
-      runs-on: macos-latest
-      needs: ios-build-sign
-      uses: apple-actions/upload-testflight-build@v1
-      with:
-        app-path: 'output.ipa'
-        issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
-        api-key-id: ${{ secrets.APPLE_KEY_ID }}
-        api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
+    steps:
+      - name: Upload app to TestFlight
+        runs-on: macos-latest
+        needs: ios-build-sign
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: 'output.ipa'
+          issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPLE_KEY_ID }}
+          api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
