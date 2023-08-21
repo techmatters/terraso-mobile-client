@@ -21,8 +21,6 @@ jobs:
 
   ios-build:
     needs: checkout
-    name: iOS Build
-    runs-on: macOS-latest
     uses: ./.github/workflows/build-shared-ios.yml
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
@@ -33,8 +31,6 @@ jobs:
 
   android-build:
     needs: checkout
-    name: Android Build
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/build-shared-android.yml
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
