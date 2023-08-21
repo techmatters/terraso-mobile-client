@@ -16,8 +16,6 @@ on:
 jobs:
   ios-build:
     uses: ./.github/workflows/build-shared-ios.yml
-    with:
-      checkout: 'true'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
@@ -27,7 +25,5 @@ jobs:
 
   android-build:
     uses: ./.github/workflows/build-shared-android.yml
-    with:
-      checkout: 'true'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
