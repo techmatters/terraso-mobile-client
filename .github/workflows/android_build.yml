@@ -11,61 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out git repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.tool-versions'
-          cache: 'npm'
-          cache-dependency-path: dev-client/package-lock.json
-
-      - name: Install Node dependencies
-        working-directory: dev-client
-        run: npm ci
-
-      - name: Set up our JDK environment
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-caches-
-
-      - name: Provide Mapbox secret key
-        run: |
-          mkdir -p $HOME/.gradle
-          echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.gradle/gradle.properties
-
-      - name: Bump Android version
-        working-directory: ./dev-client/android
-        run: ./gradlew bumpPatchVersion
-
       - name: Set up config values
         working-directory: ./dev-client/android
         run: |
           echo "GOOGLE_OAUTH_ANDROID_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}" >> .env
           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
 
-      - name: Build Android app bundle
+      - name: Bump Android version
         working-directory: ./dev-client/android
-        run: ./gradlew bundleRelease
+        run: ./gradlew bumpPatchVersion
 
-      - name: Commit version bump
+      - name: Commit Android version bump
         uses: stefanzweifel/git-auto-commit-action@v4
         if: github.event_name == 'pull_request'
         with:
@@ -73,6 +29,11 @@ jobs:
           commit_message: 'build: bump Android version number'
           commit_user_name: 'GitHub Actions'
           commit_user_email: actions@users.noreply.github.com
+
+      - name: Android Build
+        uses: ./.github/workflows/build-shared-android.yml
+        secrets:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       - name: Sign Android app bundle
         id: sign_app
