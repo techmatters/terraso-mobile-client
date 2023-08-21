@@ -7,7 +7,7 @@ on:
 
 jobs:
   ios-build-setup:
-    name: iOS Build and Sign
+    name: iOS build setup
     runs-on: macos-latest
 
     steps:
@@ -37,6 +37,8 @@ jobs:
           commit_user_email: actions@users.noreply.github.com
 
   ios-build-sign:
+    name: iOS build and sign
+    runs-on: macos-latest
     steps:
       - name: Build and sign iOS app
         needs: ios-build-setup
@@ -49,6 +51,8 @@ jobs:
           IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
 
   ios-upload:
+    name: iOS upload build
+    runs-on: macos-latest
     steps:
       - name: Upload app to TestFlight
         runs-on: macos-latest
