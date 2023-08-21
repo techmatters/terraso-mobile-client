@@ -1,10 +1,5 @@
 on:
   workflow_call:
-    inputs:
-      checkout:
-        required: false
-        type: string
-        default: 'false'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
@@ -25,7 +20,6 @@ jobs:
     steps:
       - name: Check out git repository
         uses: actions/checkout@v3
-        if: ${{ inputs.checkout == 'true' }}
 
       - name: Enable build cache
         uses: mikehardy/buildcache-action@v2
