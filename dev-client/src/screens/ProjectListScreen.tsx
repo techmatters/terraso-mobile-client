@@ -13,7 +13,9 @@ const ProjectListScaffold = () => {
   }, [dispatch]);
   return (
     <ScreenScaffold>
-      <ProjectListView projects={Object.values(projects)} />
+      <ProjectListView
+        projects={Object.values(projects).filter(({archived}) => !archived)}
+      />
     </ScreenScaffold>
   );
 };
