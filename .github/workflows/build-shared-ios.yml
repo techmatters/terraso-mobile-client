@@ -43,23 +43,6 @@ jobs:
            echo "GOOGLE_OAUTH_IOS_URI_SCHEME =${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}" >> .env
            echo "PUBLIC_MAPBOX_TOKEN =${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
 
-      - name: Bump iOS build version
-        if: ${{ inputs.upload == 'true' }}
-        uses: yanamura/ios-bump-version@v1
-        with:
-          version: '1.0'
-          project-path: dev-client/ios
-
-      - name: Commit iOS version bump
-        if: ${{ inputs.upload == 'true' }}
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          file_pattern: "dev-client/ios"
-          commit_message: "build: bump iOS version number"
-          commit_user_name: "GitHub Actions"
-          commit_user_email: actions@users.noreply.github.com
-          push_options: '--force'
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -106,6 +89,17 @@ jobs:
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           workspace-path: dev-client/ios/Terraso LandPKS.xcworkspace
           scheme: Terraso LandPKS
+          increment-build-number: ${{ inputs.upload == 'true' }}
+
+      - name: Commit iOS version bump
+        if: ${{ inputs.upload == 'true' }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: "dev-client/ios"
+          commit_message: "build: bump iOS version number"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: actions@users.noreply.github.com
+          push_options: '--force'
 
       - name: Upload app to TestFlight
         uses: apple-actions/upload-testflight-build@v1
