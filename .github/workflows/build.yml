@@ -15,6 +15,7 @@ on:
 
 jobs:
   ios-build:
+    name: Build iOS app
     uses: ./.github/workflows/build-shared-ios.yml
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
