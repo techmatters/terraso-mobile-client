@@ -8,7 +8,6 @@ on:
 jobs:
   ios-build-sign:
     name: Build and sign iOS app
-    needs: ios-build-sign
     uses: ./.github/workflows/build-shared-ios.yml
     with:
       upload: 'true'
