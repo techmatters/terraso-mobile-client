@@ -11,9 +11,10 @@ const {getSuggestions, retrieveFeature} = initMapSearch();
 type Props = {
   zoomTo?: (coords: Location['coords']) => void;
   zoomToUser?: () => void;
+  toggleMapLayer?: () => void;
 };
 
-export default function MapSearch({zoomTo, zoomToUser}: Props) {
+export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -91,6 +92,7 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
             }}
             bgColor="white"
             padding={2}
+            onPress={toggleMapLayer}
           />
           <IconButton
             name="my-location"

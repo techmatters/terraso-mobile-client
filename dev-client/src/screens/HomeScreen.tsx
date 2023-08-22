@@ -1,6 +1,6 @@
 import SiteMap from '../components/home/SiteMap';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {Camera, Location} from '@rnmapbox/maps';
+import Mapbox, {Camera, Location} from '@rnmapbox/maps';
 import {updateLocation} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
@@ -17,6 +17,7 @@ const STARTING_ZOOM_LEVEL = 5;
 
 const HomeView = () => {
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
+  const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const currentUserID = useSelector(
     state => state.account.currentUser?.data?.id,
   );
@@ -67,14 +68,29 @@ const HomeView = () => {
     }
   }, [currentUserLocation, moveToPoint]);
 
+  const toggleMapLayer = useCallback(
+    () =>
+      setMapStyleURL(
+        mapStyleURL === Mapbox.StyleURL.Street
+          ? Mapbox.StyleURL.Satellite
+          : Mapbox.StyleURL.Street,
+      ),
+    [mapStyleURL, setMapStyleURL],
+  );
+
   return (
     <ScreenScaffold>
       <Box flex={1} zIndex={-1}>
-        <MapSearch zoomTo={moveToPoint} zoomToUser={moveToUser} />
+        <MapSearch
+          zoomTo={moveToPoint}
+          zoomToUser={moveToUser}
+          toggleMapLayer={toggleMapLayer}
+        />
         <SiteMap
           updateUserLocation={updateUserLocation}
           sites={sites}
           ref={camera}
+          styleURL={mapStyleURL}
         />
       </Box>
       <BottomSheet sites={sites} showSiteOnMap={moveToPoint} />
