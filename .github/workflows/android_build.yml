@@ -6,55 +6,16 @@ on:
     types: [published]
 
 jobs:
-  android-build-and-sign:
-    name: Android Build and Sign
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out git repository
-        uses: actions/checkout@v3
-
-      - name: Set up config values
-        working-directory: ./dev-client/android
-        run: |
-          echo "GOOGLE_OAUTH_ANDROID_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}" >> .env
-          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
-
-      - name: Bump Android version
-        working-directory: ./dev-client/android
-        run: ./gradlew bumpPatchVersion
-
-      - name: Commit Android version bump
-        uses: stefanzweifel/git-auto-commit-action@v4
-        if: github.event_name == 'pull_request'
-        with:
-          file_pattern: 'dev-client/android/app/build.gradle'
-          commit_message: 'build: bump Android version number'
-          commit_user_name: 'GitHub Actions'
-          commit_user_email: actions@users.noreply.github.com
-
-      - name: Android Build
-        uses: ./.github/workflows/build-shared-android.yml
-        secrets:
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-
-      - name: Sign Android app bundle
-        id: sign_app
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: ./dev-client/android/app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-          alias: ${{ secrets.ANDROID_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
-      - name: Upload App to Google Play
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
-          releaseName: Terraso LandPKS
-          packageName: org.terraso.landpks
-          releaseFiles: ./dev-client/android/app/build/outputs/bundle/release/*.aab
-          track: internal
-          status: draft
-          inAppUpdatePriority: 2
+  android-build-sign:
+    name: Build and sign Android app
+    uses: ./.github/workflows/build-shared-android.yml
+    with:
+      upload: 'true'
+    secrets:
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
+      ANDROID_SIGNING_KEY: ${{ secrets.ANDROID_SIGNING_KEY }}
+      ANDROID_ALIAS: ${{ secrets.ANDROID_ALIAS }}
+      ANDROID_KEY_STORE_PASSWORD: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_SERVICE_ACCOUNT_JSON_TEXT: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
