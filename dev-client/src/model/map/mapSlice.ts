@@ -1,6 +1,11 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {Location} from '@rnmapbox/maps';
 
+export type Coords = {
+  latitude: number;
+  longitude: number;
+};
+
 type MapState = {
   userLocation?: Location;
 };

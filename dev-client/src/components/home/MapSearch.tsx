@@ -4,8 +4,8 @@ import {useTranslation} from 'react-i18next';
 import {Box, HStack, Input, Pressable, Text, VStack} from 'native-base';
 import {Suggestion, initMapSearch} from './mapSearch';
 import {Icon, IconButton} from '../common/Icons';
-import {TempSite} from '../../screens/HomeScreen';
 import {Keyboard} from 'react-native';
+import {Coords} from '../../model/map/mapSlice';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
@@ -33,7 +33,7 @@ function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
 }
 
 type Props = {
-  zoomTo?: (site: TempSite) => void;
+  zoomTo?: (site: Coords) => void;
   zoomToUser?: () => void;
   toggleMapLayer?: () => void;
 };
