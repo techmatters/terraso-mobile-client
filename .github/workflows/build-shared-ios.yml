@@ -89,7 +89,7 @@ jobs:
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           workspace-path: dev-client/ios/Terraso LandPKS.xcworkspace
           scheme: Terraso LandPKS
-          increment-build-number: ${{ inputs.upload == 'true' }}
+          increment-build-number: ${{ inputs.upload == 'true' && "true" || "" }}
 
       - name: Preserve artifacts
         uses: actions/upload-artifact@v3
