@@ -35,6 +35,13 @@ jobs:
       - name: Enable build cache
         uses: mikehardy/buildcache-action@v2
 
+      - name: Provide Mapbox secret key
+        run: |
+          echo "machine api.mapbox.com" >> $HOME/.netrc
+          echo "login mapbox" >> $HOME/.netrc
+          echo "password ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.netrc
+          chmod 600 $HOME/.netrc
+
       - name: Set up config values
         if: ${{ inputs.upload == 'true' }}
         working-directory: ./dev-client
@@ -66,13 +73,6 @@ jobs:
           path: dev-client/ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: ${{ runner.os }}-pods-
-
-      - name: Provide Mapbox secret key
-        run: |
-          echo "machine api.mapbox.com" >> $HOME/.netrc
-          echo "login mapbox" >> $HOME/.netrc
-          echo "password ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.netrc
-          chmod 600 $HOME/.netrc
 
       - name: CocoaPod Install
         working-directory: dev-client/ios
