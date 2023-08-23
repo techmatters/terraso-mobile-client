@@ -18,6 +18,7 @@ import {useNavigation} from '../../screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
 import {TempSiteDisplay} from '../../screens/HomeScreen';
+import {StyleSheet} from 'react-native';
 
 type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
@@ -25,6 +26,7 @@ type SiteMapProps = {
   temporarySite: null | TempSiteDisplay;
   setTemporarySite: (site: TempSiteDisplay | null) => void;
   showCallout: () => void;
+  styleURL?: string;
 };
 
 const siteFeatureCollection = (
@@ -129,6 +131,7 @@ const SiteMap = (
     setTemporarySite,
     temporarySite,
     showCallout,
+    styleURL,
   } = props;
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
@@ -210,12 +213,10 @@ const SiteMap = (
 
   return (
     <Mapbox.MapView
-      // eslint-disable-next-line react-native/no-inline-styles
-      style={{
-        flex: 1,
-      }}
+      style={styles.mapView}
       onLongPress={onLongPress}
-      scaleBarEnabled={false}>
+      scaleBarEnabled={false}
+      styleURL={styleURL}>
       <Camera ref={ref} />
       <Mapbox.Images
         onImageMissing={console.debug}
@@ -236,7 +237,7 @@ const SiteMap = (
         id="sitesSource"
         shape={sitesFeature}
         onPress={onSitePress}>
-        <Mapbox.SymbolLayer id="sitesLayer" style={styles.siteLayer} />
+        <Mapbox.SymbolLayer id="sitesLayer" style={mapStyles.siteLayer} />
       </Mapbox.ShapeSource>
       <Mapbox.ShapeSource
         id="temporarySitesSource"
@@ -244,7 +245,7 @@ const SiteMap = (
         onPress={onTempSitePress}>
         <Mapbox.SymbolLayer
           id="temporarySitesLayer"
-          style={styles.temporarySiteLayer}
+          style={mapStyles.temporarySiteLayer}
         />
       </Mapbox.ShapeSource>
       <UserLocation
@@ -266,7 +267,13 @@ const SiteMap = (
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
+  mapView: {
+    flex: 1,
+  },
+});
+
+const mapStyles = {
   siteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',

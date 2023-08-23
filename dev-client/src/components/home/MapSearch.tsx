@@ -35,9 +35,10 @@ function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
 type Props = {
   zoomTo?: (site: TempSite) => void;
   zoomToUser?: () => void;
+  toggleMapLayer?: () => void;
 };
 
-export default function MapSearch({zoomTo, zoomToUser}: Props) {
+export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -123,6 +124,7 @@ export default function MapSearch({zoomTo, zoomToUser}: Props) {
             }}
             bgColor="white"
             padding={2}
+            onPress={toggleMapLayer}
           />
           <IconButton
             name="my-location"
