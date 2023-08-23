@@ -20,6 +20,7 @@ import {ValidationError} from 'yup';
 import {Icon} from '../common/Icons';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from '../../model/store';
+import {Site} from 'terraso-client-shared/site/siteSlice';
 
 type LatLongString = {latitude: string; longitude: string};
 
@@ -34,7 +35,9 @@ type Props = {
   defaultProject?: string;
   userLocation?: Location;
   sitePin?: Location;
-  createSiteCallback?: (input: SiteAddMutationInput) => void;
+  createSiteCallback?: (
+    input: SiteAddMutationInput,
+  ) => Promise<Site | undefined>;
 };
 
 type Args = Partial<
@@ -80,7 +83,7 @@ export default function CreateSiteView({
 
   const [errors, setErrors] = useState<Error>({});
 
-  const {navigate, goBack} = useNavigation();
+  const {reset} = useNavigation();
 
   /**
    * Checks the form status with the yup library, and posts to backend
@@ -106,13 +109,21 @@ export default function CreateSiteView({
       }
     }
     const {name, latitude, longitude, projectId} = validationResults;
-    createSiteCallback({name, latitude, longitude, projectId});
-    if (defaultProject) {
-      goBack();
-      return;
+    const createdSite = await createSiteCallback({
+      name,
+      latitude,
+      longitude,
+      projectId,
+    });
+    if (createdSite !== undefined) {
+      reset({
+        routes: [
+          {name: 'HOME'},
+          {name: 'LOCATION_DASHBOARD', params: {siteId: createdSite.id}},
+        ],
+      });
     }
-    navigate('HOME');
-  }, [mutationInput, createSiteCallback, navigate, goBack, defaultProject]);
+  }, [mutationInput, createSiteCallback, reset]);
 
   /* calculates the associated location for a given location input option
    * For example, for 'pin', it grabs and formats the value from the sitepin */
