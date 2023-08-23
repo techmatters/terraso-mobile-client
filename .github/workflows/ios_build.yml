@@ -15,6 +15,9 @@ jobs:
       upload: 'true'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      GOOGLE_OAUTH_IOS_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}
+      GOOGLE_OAUTH_IOS_URI_SCHEME: ${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}
+      PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
       IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
       IOS_MOBILE_PROVISION_BASE64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
