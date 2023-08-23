@@ -79,16 +79,6 @@ jobs:
         working-directory: ./dev-client/android
         run: ./gradlew bumpPatchVersion
 
-      - name: Commit Android version bump
-        if: github.ref != 'refs/heads/main'
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          file_pattern: 'dev-client/android/app/build.gradle'
-          commit_message: 'build: bump Android version number'
-          commit_user_name: 'GitHub Actions'
-          commit_user_email: actions@users.noreply.github.com
-          push_options: '--force'
-
       - name: Build Android app bundle
         working-directory: ./dev-client/android
         run: ./gradlew bundleRelease
@@ -103,14 +93,23 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      - name: Upload App to Google Play
+      # - name: Upload App to Google Play
+      #   if: ${{ inputs.upload == 'true' }}
+      #   uses: r0adkll/upload-google-play@v1
+      #   with:
+      #     serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
+      #     releaseName: Terraso LandPKS
+      #     packageName: org.terraso.landpks
+      #     releaseFiles: ./dev-client/android/app/build/outputs/bundle/release/*.aab
+      #     track: internal
+      #     status: draft
+      #     inAppUpdatePriority: 2
+
+      - name: Commit Android version bump
         if: ${{ inputs.upload == 'true' }}
-        uses: r0adkll/upload-google-play@v1
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
-          releaseName: Terraso LandPKS
-          packageName: org.terraso.landpks
-          releaseFiles: ./dev-client/android/app/build/outputs/bundle/release/*.aab
-          track: internal
-          status: draft
-          inAppUpdatePriority: 2
+          file_pattern: 'dev-client/android/app/build.gradle'
+          commit_message: 'build: bump Android version number'
+          commit_user_name: 'GitHub Actions'
+          commit_user_email: actions@users.noreply.github.com

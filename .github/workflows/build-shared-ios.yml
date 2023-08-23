@@ -91,21 +91,20 @@ jobs:
           scheme: Terraso LandPKS
           increment-build-number: ${{ inputs.upload == 'true' }}
 
+      # - name: Upload app to TestFlight
+      #   uses: apple-actions/upload-testflight-build@v1
+      #   if: ${{ inputs.upload == 'true' }}
+      #   with:
+      #     app-path: 'output.ipa'
+      #     issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
+      #     api-key-id: ${{ secrets.APPLE_KEY_ID }}
+      #     api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
+
       - name: Commit iOS version bump
-        if: github.ref != 'refs/heads/main'
+        if: ${{ inputs.upload == 'true' }}
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          file_pattern: "dev-client/ios"
-          commit_message: "build: bump iOS version number"
-          commit_user_name: "GitHub Actions"
+          file_pattern: 'dev-client/ios'
+          commit_message: 'build: bump iOS version number'
+          commit_user_name: 'GitHub Actions'
           commit_user_email: actions@users.noreply.github.com
-          push_options: '--force'
-
-      - name: Upload app to TestFlight
-        uses: apple-actions/upload-testflight-build@v1
-        if: ${{ inputs.upload == 'true' }}
-        with:
-          app-path: 'output.ipa'
-          issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
-          api-key-id: ${{ secrets.APPLE_KEY_ID }}
-          api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
