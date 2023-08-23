@@ -1,13 +1,6 @@
 import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
-import {
-  memo,
-  useMemo,
-  useState,
-  useCallback,
-  forwardRef,
-  ForwardedRef,
-} from 'react';
+import {memo, useMemo, useCallback, forwardRef, ForwardedRef} from 'react';
 import {Card, CardCloseButton} from '../common/Card';
 import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
@@ -17,15 +10,16 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
-import {TempSiteDisplay} from '../../screens/HomeScreen';
 import {StyleSheet} from 'react-native';
+import {CalloutState} from '../../screens/HomeScreen';
+import {positionToCoords} from '../common/Map';
+import {Coords} from '../../model/map/mapSlice';
 
 type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
-  temporarySite: null | TempSiteDisplay;
-  setTemporarySite: (site: TempSiteDisplay | null) => void;
-  showCallout: () => void;
+  calloutState: CalloutState;
+  setCalloutState: (state: CalloutState) => void;
   styleURL?: string;
 };
 
@@ -72,7 +66,7 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
 };
 
 type TemporarySiteCalloutProps = {
-  site: Pick<Site, 'latitude' | 'longitude'>;
+  site: Coords;
   onCreate: () => void;
   onLearnMore: () => void;
   closeCallout: () => void;
@@ -125,16 +119,10 @@ const SiteMap = (
   props: SiteMapProps,
   ref: ForwardedRef<CameraRef>,
 ): JSX.Element => {
-  const {
-    updateUserLocation,
-    sites,
-    setTemporarySite,
-    temporarySite,
-    showCallout,
-    styleURL,
-  } = props;
-  const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
-  const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
+  const {updateUserLocation, sites, setCalloutState, calloutState, styleURL} =
+    props;
+  const selectedSite =
+    calloutState.kind === 'site' ? sites[calloutState.siteId] : null;
   const {navigate} = useNavigation();
   const {colors} = useTheme();
 
@@ -149,45 +137,51 @@ const SiteMap = (
   const temporarySitesFeature = useMemo(
     () =>
       siteFeatureCollection(
-        temporarySite === null ? [] : [{...temporarySite.site, id: 'temp'}],
+        calloutState.kind !== 'location'
+          ? []
+          : [{...calloutState.coords, id: 'temp'}],
       ),
-    [temporarySite],
+    [calloutState],
   );
 
   const temporaryCreateCallback = useCallback(() => {
-    const siteToCreate: Pick<Site, 'longitude' | 'latitude'> | undefined =
-      temporarySite !== null ? {...temporarySite.site} : undefined;
-    setTemporarySite(null);
+    const siteToCreate: Coords | undefined =
+      calloutState.kind === 'location' ? calloutState.coords : undefined;
+    setCalloutState({kind: 'none'});
     navigate('CREATE_SITE', {
       mapCoords: siteToCreate,
     });
-  }, [navigate, temporarySite, setTemporarySite]);
+  }, [navigate, calloutState, setCalloutState]);
 
   const temporaryLearnMoreCallback = useCallback(() => {
-    setTemporarySite(null);
-    if (temporarySite) {
+    setCalloutState({kind: 'none'});
+    if (calloutState.kind === 'location') {
       navigate('LOCATION_DASHBOARD', {
-        coords: temporarySite.site,
+        coords: calloutState.coords,
       });
     }
-  }, [navigate, temporarySite, setTemporarySite]);
+  }, [navigate, calloutState, setCalloutState]);
 
-  const closeCallout = useCallback(() => {
-    setSelectedSiteID(null);
-    setTemporarySite(null);
-  }, [setTemporarySite]);
-
-  const onSitePress = useCallback(
-    (event: OnPressEvent) => {
-      setSelectedSiteID(event.features[0].id as string);
-      setTemporarySite(null);
-    },
-    [setTemporarySite],
+  const closeCallout = useCallback(
+    () => setCalloutState({kind: 'none'}),
+    [setCalloutState],
   );
 
-  const onTempSitePress = useCallback(() => {
-    showCallout();
-  }, [showCallout]);
+  const onSitePress = useCallback(
+    (event: OnPressEvent) =>
+      setCalloutState({kind: 'site', siteId: event.features[0].id as string}),
+    [setCalloutState],
+  );
+
+  const onTempSitePress = useCallback(
+    () =>
+      setCalloutState(
+        calloutState.kind === 'location'
+          ? {...calloutState, showCallout: true}
+          : calloutState,
+      ),
+    [calloutState, setCalloutState],
+  );
 
   const onLongPress = useCallback(
     (feature: GeoJSON.Feature) => {
@@ -198,17 +192,13 @@ const SiteMap = (
         );
         return;
       }
-      const [lon, lat] = feature.geometry.coordinates;
-      setTemporarySite({
-        site: {
-          latitude: lat,
-          longitude: lon,
-        },
+      setCalloutState({
+        kind: 'location',
+        coords: positionToCoords(feature.geometry.coordinates),
         showCallout: true,
       });
-      setSelectedSiteID(null);
     },
-    [setTemporarySite],
+    [setCalloutState],
   );
 
   return (
@@ -255,9 +245,9 @@ const SiteMap = (
       {selectedSite && (
         <SiteCallout site={selectedSite} closeCallout={closeCallout} />
       )}
-      {temporarySite && temporarySite.showCallout && (
+      {calloutState.kind === 'location' && calloutState.showCallout && (
         <TemporarySiteCallout
-          site={temporarySite.site}
+          site={calloutState.coords}
           closeCallout={closeCallout}
           onCreate={temporaryCreateCallback}
           onLearnMore={temporaryLearnMoreCallback}
