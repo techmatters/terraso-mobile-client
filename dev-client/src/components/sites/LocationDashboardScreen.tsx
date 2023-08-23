@@ -186,7 +186,7 @@ export const LocationDashboardScreen: ScreenDefinition<Props> = {
         <IconButton
           name="add"
           _icon={{color: tintColor}}
-          onPress={() => navigate('CREATE_SITE', {mapCoords: coords})}
+          onPress={() => navigate('CREATE_SITE', {coords})}
         />
       );
     },

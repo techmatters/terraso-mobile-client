@@ -21,6 +21,7 @@ type SiteMapProps = {
   calloutState: CalloutState;
   setCalloutState: (state: CalloutState) => void;
   styleURL?: string;
+  onCreateSite: () => void;
 };
 
 const siteFeatureCollection = (
@@ -119,8 +120,14 @@ const SiteMap = (
   props: SiteMapProps,
   ref: ForwardedRef<CameraRef>,
 ): JSX.Element => {
-  const {updateUserLocation, sites, setCalloutState, calloutState, styleURL} =
-    props;
+  const {
+    updateUserLocation,
+    sites,
+    setCalloutState,
+    calloutState,
+    onCreateSite,
+    styleURL,
+  } = props;
   const selectedSite =
     calloutState.kind === 'site' ? sites[calloutState.siteId] : null;
   const {navigate} = useNavigation();
@@ -143,15 +150,6 @@ const SiteMap = (
       ),
     [calloutState],
   );
-
-  const temporaryCreateCallback = useCallback(() => {
-    const siteToCreate: Coords | undefined =
-      calloutState.kind === 'location' ? calloutState.coords : undefined;
-    setCalloutState({kind: 'none'});
-    navigate('CREATE_SITE', {
-      mapCoords: siteToCreate,
-    });
-  }, [navigate, calloutState, setCalloutState]);
 
   const temporaryLearnMoreCallback = useCallback(() => {
     setCalloutState({kind: 'none'});
@@ -249,7 +247,7 @@ const SiteMap = (
         <TemporarySiteCallout
           site={calloutState.coords}
           closeCallout={closeCallout}
-          onCreate={temporaryCreateCallback}
+          onCreate={onCreateSite}
           onLearnMore={temporaryLearnMoreCallback}
         />
       )}
