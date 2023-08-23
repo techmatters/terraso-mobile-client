@@ -91,13 +91,6 @@ jobs:
           scheme: Terraso LandPKS
           increment-build-number: ${{ inputs.upload == 'true' && 'true' || '' }}
 
-      - name: Preserve artifacts
-        uses: actions/upload-artifact@v3
-        if: "!cancelled()"
-        with:
-          name: ios-derviced-files
-          path: "/Users/runner/Library/Developer/Xcode/DerivedData/Terraso_LandPKS-*/Build/Intermediates.noindex/ArchiveIntermediates/Terraso LandPKS/IntermediateBuildFilesPath/Terraso LandPKS.build/Release-iphoneos/Terraso LandPKS.build/DerivedSources/"
-
       - name: Commit iOS version bump
         if: github.ref != 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v4
