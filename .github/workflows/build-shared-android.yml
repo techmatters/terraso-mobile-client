@@ -80,7 +80,7 @@ jobs:
         run: ./gradlew bumpPatchVersion
 
       - name: Commit Android version bump
-        if: ${{ inputs.upload == 'true' }}
+        if: github.ref != 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           file_pattern: 'dev-client/android/app/build.gradle'
