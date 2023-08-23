@@ -2,7 +2,6 @@ import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
-import {useNavigation} from '../../screens/AppScaffold';
 import {
   Box,
   Button,
@@ -85,10 +84,10 @@ const LandPKSInfo = () => {
 type Props = {
   sites: Record<string, Site>;
   showSiteOnMap: (site: Site) => void;
+  onCreateSite: () => void;
 };
-const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
+const SiteListBottomSheet = ({sites, showSiteOnMap, onCreateSite}: Props) => {
   const {t} = useTranslation();
-  const navigation = useNavigation();
 
   const siteList = useMemo(() => Object.values(sites), [sites]);
 
@@ -103,10 +102,6 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
     () => ['15%', siteList.length === 0 ? '50%' : '75%', '100%'],
     [siteList.length],
   );
-
-  const addSiteCallback = useCallback(() => {
-    navigation.navigate('CREATE_SITE');
-  }, [navigation]);
 
   const {colors} = useTheme();
   const listStyle = useMemo(() => ({paddingHorizontal: 16}), []);
@@ -128,7 +123,7 @@ const SiteListBottomSheet = ({sites, showSiteOnMap}: Props) => {
         <Heading variant="h6">{t('site.list_title')}</Heading>
         <Button
           size="sm"
-          onPress={addSiteCallback}
+          onPress={onCreateSite}
           startIcon={<Icon name="add" />}>
           {t('site.create')}
         </Button>
