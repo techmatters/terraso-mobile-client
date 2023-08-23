@@ -6,7 +6,7 @@ import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
 import {Site, fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
 import BottomSheet from '../components/home/BottomSheet';
-import {ScreenDefinition} from './AppScaffold';
+import {ScreenDefinition, useNavigation} from './AppScaffold';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {ScreenScaffold} from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
@@ -29,6 +29,7 @@ export type CalloutState =
 const STARTING_ZOOM_LEVEL = 12;
 
 const HomeView = () => {
+  const navigation = useNavigation();
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>({
@@ -110,6 +111,16 @@ const HomeView = () => {
     [moveToPoint, setCalloutState],
   );
 
+  const onCreateSite = useCallback(() => {
+    navigation.navigate(
+      'CREATE_SITE',
+      calloutState.kind === 'location'
+        ? {coords: calloutState.coords}
+        : undefined,
+    );
+    setCalloutState({kind: 'none'});
+  }, [navigation, calloutState]);
+
   return (
     <ScreenScaffold>
       <Box flex={1} zIndex={-1}>
@@ -125,9 +136,14 @@ const HomeView = () => {
           calloutState={calloutState}
           setCalloutState={setCalloutState}
           styleURL={mapStyleURL}
+          onCreateSite={onCreateSite}
         />
       </Box>
-      <BottomSheet sites={sites} showSiteOnMap={showSiteOnMap} />
+      <BottomSheet
+        sites={sites}
+        showSiteOnMap={showSiteOnMap}
+        onCreateSite={onCreateSite}
+      />
     </ScreenScaffold>
   );
 };
