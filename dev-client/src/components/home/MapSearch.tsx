@@ -1,15 +1,39 @@
 import Autocomplete from 'react-native-autocomplete-input';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Box, HStack, Input, Pressable, Text, VStack} from 'native-base';
 import {Suggestion, initMapSearch} from './mapSearch';
-import {Location} from '@rnmapbox/maps';
 import {Icon, IconButton} from '../common/Icons';
+import {TempSite} from '../../screens/HomeScreen';
+import {Keyboard} from 'react-native';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
+type SuggestionProps = {
+  name: string;
+  address: string;
+  mapboxId: string;
+  onPress: (name: string, mapboxId: string) => void;
+};
+
+function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
+  const selectSuggestion = useCallback(
+    () => onPress(name, mapboxId),
+    [name, mapboxId, onPress],
+  );
+
+  return (
+    <Pressable width="100%" py={1} px={3} onPress={selectSuggestion}>
+      <VStack>
+        <Text>{name}</Text>
+        <Text>{address}</Text>
+      </VStack>
+    </Pressable>
+  );
+}
+
 type Props = {
-  zoomTo?: (coords: Location['coords']) => void;
+  zoomTo?: (site: TempSite) => void;
   zoomToUser?: () => void;
   toggleMapLayer?: () => void;
 };
@@ -22,12 +46,22 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const [hideResults, setHideResults] = useState(false);
 
   async function querySuggestions() {
-    if (query.length > 2) {
+    if (query.length > 2 || suggestions.length !== 0) {
       const {suggestions: newSuggestions} = await getSuggestions(query);
 
       setSuggestions(newSuggestions);
     }
   }
+
+  const selectQuery = (name: string, mapboxId: string) => {
+    setQuery(name);
+    setHideResults(true);
+    if (zoomTo) {
+      lookupFeature(mapboxId);
+    }
+    // close keyboard
+    Keyboard.dismiss();
+  };
 
   async function lookupFeature(mapboxId: string) {
     let {features} = await retrieveFeature(mapboxId);
@@ -53,19 +87,15 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
           data={suggestions}
           hideResults={hideResults}
           flatListProps={{
+            keyboardShouldPersistTaps: 'always',
             keyExtractor: suggestion => suggestion.mapbox_id,
             renderItem: ({item}) => (
-              <Pressable
-                width="100%"
-                onPress={() => {
-                  setQuery(item.name);
-                  setHideResults(true);
-                  if (zoomTo) {
-                    lookupFeature(item.mapbox_id);
-                  }
-                }}>
-                <Text>{item.name}</Text>
-              </Pressable>
+              <SuggestionBox
+                name={item.name}
+                address={item.place_formatted}
+                mapboxId={item.mapbox_id}
+                onPress={selectQuery}
+              />
             ),
           }}
           inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
@@ -75,8 +105,10 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
               bgColor="white"
               onChangeText={newText => {
                 setQuery(newText);
-                setHideResults(false);
                 querySuggestions();
+              }}
+              onFocus={() => {
+                setHideResults(false);
               }}
               value={query}
               placeholder={t('search.placeholder')}

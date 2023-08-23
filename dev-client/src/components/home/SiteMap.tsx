@@ -17,11 +17,15 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
+import {TempSiteDisplay} from '../../screens/HomeScreen';
 import {StyleSheet} from 'react-native';
 
 type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
+  temporarySite: null | TempSiteDisplay;
+  setTemporarySite: (site: TempSiteDisplay | null) => void;
+  showCallout: () => void;
   styleURL?: string;
 };
 
@@ -121,11 +125,14 @@ const SiteMap = (
   props: SiteMapProps,
   ref: ForwardedRef<CameraRef>,
 ): JSX.Element => {
-  const {updateUserLocation, sites, styleURL} = props;
-  const [temporarySite, setTemporarySite] = useState<Pick<
-    Site,
-    'latitude' | 'longitude'
-  > | null>(null);
+  const {
+    updateUserLocation,
+    sites,
+    setTemporarySite,
+    temporarySite,
+    showCallout,
+    styleURL,
+  } = props;
   const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
   const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
   const {navigate} = useNavigation();
@@ -142,30 +149,25 @@ const SiteMap = (
   const temporarySitesFeature = useMemo(
     () =>
       siteFeatureCollection(
-        temporarySite === null ? [] : [{...temporarySite, id: 'temp'}],
+        temporarySite === null ? [] : [{...temporarySite.site, id: 'temp'}],
       ),
     [temporarySite],
   );
 
   const temporaryCreateCallback = useCallback(() => {
-    const siteToCreate = {...temporarySite};
+    const siteToCreate: Pick<Site, 'longitude' | 'latitude'> | undefined =
+      temporarySite !== null ? {...temporarySite.site} : undefined;
     setTemporarySite(null);
-    if (
-      siteToCreate &&
-      siteToCreate.latitude !== undefined &&
-      siteToCreate.longitude !== undefined
-    ) {
-      navigate('CREATE_SITE', {
-        mapCoords: siteToCreate as Pick<Site, 'longitude' | 'latitude'>,
-      });
-    }
+    navigate('CREATE_SITE', {
+      mapCoords: siteToCreate,
+    });
   }, [navigate, temporarySite, setTemporarySite]);
 
   const temporaryLearnMoreCallback = useCallback(() => {
     setTemporarySite(null);
     if (temporarySite) {
       navigate('LOCATION_DASHBOARD', {
-        coords: temporarySite,
+        coords: temporarySite.site,
       });
     }
   }, [navigate, temporarySite, setTemporarySite]);
@@ -173,28 +175,41 @@ const SiteMap = (
   const closeCallout = useCallback(() => {
     setSelectedSiteID(null);
     setTemporarySite(null);
-  }, []);
+  }, [setTemporarySite]);
 
-  const onSitePress = useCallback((event: OnPressEvent) => {
-    setSelectedSiteID(event.features[0].id as string);
-    setTemporarySite(null);
-  }, []);
+  const onSitePress = useCallback(
+    (event: OnPressEvent) => {
+      setSelectedSiteID(event.features[0].id as string);
+      setTemporarySite(null);
+    },
+    [setTemporarySite],
+  );
 
-  const onLongPress = useCallback((feature: GeoJSON.Feature) => {
-    if (feature.geometry === null || feature.geometry.type !== 'Point') {
-      console.error(
-        'received long press with no feature geometry or non-Point geometry',
-        feature.geometry,
-      );
-      return;
-    }
-    const [lon, lat] = feature.geometry.coordinates;
-    setTemporarySite({
-      latitude: lat,
-      longitude: lon,
-    });
-    setSelectedSiteID(null);
-  }, []);
+  const onTempSitePress = useCallback(() => {
+    showCallout();
+  }, [showCallout]);
+
+  const onLongPress = useCallback(
+    (feature: GeoJSON.Feature) => {
+      if (feature.geometry === null || feature.geometry.type !== 'Point') {
+        console.error(
+          'received long press with no feature geometry or non-Point geometry',
+          feature.geometry,
+        );
+        return;
+      }
+      const [lon, lat] = feature.geometry.coordinates;
+      setTemporarySite({
+        site: {
+          latitude: lat,
+          longitude: lon,
+        },
+        showCallout: true,
+      });
+      setSelectedSiteID(null);
+    },
+    [setTemporarySite],
+  );
 
   return (
     <Mapbox.MapView
@@ -226,7 +241,8 @@ const SiteMap = (
       </Mapbox.ShapeSource>
       <Mapbox.ShapeSource
         id="temporarySitesSource"
-        shape={temporarySitesFeature}>
+        shape={temporarySitesFeature}
+        onPress={onTempSitePress}>
         <Mapbox.SymbolLayer
           id="temporarySitesLayer"
           style={mapStyles.temporarySiteLayer}
@@ -239,9 +255,9 @@ const SiteMap = (
       {selectedSite && (
         <SiteCallout site={selectedSite} closeCallout={closeCallout} />
       )}
-      {temporarySite && (
+      {temporarySite && temporarySite.showCallout && (
         <TemporarySiteCallout
-          site={temporarySite}
+          site={temporarySite.site}
           closeCallout={closeCallout}
           onCreate={temporaryCreateCallback}
           onLearnMore={temporaryLearnMoreCallback}

@@ -13,10 +13,23 @@ import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
 import {Box} from 'native-base';
 
-const STARTING_ZOOM_LEVEL = 5;
+export interface TempSite {
+  longitude: number;
+  latitude: number;
+}
+
+export type TempSiteDisplay = {
+  site: TempSite;
+  showCallout: boolean;
+};
+
+const STARTING_ZOOM_LEVEL = 12;
 
 const HomeView = () => {
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
+  const [temporarySite, setTemporarySite] = useState<TempSiteDisplay | null>(
+    null,
+  );
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const currentUserID = useSelector(
     state => state.account.currentUser?.data?.id,
@@ -45,6 +58,14 @@ const HomeView = () => {
     [camera],
   );
 
+  const searchFunction = useCallback(
+    (site: TempSite) => {
+      setTemporarySite({site, showCallout: false});
+      moveToPoint(site);
+    },
+    [setTemporarySite, moveToPoint],
+  );
+
   useEffect(() => {
     if (mapInitialized !== null && camera.current !== undefined) {
       moveToPoint(mapInitialized.coords);
@@ -61,6 +82,12 @@ const HomeView = () => {
     },
     [dispatch, mapInitialized, setMapInitialized],
   );
+
+  const showCallout = useCallback(() => {
+    setTemporarySite(site =>
+      site !== null ? {...site, showCallout: true} : null,
+    );
+  }, []);
 
   const moveToUser = useCallback(() => {
     if (currentUserLocation?.coords !== undefined) {
@@ -82,7 +109,7 @@ const HomeView = () => {
     <ScreenScaffold>
       <Box flex={1} zIndex={-1}>
         <MapSearch
-          zoomTo={moveToPoint}
+          zoomTo={searchFunction}
           zoomToUser={moveToUser}
           toggleMapLayer={toggleMapLayer}
         />
@@ -90,6 +117,13 @@ const HomeView = () => {
           updateUserLocation={updateUserLocation}
           sites={sites}
           ref={camera}
+          temporarySite={temporarySite}
+          setTemporarySite={site => {
+            setTemporarySite(
+              site !== null ? {...site, showCallout: true} : null,
+            );
+          }}
+          showCallout={showCallout}
           styleURL={mapStyleURL}
         />
       </Box>
