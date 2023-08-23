@@ -109,3 +109,9 @@ jobs:
           issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPLE_KEY_ID }}
           api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
+
+      - name: Preserve artifacts
+        uses: actions/upload-artifact
+        with:
+          name: ios-derviced-files
+          path: "/Users/runner/Library/Developer/Xcode/DerivedData/Terraso_LandPKS-*/Build/Intermediates.noindex/ArchiveIntermediates/Terraso LandPKS/IntermediateBuildFilesPath/Terraso LandPKS.build/Release-iphoneos/Terraso LandPKS.build/DerivedSources/"
