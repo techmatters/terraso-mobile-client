@@ -469,6 +469,9 @@
 			baseConfigurationReference = 9B636DA2BF577EB074AE1958 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -487,6 +490,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.terraso.landpks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "021da57f-2b02-4efd-9bc5-a3fb2a5057ab";
+				PROVISIONING_PROFILE_SPECIFIER = "Terraso LandPKS Beta Profile";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TerrasoLandPKS.app/TerrasoLandPKS";
 			};
 			name = Debug;
@@ -496,7 +501,10 @@
 			baseConfigurationReference = FE1CE62AEB19A25D32A26A47 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				INFOPLIST_FILE = DevClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -511,6 +519,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.terraso.landpks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "021da57f-2b02-4efd-9bc5-a3fb2a5057ab";
+				PROVISIONING_PROFILE_SPECIFIER = "Terraso LandPKS Beta Profile";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TerrasoLandPKS.app/TerrasoLandPKS";
 			};
 			name = Release;
@@ -521,10 +531,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = "";
+				CURRENT_PROJECT_VERSION = 21;
+				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8W5MT5NL;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Terraso LandPKS/Info.plist";
@@ -542,7 +553,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.terraso.test.Terraso-LandPKS";
 				PRODUCT_NAME = TerrasoLandPKS;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "021da57f-2b02-4efd-9bc5-a3fb2a5057ab";
+				PROVISIONING_PROFILE_SPECIFIER = "Terraso LandPKS Beta Profile";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Terraso LandPKS Beta Profile";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -560,10 +572,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = "";
+				CURRENT_PROJECT_VERSION = 21;
+				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8W5MT5NL;
 				INFOPLIST_FILE = "Terraso LandPKS/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Terraso LandPKS";
@@ -580,7 +593,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.terraso.test.Terraso-LandPKS";
 				PRODUCT_NAME = TerrasoLandPKS;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "021da57f-2b02-4efd-9bc5-a3fb2a5057ab";
+				PROVISIONING_PROFILE_SPECIFIER = "Terraso LandPKS Beta Profile";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Terraso LandPKS Beta Profile";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
