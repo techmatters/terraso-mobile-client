@@ -6,10 +6,12 @@ import {useNavigation} from '../../../screens/AppScaffold';
 
 export default function CreateProjectView() {
   const dispatch = useDispatch();
-  const navigate = useNavigation();
+  const navigation = useNavigation();
   const onSubmit = async (values: FormValues) => {
-    await dispatch(addProject(values));
-    navigate.goBack();
+    const {payload} = await dispatch(addProject(values));
+    if (payload !== undefined && 'id' in payload) {
+      navigation.replace('PROJECT_VIEW', {project: payload});
+    }
   };
   return (
     <ScrollView bg="background.default">
