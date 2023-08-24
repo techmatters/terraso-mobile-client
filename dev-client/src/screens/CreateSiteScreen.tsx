@@ -2,21 +2,22 @@ import {useCallback} from 'react';
 import CreateSiteView from '../components/sites/CreateSiteView';
 import {useDispatch, useSelector} from '../model/store';
 import {
-  Site,
   addSite,
   fetchSitesForProject,
 } from 'terraso-client-shared/site/siteSlice';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {ScreenDefinition} from './AppScaffold';
 import CloseButton from '../components/common/CloseButton';
+import {Coords} from '../model/map/mapSlice';
 
 type Props =
   | {
-      mapCoords?: Pick<Site, 'latitude' | 'longitude'>;
+      coords: Coords;
     }
   | {
       projectId: string;
     }
+  | {}
   | undefined;
 
 const CreateSiteScaffold = (props: Props = {}) => {
@@ -43,12 +44,8 @@ const CreateSiteScaffold = (props: Props = {}) => {
     <CreateSiteView
       userLocation={userLocation}
       createSiteCallback={createSiteCallback}
-      defaultProject={('projectId' in props && props.projectId) || undefined}
-      sitePin={
-        'mapCoords' in props && props.mapCoords
-          ? {coords: props.mapCoords}
-          : undefined
-      }
+      defaultProject={'projectId' in props ? props.projectId : undefined}
+      sitePin={'coords' in props ? props.coords : undefined}
     />
   );
 };

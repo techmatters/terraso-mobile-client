@@ -21,20 +21,21 @@ import {Icon} from '../common/Icons';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from '../../model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Coords} from '../../model/map/mapSlice';
 
 type LatLongString = {latitude: string; longitude: string};
 
-function fromLocation(location: Location): LatLongString {
+function fromLocation(coords: Coords): LatLongString {
   return {
-    longitude: String(location.coords.longitude),
-    latitude: String(location.coords.latitude),
+    longitude: String(coords.longitude),
+    latitude: String(coords.latitude),
   };
 }
 
 type Props = {
   defaultProject?: string;
   userLocation?: Location;
-  sitePin?: Location;
+  sitePin?: Coords;
   createSiteCallback?: (
     input: SiteAddMutationInput,
   ) => Promise<Site | undefined>;
@@ -65,7 +66,7 @@ export default function CreateSiteView({
 
   const {latitude: defaultLat, longitude: defaultLon} = useMemo(() => {
     if (sitePin) {
-      return {...sitePin.coords};
+      return sitePin;
     }
     if (userLocation) {
       return {...userLocation.coords};
@@ -130,7 +131,7 @@ export default function CreateSiteView({
   const locationOptions = useMemo(() => {
     const options: Record<LocationInputOptions, LatLongString | undefined> = {
       coords: {latitude: '', longitude: ''},
-      gps: userLocation && fromLocation(userLocation),
+      gps: userLocation && fromLocation(userLocation.coords),
       pin: sitePin && fromLocation(sitePin),
     };
     return options;
