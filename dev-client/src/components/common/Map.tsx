@@ -45,6 +45,7 @@ export const StaticMapView = ({
         centerCoordinate={position}
         zoomLevel={zoomLevel}
         animationMode="none"
+        animationDuration={0}
       />
       {displayCenterMarker && (
         <Mapbox.MarkerView coordinate={position} anchor={defaultAnchor}>
