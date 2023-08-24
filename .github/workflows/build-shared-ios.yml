@@ -98,7 +98,7 @@ jobs:
           increment-build-number: ${{ inputs.upload == 'true' && 'true' || '' }}
 
       - name: Commit iOS version bump
-        if: github.ref != 'refs/heads/main'
+        if: ${{ inputs.upload == 'true' }}
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           file_pattern: "dev-client/ios"
