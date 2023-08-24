@@ -211,12 +211,12 @@ const SiteMap = (
         images={{
           sitePin: MapIcon.getImageSourceSync(
             'location-on',
-            35,
+            undefined,
             colors.secondary.main,
           ),
           temporarySitePin: MapIcon.getImageSourceSync(
             'location-on',
-            35,
+            undefined,
             colors.action.active,
           ),
         }}
@@ -265,13 +265,13 @@ const mapStyles = {
   siteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
-    iconSize: 3.0,
+    iconSize: 4.0,
     iconImage: 'sitePin',
   } satisfies Mapbox.SymbolLayerStyle,
   temporarySiteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
-    iconSize: 3.0,
+    iconSize: 4.0,
     iconImage: 'temporarySitePin',
   } satisfies Mapbox.SymbolLayerStyle,
 };
