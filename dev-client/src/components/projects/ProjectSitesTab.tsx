@@ -2,8 +2,6 @@ import {
   Box,
   FlatList,
   HStack,
-  Heading,
-  Link,
   Menu,
   Pressable,
   Text,
@@ -17,7 +15,6 @@ import type {CompositeScreenProps} from '@react-navigation/native';
 import SearchBar from '../common/SearchBar';
 import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import ProgressCircle from '../common/ProgressCircle';
 import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
 import {RootStackScreenProps} from '../../screens/AppScaffold';
 import {Site, deleteSite} from 'terraso-client-shared/site/siteSlice';
@@ -26,6 +23,7 @@ import {
   Project,
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
+import {SiteCard} from '../sites/SiteCard';
 
 type SiteMenuProps = {
   iconName: string;
@@ -33,7 +31,7 @@ type SiteMenuProps = {
   onPress?: () => void;
 };
 
-function SiteMenuItem({iconName, text, onPress}: SiteMenuProps) {
+const SiteMenuItem = ({iconName, text, onPress}: SiteMenuProps) => {
   return (
     <Menu.Item>
       <Pressable onPress={onPress}>
@@ -44,63 +42,40 @@ function SiteMenuItem({iconName, text, onPress}: SiteMenuProps) {
       </Pressable>
     </Menu.Item>
   );
-}
+};
 
 type SiteProps = {
   site: Site;
-  deleteCallback: () => void;
 };
 
-function SiteItem({site, deleteCallback}: SiteProps) {
+const SiteMenu = ({site}: SiteProps) => {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
+
+  const deleteSiteCallback = async () => {
+    await dispatch(deleteSite(site));
+    dispatch(removeSiteFromAllProjects(site.id));
+  };
+
   return (
-    <Box backgroundColor="background.default" px={1} py={3} m={1}>
-      <HStack>
-        <Box mt={-0.5}>
-          <Menu
-            trigger={triggerProps => (
-              <IconButton
-                as={MaterialCommunityIcons}
-                _icon={{size: 'md', color: 'action.active'}}
-                name="dots-vertical"
-                mr={-1}
-                ml={-3}
-                {...triggerProps}
-              />
-            )}>
-            <SiteMenuItem
-              iconName="remove"
-              text={t('projects.sites.remove_site')}
-            />
-            <SiteMenuItem
-              iconName="delete"
-              onPress={deleteCallback}
-              text={t('projects.sites.delete_site')}
-            />
-          </Menu>
-        </Box>
-        <VStack>
-          <Heading>{site.name}</Heading>
-          <Text color="primary.main">
-            {t('general.modified_by', {
-              date: new Date(site.updatedAt).toLocaleDateString(),
-              user: 'TBD',
-            })}
-          </Text>
-          <HStack alignItems="center" space={2}>
-            <Icon size="4xl" name="photo" ml={-2} />
-            <ProgressCircle done={0} />
-            <Box flexGrow={1} flexDirection="row" justifyContent="flex-end">
-              <Link _text={{color: 'primary.main'}}>
-                {t('projects.sites.go_to')}
-              </Link>
-            </Box>
-          </HStack>
-        </VStack>
-      </HStack>
-    </Box>
+    <Menu
+      trigger={triggerProps => (
+        <IconButton
+          as={MaterialCommunityIcons}
+          // _icon={{size: 'md', color: 'action.active'}}
+          name="dots-vertical"
+          {...triggerProps}
+        />
+      )}>
+      <SiteMenuItem iconName="remove" text={t('projects.sites.remove_site')} />
+      <SiteMenuItem
+        iconName="delete"
+        onPress={deleteSiteCallback}
+        text={t('projects.sites.delete_site')}
+      />
+    </Menu>
   );
-}
+};
 
 type Props = CompositeScreenProps<
   MaterialTopTabScreenProps<TabStackParamList, TabRoutes.SITES>,
@@ -130,7 +105,6 @@ export default function ProjectSitesTab({
   navigation,
 }: Props): JSX.Element {
   const {t} = useTranslation();
-  const dispatch = useDispatch();
   const transferCallback = useCallback(
     () =>
       navigation.navigate('SITE_TRANSFER_PROJECT', {
@@ -145,13 +119,6 @@ export default function ProjectSitesTab({
     navigation.navigate('CREATE_SITE', {projectId: projectId});
   }, [navigation, projectId]);
 
-  const deleteSiteCallback = (site: Site) => {
-    return async () => {
-      await dispatch(deleteSite(site));
-      dispatch(removeSiteFromAllProjects(site.id));
-    };
-  };
-
   const isEmpty = sites.length === 0;
 
   const full = (
@@ -159,8 +126,8 @@ export default function ProjectSitesTab({
       <SearchBar selected={sites} />
       <FlatList
         data={sites}
-        renderItem={({item}) => (
-          <SiteItem site={item} deleteCallback={deleteSiteCallback(item)} />
+        renderItem={({item: site}) => (
+          <SiteCard site={site} topRightButton={<SiteMenu site={site} />} />
         )}
         keyExtractor={site => site.id}
       />
