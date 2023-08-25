@@ -73,8 +73,7 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-caches-
+          restore-keys: ${{ runner.os }}-gradle-caches-
 
       - name: Bump Android version
         if: ${{ inputs.upload == 'true' }}
