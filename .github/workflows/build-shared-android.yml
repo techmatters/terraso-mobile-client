@@ -81,15 +81,14 @@ jobs:
         working-directory: ./dev-client/android
         run: ./gradlew bumpPatchVersion
 
-      - name: Commit Android version bump
-        if: github.ref != 'refs/heads/main'
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          file_pattern: 'dev-client/android/app/build.gradle'
-          commit_message: 'build: bump Android version number'
-          commit_user_name: 'GitHub Actions'
-          commit_user_email: actions@users.noreply.github.com
-          push_options: '--force'
+      # - name: Commit Android version bump
+      #   if: ${{ inputs.upload == 'true' }}
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     file_pattern: 'dev-client/android/app/build.gradle'
+      #     commit_message: 'build: bump Android version number'
+      #     commit_user_name: 'GitHub Actions'
+      #     commit_user_email: actions@users.noreply.github.com
 
       - name: Build Android app bundle
         working-directory: ./dev-client/android
