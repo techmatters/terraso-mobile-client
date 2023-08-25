@@ -13,11 +13,12 @@ import {
   Image,
   useTheme,
 } from 'native-base';
-import {useCallback, useMemo} from 'react';
+import {forwardRef, useCallback, useMemo} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Trans, useTranslation} from 'react-i18next';
 import {Icon} from '../common/Icons';
 import {SiteCard} from '../sites/SiteCard';
+import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 
 const LandPKSInfo = () => {
   const {t} = useTranslation();
@@ -86,62 +87,63 @@ type Props = {
   showSiteOnMap: (site: Site) => void;
   onCreateSite: () => void;
 };
-const SiteListBottomSheet = ({sites, showSiteOnMap, onCreateSite}: Props) => {
-  const {t} = useTranslation();
+export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
+  ({sites, showSiteOnMap, onCreateSite}, ref) => {
+    const {t} = useTranslation();
 
-  const siteList = useMemo(() => Object.values(sites), [sites]);
+    const siteList = useMemo(() => Object.values(sites), [sites]);
 
-  const renderSite = useCallback(
-    ({item}: {item: Site}) => (
-      <SiteCard site={item} onShowSiteOnMap={showSiteOnMap} />
-    ),
-    [showSiteOnMap],
-  );
+    const renderSite = useCallback(
+      ({item}: {item: Site}) => (
+        <SiteCard site={item} onShowSiteOnMap={showSiteOnMap} />
+      ),
+      [showSiteOnMap],
+    );
 
-  const snapPoints = useMemo(
-    () => ['15%', siteList.length === 0 ? '50%' : '75%', '100%'],
-    [siteList.length],
-  );
+    const snapPoints = useMemo(
+      () => ['15%', siteList.length === 0 ? '50%' : '75%', '100%'],
+      [siteList.length],
+    );
 
-  const {colors} = useTheme();
-  const listStyle = useMemo(() => ({paddingHorizontal: 16}), []);
-  const backgroundStyle = useMemo(
-    () => ({backgroundColor: colors.grey[300]}),
-    [colors],
-  );
+    const {colors} = useTheme();
+    const listStyle = useMemo(() => ({paddingHorizontal: 16}), []);
+    const backgroundStyle = useMemo(
+      () => ({backgroundColor: colors.grey[300]}),
+      [colors],
+    );
 
-  return (
-    <BottomSheet
-      snapPoints={snapPoints}
-      backgroundStyle={backgroundStyle}
-      handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
-      <Row
-        justifyContent="space-between"
-        alignItems="center"
-        paddingBottom="4"
-        paddingX="16px">
-        <Heading variant="h6">{t('site.list_title')}</Heading>
-        <Button
-          size="sm"
-          onPress={onCreateSite}
-          startIcon={<Icon name="add" />}>
-          {t('site.create')}
-        </Button>
-      </Row>
-      {siteList.length === 0 ? (
-        <LandPKSInfo />
-      ) : (
-        <BottomSheetFlatList
-          style={listStyle}
-          data={siteList}
-          keyExtractor={site => site.id}
-          renderItem={renderSite}
-          ItemSeparatorComponent={() => <Box height="8px" />}
-          ListFooterComponent={<Box height="10px" />}
-        />
-      )}
-    </BottomSheet>
-  );
-};
-
-export default SiteListBottomSheet;
+    return (
+      <BottomSheet
+        ref={ref}
+        snapPoints={snapPoints}
+        backgroundStyle={backgroundStyle}
+        handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
+        <Row
+          justifyContent="space-between"
+          alignItems="center"
+          paddingBottom="4"
+          paddingX="16px">
+          <Heading variant="h6">{t('site.list_title')}</Heading>
+          <Button
+            size="sm"
+            onPress={onCreateSite}
+            startIcon={<Icon name="add" />}>
+            {t('site.create')}
+          </Button>
+        </Row>
+        {siteList.length === 0 ? (
+          <LandPKSInfo />
+        ) : (
+          <BottomSheetFlatList
+            style={listStyle}
+            data={siteList}
+            keyExtractor={site => site.id}
+            renderItem={renderSite}
+            ItemSeparatorComponent={() => <Box height="8px" />}
+            ListFooterComponent={<Box height="10px" />}
+          />
+        )}
+      </BottomSheet>
+    );
+  },
+);

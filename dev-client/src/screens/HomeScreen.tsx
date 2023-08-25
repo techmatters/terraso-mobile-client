@@ -5,7 +5,7 @@ import {Coords, updateLocation} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
 import {Site, fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
-import BottomSheet from '../components/home/BottomSheet';
+import {SiteListBottomSheet} from '../components/home/BottomSheet';
 import {ScreenDefinition, useNavigation} from './AppScaffold';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {ScreenScaffold} from './ScreenScaffold';
@@ -13,6 +13,7 @@ import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
 import {Box} from 'native-base';
 import {coordsToPosition} from '../components/common/Map';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 export type CalloutState =
   | {
@@ -29,6 +30,7 @@ export type CalloutState =
 const STARTING_ZOOM_LEVEL = 12;
 
 const HomeView = () => {
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const navigation = useNavigation();
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
@@ -107,6 +109,7 @@ const HomeView = () => {
     (site: Site) => {
       moveToPoint(site);
       setCalloutState({kind: 'site', siteId: site.id});
+      bottomSheetRef.current?.collapse();
     },
     [moveToPoint, setCalloutState],
   );
@@ -139,7 +142,8 @@ const HomeView = () => {
           onCreateSite={onCreateSite}
         />
       </Box>
-      <BottomSheet
+      <SiteListBottomSheet
+        ref={bottomSheetRef}
         sites={sites}
         showSiteOnMap={showSiteOnMap}
         onCreateSite={onCreateSite}
