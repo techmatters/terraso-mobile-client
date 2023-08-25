@@ -26,10 +26,16 @@ const CreateSiteScaffold = (props: Props = {}) => {
 
   const createSiteCallback = useCallback(
     async (input: SiteAddMutationInput) => {
-      await dispatch(addSite(input));
+      let result = await dispatch(addSite(input));
+      if (result.payload && 'error' in result.payload) {
+        console.error(result.payload.error);
+        console.error(result.payload.parsedErrors);
+        return;
+      }
       if (input.projectId) {
         dispatch(fetchSitesForProject(input.projectId));
       }
+      return result.payload;
     },
     [dispatch],
   );
