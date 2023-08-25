@@ -104,6 +104,7 @@ export default function AppScaffold() {
 
   const defaultScreenOptions = useMemo<NativeStackNavigationOptions>(
     () => ({
+      headerBackTitleVisible: false,
       headerStyle: {backgroundColor: colors.primary.main},
       headerTintColor: colors.primary.contrast,
       headerTitle: ({children: name, ...props}) => (
