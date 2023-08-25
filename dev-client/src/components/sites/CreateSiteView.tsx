@@ -84,7 +84,7 @@ export default function CreateSiteView({
 
   const [errors, setErrors] = useState<Error>({});
 
-  const {reset} = useNavigation();
+  const navigation = useNavigation();
 
   /**
    * Checks the form status with the yup library, and posts to backend
@@ -117,14 +117,9 @@ export default function CreateSiteView({
       projectId,
     });
     if (createdSite !== undefined) {
-      reset({
-        routes: [
-          {name: 'HOME'},
-          {name: 'LOCATION_DASHBOARD', params: {siteId: createdSite.id}},
-        ],
-      });
+      navigation.replace('LOCATION_DASHBOARD', {siteId: createdSite.id});
     }
-  }, [mutationInput, createSiteCallback, reset]);
+  }, [mutationInput, createSiteCallback, navigation]);
 
   /* calculates the associated location for a given location input option
    * For example, for 'pin', it grabs and formats the value from the sitepin */
