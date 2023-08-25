@@ -197,6 +197,7 @@ export default function CreateSiteView({
           <FormControl.Label>Latitude</FormControl.Label>
           <Input
             variant="underlined"
+            keyboardType="numeric"
             size="sm"
             onChangeText={latitude =>
               setMutationInput({...mutationInput, latitude})
@@ -210,6 +211,7 @@ export default function CreateSiteView({
           <Input
             size="sm"
             variant="underlined"
+            keyboardType="numeric"
             value={mutationInput.longitude}
             onChangeText={longitude =>
               setMutationInput({...mutationInput, longitude})
