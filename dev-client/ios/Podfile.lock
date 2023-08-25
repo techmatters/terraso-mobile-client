@@ -458,7 +458,7 @@ PODS:
     - React-jsi (= 0.72.4)
     - React-logger (= 0.72.4)
     - React-perflogger (= 0.72.4)
-  - RNGestureHandler (2.12.1):
+  - RNGestureHandler (2.12.0):
     - React-Core
   - rnmapbox-maps (10.0.11):
     - MapboxMaps (~> 10.14.0)
@@ -737,10 +737,10 @@ SPEC CHECKSUMS:
   React-RCTVibration: 35eec7201c8ffdaccdd908a5ec874b7055f975f3
   React-rncore: 46133d523155fc84572338bd6a7c461c1d873efc
   React-runtimeexecutor: d465ba0c47ef3ed8281143f59605cacc2244d5c7
-  React-runtimescheduler: 1153e8e687ccaea5ea2fa7d7e5bf988d322ee556
-  React-utils: 9c31270afa170b18d43b0303fce6e37ade967aa7
-  ReactCommon: 75227ed9a5911cb6e8f8ad8477734aab0a87f576
-  RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
+  React-runtimescheduler: b0025e9711736ba1ac1b55f2a30e2f08a63987f0
+  React-utils: 6c7fb48fc5a0c56aba532787cb16676101fe550a
+  ReactCommon: 5cf8fbc5aa37343303ead2859aaaa562158aadd7
+  RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
   rnmapbox-maps: 6f638ec002aa6e906a6f766d69cd45f968d98e64
   RNReanimated: 726395a2fa2f04cea340274ba57a4e659bc0d9c1
   RNScreens: b21dc57dfa2b710c30ec600786a3fc223b1b92e7

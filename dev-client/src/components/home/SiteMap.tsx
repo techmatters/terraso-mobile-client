@@ -1,13 +1,6 @@
 import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
-import {
-  memo,
-  useMemo,
-  useState,
-  useCallback,
-  forwardRef,
-  ForwardedRef,
-} from 'react';
+import {memo, useMemo, useCallback, forwardRef, ForwardedRef} from 'react';
 import {Card, CardCloseButton} from '../common/Card';
 import MapIcon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
@@ -17,10 +10,18 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
+import {StyleSheet} from 'react-native';
+import {CalloutState} from '../../screens/HomeScreen';
+import {positionToCoords} from '../common/Map';
+import {Coords} from '../../model/map/mapSlice';
 
 type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
+  calloutState: CalloutState;
+  setCalloutState: (state: CalloutState) => void;
+  styleURL?: string;
+  onCreateSite: () => void;
 };
 
 const siteFeatureCollection = (
@@ -66,7 +67,7 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
 };
 
 type TemporarySiteCalloutProps = {
-  site: Pick<Site, 'latitude' | 'longitude'>;
+  site: Coords;
   onCreate: () => void;
   onLearnMore: () => void;
   closeCallout: () => void;
@@ -119,13 +120,16 @@ const SiteMap = (
   props: SiteMapProps,
   ref: ForwardedRef<CameraRef>,
 ): JSX.Element => {
-  const {updateUserLocation, sites} = props;
-  const [temporarySite, setTemporarySite] = useState<Pick<
-    Site,
-    'latitude' | 'longitude'
-  > | null>(null);
-  const [selectedSiteID, setSelectedSiteID] = useState<string | null>(null);
-  const selectedSite = selectedSiteID === null ? null : sites[selectedSiteID];
+  const {
+    updateUserLocation,
+    sites,
+    setCalloutState,
+    calloutState,
+    onCreateSite,
+    styleURL,
+  } = props;
+  const selectedSite =
+    calloutState.kind === 'site' ? sites[calloutState.siteId] : null;
   const {navigate} = useNavigation();
   const {colors} = useTheme();
 
@@ -140,80 +144,79 @@ const SiteMap = (
   const temporarySitesFeature = useMemo(
     () =>
       siteFeatureCollection(
-        temporarySite === null ? [] : [{...temporarySite, id: 'temp'}],
+        calloutState.kind !== 'location'
+          ? []
+          : [{...calloutState.coords, id: 'temp'}],
       ),
-    [temporarySite],
+    [calloutState],
   );
 
-  const temporaryCreateCallback = useCallback(() => {
-    const siteToCreate = {...temporarySite};
-    setTemporarySite(null);
-    if (
-      siteToCreate &&
-      siteToCreate.latitude !== undefined &&
-      siteToCreate.longitude !== undefined
-    ) {
-      navigate('CREATE_SITE', {
-        mapCoords: siteToCreate as Pick<Site, 'longitude' | 'latitude'>,
-      });
-    }
-  }, [navigate, temporarySite, setTemporarySite]);
-
   const temporaryLearnMoreCallback = useCallback(() => {
-    setTemporarySite(null);
-    if (temporarySite) {
+    setCalloutState({kind: 'none'});
+    if (calloutState.kind === 'location') {
       navigate('LOCATION_DASHBOARD', {
-        coords: temporarySite,
+        coords: calloutState.coords,
       });
     }
-  }, [navigate, temporarySite, setTemporarySite]);
+  }, [navigate, calloutState, setCalloutState]);
 
-  const closeCallout = useCallback(() => {
-    setSelectedSiteID(null);
-    setTemporarySite(null);
-  }, []);
+  const closeCallout = useCallback(
+    () => setCalloutState({kind: 'none'}),
+    [setCalloutState],
+  );
 
-  const onSitePress = useCallback((event: OnPressEvent) => {
-    setSelectedSiteID(event.features[0].id as string);
-    setTemporarySite(null);
-  }, []);
+  const onSitePress = useCallback(
+    (event: OnPressEvent) =>
+      setCalloutState({kind: 'site', siteId: event.features[0].id as string}),
+    [setCalloutState],
+  );
 
-  const onLongPress = useCallback((feature: GeoJSON.Feature) => {
-    if (feature.geometry === null || feature.geometry.type !== 'Point') {
-      console.error(
-        'received long press with no feature geometry or non-Point geometry',
-        feature.geometry,
-      );
-      return;
-    }
-    const [lon, lat] = feature.geometry.coordinates;
-    setTemporarySite({
-      latitude: lat,
-      longitude: lon,
-    });
-    setSelectedSiteID(null);
-  }, []);
+  const onTempSitePress = useCallback(
+    () =>
+      setCalloutState(
+        calloutState.kind === 'location'
+          ? {...calloutState, showCallout: true}
+          : calloutState,
+      ),
+    [calloutState, setCalloutState],
+  );
+
+  const onLongPress = useCallback(
+    (feature: GeoJSON.Feature) => {
+      if (feature.geometry === null || feature.geometry.type !== 'Point') {
+        console.error(
+          'received long press with no feature geometry or non-Point geometry',
+          feature.geometry,
+        );
+        return;
+      }
+      setCalloutState({
+        kind: 'location',
+        coords: positionToCoords(feature.geometry.coordinates),
+        showCallout: true,
+      });
+    },
+    [setCalloutState],
+  );
 
   return (
     <Mapbox.MapView
-      // eslint-disable-next-line react-native/no-inline-styles
-      style={{
-        flex: 1,
-      }}
+      style={styles.mapView}
       onLongPress={onLongPress}
-      scaleBarEnabled={false}>
+      scaleBarEnabled={false}
+      styleURL={styleURL}>
       <Camera ref={ref} />
       <Mapbox.Images
         onImageMissing={console.debug}
         images={{
           sitePin: MapIcon.getImageSourceSync(
             'location-on',
-            35,
+            undefined,
             colors.secondary.main,
           ),
           temporarySitePin: MapIcon.getImageSourceSync(
             'location-on',
-            35,
+            undefined,
             colors.action.active,
           ),
         }}
@@ -222,14 +225,15 @@ const SiteMap = (
         id="sitesSource"
         shape={sitesFeature}
         onPress={onSitePress}>
-        <Mapbox.SymbolLayer id="sitesLayer" style={styles.siteLayer} />
+        <Mapbox.SymbolLayer id="sitesLayer" style={mapStyles.siteLayer} />
       </Mapbox.ShapeSource>
       <Mapbox.ShapeSource
         id="temporarySitesSource"
-        shape={temporarySitesFeature}>
+        shape={temporarySitesFeature}
+        onPress={onTempSitePress}>
         <Mapbox.SymbolLayer
           id="temporarySitesLayer"
-          style={styles.temporarySiteLayer}
+          style={mapStyles.temporarySiteLayer}
         />
       </Mapbox.ShapeSource>
       <UserLocation
@@ -239,11 +243,11 @@ const SiteMap = (
       {selectedSite && (
         <SiteCallout site={selectedSite} closeCallout={closeCallout} />
       )}
-      {temporarySite && (
+      {calloutState.kind === 'location' && calloutState.showCallout && (
         <TemporarySiteCallout
-          site={temporarySite}
+          site={calloutState.coords}
           closeCallout={closeCallout}
-          onCreate={temporaryCreateCallback}
+          onCreate={onCreateSite}
           onLearnMore={temporaryLearnMoreCallback}
         />
       )}
@@ -251,17 +255,23 @@ const SiteMap = (
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
+  mapView: {
+    flex: 1,
+  },
+});
+
+const mapStyles = {
   siteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
-    iconSize: 3.0,
+    iconSize: 4.0,
     iconImage: 'sitePin',
   } satisfies Mapbox.SymbolLayerStyle,
   temporarySiteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
-    iconSize: 3.0,
+    iconSize: 4.0,
     iconImage: 'temporarySitePin',
   } satisfies Mapbox.SymbolLayerStyle,
 };

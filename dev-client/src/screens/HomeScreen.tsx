@@ -1,22 +1,40 @@
 import SiteMap from '../components/home/SiteMap';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {Camera, Location} from '@rnmapbox/maps';
-import {updateLocation} from '../model/map/mapSlice';
+import Mapbox, {Camera, Location} from '@rnmapbox/maps';
+import {Coords, updateLocation} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
-import {fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
+import {Site, fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
 import BottomSheet from '../components/home/BottomSheet';
-import {ScreenDefinition} from './AppScaffold';
+import {ScreenDefinition, useNavigation} from './AppScaffold';
 import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
 import {ScreenScaffold} from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
 import {Box} from 'native-base';
+import {coordsToPosition} from '../components/common/Map';
 
-const STARTING_ZOOM_LEVEL = 5;
+export type CalloutState =
+  | {
+      kind: 'site';
+      siteId: string;
+    }
+  | {
+      kind: 'location';
+      coords: Coords;
+      showCallout: boolean;
+    }
+  | {kind: 'none'};
+
+const STARTING_ZOOM_LEVEL = 12;
 
 const HomeView = () => {
+  const navigation = useNavigation();
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
+  const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
+  const [calloutState, setCalloutState] = useState<CalloutState>({
+    kind: 'none',
+  });
   const currentUserID = useSelector(
     state => state.account.currentUser?.data?.id,
   );
@@ -32,16 +50,24 @@ const HomeView = () => {
   }, [dispatch, currentUserID]);
 
   const moveToPoint = useCallback(
-    ({longitude, latitude}: Location['coords']) => {
+    (coords: Coords) => {
       // TODO: flyTo, zoomTo don't seem to work, find out why
       //camera.current?.flyTo([longitude, latitude]);
       //camera.current?.zoomTo(STARTING_ZOOM_LEVEL);
       camera.current?.setCamera({
-        centerCoordinate: [longitude, latitude],
+        centerCoordinate: coordsToPosition(coords),
         zoomLevel: STARTING_ZOOM_LEVEL,
       });
     },
     [camera],
+  );
+
+  const searchFunction = useCallback(
+    (coords: Coords) => {
+      setCalloutState({kind: 'location', showCallout: false, coords});
+      moveToPoint(coords);
+    },
+    [setCalloutState, moveToPoint],
   );
 
   useEffect(() => {
@@ -67,17 +93,57 @@ const HomeView = () => {
     }
   }, [currentUserLocation, moveToPoint]);
 
+  const toggleMapLayer = useCallback(
+    () =>
+      setMapStyleURL(
+        mapStyleURL === Mapbox.StyleURL.Street
+          ? Mapbox.StyleURL.Satellite
+          : Mapbox.StyleURL.Street,
+      ),
+    [mapStyleURL, setMapStyleURL],
+  );
+
+  const showSiteOnMap = useCallback(
+    (site: Site) => {
+      moveToPoint(site);
+      setCalloutState({kind: 'site', siteId: site.id});
+    },
+    [moveToPoint, setCalloutState],
+  );
+
+  const onCreateSite = useCallback(() => {
+    navigation.navigate(
+      'CREATE_SITE',
+      calloutState.kind === 'location'
+        ? {coords: calloutState.coords}
+        : undefined,
+    );
+    setCalloutState({kind: 'none'});
+  }, [navigation, calloutState]);
+
   return (
     <ScreenScaffold>
       <Box flex={1} zIndex={-1}>
-        <MapSearch zoomTo={moveToPoint} zoomToUser={moveToUser} />
+        <MapSearch
+          zoomTo={searchFunction}
+          zoomToUser={moveToUser}
+          toggleMapLayer={toggleMapLayer}
+        />
         <SiteMap
           updateUserLocation={updateUserLocation}
           sites={sites}
           ref={camera}
+          calloutState={calloutState}
+          setCalloutState={setCalloutState}
+          styleURL={mapStyleURL}
+          onCreateSite={onCreateSite}
         />
       </Box>
-      <BottomSheet sites={sites} showSiteOnMap={moveToPoint} />
+      <BottomSheet
+        sites={sites}
+        showSiteOnMap={showSiteOnMap}
+        onCreateSite={onCreateSite}
+      />
     </ScreenScaffold>
   );
 };

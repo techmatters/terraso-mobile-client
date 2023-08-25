@@ -8,115 +8,20 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - opened
-      - edited
-      - synchronize
 
 jobs:
   ios-build:
-    name: iOS Build
-    runs-on: macOS-latest
-
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
-
-      - name: Enable build cache
-        uses: mikehardy/buildcache-action@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.tool-versions'
-          cache: 'npm'
-          cache-dependency-path: dev-client/package-lock.json
-
-      - name: Install Node dependencies
-        working-directory: dev-client
-        run: npm ci
-
-      - name: Setup Ruby (bundle)
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-          working-directory: dev-client
-
-      - name: Restore Pods cache
-        uses: actions/cache@v3
-        with:
-          path: dev-client/ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: ${{ runner.os }}-pods-
-
-      - name: Provide Mapbox secret key
-        run: |
-          echo "machine api.mapbox.com" >> $HOME/.netrc
-          echo "login mapbox" >> $HOME/.netrc
-          echo "password ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.netrc
-          chmod 600 $HOME/.netrc
-
-      - name: CocoaPod Install
-        working-directory: dev-client/ios
-        run: pod install
-
-      - name: Build iOS App
-        uses: yukiarrr/ios-build-action@v1.11.0
-        with:
-          project-path: dev-client/ios/Terraso LandPKS.xcodeproj
-          p12-base64: ${{ secrets.IOS_P12_BASE64 }}
-          mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
-          code-signing-identity: 'iPhone Distribution'
-          team-id: ${{ secrets.IOS_TEAM_ID }}
-          certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          workspace-path: dev-client/ios/Terraso LandPKS.xcworkspace
-          scheme: Terraso LandPKS
+    name: Build iOS app
+    uses: ./.github/workflows/build-shared-ios.yml
+    secrets:
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+      IOS_MOBILE_PROVISION_BASE64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
+      IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+      IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
 
   android-build:
-    name: Android Build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out git repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.tool-versions'
-          cache: 'npm'
-          cache-dependency-path: dev-client/package-lock.json
-
-      - name: Install Node dependencies
-        working-directory: dev-client
-        run: npm ci
-
-      - name: Set up our JDK environment
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-caches-
-
-      - name: Provide Mapbox secret key
-        run: |
-          mkdir -p $HOME/.gradle
-          echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.gradle/gradle.properties
-
-      - name: Build Android app bundle
-        working-directory: ./dev-client/android
-        run: ./gradlew bundleRelease
+    name: Build Android app
+    uses: ./.github/workflows/build-shared-android.yml
+    secrets:
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
