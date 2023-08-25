@@ -8,6 +8,7 @@ import {useDispatch} from '../../model/store';
 import {
   deleteProject,
   updateProject,
+  archiveProject,
 } from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from '../../screens/AppScaffold';
 import ProjectSettingsForm, {FormValues} from './CreateProjectView/Form';
@@ -41,7 +42,18 @@ export default function ProjectSettingsTab({
     dispatch(deleteProject({id: projectId}));
     navigation.navigate('PROJECT_LIST');
   };
-
+  const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
+  const closeArchiveProject = () => {
+    setIsArchiveModalOpen(false);
+  };
+  const openArchiveProject = () => {
+    setIsArchiveModalOpen(true);
+  };
+  const triggerArchiveProject = () => {
+    setIsDeleteModalOpen(false);
+    dispatch(archiveProject({id: projectId, archived: true}));
+    navigation.navigate('PROJECT_LIST');
+  };
   return (
     <ScrollView>
       <VStack px={2} py={4} space={1} m={3} height="100%">
@@ -56,9 +68,39 @@ export default function ProjectSettingsTab({
           href={downloadLink}>
           {t('projects.settings.copy_download_link').toUpperCase()}
         </IconLink>
-        <IconLink iconName="archive" underlined={false}>
+        <IconLink
+          iconName="archive"
+          underlined={false}
+          onPress={openArchiveProject}>
           {t('projects.settings.archive').toUpperCase()}
         </IconLink>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={isArchiveModalOpen}
+          onClose={closeArchiveProject}>
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>
+              {t('projects.settings.archive_button_prompt')}
+            </AlertDialog.Header>
+            <AlertDialog.Body>
+              {t('projects.settings.archive_description')}
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="unstyled"
+                  colorScheme="coolGray"
+                  onPress={closeArchiveProject}>
+                  {t('projects.settings.cancel')}
+                </Button>
+                <Button colorScheme="danger" onPress={triggerArchiveProject}>
+                  {t('projects.settings.archive_button')}
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
         <IconLink
           iconName="delete-forever"
           underlined={false}
