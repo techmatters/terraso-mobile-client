@@ -10,7 +10,7 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from '../../screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
-import {StyleSheet} from 'react-native';
+import {Keyboard, StyleSheet} from 'react-native';
 import {CalloutState} from '../../screens/HomeScreen';
 import {positionToCoords} from '../common/Map';
 import {Coords} from '../../model/map/mapSlice';
@@ -202,6 +202,7 @@ const SiteMap = (
   return (
     <Mapbox.MapView
       style={styles.mapView}
+      onPress={() => Keyboard.dismiss()}
       onLongPress={onLongPress}
       scaleBarEnabled={false}
       styleURL={styleURL}>

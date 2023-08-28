@@ -82,7 +82,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       zIndex={1}
       px={3}
       py={3}>
-      <HStack space={3}>
+      <HStack space={3} flex={1}>
         <Autocomplete
           data={suggestions}
           hideResults={hideResults}
@@ -109,6 +109,10 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
               }}
               onFocus={() => {
                 setHideResults(false);
+                querySuggestions();
+              }}
+              onEndEditing={() => {
+                setHideResults(true);
               }}
               value={query}
               placeholder={t('search.placeholder')}
