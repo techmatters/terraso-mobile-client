@@ -26,7 +26,7 @@ if linkage != nil
 end
 
 target 'Terraso LandPKS' do
-  pod 'MapboxMaps', '10.14.0'
+  pod 'MapboxMaps', '10.15.0'
 
   config = use_native_modules!
 
