@@ -1,7 +1,7 @@
 import Autocomplete from 'react-native-autocomplete-input';
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Box, HStack, Input, Pressable, Text, VStack} from 'native-base';
+import {Box, HStack, Input, Pressable, Text, View, VStack} from 'native-base';
 import {Suggestion, initMapSearch} from './mapSearch';
 import {Icon, IconButton} from '../common/Icons';
 import {Keyboard} from 'react-native';
@@ -82,44 +82,46 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       zIndex={1}
       px={3}
       py={3}>
-      <HStack space={3} flex={1}>
-        <Autocomplete
-          data={suggestions}
-          hideResults={hideResults}
-          flatListProps={{
-            keyboardShouldPersistTaps: 'always',
-            keyExtractor: suggestion => suggestion.mapbox_id,
-            renderItem: ({item}) => (
-              <SuggestionBox
-                name={item.name}
-                address={item.place_formatted}
-                mapboxId={item.mapbox_id}
-                onPress={selectQuery}
+      <HStack space={3}>
+        <View flex={1}>
+          <Autocomplete
+            data={suggestions}
+            hideResults={hideResults}
+            flatListProps={{
+              keyboardShouldPersistTaps: 'always',
+              keyExtractor: suggestion => suggestion.mapbox_id,
+              renderItem: ({item}) => (
+                <SuggestionBox
+                  name={item.name}
+                  address={item.place_formatted}
+                  mapboxId={item.mapbox_id}
+                  onPress={selectQuery}
+                />
+              ),
+            }}
+            inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
+            renderTextInput={() => (
+              <Input
+                borderRadius={10}
+                bgColor="white"
+                onChangeText={newText => {
+                  setQuery(newText);
+                  querySuggestions();
+                }}
+                onFocus={() => {
+                  setHideResults(false);
+                  querySuggestions();
+                }}
+                onEndEditing={() => {
+                  setHideResults(true);
+                }}
+                value={query}
+                placeholder={t('search.placeholder')}
+                InputLeftElement={<Icon ml={3} name="search" size="md" />}
               />
-            ),
-          }}
-          inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
-          renderTextInput={() => (
-            <Input
-              borderRadius={10}
-              bgColor="white"
-              onChangeText={newText => {
-                setQuery(newText);
-                querySuggestions();
-              }}
-              onFocus={() => {
-                setHideResults(false);
-                querySuggestions();
-              }}
-              onEndEditing={() => {
-                setHideResults(true);
-              }}
-              value={query}
-              placeholder={t('search.placeholder')}
-              InputLeftElement={<Icon ml={3} name="search" size="md" />}
-            />
-          )}
-        />
+            )}
+          />
+        </View>
         <VStack space={3}>
           <IconButton
             name="layers"
