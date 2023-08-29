@@ -26,7 +26,7 @@ export const BottomNavigation = () => {
   return (
     <HStack bg="primary.main" justifyContent="center" space={10} pb={2}>
       <BottomNavIconButton
-        name="map"
+        name="location-pin"
         label={t('bottom_navigation.home')}
         onPress={onHome}
       />
