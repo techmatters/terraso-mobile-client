@@ -534,7 +534,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8W5MT5NL;
 				ENABLE_BITCODE = NO;
@@ -575,7 +575,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8W5MT5NL;
 				INFOPLIST_FILE = "Terraso LandPKS/Info.plist";
