@@ -8,4 +8,4 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
--keep class com.terraso.landpks.BuildConfig { *; }
+-keep class org.terraso.landpks.BuildConfig { *; }
