@@ -78,9 +78,7 @@ jobs:
       - name: Bump Android version
         if: ${{ inputs.upload == 'true' }}
         working-directory: ./dev-client/android
-        run: |
-          ./gradlew bumpCodeVersion
-          ./gradlew bumpPatchVersion
+        run: ./gradlew bumpPatchVersion
 
       # - name: Commit Android version bump
       #   if: ${{ inputs.upload == 'true' }}
