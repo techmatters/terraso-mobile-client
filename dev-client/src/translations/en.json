@@ -32,6 +32,14 @@
         "body": "in the side menu to the left or at <landpks href=\"https://landpotential.org\">landpotential.org</landpks>"
       }
     },
+    "create": {
+        "title": "Create Site",
+        "gps": "Use my current location (GPS)",
+        "pin": "Use map pin",
+        "coords": "Enter coordinates",
+        "location_label": "Site location",
+        "name_placeholder": "Site name"
+    },
     "dashboard": {
       "privacy": "Data Privacy",
       "team_button": "Team",
