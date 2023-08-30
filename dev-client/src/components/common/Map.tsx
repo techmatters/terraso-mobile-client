@@ -1,5 +1,5 @@
 import Mapbox from '@rnmapbox/maps';
-import {StyleProp, ViewStyle} from 'react-native';
+import {PixelRatio, StyleProp, ViewStyle} from 'react-native';
 import {Icon} from './Icons';
 import {Coords} from '../../model/map/mapSlice';
 import {Position} from '@rnmapbox/maps/lib/typescript/types/Position';
@@ -22,6 +22,9 @@ export const positionToCoords = ([longitude, latitude]: Position): Coords => ({
   latitude,
   longitude,
 });
+
+export const mapIconSizeForPlatform = (size: number) =>
+  Math.round(size * PixelRatio.get());
 
 export const StaticMapView = ({
   coords,
