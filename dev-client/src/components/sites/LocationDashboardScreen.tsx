@@ -17,6 +17,18 @@ import CloseButton from '../common/CloseButton';
 import {StaticMapView} from '../common/Map';
 import {StyleSheet} from 'react-native';
 
+const TEMP_ELEVATION = '1900 ft';
+const TEMP_ACCURACY = '20 ft';
+const TEMP_MODIFIED_DATE = '8/15/23';
+const TEMP_MODIFIED_NAME = 'Sample Sam';
+const TEMP_NOT_FOUND = 'not found';
+const TEMP_SOIL_ID_VALUE = 'Clifton';
+const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
+const TEMP_LCC_PREDICTION = 'Class 1';
+const TEMP_SOIL_ID_CONFIDENCE = '80%';
+const TEMP_ECO_SITE_ID_CONFIDENCE = '80%';
+const TEMP_LCC_CONFIDENCE = '80%';
+
 type Props = {siteId?: string; coords?: Pick<Site, 'latitude' | 'longitude'>};
 
 const LocationDetail = ({label, value}: {label: string; value: string}) => (
@@ -127,19 +139,25 @@ const LocationDashboardView = ({siteId, coords}: Props) => {
             label={t('geo.longitude.title')}
             value={coords.longitude.toFixed(6)}
           />
-          <LocationDetail label={t('geo.elevation.title')} value={'1900 ft'} />
+          <LocationDetail
+            label={t('geo.elevation.title')}
+            value={TEMP_ELEVATION}
+          />
           {site && (
             <>
               <LocationDetail
                 label={t('site.dashboard.location_accuracy')}
-                value={'20 ft'}
+                value={TEMP_ACCURACY}
               />
-              <LocationDetail label={t('soil.bedrock')} value={'not found'} />
+              <LocationDetail
+                label={t('soil.bedrock')}
+                value={TEMP_NOT_FOUND}
+              />
               <LocationDetail
                 label={t('site.dashboard.last_modified.label')}
                 value={t('site.dashboard.last_modified.value', {
-                  date: '8/15/23',
-                  name: 'Sam Sam',
+                  date: TEMP_MODIFIED_DATE,
+                  name: TEMP_MODIFIED_NAME,
                 })}
               />
             </>
@@ -149,19 +167,19 @@ const LocationDashboardView = ({siteId, coords}: Props) => {
       <Divider />
       <Column space="20px" padding="16px">
         <LocationPrediction
-          prediction="Clifton"
-          confidence="90%"
           label={t('soil.soil_id').toUpperCase()}
+          prediction={TEMP_SOIL_ID_VALUE}
+          confidence={TEMP_SOIL_ID_CONFIDENCE}
         />
         <LocationPrediction
-          prediction="Loamy Upland"
-          confidence="80%"
           label={t('soil.ecological_site_id').toUpperCase()}
+          prediction={TEMP_ECO_SITE_PREDICTION}
+          confidence={TEMP_ECO_SITE_ID_CONFIDENCE}
         />
         <LocationPrediction
-          prediction="Class 1"
-          confidence="85%"
           label={t('soil.land_capability_classification').toUpperCase()}
+          prediction={TEMP_LCC_PREDICTION}
+          confidence={TEMP_LCC_CONFIDENCE}
         />
       </Column>
     </ScreenScaffold>

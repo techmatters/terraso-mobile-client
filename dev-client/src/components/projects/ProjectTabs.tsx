@@ -12,6 +12,8 @@ import {useMemo} from 'react';
 import {Membership} from 'terraso-client-shared/memberships/membershipsSlice';
 import {User} from 'terraso-client-shared/account/accountSlice';
 
+const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
+
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 type ScreenOptions = React.ComponentProps<
   (typeof Tab)['Navigator']
@@ -122,7 +124,7 @@ export default function ProjectTabs({project}: Props) {
           name: project.name,
           description: project.description,
           privacy: project.privacy,
-          downloadLink: 'https://s3.amazon.com/mydownload',
+          downloadLink: TEMP_DOWNLOAD_LINK,
         }}
       />
       <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />

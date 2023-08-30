@@ -9,6 +9,9 @@ import {Icon, IconButton} from '../common/Icons';
 import {StaticMapView} from '../common/Map';
 import {Card} from '../common/Card';
 
+const TEMP_MODIFIED_DATE = '8/15/23';
+const TEMP_MODIFIED_NAME = 'Sample Sam';
+
 type SiteCardProps = {
   site: Site;
   onShowSiteOnMap?: (site: Site) => void;
@@ -41,8 +44,8 @@ export const SiteCard = ({
         {project && <Heading size="md">{project.name}</Heading>}
         <Text variant="subtitle2" color="text.secondary">
           {t('site.last_updated', {
-            date: '14-08-2023',
-            name: 'Sam',
+            date: TEMP_MODIFIED_DATE,
+            name: TEMP_MODIFIED_NAME,
           })}
         </Text>
         <Box height="16px" />
