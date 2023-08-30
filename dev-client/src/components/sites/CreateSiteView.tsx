@@ -63,6 +63,7 @@ export default function CreateSiteView({
 
   const projectMap = useSelector(state => state.project.projects);
   const projects = useMemo(() => Object.values(projectMap), [projectMap]);
+  const [submitting, setSubmitting] = useState(false);
 
   const {latitude: defaultLat, longitude: defaultLon} = useMemo(() => {
     if (sitePin) {
@@ -90,6 +91,7 @@ export default function CreateSiteView({
    * Checks the form status with the yup library, and posts to backend
    */
   const onSave = useCallback(async () => {
+    setSubmitting(true);
     if (createSiteCallback === undefined) {
       return;
     }
@@ -99,6 +101,7 @@ export default function CreateSiteView({
     try {
       validationResults = await siteValidationSchema.validate(mutationInput);
     } catch (validationError) {
+      setSubmitting(false);
       if (validationError instanceof ValidationError) {
         setErrors({
           [validationError.path as keyof SiteAddMutationInput]:
@@ -119,6 +122,7 @@ export default function CreateSiteView({
     if (createdSite !== undefined) {
       navigation.replace('LOCATION_DASHBOARD', {siteId: createdSite.id});
     }
+    setSubmitting(false);
   }, [mutationInput, createSiteCallback, navigation]);
 
   /* calculates the associated location for a given location input option
@@ -253,7 +257,11 @@ export default function CreateSiteView({
               }),
           }}
         />
-        <Fab label={t('general.save_fab')} onPress={onSave} />
+        <Fab
+          label={t('general.save_fab')}
+          onPress={onSave}
+          disabled={submitting}
+        />
       </VStack>
     </ScrollView>
   );
