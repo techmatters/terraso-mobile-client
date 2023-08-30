@@ -29,7 +29,7 @@
       },
       "learn_more": {
         "lead": "Find more information and guides",
-        "body": "in the side menu to the left or at <landpks href=\"https://landpotential.org\">landpotential.org</landpks>"
+        "body": "in the side menu to the left or at <landpks href='https://landpotential.org'>landpotential.org</landpks>"
       }
     },
     "create": {
