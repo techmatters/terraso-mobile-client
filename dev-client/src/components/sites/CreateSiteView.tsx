@@ -171,7 +171,9 @@ export default function CreateSiteView({
           <Input
             placeholder="Site name"
             value={mutationInput.name}
-            onChangeText={name => setMutationInput({...mutationInput, name})}
+            onChangeText={name =>
+              setMutationInput(current => ({...current, name}))
+            }
           />
           {/* TODO: FormControl.ErrorMessage does not seem to work :( */}
           {errors.name &&
@@ -204,7 +206,7 @@ export default function CreateSiteView({
             keyboardType="numeric"
             size="sm"
             onChangeText={latitude =>
-              setMutationInput({...mutationInput, latitude})
+              setMutationInput(current => ({...current, latitude}))
             }
             value={mutationInput.latitude}
             leftElement={<Icon mr={2} name="edit" />}
@@ -218,7 +220,7 @@ export default function CreateSiteView({
             keyboardType="numeric"
             value={mutationInput.longitude}
             onChangeText={longitude =>
-              setMutationInput({...mutationInput, longitude})
+              setMutationInput(current => ({...current, longitude}))
             }
             leftElement={<Icon mr={2} name="edit" />}
           />
@@ -228,7 +230,7 @@ export default function CreateSiteView({
           <Select
             selectedValue={mutationInput.projectId}
             onValueChange={projectId =>
-              setMutationInput({...mutationInput, projectId})
+              setMutationInput(current => ({...current, projectId}))
             }>
             {projects.map(project => (
               <Select.Item
@@ -251,10 +253,10 @@ export default function CreateSiteView({
             name: 'data-privacy',
             value: mutationInput.privacy,
             onChange: (privacy: ProjectPrivacy) =>
-              setMutationInput({
-                ...mutationInput,
+              setMutationInput(current => ({
+                ...current,
                 privacy,
-              }),
+              })),
           }}
         />
         <Fab
