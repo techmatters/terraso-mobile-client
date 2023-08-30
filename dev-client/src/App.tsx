@@ -23,8 +23,12 @@ import './config';
 import {createStore} from './model/store';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {APP_CONFIG} from './config';
+import {LogBox} from 'react-native';
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
+LogBox.ignoreLogs([
+  'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
+]);
 
 function App(): JSX.Element {
   const store = useMemo(createStore, []);
