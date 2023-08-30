@@ -128,7 +128,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
             size="sm"
             onPress={onCreateSite}
             startIcon={<Icon name="add" />}>
-            {t('site.create')}
+            {t('site.create.title').toUpperCase()}
           </Button>
         </Row>
         {siteList.length === 0 ? (

@@ -149,19 +149,19 @@ const LocationDashboardView = ({siteId, coords}: Props) => {
       <Divider />
       <Column space="20px" padding="16px">
         <LocationPrediction
-          label={t('soil.soil_id')}
           prediction="Clifton"
           confidence="90%"
+          label={t('soil.soil_id').toUpperCase()}
         />
         <LocationPrediction
-          label={t('soil.ecological_site_id')}
           prediction="Loamy Upland"
           confidence="80%"
+          label={t('soil.ecological_site_id').toUpperCase()}
         />
         <LocationPrediction
-          label={t('soil.land_capability_classification')}
           prediction="Class 1"
           confidence="85%"
+          label={t('soil.land_capability_classification').toUpperCase()}
         />
       </Column>
     </ScreenScaffold>

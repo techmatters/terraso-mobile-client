@@ -83,7 +83,7 @@ const SiteSettingsView = ({siteId}: Props) => {
           variant="link"
           startIcon={<Icon name="content-copy" />}
           endIcon={<Icon name="info" />}>
-          {t('site.dashboard.copy_download_link_button')}
+          {t('site.dashboard.copy_download_link_button').toUpperCase()}
         </Button>
         <FormControl alignItems="flex-start">
           <Button
@@ -91,7 +91,7 @@ const SiteSettingsView = ({siteId}: Props) => {
             variant="link"
             startIcon={<Icon name="archive" />}
             endIcon={<Icon name="info" />}>
-            {t('site.dashboard.archive_button')}
+            {t('site.dashboard.archive_button').toUpperCase()}
           </Button>
           <FormControl.HelperText ml="26px" mt={0}>
             {t('site.dashboard.archive_button_help_text')}
@@ -102,7 +102,7 @@ const SiteSettingsView = ({siteId}: Props) => {
           variant="link"
           _text={{color: 'error.main'}}
           startIcon={<Icon color="error.main" name="delete-forever" />}>
-          {t('site.dashboard.delete_button')}
+          {t('site.dashboard.delete_button').toUpperCase()}
         </Button>
       </Column>
       <Fab label={t('general.save_fab')} onPress={onSave} />

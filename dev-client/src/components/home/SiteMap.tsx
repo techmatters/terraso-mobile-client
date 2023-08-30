@@ -90,24 +90,26 @@ const TemporarySiteCallout = ({
           <CalloutDetail label={t('site.soil_id_prediction')} value="CLIFTON" />
           <Divider />
           <CalloutDetail
-            label={t('site.ecological_site_prediction')}
             value="LOAMY UPLAND"
+            label={t('site.ecological_site_prediction').toUpperCase()}
           />
           <Divider />
           <CalloutDetail
-            label={t('site.annual_precip_avg')}
             value="28 INCHES"
+            label={t('site.annual_precip_avg').toUpperCase()}
           />
           <Divider />
-          <CalloutDetail label={t('site.elevation')} value="2800 FEET" />
+          <CalloutDetail
+            label={t('site.elevation').toUpperCase()}
+          />
           <Divider />
           <Row justifyContent="flex-end">
             <Button onPress={onCreate} size="sm" variant="outline">
-              {t('site.create')}
+              {t('site.create.title').toUpperCase()}
             </Button>
             <Box width="24px" />
             <Button onPress={onLearnMore} size="sm">
-              {t('site.more_info')}
+              {t('site.more_info').tpUpperCase()}
             </Button>
           </Row>
         </Column>
