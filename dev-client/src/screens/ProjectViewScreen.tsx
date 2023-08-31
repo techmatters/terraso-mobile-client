@@ -1,26 +1,15 @@
 import ProjectTabs from '../components/projects/ProjectTabs';
-import {ScreenDefinition} from './AppScaffold';
-import {HeaderTitle} from '@react-navigation/elements';
-import {Project} from 'terraso-client-shared/project/projectSlice';
-import {ScreenScaffold} from './ScreenScaffold';
+import {AppBar, ScreenScaffold} from './ScreenScaffold';
+import {useSelector} from '../model/store';
 
-type Props = {project: Project};
+type Props = {projectId: string};
 
-const ProjectView = ({project}: Props) => {
+export const ProjectViewScreen = ({projectId}: Props) => {
+  const project = useSelector(state => state.project.projects[projectId]);
+
   return (
-    <ScreenScaffold>
+    <ScreenScaffold AppBar={<AppBar LeftButton={null} title={project.name} />}>
       <ProjectTabs project={project} />
     </ScreenScaffold>
   );
-};
-
-export const ProjectViewScreen: ScreenDefinition<Props> = {
-  View: ProjectView,
-  options: ({project: {name}}) => ({
-    headerBackVisible: false,
-    headerTitle: props => {
-      // const {name} = useSelector(state => state.project.projects[projectId]);
-      return <HeaderTitle {...props}>{name}</HeaderTitle>;
-    },
-  }),
 };
