@@ -42,14 +42,44 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  //const [isLoading, setIsLoading] = useState(false);
+  const [, setAbortController] = useState<AbortController | null>(null);
   const [hideResults, setHideResults] = useState(false);
 
-  async function querySuggestions() {
-    if (query.length > 2 || suggestions.length !== 0) {
-      const {suggestions: newSuggestions} = await getSuggestions(query);
+  async function makeSuggestionsApiCall(queryText: string) {
+    const newAbortController = new AbortController();
+    setAbortController(current => {
+      if (current !== null) {
+        current.abort();
+      }
+      return newAbortController;
+    });
+    const newSuggestions = await getSuggestions(
+      queryText,
+      newAbortController.signal,
+    );
+    setAbortController(null);
+    return newSuggestions;
+  }
 
-      setSuggestions(newSuggestions);
+  async function querySuggestions(queryText: string) {
+    if (queryText.length >= 2) {
+      try {
+        const {suggestions: newSuggestions} =
+          await makeSuggestionsApiCall(queryText);
+        setSuggestions(newSuggestions);
+      } catch (e: any) {
+        if (e.name !== 'AbortError') {
+          throw e;
+        }
+      }
+    } else if (queryText.length === 0) {
+      setAbortController(current => {
+        if (current !== null) {
+          current.abort();
+        }
+        return null;
+      });
+      setSuggestions([]);
     }
   }
 
@@ -106,11 +136,11 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
                 bgColor="white"
                 onChangeText={newText => {
                   setQuery(newText);
-                  querySuggestions();
+                  querySuggestions(newText);
                 }}
                 onFocus={() => {
                   setHideResults(false);
-                  querySuggestions();
+                  querySuggestions(query);
                 }}
                 onEndEditing={() => {
                   setHideResults(true);
