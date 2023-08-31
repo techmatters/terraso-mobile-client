@@ -2,7 +2,7 @@ import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {memo, useMemo, useCallback, forwardRef, ForwardedRef} from 'react';
 import {Card, CardCloseButton} from '../common/Card';
-import MapIcon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Box, Row, Text, Divider, Button, useTheme, Column} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
@@ -12,7 +12,7 @@ import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {SiteCard} from '../sites/SiteCard';
 import {Keyboard, StyleSheet} from 'react-native';
 import {CalloutState} from '../../screens/HomeScreen';
-import {positionToCoords} from '../common/Map';
+import {mapIconSizeForPlatform, positionToCoords} from '../common/Map';
 import {Coords} from '../../model/map/mapSlice';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
@@ -210,6 +210,22 @@ const SiteMap = (
     [setCalloutState],
   );
 
+  const mapImages = useMemo(
+    () => ({
+      sitePin: Icon.getImageSourceSync(
+        'location-on',
+        mapIconSizeForPlatform(35),
+        colors.secondary.main,
+      ),
+      temporarySitePin: Icon.getImageSourceSync(
+        'location-on',
+        mapIconSizeForPlatform(35),
+        colors.action.active,
+      ),
+    }),
+    [colors],
+  );
+
   return (
     <Mapbox.MapView
       style={styles.mapView}
@@ -218,21 +234,7 @@ const SiteMap = (
       scaleBarEnabled={false}
       styleURL={styleURL}>
       <Camera ref={ref} />
-      <Mapbox.Images
-        onImageMissing={console.debug}
-        images={{
-          sitePin: MapIcon.getImageSourceSync(
-            'location-on',
-            undefined,
-            colors.secondary.main,
-          ),
-          temporarySitePin: MapIcon.getImageSourceSync(
-            'location-on',
-            undefined,
-            colors.action.active,
-          ),
-        }}
-      />
+      <Mapbox.Images onImageMissing={console.debug} images={mapImages} />
       <Mapbox.ShapeSource
         id="sitesSource"
         shape={sitesFeature}
@@ -277,13 +279,11 @@ const mapStyles = {
   siteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
-    iconSize: 4.0,
     iconImage: 'sitePin',
   } satisfies Mapbox.SymbolLayerStyle,
   temporarySiteLayer: {
     iconAllowOverlap: true,
     iconAnchor: 'bottom',
-    iconSize: 4.0,
     iconImage: 'temporarySitePin',
   } satisfies Mapbox.SymbolLayerStyle,
 };

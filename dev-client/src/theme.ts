@@ -26,11 +26,11 @@ export const theme = extendTheme({
       800: '#424242',
     },
     action: {
-      active: '#1A202CB2',
+      active: '#1A202C',
     },
     text: {
-      primary: '#1A202CCC',
-      secondary: '#1A202CCC',
+      primary: '#1A202C',
+      secondary: '#1A202C',
     },
   },
   radii: {
