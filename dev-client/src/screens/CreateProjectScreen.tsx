@@ -1,8 +1,10 @@
 import CreateProjectView from '../components/projects/CreateProjectView';
-import CloseButton from '../components/common/CloseButton';
-import {ScreenDefinition} from './AppScaffold';
+import {AppBar, ScreenCloseButton, ScreenScaffold} from './ScreenScaffold';
 
-export const CreateProjectScreen: ScreenDefinition = {
-  View: CreateProjectView,
-  options: () => ({headerLeft: CloseButton, headerBackVisible: false}),
+export const CreateProjectScreen = () => {
+  return (
+    <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
+      <CreateProjectView />
+    </ScreenScaffold>
+  );
 };
