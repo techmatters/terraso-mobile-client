@@ -15,6 +15,11 @@ import {CalloutState} from '../../screens/HomeScreen';
 import {positionToCoords} from '../common/Map';
 import {Coords} from '../../model/map/mapSlice';
 
+const TEMP_SOIL_ID_VALUE = 'Clifton';
+const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
+const TEMP_PRECIPITATION = '28 inches';
+const TEMP_ELEVATION = '2800 feet';
+
 type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
@@ -87,27 +92,33 @@ const TemporarySiteCallout = ({
       allowOverlap={true}>
       <Card topRightButton={<CardCloseButton onPress={closeCallout} />}>
         <Column space="12px">
-          <CalloutDetail label={t('site.soil_id_prediction')} value="CLIFTON" />
-          <Divider />
           <CalloutDetail
-            label={t('site.ecological_site_prediction')}
-            value="LOAMY UPLAND"
+            label={t('site.soil_id_prediction').toUpperCase()}
+            value={TEMP_SOIL_ID_VALUE.toUpperCase()}
           />
           <Divider />
           <CalloutDetail
-            label={t('site.annual_precip_avg')}
-            value="28 INCHES"
+            label={t('site.ecological_site_prediction').toUpperCase()}
+            value={TEMP_ECO_SITE_PREDICTION.toUpperCase()}
           />
           <Divider />
-          <CalloutDetail label={t('site.elevation')} value="2800 FEET" />
+          <CalloutDetail
+            label={t('site.annual_precip_avg').toUpperCase()}
+            value={TEMP_PRECIPITATION.toUpperCase()}
+          />
+          <Divider />
+          <CalloutDetail
+            label={t('site.elevation').toUpperCase()}
+            value={TEMP_ELEVATION.toUpperCase()}
+          />
           <Divider />
           <Row justifyContent="flex-end">
             <Button onPress={onCreate} size="sm" variant="outline">
-              {t('site.create')}
+              {t('site.create.title').toUpperCase()}
             </Button>
             <Box width="24px" />
             <Button onPress={onLearnMore} size="sm">
-              {t('site.more_info')}
+              {t('site.more_info').toUpperCase()}
             </Button>
           </Row>
         </Column>
