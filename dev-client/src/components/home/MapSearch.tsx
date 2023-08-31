@@ -42,9 +42,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [_abortController, setAbortController] =
-    useState<AbortController | null>(null);
-  //const [isLoading, setIsLoading] = useState(false);
+  const [, setAbortController] = useState<AbortController | null>(null);
   const [hideResults, setHideResults] = useState(false);
 
   async function makeSuggestionsApiCall(queryText: string) {
