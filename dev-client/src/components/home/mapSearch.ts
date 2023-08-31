@@ -63,11 +63,12 @@ export function initMapSearch() {
    *       would this be more reliable than relying on IP
    * TODO: For US version we can restrict queries to country
    */
-  const getSuggestions = async (query: string) => {
+  const getSuggestions = async (query: string, signal: AbortSignal) => {
     try {
       const resp = await fetch(
         `${BASE_URI}/suggest?` +
           `q=${query}&access_token=${ACCESS_TOKEN}&session_token=${session.token}&types=place,address,street,block,poi`,
+        {signal},
       );
       const payload = (await checkResponse(resp)) as SuggestionResponse;
       return payload;
