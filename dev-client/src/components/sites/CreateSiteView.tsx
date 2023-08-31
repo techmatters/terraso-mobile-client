@@ -169,7 +169,7 @@ export default function CreateSiteView({
       <VStack p={5} space={3}>
         <FormControl>
           <Input
-            placeholder="Site name"
+            placeholder={t('site.create.name_placeholder')}
             value={mutationInput.name}
             onChangeText={name =>
               setMutationInput(current => ({...current, name}))
@@ -184,14 +184,14 @@ export default function CreateSiteView({
             ))}
         </FormControl>
         <RadioBlock<LocationInputOptions>
-          label="Site Location"
+          label={t('site.create.location_label')}
           options={{
-            gps: {text: 'Use my current location (GPS)'},
+            gps: {text: t('site.create.gps')},
             pin: {
-              text: 'Use map pin',
+              text: t('site.create.pin'),
               isDisabled: sitePin === undefined,
             },
-            coords: {text: 'Enter coordinates'},
+            coords: {text: t('site.create.coords')},
           }}
           groupProps={{
             name: 'location',
