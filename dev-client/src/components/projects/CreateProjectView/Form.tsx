@@ -1,5 +1,5 @@
-import {Fab, HStack, Heading, Input, VStack} from 'native-base';
-import {Formik, FormikConfig, FormikProps} from 'formik';
+import {HStack, Heading, Input, VStack} from 'native-base';
+import {useFormikContext} from 'formik';
 import RadioBlock from '../../common/RadioBlock';
 import {Icon, IconButton} from '../../common/Icons';
 import {useTranslation} from 'react-i18next';
@@ -10,108 +10,100 @@ import {
   PROJECT_NAME_MAX_LENGTH,
   PROJECT_NAME_MIN_LENGTH,
 } from '../../../constants';
+import {TFunction} from 'i18next';
 
-const validationSchema = yup.object().shape({
-  name: yup
-    .string()
-    .min(PROJECT_NAME_MIN_LENGTH)
-    .max(PROJECT_NAME_MAX_LENGTH)
-    .required(),
-  description: yup.string().max(PROJECT_DESCRIPTION_MAX_LENGTH),
-  privacy: yup.string().oneOf(['PRIVATE', 'PUBLIC']).required(),
-});
+export const projectValidationSchema = (t: TFunction) =>
+  yup.object().shape({
+    name: yup
+      .string()
+      .min(
+        PROJECT_NAME_MIN_LENGTH,
+        t('projects.form.name_min_length_error', {
+          min: PROJECT_NAME_MIN_LENGTH,
+        }),
+      )
+      .max(
+        PROJECT_NAME_MAX_LENGTH,
+        t('projects.form.name_max_length_error', {
+          max: PROJECT_NAME_MAX_LENGTH,
+        }),
+      )
+      .required(
+        t('projects.form.name_min_length_error', {
+          min: PROJECT_NAME_MIN_LENGTH,
+        }),
+      ),
+    description: yup.string().max(
+      PROJECT_DESCRIPTION_MAX_LENGTH,
+      t('projects.form.description_max_length_error', {
+        max: PROJECT_DESCRIPTION_MAX_LENGTH,
+      }),
+    ),
+    privacy: yup.string().oneOf(['PRIVATE', 'PUBLIC']).required(),
+  });
 
-export interface FormValues {
+export type ProjectFormValues = {
   name: string;
   description: string;
   privacy: 'PUBLIC' | 'PRIVATE';
-}
+};
 
-interface Props {
-  onSubmit: FormikConfig<FormValues>['onSubmit'];
-  initialValues?: FormValues;
+type Props = {
   editForm?: boolean;
-}
+};
 
-export default function Form({
-  onSubmit,
-  initialValues,
-  editForm = false,
-}: Props) {
+export default function Form({editForm = false}: Props) {
   const {t} = useTranslation();
+  const {handleChange, handleBlur, values} =
+    useFormikContext<ProjectFormValues>();
+  const inputParams = (field: keyof ProjectFormValues) => ({
+    value: values[field],
+    onChangeText: handleChange(field),
+    onBlur: handleBlur(field),
+  });
+
+  const EditHeader = editForm ? (
+    <Heading size="sm">{t('projects.edit.inputHeader')}</Heading>
+  ) : (
+    <></>
+  );
+
+  const pencilIcon = editForm ? <Icon name="edit" ml={2} /> : undefined;
+
   return (
-    <Formik
-      initialValues={
-        initialValues ?? {name: '', description: '', privacy: 'PRIVATE'}
-      }
-      onSubmit={onSubmit}
-      validationSchema={validationSchema}>
-      {({
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        values,
-        isSubmitting,
-      }: FormikProps<FormValues>) => {
-        const inputParams = (field: keyof FormValues) => ({
-          value: values[field],
-          onChangeText: handleChange(field),
-          onBlur: handleBlur(field),
-        });
-
-        const EditHeader = editForm ? (
-          <Heading size="sm">{t('projects.edit.inputHeader')}</Heading>
-        ) : (
-          <></>
-        );
-
-        const pencilIcon = editForm ? <Icon name="edit" ml={2} /> : undefined;
-
-        return (
-          <>
-            <VStack space={3}>
-              {EditHeader}
-              <Input
-                placeholder={t('projects.add.name')}
-                InputLeftElement={pencilIcon}
-                {...inputParams('name')}
-              />
-              <ErrorMessage fieldName="name" />
-              <Input
-                placeholder={t('projects.add.description')}
-                InputLeftElement={pencilIcon}
-                {...inputParams('description')}
-              />
-              <ErrorMessage fieldName="description" />
-              <RadioBlock
-                label={
-                  <HStack alignItems="center">
-                    <Heading size="sm">Data Privacy</Heading>
-                    <IconButton name="info" _icon={{color: 'action.active'}} />
-                  </HStack>
-                }
-                options={{
-                  PUBLIC: {text: t('projects.add.public')},
-                  PRIVATE: {text: t('projects.add.private')},
-                }}
-                groupProps={{
-                  value: values.privacy,
-                  variant: 'oneLine',
-                  onChange: handleChange('privacy'),
-                  name: 'data-privacy',
-                }}
-              />
-              <ErrorMessage fieldName="privacy" />
-            </VStack>
-            <Fab
-              label={t('general.save_fab')}
-              onPress={() => handleSubmit()}
-              disabled={isSubmitting}
-              renderInPortal={false}
-            />
-          </>
-        );
-      }}
-    </Formik>
+    <VStack space={3}>
+      {EditHeader}
+      <Input
+        placeholder={t('projects.add.name')}
+        InputLeftElement={pencilIcon}
+        {...inputParams('name')}
+      />
+      <ErrorMessage fieldName="name" />
+      <Input
+        placeholder={t('projects.add.description')}
+        InputLeftElement={pencilIcon}
+        {...inputParams('description')}
+      />
+      <ErrorMessage fieldName="description" />
+      <RadioBlock
+        label={
+          <HStack alignItems="center">
+            <Heading size="sm">Data Privacy</Heading>
+            <IconButton name="info" _icon={{color: 'action.active'}} />
+          </HStack>
+        }
+        options={{
+          PUBLIC: {text: t('projects.add.public')},
+          PRIVATE: {text: t('projects.add.private')},
+        }}
+        groupProps={{
+          value: values.privacy,
+          variant: 'oneLine',
+          onChange: handleChange('privacy'),
+          name: 'data-privacy',
+        }}
+      />
+      <ErrorMessage fieldName="privacy" />
+    </VStack>
   );
 }
