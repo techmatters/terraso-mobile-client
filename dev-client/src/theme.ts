@@ -93,10 +93,7 @@ export const theme = extendTheme({
         },
         right: '24px',
         bottom: '24px',
-        shadowOffset: {
-          width: 0,
-          height: 3,
-        },
+        shadow: 2,
       },
     },
     Select: {
