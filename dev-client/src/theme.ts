@@ -30,7 +30,7 @@ export const theme = extendTheme({
     },
     text: {
       primary: '#1A202C',
-      secondary: '#1A202C',
+      secondary: '#1A202CCC',
     },
   },
   radii: {
@@ -176,7 +176,7 @@ export const theme = extendTheme({
         },
         subtitle1: {},
         subtitle2: {
-          fontSize: '16px',
+          fontSize: '14px',
           fontWeight: 500,
           lineHeight: '22px',
           letterSpacing: '0.1px',

@@ -1,5 +1,6 @@
 import {Box} from 'native-base';
 import {IconButton} from './Icons';
+import {Pressable} from 'react-native';
 
 export const CardCloseButton = ({onPress}: {onPress: () => void}) => {
   return (
@@ -17,14 +18,15 @@ export const CardCloseButton = ({onPress}: {onPress: () => void}) => {
 type CardProps = {
   topRightButton?: React.ReactElement;
   children?: React.ReactNode;
+  onPress?: () => void;
 };
-export const Card = ({topRightButton, children}: CardProps) => {
+export const Card = ({topRightButton, onPress, children}: CardProps) => {
   return (
-    <Box>
+    <Pressable onPress={onPress}>
       <Box variant="card">{children}</Box>
       <Box position="absolute" top="8px" right="8px">
         {topRightButton}
       </Box>
-    </Box>
+    </Pressable>
   );
 };
