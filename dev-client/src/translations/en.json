@@ -1,18 +1,6 @@
 {
-  "search": {
-    "placeholder": "Search"
-  },
-  "site": {
-    "list_title": "Sites",
-    "last_updated": "Last Modified: {{date}} by {{name}}",
-    "progress": "Progress: {{progress}}",
-    "members": "{{members}} Members",
-    "more_info": "More info",
-    "soil_id_prediction": "Soil ID prediction",
-    "ecological_site_prediction": "Ecological site prediction",
-    "annual_precip_avg": "Annual precipitation avg",
-    "elevation": "Elevation",
-    "empty": {
+  "home": {
+    "info": {
       "title": "Soil Science in Your Hands",
       "intro_image_alt": "",
       "description": {
@@ -31,14 +19,32 @@
         "lead": "Find more information and guides",
         "body": "in the side menu to the left or at <landpks href='https://landpotential.org'>landpotential.org</landpks>"
       }
+    }
+  },
+  "search": {
+    "placeholder": "Search"
+  },
+  "site": {
+    "list_title": "Sites",
+    "last_updated": "Last Modified: {{date}} by {{name}}",
+    "progress": "Progress: {{progress}}",
+    "members": "{{members}} Members",
+    "more_info": "More info",
+    "soil_id_prediction": "Soil ID prediction",
+    "ecological_site_prediction": "Ecological site prediction",
+    "annual_precip_avg": "Annual precipitation avg",
+    "elevation": "Elevation",
+    "empty": {
+      "info": "You have not created any sites. Create a site with the button above or by finding the location on the map.\n\nA site allows you to collect and save data, learn more about your land and its potential, and share with others.",
+      "link": "Learn more about using LandPKS"
     },
     "create": {
-        "title": "Create Site",
-        "gps": "Use my current location (GPS)",
-        "pin": "Use map pin",
-        "coords": "Enter coordinates",
-        "location_label": "Site location",
-        "name_placeholder": "Site name"
+      "title": "Create Site",
+      "gps": "Use my current location (GPS)",
+      "pin": "Use map pin",
+      "coords": "Enter coordinates",
+      "location_label": "Site location",
+      "name_placeholder": "Site name"
     },
     "dashboard": {
       "privacy": "Data Privacy",

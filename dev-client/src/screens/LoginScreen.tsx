@@ -1,5 +1,5 @@
 import {Box, Button, Column, Heading, Text} from 'native-base';
-import {ScreenDefinition, useNavigation} from './AppScaffold';
+import {useNavigation} from './AppScaffold';
 import {useDispatch, useSelector} from '../model/store';
 import {useEffect, useCallback} from 'react';
 import {auth} from '../auth';
@@ -8,7 +8,7 @@ import {useTranslation} from 'react-i18next';
 import {Icon, MaterialCommunityIcons} from '../components/common/Icons';
 import TerrasoLogo from '../../assets/terraso-logo.svg';
 
-const LoginView = () => {
+export const LoginScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const loggedIn = useSelector(
@@ -72,11 +72,4 @@ const LoginView = () => {
       </Column>
     </Column>
   );
-};
-
-export const LoginScreen: ScreenDefinition = {
-  View: LoginView,
-  options: () => ({
-    headerShown: false,
-  }),
 };
