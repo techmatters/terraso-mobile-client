@@ -45,9 +45,7 @@ export const HomeScreen = () => {
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const navigation = useNavigation();
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
-  const [mapStyleURL, setMapStyleURL] = useState(
-    'mapbox://styles/terraso/cllckplva00e701pu83p46ngx',
-  );
+  const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>({
     kind: 'none',
   });
