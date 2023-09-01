@@ -46,24 +46,28 @@ export default function Index({projects}: Props) {
 
       {projects.length > 0 && (
         <>
-          <HStack alignContent="center">
-            <VStack>
+          <HStack alignContent="center" mb="25px">
+            <Box paddingRight="13px" paddingTop="3px">
               <Badge
-                alignSelf="flex-end"
-                mb={-5}
-                mr={-2}
-                py={0}
+                position="absolute"
+                top="0"
+                right="0"
                 rounded="full"
+                px="6.5px"
                 zIndex={1}
-                bg="none">
-                {projects.length}
+                bg="primary.lightest"
+                _text={{
+                  fontSize: '12px',
+                }}>
+                {1}
               </Badge>
               <IconButton
                 name="filter-list"
-                color="grey.200"
+                bg="primary.contrast"
+                borderRadius="full"
                 _icon={{color: 'action.active', size: 'sm'}}
               />
-            </VStack>
+            </Box>
             {/* TODO: translation function returns null, but placeholder only accepts
         undefined */}
             <Input
@@ -71,13 +75,14 @@ export default function Index({projects}: Props) {
               size="sm"
               bg="background.default"
               flexGrow={1}
-              ml={2}
+              ml="16px"
               maxHeight={8}
             />
           </HStack>
           <FlatList
             data={projects}
             renderItem={({item}) => <ProjectPreviewCard project={item} />}
+            ItemSeparatorComponent={() => <Box height="8px" />}
             keyExtractor={project => String(project.id)}
           />
         </>
