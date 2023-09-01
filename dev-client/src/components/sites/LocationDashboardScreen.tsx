@@ -153,7 +153,6 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
                 name: 'site-privacy',
                 onChange: onSitePrivacyChanged,
                 value: site.privacy,
-                ml: '',
               }}
             />
           )}
