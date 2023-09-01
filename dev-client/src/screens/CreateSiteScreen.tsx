@@ -6,8 +6,9 @@ import {
   fetchSitesForProject,
 } from 'terraso-client-shared/site/siteSlice';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {ScreenDefinition} from './AppScaffold';
+import CloseButton from '../components/common/CloseButton';
 import {Coords} from '../model/map/mapSlice';
-import {AppBar, ScreenCloseButton, ScreenScaffold} from './ScreenScaffold';
 
 type Props =
   | {
@@ -19,7 +20,7 @@ type Props =
   | {}
   | undefined;
 
-export const CreateSiteScreen = (props: Props = {}) => {
+const CreateSiteScaffold = (props: Props = {}) => {
   const userLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
 
@@ -40,15 +41,16 @@ export const CreateSiteScreen = (props: Props = {}) => {
   );
 
   return (
-    <ScreenScaffold
-      BottomNavigation={null}
-      AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
-      <CreateSiteView
-        userLocation={userLocation}
-        createSiteCallback={createSiteCallback}
-        defaultProject={'projectId' in props ? props.projectId : undefined}
-        sitePin={'coords' in props ? props.coords : undefined}
-      />
-    </ScreenScaffold>
+    <CreateSiteView
+      userLocation={userLocation}
+      createSiteCallback={createSiteCallback}
+      defaultProject={'projectId' in props ? props.projectId : undefined}
+      sitePin={'coords' in props ? props.coords : undefined}
+    />
   );
+};
+
+export const CreateSiteScreen: ScreenDefinition<Props> = {
+  View: CreateSiteScaffold,
+  options: () => ({headerLeft: CloseButton, headerBackVisible: false}),
 };

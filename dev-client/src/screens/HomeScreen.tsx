@@ -6,25 +6,14 @@ import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
 import {Site, fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
 import {SiteListBottomSheet} from '../components/home/BottomSheet';
-import {useNavigation} from './AppScaffold';
-import {
-  AppBarIconButton,
-  AppBar,
-  ScreenScaffold,
-  BottomNavigation,
-} from './ScreenScaffold';
+import {ScreenDefinition, useNavigation} from './AppScaffold';
+import {MainMenuBar, MapInfoIcon} from './HeaderIcons';
+import {ScreenScaffold} from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
-import {Box, Column, Heading, Image, Link, Text} from 'native-base';
+import {Box} from 'native-base';
 import {coordsToPosition} from '../components/common/Map';
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetScrollView,
-} from '@gorhom/bottom-sheet';
-import {Trans, useTranslation} from 'react-i18next';
-import {Icon} from '../components/common/Icons';
-import {CardCloseButton} from '../components/common/Card';
-import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 export type CalloutState =
   | {
@@ -40,9 +29,8 @@ export type CalloutState =
 
 const STARTING_ZOOM_LEVEL = 12;
 
-export const HomeScreen = () => {
-  const infoBottomSheetRef = useRef<BottomSheet>(null);
-  const siteListBottomSheetRef = useRef<BottomSheet>(null);
+const HomeView = () => {
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const navigation = useNavigation();
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
@@ -121,7 +109,7 @@ export const HomeScreen = () => {
     (site: Site) => {
       moveToPoint(site);
       setCalloutState({kind: 'site', siteId: site.id});
-      siteListBottomSheetRef.current?.collapse();
+      bottomSheetRef.current?.collapse();
     },
     [moveToPoint, setCalloutState],
   );
@@ -136,122 +124,38 @@ export const HomeScreen = () => {
     setCalloutState({kind: 'none'});
   }, [navigation, calloutState]);
 
-  const onInfo = useCallback(
-    () => infoBottomSheetRef?.current?.expand(),
-    [infoBottomSheetRef],
-  );
-  const onInfoClose = useCallback(
-    () => infoBottomSheetRef?.current?.close(),
-    [infoBottomSheetRef],
-  );
-
   return (
-    <>
-      <ScreenScaffold
-        AppBar={
-          <AppBar
-            LeftButton={<AppBarIconButton name="menu" />}
-            RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
-          />
-        }
-        BottomNavigation={null}>
-        <Box flex={1}>
-          <Box flex={1} zIndex={-1}>
-            <MapSearch
-              zoomTo={searchFunction}
-              zoomToUser={moveToUser}
-              toggleMapLayer={toggleMapLayer}
-            />
-            <SiteMap
-              updateUserLocation={updateUserLocation}
-              sites={sites}
-              ref={camera}
-              calloutState={calloutState}
-              setCalloutState={setCalloutState}
-              styleURL={mapStyleURL}
-              onCreateSite={onCreateSite}
-            />
-          </Box>
-          <SiteListBottomSheet
-            ref={siteListBottomSheetRef}
-            sites={sites}
-            showSiteOnMap={showSiteOnMap}
-            onCreateSite={onCreateSite}
-          />
-        </Box>
-        <BottomNavigation />
-      </ScreenScaffold>
-      <BottomSheet
-        ref={infoBottomSheetRef}
-        index={-1}
-        snapPoints={['100%']}
-        handleComponent={null}
-        topInset={56}
-        backdropComponent={BackdropComponent}>
-        <LandPKSInfo />
-        <Box position="absolute" top="18px" right="23px">
-          <CardCloseButton onPress={onInfoClose} />
-        </Box>
-      </BottomSheet>
-    </>
+    <ScreenScaffold>
+      <Box flex={1} zIndex={-1}>
+        <MapSearch
+          zoomTo={searchFunction}
+          zoomToUser={moveToUser}
+          toggleMapLayer={toggleMapLayer}
+        />
+        <SiteMap
+          updateUserLocation={updateUserLocation}
+          sites={sites}
+          ref={camera}
+          calloutState={calloutState}
+          setCalloutState={setCalloutState}
+          styleURL={mapStyleURL}
+          onCreateSite={onCreateSite}
+        />
+      </Box>
+      <SiteListBottomSheet
+        ref={bottomSheetRef}
+        sites={sites}
+        showSiteOnMap={showSiteOnMap}
+        onCreateSite={onCreateSite}
+      />
+    </ScreenScaffold>
   );
 };
 
-const BackdropComponent = (props: BottomSheetBackdropProps) => (
-  <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
-);
-
-const LandPKSInfo = () => {
-  const {t} = useTranslation();
-
-  return (
-    <BottomSheetScrollView>
-      <Column space={3} pb="65%" px={5} mt="48px">
-        <Heading width="full" textAlign="center">
-          {t('home.info.title')}
-        </Heading>
-        <Image
-          source={require('../../assets/landpks_intro_image.png')}
-          width="100%"
-          height="30%"
-          resizeMode="contain"
-          alt={t('home.info.intro_image_alt')}
-        />
-        <Text>
-          <Text bold>{t('home.info.description.lead')} </Text>
-          {t('home.info.description.body')}
-        </Text>
-        <Text alignItems="center">
-          <Text bold>{t('home.info.location.lead')} </Text>
-          <Trans
-            i18nKey="home.info.location.body"
-            components={{
-              icon: (
-                <Icon
-                  name="my-location"
-                  color="action.active"
-                  position="relative"
-                />
-              ),
-            }}
-          />
-        </Text>
-        <Text>
-          <Text bold>{t('home.info.search.lead')} </Text>
-          {t('home.info.search.body')}
-        </Text>
-        <Text>
-          <Text bold>{t('home.info.learn_more.lead')} </Text>
-          <Trans
-            i18nKey="home.info.learn_more.body"
-            components={{
-              // note: "link" is a reserved word for the Trans component, cannot use as key here
-              // see https://react.i18next.com/latest/trans-component#alternative-usage-which-lists-the-components-v11.6.0
-              landpks: <Link isExternal pt={2} />,
-            }}
-          />
-        </Text>
-      </Column>
-    </BottomSheetScrollView>
-  );
+export const HomeScreen: ScreenDefinition = {
+  View: HomeView,
+  options: () => ({
+    headerLeft: MainMenuBar,
+    headerRight: MapInfoIcon,
+  }),
 };

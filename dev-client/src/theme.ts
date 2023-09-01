@@ -211,17 +211,6 @@ export const theme = extendTheme({
         },
       },
     },
-    Link: {
-      baseStyle: {
-        _text: {
-          fontSize: '16px',
-          fontWeight: 400,
-          lineHeight: '24px',
-          letterSpacing: '0.15px',
-          color: 'primary.main',
-        },
-      },
-    },
   },
 });
 

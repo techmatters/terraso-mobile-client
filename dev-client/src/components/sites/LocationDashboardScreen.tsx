@@ -1,5 +1,6 @@
-import {useNavigation} from '../../screens/AppScaffold';
+import {ScreenDefinition, useNavigation} from '../../screens/AppScaffold';
 import {useDispatch, useSelector} from '../../model/store';
+import {HeaderTitle} from '@react-navigation/elements';
 import {useTranslation} from 'react-i18next';
 import RadioBlock from '../common/RadioBlock';
 import {
@@ -7,15 +8,12 @@ import {
   SitePrivacy,
   updateSite,
 } from 'terraso-client-shared/site/siteSlice';
-import {useCallback, useMemo} from 'react';
+import {useCallback} from 'react';
 import {Box, Divider, Text, Column} from 'native-base';
-import {
-  AppBar,
-  AppBarIconButton,
-  ScreenCloseButton,
-  ScreenScaffold,
-} from '../../screens/ScreenScaffold';
+import {IconButton} from '../common/Icons';
+import {ScreenScaffold} from '../../screens/ScreenScaffold';
 import {Accordion} from '../common/Accordion';
+import CloseButton from '../common/CloseButton';
 import {StaticMapView} from '../common/Map';
 import {StyleSheet} from 'react-native';
 
@@ -70,10 +68,9 @@ const LocationPrediction = ({
   );
 };
 
-export const LocationDashboardScreen = ({siteId, coords}: Props) => {
+const LocationDashboardView = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
   );
@@ -91,31 +88,8 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
     [site, dispatch],
   );
 
-  const appBarRightButton = useMemo(
-    () =>
-      siteId ? (
-        <AppBarIconButton
-          name="settings"
-          onPress={() => navigation.navigate('SITE_SETTINGS', {siteId})}
-        />
-      ) : (
-        <AppBarIconButton
-          name="add"
-          onPress={() => navigation.navigate('CREATE_SITE', {coords})}
-        />
-      ),
-    [siteId, coords, navigation],
-  );
-
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar
-          LeftButton={<ScreenCloseButton />}
-          RightButton={appBarRightButton}
-          title={site?.name ?? t('site.dashboard.default_title')}
-        />
-      }>
+    <ScreenScaffold>
       <StaticMapView
         coords={coords}
         style={styles.mapView}
@@ -210,6 +184,42 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
       </Column>
     </ScreenScaffold>
   );
+};
+
+export const LocationDashboardScreen: ScreenDefinition<Props> = {
+  View: LocationDashboardView,
+  options: ({siteId, coords}) => ({
+    headerBackVisible: false,
+    headerLeft: CloseButton,
+    headerRight: ({tintColor}) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const {navigate} = useNavigation();
+      return siteId ? (
+        <IconButton
+          name="settings"
+          _icon={{color: tintColor}}
+          onPress={() => navigate('SITE_SETTINGS', {siteId})}
+        />
+      ) : (
+        <IconButton
+          name="add"
+          _icon={{color: tintColor}}
+          onPress={() => navigate('CREATE_SITE', {coords})}
+        />
+      );
+    },
+    headerTitle: props => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const {t} = useTranslation();
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const name = useSelector(state =>
+        siteId === undefined
+          ? t('site.dashboard.default_title')
+          : state.site.sites[siteId].name,
+      );
+      return <HeaderTitle {...props}>{name}</HeaderTitle>;
+    },
+  }),
 };
 
 const styles = StyleSheet.create({mapView: {height: 170}});
