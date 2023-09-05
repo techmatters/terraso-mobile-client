@@ -8,6 +8,8 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
 import {useNavigation} from './AppScaffold';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {StyleSheet} from 'react-native';
 
 const BottomNavIconButton = (props: IconButtonProps & {label: string}) => (
   <IconButton pb={0} _icon={{color: 'primary.contrast'}} {...props} />
@@ -94,9 +96,13 @@ export const ScreenScaffold = ({
   AppBar: PropsAppBar = <AppBar />,
   BottomNavigation: PropsBottomNavigation = <BottomNavigation />,
 }: Props) => (
-  <Column flex={1}>
-    {PropsAppBar}
-    <Box flex={1}>{children}</Box>
-    {PropsBottomNavigation}
-  </Column>
+  <SafeAreaView style={styles.safeAreaView}>
+    <Column flex={1}>
+      {PropsAppBar}
+      <Box flex={1}>{children}</Box>
+      {PropsBottomNavigation}
+    </Column>
+  </SafeAreaView>
 );
+
+const styles = StyleSheet.create({safeAreaView: {flex: 1}});
