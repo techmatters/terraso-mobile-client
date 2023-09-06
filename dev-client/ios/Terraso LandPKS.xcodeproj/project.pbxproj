@@ -14,8 +14,6 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9593A4BCA49ADB6F36DBD38E /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E367045AEA3B522AF0BB61DD /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */; };
 		C61185A1D49303BBF1FC31E9 /* Pods_Terraso_LandPKS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B11C48E3D5248AFAB632513C /* Pods_Terraso_LandPKS.framework */; };
-		DA26A17B2A38EDC8003248A1 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = A77A52EE26C701884FDC0B0C /* Mapbox */; };
-		DA26A17C2A38EDC8003248A1 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = 5DA4D00C047877E1CDF04500 /* Mapbox */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,7 +57,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA26A17C2A38EDC8003248A1 /* Mapbox in Frameworks */,
 				9593A4BCA49ADB6F36DBD38E /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,7 +65,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA26A17B2A38EDC8003248A1 /* Mapbox in Frameworks */,
 				C61185A1D49303BBF1FC31E9 /* Pods_Terraso_LandPKS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,9 +189,6 @@
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
 			name = "Terraso LandPKSTests";
-			packageProductDependencies = (
-				5DA4D00C047877E1CDF04500 /* Mapbox */,
-			);
 			productName = DevClientTests;
 			productReference = 00E356EE1AD99517003FC87E /* Terraso LandPKSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -218,9 +211,6 @@
 			dependencies = (
 			);
 			name = "Terraso LandPKS";
-			packageProductDependencies = (
-				A77A52EE26C701884FDC0B0C /* Mapbox */,
-			);
 			productName = DevClient;
 			productReference = 13B07F961A680F5B00A75B9A /* TerrasoLandPKS.app */;
 			productType = "com.apple.product-type.application";
@@ -251,9 +241,6 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
-			packageReferences = (
-				2FBB3F34F2C50BB8B74B678E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
-			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -791,30 +778,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		2FBB3F34F2C50BB8B74B678E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
-			requirement = {
-				kind = exactVersion;
-				version = 5.12.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		5DA4D00C047877E1CDF04500 /* Mapbox */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2FBB3F34F2C50BB8B74B678E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
-			productName = Mapbox;
-		};
-		A77A52EE26C701884FDC0B0C /* Mapbox */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2FBB3F34F2C50BB8B74B678E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
-			productName = Mapbox;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
