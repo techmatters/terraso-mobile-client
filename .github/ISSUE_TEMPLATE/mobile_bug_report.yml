@@ -1,0 +1,44 @@
+name: "Mobile App Bug Report"
+description: Used for reporting bugs and defects in mobile apps.
+body:
+- type: input
+  id: app-version
+  attributes:
+    label: App Version
+    placeholder: 1.0.0 (40)
+  validations:
+    required: true
+- type: checkboxes
+  id: platform
+  attributes:
+    label: Platforms
+    options:
+      - label: "iOS"
+      - label: "Android"
+      - label: "iOS simulator"
+      - label: "Android emulator"
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Description
+    description: A clear and concise description of the problem.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to Reproduce
+    placeholder: |
+      1. ...
+      1. ...
+      1. ...
+- type: textarea
+  attributes:
+    label: Expected behavior
+- type: textarea
+  attributes:
+    label: Actual behavior
+- type: textarea
+  attributes:
+    label: Additional context
+    description: Include screen shots, videos, backtraces, etc.
