@@ -14,7 +14,7 @@ type Props = {
   displayCenterMarker?: boolean;
 };
 
-export const coordsToPosition = ({latitude, longitude}: Coords): Position => [
+export const coordsToPosition = ({longitude, latitude}: Coords): Position => [
   longitude,
   latitude,
 ];
