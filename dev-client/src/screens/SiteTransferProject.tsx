@@ -6,9 +6,8 @@ import {SITES_BY_PROJECT} from '../dataflow';
 import {useCallback} from 'react';
 import SelectAllCheckboxes from '../components/common/SelectAllCheckboxes';
 import {Accordion} from '../components/common/Accordion';
-import {ScreenDefinition} from './AppScaffold';
-import {HeaderTitle} from '@react-navigation/elements';
 import {useSelector} from '../model/store';
+import {AppBar, ScreenScaffold} from './ScreenScaffold';
 
 type ItemProps = {
   projectName: string;
@@ -45,40 +44,34 @@ const SiteTransferItem = ({
 
 type Props = {projectId: string};
 
-const SiteTransferProjectView = ({projectId}: Props) => {
+export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
 
+  const project = useSelector(state => state.project.projects[projectId]);
   // TODO: Replace with data fetched from backend
   const sitesByProject = SITES_BY_PROJECT;
 
   return (
-    <VStack space={4} p={4}>
-      <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
-      <Text>{t('projects.transfer_sites.description', '')}</Text>
-      <SearchInput />
-      {Object.entries(sitesByProject)
-        .filter(([aProjectId]) => aProjectId !== String(projectId))
-        .map(([projId, {projectName, sites}]) => {
-          return (
-            <SiteTransferItem
-              projectName={projectName}
-              projectId={projId}
-              sites={sites}
-              key={projId}
-            />
-          );
-        })}
-    </VStack>
+    <ScreenScaffold
+      BottomNavigation={null}
+      AppBar={<AppBar title={project.name} />}>
+      <VStack space={4} p={4}>
+        <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
+        <Text>{t('projects.transfer_sites.description', '')}</Text>
+        <SearchInput />
+        {Object.entries(sitesByProject)
+          .filter(([aProjectId]) => aProjectId !== String(projectId))
+          .map(([projId, {projectName, sites}]) => {
+            return (
+              <SiteTransferItem
+                projectName={projectName}
+                projectId={projId}
+                sites={sites}
+                key={projId}
+              />
+            );
+          })}
+      </VStack>
+    </ScreenScaffold>
   );
-};
-
-export const SiteTransferProjectScreen: ScreenDefinition<Props> = {
-  View: SiteTransferProjectView,
-  options: ({projectId}) => ({
-    /* eslint-disable react-hooks/rules-of-hooks */
-    headerTitle: props => {
-      const name = useSelector(state => state.project.projects[projectId].name);
-      return <HeaderTitle {...props}>{name}</HeaderTitle>;
-    },
-  }),
 };

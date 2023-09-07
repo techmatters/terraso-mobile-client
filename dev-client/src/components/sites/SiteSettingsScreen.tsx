@@ -13,18 +13,18 @@ import {
   Pressable,
 } from 'native-base';
 import {useDispatch, useSelector} from '../../model/store';
-import {ScreenDefinition, useNavigation} from '../../screens/AppScaffold';
-import {HeaderTitle} from '@react-navigation/elements';
+import {useNavigation} from '../../screens/AppScaffold';
 import {Icon} from '../common/Icons';
 import {useTranslation} from 'react-i18next';
 import {IconLabel} from '../common/RadioBlock';
 import {updateSite} from 'terraso-client-shared/site/siteSlice';
+import {ScreenScaffold, AppBar} from '../../screens/ScreenScaffold';
 
 type Props = {
   siteId: string;
 };
 
-const SiteSettingsView = ({siteId}: Props) => {
+export const SiteSettingsScreen = ({siteId}: Props) => {
   const dispatch = useDispatch();
   const {t} = useTranslation();
   const {colors} = useTheme();
@@ -43,7 +43,9 @@ const SiteSettingsView = ({siteId}: Props) => {
   );
 
   return (
-    <>
+    <ScreenScaffold
+      BottomNavigation={null}
+      AppBar={<AppBar title={site.name} />}>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
         <Input
           value={name}
@@ -106,17 +108,6 @@ const SiteSettingsView = ({siteId}: Props) => {
         </Button>
       </Column>
       <Fab label={t('general.save_fab')} onPress={onSave} />
-    </>
+    </ScreenScaffold>
   );
-};
-
-export const SiteSettingsScreen: ScreenDefinition<Props> = {
-  View: SiteSettingsView,
-  options: ({siteId}) => ({
-    /* eslint-disable react-hooks/rules-of-hooks */
-    headerTitle: props => {
-      const name = useSelector(state => state.site.sites[siteId].name);
-      return <HeaderTitle {...props}>{name}</HeaderTitle>;
-    },
-  }),
 };

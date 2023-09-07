@@ -1,84 +1,24 @@
-import BottomSheet, {
-  BottomSheetFlatList,
-  BottomSheetScrollView,
-} from '@gorhom/bottom-sheet';
-import {
-  Box,
-  Button,
-  Row,
-  Heading,
-  Text,
-  VStack,
-  Link,
-  Image,
-  useTheme,
-} from 'native-base';
+import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import {Box, Button, Row, Heading, Text, Link, useTheme} from 'native-base';
 import {forwardRef, useCallback, useMemo} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Trans, useTranslation} from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {Icon} from '../common/Icons';
 import {SiteCard} from '../sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 
-const LandPKSInfo = () => {
+const EmptySiteMessage = () => {
   const {t} = useTranslation();
 
   return (
-    <BottomSheetScrollView>
-      <VStack space={3} pb="65%" px={5}>
-        <Heading>{t('site.empty.title')}</Heading>
-        <Image
-          source={require('../../assets/landpks_intro_image.png')}
-          width="100%"
-          height="30%"
-          resizeMode="contain"
-          alt={t('site.empty.intro_image_alt')}
-        />
-        <Text>
-          <Text bold>{t('site.empty.description.lead')} </Text>
-          {t('site.empty.description.body')}
-        </Text>
-        <Text alignItems="center">
-          <Text bold>{t('site.empty.location.lead')} </Text>
-          <Trans
-            i18nKey="site.empty.location.body"
-            components={{
-              icon: (
-                <Icon
-                  name="my-location"
-                  color="action.active"
-                  position="relative"
-                />
-              ),
-            }}
-          />
-        </Text>
-        <Text>
-          <Text bold>{t('site.empty.search.lead')} </Text>
-          {t('site.empty.search.body')}
-        </Text>
-        <Text>
-          <Text bold>{t('site.empty.learn_more.lead')} </Text>
-          <Trans
-            i18nKey="site.empty.learn_more.body"
-            components={{
-              // note: "link" is a reserved word for the Trans component, cannot use as key here
-              // see https://react.i18next.com/latest/trans-component#alternative-usage-which-lists-the-components-v11.6.0
-              landpks: (
-                <Link
-                  _text={{
-                    color: 'primary.main',
-                    fontSize: 'sm',
-                  }}
-                  isExternal
-                  pt={2}
-                />
-              ),
-            }}
-          />
-        </Text>
-      </VStack>
-    </BottomSheetScrollView>
+    <Text px="17px" variant="body1">
+      <Text>{t('site.empty.info')}</Text>
+      <Text>{'\n\n'}</Text>
+      <Link isUnderlined={false} _text={{variant: 'body1'}}>
+        {t('site.empty.link') + ' '}
+        <Icon name="open-in-new" />
+      </Link>
+    </Text>
   );
 };
 
@@ -132,7 +72,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
           </Button>
         </Row>
         {siteList.length === 0 ? (
-          <LandPKSInfo />
+          <EmptySiteMessage />
         ) : (
           <BottomSheetFlatList
             style={listStyle}
