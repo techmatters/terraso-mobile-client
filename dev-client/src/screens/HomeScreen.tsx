@@ -1,5 +1,5 @@
 import SiteMap from '../components/home/SiteMap';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
 import Mapbox, {Camera, Location} from '@rnmapbox/maps';
 import {Coords, updateLocation} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
@@ -11,7 +11,7 @@ import {
   AppBarIconButton,
   AppBar,
   ScreenScaffold,
-  BottomNavigation,
+  useHeaderHeight,
 } from './ScreenScaffold';
 import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
@@ -19,6 +19,8 @@ import {Box, Column, Heading, Image, Link, Text} from 'native-base';
 import {coordsToPosition} from '../components/common/Map';
 import BottomSheet, {
   BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
@@ -41,7 +43,7 @@ export type CalloutState =
 const STARTING_ZOOM_LEVEL = 12;
 
 export const HomeScreen = () => {
-  const infoBottomSheetRef = useRef<BottomSheet>(null);
+  const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const navigation = useNavigation();
   const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
@@ -137,24 +139,23 @@ export const HomeScreen = () => {
   }, [navigation, calloutState]);
 
   const onInfo = useCallback(
-    () => infoBottomSheetRef?.current?.expand(),
+    () => infoBottomSheetRef?.current?.present(),
     [infoBottomSheetRef],
   );
   const onInfoClose = useCallback(
-    () => infoBottomSheetRef?.current?.close(),
+    () => infoBottomSheetRef?.current?.dismiss(),
     [infoBottomSheetRef],
   );
 
   return (
-    <>
+    <BottomSheetModalProvider>
       <ScreenScaffold
         AppBar={
           <AppBar
             LeftButton={<AppBarIconButton name="menu" />}
             RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
           />
-        }
-        BottomNavigation={null}>
+        }>
         <Box flex={1}>
           <Box flex={1} zIndex={-1}>
             <MapSearch
@@ -179,23 +180,30 @@ export const HomeScreen = () => {
             onCreateSite={onCreateSite}
           />
         </Box>
-        <BottomNavigation />
+        <InfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
       </ScreenScaffold>
-      <BottomSheet
-        ref={infoBottomSheetRef}
-        index={-1}
+    </BottomSheetModalProvider>
+  );
+};
+
+const InfoModal = forwardRef<BottomSheetModal, {onClose: () => void}>(
+  ({onClose}, ref) => {
+    const headerHeight = useHeaderHeight();
+    return (
+      <BottomSheetModal
+        ref={ref}
         snapPoints={['100%']}
         handleComponent={null}
-        topInset={56}
+        topInset={headerHeight}
         backdropComponent={BackdropComponent}>
         <LandPKSInfo />
         <Box position="absolute" top="18px" right="23px">
-          <CardCloseButton onPress={onInfoClose} />
+          <CardCloseButton onPress={onClose} />
         </Box>
-      </BottomSheet>
-    </>
-  );
-};
+      </BottomSheetModal>
+    );
+  },
+);
 
 const BackdropComponent = (props: BottomSheetBackdropProps) => (
   <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
