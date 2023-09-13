@@ -29,6 +29,7 @@ export const SearchBar = ({
     onApplyFilter && onApplyFilter();
     onClose();
   }, [onApplyFilter, onClose]);
+  const onClear = useCallback(() => setQuery(''), [setQuery]);
 
   return (
     <Row mb="25px" {...rowProps}>
@@ -83,6 +84,11 @@ export const SearchBar = ({
         value={query}
         onChangeText={setQuery}
         InputLeftElement={<Icon ml="16px" name="search" />}
+        InputRightElement={
+          query.length === 0 ? undefined : (
+            <IconButton name="close" onPress={onClear} />
+          )
+        }
       />
     </Row>
   );

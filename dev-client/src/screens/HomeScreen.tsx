@@ -75,6 +75,9 @@ export const HomeScreen = () => {
   } = useTextSearch({data: siteList, keys: ['name']});
   const [siteFilter, setSiteFilter] = useState({});
   const filteredSites = useFilterSites(searchedSites, siteFilter);
+  const filteredSitesById = Object.fromEntries(
+    filteredSites.map(site => [site.id, site]),
+  );
 
   useEffect(() => {
     // load sites on mount
@@ -182,7 +185,7 @@ export const HomeScreen = () => {
             />
             <SiteMap
               updateUserLocation={updateUserLocation}
-              sites={sites}
+              sites={filteredSitesById}
               ref={camera}
               calloutState={calloutState}
               setCalloutState={setCalloutState}
