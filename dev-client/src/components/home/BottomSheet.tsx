@@ -106,6 +106,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
             renderItem={renderSite}
             ItemSeparatorComponent={() => <Box height="8px" />}
             ListFooterComponent={<Box height="10px" />}
+            ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
           />
         )}
       </BottomSheet>

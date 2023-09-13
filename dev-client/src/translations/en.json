@@ -64,7 +64,8 @@
     "search": {
       "placeholder": "Search sites",
       "filter_projects": "Filter sites by project:",
-      "filter_role": "Filter sites by role"
+      "filter_role": "Filter sites by role",
+      "no_matches": "No sites match the current search and filter options."
     },
     "role": {
       "MANAGER": "Manager",
@@ -142,7 +143,8 @@
       "description_max_length_error": "Project description must be at most {{max}} characters"
     },
     "search": {
-      "placeholder": "Search projects"
+      "placeholder": "Search projects",
+      "no_matches": "No projects match the current search and filter options."
     }
   },
   "badge": {

@@ -148,6 +148,7 @@ export default function ProjectSitesTab({
         )}
         keyExtractor={site => site.id}
         ItemSeparatorComponent={() => <Box height="8px" />}
+        ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
       />
     </>
   );
