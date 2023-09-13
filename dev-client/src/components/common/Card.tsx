@@ -16,7 +16,7 @@ export const CardCloseButton = ({onPress}: {onPress: () => void}) => {
 };
 
 type CardProps = {
-  topRightButton?: React.ReactElement;
+  topRightButton?: React.ReactNode;
   children?: React.ReactNode;
   onPress?: () => void;
 };

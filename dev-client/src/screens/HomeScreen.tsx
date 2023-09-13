@@ -1,5 +1,12 @@
 import SiteMap from '../components/home/SiteMap';
-import {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Mapbox, {Camera, Location} from '@rnmapbox/maps';
 import {Coords, updateLocation} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
@@ -27,6 +34,8 @@ import {Trans, useTranslation} from 'react-i18next';
 import {Icon} from '../components/common/Icons';
 import {CardCloseButton} from '../components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
+import {useTextSearch} from '../components/common/search/search';
+import {useFilterSites} from '../components/sites/filter';
 
 export type CalloutState =
   | {
@@ -55,9 +64,17 @@ export const HomeScreen = () => {
     state => state.account.currentUser?.data?.id,
   );
   const sites = useSelector(state => state.site.sites);
+  const siteList = useMemo(() => Object.values(sites), [sites]);
   const currentUserLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
   const camera = useRef<Camera | null>(null);
+  const {
+    results: searchedSites,
+    query: sitesQuery,
+    setQuery: setSitesQuery,
+  } = useTextSearch({data: siteList, keys: ['name']});
+  const [siteFilter, setSiteFilter] = useState({});
+  const filteredSites = useFilterSites(searchedSites, siteFilter);
 
   useEffect(() => {
     // load sites on mount
@@ -175,9 +192,14 @@ export const HomeScreen = () => {
           </Box>
           <SiteListBottomSheet
             ref={siteListBottomSheetRef}
-            sites={sites}
+            sites={siteList}
+            filteredSites={filteredSites}
             showSiteOnMap={showSiteOnMap}
             onCreateSite={onCreateSite}
+            query={sitesQuery}
+            setQuery={setSitesQuery}
+            filter={siteFilter}
+            setFilter={setSiteFilter}
           />
         </Box>
         <InfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />

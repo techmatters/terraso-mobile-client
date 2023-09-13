@@ -79,6 +79,8 @@ export const theme = extendTheme({
             lineHeight: '26px',
             letterSpacing: '0.46px',
           },
+          px: '22px',
+          py: '8px',
         },
       },
     },
@@ -141,6 +143,16 @@ export const theme = extendTheme({
         _icon: {
           size: 'md',
         },
+      },
+    },
+    ModalCloseButton: {
+      baseStyle: {
+        background: 'grey.200',
+        _icon: {
+          size: 'sm',
+          color: 'action.active',
+        },
+        borderRadius: 'full',
       },
     },
     RadioGroup: {

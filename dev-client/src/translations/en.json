@@ -60,6 +60,16 @@
         "value": "{{date}} {{name}}"
       },
       "default_title": "Location Information"
+    },
+    "search": {
+      "placeholder": "Search sites",
+      "filter_projects": "Filter sites by project:",
+      "filter_role": "Filter sites by role"
+    },
+    "role": {
+      "MANAGER": "Manager",
+      "CONTRIBUTOR": "Contributor",
+      "VIEWER": "Viewer"
     }
   },
   "projects": {
@@ -123,12 +133,16 @@
     },
     "transfer_sites": {
       "heading": "Transfer existing sites",
-      "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project."
+      "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project.",
+      "unaffiliated": "Unaffiliated"
     },
     "form": {
       "name_min_length_error": "Project name must be at least {{min}} characters",
       "name_max_length_error": "Project name must be at most {{max}} characters",
       "description_max_length_error": "Project description must be at most {{max}} characters"
+    },
+    "search": {
+      "placeholder": "Search projects"
     }
   },
   "badge": {
@@ -145,7 +159,8 @@
     "modified_by": "Last modified {{date}} by {{user}}",
     "select_all": "Select All",
     "you": "you",
-    "details": "Details"
+    "details": "Details",
+    "apply": "Apply"
   },
   "screens": {
     "HOME": "LandPKS",

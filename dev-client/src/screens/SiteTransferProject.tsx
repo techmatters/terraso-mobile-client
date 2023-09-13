@@ -1,29 +1,24 @@
 import {HStack, Heading, Text, VStack} from 'native-base';
-import {SearchInput} from '../components/common/SearchBar';
+import {SearchBar} from '../components/common/search/SearchBar';
 import {useTranslation} from 'react-i18next';
-import {SiteDisplay} from '../types';
-import {SITES_BY_PROJECT} from '../dataflow';
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import SelectAllCheckboxes from '../components/common/SelectAllCheckboxes';
 import {Accordion} from '../components/common/Accordion';
 import {useSelector} from '../model/store';
 import {AppBar, ScreenScaffold} from './ScreenScaffold';
+import {useTextSearch} from '../components/common/search/search';
+import {Site} from 'terraso-client-shared/site/siteSlice';
 
 type ItemProps = {
   projectName: string;
-  projectId: string;
-  sites: Pick<SiteDisplay, 'name' | 'id'>[];
+  sites: Site[];
 };
 
-const SiteTransferItem = ({
-  projectName,
-  projectId: _projectId,
-  sites,
-}: ItemProps) => {
+const SiteTransferItem = ({projectName, sites}: ItemProps) => {
   const items = sites.map(site => ({
-    value: String(site.id),
+    value: site.id,
     label: site.name,
-    key: String(site.id),
+    key: site.id,
   }));
   const updateSelected = useCallback((currentItems: string[]) => {
     console.debug(currentItems);
@@ -47,9 +42,50 @@ type Props = {projectId: string};
 export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
 
-  const project = useSelector(state => state.project.projects[projectId]);
-  // TODO: Replace with data fetched from backend
-  const sitesByProject = SITES_BY_PROJECT;
+  const projects = useSelector(state => state.project.projects);
+  const project = projects[projectId];
+  const sites = useSelector(state => state.site.sites);
+  const siteList = useMemo(() => Object.values(sites), [sites]);
+  const {
+    results: searchedSites,
+    query,
+    setQuery,
+  } = useTextSearch({data: siteList, keys: ['name']});
+
+  const sortedSitesByProject = useMemo(() => {
+    const nonProjectSites = searchedSites.filter(
+      site => site.projectId === undefined,
+    );
+    const projectSites = searchedSites.filter(
+      site => site.projectId !== undefined && site.projectId !== project.id,
+    );
+
+    const sitesByProject = projectSites.reduce(
+      (projectMap, site) =>
+        Object.assign(projectMap, {
+          [site.projectId!]: {...projectMap[site.projectId!], [site.id]: site},
+        }),
+      {} as Record<string, Record<string, Site>>,
+    );
+
+    return [
+      [undefined, nonProjectSites] as const,
+      ...Object.entries(sitesByProject)
+        .sort(([projectIdA], [projectIdB]) =>
+          projects[projectIdA].name.localeCompare(projects[projectIdB].name),
+        )
+        .map(
+          ([projectId, sites]) =>
+            [projects[projectId], Object.values(sites)] as const,
+        ),
+    ].map(
+      ([projectId, sites]) =>
+        [
+          projectId,
+          sites.sort((siteA, siteB) => siteA.name.localeCompare(siteB.name)),
+        ] as const,
+    );
+  }, [projects, project.id, searchedSites]);
 
   return (
     <ScreenScaffold
@@ -58,19 +94,22 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
       <VStack space={4} p={4}>
         <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
         <Text>{t('projects.transfer_sites.description', '')}</Text>
-        <SearchInput />
-        {Object.entries(sitesByProject)
-          .filter(([aProjectId]) => aProjectId !== String(projectId))
-          .map(([projId, {projectName, sites}]) => {
-            return (
-              <SiteTransferItem
-                projectName={projectName}
-                projectId={projId}
-                sites={sites}
-                key={projId}
-              />
-            );
-          })}
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          placeholder={t('site.search.placeholder')}
+        />
+        {sortedSitesByProject.map(([itemProject, itemSites]) => {
+          return (
+            <SiteTransferItem
+              projectName={
+                itemProject?.name ?? t('projects.transfer_sites.unaffiliated')
+              }
+              sites={itemSites}
+              key={itemProject?.id ?? null}
+            />
+          );
+        })}
       </VStack>
     </ScreenScaffold>
   );

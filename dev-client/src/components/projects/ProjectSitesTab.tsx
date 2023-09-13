@@ -12,7 +12,7 @@ import {useTranslation} from 'react-i18next';
 import {TabRoutes, TabStackParamList} from './constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import SearchBar from '../common/SearchBar';
+import {SearchBar} from '../common/search/SearchBar';
 import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
 import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
@@ -24,6 +24,7 @@ import {
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
 import {SiteCard} from '../sites/SiteCard';
+import {useTextSearch} from '../common/search/search';
 
 type SiteMenuProps = {
   iconName: string;
@@ -114,6 +115,14 @@ export default function ProjectSitesTab({
   );
 
   const sites = useSelector(state => selectProjectSites(state, projectId));
+  const {
+    results: searchedSites,
+    query,
+    setQuery,
+  } = useTextSearch({
+    data: sites,
+    keys: ['name'],
+  });
 
   const addSiteCallback = useCallback(() => {
     navigation.navigate('CREATE_SITE', {projectId: projectId});
@@ -123,13 +132,20 @@ export default function ProjectSitesTab({
 
   const full = (
     <>
-      <SearchBar selected={sites} />
+      <SearchBar
+        mb="18px"
+        query={query}
+        setQuery={setQuery}
+        placeholder={t('site.search.placeholder')}
+        FilterOptions={<Text>Site filter placeholder</Text>}
+      />
       <FlatList
-        data={sites}
+        data={searchedSites}
         renderItem={({item: site}) => (
           <SiteCard site={site} topRightButton={<SiteMenu site={site} />} />
         )}
         keyExtractor={site => site.id}
+        ItemSeparatorComponent={() => <Box height="8px" />}
       />
     </>
   );
