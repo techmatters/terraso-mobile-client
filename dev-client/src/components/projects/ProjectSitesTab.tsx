@@ -15,7 +15,7 @@ import type {CompositeScreenProps} from '@react-navigation/native';
 import {SearchBar} from '../common/search/SearchBar';
 import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
+import {Icon, MaterialCommunityIcons} from '../common/Icons';
 import {RootStackScreenProps} from '../../screens/AppScaffold';
 import {Site, deleteSite} from 'terraso-client-shared/site/siteSlice';
 import {useDispatch, useSelector, AppState} from '../../model/store';
@@ -139,6 +139,7 @@ export default function ProjectSitesTab({
         setQuery={setQuery}
         placeholder={t('site.search.placeholder')}
         FilterOptions={<Text>Site filter placeholder</Text>}
+        filterIcon="sort"
       />
       <FlatList
         data={searchedSites}

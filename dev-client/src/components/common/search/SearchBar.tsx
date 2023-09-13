@@ -11,6 +11,7 @@ type SearchBarProps = {
   numFilters?: number;
   onApplyFilter?: () => void;
   placeholder: string;
+  filterIcon?: string;
 } & React.ComponentProps<typeof Row>;
 export const SearchBar = ({
   query,
@@ -19,6 +20,7 @@ export const SearchBar = ({
   numFilters,
   onApplyFilter,
   placeholder,
+  filterIcon = 'filter-list',
   ...rowProps
 }: SearchBarProps) => {
   const {t} = useTranslation();
@@ -48,7 +50,7 @@ export const SearchBar = ({
             </Badge>
           )}
           <IconButton
-            name="filter-list"
+            name={filterIcon}
             bg="primary.contrast"
             borderRadius="full"
             _icon={{color: 'action.active', size: 'sm'}}
