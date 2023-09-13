@@ -1,7 +1,8 @@
-import {Badge, Row, Box, Input, Modal, Button} from 'native-base';
+import {Badge, Row, Box, Input, Modal, Button, useDisclose} from 'native-base';
 import {Icon, IconButton} from '../Icons';
-import {useCallback, useState} from 'react';
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {CardCloseButton} from '../Card';
 
 type SearchBarProps = {
   query: string;
@@ -21,15 +22,11 @@ export const SearchBar = ({
   ...rowProps
 }: SearchBarProps) => {
   const {t} = useTranslation();
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-  const onFiltersOpen = useCallback(
-    () => setIsFiltersOpen(true),
-    [setIsFiltersOpen],
-  );
-  const onFiltersClose = useCallback(
-    () => setIsFiltersOpen(false),
-    [setIsFiltersOpen],
-  );
+  const {isOpen, onOpen, onClose} = useDisclose();
+  const onApply = useCallback(() => {
+    onApplyFilter && onApplyFilter();
+    onClose();
+  }, [onApplyFilter, onClose]);
 
   return (
     <Row mb="25px" {...rowProps}>
@@ -55,18 +52,18 @@ export const SearchBar = ({
             bg="primary.contrast"
             borderRadius="full"
             _icon={{color: 'action.active', size: 'sm'}}
-            onPress={onFiltersOpen}
+            onPress={onOpen}
           />
-          <Modal isOpen={isFiltersOpen} onClose={onFiltersClose}>
+          <Modal isOpen={isOpen} onClose={onClose}>
             <Modal.Content>
-              <Modal.CloseButton />
+              <CardCloseButton onPress={onClose} />
               <Box pt="50px" pb="28px" px="16px">
                 {FilterOptions}
                 <Button
                   mt="32px"
                   size="lg"
                   alignSelf="center"
-                  onPress={onApplyFilter}>
+                  onPress={onApply}>
                   {t('general.apply')}
                 </Button>
               </Box>

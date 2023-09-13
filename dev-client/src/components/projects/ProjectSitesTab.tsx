@@ -25,6 +25,7 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {SiteCard} from '../sites/SiteCard';
 import {useTextSearch} from '../common/search/search';
+import {CardTopRightButton} from '../common/Card';
 
 type SiteMenuProps = {
   iconName: string;
@@ -61,7 +62,7 @@ const SiteMenu = ({site}: SiteProps) => {
   return (
     <Menu
       trigger={triggerProps => (
-        <IconButton
+        <CardTopRightButton
           as={MaterialCommunityIcons}
           // _icon={{size: 'md', color: 'action.active'}}
           name="dots-vertical"
@@ -142,7 +143,7 @@ export default function ProjectSitesTab({
       <FlatList
         data={searchedSites}
         renderItem={({item: site}) => (
-          <SiteCard site={site} topRightButton={<SiteMenu site={site} />} />
+          <SiteCard site={site} buttons={<SiteMenu site={site} />} />
         )}
         keyExtractor={site => site.id}
         ItemSeparatorComponent={() => <Box height="8px" />}

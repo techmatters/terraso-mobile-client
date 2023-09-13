@@ -145,16 +145,6 @@ export const theme = extendTheme({
         },
       },
     },
-    ModalCloseButton: {
-      baseStyle: {
-        background: 'grey.200',
-        _icon: {
-          size: 'sm',
-          color: 'action.active',
-        },
-        borderRadius: 'full',
-      },
-    },
     RadioGroup: {
       baseStyle: {
         colorScheme: 'primary',

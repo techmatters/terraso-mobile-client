@@ -56,7 +56,7 @@ const SiteCallout = ({site, closeCallout}: SiteCalloutProps) => {
       allowOverlap={true}>
       <SiteCard
         site={site}
-        topRightButton={<CardCloseButton onPress={closeCallout} />}
+        buttons={<CardCloseButton onPress={closeCallout} />}
       />
     </Mapbox.MarkerView>
   );
@@ -90,7 +90,7 @@ const TemporarySiteCallout = ({
       coordinate={[site.longitude, site.latitude]}
       anchor={{x: 0.5, y: 0}}
       allowOverlap={true}>
-      <Card topRightButton={<CardCloseButton onPress={closeCallout} />}>
+      <Card buttons={<CardCloseButton onPress={closeCallout} />}>
         <Column space="12px">
           <CalloutDetail
             label={t('site.soil_id_prediction').toUpperCase()}
