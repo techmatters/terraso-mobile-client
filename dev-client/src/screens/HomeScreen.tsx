@@ -3,12 +3,12 @@ import {
   forwardRef,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
+  useMemo,
 } from 'react';
-import Mapbox, {Camera, Location} from '@rnmapbox/maps';
-import {Coords, updateLocation} from '../model/map/mapSlice';
+import Mapbox, {Camera} from '@rnmapbox/maps';
+import {Coords} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
 import {Site, fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
@@ -55,7 +55,6 @@ export const HomeScreen = () => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const navigation = useNavigation();
-  const [mapInitialized, setMapInitialized] = useState<Location | null>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>({
     kind: 'none',
@@ -65,7 +64,6 @@ export const HomeScreen = () => {
   );
   const sites = useSelector(state => state.site.sites);
   const siteList = useMemo(() => Object.values(sites), [sites]);
-  const currentUserLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
   const camera = useRef<Camera | null>(null);
   const {
@@ -85,6 +83,17 @@ export const HomeScreen = () => {
     dispatch(fetchProjectsForUser());
   }, [dispatch, currentUserID]);
 
+  const currentUserLocation = useSelector(state => state.map.userLocation);
+  const [initialLocation, setInitialLocation] = useState<Coords | null>(
+    currentUserLocation,
+  );
+
+  useEffect(() => {
+    if (initialLocation === null && currentUserLocation !== null) {
+      setInitialLocation(currentUserLocation);
+    }
+  }, [initialLocation, currentUserLocation, setInitialLocation]);
+
   const moveToPoint = useCallback(
     (coords: Coords) => {
       // TODO: flyTo, zoomTo don't seem to work, find out why
@@ -98,6 +107,12 @@ export const HomeScreen = () => {
     [camera],
   );
 
+  useEffect(() => {
+    if (initialLocation !== null && camera.current !== undefined) {
+      moveToPoint(initialLocation);
+    }
+  }, [initialLocation, camera, moveToPoint]);
+
   const searchFunction = useCallback(
     (coords: Coords) => {
       setCalloutState({kind: 'location', showCallout: false, coords});
@@ -106,26 +121,9 @@ export const HomeScreen = () => {
     [setCalloutState, moveToPoint],
   );
 
-  useEffect(() => {
-    if (mapInitialized !== null && camera.current !== undefined) {
-      moveToPoint(mapInitialized.coords);
-    }
-  }, [mapInitialized, camera, moveToPoint]);
-
-  const updateUserLocation = useCallback(
-    (location: Location) => {
-      dispatch(updateLocation(location));
-      // only set map center at start for now
-      if (mapInitialized === null) {
-        setMapInitialized(location);
-      }
-    },
-    [dispatch, mapInitialized, setMapInitialized],
-  );
-
   const moveToUser = useCallback(() => {
-    if (currentUserLocation?.coords !== undefined) {
-      moveToPoint(currentUserLocation.coords);
+    if (currentUserLocation !== null) {
+      moveToPoint(currentUserLocation);
     }
   }, [currentUserLocation, moveToPoint]);
 
@@ -184,7 +182,6 @@ export const HomeScreen = () => {
               toggleMapLayer={toggleMapLayer}
             />
             <SiteMap
-              updateUserLocation={updateUserLocation}
               sites={filteredSitesById}
               ref={camera}
               calloutState={calloutState}
