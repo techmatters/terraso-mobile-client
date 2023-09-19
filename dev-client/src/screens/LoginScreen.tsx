@@ -33,17 +33,17 @@ export const LoginScreen = () => {
   });
 
   return (
-    <Column bgColor="primary.main" alignItems="center" height="100%">
+    <Column bgColor="primary.main" alignItems="center" h="100%">
       <Box flexGrow={2} />
       <Column justifyContent="flex-end" alignItems="center">
         <Heading variant="h3" fontSize="40px" color="primary.contrast">
           {t('login.title')}
         </Heading>
-        <Box height="28px" />
+        <Box h="28px" />
         <Heading variant="h5" color="primary.contrast" textAlign="center">
           {t('login.subtitle')}
         </Heading>
-        <Box height="72px" />
+        <Box h="72px" />
         <Button
           bgColor="primary.contrast"
           _text={{color: 'primary.main'}}
@@ -60,12 +60,9 @@ export const LoginScreen = () => {
         </Button>
       </Column>
       <Box flexGrow={3} />
-      <Column
-        paddingBottom="60px"
-        alignItems="center"
-        justifyContent="flex-end">
-        <TerrasoLogo width="122px" height="39px" />
-        <Box height="12px" />
+      <Column pb="60px" alignItems="center" justifyContent="flex-end">
+        <TerrasoLogo w="122px" h="39px" />
+        <Box h="12px" />
         <Text variant="caption" color="primary.contrast">
           {t('login.description')}
         </Text>

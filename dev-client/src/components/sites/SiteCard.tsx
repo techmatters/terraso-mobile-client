@@ -43,10 +43,10 @@ export const SiteCard = ({site, onShowSiteOnMap, buttons}: SiteCardProps) => {
           name: TEMP_MODIFIED_NAME,
         })}
       </Text>
-      <Box height="16px" />
+      <Box h="16px" />
       <Row alignItems="center">
         <StaticMapView coords={site} style={styles.mapView} />
-        <Box width="4" />
+        <Box w="4" />
         <Badge
           variant="chip"
           backgroundColor="primary.lightest"
