@@ -1,14 +1,6 @@
 import {Location} from '@rnmapbox/maps';
 import RadioBlock from '../common/RadioBlock';
-import {
-  Fab,
-  FormControl,
-  Input,
-  ScrollView,
-  Select,
-  Text,
-  VStack,
-} from 'native-base';
+import {Fab, FormControl, Input, ScrollView, Text, VStack} from 'native-base';
 import {useCallback, useMemo, useState} from 'react';
 import {
   ProjectPrivacy,
@@ -22,6 +14,7 @@ import {useTranslation} from 'react-i18next';
 import {useSelector} from '../../model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from '../../model/map/mapSlice';
+import {ProjectSelect} from '../projects/ProjectSelect';
 
 type LatLongString = {latitude: string; longitude: string};
 
@@ -62,7 +55,6 @@ export default function CreateSiteView({
   const {t} = useTranslation();
 
   const projectMap = useSelector(state => state.project.projects);
-  const projects = useMemo(() => Object.values(projectMap), [projectMap]);
   const [submitting, setSubmitting] = useState(false);
 
   const {latitude: defaultLat, longitude: defaultLon} = useMemo(() => {
@@ -227,19 +219,12 @@ export default function CreateSiteView({
         </FormControl>
         <FormControl>
           <FormControl.Label>Add to Project</FormControl.Label>
-          <Select
-            selectedValue={mutationInput.projectId}
-            onValueChange={projectId =>
+          <ProjectSelect
+            projectId={mutationInput.projectId}
+            setProjectId={projectId =>
               setMutationInput(current => ({...current, projectId}))
-            }>
-            {projects.map(project => (
-              <Select.Item
-                label={project.name}
-                value={project.id}
-                key={project.id}
-              />
-            ))}
-          </Select>
+            }
+          />
         </FormControl>
         <RadioBlock<ProjectPrivacy>
           label="Data Privacy"

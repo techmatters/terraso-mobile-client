@@ -79,6 +79,8 @@ export const theme = extendTheme({
             lineHeight: '26px',
             letterSpacing: '0.46px',
           },
+          px: '22px',
+          py: '8px',
         },
       },
     },
