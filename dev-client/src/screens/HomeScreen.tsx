@@ -240,13 +240,13 @@ const LandPKSInfo = () => {
   return (
     <BottomSheetScrollView>
       <Column space={3} pb="65%" px={5} mt="48px">
-        <Heading width="full" textAlign="center">
+        <Heading w="full" textAlign="center">
           {t('home.info.title')}
         </Heading>
         <Image
           source={require('../../assets/landpks_intro_image.png')}
-          width="100%"
-          height="30%"
+          w="100%"
+          h="30%"
           resizeMode="contain"
           alt={t('home.info.intro_image_alt')}
         />

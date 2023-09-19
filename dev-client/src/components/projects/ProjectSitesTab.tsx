@@ -147,14 +147,14 @@ export default function ProjectSitesTab({
           <SiteCard site={site} buttons={<SiteMenu site={site} />} />
         )}
         keyExtractor={site => site.id}
-        ItemSeparatorComponent={() => <Box height="8px" />}
+        ItemSeparatorComponent={() => <Box h="8px" />}
         ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
       />
     </>
   );
 
   return (
-    <VStack m={3} pb={5} space={3} height="100%">
+    <VStack m={3} pb={5} space={3} h="100%">
       {isEmpty && <Text>{t('projects.sites.empty')}</Text>}
       <Menu
         shouldOverlapWithTrigger={false}

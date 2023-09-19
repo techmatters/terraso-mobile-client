@@ -67,7 +67,7 @@ export default function ProjectSettingsTab({
       {({handleSubmit, isSubmitting}) => (
         <>
           <ScrollView>
-            <VStack px={2} py={4} space={1} m={3} height="100%">
+            <VStack px={2} py={4} space={1} m={3} h="100%">
               <ProjectSettingsForm editForm={true} />
               <IconLink
                 iconName="content-copy"

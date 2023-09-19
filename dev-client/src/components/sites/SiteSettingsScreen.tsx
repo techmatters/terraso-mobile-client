@@ -54,7 +54,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
         />
         <Pressable
           variant="subtle"
-          width="full"
+          w="full"
           background={colors.grey[200]}
           py="12px"
           pl="16px"
@@ -65,7 +65,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             alignItems="center"
             justifyContent="space-around">
             <Icon name="people" />
-            <Spacer flexGrow={0} width="16px" />
+            <Spacer flexGrow={0} w="16px" />
             <Text>{t('site.dashboard.team_button')}</Text>
             <Spacer />
             <Icon name="arrow-forward-ios" />

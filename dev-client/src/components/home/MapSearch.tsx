@@ -23,7 +23,7 @@ function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
   );
 
   return (
-    <Pressable width="100%" py={1} px={3} onPress={selectSuggestion}>
+    <Pressable w="100%" py={1} px={3} onPress={selectSuggestion}>
       <VStack>
         <Text>{name}</Text>
         <Text>{address}</Text>

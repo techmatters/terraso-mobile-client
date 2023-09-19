@@ -57,7 +57,7 @@ const LocationPrediction = ({
       <Text variant="body1" color="primary.contrast" bold>
         {label}
       </Text>
-      <Box height="5px" />
+      <Box h="5px" />
       <Text variant="body2" color="primary.contrast">
         <Text bold>{t('soil.prediction')}: </Text>
         <Text>{prediction}</Text>

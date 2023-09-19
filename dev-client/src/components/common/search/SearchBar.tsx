@@ -34,7 +34,7 @@ export const SearchBar = ({
   return (
     <Row mb="25px" {...rowProps}>
       {FilterOptions && (
-        <Box alignSelf="center" paddingRight="13px" paddingTop="3px" mr="16px">
+        <Box alignSelf="center" pr="13px" pt="3px" mr="16px">
           {(numFilters ?? 0) > 0 && (
             <Badge
               position="absolute"

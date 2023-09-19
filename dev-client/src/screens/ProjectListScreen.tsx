@@ -72,7 +72,7 @@ export const ProjectListScreen = () => {
             <FlatList
               data={searchedProjects}
               renderItem={({item}) => <ProjectPreviewCard project={item} />}
-              ItemSeparatorComponent={() => <Box height="8px" />}
+              ItemSeparatorComponent={() => <Box h="8px" />}
               keyExtractor={project => project.id}
               ListEmptyComponent={
                 <Text>{t('projects.search.no_matches')}</Text>
