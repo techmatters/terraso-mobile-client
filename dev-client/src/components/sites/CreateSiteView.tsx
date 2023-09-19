@@ -1,7 +1,6 @@
-import {Location} from '@rnmapbox/maps';
 import RadioBlock from '../common/RadioBlock';
 import {Fab, FormControl, Input, ScrollView, Text, VStack} from 'native-base';
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useMemo, useState, useEffect} from 'react';
 import {
   ProjectPrivacy,
   SiteAddMutationInput,
@@ -27,7 +26,6 @@ function fromLocation(coords: Coords): LatLongString {
 
 type Props = {
   defaultProject?: string;
-  userLocation?: Location;
   sitePin?: Coords;
   createSiteCallback?: (
     input: SiteAddMutationInput,
@@ -48,24 +46,23 @@ type LocationInputOptions = 'coords' | 'gps' | 'pin';
 
 export default function CreateSiteView({
   defaultProject,
-  userLocation,
   createSiteCallback,
   sitePin,
 }: Props) {
   const {t} = useTranslation();
 
+  const userLocation = useSelector(state => state.map.userLocation);
   const projectMap = useSelector(state => state.project.projects);
   const [submitting, setSubmitting] = useState(false);
 
-  const {latitude: defaultLat, longitude: defaultLon} = useMemo(() => {
-    if (sitePin) {
-      return sitePin;
-    }
-    if (userLocation) {
-      return {...userLocation.coords};
-    }
-    return {latitude: '0', longitude: '0'};
-  }, [userLocation, sitePin]);
+  const {latitude: defaultLat, longitude: defaultLon} = useMemo(
+    () => sitePin ?? userLocation ?? {latitude: '0', longitude: '0'},
+    [userLocation, sitePin],
+  );
+
+  const [locationSource, setLocationSource] = useState<LocationInputOptions>(
+    sitePin ? 'pin' : userLocation ? 'gps' : 'coords',
+  );
 
   /** We store the form state in mutationInput */
   const [mutationInput, setMutationInput] = useState<Args>({
@@ -120,17 +117,24 @@ export default function CreateSiteView({
   /* calculates the associated location for a given location input option
    * For example, for 'pin', it grabs and formats the value from the sitepin */
   const locationOptions = useMemo(() => {
-    const options: Record<LocationInputOptions, LatLongString | undefined> = {
+    const options: Record<LocationInputOptions, LatLongString | null> = {
       coords: {latitude: '', longitude: ''},
-      gps: userLocation && fromLocation(userLocation.coords),
-      pin: sitePin && fromLocation(sitePin),
+      gps: userLocation && fromLocation(userLocation),
+      pin: (sitePin && fromLocation(sitePin)) ?? null,
     };
     return options;
   }, [userLocation, sitePin]);
 
+  useEffect(() => {
+    if (userLocation !== null && locationSource === 'gps') {
+      setMutationInput(input => ({...input, ...locationOptions.gps}));
+    }
+  }, [userLocation, setMutationInput, locationSource, locationOptions]);
+
   /** Callback passed to RadioBlock to update the value of the location input */
   const updateLocationSource = useCallback(
     (key: LocationInputOptions) => {
+      setLocationSource(key);
       const newLocation = locationOptions[key];
       if (newLocation === undefined) {
         console.error(
@@ -145,16 +149,6 @@ export default function CreateSiteView({
     },
     [locationOptions],
   );
-
-  const defaultLocationSource = useMemo(() => {
-    if (sitePin) {
-      return 'pin';
-    }
-    if (userLocation) {
-      return 'gps';
-    }
-    return 'coords';
-  }, [sitePin, userLocation]);
 
   return (
     <ScrollView>
@@ -187,7 +181,7 @@ export default function CreateSiteView({
           }}
           groupProps={{
             name: 'location',
-            defaultValue: defaultLocationSource,
+            value: locationSource,
             onChange: updateLocationSource,
           }}
         />

@@ -21,6 +21,9 @@ import {useNavigation as useNavigationNative} from '@react-navigation/native';
 import {LocationDashboardScreen} from '../components/sites/LocationDashboardScreen';
 import {SiteSettingsScreen} from '../components/sites/SiteSettingsScreen';
 import {SiteTeamSettingsScreen} from '../components/sites/SiteTeamSettings';
+import {Location, locationManager} from '@rnmapbox/maps';
+import {updateLocation} from '../model/map/mapSlice';
+import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../constants';
 
 const screenDefinitions = {
   LOGIN: LoginScreen,
@@ -76,6 +79,13 @@ export default function AppScaffold() {
       dispatch(fetchUser());
     }
   }, [hasToken, currentUser, dispatch]);
+
+  useEffect(() => {
+    const listener = ({coords}: Location) => dispatch(updateLocation(coords));
+    locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
+    locationManager.addListener(listener);
+    return () => locationManager.removeListener(listener);
+  }, [dispatch]);
 
   return (
     <RootStack.Navigator

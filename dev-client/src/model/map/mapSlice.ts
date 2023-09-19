@@ -1,22 +1,19 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {Location} from '@rnmapbox/maps';
 
 export type Coords = {
   latitude: number;
   longitude: number;
 };
 
-type MapState = {
-  userLocation?: Location;
+const initialState = {
+  userLocation: null as Coords | null,
 };
-
-const initialState: MapState = {};
 
 const mapSlice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    updateLocation(state, action: PayloadAction<Location>) {
+    updateLocation(state, action: PayloadAction<Coords>) {
       state.userLocation = action.payload;
     },
   },

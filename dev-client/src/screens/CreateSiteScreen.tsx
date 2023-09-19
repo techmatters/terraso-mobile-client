@@ -1,6 +1,6 @@
 import {useCallback} from 'react';
 import CreateSiteView from '../components/sites/CreateSiteView';
-import {useDispatch, useSelector} from '../model/store';
+import {useDispatch} from '../model/store';
 import {
   addSite,
   fetchSitesForProject,
@@ -20,7 +20,6 @@ type Props =
   | undefined;
 
 export const CreateSiteScreen = (props: Props = {}) => {
-  const userLocation = useSelector(state => state.map.userLocation);
   const dispatch = useDispatch();
 
   const createSiteCallback = useCallback(
@@ -44,7 +43,6 @@ export const CreateSiteScreen = (props: Props = {}) => {
       BottomNavigation={null}
       AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
       <CreateSiteView
-        userLocation={userLocation}
         createSiteCallback={createSiteCallback}
         defaultProject={'projectId' in props ? props.projectId : undefined}
         sitePin={'coords' in props ? props.coords : undefined}
