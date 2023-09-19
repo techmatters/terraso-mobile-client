@@ -81,11 +81,8 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
         snapPoints={snapPoints}
         backgroundStyle={backgroundStyle}
         handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
-        <Column paddingX="16px">
-          <Row
-            justifyContent="space-between"
-            alignItems="center"
-            paddingBottom="4">
+        <Column px="16px">
+          <Row justifyContent="space-between" alignItems="center" pb="4">
             <Heading variant="h6">{t('site.list_title')}</Heading>
             <Button
               size="sm"
@@ -104,8 +101,8 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
             data={filteredSites}
             keyExtractor={site => site.id}
             renderItem={renderSite}
-            ItemSeparatorComponent={() => <Box height="8px" />}
-            ListFooterComponent={<Box height="10px" />}
+            ItemSeparatorComponent={() => <Box h="8px" />}
+            ListFooterComponent={<Box h="10px" />}
             ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
           />
         )}

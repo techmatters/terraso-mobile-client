@@ -116,7 +116,7 @@ const TemporarySiteCallout = ({
             <Button onPress={onCreate} size="sm" variant="outline">
               {t('site.create.title').toUpperCase()}
             </Button>
-            <Box width="24px" />
+            <Box w="24px" />
             <Button onPress={onLearnMore} size="sm">
               {t('site.more_info').toUpperCase()}
             </Button>

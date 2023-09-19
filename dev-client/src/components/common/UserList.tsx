@@ -76,7 +76,7 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
             <Button
               size="sm"
               my={2}
-              width="50%"
+              w="50%"
               _text={{color: 'error.main'}}
               bgColor="grey.200"
               onPress={onPress}>
