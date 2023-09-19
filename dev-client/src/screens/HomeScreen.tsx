@@ -44,8 +44,13 @@ export type CalloutState =
     }
   | {
       kind: 'location';
-      coords: Coords;
       showCallout: boolean;
+      coords: Coords;
+    }
+  | {
+      kind: 'site_cluster';
+      siteIds: string[];
+      coords: Coords;
     }
   | {kind: 'none'};
 
@@ -65,7 +70,7 @@ export const HomeScreen = () => {
   const sites = useSelector(state => state.site.sites);
   const siteList = useMemo(() => Object.values(sites), [sites]);
   const dispatch = useDispatch();
-  const camera = useRef<Camera | null>(null);
+  const camera = useRef<Camera>(null);
   const {
     results: searchedSites,
     query: sitesQuery,
@@ -187,7 +192,6 @@ export const HomeScreen = () => {
               calloutState={calloutState}
               setCalloutState={setCalloutState}
               styleURL={mapStyleURL}
-              onCreateSite={onCreateSite}
             />
           </Box>
           <SiteListBottomSheet

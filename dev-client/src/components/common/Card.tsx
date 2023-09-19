@@ -34,11 +34,13 @@ type CardProps = {
   buttons?: React.ReactNode;
   children?: React.ReactNode;
   onPress?: () => void;
-};
-export const Card = ({buttons, onPress, children}: CardProps) => {
+} & React.ComponentProps<typeof Box>;
+export const Card = ({buttons, onPress, children, ...boxProps}: CardProps) => {
   return (
     <Pressable onPress={onPress}>
-      <Box variant="card">{children}</Box>
+      <Box variant="card" {...boxProps}>
+        {children}
+      </Box>
       {buttons}
     </Pressable>
   );
