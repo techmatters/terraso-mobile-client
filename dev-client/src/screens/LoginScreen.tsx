@@ -61,7 +61,7 @@ export const LoginScreen = () => {
       </Column>
       <Box flexGrow={3} />
       <Column pb="60px" alignItems="center" justifyContent="flex-end">
-        <TerrasoLogo w="122px" h="39px" />
+        <TerrasoLogo width="122px" height="39px" />
         <Box h="12px" />
         <Text variant="caption" color="primary.contrast">
           {t('login.description')}
