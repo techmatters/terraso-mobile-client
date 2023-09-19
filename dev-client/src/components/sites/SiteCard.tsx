@@ -15,13 +15,9 @@ const TEMP_MODIFIED_NAME = 'Sample Sam';
 type SiteCardProps = {
   site: Site;
   onShowSiteOnMap?: (site: Site) => void;
-  topRightButton?: React.ReactElement;
+  buttons?: React.ReactNode;
 };
-export const SiteCard = ({
-  site,
-  onShowSiteOnMap,
-  topRightButton,
-}: SiteCardProps) => {
+export const SiteCard = ({site, onShowSiteOnMap, buttons}: SiteCardProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state =>
@@ -36,7 +32,7 @@ export const SiteCard = ({
   );
 
   return (
-    <Card onPress={onCardPress} topRightButton={topRightButton}>
+    <Card onPress={onCardPress} buttons={buttons}>
       <Heading variant="h6" color="primary.main">
         {site.name}
       </Heading>

@@ -12,10 +12,10 @@ import {useTranslation} from 'react-i18next';
 import {TabRoutes, TabStackParamList} from './constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import SearchBar from '../common/SearchBar';
+import {SearchBar} from '../common/search/SearchBar';
 import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {Icon, IconButton, MaterialCommunityIcons} from '../common/Icons';
+import {Icon, MaterialCommunityIcons} from '../common/Icons';
 import {RootStackScreenProps} from '../../screens/AppScaffold';
 import {Site, deleteSite} from 'terraso-client-shared/site/siteSlice';
 import {useDispatch, useSelector, AppState} from '../../model/store';
@@ -24,6 +24,8 @@ import {
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
 import {SiteCard} from '../sites/SiteCard';
+import {useTextSearch} from '../common/search/search';
+import {CardTopRightButton} from '../common/Card';
 
 type SiteMenuProps = {
   iconName: string;
@@ -60,7 +62,7 @@ const SiteMenu = ({site}: SiteProps) => {
   return (
     <Menu
       trigger={triggerProps => (
-        <IconButton
+        <CardTopRightButton
           as={MaterialCommunityIcons}
           // _icon={{size: 'md', color: 'action.active'}}
           name="dots-vertical"
@@ -114,6 +116,14 @@ export default function ProjectSitesTab({
   );
 
   const sites = useSelector(state => selectProjectSites(state, projectId));
+  const {
+    results: searchedSites,
+    query,
+    setQuery,
+  } = useTextSearch({
+    data: sites,
+    keys: ['name'],
+  });
 
   const addSiteCallback = useCallback(() => {
     navigation.navigate('CREATE_SITE', {projectId: projectId});
@@ -123,13 +133,22 @@ export default function ProjectSitesTab({
 
   const full = (
     <>
-      <SearchBar selected={sites} />
+      <SearchBar
+        mb="18px"
+        query={query}
+        setQuery={setQuery}
+        placeholder={t('site.search.placeholder')}
+        FilterOptions={<Text>Site filter placeholder</Text>}
+        filterIcon="sort"
+      />
       <FlatList
-        data={sites}
+        data={searchedSites}
         renderItem={({item: site}) => (
-          <SiteCard site={site} topRightButton={<SiteMenu site={site} />} />
+          <SiteCard site={site} buttons={<SiteMenu site={site} />} />
         )}
         keyExtractor={site => site.id}
+        ItemSeparatorComponent={() => <Box height="8px" />}
+        ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
       />
     </>
   );
