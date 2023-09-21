@@ -4,15 +4,12 @@ import {Icon} from './Icons';
 import {Coords} from '../../model/map/mapSlice';
 import {Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {useMemo} from 'react';
+import {COORDINATE_PRECISION} from '../../constants';
 
-const defaultAnchor = {x: 0.5, y: 0};
-
-type Props = {
-  coords: Coords;
-  zoomLevel?: number;
-  style?: StyleProp<ViewStyle>;
-  displayCenterMarker?: boolean;
-};
+export const coordToString = (coord: number) =>
+  coord.toFixed(COORDINATE_PRECISION);
+export const coordsToString = ({latitude, longitude}: Coords): string =>
+  `${coordToString(latitude)},${coordToString(longitude)}`;
 
 export const coordsToPosition = ({latitude, longitude}: Coords): Position => [
   longitude,
@@ -25,6 +22,15 @@ export const positionToCoords = ([longitude, latitude]: Position): Coords => ({
 
 export const mapIconSizeForPlatform = (size: number) =>
   Math.round(size * Platform.select({android: PixelRatio.get(), default: 1}));
+
+const defaultAnchor = {x: 0.5, y: 0};
+
+type Props = {
+  coords: Coords;
+  zoomLevel?: number;
+  style?: StyleProp<ViewStyle>;
+  displayCenterMarker?: boolean;
+};
 
 export const StaticMapView = ({
   coords,

@@ -108,9 +108,27 @@ export const theme = extendTheme({
     FormControlLabel: {
       baseStyle: {
         _text: {
-          fontSize: 'sm',
-          fontWeight: 'bold',
           color: 'text.primary',
+          fontSize: '16px',
+          fontWeight: 700,
+          lineHeight: '24px',
+          letterSpacing: '0.15px',
+        },
+      },
+      variants: {
+        subtle: {
+          _text: {
+            color: 'text.secondary',
+            fontSize: '12px',
+            fontWeight: 400,
+            lineHeight: '12px',
+            letterSpacing: '0.15px',
+          },
+        },
+      },
+      defaultProps: {
+        _text: {
+          variant: 'body1-strong',
         },
       },
     },
@@ -158,8 +176,11 @@ export const theme = extendTheme({
     },
     Radio: {
       baseStyle: {
-        size: 'sm',
-        my: 1,
+        my: '6px',
+        fontSize: '16px',
+        fontWeight: 400,
+        lineHeight: '24px',
+        letterSpacing: '0.15px',
       },
     },
     Text: {
