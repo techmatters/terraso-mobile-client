@@ -6,9 +6,10 @@ import {TabRoutes, TabStackParamList} from './constants';
 import {useDispatch, useSelector} from '../../model/store';
 import {useCallback, useState} from 'react';
 import {
-  ProjectMembership,
-  removeMembershipFromProject,
-} from 'terraso-client-shared/project/projectSlice';
+  Membership,
+  removeMember,
+} from 'terraso-client-shared/memberships/membershipsSlice';
+import {removeMembershipFromProject} from 'terraso-client-shared/project/projectSlice';
 import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';
 
@@ -20,23 +21,24 @@ export default function ProjectTeamTab({route}: Props) {
   const currentUser = useSelector(state => state.account.currentUser);
   let [members, setMembers] = useState(
     route.params.memberships.reduce(
-      (x, y) => ({...x, [y[0].id]: y}),
-      {} as Record<string, [ProjectMembership, User]>,
+      (x, y) => ({...x, [y[0].membershipId]: y}),
+      {} as Record<string, [Membership, User]>,
     ),
   );
 
   const removeMembership = useCallback(
-    (membership: ProjectMembership) => {
+    (membership: Membership) => {
       return async () => {
+        await dispatch(removeMember(membership));
         dispatch(
           removeMembershipFromProject({
-            membershipId: membership.id,
+            membershipId: membership.membershipId,
             projectId: route.params.projectId,
           }),
         );
         // TODO: This is just to get the project to update
         let newMembers = {...members};
-        delete newMembers[membership.id];
+        delete newMembers[membership.membershipId];
         setMembers(newMembers);
       };
     },
