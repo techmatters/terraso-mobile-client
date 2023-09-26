@@ -6,12 +6,10 @@ import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
 import {Icon} from '../common/Icons';
-import {
-  Project,
-  ProjectMembership,
-} from 'terraso-client-shared/project/projectSlice';
+import {Project} from 'terraso-client-shared/project/projectSlice';
 import {useSelector} from '../../model/store';
 import {useMemo} from 'react';
+import {Membership} from 'terraso-client-shared/memberships/membershipsSlice';
 import {User} from 'terraso-client-shared/account/accountSlice';
 
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
@@ -54,14 +52,66 @@ export default function ProjectTabs({project}: Props) {
     };
   };
 
-  const users = useSelector(state => state.account.users);
+  const projectMembershipsList = useSelector(
+    state => state.memberships.members.list,
+  );
 
-  const projectMembers: [ProjectMembership, User][] = useMemo(
+  const projectMemberships = useMemo(
     () =>
-      Object.values<ProjectMembership>(project.memberships)
-        .filter(({userId}) => userId in users)
-        .map(membership => [membership, users[membership.userId]]),
-    [],
+      Object.entries<Membership | undefined>(
+        projectMembershipsList || [],
+      ).reduce(
+        (acc, [id, membership]) => {
+          if (id in project.membershipIds && membership !== undefined) {
+            acc[id] = membership;
+          }
+          return acc;
+        },
+        {} as Record<string, Membership>,
+      ),
+    [projectMembershipsList, project],
+  );
+
+  const projectUserIds: [Membership, string][] = useMemo(
+    () =>
+      Object.entries(project.membershipIds).map(
+        ([membershipId, {user: userId}]) => [
+          projectMemberships[membershipId],
+          userId,
+        ],
+      ),
+    [project, projectMemberships],
+  );
+
+  // lol
+  const userIdsInProject = useMemo(
+    () => new Set(Object.values(project.membershipIds).map(m => m.user)),
+    [project],
+  );
+
+  const projectUsersState = useSelector(state => state.account.users);
+
+  const projectUsers = useMemo(
+    () =>
+      Object.entries<User>(projectUsersState).reduce(
+        (acc, [id, user]) => {
+          if (userIdsInProject.has(id)) {
+            acc[id] = user;
+          }
+          return acc;
+        },
+        {} as Record<string, User>,
+      ),
+    [projectUsersState, userIdsInProject],
+  );
+
+  const projectMembers: [Membership, User][] = useMemo(
+    () =>
+      projectUserIds.map(([membership, userId]) => [
+        membership,
+        projectUsers[userId],
+      ]),
+    [projectUsers, projectUserIds],
   );
 
   return (
