@@ -212,7 +212,7 @@ export const CreateSiteView = ({
           name: '',
           coords: defaultCoords ? coordsToString(defaultCoords) : '',
           projectId: defaultProject?.id,
-          privacy: defaultProject?.privacy ?? 'PRIVATE',
+          privacy: defaultProject?.privacy ?? 'PUBLIC',
           locationSource: defaultLocationSource,
         }}>
         {props => <CreateSiteForm {...props} sitePin={sitePin} />}

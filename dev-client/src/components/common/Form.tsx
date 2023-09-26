@@ -76,8 +76,7 @@ export const FormFieldWrapper = memo(
 
 type InputProps = WrapperProps & React.ComponentProps<typeof Input>;
 export const FormInput = memo((props: InputProps) => {
-  const {name, value, onChange, onBlur} = useFieldContext(props.name);
-  console.log(`${name} ${new Date().getMilliseconds()}`);
+  const {value, onChange, onBlur} = useFieldContext(props.name);
   return (
     <FormFieldWrapper {...props}>
       <Input value={value} onChangeText={onChange} onBlur={onBlur} {...props} />
@@ -116,17 +115,13 @@ type RadioGroupProps<T> = {
 } & WrapperProps &
   Omit<React.ComponentProps<typeof Radio.Group>, 'name'>;
 export const FormRadioGroup = memo(
-  <T extends string>({values, renderRadio, ...props}: RadioGroupProps<T>) => {
-    const ctxProps = useFieldContext(props.name);
-    console.log(`${ctxProps.name} ${new Date().getMilliseconds()}`);
-    return (
-      <FormFieldWrapper {...props}>
-        <Radio.Group {...ctxProps} {...props}>
-          {values.map(renderRadio)}
-        </Radio.Group>
-      </FormFieldWrapper>
-    );
-  },
+  <T extends string>({values, renderRadio, ...props}: RadioGroupProps<T>) => (
+    <FormFieldWrapper {...props}>
+      <Radio.Group {...useFieldContext(props.name)} {...props}>
+        {values.map(renderRadio)}
+      </Radio.Group>
+    </FormFieldWrapper>
+  ),
 );
 
 export const FormRadio = memo((props: React.ComponentProps<typeof Radio>) => (
