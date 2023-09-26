@@ -1,10 +1,10 @@
 import {Badge, HStack, Heading, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
-import {Project} from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from '../../screens/AppScaffold';
 import {Card} from '../common/Card';
 import {Icon} from '../common/Icons';
+import {Project} from 'terraso-client-shared/project/projectSlice';
 
 type Props = {
   project: Project;
@@ -48,7 +48,7 @@ export default function ProjectPreviewCard({project}: Props) {
           variant="chip"
           backgroundColor="primary.lightest"
           startIcon={<Icon name="people-alt" />}>
-          {Object.keys(project.membershipIds).length}
+          {Object.keys(project.memberships).length}
         </Badge>
       </HStack>
     </Card>
