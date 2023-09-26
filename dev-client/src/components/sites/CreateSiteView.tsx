@@ -1,4 +1,12 @@
-import {Text, Fab, FormControl, ScrollView, VStack, Column} from 'native-base';
+import {
+  Text,
+  Fab,
+  FormControl,
+  ScrollView,
+  VStack,
+  Column,
+  Link,
+} from 'native-base';
 import {useCallback, useMemo, useEffect} from 'react';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from '../../screens/AppScaffold';
@@ -9,7 +17,7 @@ import {useSelector} from '../../model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from '../../model/map/mapSlice';
 import {ProjectSelect} from '../projects/ProjectSelect';
-import {coordsToString} from '../common/Map';
+import {coordsToString, parseCoords} from '../common/Map';
 import {Formik, FormikProps} from 'formik';
 import {
   FormField,
@@ -18,6 +26,7 @@ import {
   FormRadioGroup,
   FormHelperText,
   FormLabel,
+  FormTooltip,
 } from '../common/Form';
 
 type LocationInputOptions = 'manual' | 'gps' | 'pin';
@@ -55,10 +64,10 @@ const CreateSiteForm = ({
   );
 
   useEffect(() => {
-    if (currentCoords) {
+    if (currentCoords && values.coords !== coordsToString(currentCoords)) {
       handleChange('coords')(coordsToString(currentCoords));
     }
-  }, [currentCoords, values.locationSource, handleChange]);
+  }, [currentCoords, values.coords, handleChange]);
 
   const projectPrivacy = useSelector(state =>
     values.projectId
@@ -67,7 +76,7 @@ const CreateSiteForm = ({
   );
 
   return (
-    <VStack p={5} space={3}>
+    <VStack p="16px" pt="30px" space="18px">
       <FormInput name="name" placeholder={t('site.create.name_placeholder')} />
       <FormRadioGroup
         name="locationSource"
@@ -107,7 +116,12 @@ const CreateSiteForm = ({
         )}
       </FormField>
       <FormField name="projectId">
-        <FormLabel>{t('site.create.add_to_project_label')}</FormLabel>
+        <FormLabel>
+          {t('site.create.add_to_project_label')}
+          <FormTooltip icon="help">
+            {t('site.create.add_to_project_tooltip')}
+          </FormTooltip>
+        </FormLabel>
         <ProjectSelect
           projectId={values.projectId}
           setProjectId={projectId =>
@@ -115,18 +129,27 @@ const CreateSiteForm = ({
           }
         />
       </FormField>
-      <FormRadioGroup
-        name="privacy"
-        label={t('privacy.label')}
-        values={['PUBLIC', 'PRIVATE']}
-        variant="oneLine"
-        value={projectPrivacy ?? values.privacy}
-        renderRadio={value => (
-          <FormRadio value={value} isDisabled={projectPrivacy !== undefined}>
-            {t(`privacy.${value}.title`)}
-          </FormRadio>
-        )}
-      />
+      <FormField name="privacy">
+        <FormLabel>
+          {t('privacy.label')}
+          <FormTooltip icon="help">
+            {t('site.create.privacy_tooltip')}
+            <Link _text={{color: 'primary.lightest'}}>
+              {t('site.create.privacy_tooltip_link')}
+            </Link>
+          </FormTooltip>
+        </FormLabel>
+        <FormRadioGroup
+          values={['PUBLIC', 'PRIVATE']}
+          variant="oneLine"
+          value={projectPrivacy ?? values.privacy}
+          renderRadio={value => (
+            <FormRadio value={value} isDisabled={projectPrivacy !== undefined}>
+              {t(`privacy.${value}.title`)}
+            </FormRadio>
+          )}
+        />
+      </FormField>
       <Fab
         label={t('general.save_fab')}
         onPress={() => handleSubmit()}
@@ -169,7 +192,10 @@ export const CreateSiteView = ({
   const onSave = useCallback(
     async (form: FormState) => {
       const {coords, ...site} = validationSchema.cast(form);
-      const createdSite = await createSiteCallback({...site, ...coords});
+      const createdSite = await createSiteCallback({
+        ...site,
+        ...parseCoords(coords),
+      });
       if (createdSite !== undefined) {
         navigation.replace('LOCATION_DASHBOARD', {siteId: createdSite.id});
       }

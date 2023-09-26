@@ -27,6 +27,7 @@ export const theme = extendTheme({
     },
     action: {
       active: '#1A202C',
+      active_subtle: '#1A202CB2',
     },
     text: {
       primary: '#1A202C',
@@ -149,6 +150,9 @@ export const theme = extendTheme({
     },
     IconButton: {
       sizes: {
+        xs: {
+          padding: '0px',
+        },
         sm: {
           padding: '4px',
         },
@@ -176,11 +180,12 @@ export const theme = extendTheme({
     },
     Radio: {
       baseStyle: {
-        my: '6px',
         fontSize: '16px',
         fontWeight: 400,
         lineHeight: '24px',
         letterSpacing: '0.15px',
+        m: '8px',
+        mr: '0px',
       },
     },
     Text: {
