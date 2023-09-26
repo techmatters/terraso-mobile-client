@@ -40,7 +40,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.0",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#b24de7b",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "yup": "^1.2.0"
   },
   "devDependencies": {
@@ -53,7 +53,7 @@
     "@types/react": "^18.2.21",
     "@types/react-native-vector-icons": "^6.4.14",
     "@types/react-test-renderer": "^18.0.1",
-    "@types/uuid": "^9.0.2",
+    "@types/uuid": "^9.0.4",
     "babel-jest": "^29.6.2",
     "depcheck": "^1.4.6",
     "eslint": "^8.47.0",
