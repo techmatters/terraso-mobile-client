@@ -61,7 +61,7 @@ export default function ProjectTabs({project}: Props) {
       Object.values<ProjectMembership>(project.memberships)
         .filter(({userId}) => userId in users)
         .map(membership => [membership, users[membership.userId]]),
-    [],
+    [project.memberships, users],
   );
 
   return (
