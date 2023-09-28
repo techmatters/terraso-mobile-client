@@ -75,14 +75,16 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           projects[projectIdA].name.localeCompare(projects[projectIdB].name),
         )
         .map(
-          ([projectId, sites]) =>
-            [projects[projectId], Object.values(sites)] as const,
+          ([projIds, projSites]) =>
+            [projects[projIds], Object.values(projSites)] as const,
         ),
     ].map(
-      ([projectId, sites]) =>
+      ([pId, projSites]) =>
         [
-          projectId,
-          sites.sort((siteA, siteB) => siteA.name.localeCompare(siteB.name)),
+          pId,
+          projSites.sort((siteA, siteB) =>
+            siteA.name.localeCompare(siteB.name),
+          ),
         ] as const,
     );
   }, [projects, project.id, searchedSites]);

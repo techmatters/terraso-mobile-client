@@ -9,19 +9,19 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import {Membership} from 'terraso-client-shared/memberships/membershipsSlice';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
+import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 
 type ListProps = {
-  memberships: [string, [Membership, User]][];
+  memberships: [string, [ProjectMembership, User]][];
   currentUserId?: string;
-  userAction: (membership: Membership) => () => void;
+  userAction: (membership: ProjectMembership) => () => void;
 };
 
 type ItemProps = {
-  membership: Membership;
+  membership: ProjectMembership;
   user: User;
   currentUserId?: string;
   onPress?: () => void;
