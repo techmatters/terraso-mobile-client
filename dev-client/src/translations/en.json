@@ -79,7 +79,12 @@
         "label": "Last Modified",
         "value": "{{date}} {{name}}"
       },
-      "default_title": "Location Information"
+      "default_title": "Location Information",
+      "speed_dial": {
+        "note_label": "NOTE",
+        "photo_label": "PHOTO",
+        "bedrock_label": "BEDROCK"
+      }
     },
     "search": {
       "placeholder": "Search sites",
@@ -91,6 +96,11 @@
       "MANAGER": "Manager",
       "CONTRIBUTOR": "Contributor",
       "VIEWER": "Viewer"
+    },
+    "tabs": {
+      "SITE": "Site",
+      "SLOPE": "Slope",
+      "SOIL": "Soil"
     }
   },
   "projects": {
@@ -192,7 +202,8 @@
     "details": "Details",
     "apply": "Apply",
     "example_email": "name@domain.com",
-    "profile_image_alt": "Profile image"
+    "profile_image_alt": "Profile image",
+    "add": "ADD"
   },
   "screens": {
     "HOME": "LandPKS",
@@ -245,6 +256,15 @@
     "confidence": "Confidence",
     "soil_id": "Soil ID",
     "ecological_site_id": "Ecological Site ID",
-    "land_capability_classification": "Land Capability Classification"
+    "land_capability_classification": "Land Capability Classification",
+    "profile": "Soil Profile",
+    "add_depth_label": "ADD DEPTH",
+    "depth_interval": {
+      "add_title": "Add depth interval",
+      "label_help": "{{max}} characters max",
+      "label_placeholder": "Label",
+      "start_label": "From ({{unit}})",
+      "end_label": "To ({{unit}})"
+    }
   }
 }

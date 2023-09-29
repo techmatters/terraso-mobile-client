@@ -6,6 +6,7 @@ export const theme = extendTheme({
       main: '#276749',
       contrast: '#FFFFFF',
       lightest: '#9AE6B4',
+      dark: '#22543D',
       // TODO: This is used for the colorScheme value for Radio
       // We should figure out how the color scheme stuff works and see if we can
       // map our current variables to 100, 200 values etc.
@@ -164,6 +165,12 @@ export const theme = extendTheme({
         size: 'sm',
         _icon: {
           size: 'md',
+        },
+      },
+      variants: {
+        FAB: {
+          padding: '16px',
+          shadow: 2,
         },
       },
     },

@@ -1,6 +1,5 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import ProjectInputTab from './ProjectInputTab';
-import {useTheme} from 'native-base';
 import ProjectTeamTab from './ProjectTeamTab';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
@@ -13,6 +12,7 @@ import {
 import {useSelector} from '../../model/store';
 import {useMemo} from 'react';
 import {User} from 'terraso-client-shared/account/accountSlice';
+import {useDefaultTabOptions} from '../../screens/TabBar';
 
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
 
@@ -24,7 +24,7 @@ type ScreenOptions = React.ComponentProps<
 type Props = {project: Project};
 
 export default function ProjectTabs({project}: Props) {
-  const {colors} = useTheme();
+  const defaultTabOptions = useDefaultTabOptions();
 
   const tabIconNames: Record<keyof TabStackParamList, string> = {
     Inputs: 'tune',
@@ -37,19 +37,9 @@ export default function ProjectTabs({project}: Props) {
     let iconName = tabIconNames[route.name];
 
     return {
-      tabBarScrollEnabled: true,
+      ...defaultTabOptions,
       tabBarIcon: ({color}) => {
         return <Icon name={iconName} color={color} />;
-      },
-      tabBarActiveTintColor: colors.primary.contrast,
-      tabBarInactiveTintColor: colors.secondary.main,
-      tabBarItemStyle: {width: 100, flexDirection: 'row'},
-      tabBarStyle: {
-        backgroundColor: colors.grey[200],
-      },
-      tabBarIndicatorStyle: {
-        backgroundColor: colors.secondary.main,
-        height: '100%',
       },
     };
   };
