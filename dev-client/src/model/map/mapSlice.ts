@@ -5,15 +5,22 @@ export type Coords = {
   longitude: number;
 };
 
+export type UserLocation = {
+  coords: Coords | null;
+  accuracyM: number | null;
+};
 const initialState = {
-  userLocation: null as Coords | null,
+  userLocation: {
+    coords: null,
+    accuracyM: null,
+  } as UserLocation,
 };
 
 const mapSlice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    updateLocation(state, action: PayloadAction<Coords>) {
+    updateLocation(state, action: PayloadAction<UserLocation>) {
       state.userLocation = action.payload;
     },
   },

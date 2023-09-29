@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import CreateSiteView from '../components/sites/CreateSiteView';
+import {CreateSiteView} from '../components/sites/CreateSiteView';
 import {useDispatch} from '../model/store';
 import {
   addSite,
@@ -44,7 +44,7 @@ export const CreateSiteScreen = (props: Props = {}) => {
       AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
       <CreateSiteView
         createSiteCallback={createSiteCallback}
-        defaultProject={'projectId' in props ? props.projectId : undefined}
+        defaultProjectId={'projectId' in props ? props.projectId : undefined}
         sitePin={'coords' in props ? props.coords : undefined}
       />
     </ScreenScaffold>

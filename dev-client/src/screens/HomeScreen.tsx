@@ -88,16 +88,16 @@ export const HomeScreen = () => {
     dispatch(fetchProjectsForUser());
   }, [dispatch, currentUserID]);
 
-  const currentUserLocation = useSelector(state => state.map.userLocation);
+  const currentUserCoords = useSelector(state => state.map.userLocation.coords);
   const [initialLocation, setInitialLocation] = useState<Coords | null>(
-    currentUserLocation,
+    currentUserCoords,
   );
 
   useEffect(() => {
-    if (initialLocation === null && currentUserLocation !== null) {
-      setInitialLocation(currentUserLocation);
+    if (initialLocation === null && currentUserCoords !== null) {
+      setInitialLocation(currentUserCoords);
     }
-  }, [initialLocation, currentUserLocation, setInitialLocation]);
+  }, [initialLocation, currentUserCoords, setInitialLocation]);
 
   const moveToPoint = useCallback(
     (coords: Coords) => {
@@ -127,10 +127,10 @@ export const HomeScreen = () => {
   );
 
   const moveToUser = useCallback(() => {
-    if (currentUserLocation !== null) {
-      moveToPoint(currentUserLocation);
+    if (currentUserCoords !== null) {
+      moveToPoint(currentUserCoords);
     }
-  }, [currentUserLocation, moveToPoint]);
+  }, [currentUserCoords, moveToPoint]);
 
   const toggleMapLayer = useCallback(
     () =>
