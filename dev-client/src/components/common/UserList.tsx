@@ -52,8 +52,7 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
         <HStack space={3} justifyContent="space-between" alignItems="center">
           <Box>
             <Image
-              size={50}
-              borderRadius={100}
+              variant="profilePic"
               source={{uri: user.profileImage}}
               alt="profile pic"
             />
