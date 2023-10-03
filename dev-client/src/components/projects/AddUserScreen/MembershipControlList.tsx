@@ -1,7 +1,7 @@
 import {FlatList, HStack, Heading, Image, Select, VStack} from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {IconButton} from '../../code/terraso-mobile-client/dev-client/src/components/common/Icons';
-import {formatNames} from '../../code/terraso-mobile-client/dev-client/src/util';
+import {IconButton} from '../../common/Icons';
+import {formatNames} from '../../../util';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 
 type UserWithRole = {
@@ -12,6 +12,7 @@ type UserWithRole = {
 type Props = {
   users: UserWithRole[];
   updateUserRole: (role: UserRole, userId: string) => void;
+  removeUser: (userId: string) => void;
 };
 
 type DisplayProps = {
@@ -19,13 +20,15 @@ type DisplayProps = {
   role: UserRole;
   roles: [UserRole, string][];
   updateUserRole: (role: UserRole) => void;
+  removeUser: () => void;
 };
 
 const UserDisplay = ({
-  user: {id, profileImage, firstName, lastName, email},
+  user: {profileImage, firstName, lastName, email},
   roles,
   role,
   updateUserRole,
+  removeUser,
 }: DisplayProps) => {
   return (
     <HStack>
@@ -43,12 +46,19 @@ const UserDisplay = ({
           ))}
         </Select>
       </VStack>
-      <IconButton name="delete" />
+      <IconButton name="delete" onPress={removeUser} />
     </HStack>
   );
 };
 
-export const MembershipControlList = ({users, updateUserRole}: Props) => {
+export const MembershipControlList = ({
+  users,
+  updateUserRole,
+  removeUser,
+}: Props) => {
+  const itemUpdateUserRole = (userId: string) => (role: UserRole) =>
+    updateUserRole(role, userId);
+  const itemRemoveUser = (userId: string) => () => removeUser(userId);
   return (
     <FlatList
       renderItem={({item: {user, role}}) => (
@@ -60,7 +70,8 @@ export const MembershipControlList = ({users, updateUserRole}: Props) => {
             ['contributor', 'Contributor'],
             ['manager', 'Manager'],
           ]}
-          updateUserRole={role => updateUserRole(role, user.id)}
+          updateUserRole={itemUpdateUserRole(user.id)}
+          removeUser={itemRemoveUser(user.id)}
         />
       )}
       data={users}
