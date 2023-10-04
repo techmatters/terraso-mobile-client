@@ -162,7 +162,8 @@
     "select_all": "Select All",
     "you": "you",
     "details": "Details",
-    "apply": "Apply"
+    "apply": "Apply",
+    "example_email": "name@domain.com"
   },
   "screens": {
     "HOME": "LandPKS",
@@ -171,7 +172,8 @@
     "LOGIN": "Login",
     "CREATE_PROJECT": "Create Project",
     "SITE_TRANSFER_PROJECT": "Project #{{id}}",
-    "CREATE_SITE": "Create Site"
+    "CREATE_SITE": "Create Site",
+    "ADD_USER_PROJECT": "Add user"
   },
   "login": {
     "title": "LandPKS",

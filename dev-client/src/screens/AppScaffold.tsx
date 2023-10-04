@@ -24,6 +24,7 @@ import {SiteTeamSettingsScreen} from '../components/sites/SiteTeamSettings';
 import {Location, locationManager} from '@rnmapbox/maps';
 import {updateLocation} from '../model/map/mapSlice';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../constants';
+import {AddUserToProjectScreen} from '../components/projects/AddUserToProjectScreen';
 
 const screenDefinitions = {
   LOGIN: LoginScreen,
@@ -36,6 +37,7 @@ const screenDefinitions = {
   LOCATION_DASHBOARD: LocationDashboardScreen,
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
+  ADD_USER_PROJECT: AddUserToProjectScreen,
 } satisfies Record<string, React.FC<any>>;
 
 type ScreenName = keyof typeof screenDefinitions;

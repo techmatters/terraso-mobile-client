@@ -11,12 +11,14 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';
+import {useNavigation} from '../../screens/AppScaffold';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 
 export default function ProjectTeamTab({route}: Props) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const currentUser = useSelector(state => state.account.currentUser);
   let [members, setMembers] = useState(
     route.params.memberships.reduce(
@@ -45,7 +47,15 @@ export default function ProjectTeamTab({route}: Props) {
 
   return (
     <VStack alignItems="flex-start" p={4} space={3}>
-      <AddButton text={t('projects.team.add')} />
+      <AddButton
+        text={t('projects.team.add')}
+        buttonProps={{
+          onPress: () =>
+            navigation.navigate('ADD_USER_PROJECT', {
+              projectId: route.params.projectId,
+            }),
+        }}
+      />
       <UserList
         memberships={Object.entries(members)}
         currentUserId={currentUser.data?.id}
