@@ -190,10 +190,8 @@ export const CreateSiteView = ({
   const navigation = useNavigation();
 
   const onSave = useCallback(
-    async (form: FormState) => {
-      let input: Partial<FormState> = {...form};
-      delete input.locationSource;
-      const {coords, ...site} = validationSchema.cast(input);
+    async ({locationSource: _, ...form}: FormState) => {
+      const {coords, ...site} = validationSchema.cast(form);
       const createdSite = await createSiteCallback({
         ...site,
         ...parseCoords(coords),
