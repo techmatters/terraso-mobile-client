@@ -1,8 +1,17 @@
-import {FlatList, HStack, Heading, Image, Select, VStack} from 'native-base';
+import {
+  Center,
+  FlatList,
+  HStack,
+  Heading,
+  Image,
+  Select,
+  VStack,
+} from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {IconButton} from '../../common/Icons';
 import {formatNames} from '../../../util';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
+import {useTranslation} from 'react-i18next';
 
 type UserFields = Omit<User, 'preferences'>;
 
@@ -29,9 +38,16 @@ const UserDisplay = ({
   updateUserRole,
   removeUser,
 }: DisplayProps) => {
+  const {t} = useTranslation();
   return (
     <HStack>
-      <Image variant="profilePic" source={{uri: profileImage}} />
+      <Center>
+        <Image
+          variant="profilePic"
+          source={{uri: profileImage}}
+          alt={t('general.profile_image')}
+        />
+      </Center>
       <VStack>
         <Heading>{formatNames(firstName, lastName)}</Heading>
         <Heading>{email}</Heading>

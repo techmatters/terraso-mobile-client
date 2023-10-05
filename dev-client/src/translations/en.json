@@ -168,7 +168,8 @@
     "you": "you",
     "details": "Details",
     "apply": "Apply",
-    "example_email": "name@domain.com"
+    "example_email": "name@domain.com",
+    "profile_image_alt": "Profile image"
   },
   "screens": {
     "HOME": "LandPKS",
