@@ -21,7 +21,7 @@ export const FreeformTextInput = ({validationFunc, placeholder}: Props) => {
       setHasError(validationResults);
     } else {
       setTextValue('');
-      setHasError('');
+      setHasError(null);
     }
   }, [validationFunc, textValue, setTextValue]);
 
