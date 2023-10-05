@@ -1,4 +1,4 @@
-import {Fab} from 'native-base';
+import {Box, Button, HStack, Heading, Text} from 'native-base';
 import {FreeformTextInput} from '../../common/FreeformTextInput';
 import {useTranslation} from 'react-i18next';
 import {AppBar, ScreenScaffold} from '../../../screens/ScreenScaffold';
@@ -29,6 +29,10 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   );
 
   const userList = useMemo(() => Object.values(userRecord), [userRecord]);
+  const disableSubmit = useMemo(
+    () => isSubmitting || Object.keys(userRecord).length === 0,
+    [userRecord, isSubmitting],
+  );
 
   const validationFunc = async (email: string) => {
     const userExists = await checkUserInProject(projectId, email);
@@ -86,21 +90,32 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar title={projectName} />}>
-      <FreeformTextInput
-        validationFunc={validationFunc}
-        placeholder={t('general.example_email')}
-      />
+      <Box mx="5%" mb="15px" mt="22px">
+        <Text variant="body1" fontWeight="bold">
+          {t('projects.add_user.heading')}
+        </Text>
+        <Text variant="body1">{t('projects.add_user.help_text')}</Text>
+      </Box>
+      <Box mx="5%">
+        <FreeformTextInput
+          validationFunc={validationFunc}
+          placeholder={t('general.example_email')}
+        />
+      </Box>
       <MembershipControlList
         users={userList}
         updateUserRole={updateUserRole}
         removeUser={removeUser}
       />
-      <Fab
-        label={t('general.save_fab')}
-        onPress={submitUsers}
-        disabled={isSubmitting}
-        renderInPortal={false}
-      />
+      <HStack flexDirection="row-reverse" my="20px" ml="20px">
+        <Button
+          onPress={submitUsers}
+          isDisabled={disableSubmit}
+          isLoading={isSubmitting}
+          w="100px">
+          {t('general.save_fab')}
+        </Button>
+      </HStack>
     </ScreenScaffold>
   );
 };
