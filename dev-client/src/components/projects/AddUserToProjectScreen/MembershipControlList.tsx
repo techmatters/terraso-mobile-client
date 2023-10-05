@@ -57,7 +57,7 @@ const UserDisplay = ({
             updateUserRole(value as UserRole);
           }}>
           {roles.map(([role, label]) => (
-            <Select.Item value={role} label={label} />
+            <Select.Item value={role} label={label} key={role} />
           ))}
         </Select>
       </VStack>
