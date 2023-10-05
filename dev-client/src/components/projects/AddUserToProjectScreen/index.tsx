@@ -1,23 +1,23 @@
-import {ScrollView} from 'native-base';
+import {Box, ScrollView} from 'native-base';
 import {FreeformTextInput} from '../../common/FreeformTextInput';
 import {useTranslation} from 'react-i18next';
 import {ScreenScaffold} from '../../../screens/ScreenScaffold';
-import {useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
-import {User} from 'terraso-client-shared/account/accountSlice';
 import {checkUserInProject} from 'terraso-client-shared/account/accountService';
+import MembershipControlList, {UserWithRole} from './MembershipControlList';
 
 type Props = {
   projectId: string;
 };
-
-type UserWithRole = {user: Omit<User, 'preferences'>; role: UserRole};
 
 export const AddUserToProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const [userRecord, setUserRecord] = useState<Record<string, UserWithRole>>(
     {},
   );
+
+  const userList = useMemo(() => Object.values(userRecord), [userRecord]);
 
   const validationFunc = async (email: string) => {
     const userExists = await checkUserInProject(projectId, email);
@@ -41,14 +41,33 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
     return null;
   };
 
+  const updateUserRole = useCallback((role: UserRole, userId: string) => {
+    setUserRecord(users => {
+      const newUsers = {...users};
+      newUsers[userId].role = role;
+      return newUsers;
+    });
+  }, []);
+
+  const removeUser = useCallback((userId: string) => {
+    setUserRecord(users => {
+      let newUsers = {...users};
+      delete newUsers[userId];
+      return newUsers;
+    });
+  }, []);
+
   return (
     <ScreenScaffold>
-      <ScrollView>
-        <FreeformTextInput
-          validationFunc={validationFunc}
-          placeholder={t('general.example_email')}
-        />
-      </ScrollView>
+      <FreeformTextInput
+        validationFunc={validationFunc}
+        placeholder={t('general.example_email')}
+      />
+      <MembershipControlList
+        users={userList}
+        updateUserRole={updateUserRole}
+        removeUser={removeUser}
+      />
     </ScreenScaffold>
   );
 };
