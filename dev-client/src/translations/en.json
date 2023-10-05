@@ -133,8 +133,9 @@
       "private": "Private"
     },
     "add_user": {
-      "user_does_not_exist": "User {{email}} is not a Terraso user, unable to add to project",
-      "user_in_project": "User {{email}} is already a member of this project"
+      "user_does_not_exist": "User {{email}} is not a Terraso user, unable to add to project.",
+      "user_in_project": "User {{email}} is already a member of this project.",
+      "already_added": "User {{email}} already added to user list."
     },
     "transfer_sites": {
       "heading": "Transfer existing sites",

@@ -15,9 +15,11 @@ type UserWithRole = {user: Omit<User, 'preferences'>; role: UserRole};
 
 export const AddUserToProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
-  const [usersList, setUsersList] = useState<UserWithRole[]>([]);
+  const [userRecord, setUserRecord] = useState<Record<string, UserWithRole>>(
+    {},
+  );
 
-  const validationFunc = useCallback(async (email: string) => {
+  const validationFunc = async (email: string) => {
     const userExists = await checkUserInProject(projectId, email);
     if ('type' in userExists) {
       switch (userExists.type) {
@@ -27,12 +29,17 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
           return t('projects.add_user.user_in_project', {email: email});
       }
     }
-    setUsersList(usersList => [
-      ...usersList,
-      {user: userExists, role: 'viewer'},
-    ]);
+    if (userExists.id in userRecord) {
+      return t('projects.add_user.already_added', {email: email});
+    }
+    setUserRecord(users => {
+      return {
+        ...users,
+        [userExists.id]: {user: userExists, role: 'viewer'},
+      };
+    });
     return null;
-  }, []);
+  };
 
   return (
     <ScreenScaffold>
