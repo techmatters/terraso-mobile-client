@@ -4,10 +4,9 @@ import {IconButton} from '../../common/Icons';
 import {formatNames} from '../../../util';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 
-type UserWithRole = {
-  user: User;
-  role: UserRole;
-};
+type UserFields = Omit<User, 'preferences'>;
+
+export type UserWithRole = {user: UserFields; role: UserRole};
 
 type Props = {
   users: UserWithRole[];
@@ -16,7 +15,7 @@ type Props = {
 };
 
 type DisplayProps = {
-  user: User;
+  user: UserFields;
   role: UserRole;
   roles: [UserRole, string][];
   updateUserRole: (role: UserRole) => void;
