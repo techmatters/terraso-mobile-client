@@ -1,14 +1,15 @@
 import {
   Center,
+  Divider,
   FlatList,
   HStack,
-  Heading,
   Image,
   Select,
+  Text,
   VStack,
 } from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {IconButton} from '../../common/Icons';
+import {Icon, IconButton} from '../../common/Icons';
 import {formatNames} from '../../../util';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useTranslation} from 'react-i18next';
@@ -40,29 +41,40 @@ const UserDisplay = ({
 }: DisplayProps) => {
   const {t} = useTranslation();
   return (
-    <HStack>
-      <Center>
-        <Image
-          variant="profilePic"
-          source={{uri: profileImage}}
-          alt={t('general.profile_image_alt')}
-        />
-      </Center>
-      <VStack>
-        <Heading>{formatNames(firstName, lastName)}</Heading>
-        <Heading>{email}</Heading>
-        <Select
-          selectedValue={role}
-          onValueChange={value => {
-            updateUserRole(value as UserRole);
-          }}>
-          {roles.map(([role, label]) => (
-            <Select.Item value={role} label={label} key={role} />
-          ))}
-        </Select>
-      </VStack>
-      <IconButton name="delete" onPress={removeUser} />
-    </HStack>
+    <VStack space="5px" my="10px">
+      <HStack>
+        <Center>
+          <Image
+            variant="profilePic"
+            source={{uri: profileImage}}
+            alt={t('general.profile_image_alt')}
+          />
+        </Center>
+        <VStack flexGrow={2} ml="15px">
+          <Text fontWeight={700} fontSize="16px">
+            {formatNames(firstName, lastName)}
+          </Text>
+          <Text fontWeight={400} fontSize="14px">
+            {email}
+          </Text>
+        </VStack>
+        <IconButton name="delete" onPress={removeUser} />
+      </HStack>
+      <Select
+        width="60%"
+        ml="50px"
+        variant="unstyled"
+        dropdownCloseIcon={<Icon name="arrow-drop-down" />}
+        dropdownOpenIcon={<Icon name="arrow-drop-down" />}
+        selectedValue={role}
+        onValueChange={value => {
+          updateUserRole(value as UserRole);
+        }}>
+        {roles.map(([role, label]) => (
+          <Select.Item value={role} label={label} key={role} />
+        ))}
+      </Select>
+    </VStack>
   );
 };
 
@@ -89,8 +101,13 @@ export const MembershipControlList = ({
           removeUser={itemRemoveUser(user.id)}
         />
       )}
+      ListHeaderComponent={Divider}
+      ListFooterComponent={Divider}
+      ItemSeparatorComponent={Divider}
       data={users}
       keyExtractor={({user: {id}}) => id}
+      mx="15px"
+      w="90%"
     />
   );
 };
