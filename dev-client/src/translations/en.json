@@ -132,6 +132,10 @@
       "public": "Public",
       "private": "Private"
     },
+    "add_user": {
+      "user_does_not_exist": "User {{email}} is not a Terraso user, unable to add to project",
+      "user_in_project": "User {{email}} is already a member of this project"
+    },
     "transfer_sites": {
       "heading": "Transfer existing sites",
       "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project.",
