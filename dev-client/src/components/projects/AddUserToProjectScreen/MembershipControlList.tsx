@@ -45,7 +45,7 @@ const UserDisplay = ({
         <Image
           variant="profilePic"
           source={{uri: profileImage}}
-          alt={t('general.profile_image')}
+          alt={t('general.profile_image_alt')}
         />
       </Center>
       <VStack>
