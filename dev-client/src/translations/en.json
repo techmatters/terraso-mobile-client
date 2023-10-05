@@ -178,8 +178,7 @@
     "LOGIN": "Login",
     "CREATE_PROJECT": "Create Project",
     "SITE_TRANSFER_PROJECT": "Project #{{id}}",
-    "CREATE_SITE": "Create Site",
-    "ADD_USER_PROJECT": "Add user"
+    "CREATE_SITE": "Create Site"
   },
   "login": {
     "title": "LandPKS",

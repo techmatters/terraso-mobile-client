@@ -1,14 +1,14 @@
 import {Fab} from 'native-base';
 import {FreeformTextInput} from '../../common/FreeformTextInput';
 import {useTranslation} from 'react-i18next';
-import {ScreenScaffold} from '../../../screens/ScreenScaffold';
+import {AppBar, ScreenScaffold} from '../../../screens/ScreenScaffold';
 import {useCallback, useMemo, useState} from 'react';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {checkUserInProject} from 'terraso-client-shared/account/accountService';
 import MembershipControlList, {UserWithRole} from './MembershipControlList';
 import {addUserToProject} from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from '../../../screens/AppScaffold';
-import {useDispatch} from '../../../model/store';
+import {useDispatch, useSelector} from '../../../model/store';
 
 type Props = {
   projectId: string;
@@ -23,6 +23,10 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  const projectName = useSelector(
+    state => state.project.projects[projectId]?.name,
+  );
 
   const userList = useMemo(() => Object.values(userRecord), [userRecord]);
 
@@ -81,7 +85,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   };
 
   return (
-    <ScreenScaffold>
+    <ScreenScaffold AppBar={<AppBar title={projectName} />}>
       <FreeformTextInput
         validationFunc={validationFunc}
         placeholder={t('general.example_email')}
