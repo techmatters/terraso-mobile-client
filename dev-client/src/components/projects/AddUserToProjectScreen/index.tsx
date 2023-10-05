@@ -1,8 +1,8 @@
 import {ScrollView} from 'native-base';
-import {FreeformTextInput} from '../common/FreeformTextInput';
+import {FreeformTextInput} from '../../common/FreeformTextInput';
 import {useTranslation} from 'react-i18next';
-import {ScreenScaffold} from '../../screens/ScreenScaffold';
-import {useCallback, useState} from 'react';
+import {ScreenScaffold} from '../../../screens/ScreenScaffold';
+import {useState} from 'react';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {checkUserInProject} from 'terraso-client-shared/account/accountService';
