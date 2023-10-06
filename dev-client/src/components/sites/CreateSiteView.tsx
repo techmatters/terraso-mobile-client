@@ -1,249 +1,222 @@
-import RadioBlock from '../common/RadioBlock';
-import {Fab, FormControl, Input, ScrollView, Text, VStack} from 'native-base';
-import {useCallback, useMemo, useState, useEffect} from 'react';
 import {
-  ProjectPrivacy,
-  SiteAddMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+  Text,
+  Fab,
+  FormControl,
+  ScrollView,
+  VStack,
+  Column,
+  Link,
+} from 'native-base';
+import {useCallback, useMemo, useEffect} from 'react';
+import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from '../../screens/AppScaffold';
 import {siteValidationSchema} from './validation';
-import {ValidationError} from 'yup';
-import {Icon} from '../common/Icons';
+import {InferType} from 'yup';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from '../../model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from '../../model/map/mapSlice';
 import {ProjectSelect} from '../projects/ProjectSelect';
+import {coordsToString, parseCoords} from '../common/Map';
+import {Formik, FormikProps} from 'formik';
+import {
+  FormField,
+  FormInput,
+  FormRadio,
+  FormRadioGroup,
+  FormHelperText,
+  FormLabel,
+  FormTooltip,
+} from '../common/Form';
 
-type LatLongString = {latitude: string; longitude: string};
+type LocationInputOptions = 'manual' | 'gps' | 'pin';
 
-function fromLocation(coords: Coords): LatLongString {
-  return {
-    longitude: String(coords.longitude),
-    latitude: String(coords.latitude),
-  };
-}
+type FormState = Omit<
+  InferType<ReturnType<typeof siteValidationSchema>>,
+  'coords'
+> & {
+  coords: string;
+  locationSource: LocationInputOptions;
+};
+
+const CreateSiteForm = ({
+  isSubmitting,
+  handleSubmit,
+  handleChange,
+  setValues,
+  values,
+  sitePin,
+}: FormikProps<FormState> & {sitePin: Coords | undefined}) => {
+  const {t} = useTranslation();
+
+  const {coords: userCoords, accuracyM} = useSelector(
+    state => state.map.userLocation,
+  );
+
+  const currentCoords = useMemo(
+    () =>
+      values.locationSource === 'gps'
+        ? userCoords
+        : values.locationSource === 'pin'
+        ? sitePin
+        : undefined,
+    [values.locationSource, userCoords, sitePin],
+  );
+
+  useEffect(() => {
+    if (currentCoords && values.coords !== coordsToString(currentCoords)) {
+      handleChange('coords')(coordsToString(currentCoords));
+    }
+  }, [currentCoords, values.coords, handleChange]);
+
+  const projectPrivacy = useSelector(state =>
+    values.projectId
+      ? state.project.projects[values.projectId].privacy
+      : undefined,
+  );
+
+  return (
+    <VStack p="16px" pt="30px" space="18px">
+      <FormInput name="name" placeholder={t('site.create.name_placeholder')} />
+      <FormRadioGroup
+        name="locationSource"
+        label={t('site.create.location_label')}
+        values={[...(sitePin ? ['pin'] : []), 'gps', 'manual']}
+        renderRadio={value => {
+          if (value !== 'gps' || accuracyM === null) {
+            return (
+              <FormRadio value={value}>{t(`site.create.${value}`)}</FormRadio>
+            );
+          }
+          return (
+            <FormRadio value={value} _stack={{alignItems: 'flex-start'}}>
+              <Column pt="6px">
+                <Text variant="body1">{t(`site.create.${value}`)}</Text>
+                <Text variant="body2">
+                  {t('site.create.location_accuracy', {
+                    accuracyM: Math.round(accuracyM),
+                  })}
+                </Text>
+              </Column>
+            </FormRadio>
+          );
+        }}
+      />
+      <FormField name="coords">
+        <FormControl.Label variant="subtle">
+          {t('site.create.coords_label')}
+        </FormControl.Label>
+        <FormInput
+          variant="underlined"
+          keyboardType="decimal-pad"
+          onChange={() => handleChange('locationSource')('manual')}
+        />
+        {values.locationSource === 'manual' && (
+          <FormHelperText>{t('site.create.coords_help')}</FormHelperText>
+        )}
+      </FormField>
+      <FormField name="projectId">
+        <FormLabel>
+          {t('site.create.add_to_project_label')}
+          <FormTooltip icon="help">
+            {t('site.create.add_to_project_tooltip')}
+          </FormTooltip>
+        </FormLabel>
+        <ProjectSelect
+          projectId={values.projectId}
+          setProjectId={projectId =>
+            setValues(current => ({...current, projectId}))
+          }
+        />
+      </FormField>
+      <FormField name="privacy">
+        <FormLabel>
+          {t('privacy.label')}
+          <FormTooltip icon="help">
+            {t('site.create.privacy_tooltip')}
+            <Link _text={{color: 'primary.lightest'}}>
+              {t('site.create.privacy_tooltip_link')}
+            </Link>
+          </FormTooltip>
+        </FormLabel>
+        <FormRadioGroup
+          values={['PUBLIC', 'PRIVATE']}
+          variant="oneLine"
+          value={projectPrivacy ?? values.privacy}
+          renderRadio={value => (
+            <FormRadio value={value} isDisabled={projectPrivacy !== undefined}>
+              {t(`privacy.${value}.title`)}
+            </FormRadio>
+          )}
+        />
+      </FormField>
+      <Fab
+        label={t('general.save_fab')}
+        onPress={() => handleSubmit()}
+        disabled={isSubmitting}
+      />
+    </VStack>
+  );
+};
 
 type Props = {
-  defaultProject?: string;
+  defaultProjectId?: string;
   sitePin?: Coords;
-  createSiteCallback?: (
+  createSiteCallback: (
     input: SiteAddMutationInput,
   ) => Promise<Site | undefined>;
 };
 
-type Args = Partial<
-  Omit<Record<keyof SiteAddMutationInput, string>, 'clientMutationId'> & {
-    privacy: ProjectPrivacy;
-  }
->;
-
-type Error = Partial<
-  Omit<Record<keyof SiteAddMutationInput, string[]>, 'clientMutationId'>
->;
-
-type LocationInputOptions = 'coords' | 'gps' | 'pin';
-
-export default function CreateSiteView({
-  defaultProject,
+export const CreateSiteView = ({
+  defaultProjectId,
   createSiteCallback,
   sitePin,
-}: Props) {
+}: Props) => {
   const {t} = useTranslation();
+  const validationSchema = useMemo(() => siteValidationSchema(t), [t]);
 
   const userLocation = useSelector(state => state.map.userLocation);
-  const projectMap = useSelector(state => state.project.projects);
-  const [submitting, setSubmitting] = useState(false);
-
-  const {latitude: defaultLat, longitude: defaultLon} = useMemo(
-    () => sitePin ?? userLocation ?? {latitude: '0', longitude: '0'},
-    [userLocation, sitePin],
+  const defaultProject = useSelector(state =>
+    defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
 
-  const [locationSource, setLocationSource] = useState<LocationInputOptions>(
-    sitePin ? 'pin' : userLocation ? 'gps' : 'coords',
-  );
-
-  /** We store the form state in mutationInput */
-  const [mutationInput, setMutationInput] = useState<Args>({
-    latitude: String(defaultLat),
-    longitude: String(defaultLon),
-    projectId: defaultProject ? projectMap[defaultProject]?.id : undefined,
-    privacy: defaultProject ? projectMap[defaultProject].privacy : 'PRIVATE',
-  });
-
-  const [errors, setErrors] = useState<Error>({});
+  const defaultLocationSource = sitePin
+    ? 'pin'
+    : userLocation.coords
+    ? 'gps'
+    : 'manual';
+  const defaultCoords = sitePin ?? userLocation.coords;
 
   const navigation = useNavigation();
 
-  /**
-   * Checks the form status with the yup library, and posts to backend
-   */
-  const onSave = useCallback(async () => {
-    setSubmitting(true);
-    if (createSiteCallback === undefined) {
-      return;
-    }
-
-    let validationResults;
-
-    try {
-      validationResults = await siteValidationSchema.validate(mutationInput);
-    } catch (validationError) {
-      setSubmitting(false);
-      if (validationError instanceof ValidationError) {
-        setErrors({
-          [validationError.path as keyof SiteAddMutationInput]:
-            validationError.errors,
-        });
-        return;
-      } else {
-        throw validationError;
+  const onSave = useCallback(
+    async (form: FormState) => {
+      const {coords, ...site} = validationSchema.cast(form);
+      const createdSite = await createSiteCallback({
+        ...site,
+        ...parseCoords(coords),
+      });
+      if (createdSite !== undefined) {
+        navigation.replace('LOCATION_DASHBOARD', {siteId: createdSite.id});
       }
-    }
-    const {name, latitude, longitude, projectId} = validationResults;
-    const createdSite = await createSiteCallback({
-      name,
-      latitude,
-      longitude,
-      projectId,
-    });
-    if (createdSite !== undefined) {
-      navigation.replace('LOCATION_DASHBOARD', {siteId: createdSite.id});
-    }
-    setSubmitting(false);
-  }, [mutationInput, createSiteCallback, navigation]);
-
-  /* calculates the associated location for a given location input option
-   * For example, for 'pin', it grabs and formats the value from the sitepin */
-  const locationOptions = useMemo(() => {
-    const options: Record<LocationInputOptions, LatLongString | null> = {
-      coords: {latitude: '', longitude: ''},
-      gps: userLocation && fromLocation(userLocation),
-      pin: (sitePin && fromLocation(sitePin)) ?? null,
-    };
-    return options;
-  }, [userLocation, sitePin]);
-
-  useEffect(() => {
-    if (userLocation !== null && locationSource === 'gps') {
-      setMutationInput(input => ({...input, ...locationOptions.gps}));
-    }
-  }, [userLocation, setMutationInput, locationSource, locationOptions]);
-
-  /** Callback passed to RadioBlock to update the value of the location input */
-  const updateLocationSource = useCallback(
-    (key: LocationInputOptions) => {
-      setLocationSource(key);
-      const newLocation = locationOptions[key];
-      if (newLocation === undefined) {
-        console.error(
-          `Trying to change location source ${key} , but no location associated`,
-        );
-        return;
-      }
-      setMutationInput(current => ({
-        ...current,
-        ...newLocation,
-      }));
     },
-    [locationOptions],
+    [createSiteCallback, navigation, validationSchema],
   );
 
   return (
     <ScrollView>
-      <VStack p={5} space={3}>
-        <FormControl>
-          <Input
-            placeholder={t('site.create.name_placeholder')}
-            value={mutationInput.name}
-            onChangeText={name =>
-              setMutationInput(current => ({...current, name}))
-            }
-          />
-          {/* TODO: FormControl.ErrorMessage does not seem to work :( */}
-          {errors.name &&
-            errors.name.map(msg => (
-              <Text color="error.main" key={msg}>
-                {msg}
-              </Text>
-            ))}
-        </FormControl>
-        <RadioBlock<LocationInputOptions>
-          label={t('site.create.location_label')}
-          options={{
-            gps: {text: t('site.create.gps')},
-            pin: {
-              text: t('site.create.pin'),
-              isDisabled: sitePin === undefined,
-            },
-            coords: {text: t('site.create.coords')},
-          }}
-          groupProps={{
-            name: 'location',
-            value: locationSource,
-            onChange: updateLocationSource,
-          }}
-        />
-        <FormControl>
-          <FormControl.Label>Latitude</FormControl.Label>
-          <Input
-            variant="underlined"
-            keyboardType="numeric"
-            size="sm"
-            onChangeText={latitude =>
-              setMutationInput(current => ({...current, latitude}))
-            }
-            value={mutationInput.latitude}
-            leftElement={<Icon mr={2} name="edit" />}
-          />
-        </FormControl>
-        <FormControl>
-          <FormControl.Label>Longitude</FormControl.Label>
-          <Input
-            size="sm"
-            variant="underlined"
-            keyboardType="numeric"
-            value={mutationInput.longitude}
-            onChangeText={longitude =>
-              setMutationInput(current => ({...current, longitude}))
-            }
-            leftElement={<Icon mr={2} name="edit" />}
-          />
-        </FormControl>
-        <FormControl>
-          <FormControl.Label>Add to Project</FormControl.Label>
-          <ProjectSelect
-            projectId={mutationInput.projectId}
-            setProjectId={projectId =>
-              setMutationInput(current => ({...current, projectId}))
-            }
-          />
-        </FormControl>
-        <RadioBlock<ProjectPrivacy>
-          label="Data Privacy"
-          options={{
-            PUBLIC: {text: 'Public'},
-            PRIVATE: {text: 'Private'},
-          }}
-          allDisabled={mutationInput.projectId ? true : undefined}
-          groupProps={{
-            variant: 'oneLine',
-            name: 'data-privacy',
-            value: mutationInput.privacy,
-            onChange: (privacy: ProjectPrivacy) =>
-              setMutationInput(current => ({
-                ...current,
-                privacy,
-              })),
-          }}
-        />
-        <Fab
-          label={t('general.save_fab')}
-          onPress={onSave}
-          disabled={submitting}
-        />
-      </VStack>
+      <Formik<FormState>
+        onSubmit={onSave}
+        validationSchema={validationSchema}
+        initialValues={{
+          name: '',
+          coords: defaultCoords ? coordsToString(defaultCoords) : '',
+          projectId: defaultProject?.id,
+          privacy: defaultProject?.privacy ?? 'PUBLIC',
+          locationSource: defaultLocationSource,
+        }}>
+        {props => <CreateSiteForm {...props} sitePin={sitePin} />}
+      </Formik>
     </ScrollView>
   );
-}
+};
