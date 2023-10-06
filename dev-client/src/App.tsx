@@ -40,15 +40,15 @@ function App(): JSX.Element {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <GestureHandlerRootView style={{flex: 1}}>
-      <NativeBaseProvider theme={theme}>
-        <NavigationContainer>
-          <LoginProvider>
-            <Provider store={store}>
+      <Provider store={store}>
+        <NativeBaseProvider theme={theme}>
+          <NavigationContainer>
+            <LoginProvider>
               <AppScaffold />
-            </Provider>
-          </LoginProvider>
-        </NavigationContainer>
-      </NativeBaseProvider>
+            </LoginProvider>
+          </NavigationContainer>
+        </NativeBaseProvider>
+      </Provider>
     </GestureHandlerRootView>
   );
 }

@@ -74,6 +74,7 @@ target 'Terraso LandPKS' do
         config.build_settings["LD"] = "clang"
         config.build_settings["CXX"] = "clang++"
         config.build_settings["LDPLUSPLUS"] = "clang++"
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
       end
     end
   end
