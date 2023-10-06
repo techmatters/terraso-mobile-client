@@ -98,7 +98,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
         </Text>
         <Text variant="body1">{t('projects.add_user.help_text')}</Text>
       </Box>
-      <Box mx="5%">
+      <Box mx="5%" mb="15px">
         <FreeformTextInput
           validationFunc={validationFunc}
           placeholder={t('general.example_email')}
