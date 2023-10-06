@@ -18,7 +18,9 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {SlopeScreen} from '../dataInputs/SlopeScreen';
 import {SoilScreen} from '../dataInputs/SoilScreen';
 import {useDefaultTabOptions} from '../../screens/TabBar';
-import {SpeedDial, SpeedDialButton} from '../common/SpeedDial';
+import {SpeedDial} from '../common/SpeedDial';
+import {Button} from 'native-base';
+import {Icon} from '../common/Icons';
 
 type Props = {siteId?: string; coords?: Coords};
 
@@ -54,18 +56,15 @@ const LocationDashboardTabs = (params: {siteId: string}) => {
     <>
       <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
       <SpeedDial>
-        <SpeedDialButton
-          name="description"
-          label={t('site.dashboard.speed_dial.note_label')}
-        />
-        <SpeedDialButton
-          name="image"
-          label={t('site.dashboard.speed_dial.photo_label')}
-        />
-        <SpeedDialButton
-          name="check"
-          label={t('site.dashboard.speed_dial.bedrock_label')}
-        />
+        <Button variant="speedDial" leftIcon={<Icon name="description" />}>
+          {t('site.dashboard.speed_dial.note_label')}
+        </Button>
+        <Button variant="speedDial" leftIcon={<Icon name="image" />}>
+          {t('site.dashboard.speed_dial.photo_label')}
+        </Button>
+        <Button variant="speedDial" leftIcon={<Icon name="image" />}>
+          {t('site.dashboard.speed_dial.bedrock_label')}
+        </Button>
       </SpeedDial>
     </>
   );

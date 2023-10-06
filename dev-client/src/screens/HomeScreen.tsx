@@ -11,7 +11,7 @@ import Mapbox, {Camera} from '@rnmapbox/maps';
 import {Coords} from '../model/map/mapSlice';
 import {useDispatch} from '../model/store';
 import {useSelector} from '../model/store';
-import {Site, fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteSlice';
 import {SiteListBottomSheet} from '../components/home/BottomSheet';
 import {useNavigation} from './AppScaffold';
 import {
@@ -20,7 +20,6 @@ import {
   ScreenScaffold,
   useHeaderHeight,
 } from './ScreenScaffold';
-import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
 import MapSearch from '../components/home/MapSearch';
 import {Box, Column, Heading, Image, Link, Text} from 'native-base';
 import {coordsToPosition} from '../components/common/Map';
@@ -36,6 +35,7 @@ import {CardCloseButton} from '../components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
 import {useTextSearch} from '../components/common/search/search';
 import {useFilterSites} from '../components/sites/filter';
+import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 
 export type CalloutState =
   | {
@@ -83,9 +83,9 @@ export const HomeScreen = () => {
   );
 
   useEffect(() => {
-    // load sites on mount
-    dispatch(fetchSitesForUser());
-    dispatch(fetchProjectsForUser());
+    if (currentUserID !== undefined) {
+      dispatch(fetchSoilDataForUser(currentUserID)).then(console.log);
+    }
   }, [dispatch, currentUserID]);
 
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
@@ -162,11 +162,11 @@ export const HomeScreen = () => {
   }, [navigation, calloutState]);
 
   const onInfo = useCallback(
-    () => infoBottomSheetRef?.current?.present(),
+    () => infoBottomSheetRef.current?.present(),
     [infoBottomSheetRef],
   );
   const onInfoClose = useCallback(
-    () => infoBottomSheetRef?.current?.dismiss(),
+    () => infoBottomSheetRef.current?.dismiss(),
     [infoBottomSheetRef],
   );
 

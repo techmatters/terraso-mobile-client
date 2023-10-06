@@ -1,5 +1,5 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import ProjectInputTab from './ProjectInputTab';
+import {ProjectInputTab} from './ProjectInputTab';
 import ProjectTeamTab from './ProjectTeamTab';
 import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
@@ -67,7 +67,11 @@ export default function ProjectTabs({project}: Props) {
           downloadLink: TEMP_DOWNLOAD_LINK,
         }}
       />
-      <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />
+      <Tab.Screen
+        name={TabRoutes.INPUTS}
+        component={ProjectInputTab}
+        initialParams={{projectId: project.id}}
+      />
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamTab}

@@ -70,6 +70,14 @@ export const theme = extendTheme({
           },
         },
         md: {
+          px: '16px',
+          py: '6px',
+          _text: {
+            fontSize: '14px',
+            fontWeight: 500,
+            lineHeight: '24px',
+            letterSpacing: '0.4px',
+          },
           _icon: {
             size: 'md',
           },
@@ -85,6 +93,26 @@ export const theme = extendTheme({
           py: '8px',
         },
       },
+      variants: {
+        speedDial: {
+          size: 'md',
+          borderRadius: '50px',
+          shadow: 6,
+          backgroundColor: 'primary.contrast',
+          _icon: {
+            size: 'sm',
+            color: 'text.primary',
+          },
+          _text: {
+            color: 'text.primary',
+          },
+        },
+        fullWidth: {
+          borderRadius: '0px',
+          width: 'full',
+          justifyContent: 'start',
+        },
+      },
     },
     FAB: {
       baseStyle: {
@@ -97,7 +125,7 @@ export const theme = extendTheme({
         },
         right: '24px',
         bottom: '24px',
-        shadow: 2,
+        shadow: 6,
       },
     },
     Select: {
@@ -160,6 +188,9 @@ export const theme = extendTheme({
         md: {
           padding: '12px',
         },
+        lg: {
+          padding: '16px',
+        },
       },
       defaultProps: {
         size: 'sm',
@@ -169,8 +200,13 @@ export const theme = extendTheme({
       },
       variants: {
         FAB: {
-          padding: '16px',
           shadow: 2,
+          borderRadius: 'full',
+          backgroundColor: 'primary.main',
+          _icon: {
+            color: 'primary.contrast',
+            size: 'md',
+          },
         },
       },
     },
@@ -263,6 +299,11 @@ export const theme = extendTheme({
           size: '50px',
           borderRadius: 100,
         },
+      },
+    },
+    Modal: {
+      defaultProps: {
+        avoidKeyboard: true,
       },
     },
   },
