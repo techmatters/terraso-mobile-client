@@ -37,6 +37,11 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   );
 
   const validationFunc = async (email: string) => {
+    if (email === '') {
+      // TODO: current bug means empty string for email is considered existing :(
+      // Easier just to explicitly reject it here
+      return t('projects.add_user.empty_email');
+    }
     const userExists = await checkUserInProject(projectId, email);
     if ('type' in userExists) {
       switch (userExists.type) {
@@ -49,6 +54,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
     if (userExists.id in userRecord) {
       return t('projects.add_user.already_added', {email: email});
     }
+
     setUserRecord(users => {
       return {
         ...users,
