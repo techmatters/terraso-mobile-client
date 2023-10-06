@@ -41,15 +41,13 @@ const UserDisplay = ({
 }: DisplayProps) => {
   const {t} = useTranslation();
   return (
-    <VStack space="5px" my="10px">
-      <HStack>
-        <Center>
-          <Image
-            variant="profilePic"
-            source={{uri: profileImage}}
-            alt={t('general.profile_image_alt')}
-          />
-        </Center>
+    <VStack space="5px">
+      <HStack mt="15px">
+        <Image
+          variant="profilePic"
+          source={{uri: profileImage}}
+          alt={t('general.profile_image_alt')}
+        />
         <VStack flexGrow={2} ml="15px">
           <Text fontWeight={700} fontSize="16px">
             {formatNames(firstName, lastName)}
@@ -107,6 +105,7 @@ export const MembershipControlList = ({
       data={users}
       keyExtractor={({user: {id}}) => id}
       mx="15px"
+      my="15px"
       w="90%"
     />
   );
