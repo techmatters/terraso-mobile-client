@@ -9,6 +9,7 @@ import MembershipControlList, {UserWithRole} from './MembershipControlList';
 import {addUserToProject} from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from '../../../screens/AppScaffold';
 import {useDispatch, useSelector} from '../../../model/store';
+import {useKeyboardOpen} from '../../../hooks';
 
 type Props = {
   projectId: string;
@@ -19,6 +20,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   const [userRecord, setUserRecord] = useState<Record<string, UserWithRole>>(
     {},
   );
+  const keyboardOpen = useKeyboardOpen();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigation = useNavigation();
@@ -107,7 +109,11 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
         updateUserRole={updateUserRole}
         removeUser={removeUser}
       />
-      <HStack flexDirection="row-reverse" my="20px" ml="20px">
+      <HStack
+        flexDirection="row-reverse"
+        my="20px"
+        ml="20px"
+        display={keyboardOpen ? 'none' : undefined}>
         <Button
           onPress={submitUsers}
           isDisabled={disableSubmit}
