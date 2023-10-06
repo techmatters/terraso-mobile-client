@@ -1,4 +1,4 @@
-import {Box, Button, HStack, Heading, Text} from 'native-base';
+import {Box, Button, HStack, Text} from 'native-base';
 import {FreeformTextInput} from '../../common/FreeformTextInput';
 import {useTranslation} from 'react-i18next';
 import {AppBar, ScreenScaffold} from '../../../screens/ScreenScaffold';

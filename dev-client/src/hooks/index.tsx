@@ -13,8 +13,12 @@ export const useKeyboardOpen = () => {
       setKeyboardOpen(false),
     );
     return () => {
-      if (openListener) openListener.remove();
-      if (closeListener) closeListener.remove();
+      if (openListener) {
+        openListener.remove();
+      }
+      if (closeListener) {
+        closeListener.remove();
+      }
     };
   });
 

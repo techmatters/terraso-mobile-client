@@ -1,5 +1,4 @@
 import {
-  Center,
   Divider,
   FlatList,
   HStack,
@@ -68,8 +67,8 @@ const UserDisplay = ({
         onValueChange={value => {
           updateUserRole(value as UserRole);
         }}>
-        {roles.map(([role, label]) => (
-          <Select.Item value={role} label={label} key={role} />
+        {roles.map(([roleName, label]) => (
+          <Select.Item value={roleName} label={label} key={roleName} />
         ))}
       </Select>
     </VStack>
