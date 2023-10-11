@@ -332,25 +332,18 @@ const SiteMap = (
     [calloutState, setCalloutState],
   );
 
-  const onPress = useCallback(() => {
-    Keyboard.dismiss();
-    setCalloutState({kind: 'none'});
-  }, [setCalloutState]);
-
-  const onLongPress = useCallback(
+  const onPress = useCallback(
     (feature: GeoJSON.Feature) => {
-      if (feature.geometry === null || feature.geometry.type !== 'Point') {
-        console.error(
-          'received long press with no feature geometry or non-Point geometry',
-          feature.geometry,
-        );
-        return;
+      if (feature.geometry !== null && feature.geometry.type === 'Point') {
+        setCalloutState({
+          kind: 'location',
+          coords: positionToCoords(feature.geometry.coordinates),
+          showCallout: true,
+        });
+      } else {
+        Keyboard.dismiss();
+        setCalloutState({kind: 'none'});
       }
-      setCalloutState({
-        kind: 'location',
-        coords: positionToCoords(feature.geometry.coordinates),
-        showCallout: true,
-      });
     },
     [setCalloutState],
   );
@@ -411,7 +404,6 @@ const SiteMap = (
     <Mapbox.MapView
       ref={mapRef}
       style={styles.mapView}
-      onLongPress={onLongPress}
       scaleBarEnabled={false}
       styleURL={styleURL}
       onPress={onPress}>
