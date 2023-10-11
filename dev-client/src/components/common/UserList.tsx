@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  Divider,
   FlatList,
   HStack,
   Image,
@@ -60,13 +61,12 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
           <Text flex={3}>{userName}</Text>
           <Box>
             <Badge
+              variant="chip"
               bg="primary.lightest"
-              _text={{color: 'text.primary'}}
-              borderRadius={14}
-              flex={0}
-              ml={6}>
-              {membership.userRole.charAt(0) +
-                membership.userRole.slice(1).toLowerCase()}
+              py="5px"
+              px="10px"
+              _text={{color: 'text.primary'}}>
+              {t('general.role.' + membership.userRole)}
             </Badge>
           </Box>
         </HStack>
@@ -79,7 +79,7 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
               _text={{color: 'error.main'}}
               bgColor="grey.200"
               onPress={onPress}>
-              LEAVE PROJECT
+              {t('projects.team.leave_project')}
             </Button>
           </Center>
         )}
@@ -105,6 +105,7 @@ export default function UserList({
         />
       )}
       keyExtractor={([id, _]) => id}
+      ItemSeparatorComponent={Divider}
     />
   );
 }

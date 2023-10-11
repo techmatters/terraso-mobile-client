@@ -119,7 +119,8 @@
       }
     },
     "team": {
-      "add": "Add team members"
+      "add": "Add team members",
+      "leave_project": "LEAVE PROJECT"
     },
     "edit": {
       "inputHeader": "General Project Settings"
@@ -192,7 +193,12 @@
     "details": "Details",
     "apply": "Apply",
     "example_email": "name@domain.com",
-    "profile_image_alt": "Profile image"
+    "profile_image_alt": "Profile image",
+    "role": {
+      "viewer": "Viewer",
+      "contributor": "Contributor",
+      "manager": "Manager"
+    }
   },
   "screens": {
     "HOME": "LandPKS",
