@@ -184,8 +184,7 @@ const TemporarySiteCallout = ({
   }, [closeCallout, navigation, coords]);
   const onLearnMore = useCallback(() => {
     navigation.navigate('LOCATION_DASHBOARD', {coords});
-    closeCallout();
-  }, [closeCallout, navigation, coords]);
+  }, [navigation, coords]);
 
   return (
     <Card buttons={<CardCloseButton onPress={closeCallout} />}>
