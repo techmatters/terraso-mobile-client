@@ -31,7 +31,8 @@ export const FreeformTextInput = ({validationFunc, placeholder}: Props) => {
         placeholder={placeholder !== undefined ? placeholder : ''}
         onSubmitEditing={handleSubmit}
         onChangeText={text => setTextValue(text)}
-        value={textValue}></Input>
+        value={textValue}
+      />
       <FormControl.ErrorMessage>{hasError}</FormControl.ErrorMessage>
     </FormControl>
   );
