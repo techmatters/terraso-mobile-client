@@ -88,7 +88,7 @@ const SiteMap = (
 
       if (targetZoom > currentZoom) {
         const animationDuration = 500 + (targetZoom - currentZoom) * 100;
-        repositionCamera(feature, targetZoom, animationDuration, cameraRef);
+        repositionCamera(feature, targetZoom, animationDuration, 0, cameraRef);
       } else {
         const leafFeatures = (await shapeSource.getClusterLeaves(
           feature,
@@ -112,7 +112,6 @@ const SiteMap = (
     async (event: OnPressEvent) => {
       const feature = event.features[0];
       const currentZoom = await mapRef.current?.getZoom();
-
       if (!currentZoom) {
         console.error('Unable to fetch the current zoom level');
         return;
@@ -125,7 +124,7 @@ const SiteMap = (
       ) {
         await handleClusterPress(feature, currentZoom);
       } else {
-        repositionCamera(feature, currentZoom, 500, cameraRef);
+        repositionCamera(feature, currentZoom, 500, 0, cameraRef);
         setCalloutState({kind: 'site', siteId: feature.id as string});
       }
     },
@@ -143,8 +142,15 @@ const SiteMap = (
   );
 
   const onPress = useCallback(
-    (feature: GeoJSON.Feature) => {
+    async (feature: GeoJSON.Feature) => {
       if (feature.geometry !== null && feature.geometry.type === 'Point') {
+        const currentZoom = await mapRef.current?.getZoom();
+        if (!currentZoom) {
+          console.error('Unable to fetch the current zoom level');
+          return;
+        }
+
+        repositionCamera(feature, currentZoom, 500, 320, cameraRef);
         setCalloutState({
           kind: 'location',
           coords: positionToCoords(feature.geometry.coordinates),

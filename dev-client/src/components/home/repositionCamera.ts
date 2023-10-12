@@ -4,6 +4,7 @@ export const repositionCamera = (
   feature: GeoJSON.Feature,
   zoomLevel: number,
   animationDuration: number,
+  paddingBottom: number,
   cameraRef?: React.RefObject<CameraRef>,
 ) => {
   if (!feature.geometry || feature.geometry.type !== 'Point') {
@@ -13,11 +14,18 @@ export const repositionCamera = (
     );
     return;
   }
+  const padding = {
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: paddingBottom,
+  };
 
   cameraRef?.current?.setCamera({
     zoomLevel,
     centerCoordinate: feature.geometry.coordinates,
     animationDuration,
     animationMode: 'easeTo',
+    padding,
   });
 };
