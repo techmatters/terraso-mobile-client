@@ -16,7 +16,7 @@ import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 
 type ListProps = {
-  memberships: [string, [ProjectMembership, User]][];
+  memberships: [ProjectMembership, User][];
   currentUserId?: string;
   userAction: (membership: ProjectMembership) => () => void;
 };
@@ -96,7 +96,7 @@ export default function UserList({
   return (
     <FlatList
       data={memberships}
-      renderItem={({item: [_, [membership, user]]}) => (
+      renderItem={({item: [membership, user]}) => (
         <UserItem
           membership={membership}
           user={user}
@@ -104,7 +104,7 @@ export default function UserList({
           onPress={userAction(membership)}
         />
       )}
-      keyExtractor={([id, _]) => id}
+      keyExtractor={([membership, _]) => membership.id}
       ItemSeparatorComponent={Divider}
     />
   );
