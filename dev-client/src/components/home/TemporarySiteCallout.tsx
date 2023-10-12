@@ -31,7 +31,9 @@ export const TemporarySiteCallout = ({
   }, [navigation, coords]);
 
   return (
-    <Card buttons={<CardCloseButton onPress={closeCallout} />}>
+    <Card
+      buttons={<CardCloseButton onPress={closeCallout} />}
+      showTriangle={true}>
       <Column space="12px">
         <CalloutDetail
           label={t('site.soil_id_prediction').toUpperCase()}

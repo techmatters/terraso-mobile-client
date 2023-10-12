@@ -16,8 +16,14 @@ type SiteCardProps = {
   site: Site;
   onShowSiteOnMap?: (site: Site) => void;
   buttons?: React.ReactNode;
+  showTriangle?: boolean;
 };
-export const SiteCard = ({site, onShowSiteOnMap, buttons}: SiteCardProps) => {
+export const SiteCard = ({
+  site,
+  onShowSiteOnMap,
+  buttons,
+  showTriangle,
+}: SiteCardProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state =>
@@ -32,7 +38,7 @@ export const SiteCard = ({site, onShowSiteOnMap, buttons}: SiteCardProps) => {
   );
 
   return (
-    <Card onPress={onCardPress} buttons={buttons}>
+    <Card onPress={onCardPress} buttons={buttons} showTriangle={showTriangle}>
       <Heading variant="h6" color="primary.main">
         {site.name}
       </Heading>
