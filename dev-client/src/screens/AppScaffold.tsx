@@ -83,7 +83,10 @@ export default function AppScaffold() {
   }, [hasToken, currentUser, dispatch]);
 
   useEffect(() => {
-    const listener = ({coords}: Location) => dispatch(updateLocation(coords));
+    const listener = ({coords}: Location) =>
+      dispatch(
+        updateLocation({coords: coords, accuracyM: coords.accuracy ?? null}),
+      );
     locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
     locationManager.addListener(listener);
     return () => locationManager.removeListener(listener);

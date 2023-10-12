@@ -42,9 +42,29 @@
       "title": "Create Site",
       "gps": "Use my current location (GPS)",
       "pin": "Use map pin",
-      "coords": "Enter coordinates",
-      "location_label": "Site location",
-      "name_placeholder": "Site name"
+      "manual": "Enter coordinates",
+      "location_label": "Site Location",
+      "location_accuracy": "Accuracy: {{accuracyM}}m",
+      "coords_label": "Latitude, Longitude",
+      "coords_help": "Enter decimal degrees, with latitude and longitude separated by a comma.",
+      "name_placeholder": "Site name",
+      "add_to_project_label": "Add to Project",
+      "add_to_project_tooltip": "The site will inherit the settings of the project, including data collection requirements and team members. Create new projects using the Projects tab in the bottom navigation.",
+      "privacy_tooltip": "Public projects will sync data to public data portals. ",
+      "privacy_tooltip_link": "Learn more..."
+    },
+    "form": {
+      "name_min_length_error": "Site name must be at least {{min}} characters",
+      "name_max_length_error": "Site name must be at most {{max}} characters",
+      "coords_parse_error": {
+        "COORDS_PARSE": "Coordinates must be comma-separated decimal numbers representing a latitude, longitude pair",
+        "LATITUDE_PARSE": "Latitude must be a decimal number",
+        "LATITUDE_MIN": "Latitude must be at least {{LATITUDE_MIN}}",
+        "LATITUDE_MAX": "Latitude must be at most {{LATITUDE_MAX}}",
+        "LONGITUDE_PARSE": "Longitude must be a decimal number",
+        "LONGITUDE_MIN": "Longitude must be at least {{LONGITUDE_MIN}}",
+        "LONGITUDE_MAX": "Longitude must be at most {{LONGITUDE_MAX}}"
+      }
     },
     "dashboard": {
       "privacy": "Data Privacy",
@@ -190,6 +210,7 @@
     "description": "LandPKS is a Terraso soil science tool."
   },
   "privacy": {
+    "label": "Data Privacy",
     "PUBLIC": {
       "inline": "public",
       "title": "Public"

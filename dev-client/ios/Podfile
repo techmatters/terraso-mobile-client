@@ -26,7 +26,7 @@ if linkage != nil
 end
 
 target 'Terraso LandPKS' do
-  pod 'MapboxMaps', '10.15.0'
+  pod 'MapboxMaps', '10.16.0'
 
   config = use_native_modules!
 
@@ -74,6 +74,7 @@ target 'Terraso LandPKS' do
         config.build_settings["LD"] = "clang"
         config.build_settings["CXX"] = "clang++"
         config.build_settings["LDPLUSPLUS"] = "clang++"
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
       end
     end
   end

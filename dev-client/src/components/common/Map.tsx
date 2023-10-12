@@ -4,15 +4,62 @@ import {Icon} from './Icons';
 import {Coords} from '../../model/map/mapSlice';
 import {Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {useMemo} from 'react';
+import {COORDINATE_PRECISION} from '../../constants';
+import {
+  LATITUDE_MAX,
+  LATITUDE_MIN,
+  LONGITUDE_MIN,
+  LONGITUDE_MAX,
+} from '../../constants';
 
-const defaultAnchor = {x: 0.5, y: 0};
+const coordsRegex = /^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/;
+export type CoordsParseErrorReason =
+  | 'COORDS_PARSE'
+  | 'LATITUDE_PARSE'
+  | 'LONGITUDE_PARSE'
+  | 'LATITUDE_MIN'
+  | 'LATITUDE_MAX'
+  | 'LONGITUDE_MIN'
+  | 'LONGITUDE_MAX';
 
-type Props = {
-  coords: Coords;
-  zoomLevel?: number;
-  style?: StyleProp<ViewStyle>;
-  displayCenterMarker?: boolean;
+export class CoordsParseError extends Error {
+  constructor(reason: CoordsParseErrorReason) {
+    super(reason);
+  }
+}
+
+export interface CoordsParseError {
+  message: CoordsParseErrorReason;
+}
+
+export const parseCoords = (coords: string) => {
+  const match = coords.trim().match(coordsRegex);
+  if (!match) {
+    throw new CoordsParseError('COORDS_PARSE');
+  }
+
+  const [latitude, longitude] = [match[1], match[2]].map(Number.parseFloat);
+  if (Number.isNaN(latitude)) {
+    throw new CoordsParseError('LATITUDE_PARSE');
+  } else if (Number.isNaN(longitude)) {
+    throw new CoordsParseError('LONGITUDE_PARSE');
+  } else if (latitude < LATITUDE_MIN) {
+    throw new CoordsParseError('LATITUDE_MIN');
+  } else if (latitude > LATITUDE_MAX) {
+    throw new CoordsParseError('LATITUDE_MAX');
+  } else if (longitude < LONGITUDE_MIN) {
+    throw new CoordsParseError('LONGITUDE_MIN');
+  } else if (longitude > LONGITUDE_MAX) {
+    throw new CoordsParseError('LONGITUDE_MAX');
+  } else {
+    return {latitude, longitude};
+  }
 };
+
+export const coordToString = (coord: number) =>
+  coord.toFixed(COORDINATE_PRECISION);
+export const coordsToString = ({latitude, longitude}: Coords): string =>
+  `${coordToString(latitude)},${coordToString(longitude)}`;
 
 export const coordsToPosition = ({latitude, longitude}: Coords): Position => [
   longitude,
@@ -25,6 +72,15 @@ export const positionToCoords = ([longitude, latitude]: Position): Coords => ({
 
 export const mapIconSizeForPlatform = (size: number) =>
   Math.round(size * Platform.select({android: PixelRatio.get(), default: 1}));
+
+const defaultAnchor = {x: 0.5, y: 0};
+
+type Props = {
+  coords: Coords;
+  zoomLevel?: number;
+  style?: StyleProp<ViewStyle>;
+  displayCenterMarker?: boolean;
+};
 
 export const StaticMapView = ({
   coords,
