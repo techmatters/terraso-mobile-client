@@ -30,18 +30,48 @@ export const CardCloseButton = (
   );
 };
 
+export const CardTriangle = () => {
+  return (
+    <Box
+      width={0}
+      height={0}
+      borderBottomWidth={15}
+      borderBottomColor="white"
+      borderLeftWidth={15}
+      borderLeftColor="transparent"
+      borderRightWidth={15}
+      borderRightColor="transparent"
+      alignSelf="center"
+      position="absolute"
+      top={-14}
+    />
+  );
+};
+
 type CardProps = {
   buttons?: React.ReactNode;
   children?: React.ReactNode;
   onPress?: () => void;
+  showTriangle?: Boolean;
 } & React.ComponentProps<typeof Box>;
-export const Card = ({buttons, onPress, children, ...boxProps}: CardProps) => {
+
+export const Card = ({
+  buttons,
+  onPress,
+  children,
+  showTriangle,
+  ...boxProps
+}: CardProps) => {
   return (
     <Pressable onPress={onPress}>
-      <Box variant="card" {...boxProps}>
+      <Box
+        variant="card"
+        marginTop={showTriangle ? '15px' : '0px'}
+        {...boxProps}>
+        {showTriangle && <CardTriangle />}
         {children}
+        {buttons}
       </Box>
-      {buttons}
     </Pressable>
   );
 };

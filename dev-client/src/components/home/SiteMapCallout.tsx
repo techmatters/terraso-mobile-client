@@ -35,11 +35,15 @@ export const SiteMapCallout = ({
       <SiteCard
         site={sites[state.siteId]}
         buttons={<CardCloseButton onPress={closeCallout} />}
+        showTriangle={true}
       />
     );
   } else if (state.kind === 'site_cluster') {
     child = (
-      <Card width="270px" buttons={<CardCloseButton onPress={closeCallout} />}>
+      <Card
+        width="270px"
+        buttons={<CardCloseButton onPress={closeCallout} />}
+        showTriangle={true}>
         <FlatList
           data={state.siteIds}
           keyExtractor={id => id}
