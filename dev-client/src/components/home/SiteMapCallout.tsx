@@ -6,8 +6,8 @@ import {CalloutState} from '../../screens/HomeScreen';
 import {coordsToPosition} from '../common/Map';
 import {Card, CardCloseButton} from '../common/Card';
 import {SiteCard} from '../sites/SiteCard';
-import SiteClusterCalloutListItem from './SiteClusterCalloutListItem';
-import TemporarySiteCallout from './TemporarySiteCallout';
+import {SiteClusterCalloutListItem} from './SiteClusterCalloutListItem';
+import {TemporarySiteCallout} from './TemporarySiteCallout';
 
 type SiteMapCalloutProps = {
   sites: Record<string, Site>;
@@ -15,7 +15,11 @@ type SiteMapCalloutProps = {
   setState: (state: CalloutState) => void;
 };
 
-const SiteMapCallout = ({sites, state, setState}: SiteMapCalloutProps) => {
+export const SiteMapCallout = ({
+  sites,
+  state,
+  setState,
+}: SiteMapCalloutProps) => {
   const closeCallout = useCallback(() => setState({kind: 'none'}), [setState]);
 
   if (state.kind === 'none') {
@@ -63,5 +67,3 @@ const SiteMapCallout = ({sites, state, setState}: SiteMapCalloutProps) => {
     </Mapbox.MarkerView>
   );
 };
-
-export default SiteMapCallout;

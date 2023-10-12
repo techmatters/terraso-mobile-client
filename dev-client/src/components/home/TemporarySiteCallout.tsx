@@ -4,7 +4,7 @@ import {Coords} from '../../model/map/mapSlice';
 import {useNavigation} from '../../screens/AppScaffold';
 import {useTranslation} from 'react-i18next';
 import {Card, CardCloseButton} from '../common/Card';
-import CalloutDetail from './CalloutDetail';
+import {CalloutDetail} from './CalloutDetail';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
@@ -16,7 +16,7 @@ type TemporarySiteCalloutProps = {
   closeCallout: () => void;
 };
 
-const TemporarySiteCallout = ({
+export const TemporarySiteCallout = ({
   coords,
   closeCallout,
 }: TemporarySiteCalloutProps) => {
@@ -66,5 +66,3 @@ const TemporarySiteCallout = ({
     </Card>
   );
 };
-
-export default TemporarySiteCallout;
