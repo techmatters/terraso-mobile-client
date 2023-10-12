@@ -1,6 +1,12 @@
 import {Box, Text} from 'native-base';
 
-const CalloutDetail = ({label, value}: {label: string; value: string}) => {
+export const CalloutDetail = ({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) => {
   return (
     <Box>
       <Text>{label}</Text>
@@ -8,5 +14,3 @@ const CalloutDetail = ({label, value}: {label: string; value: string}) => {
     </Box>
   );
 };
-
-export default CalloutDetail;

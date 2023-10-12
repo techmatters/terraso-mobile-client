@@ -19,7 +19,7 @@ import {CalloutState} from '../../screens/HomeScreen';
 import {mapIconSizeForPlatform, positionToCoords} from '../common/Map';
 import {siteFeatureCollection} from './siteFeatureCollection';
 import {repositionCamera} from './repositionCamera';
-import SiteMapCallout from './SiteMapCallout';
+import {SiteMapCallout} from './SiteMapCallout';
 
 const MAX_EXPANSION_ZOOM = 15;
 

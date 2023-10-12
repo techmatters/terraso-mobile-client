@@ -10,7 +10,7 @@ type SiteClusterCalloutListItemProps = {
   setState: (state: CalloutState) => void;
 };
 
-const SiteClusterCalloutListItem = ({
+export const SiteClusterCalloutListItem = ({
   site,
   setState,
 }: SiteClusterCalloutListItemProps) => {
@@ -34,5 +34,3 @@ const SiteClusterCalloutListItem = ({
     </Pressable>
   );
 };
-
-export default SiteClusterCalloutListItem;
