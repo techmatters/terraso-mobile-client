@@ -316,6 +316,11 @@ const SiteMap = (
           siteIds: leafFeatures.features.map(feat => feat.id as string),
         });
       } else {
+        cameraRef?.current?.setCamera({
+          centerCoordinate: feature.geometry.coordinates,
+          animationDuration: 500,
+          animationMode: 'easeTo',
+        });
         setCalloutState({kind: 'site', siteId: event.features[0].id as string});
       }
     },
