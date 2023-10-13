@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  Divider,
   FlatList,
   HStack,
   Image,
@@ -15,7 +16,7 @@ import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 
 type ListProps = {
-  memberships: [string, [ProjectMembership, User]][];
+  memberships: [ProjectMembership, User][];
   currentUserId?: string;
   userAction: (membership: ProjectMembership) => () => void;
 };
@@ -52,8 +53,7 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
         <HStack space={3} justifyContent="space-between" alignItems="center">
           <Box>
             <Image
-              size={50}
-              borderRadius={100}
+              variant="profilePic"
               source={{uri: user.profileImage}}
               alt="profile pic"
             />
@@ -61,13 +61,12 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
           <Text flex={3}>{userName}</Text>
           <Box>
             <Badge
+              variant="chip"
               bg="primary.lightest"
-              _text={{color: 'text.primary'}}
-              borderRadius={14}
-              flex={0}
-              ml={6}>
-              {membership.userRole.charAt(0) +
-                membership.userRole.slice(1).toLowerCase()}
+              py="5px"
+              px="10px"
+              _text={{color: 'text.primary'}}>
+              {t('general.role.' + membership.userRole)}
             </Badge>
           </Box>
         </HStack>
@@ -80,7 +79,7 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
               _text={{color: 'error.main'}}
               bgColor="grey.200"
               onPress={onPress}>
-              LEAVE PROJECT
+              {t('projects.team.leave_project')}
             </Button>
           </Center>
         )}
@@ -97,7 +96,7 @@ export default function UserList({
   return (
     <FlatList
       data={memberships}
-      renderItem={({item: [_, [membership, user]]}) => (
+      renderItem={({item: [membership, user]}) => (
         <UserItem
           membership={membership}
           user={user}
@@ -105,7 +104,8 @@ export default function UserList({
           onPress={userAction(membership)}
         />
       )}
-      keyExtractor={([id, _]) => id}
+      keyExtractor={([membership, _]) => membership.id}
+      ItemSeparatorComponent={Divider}
     />
   );
 }
