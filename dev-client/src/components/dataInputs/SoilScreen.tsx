@@ -9,12 +9,15 @@ import {EditIntervalModal} from './EditIntervalModal';
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
+  SoilData,
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
-  const soilData = useSelector(state => state.soilId.soilData[siteId]);
+  const soilData = useSelector(state => state.soilId.soilData[siteId]) as
+    | SoilData
+    | undefined;
   const project = useSelector(state => {
     const projectId = state.site.sites[siteId].projectId;
     return projectId ? state.soilId.projectSettings[projectId] : undefined;
@@ -23,15 +26,15 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     () =>
       (project?.depthIntervals ?? [])
         .concat(
-          soilData.depthIntervals.filter(
+          soilData?.depthIntervals?.filter(
             ({depthInterval: a}) =>
               project?.depthIntervals?.every(
                 ({depthInterval: b}) => a.end <= b.start || a.start >= b.end,
               ),
-          ),
+          ) ?? [],
         )
         .sort((a, b) => a.depthInterval.start - b.depthInterval.start),
-    [project?.depthIntervals, soilData.depthIntervals],
+    [project?.depthIntervals, soilData?.depthIntervals],
   );
   const existingIntervals = useMemo(
     () => allIntervals.map(interval => interval.depthInterval),

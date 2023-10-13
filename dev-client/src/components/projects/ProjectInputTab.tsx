@@ -72,9 +72,6 @@ const SoilPitSettings = ({projectId}: {projectId: string}) => {
   const settings = useSelector(
     state => state.soilId.projectSettings[projectId],
   );
-  const allSettings = useSelector(state => state.soilId.projectSettings);
-  console.log(allSettings);
-  console.log(projectId);
   const dispatch = useDispatch();
   const existingIntervals = useMemo(
     () => settings.depthIntervals.map(interval => interval.depthInterval),

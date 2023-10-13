@@ -84,7 +84,7 @@ export const HomeScreen = () => {
 
   useEffect(() => {
     if (currentUserID !== undefined) {
-      dispatch(fetchSoilDataForUser(currentUserID)).then(console.log);
+      dispatch(fetchSoilDataForUser(currentUserID));
     }
   }, [dispatch, currentUserID]);
 
