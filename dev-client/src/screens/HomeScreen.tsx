@@ -244,7 +244,7 @@ const LandPKSInfo = () => {
           {t('home.info.title')}
         </Heading>
         <Image
-          source={require('../../assets/landpks_intro_image.png')}
+          source={require('terraso-mobile-client/assets/landpks_intro_image.png')}
           w="100%"
           h="30%"
           resizeMode="contain"
