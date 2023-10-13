@@ -50,6 +50,12 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       }),
   });
 
+export type IntervalFormInput = {
+  label: string;
+  start: string;
+  end: string;
+};
+
 export const IntervalForm = () => {
   const {t} = useTranslation();
   return (

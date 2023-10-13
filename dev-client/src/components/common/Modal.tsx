@@ -14,7 +14,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import {useHeaderHeight} from '../../screens/ScreenScaffold';
 import {CardCloseButton} from './Card';
-import {Pressable} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
 import {useDisclose, Modal as NativeBaseModal} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 
@@ -44,7 +44,7 @@ export const Modal = forwardRef<ModalMethods, Props>(
         )}
         <NativeBaseModal isOpen={isOpen} onClose={onClose}>
           <KeyboardAvoidingView
-            style={{width: '100%', alignItems: 'center'}}
+            style={styles.nativeBaseModalChild}
             behavior="padding"
             keyboardVerticalOffset={100}>
             <NativeBaseModal.Content padding="18px">
@@ -101,3 +101,10 @@ export const BottomSheetModal = forwardRef<ModalMethods, Props>(
 const BackdropComponent = (props: BottomSheetBackdropProps) => (
   <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
 );
+
+const styles = StyleSheet.create({
+  nativeBaseModalChild: {
+    width: '100%',
+    alignItems: 'center',
+  },
+});

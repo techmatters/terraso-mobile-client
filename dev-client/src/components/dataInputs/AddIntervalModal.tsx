@@ -5,20 +5,13 @@ import {
   DepthInterval,
   LabelledDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {FormInput} from '../common/Form';
 import {useTranslation} from 'react-i18next';
-import {intervalSchema, IntervalForm} from './IntervalForm';
+import {intervalSchema, IntervalForm, IntervalFormInput} from './IntervalForm';
 import {useModal} from '../common/Modal';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;
   existingIntervals: DepthInterval[];
-};
-
-type FormInput = {
-  label: string;
-  start: string;
-  end: string;
 };
 
 export const AddIntervalModal = ({
@@ -33,14 +26,14 @@ export const AddIntervalModal = ({
     [t, existingIntervals],
   );
 
-  const onSubmit = async (values: FormInput) => {
+  const onSubmit = async (values: IntervalFormInput) => {
     const {label, ...depthInterval} = schema.cast(values);
     await parentOnSubmit({label: label ?? '', depthInterval});
     onClose();
   };
 
   return (
-    <Formik<FormInput>
+    <Formik<IntervalFormInput>
       validationSchema={schema}
       initialValues={{
         label: '',

@@ -5,16 +5,22 @@ import {
   updateSoilDataDepthInterval,
   soilPitMethods,
   methodEnabled,
+  SoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 import {useMemo, useCallback} from 'react';
-import {intervalSchema, IntervalForm} from './IntervalForm';
+import {intervalSchema, IntervalForm, IntervalFormInput} from './IntervalForm';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {Heading, Row, Box, Button} from 'native-base';
 import {Formik} from 'formik';
 import {FormCheckbox, FormSwitch} from '../common/Form';
 import {useModal} from '../common/Modal';
+
+type EditIntervalFormInput = IntervalFormInput &
+  Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
+    applyToAll: boolean;
+  };
 
 type Props = {
   siteId: string;
@@ -49,7 +55,9 @@ export const EditIntervalModal = ({siteId, depthInterval}: Props) => {
   );
 
   const onSubmit = useCallback(
-    async values => {
+    async (values: EditIntervalFormInput) => {
+      // TODO: actually use the applyToAll variable
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {start, end, applyToAll, ...newInterval} = schema.cast(values);
       await dispatch(
         updateSoilDataDepthInterval({
