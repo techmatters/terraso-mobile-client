@@ -5,7 +5,7 @@ import {Box, HStack, Input, Pressable, Text, View, VStack} from 'native-base';
 import {
   Suggestion,
   initMapSearch,
-} from 'terraso-mobile-client/components/home/mapSearch';
+} from 'terraso-mobile-client/components/home/mapSearchTools';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Keyboard} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
