@@ -9,7 +9,7 @@ import {
   Icon,
   MaterialCommunityIcons,
 } from 'terraso-mobile-client/components/common/Icons';
-import TerrasoLogo from '../../assets/terraso-logo.svg';
+import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
