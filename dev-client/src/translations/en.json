@@ -120,7 +120,12 @@
     },
     "team": {
       "add": "Add team members",
-      "leave_project": "LEAVE PROJECT"
+      "leave_project_modal": {
+        "trigger": "LEAVE PROJECT",
+        "title": "Leave Project?",
+        "body": "This will remove your access to the project, but data you have contributed will remain with the project.",
+        "action_name": "Leave"
+      }
     },
     "edit": {
       "inputHeader": "General Project Settings"
@@ -198,7 +203,8 @@
       "viewer": "Viewer",
       "contributor": "Contributor",
       "manager": "Manager"
-    }
+    },
+    "cancel": "Cancel"
   },
   "screens": {
     "HOME": "LandPKS",

@@ -26,8 +26,10 @@ type ModalMethods = {
 const ModalContext = createContext<ModalMethods | undefined>(undefined);
 export const useModal = () => useContext(ModalContext);
 
+export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
+
 type Props = React.PropsWithChildren<{
-  trigger?: (onOpen: () => void) => React.ReactNode;
+  trigger?: ModalTrigger;
 }>;
 
 export const Modal = forwardRef<ModalMethods, Props>(

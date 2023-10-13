@@ -19,6 +19,7 @@ export const theme = extendTheme({
     },
     error: {
       main: '#D32F2F',
+      contrast: '#FFFFFF',
     },
     grey: {
       200: '#EEEEEE',
@@ -32,6 +33,13 @@ export const theme = extendTheme({
     text: {
       primary: '#1A202C',
       secondary: '#1A202CCC',
+    },
+    m3: {
+      sys: {
+        light: {
+          outline: '#79747E',
+        },
+      },
     },
   },
   radii: {

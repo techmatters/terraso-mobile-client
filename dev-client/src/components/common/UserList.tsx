@@ -14,6 +14,7 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
+import ConfirmModal from './ConfirmModal';
 
 type ListProps = {
   memberships: [ProjectMembership, User][];
@@ -25,10 +26,31 @@ type ItemProps = {
   membership: ProjectMembership;
   user: User;
   currentUserId?: string;
-  onPress?: () => void;
+  removeUser: () => void;
 };
 
-function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
+type TriggerProps = {
+  onOpen: () => void;
+  message: string;
+};
+
+function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
+  return (
+    <Center>
+      <Button
+        size="sm"
+        my={2}
+        w="50%"
+        _text={{color: 'error.main'}}
+        bgColor="grey.200"
+        onPress={onOpen}>
+        {message}
+      </Button>
+    </Center>
+  );
+}
+
+function UserItem({membership, user, currentUserId, removeUser}: ItemProps) {
   const {t} = useTranslation();
   const isCurrentUser = useMemo(() => {
     return user.id === currentUserId;
@@ -71,17 +93,18 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
           </Box>
         </HStack>
         {isCurrentUser && (
-          <Center>
-            <Button
-              size="sm"
-              my={2}
-              w="50%"
-              _text={{color: 'error.main'}}
-              bgColor="grey.200"
-              onPress={onPress}>
-              {t('projects.team.leave_project')}
-            </Button>
-          </Center>
+          <ConfirmModal
+            trigger={onOpen => (
+              <LeaveProjectTrigger
+                onOpen={onOpen}
+                message={t('projects.team.leave_project_modal.trigger')}
+              />
+            )}
+            title={t('projects.team.leave_project_modal.title')}
+            body={t('projects.team.leave_project_modal.body')}
+            actionName={t('projects.team.leave_project_modal.action_name')}
+            handleConfirm={removeUser}
+          />
         )}
       </VStack>
     </Box>
@@ -101,7 +124,7 @@ export default function UserList({
           membership={membership}
           user={user}
           currentUserId={currentUserId}
-          onPress={userAction(membership)}
+          removeUser={userAction(membership)}
         />
       )}
       keyExtractor={([membership, _]) => membership.id}
