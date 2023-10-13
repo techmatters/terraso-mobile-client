@@ -42,7 +42,7 @@ export default function ProjectPreviewCard({project}: Props) {
           variant="chip"
           backgroundColor="primary.lightest"
           startIcon={<Icon name="location-on" />}>
-          {Object.keys(project.siteIds).length}
+          {Object.keys(project.sites).length}
         </Badge>
         <Badge
           variant="chip"

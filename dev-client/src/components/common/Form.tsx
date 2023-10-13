@@ -1,35 +1,46 @@
 import {ErrorMessage as FormikErrorMessage, useFormikContext} from 'formik';
-import {FormControl, Input, Radio, Popover} from 'native-base';
+import {
+  FormControl,
+  Input,
+  Radio,
+  Popover,
+  Switch,
+  Checkbox,
+  Row,
+  Text,
+} from 'native-base';
 import {createContext, memo, useContext} from 'react';
 import {IconButton} from './Icons';
 
 type FieldContextType<Name extends string = string, T = string> = {
-  name: Name;
-  value: T;
-  onChange: (_: T) => void;
-  onBlur: () => void;
+  name?: Name;
+  value?: T;
+  onChange?: (_: T) => void;
+  onBlur?: () => void;
 };
 const FieldContext = createContext<FieldContextType | undefined>(undefined);
 
 export const useFieldContext = <
-  Name extends string,
   Value = string,
-  FormValues extends Record<Name, Value> = Record<Name, Value>,
+  Name extends string = string,
+  FormValues extends Record<Name, any> = Record<Name, any>,
 >(
   name?: Name,
-) => {
+): FieldContextType<Name, Value> => {
   const fieldContext = useContext(FieldContext) as
     | FieldContextType<Name, Value>
     | undefined;
-  const {values, handleChange, handleBlur} = useFormikContext<FormValues>();
+  const formikContext = useFormikContext<FormValues>();
 
   return name === undefined
     ? fieldContext!
+    : formikContext === undefined
+    ? {}
     : {
         name,
-        value: values[name] as string,
-        onChange: handleChange(name),
-        onBlur: handleBlur(name) as unknown as () => void,
+        value: formikContext.values[name] as Value,
+        onChange: formikContext.handleChange(name) as (_: Value) => void,
+        onBlur: formikContext.handleBlur(name) as unknown as () => void,
       };
 };
 
@@ -84,6 +95,46 @@ export const FormInput = memo((props: InputProps) => {
   );
 });
 
+type SwitchProps = WrapperProps &
+  Omit<React.ComponentProps<typeof Switch>, 'onChange' | 'onValueChange'> & {
+    onChange?: (_: boolean) => void;
+  };
+export const FormSwitch = memo(
+  ({onChange: onValueChange, label, ...props}: SwitchProps) => {
+    const {value, onChange} = useFieldContext<boolean>(props.name);
+    return (
+      <FormFieldWrapper errorMessage={null} {...props}>
+        <Row justifyContent="flex-start">
+          <Switch
+            value={value}
+            onValueChange={onValueChange ?? onChange}
+            {...props}
+          />
+          <Text>{label}</Text>
+        </Row>
+      </FormFieldWrapper>
+    );
+  },
+);
+
+type CheckboxProps = WrapperProps &
+  Omit<React.ComponentProps<typeof Checkbox>, 'value'> & {value?: boolean};
+export const FormCheckbox = memo(
+  ({value: isChecked, ...props}: CheckboxProps) => {
+    const {value, onChange} = useFieldContext<boolean>(props.name);
+    return (
+      <FormFieldWrapper errorMessage={null} {...props}>
+        <Checkbox
+          value=""
+          isChecked={isChecked ?? value}
+          onChange={onChange}
+          {...props}
+        />
+      </FormFieldWrapper>
+    );
+  },
+);
+
 export const FormLabel = memo(
   (props: React.ComponentProps<typeof FormControl.Label>) => (
     <FormControl.Label {...props} />
@@ -92,7 +143,7 @@ export const FormLabel = memo(
 
 export const FormErrorMessage = memo(
   (props: React.ComponentProps<typeof FormControl.ErrorMessage>) => (
-    <FormikErrorMessage name={useFieldContext().name}>
+    <FormikErrorMessage name={useFieldContext().name!}>
       {msg => (
         <FormControl.ErrorMessage isInvalid {...props}>
           {msg}
@@ -104,7 +155,7 @@ export const FormErrorMessage = memo(
 
 export const FormHelperText = memo(
   (props: React.ComponentProps<typeof FormControl.HelperText>) =>
-    useFieldContext().name in useFormikContext().errors ? undefined : (
+    useFieldContext().name! in useFormikContext().errors ? undefined : (
       <FormControl.HelperText {...props} />
     ),
 );
@@ -117,7 +168,10 @@ type RadioGroupProps<T> = {
 export const FormRadioGroup = memo(
   <T extends string>({values, renderRadio, ...props}: RadioGroupProps<T>) => (
     <FormFieldWrapper {...props}>
-      <Radio.Group {...useFieldContext(props.name)} {...props}>
+      <Radio.Group
+        name={props.name!}
+        {...useFieldContext(props.name)}
+        {...props}>
         {values.map(renderRadio)}
       </Radio.Group>
     </FormFieldWrapper>
