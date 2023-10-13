@@ -14,7 +14,7 @@ import Mapbox from '@rnmapbox/maps';
 import {NativeBaseProvider} from 'native-base';
 import {theme} from 'terraso-mobile-client/theme';
 import {LoginProvider} from 'terraso-mobile-client/context/LoginContext';
-import AppScaffold from 'terraso-mobile-client/screens/AppScaffold';
+import {AppScaffold} from 'terraso-mobile-client/screens/AppScaffold';
 import 'terraso-mobile-client/translations';
 import {checkAndroidPermissions} from 'terraso-mobile-client/native';
 import {PermissionsAndroid} from 'react-native';

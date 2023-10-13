@@ -66,7 +66,7 @@ export const useNavigation = <Name extends ScreenName = ScreenName>() =>
 
 const defaultScreenOptions: NativeStackNavigationOptions = {headerShown: false};
 
-export default function AppScaffold() {
+export function AppScaffold() {
   const dispatch = useDispatch();
   const hasToken = useSelector(state => state.account.hasToken);
   const currentUser = useSelector(state => state.account.currentUser.data);
