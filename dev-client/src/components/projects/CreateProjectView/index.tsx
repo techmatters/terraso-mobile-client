@@ -13,8 +13,8 @@ export default function CreateProjectView() {
   const navigation = useNavigation();
   const onSubmit = async (values: ProjectFormValues) => {
     const {payload} = await dispatch(addProject(values));
-    if (payload !== undefined && 'id' in payload) {
-      navigation.replace('PROJECT_VIEW', {projectId: payload.id});
+    if (payload !== undefined && 'project' in payload) {
+      navigation.replace('PROJECT_VIEW', {projectId: payload.project.id});
     }
   };
   const validationSchema = useMemo(() => projectValidationSchema(t), [t]);

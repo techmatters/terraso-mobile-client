@@ -26,6 +26,12 @@ import {updateLocation} from '../model/map/mapSlice';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../constants';
 import {AddUserToProjectScreen} from '../components/projects/AddUserToProjectScreen';
 
+type UnknownToUndefined<T extends unknown> = unknown extends T ? undefined : T;
+export type ScreenDefinitions = Record<string, React.FC<any>>;
+export type ParamList<T extends ScreenDefinitions> = {
+  [K in keyof T]: UnknownToUndefined<React.ComponentProps<T[K]>>;
+};
+
 const screenDefinitions = {
   LOGIN: LoginScreen,
   PROJECT_LIST: ProjectListScreen,
@@ -38,22 +44,14 @@ const screenDefinitions = {
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,
-} satisfies Record<string, React.FC<any>>;
+} satisfies ScreenDefinitions;
 
-type ScreenName = keyof typeof screenDefinitions;
-type UnknownToUndefined<T extends unknown> = unknown extends T ? undefined : T;
-type RootStackParamList = {
-  [K in ScreenName]: UnknownToUndefined<
-    React.ComponentProps<(typeof screenDefinitions)[K]>
-  >;
-};
+type RootStackParamList = ParamList<typeof screenDefinitions>;
+type ScreenName = keyof RootStackParamList;
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
-export type RootStackScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  ScreenName
->;
+export type RootStackScreenProps = NativeStackScreenProps<RootStackParamList>;
 
 const screens = Object.entries(screenDefinitions).map(([name, Screen]) => (
   <RootStack.Screen

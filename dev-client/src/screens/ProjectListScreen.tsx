@@ -1,6 +1,5 @@
-import {useEffect, useCallback, useMemo} from 'react';
-import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
-import {useDispatch, useSelector} from '../model/store';
+import {useCallback, useMemo} from 'react';
+import {useSelector} from '../model/store';
 import {AppBar, AppBarIconButton, ScreenScaffold} from './ScreenScaffold';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from './AppScaffold';
@@ -12,11 +11,6 @@ import {SearchBar} from '../components/common/search/SearchBar';
 import {useTextSearch} from '../components/common/search/search';
 
 export const ProjectListScreen = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchProjectsForUser());
-  }, [dispatch]);
-
   const allProjects = useSelector(state => state.project.projects);
   const activeProjects = useMemo(
     () => Object.values(allProjects).filter(project => !project.archived),
