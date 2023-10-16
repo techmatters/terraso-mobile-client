@@ -251,7 +251,9 @@
   "login": {
     "title": "LandPKS",
     "subtitle": "Discover the potential\nof your land",
-    "google_button": "CONTINUE WITH GOOGLE",
+    "google_button": "Sign in with Google",
+    "apple_button": "Sign in with Apple",
+    "microsoft_button": "Sign in with Microsoft",
     "description": "LandPKS is a Terraso soil science tool."
   },
   "privacy": {
