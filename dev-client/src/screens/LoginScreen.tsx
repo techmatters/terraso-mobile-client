@@ -43,7 +43,7 @@ export const LoginScreen = () => {
           {t('login.title')}
         </Heading>
         <Box h="28px" />
-        <Heading variant="h5" color="primary.contrast" textAlign="center">
+        <Heading variant="h5" color="primary.contrast" textAlign="center" pl={10} pr={10}>
           {t('login.subtitle')}
         </Heading>
         <Box h="72px" />
