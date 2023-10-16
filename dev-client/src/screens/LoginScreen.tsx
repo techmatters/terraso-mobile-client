@@ -47,20 +47,50 @@ export const LoginScreen = () => {
           {t('login.subtitle')}
         </Heading>
         <Box h="72px" />
-        <Button
-          bgColor="primary.contrast"
-          _text={{color: 'primary.main'}}
-          size="lg"
-          onPress={onPress}
-          startIcon={
-            <Icon
-              as={MaterialCommunityIcons}
-              name="google"
-              color="primary.main"
-            />
-          }>
-          {t('login.google_button')}
-        </Button>
+        <Button.Group direction="column" space={5}>
+          <Button
+            bgColor="primary.contrast"
+            _text={{color: 'primary.main'}}
+            size="lg"
+            onPress={onPress}
+            startIcon={
+              <Icon
+                as={MaterialCommunityIcons}
+                name="google"
+                color="primary.main"
+              />
+            }>
+            {t('login.google_button').toUpperCase()}
+          </Button>
+          <Button
+            bgColor="primary.contrast"
+            _text={{color: 'primary.main'}}
+            size="lg"
+            onPress={onPress}
+            startIcon={
+              <Icon
+                as={MaterialCommunityIcons}
+                name="microsoft"
+                color="primary.main"
+              />
+            }>
+            {t('login.microsoft_button').toUpperCase()}
+          </Button>
+          <Button
+            bgColor="primary.contrast"
+            _text={{color: 'primary.main'}}
+            size="lg"
+            onPress={onPress}
+            startIcon={
+              <Icon
+                as={MaterialCommunityIcons}
+                name="apple"
+                color="primary.main"
+              />
+            }>
+            {t('login.apple_button').toUpperCase()}
+          </Button>
+        </Button.Group>
       </Column>
       <Box flexGrow={3} />
       <Column pb="60px" alignItems="center" justifyContent="flex-end">
