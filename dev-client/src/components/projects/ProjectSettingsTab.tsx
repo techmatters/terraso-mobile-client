@@ -1,16 +1,19 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AlertDialog, Button, VStack, ScrollView, Fab} from 'native-base';
-import {TabRoutes, TabStackParamList} from './constants';
+import {
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/components/projects/constants';
 import {useTranslation} from 'react-i18next';
-import IconLink from '../common/IconLink';
+import IconLink from 'terraso-mobile-client/components/common/IconLink';
 import {useMemo, useRef, useState} from 'react';
-import {useDispatch} from '../../model/store';
+import {useDispatch} from 'terraso-mobile-client/model/store';
 import {
   deleteProject,
   updateProject,
   archiveProject,
 } from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from '../../screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import ProjectSettingsForm, {
   ProjectFormValues,
   projectValidationSchema,

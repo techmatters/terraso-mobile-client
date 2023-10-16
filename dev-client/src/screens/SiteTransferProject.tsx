@@ -1,12 +1,15 @@
 import {HStack, Heading, Text, VStack} from 'native-base';
-import {SearchBar} from '../components/common/search/SearchBar';
+import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {useTranslation} from 'react-i18next';
 import {useCallback, useMemo} from 'react';
-import SelectAllCheckboxes from '../components/common/SelectAllCheckboxes';
-import {Accordion} from '../components/common/Accordion';
-import {useSelector} from '../model/store';
-import {AppBar, ScreenScaffold} from './ScreenScaffold';
-import {useTextSearch} from '../components/common/search/search';
+import SelectAllCheckboxes from 'terraso-mobile-client/components/common/SelectAllCheckboxes';
+import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
+import {useSelector} from 'terraso-mobile-client/model/store';
+import {
+  AppBar,
+  ScreenScaffold,
+} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 
 type ItemProps = {

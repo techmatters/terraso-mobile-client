@@ -1,5 +1,5 @@
 import {Select} from 'native-base';
-import {useSelector} from '../../model/store';
+import {useSelector} from 'terraso-mobile-client/model/store';
 import {useMemo} from 'react';
 
 type ProjectSelectProps = {

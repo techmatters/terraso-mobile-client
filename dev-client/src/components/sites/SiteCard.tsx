@@ -1,13 +1,13 @@
-import {useNavigation} from '../../screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {Box, Heading, Text, Badge, Row} from 'native-base';
 import {useCallback} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {useSelector} from '../../model/store';
+import {useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
-import {Icon, IconButton} from '../common/Icons';
-import {StaticMapView} from '../common/Map';
-import {Card} from '../common/Card';
+import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {StaticMapView} from 'terraso-mobile-client/components/common/Map';
+import {Card} from 'terraso-mobile-client/components/common/Card';
 
 const TEMP_MODIFIED_DATE = '8/15/23';
 const TEMP_MODIFIED_NAME = 'Sample Sam';

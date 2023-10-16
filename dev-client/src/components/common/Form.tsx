@@ -10,7 +10,7 @@ import {
   Text,
 } from 'native-base';
 import {createContext, memo, useContext} from 'react';
-import {IconButton} from './Icons';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 
 type FieldContextType<Name extends string = string, T = string> = {
   name?: Name;

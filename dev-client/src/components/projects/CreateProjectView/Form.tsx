@@ -1,9 +1,9 @@
 import {HStack, Heading, Input, VStack} from 'native-base';
 import {useFormikContext} from 'formik';
-import RadioBlock from '../../common/RadioBlock';
-import {Icon, IconButton} from '../../common/Icons';
+import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
+import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
-import ErrorMessage from '../../common/ErrorMessage';
+import ErrorMessage from 'terraso-mobile-client/components/common/ErrorMessage';
 import * as yup from 'yup';
 import {
   PROJECT_DESCRIPTION_MAX_LENGTH,

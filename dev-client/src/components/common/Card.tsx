@@ -1,5 +1,5 @@
 import {Box} from 'native-base';
-import {IconButton} from './Icons';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Pressable} from 'react-native';
 import {forwardRef} from 'react';
 

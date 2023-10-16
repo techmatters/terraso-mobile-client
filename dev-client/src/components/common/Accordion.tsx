@@ -1,6 +1,6 @@
 import {Box, HStack} from 'native-base';
 import {ReactNode, useCallback, useState} from 'react';
-import {IconButton} from './Icons';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 
 type Props = {
   Head: ReactNode;

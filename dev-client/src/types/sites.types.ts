@@ -1,4 +1,4 @@
-import {UserPreview} from './users.types';
+import {UserPreview} from 'terraso-mobile-client/types/users.types';
 export type SiteDisplay = {
   lat: number;
   lon: number;

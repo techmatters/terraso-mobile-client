@@ -1,6 +1,9 @@
-import {useSelector} from '../../model/store';
+import {useSelector} from 'terraso-mobile-client/model/store';
 import {Text} from 'native-base';
-import {ScreenScaffold, AppBar} from '../../screens/ScreenScaffold';
+import {
+  ScreenScaffold,
+  AppBar,
+} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 type Props = {
   siteId: string;

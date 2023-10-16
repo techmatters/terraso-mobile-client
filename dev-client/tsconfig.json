@@ -1,6 +1,12 @@
 {
   "extends": "@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
-    "jsx": "react-jsx"
-  }
+    "jsx": "react-jsx",
+    "paths": {
+      "terraso-mobile-client/*": ["./src/*"]
+    }
+  },
+
+  "include": ["src"],
+  "exclude": ["dist"]
 }

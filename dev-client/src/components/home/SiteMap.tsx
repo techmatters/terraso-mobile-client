@@ -9,7 +9,10 @@ import {
   useRef,
   useImperativeHandle,
 } from 'react';
-import {Card, CardCloseButton} from '../common/Card';
+import {
+  Card,
+  CardCloseButton,
+} from 'terraso-mobile-client/components/common/Card';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {
@@ -23,11 +26,11 @@ import {
   FlatList,
   Heading,
 } from 'native-base';
-import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../../constants';
+import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from '../../screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
-import {SiteCard} from '../sites/SiteCard';
+import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {
   Keyboard,
   PixelRatio,
@@ -35,14 +38,14 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import {CalloutState} from '../../screens/HomeScreen';
+import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen';
 import {
   coordsToPosition,
   mapIconSizeForPlatform,
   positionToCoords,
-} from '../common/Map';
-import {Coords} from '../../model/map/mapSlice';
-import {useSelector} from '../../model/store';
+} from 'terraso-mobile-client/components/common/Map';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {useSelector} from 'terraso-mobile-client/model/store';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';

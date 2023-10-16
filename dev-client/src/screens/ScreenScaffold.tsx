@@ -3,11 +3,11 @@ import {
   IconButton,
   IconButtonProps,
   MaterialCommunityIcons,
-} from '../components/common/Icons';
+} from 'terraso-mobile-client/components/common/Icons';
 import {createContext, useCallback, useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
-import {useNavigation} from './AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StatusBar, View, LayoutChangeEvent} from 'react-native';
 

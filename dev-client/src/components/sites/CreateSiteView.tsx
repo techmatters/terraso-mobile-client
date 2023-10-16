@@ -9,15 +9,18 @@ import {
 } from 'native-base';
 import {useCallback, useMemo, useEffect} from 'react';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {useNavigation} from '../../screens/AppScaffold';
-import {siteValidationSchema} from './validation';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {siteValidationSchema} from 'terraso-mobile-client/components/sites/validation';
 import {InferType} from 'yup';
 import {useTranslation} from 'react-i18next';
-import {useSelector} from '../../model/store';
+import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Coords} from '../../model/map/mapSlice';
-import {ProjectSelect} from '../projects/ProjectSelect';
-import {coordsToString, parseCoords} from '../common/Map';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {ProjectSelect} from 'terraso-mobile-client/components/projects/ProjectSelect';
+import {
+  coordsToString,
+  parseCoords,
+} from 'terraso-mobile-client/components/common/Map';
 import {Formik, FormikProps} from 'formik';
 import {
   FormField,
@@ -27,7 +30,7 @@ import {
   FormHelperText,
   FormLabel,
   FormTooltip,
-} from '../common/Form';
+} from 'terraso-mobile-client/components/common/Form';
 
 type LocationInputOptions = 'manual' | 'gps' | 'pin';
 
