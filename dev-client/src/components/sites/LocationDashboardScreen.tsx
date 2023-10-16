@@ -2,7 +2,7 @@ import {
   useNavigation,
   ParamList,
   ScreenDefinitions,
-} from 'terraso-mobile-client/screens/screens/AppScaffold';
+} from 'terraso-mobile-client/screens/AppScaffold';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
@@ -15,8 +15,8 @@ import {
 import {LocationDashboardView} from 'terraso-mobile-client/components/sites/LocationDashboardView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {SlopeScreen} from 'terraso-mobile-client/dataInputs/SlopeScreen';
-import {SoilScreen} from 'terraso-mobile-client/dataInputs/SoilScreen';
+import {SlopeScreen} from 'terraso-mobile-client/components/dataInputs/SlopeScreen';
+import {SoilScreen} from 'terraso-mobile-client/components/dataInputs/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/screens/TabBar';
 import {SpeedDial} from 'terraso-mobile-client/components/common/SpeedDial';
 import {Button} from 'native-base';
