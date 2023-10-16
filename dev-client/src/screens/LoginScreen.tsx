@@ -60,7 +60,7 @@ export const LoginScreen = () => {
                 color="primary.main"
               />
             }>
-            {t('login.google_button').toUpperCase()}
+            {t('account.google_login').toUpperCase()}
           </Button>
           <Button
             bgColor="primary.contrast"
@@ -74,7 +74,7 @@ export const LoginScreen = () => {
                 color="primary.main"
               />
             }>
-            {t('login.microsoft_button').toUpperCase()}
+            {t('account.microsoft_login').toUpperCase()}
           </Button>
           <Button
             bgColor="primary.contrast"
@@ -88,7 +88,7 @@ export const LoginScreen = () => {
                 color="primary.main"
               />
             }>
-            {t('login.apple_button').toUpperCase()}
+            {t('account.apple_login').toUpperCase()}
           </Button>
         </Button.Group>
       </Column>
