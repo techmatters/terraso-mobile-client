@@ -7,7 +7,7 @@ import {
   useSelector as reduxUseSelector,
   TypedUseSelectorHook,
 } from 'react-redux';
-import mapReducer from './map/mapSlice';
+import mapReducer from 'terraso-mobile-client/model/map/mapSlice';
 import {StateFromReducersMapObject} from '@reduxjs/toolkit';
 
 type LandPksState = StateFromReducersMapObject<typeof reducers>;

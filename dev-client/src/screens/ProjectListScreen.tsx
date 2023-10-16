@@ -1,14 +1,14 @@
 import {useCallback, useMemo} from 'react';
-import {useSelector} from '../model/store';
-import {AppBar, AppBarIconButton, ScreenScaffold} from './ScreenScaffold';
+import {useSelector} from 'terraso-mobile-client/model/store';
+import {AppBar, AppBarIconButton, ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from './AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {Box, FlatList, Heading, Link, Text, VStack} from 'native-base';
-import {IconButton} from '../components/common/Icons';
-import AddButton from '../components/common/AddButton';
-import ProjectPreviewCard from '../components/projects/ProjectPreviewCard';
-import {SearchBar} from '../components/common/search/SearchBar';
-import {useTextSearch} from '../components/common/search/search';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
+import AddButton from 'terraso-mobile-client/components/common/AddButton';
+import ProjectPreviewCard from 'terraso-mobile-client/components/projects/ProjectPreviewCard';
+import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
+import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);

@@ -1,4 +1,4 @@
-import {ProjectPrivacy} from '../../types';
+import {ProjectPrivacy} from 'terraso-mobile-client/types';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 

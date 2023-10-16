@@ -1,13 +1,17 @@
 import {useCallback} from 'react';
-import {CreateSiteView} from '../components/sites/CreateSiteView';
-import {useDispatch} from '../model/store';
+import {CreateSiteView} from 'terraso-mobile-client/components/sites/CreateSiteView';
+import {useDispatch} from 'terraso-mobile-client/model/store';
 import {
   addSite,
   fetchSitesForProject,
 } from 'terraso-client-shared/site/siteSlice';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Coords} from '../model/map/mapSlice';
-import {AppBar, ScreenCloseButton, ScreenScaffold} from './ScreenScaffold';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {
+  AppBar,
+  ScreenCloseButton,
+  ScreenScaffold,
+} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 type Props =
   | {

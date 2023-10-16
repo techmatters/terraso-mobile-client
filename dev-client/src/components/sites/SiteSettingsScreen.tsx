@@ -12,13 +12,13 @@ import {
   Spacer,
   Pressable,
 } from 'native-base';
-import {useDispatch, useSelector} from '../../model/store';
-import {useNavigation} from '../../screens/AppScaffold';
-import {Icon} from '../common/Icons';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
-import {IconLabel} from '../common/RadioBlock';
+import {IconLabel} from 'terraso-mobile-client/components/common/RadioBlock';
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
-import {ScreenScaffold, AppBar} from '../../screens/ScreenScaffold';
+import {ScreenScaffold, AppBar} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 type Props = {
   siteId: string;

@@ -1,8 +1,11 @@
 import {Box, Fab, ScrollView} from 'native-base';
-import Form, {ProjectFormValues, projectValidationSchema} from './Form';
+import Form, {
+  ProjectFormValues,
+  projectValidationSchema,
+} from 'terraso-mobile-client/components/projects/CreateProjectView/Form';
 import {addProject} from 'terraso-client-shared/project/projectSlice';
-import {useDispatch} from '../../../model/store';
-import {useNavigation} from '../../../screens/AppScaffold';
+import {useDispatch} from 'terraso-mobile-client/model/store';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';

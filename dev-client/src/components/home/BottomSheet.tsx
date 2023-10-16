@@ -21,12 +21,12 @@ import {
 } from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {useTranslation} from 'react-i18next';
-import {Icon} from '../common/Icons';
-import {SiteCard} from '../sites/SiteCard';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
-import {SearchBar} from '../common/search/SearchBar';
-import {SiteFilter} from '../sites/filter';
-import {ProjectSelect} from '../projects/ProjectSelect';
+import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
+import {SiteFilter} from 'terraso-mobile-client/components/sites/filter';
+import {ProjectSelect} from 'terraso-mobile-client/components/projects/ProjectSelect';
 
 const EmptySiteMessage = () => {
   const {t} = useTranslation();

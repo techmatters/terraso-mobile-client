@@ -1,10 +1,10 @@
 import {Button, Row, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import RadioBlock from '../common/RadioBlock';
-import {Accordion} from '../common/Accordion';
-import {FormSwitch} from '../common/Form';
-import {useDispatch, useSelector} from '../../model/store';
-import {TabRoutes, TabStackParamList} from './constants';
+import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
+import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
+import {FormSwitch} from 'terraso-mobile-client/components/common/Form';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
+import {TabRoutes, TabStackParamList} from 'terraso-mobile-client/components/projects/constants';
 import {
   LabelledDepthInterval,
   collectionMethods,
@@ -13,9 +13,9 @@ import {
   updateProjectDepthInterval,
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {Icon, IconButton} from '../common/Icons';
-import {Modal} from '../common/Modal';
-import {AddIntervalModal} from '../dataInputs/AddIntervalModal';
+import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {Modal} from 'terraso-mobile-client/components/common/Modal';
+import {AddIntervalModal} from 'terraso-mobile-client/components/dataInputs/AddIntervalModal';
 import {useMemo, useCallback} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'react-native';
