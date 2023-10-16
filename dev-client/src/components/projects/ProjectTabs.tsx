@@ -6,13 +6,7 @@ import {TabRoutes, TabStackParamList} from './constants';
 import ProjectSettingsTab from './ProjectSettingsTab';
 import ProjectSitesTab from './ProjectSitesTab';
 import {Icon} from '../common/Icons';
-import {
-  Project,
-  ProjectMembership,
-} from 'terraso-client-shared/project/projectSlice';
-import {useSelector} from '../../model/store';
-import {useMemo} from 'react';
-import {User} from 'terraso-client-shared/account/accountSlice';
+import {Project} from 'terraso-client-shared/project/projectSlice';
 
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
 
@@ -54,16 +48,6 @@ export default function ProjectTabs({project}: Props) {
     };
   };
 
-  const users = useSelector(state => state.account.users);
-
-  const projectMembers: [ProjectMembership, User][] = useMemo(
-    () =>
-      Object.values<ProjectMembership>(project.memberships)
-        .filter(({userId}) => userId in users)
-        .map(membership => [membership, users[membership.userId]]),
-    [project.memberships, users],
-  );
-
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
@@ -81,7 +65,7 @@ export default function ProjectTabs({project}: Props) {
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamTab}
-        initialParams={{memberships: projectMembers, projectId: project.id}}
+        initialParams={{projectId: project.id}}
       />
 
       <Tab.Screen
