@@ -1,12 +1,15 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import ProjectInputTab from './ProjectInputTab';
-import {useTheme} from 'native-base';
-import ProjectTeamTab from './ProjectTeamTab';
-import {TabRoutes, TabStackParamList} from './constants';
-import ProjectSettingsTab from './ProjectSettingsTab';
-import ProjectSitesTab from './ProjectSitesTab';
-import {Icon} from '../common/Icons';
+import {ProjectInputTab} from 'terraso-mobile-client/components/projects/ProjectInputTab';
+import ProjectTeamTab from 'terraso-mobile-client/components/projects/ProjectTeamTab';
+import {
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/components/projects/constants';
+import ProjectSettingsTab from 'terraso-mobile-client/components/projects/ProjectSettingsTab';
+import ProjectSitesTab from 'terraso-mobile-client/components/projects/ProjectSitesTab';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {Project} from 'terraso-client-shared/project/projectSlice';
+import {useDefaultTabOptions} from '../../screens/TabBar';
 
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
 
@@ -18,7 +21,7 @@ type ScreenOptions = React.ComponentProps<
 type Props = {project: Project};
 
 export default function ProjectTabs({project}: Props) {
-  const {colors} = useTheme();
+  const defaultTabOptions = useDefaultTabOptions();
 
   const tabIconNames: Record<keyof TabStackParamList, string> = {
     Inputs: 'tune',
@@ -31,19 +34,9 @@ export default function ProjectTabs({project}: Props) {
     let iconName = tabIconNames[route.name];
 
     return {
-      tabBarScrollEnabled: true,
+      ...defaultTabOptions,
       tabBarIcon: ({color}) => {
         return <Icon name={iconName} color={color} />;
-      },
-      tabBarActiveTintColor: colors.primary.contrast,
-      tabBarInactiveTintColor: colors.secondary.main,
-      tabBarItemStyle: {width: 100, flexDirection: 'row'},
-      tabBarStyle: {
-        backgroundColor: colors.grey[200],
-      },
-      tabBarIndicatorStyle: {
-        backgroundColor: colors.secondary.main,
-        height: '100%',
       },
     };
   };
@@ -61,7 +54,11 @@ export default function ProjectTabs({project}: Props) {
           downloadLink: TEMP_DOWNLOAD_LINK,
         }}
       />
-      <Tab.Screen name={TabRoutes.INPUTS} component={ProjectInputTab} />
+      <Tab.Screen
+        name={TabRoutes.INPUTS}
+        component={ProjectInputTab}
+        initialParams={{projectId: project.id}}
+      />
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamTab}

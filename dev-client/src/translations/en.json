@@ -79,7 +79,12 @@
         "label": "Last Modified",
         "value": "{{date}} {{name}}"
       },
-      "default_title": "Location Information"
+      "default_title": "Location Information",
+      "speed_dial": {
+        "note_label": "NOTE",
+        "photo_label": "PHOTO",
+        "bedrock_label": "BEDROCK"
+      }
     },
     "search": {
       "placeholder": "Search sites",
@@ -91,6 +96,11 @@
       "MANAGER": "Manager",
       "CONTRIBUTOR": "Contributor",
       "VIEWER": "Viewer"
+    },
+    "tabs": {
+      "SITE": "Site",
+      "SLOPE": "Slope",
+      "SOIL": "Soil"
     }
   },
   "projects": {
@@ -198,7 +208,8 @@
       "viewer": "Viewer",
       "contributor": "Contributor",
       "manager": "Manager"
-    }
+    },
+    "add": "ADD"
   },
   "screens": {
     "HOME": "LandPKS",
@@ -251,6 +262,39 @@
     "confidence": "Confidence",
     "soil_id": "Soil ID",
     "ecological_site_id": "Ecological Site ID",
-    "land_capability_classification": "Land Capability Classification"
+    "land_capability_classification": "Land Capability Classification",
+    "surface": "Soil Surface",
+    "pit": "Soil Pit",
+    "add_depth_label": "ADD DEPTH",
+    "project_settings": {
+      "pit_required_label": "Soil pit required",
+      "required_data_title": "Data Collection Requirements"
+    },
+    "collection_method": {
+      "slope": "Slope and Landscape",
+      "soilTexture": "Texture",
+      "soilColor": "Color",
+      "verticalCracking": "Vertical Cracks",
+      "carbonates": "Carbonates",
+      "ph": "pH",
+      "soilOrganicCarbonMatter": "SOC/SOM",
+      "electricalConductivity": "Electrical Conductivity",
+      "sodiumAdsorptionRatio": "SAR",
+      "soilStructure": "Structure",
+      "landUseLandCover": "Land Use/Land Cover",
+      "soilLimitations": "Limitations",
+      "photos": "Photos",
+      "notes": "Notes"
+    },
+    "depth_interval": {
+      "add_title": "Add depth interval",
+      "edit_title": "Depth Interval",
+      "data_inputs_title": "Data Inputs",
+      "label_help": "{{max}} characters max",
+      "label_placeholder": "Label",
+      "apply_to_all_label": "Apply to all to intervals",
+      "start_label": "From ({{unit}})",
+      "end_label": "To ({{unit}})"
+    }
   }
 }

@@ -12,13 +12,16 @@ import {
   Spacer,
   Pressable,
 } from 'native-base';
-import {useDispatch, useSelector} from '../../model/store';
-import {useNavigation} from '../../screens/AppScaffold';
-import {Icon} from '../common/Icons';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
-import {IconLabel} from '../common/RadioBlock';
-import {updateSite} from 'terraso-client-shared/site/siteSlice';
-import {ScreenScaffold, AppBar} from '../../screens/ScreenScaffold';
+import {IconLabel} from 'terraso-mobile-client/components/common/RadioBlock';
+import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
+import {
+  ScreenScaffold,
+  AppBar,
+} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 type Props = {
   siteId: string;
@@ -41,6 +44,12 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
     () => dispatch(updateSite({id: site.id, name})),
     [dispatch, site, name],
   );
+
+  const onDelete = useCallback(async () => {
+    // TODO: confirm successful deletion before navigating home
+    navigate('HOME');
+    await dispatch(deleteSite(site));
+  }, [dispatch, navigate, site]);
 
   return (
     <ScreenScaffold
@@ -103,7 +112,8 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           pl={0}
           variant="link"
           _text={{color: 'error.main'}}
-          startIcon={<Icon color="error.main" name="delete-forever" />}>
+          startIcon={<Icon color="error.main" name="delete-forever" />}
+          onPress={onDelete}>
           {t('site.dashboard.delete_button').toUpperCase()}
         </Button>
       </Column>

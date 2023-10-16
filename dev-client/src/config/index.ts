@@ -2,7 +2,7 @@ import Config from 'react-native-config';
 import {MMKVLoader} from 'react-native-mmkv-storage';
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
-import {PACKAGE_NAME} from '../constants';
+import {PACKAGE_NAME} from 'terraso-mobile-client/constants';
 
 const terrasoAPIURL =
   Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';

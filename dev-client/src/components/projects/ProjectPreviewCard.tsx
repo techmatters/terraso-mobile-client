@@ -1,9 +1,9 @@
 import {Badge, HStack, Heading, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
-import {useNavigation} from '../../screens/AppScaffold';
-import {Card} from '../common/Card';
-import {Icon} from '../common/Icons';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {Card} from 'terraso-mobile-client/components/common/Card';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 
 type Props = {
@@ -42,7 +42,7 @@ export default function ProjectPreviewCard({project}: Props) {
           variant="chip"
           backgroundColor="primary.lightest"
           startIcon={<Icon name="location-on" />}>
-          {Object.keys(project.siteIds).length}
+          {Object.keys(project.sites).length}
         </Badge>
         <Badge
           variant="chip"

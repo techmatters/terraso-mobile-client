@@ -1,1 +1,1 @@
-ignores: ["react-native-gradle-plugin", "uuid",  "@babel/core", "@babel/preset-env", "@babel/runtime", "@tsconfig/react-native", "@types/jest", "@types/uuid", "babel-jest", "eslint-plugin-prettier", "metro-react-native-babel-preset", "react-redux", "@reduxjs/toolkit" ]
+ignores: ["react-native-gradle-plugin", "uuid",  "@babel/core", "@babel/preset-env", "@babel/runtime", "@tsconfig/react-native", "@types/jest", "@types/uuid", "babel-jest", "eslint-plugin-prettier", "metro-react-native-babel-preset", "react-redux", "@reduxjs/toolkit", "terraso-mobile-client" ]

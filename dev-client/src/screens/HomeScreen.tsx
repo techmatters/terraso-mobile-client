@@ -1,4 +1,4 @@
-import SiteMap from '../components/home/SiteMap';
+import SiteMap from 'terraso-mobile-client/components/home/SiteMap';
 import {
   forwardRef,
   useCallback,
@@ -8,22 +8,20 @@ import {
   useMemo,
 } from 'react';
 import Mapbox, {Camera} from '@rnmapbox/maps';
-import {Coords} from '../model/map/mapSlice';
-import {useDispatch} from '../model/store';
-import {useSelector} from '../model/store';
-import {Site, fetchSitesForUser} from 'terraso-client-shared/site/siteSlice';
-import {SiteListBottomSheet} from '../components/home/BottomSheet';
-import {useNavigation} from './AppScaffold';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
+import {Site} from 'terraso-client-shared/site/siteSlice';
+import {SiteListBottomSheet} from 'terraso-mobile-client/components/home/BottomSheet';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {
   AppBarIconButton,
   AppBar,
   ScreenScaffold,
   useHeaderHeight,
-} from './ScreenScaffold';
-import {fetchProjectsForUser} from 'terraso-client-shared/project/projectSlice';
-import MapSearch from '../components/home/MapSearch';
+} from 'terraso-mobile-client/screens/ScreenScaffold';
+import MapSearch from 'terraso-mobile-client/components/home/MapSearch';
 import {Box, Column, Heading, Image, Link, Text} from 'native-base';
-import {coordsToPosition} from '../components/common/Map';
+import {coordsToPosition} from 'terraso-mobile-client/components/common/Map';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -31,11 +29,12 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
-import {Icon} from '../components/common/Icons';
-import {CardCloseButton} from '../components/common/Card';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
-import {useTextSearch} from '../components/common/search/search';
-import {useFilterSites} from '../components/sites/filter';
+import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
+import {useFilterSites} from 'terraso-mobile-client/components/sites/filter';
+import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 
 export type CalloutState =
   | {
@@ -83,9 +82,9 @@ export const HomeScreen = () => {
   );
 
   useEffect(() => {
-    // load sites on mount
-    dispatch(fetchSitesForUser());
-    dispatch(fetchProjectsForUser());
+    if (currentUserID !== undefined) {
+      dispatch(fetchSoilDataForUser(currentUserID));
+    }
   }, [dispatch, currentUserID]);
 
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
@@ -162,11 +161,11 @@ export const HomeScreen = () => {
   }, [navigation, calloutState]);
 
   const onInfo = useCallback(
-    () => infoBottomSheetRef?.current?.present(),
+    () => infoBottomSheetRef.current?.present(),
     [infoBottomSheetRef],
   );
   const onInfoClose = useCallback(
-    () => infoBottomSheetRef?.current?.dismiss(),
+    () => infoBottomSheetRef.current?.dismiss(),
     [infoBottomSheetRef],
   );
 
@@ -245,7 +244,7 @@ const LandPKSInfo = () => {
           {t('home.info.title')}
         </Heading>
         <Image
-          source={require('../../assets/landpks_intro_image.png')}
+          source={require('terraso-mobile-client/assets/landpks_intro_image.png')}
           w="100%"
           h="30%"
           resizeMode="contain"

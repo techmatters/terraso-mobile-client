@@ -7,25 +7,35 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import AddButton from '../common/AddButton';
+import AddButton from 'terraso-mobile-client/components/common/AddButton';
 import {useTranslation} from 'react-i18next';
-import {TabRoutes, TabStackParamList} from './constants';
+import {
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/components/projects/constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import {SearchBar} from '../common/search/SearchBar';
+import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {Icon, MaterialCommunityIcons} from '../common/Icons';
-import {RootStackScreenProps} from '../../screens/AppScaffold';
+import {
+  Icon,
+  MaterialCommunityIcons,
+} from 'terraso-mobile-client/components/common/Icons';
+import {RootStackScreenProps} from 'terraso-mobile-client/screens/AppScaffold';
 import {Site, deleteSite} from 'terraso-client-shared/site/siteSlice';
-import {useDispatch, useSelector, AppState} from '../../model/store';
+import {
+  useDispatch,
+  useSelector,
+  AppState,
+} from 'terraso-mobile-client/model/store';
 import {
   Project,
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
-import {SiteCard} from '../sites/SiteCard';
-import {useTextSearch} from '../common/search/search';
-import {CardTopRightButton} from '../common/Card';
+import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
+import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
+import {CardTopRightButton} from 'terraso-mobile-client/components/common/Card';
 
 type SiteMenuProps = {
   iconName: string;
@@ -94,7 +104,7 @@ const selectProjectSites = createSelector(
     projectId: string,
   ) => {
     let project = projects[projectId];
-    return Object.keys(project.siteIds)
+    return Object.keys(project.sites)
       .map(id => sites[id])
       .filter(site => site);
   },

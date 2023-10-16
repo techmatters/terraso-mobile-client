@@ -4,27 +4,33 @@ import {
   NativeStackNavigationProp,
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
-import {useDispatch, useSelector} from '../model/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import React, {useEffect} from 'react';
 import {
   setHasAccessTokenAsync,
   fetchUser,
 } from 'terraso-client-shared/account/accountSlice';
-import {LoginScreen} from './LoginScreen';
-import {ProjectListScreen} from './ProjectListScreen';
-import {ProjectViewScreen} from './ProjectViewScreen';
-import {CreateProjectScreen} from './CreateProjectScreen';
-import {HomeScreen} from './HomeScreen';
-import {SiteTransferProjectScreen} from './SiteTransferProject';
-import {CreateSiteScreen} from './CreateSiteScreen';
+import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
+import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen';
+import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
+import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen';
+import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen';
+import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProject';
+import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen';
 import {useNavigation as useNavigationNative} from '@react-navigation/native';
-import {LocationDashboardScreen} from '../components/sites/LocationDashboardScreen';
-import {SiteSettingsScreen} from '../components/sites/SiteSettingsScreen';
-import {SiteTeamSettingsScreen} from '../components/sites/SiteTeamSettings';
+import {LocationDashboardScreen} from 'terraso-mobile-client/components/sites/LocationDashboardScreen';
+import {SiteSettingsScreen} from 'terraso-mobile-client/components/sites/SiteSettingsScreen';
+import {SiteTeamSettingsScreen} from 'terraso-mobile-client/components/sites/SiteTeamSettings';
 import {Location, locationManager} from '@rnmapbox/maps';
-import {updateLocation} from '../model/map/mapSlice';
-import {USER_DISPLACEMENT_MIN_DISTANCE_M} from '../constants';
-import {AddUserToProjectScreen} from '../components/projects/AddUserToProjectScreen';
+import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
+import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
+import {AddUserToProjectScreen} from 'terraso-mobile-client/components/projects/AddUserToProjectScreen';
+
+type UnknownToUndefined<T extends unknown> = unknown extends T ? undefined : T;
+export type ScreenDefinitions = Record<string, React.FC<any>>;
+export type ParamList<T extends ScreenDefinitions> = {
+  [K in keyof T]: UnknownToUndefined<React.ComponentProps<T[K]>>;
+};
 
 const screenDefinitions = {
   LOGIN: LoginScreen,
@@ -38,22 +44,14 @@ const screenDefinitions = {
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,
-} satisfies Record<string, React.FC<any>>;
+} satisfies ScreenDefinitions;
 
-type ScreenName = keyof typeof screenDefinitions;
-type UnknownToUndefined<T extends unknown> = unknown extends T ? undefined : T;
-type RootStackParamList = {
-  [K in ScreenName]: UnknownToUndefined<
-    React.ComponentProps<(typeof screenDefinitions)[K]>
-  >;
-};
+type RootStackParamList = ParamList<typeof screenDefinitions>;
+type ScreenName = keyof RootStackParamList;
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
-export type RootStackScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  ScreenName
->;
+export type RootStackScreenProps = NativeStackScreenProps<RootStackParamList>;
 
 const screens = Object.entries(screenDefinitions).map(([name, Screen]) => (
   <RootStack.Screen
@@ -68,7 +66,7 @@ export const useNavigation = <Name extends ScreenName = ScreenName>() =>
 
 const defaultScreenOptions: NativeStackNavigationOptions = {headerShown: false};
 
-export default function AppScaffold() {
+export function AppScaffold() {
   const dispatch = useDispatch();
   const hasToken = useSelector(state => state.account.hasToken);
   const currentUser = useSelector(state => state.account.currentUser.data);
