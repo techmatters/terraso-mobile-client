@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.5.1",
-    "@react-native/metro-config": "^0.73.1",
+    "@react-native/metro-config": "^0.74.0",
     "@react-navigation/material-top-tabs": "^6.6.3",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
