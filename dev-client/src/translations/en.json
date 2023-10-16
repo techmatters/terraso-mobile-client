@@ -129,7 +129,8 @@
       }
     },
     "team": {
-      "add": "Add team members"
+      "add": "Add team members",
+      "leave_project": "LEAVE PROJECT"
     },
     "edit": {
       "inputHeader": "General Project Settings"
@@ -203,6 +204,11 @@
     "apply": "Apply",
     "example_email": "name@domain.com",
     "profile_image_alt": "Profile image",
+    "role": {
+      "viewer": "Viewer",
+      "contributor": "Contributor",
+      "manager": "Manager"
+    },
     "add": "ADD"
   },
   "screens": {
