@@ -1,9 +1,12 @@
 import {VStack} from 'native-base';
-import AddButton from '../common/AddButton';
-import UserList from '../common/UserList';
+import AddButton from 'terraso-mobile-client/components/common/AddButton';
+import UserList from 'terraso-mobile-client/components/common/UserList';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {TabRoutes, TabStackParamList} from './constants';
-import {useDispatch, useSelector} from '../../model/store';
+import {
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/components/projects/constants';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useCallback, useState} from 'react';
 import {
   ProjectMembership,
@@ -11,7 +14,7 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {useNavigation} from '../../screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 

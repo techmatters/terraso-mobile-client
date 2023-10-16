@@ -8,8 +8,8 @@ import {
   VStack,
 } from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {Icon, IconButton} from '../../common/Icons';
-import {formatNames} from '../../../util';
+import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {formatNames} from 'terraso-mobile-client/util';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useTranslation} from 'react-i18next';
 

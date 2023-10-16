@@ -1,4 +1,4 @@
-import {APP_CONFIG} from '../../config';
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {v4 as uuidv4} from 'uuid';
 
 interface SuggestionResponse {

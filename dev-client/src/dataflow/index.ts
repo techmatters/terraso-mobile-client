@@ -1,4 +1,9 @@
-import {ProjectPreview, Project, UserProfile, SiteDisplay} from '../types';
+import {
+  ProjectPreview,
+  Project,
+  UserProfile,
+  SiteDisplay,
+} from 'terraso-mobile-client/types';
 
 export function fetchProjects(): ProjectPreview[] {
   return [

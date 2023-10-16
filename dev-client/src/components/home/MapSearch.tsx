@@ -2,10 +2,13 @@ import Autocomplete from 'react-native-autocomplete-input';
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Box, HStack, Input, Pressable, Text, View, VStack} from 'native-base';
-import {Suggestion, initMapSearch} from './mapSearch';
-import {Icon, IconButton} from '../common/Icons';
+import {
+  Suggestion,
+  initMapSearch,
+} from 'terraso-mobile-client/components/home/mapSearchTools';
+import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Keyboard} from 'react-native';
-import {Coords} from '../../model/map/mapSlice';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 

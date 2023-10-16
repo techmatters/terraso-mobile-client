@@ -1,12 +1,15 @@
 import {Box, Button, Column, Heading, Text} from 'native-base';
-import {useNavigation} from './AppScaffold';
-import {useDispatch, useSelector} from '../model/store';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useEffect, useCallback} from 'react';
-import {auth} from '../auth';
+import {auth} from 'terraso-mobile-client/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
-import {Icon, MaterialCommunityIcons} from '../components/common/Icons';
-import TerrasoLogo from '../../assets/terraso-logo.svg';
+import {
+  Icon,
+  MaterialCommunityIcons,
+} from 'terraso-mobile-client/components/common/Icons';
+import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
