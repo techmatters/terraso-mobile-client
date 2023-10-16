@@ -41,6 +41,16 @@ export default function ProjectTeamTab({route}: Props) {
     [dispatch, route.params.projectId],
   );
 
+  const manageMember = useCallback((userId: string, membershipId: string) => {
+    return async () => {
+      navigation.navigate('MANAGE_TEAM_MEMBER', {
+        userId,
+        membershipId,
+        projectId: route.params.projectId,
+      });
+    };
+  });
+
   return (
     <VStack alignItems="flex-start" p={4} space={3}>
       <AddButton
@@ -56,6 +66,7 @@ export default function ProjectTeamTab({route}: Props) {
         memberships={members}
         currentUserId={currentUser.data?.id}
         userAction={removeMembership}
+        memberAction={manageMember}
       />
     </VStack>
   );

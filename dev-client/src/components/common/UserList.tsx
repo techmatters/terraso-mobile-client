@@ -7,6 +7,7 @@ import {
   FlatList,
   HStack,
   Image,
+  Pressable,
   Text,
   VStack,
 } from 'native-base';
@@ -14,12 +15,13 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
-import ConfirmModal from './ConfirmModal';
+import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 
 type ListProps = {
   memberships: [ProjectMembership, User][];
   currentUserId?: string;
   userAction: (membership: ProjectMembership) => () => void;
+  memberAction: (userId: string, memberId: string) => () => void;
 };
 
 type ItemProps = {
@@ -27,6 +29,7 @@ type ItemProps = {
   user: User;
   currentUserId?: string;
   removeUser: () => void;
+  memberAction: () => void;
 };
 
 type TriggerProps = {
@@ -50,7 +53,13 @@ function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
   );
 }
 
-function UserItem({membership, user, currentUserId, removeUser}: ItemProps) {
+function UserItem({
+  membership,
+  user,
+  currentUserId,
+  removeUser,
+  memberAction,
+}: ItemProps) {
   const {t} = useTranslation();
   const isCurrentUser = useMemo(() => {
     return user.id === currentUserId;
@@ -69,29 +78,38 @@ function UserItem({membership, user, currentUserId, removeUser}: ItemProps) {
     return name;
   }, [user, isCurrentUser, t]);
 
+  const UserWrapper = ({children}: React.PropsWithChildren) =>
+    isCurrentUser ? (
+      <>{children}</>
+    ) : (
+      <Pressable onPress={memberAction}>{children}</Pressable>
+    );
+
   return (
     <Box borderBottomWidth="1" width={275} py={2}>
       <VStack>
-        <HStack space={3} justifyContent="space-between" alignItems="center">
-          <Box>
-            <Image
-              variant="profilePic"
-              source={{uri: user.profileImage}}
-              alt="profile pic"
-            />
-          </Box>
-          <Text flex={3}>{userName}</Text>
-          <Box>
-            <Badge
-              variant="chip"
-              bg="primary.lightest"
-              py="5px"
-              px="10px"
-              _text={{color: 'text.primary'}}>
-              {t('general.role.' + membership.userRole)}
-            </Badge>
-          </Box>
-        </HStack>
+        <UserWrapper>
+          <HStack space={3} justifyContent="space-between" alignItems="center">
+            <Box>
+              <Image
+                variant="profilePic"
+                source={{uri: user.profileImage}}
+                alt="profile pic"
+              />
+            </Box>
+            <Text flex={3}>{userName}</Text>
+            <Box>
+              <Badge
+                variant="chip"
+                bg="primary.lightest"
+                py="5px"
+                px="10px"
+                _text={{color: 'text.primary'}}>
+                {t('general.role.' + membership.userRole)}
+              </Badge>
+            </Box>
+          </HStack>
+        </UserWrapper>
         {isCurrentUser && (
           <ConfirmModal
             trigger={onOpen => (
@@ -115,6 +133,7 @@ export default function UserList({
   memberships,
   userAction,
   currentUserId,
+  memberAction,
 }: ListProps) {
   return (
     <FlatList
@@ -125,6 +144,7 @@ export default function UserList({
           user={user}
           currentUserId={currentUserId}
           removeUser={userAction(membership)}
+          memberAction={memberAction(membership.id, user.id)}
         />
       )}
       keyExtractor={([membership, _]) => membership.id}
