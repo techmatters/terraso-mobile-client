@@ -126,6 +126,8 @@ export const theme = extendTheme({
           borderRadius: '4px',
           _text: {
             fontSize: '14px',
+            fontWeight: 400,
+            lineHeight: '20px',
           },
         },
       },

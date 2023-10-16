@@ -38,7 +38,11 @@ const ConfirmModal = ({
               <Button
                 onPress={onClose}
                 variant="confirmModal"
-                _text={{color: 'text.primary'}}
+                _text={{
+                  color: 'text.primary',
+                  fontWeight: '400',
+                  fontSize: '14px',
+                }}
                 borderWidth="1px"
                 borderColor="m3.sys.light.outline">
                 {t('general.cancel')}
@@ -47,7 +51,11 @@ const ConfirmModal = ({
                 onPress={handleConfirm}
                 variant="confirmModal"
                 backgroundColor="error.main"
-                _text={{color: 'error.contrast'}}>
+                _text={{
+                  color: 'error.contrast',
+                  fontWeight: '400',
+                  fontSize: '14px',
+                }}>
                 {actionName}
               </Button>
             </HStack>
