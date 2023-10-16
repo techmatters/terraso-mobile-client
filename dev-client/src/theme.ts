@@ -120,6 +120,14 @@ export const theme = extendTheme({
           width: 'full',
           justifyContent: 'start',
         },
+        confirmModal: {
+          py: '10px',
+          px: '24px',
+          borderRadius: '4px',
+          _text: {
+            fontSize: '14px',
+          },
+        },
       },
     },
     FAB: {

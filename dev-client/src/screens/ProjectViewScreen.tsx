@@ -8,7 +8,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
   const project = useSelector(state => state.project.projects[projectId]);
 
   return (
-    <ScreenScaffold AppBar={<AppBar LeftButton={null} title={project.name} />}>
+    <ScreenScaffold AppBar={<AppBar LeftButton={null} title={project?.name} />}>
       <ProjectTabs project={project} />
     </ScreenScaffold>
   );

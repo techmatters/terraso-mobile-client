@@ -22,11 +22,6 @@ const ConfirmModal = ({
 }: Props) => {
   const {isOpen, onOpen, onClose} = useDisclose();
   const {t} = useTranslation();
-  const buttonStyle = {
-    py: '10px',
-    px: '24px',
-    borderRadius: '4px',
-  };
   return (
     <>
       {trigger(onOpen)}
@@ -42,18 +37,17 @@ const ConfirmModal = ({
             <HStack space="8px" alignItems="center">
               <Button
                 onPress={onClose}
-                backgroundColor="grey.200"
-                _text={{color: 'text.primary', fontSize: '14px'}}
+                variant="confirmModal"
+                _text={{color: 'text.primary'}}
                 borderWidth="1px"
-                borderColor="m3.sys.light.outline"
-                {...buttonStyle}>
+                borderColor="m3.sys.light.outline">
                 {t('general.cancel')}
               </Button>
               <Button
                 onPress={handleConfirm}
+                variant="confirmModal"
                 backgroundColor="error.main"
-                _text={{color: 'error.contrast', fontSize: '14px'}}
-                {...buttonStyle}>
+                _text={{color: 'error.contrast'}}>
                 {actionName}
               </Button>
             </HStack>
