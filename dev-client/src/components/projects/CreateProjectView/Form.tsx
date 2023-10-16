@@ -9,7 +9,7 @@ import {
   PROJECT_DESCRIPTION_MAX_LENGTH,
   PROJECT_NAME_MAX_LENGTH,
   PROJECT_NAME_MIN_LENGTH,
-} from '../../../constants';
+} from 'terraso-mobile-client/constants';
 import {TFunction} from 'i18next';
 
 export const projectValidationSchema = (t: TFunction) =>

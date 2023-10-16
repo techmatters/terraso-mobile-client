@@ -6,7 +6,7 @@ import {
   LONGITUDE_MAX,
   SITE_NAME_MAX,
   SITE_NAME_MIN,
-} from '../../constants';
+} from 'terraso-mobile-client/constants';
 import {TFunction} from 'i18next';
 import {
   CoordsParseError,
