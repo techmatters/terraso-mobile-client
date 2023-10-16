@@ -15,7 +15,7 @@ import {
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {useMemo} from 'react';
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {useDefaultTabOptions} from '../../screens/TabBar';
+import {useDefaultTabOptions} from 'terraso-mobile-client/screens/TabBar';
 
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
 

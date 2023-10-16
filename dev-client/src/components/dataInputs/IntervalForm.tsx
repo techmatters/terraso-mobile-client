@@ -1,9 +1,9 @@
 import * as yup from 'yup';
-import {FORM_LABEL_MAX} from '../../constants';
+import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
 import {DepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
 import {TFunction} from 'i18next';
 import {useTranslation} from 'react-i18next';
-import {FormInput} from '../common/Form';
+import {FormInput} from 'terraso-mobile-client/components/common/Form';
 import {Box, Row} from 'native-base';
 
 type Args = {
