@@ -12,7 +12,6 @@ export const enum TabRoutes {
 export type TabStackParamList = {
   [TabRoutes.INPUTS]: {projectId: string};
   [TabRoutes.TEAM]: {
-    memberships: [ProjectMembership, User][];
     projectId: string;
   };
   [TabRoutes.SETTINGS]: {
