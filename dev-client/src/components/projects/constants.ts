@@ -1,6 +1,4 @@
-import {ProjectPrivacy} from '../../types';
-import {User} from 'terraso-client-shared/account/accountSlice';
-import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
+import {ProjectPrivacy} from 'terraso-mobile-client/types';
 
 export const enum TabRoutes {
   INPUTS = 'Inputs',

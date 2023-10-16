@@ -8,7 +8,10 @@ import {
   SITE_NAME_MIN,
 } from '../../constants';
 import {TFunction} from 'i18next';
-import {CoordsParseError, parseCoords} from '../common/Map';
+import {
+  CoordsParseError,
+  parseCoords,
+} from 'terraso-mobile-client/components/common/Map';
 
 export const siteValidationSchema = (t: TFunction) =>
   yup.object({

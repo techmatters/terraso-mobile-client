@@ -1,15 +1,20 @@
 import {Box, Button, HStack, Text} from 'native-base';
-import {FreeformTextInput} from '../../common/FreeformTextInput';
+import {FreeformTextInput} from 'terraso-mobile-client/components/common/FreeformTextInput';
 import {useTranslation} from 'react-i18next';
-import {AppBar, ScreenScaffold} from '../../../screens/ScreenScaffold';
+import {
+  AppBar,
+  ScreenScaffold,
+} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useCallback, useMemo, useState} from 'react';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {checkUserInProject} from 'terraso-client-shared/account/accountService';
-import MembershipControlList, {UserWithRole} from './MembershipControlList';
+import MembershipControlList, {
+  UserWithRole,
+} from 'terraso-mobile-client/components/projects/AddUserToProjectScreen/MembershipControlList';
 import {addUserToProject} from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from '../../../screens/AppScaffold';
-import {useDispatch, useSelector} from '../../../model/store';
-import {useKeyboardOpen} from '../../../hooks';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
+import {useKeyboardOpen} from 'terraso-mobile-client/hooks';
 
 type Props = {
   projectId: string;

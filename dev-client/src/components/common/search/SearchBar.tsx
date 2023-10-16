@@ -1,8 +1,8 @@
 import {Badge, Row, Box, Input, Modal, Button, useDisclose} from 'native-base';
-import {Icon, IconButton} from '../Icons';
+import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {CardCloseButton} from '../Card';
+import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 
 type SearchBarProps = {
   query: string;

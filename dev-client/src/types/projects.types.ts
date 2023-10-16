@@ -1,5 +1,5 @@
-import {UserPreview} from './users.types';
-import {SitePreview} from './sites.types';
+import {UserPreview} from 'terraso-mobile-client/types/users.types';
+import {SitePreview} from 'terraso-mobile-client/types/sites.types';
 
 export interface ProjectName {
   name: string;

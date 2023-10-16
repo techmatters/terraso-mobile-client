@@ -1,10 +1,10 @@
 import Mapbox from '@rnmapbox/maps';
 import {PixelRatio, Platform, StyleProp, ViewStyle} from 'react-native';
-import {Icon} from './Icons';
-import {Coords} from '../../model/map/mapSlice';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {Position} from '@rnmapbox/maps/lib/typescript/types/Position';
 import {useMemo} from 'react';
-import {COORDINATE_PRECISION} from '../../constants';
+import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
 import {
   LATITUDE_MAX,
   LATITUDE_MIN,

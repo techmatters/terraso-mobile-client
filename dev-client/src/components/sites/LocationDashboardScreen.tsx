@@ -2,8 +2,8 @@ import {
   useNavigation,
   ParamList,
   ScreenDefinitions,
-} from '../../screens/AppScaffold';
-import {useSelector} from '../../model/store';
+} from 'terraso-mobile-client/screens/AppScaffold';
+import {useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 import {
@@ -11,16 +11,16 @@ import {
   AppBarIconButton,
   ScreenCloseButton,
   ScreenScaffold,
-} from '../../screens/ScreenScaffold';
-import {LocationDashboardView} from './LocationDashboardView';
-import {Coords} from '../../model/map/mapSlice';
+} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {LocationDashboardView} from 'terraso-mobile-client/components/sites/LocationDashboardView';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {SlopeScreen} from '../dataInputs/SlopeScreen';
-import {SoilScreen} from '../dataInputs/SoilScreen';
-import {useDefaultTabOptions} from '../../screens/TabBar';
-import {SpeedDial} from '../common/SpeedDial';
+import {SlopeScreen} from 'terraso-mobile-client/components/dataInputs/SlopeScreen';
+import {SoilScreen} from 'terraso-mobile-client/components/dataInputs/SoilScreen';
+import {useDefaultTabOptions} from 'terraso-mobile-client/screens/TabBar';
+import {SpeedDial} from 'terraso-mobile-client/components/common/SpeedDial';
 import {Button} from 'native-base';
-import {Icon} from '../common/Icons';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
 
 type Props = {siteId?: string; coords?: Coords};
 

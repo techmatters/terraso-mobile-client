@@ -1,5 +1,5 @@
 import {Button, HStack, Text} from 'native-base';
-import {Icon} from './Icons';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
 
 type Props = {
   text: string;
