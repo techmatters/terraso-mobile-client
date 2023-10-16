@@ -1,7 +1,10 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {ProjectInputTab} from 'terraso-mobile-client/components/projects/ProjectInputTab';
 import ProjectTeamTab from 'terraso-mobile-client/components/projects/ProjectTeamTab';
-import {TabRoutes, TabStackParamList} from 'terraso-mobile-client/components/projects/constants';
+import {
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/components/projects/constants';
 import ProjectSettingsTab from 'terraso-mobile-client/components/projects/ProjectSettingsTab';
 import ProjectSitesTab from 'terraso-mobile-client/components/projects/ProjectSitesTab';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';

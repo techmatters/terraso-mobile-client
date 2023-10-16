@@ -4,7 +4,10 @@ import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {FormSwitch} from 'terraso-mobile-client/components/common/Form';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
-import {TabRoutes, TabStackParamList} from 'terraso-mobile-client/components/projects/constants';
+import {
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/components/projects/constants';
 import {
   LabelledDepthInterval,
   collectionMethods,

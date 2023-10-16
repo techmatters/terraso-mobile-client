@@ -18,7 +18,10 @@ import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import {IconLabel} from 'terraso-mobile-client/components/common/RadioBlock';
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
-import {ScreenScaffold, AppBar} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {
+  ScreenScaffold,
+  AppBar,
+} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 type Props = {
   siteId: string;
