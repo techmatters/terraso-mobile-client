@@ -12,8 +12,8 @@ import {
   BottomSheetScrollView,
   BottomSheetModal as GorhomBottomSheetModal,
 } from '@gorhom/bottom-sheet';
-import {useHeaderHeight} from '../../screens/ScreenScaffold';
-import {CardCloseButton} from './Card';
+import {useHeaderHeight} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {Pressable, StyleSheet} from 'react-native';
 import {useDisclose, Modal as NativeBaseModal} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
