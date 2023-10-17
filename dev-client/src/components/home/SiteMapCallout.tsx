@@ -2,12 +2,15 @@ import React, {useCallback} from 'react';
 import Mapbox from '@rnmapbox/maps';
 import {Divider, FlatList} from 'native-base';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CalloutState} from '../../screens/HomeScreen';
-import {coordsToPosition} from '../common/Map';
-import {Card, CardCloseButton} from '../common/Card';
-import {SiteCard} from '../sites/SiteCard';
-import {SiteClusterCalloutListItem} from './SiteClusterCalloutListItem';
-import {TemporarySiteCallout} from './TemporarySiteCallout';
+import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen';
+import {coordsToPosition} from 'terraso-mobile-client/components/common/Map';
+import {
+  Card,
+  CardCloseButton,
+} from 'terraso-mobile-client/components/common/Card';
+import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
+import {SiteClusterCalloutListItem} from 'terraso-mobile-client/components/home/SiteClusterCalloutListItem';
+import {TemporarySiteCallout} from 'terraso-mobile-client/components/home/TemporarySiteCallout';
 
 type SiteMapCalloutProps = {
   sites: Record<string, Site>;

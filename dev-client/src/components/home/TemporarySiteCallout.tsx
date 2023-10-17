@@ -1,10 +1,13 @@
 import {useCallback} from 'react';
 import {Button, Column, Divider, Row, Box} from 'native-base';
-import {Coords} from '../../model/map/mapSlice';
-import {useNavigation} from '../../screens/AppScaffold';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {useTranslation} from 'react-i18next';
-import {Card, CardCloseButton} from '../common/Card';
-import {CalloutDetail} from './CalloutDetail';
+import {
+  Card,
+  CardCloseButton,
+} from 'terraso-mobile-client/components/common/Card';
+import {CalloutDetail} from 'terraso-mobile-client/components/home/CalloutDetail';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';

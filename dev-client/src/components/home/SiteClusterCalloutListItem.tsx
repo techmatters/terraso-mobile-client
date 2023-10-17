@@ -2,8 +2,8 @@ import {useCallback} from 'react';
 import {Pressable} from 'react-native';
 import {Column, Heading, Text} from 'native-base';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CalloutState} from '../../screens/HomeScreen';
-import {useSelector} from '../../model/store';
+import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen';
+import {useSelector} from 'terraso-mobile-client/model/store';
 
 type SiteClusterCalloutListItemProps = {
   site: Site;
