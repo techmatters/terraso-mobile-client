@@ -1,4 +1,4 @@
-import {Text, VStack} from 'native-base';
+import {Button, Divider, Text, VStack} from 'native-base';
 import {useState} from 'react';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
@@ -9,9 +9,10 @@ import {
   ScreenScaffold,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import {formatNames} from 'terraso-mobile-client/util';
-import RadioBlock from '../common/RadioBlock';
+import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
 
 type Props = {
   projectId: string;
@@ -67,6 +68,20 @@ export const ManageTeamMemberScreen = ({
           name: 'selected-role',
         }}
       />
+
+      <Divider my="25px" width="80%" />
+
+      <Button
+        size="sm"
+        variant="ghost"
+        alignSelf="start"
+        width="60%"
+        ml="20px"
+        _text={{color: 'error.main'}}
+        _pressed={{backgroundColor: 'red.100'}}
+        leftIcon={<Icon name="delete" color="error.main" />}>
+        {t('projects.manage_member.remove').toLocaleUpperCase()}
+      </Button>
     </ScreenScaffold>
   );
 };
