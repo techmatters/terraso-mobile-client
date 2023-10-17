@@ -1,5 +1,5 @@
 import {Text, VStack} from 'native-base';
-import {useMemo, useState} from 'react';
+import {useState} from 'react';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 import {useSelector} from 'terraso-mobile-client/model/store';
@@ -50,11 +50,16 @@ export const ManageTeamMemberScreen = ({
         options={{
           manager: {
             text: t('general.role.manager'),
+            helpText: t('projects.manage_member.manager_help'),
           },
           contributor: {
             text: t('general.role.contributor'),
+            helpText: t('projects.manage_member.contributor_help'),
           },
-          viewer: {text: t('general.role.viewer')},
+          viewer: {
+            text: t('general.role.viewer'),
+            helpText: t('projects.manage_member.viewer_help'),
+          },
         }}
         groupProps={{
           onChange: setSelectedRole,

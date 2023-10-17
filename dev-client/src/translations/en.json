@@ -179,8 +179,8 @@
     "manage_member": {
       "project_role": "Project Role",
       "manager_help": "Can view and edit all aspects of the projects and its affiliated sites.",
-      "contributor": "Can view, add, and edit site data.",
-      "viewer": "Can view site data.",
+      "contributor_help": "Can view, add, and edit site data.",
+      "viewer_help": "Can view site data.",
       "remove": "Remove from project",
       "remove_help": "Remove the team member's access to this project, retaining any data contributed to sites"
     },
