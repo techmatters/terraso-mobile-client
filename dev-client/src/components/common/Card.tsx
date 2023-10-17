@@ -3,6 +3,8 @@ import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Pressable} from 'react-native';
 import {forwardRef} from 'react';
 
+const TRIANGLE_BORDER_WIDTH = 15;
+
 export const CardTopRightButton = forwardRef(
   (props: React.ComponentProps<typeof IconButton>, ref) => {
     return (
@@ -30,18 +32,48 @@ export const CardCloseButton = (
   );
 };
 
+export const CardTriangle = () => {
+  return (
+    <Box
+      width={0}
+      height={0}
+      borderBottomWidth={TRIANGLE_BORDER_WIDTH}
+      borderBottomColor="white"
+      borderLeftWidth={TRIANGLE_BORDER_WIDTH}
+      borderLeftColor="transparent"
+      borderRightWidth={TRIANGLE_BORDER_WIDTH}
+      borderRightColor="transparent"
+      alignSelf="center"
+      position="absolute"
+      top={-14}
+    />
+  );
+};
+
 type CardProps = {
   buttons?: React.ReactNode;
   children?: React.ReactNode;
   onPress?: () => void;
+  showTriangle?: Boolean;
 } & React.ComponentProps<typeof Box>;
-export const Card = ({buttons, onPress, children, ...boxProps}: CardProps) => {
+
+export const Card = ({
+  buttons,
+  onPress,
+  children,
+  showTriangle,
+  ...boxProps
+}: CardProps) => {
   return (
     <Pressable onPress={onPress}>
-      <Box variant="card" {...boxProps}>
+      <Box
+        variant="card"
+        marginTop={showTriangle ? '15px' : '0px'}
+        {...boxProps}>
+        {showTriangle && <CardTriangle />}
         {children}
+        {buttons}
       </Box>
-      {buttons}
     </Pressable>
   );
 };
