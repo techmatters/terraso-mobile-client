@@ -9,219 +9,29 @@ import {
   useRef,
   useImperativeHandle,
 } from 'react';
-import {
-  Card,
-  CardCloseButton,
-} from 'terraso-mobile-client/components/common/Card';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useTheme} from 'native-base';
+import {Keyboard, PixelRatio, Platform, StyleSheet} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {
-  Box,
-  Row,
-  Text,
-  Divider,
-  Button,
-  useTheme,
-  Column,
-  FlatList,
-  Heading,
-} from 'native-base';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
-import {useTranslation} from 'react-i18next';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
-import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
-import {
-  Keyboard,
-  PixelRatio,
-  Platform,
-  Pressable,
-  StyleSheet,
-} from 'react-native';
 import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen';
 import {
-  coordsToPosition,
   mapIconSizeForPlatform,
   positionToCoords,
 } from 'terraso-mobile-client/components/common/Map';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
-import {useSelector} from 'terraso-mobile-client/model/store';
+import {siteFeatureCollection} from 'terraso-mobile-client/components/home/siteFeatureCollection';
+import {repositionCamera} from 'terraso-mobile-client/components/home/repositionCamera';
+import {SiteMapCallout} from 'terraso-mobile-client/components/home/SiteMapCallout';
 
-const TEMP_SOIL_ID_VALUE = 'Clifton';
-const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
-const TEMP_PRECIPITATION = '28 inches';
-const TEMP_ELEVATION = '2800 feet';
 const MAX_EXPANSION_ZOOM = 15;
 
-type SiteMapProps = {
+export type SiteMapProps = {
   updateUserLocation?: (location: Location) => void;
   sites: Record<string, Site>;
   calloutState: CalloutState;
   setCalloutState: (state: CalloutState) => void;
   styleURL?: string;
-};
-
-const siteFeatureCollection = (
-  sites: Pick<Site, 'id' | 'latitude' | 'longitude'>[],
-): GeoJSON.FeatureCollection<GeoJSON.Point> => ({
-  type: 'FeatureCollection',
-  features: sites.map(site => ({
-    type: 'Feature',
-    id: site.id,
-    properties: {},
-    geometry: {
-      type: 'Point',
-      coordinates: [site.longitude, site.latitude],
-    },
-  })),
-});
-
-type SiteMapCalloutProps = {
-  sites: Record<string, Site>;
-  state: CalloutState;
-  setState: (state: CalloutState) => void;
-};
-const SiteMapCallout = ({sites, state, setState}: SiteMapCalloutProps) => {
-  const closeCallout = useCallback(() => setState({kind: 'none'}), [setState]);
-
-  if (state.kind === 'none') {
-    return null;
-  }
-
-  const coords = state.kind === 'site' ? sites[state.siteId] : state.coords;
-
-  let child: React.ComponentProps<typeof Mapbox.MarkerView>['children'];
-
-  if (state.kind === 'site') {
-    child = (
-      <SiteCard
-        site={sites[state.siteId]}
-        buttons={<CardCloseButton onPress={closeCallout} />}
-      />
-    );
-  } else if (state.kind === 'site_cluster') {
-    child = (
-      <Card width="270px" buttons={<CardCloseButton onPress={closeCallout} />}>
-        <FlatList
-          data={state.siteIds}
-          keyExtractor={id => id}
-          renderItem={({item: id}) => (
-            <SiteClusterCalloutListItem site={sites[id]} setState={setState} />
-          )}
-          ItemSeparatorComponent={() => <Divider my="10px" />}
-        />
-      </Card>
-    );
-  } else if (state.kind === 'location') {
-    child = (
-      <TemporarySiteCallout coords={coords} closeCallout={closeCallout} />
-    );
-  } else {
-    return null;
-  }
-
-  return (
-    <Mapbox.MarkerView
-      coordinate={coordsToPosition(coords)}
-      anchor={{x: 0.5, y: 0}}
-      allowOverlap>
-      {child}
-    </Mapbox.MarkerView>
-  );
-};
-
-type SiteClusterCalloutListItemProps = {
-  site: Site;
-  setState: (state: CalloutState) => void;
-};
-const SiteClusterCalloutListItem = ({
-  site,
-  setState,
-}: SiteClusterCalloutListItemProps) => {
-  const project = useSelector(state =>
-    site.projectId === undefined
-      ? undefined
-      : state.project.projects[site.projectId],
-  );
-  const onPress = useCallback(() => {
-    setState({kind: 'site', siteId: site.id});
-  }, [site.id, setState]);
-
-  return (
-    <Pressable onPress={onPress}>
-      <Column>
-        <Heading variant="h6" color="primary.main">
-          {site.name}
-        </Heading>
-        {project && <Text variant="body1">{project.name}</Text>}
-      </Column>
-    </Pressable>
-  );
-};
-
-const CalloutDetail = ({label, value}: {label: string; value: string}) => {
-  return (
-    <Box>
-      <Text>{label}</Text>
-      <Text bold>{value}</Text>
-    </Box>
-  );
-};
-
-type TemporarySiteCalloutProps = {
-  coords: Coords;
-  closeCallout: () => void;
-};
-const TemporarySiteCallout = ({
-  coords,
-  closeCallout,
-}: TemporarySiteCalloutProps) => {
-  const {t} = useTranslation();
-  const navigation = useNavigation();
-  const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {coords});
-    closeCallout();
-  }, [closeCallout, navigation, coords]);
-  const onLearnMore = useCallback(() => {
-    navigation.navigate('LOCATION_DASHBOARD', {coords});
-    closeCallout();
-  }, [closeCallout, navigation, coords]);
-
-  return (
-    <Card buttons={<CardCloseButton onPress={closeCallout} />}>
-      <Column space="12px">
-        <CalloutDetail
-          label={t('site.soil_id_prediction').toUpperCase()}
-          value={TEMP_SOIL_ID_VALUE.toUpperCase()}
-        />
-        <Divider />
-        <CalloutDetail
-          label={t('site.ecological_site_prediction').toUpperCase()}
-          value={TEMP_ECO_SITE_PREDICTION.toUpperCase()}
-        />
-        <Divider />
-        <CalloutDetail
-          label={t('site.annual_precip_avg').toUpperCase()}
-          value={TEMP_PRECIPITATION.toUpperCase()}
-        />
-        <Divider />
-        <CalloutDetail
-          label={t('site.elevation').toUpperCase()}
-          value={TEMP_ELEVATION.toUpperCase()}
-        />
-        <Divider />
-        <Row justifyContent="flex-end">
-          <Button onPress={onCreate} size="sm" variant="outline">
-            {t('site.create.title').toUpperCase()}
-          </Button>
-          <Box w="24px" />
-          <Button onPress={onLearnMore} size="sm">
-            {t('site.more_info').toUpperCase()}
-          </Button>
-        </Row>
-      </Column>
-    </Card>
-  );
 };
 
 const SiteMap = (
@@ -269,43 +79,26 @@ const SiteMap = (
     [calloutState],
   );
 
-  const onSitePress = useCallback(
-    async (event: OnPressEvent) => {
-      const feature = event.features[0];
-      if (
-        feature.properties &&
-        'cluster' in feature.properties &&
-        feature.properties.cluster
-      ) {
-        const shapeSource = shapeSourceRef.current;
-        if (shapeSource === null) {
-          return;
-        }
-        const expansionZoom =
-          await shapeSource.getClusterExpansionZoom(feature);
-        const targetZoom = Math.min(expansionZoom, MAX_EXPANSION_ZOOM);
-        const currentZoom = await mapRef.current?.getZoom();
-        if (currentZoom === undefined) {
-          return;
-        }
-        if (targetZoom > currentZoom) {
-          if (feature.geometry === null || feature.geometry.type !== 'Point') {
-            console.error(
-              'received cluster with no feature geometry or non-Point geometry',
-              feature.geometry,
-            );
-            return;
-          }
+  const handleClusterPress = useCallback(
+    async (feature: GeoJSON.Feature, currentZoom: number) => {
+      const shapeSource = shapeSourceRef.current;
+      if (!shapeSource) {
+        return;
+      }
 
-          cameraRef?.current?.setCamera({
-            zoomLevel: targetZoom,
-            centerCoordinate: feature.geometry.coordinates,
-            animationDuration: 500 + (targetZoom - currentZoom) * 100,
-            animationMode: 'easeTo',
-          });
-          return;
-        }
+      const expansionZoom = await shapeSource.getClusterExpansionZoom(feature);
+      const targetZoom = Math.min(expansionZoom, MAX_EXPANSION_ZOOM);
 
+      if (targetZoom > currentZoom) {
+        const animationDuration = 500 + (targetZoom - currentZoom) * 100;
+        repositionCamera({
+          feature: feature,
+          zoomLevel: targetZoom,
+          animationDuration: animationDuration,
+          paddingBottom: 0,
+          cameraRef: cameraRef,
+        });
+      } else {
         const leafFeatures = (await shapeSource.getClusterLeaves(
           feature,
           100,
@@ -319,11 +112,38 @@ const SiteMap = (
           ),
           siteIds: leafFeatures.features.map(feat => feat.id as string),
         });
-      } else {
-        setCalloutState({kind: 'site', siteId: event.features[0].id as string});
       }
     },
-    [setCalloutState],
+    [shapeSourceRef, setCalloutState],
+  );
+
+  const onSitePress = useCallback(
+    async (event: OnPressEvent) => {
+      const feature = event.features[0];
+      const currentZoom = await mapRef.current?.getZoom();
+      if (!currentZoom) {
+        console.error('Unable to fetch the current zoom level');
+        return;
+      }
+
+      if (
+        feature.properties &&
+        'cluster' in feature.properties &&
+        feature.properties.cluster
+      ) {
+        await handleClusterPress(feature, currentZoom);
+      } else {
+        repositionCamera({
+          feature: feature,
+          zoomLevel: currentZoom,
+          animationDuration: 500,
+          paddingBottom: 0,
+          cameraRef: cameraRef,
+        });
+        setCalloutState({kind: 'site', siteId: feature.id as string});
+      }
+    },
+    [setCalloutState, handleClusterPress],
   );
 
   const onTempSitePress = useCallback(
@@ -336,25 +156,31 @@ const SiteMap = (
     [calloutState, setCalloutState],
   );
 
-  const onPress = useCallback(() => {
-    Keyboard.dismiss();
-    setCalloutState({kind: 'none'});
-  }, [setCalloutState]);
+  const onPress = useCallback(
+    async (feature: GeoJSON.Feature) => {
+      if (feature.geometry !== null && feature.geometry.type === 'Point') {
+        const currentZoom = await mapRef.current?.getZoom();
+        if (!currentZoom) {
+          console.error('Unable to fetch the current zoom level');
+          return;
+        }
 
-  const onLongPress = useCallback(
-    (feature: GeoJSON.Feature) => {
-      if (feature.geometry === null || feature.geometry.type !== 'Point') {
-        console.error(
-          'received long press with no feature geometry or non-Point geometry',
-          feature.geometry,
-        );
-        return;
+        repositionCamera({
+          feature: feature,
+          zoomLevel: currentZoom,
+          animationDuration: 500,
+          paddingBottom: 320,
+          cameraRef: cameraRef,
+        });
+        setCalloutState({
+          kind: 'location',
+          coords: positionToCoords(feature.geometry.coordinates),
+          showCallout: true,
+        });
+      } else {
+        Keyboard.dismiss();
+        setCalloutState({kind: 'none'});
       }
-      setCalloutState({
-        kind: 'location',
-        coords: positionToCoords(feature.geometry.coordinates),
-        showCallout: true,
-      });
     },
     [setCalloutState],
   );
@@ -415,7 +241,6 @@ const SiteMap = (
     <Mapbox.MapView
       ref={mapRef}
       style={styles.mapView}
-      onLongPress={onLongPress}
       scaleBarEnabled={false}
       styleURL={styleURL}
       onPress={onPress}>
