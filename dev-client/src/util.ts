@@ -1,3 +1,3 @@
-export function formatNames(firstName: string, lastName?: string) {
+export function formatName(firstName: string, lastName?: string) {
   return [lastName, firstName].filter(Boolean).join(', ');
 }
