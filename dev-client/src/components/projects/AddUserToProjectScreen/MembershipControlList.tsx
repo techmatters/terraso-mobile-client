@@ -9,7 +9,7 @@ import {
 } from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
-import {formatNames} from 'terraso-mobile-client/util';
+import {formatName} from 'terraso-mobile-client/util';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useTranslation} from 'react-i18next';
 
@@ -49,7 +49,7 @@ const UserDisplay = ({
         />
         <VStack flexGrow={2} ml="15px">
           <Text fontWeight={700} fontSize="16px">
-            {formatNames(firstName, lastName)}
+            {formatName(firstName, lastName)}
           </Text>
           <Text fontWeight={400} fontSize="14px">
             {email}

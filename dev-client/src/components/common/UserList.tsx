@@ -14,6 +14,7 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
+import {formatName} from 'terraso-mobile-client/util';
 
 type ListProps = {
   memberships: [ProjectMembership, User][];
@@ -35,12 +36,8 @@ function UserItem({membership, user, currentUserId, onPress}: ItemProps) {
   }, [user, currentUserId]);
 
   const userName = useMemo(() => {
-    let name = '';
-    if (user.lastName !== '') {
-      name += user.lastName;
-      name += ', ';
-    }
-    name += user.firstName;
+    let name = formatName(user.firstName, user.lastName);
+
     if (isCurrentUser) {
       name += ` (${t('general.you')})`;
     }
