@@ -91,7 +91,13 @@ const SiteMap = (
 
       if (targetZoom > currentZoom) {
         const animationDuration = 500 + (targetZoom - currentZoom) * 100;
-        repositionCamera(feature, targetZoom, animationDuration, 0, cameraRef);
+        repositionCamera({
+          feature: feature,
+          zoomLevel: targetZoom,
+          animationDuration: animationDuration,
+          paddingBottom: 0,
+          cameraRef: cameraRef,
+        });
       } else {
         const leafFeatures = (await shapeSource.getClusterLeaves(
           feature,
@@ -127,7 +133,13 @@ const SiteMap = (
       ) {
         await handleClusterPress(feature, currentZoom);
       } else {
-        repositionCamera(feature, currentZoom, 500, 0, cameraRef);
+        repositionCamera({
+          feature: feature,
+          zoomLevel: currentZoom,
+          animationDuration: 500,
+          paddingBottom: 0,
+          cameraRef: cameraRef,
+        });
         setCalloutState({kind: 'site', siteId: feature.id as string});
       }
     },
@@ -153,7 +165,13 @@ const SiteMap = (
           return;
         }
 
-        repositionCamera(feature, currentZoom, 500, 320, cameraRef);
+        repositionCamera({
+          feature: feature,
+          zoomLevel: currentZoom,
+          animationDuration: 500,
+          paddingBottom: 320,
+          cameraRef: cameraRef,
+        });
         setCalloutState({
           kind: 'location',
           coords: positionToCoords(feature.geometry.coordinates),

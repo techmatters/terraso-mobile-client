@@ -3,6 +3,8 @@ import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Pressable} from 'react-native';
 import {forwardRef} from 'react';
 
+const TRIANGLE_BORDER_WIDTH = 15;
+
 export const CardTopRightButton = forwardRef(
   (props: React.ComponentProps<typeof IconButton>, ref) => {
     return (
@@ -35,11 +37,11 @@ export const CardTriangle = () => {
     <Box
       width={0}
       height={0}
-      borderBottomWidth={15}
+      borderBottomWidth={TRIANGLE_BORDER_WIDTH}
       borderBottomColor="white"
-      borderLeftWidth={15}
+      borderLeftWidth={TRIANGLE_BORDER_WIDTH}
       borderLeftColor="transparent"
-      borderRightWidth={15}
+      borderRightWidth={TRIANGLE_BORDER_WIDTH}
       borderRightColor="transparent"
       alignSelf="center"
       position="absolute"
