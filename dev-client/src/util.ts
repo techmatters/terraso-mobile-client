@@ -1,9 +1,3 @@
-export function formatNames(firstName: string, lastName?: string) {
-  let formatted = '';
-  if (lastName !== undefined) {
-    formatted += lastName;
-    formatted += ', ';
-  }
-  formatted += firstName;
-  return formatted;
+export function formatName(firstName: string, lastName?: string) {
+  return [lastName, firstName].filter(Boolean).join(', ');
 }
