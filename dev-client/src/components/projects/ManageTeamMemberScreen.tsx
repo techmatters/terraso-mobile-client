@@ -1,8 +1,11 @@
 import {Button, Divider, Text, VStack} from 'native-base';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
-import {useSelector} from 'terraso-mobile-client/model/store';
+import {
+  ProjectMembership,
+  removeMembershipFromProject,
+} from 'terraso-client-shared/project/projectSlice';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {
   AppBar,
   ScreenCloseButton,
@@ -34,10 +37,21 @@ export const ManageTeamMemberScreen = ({
   const {t} = useTranslation();
 
   const [selectedRole, setSelectedRole] = useState<UserRole>('manager');
+  const dispatch = useDispatch();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const user = useSelector(state => state.account.users[userId]);
   const membership = project?.memberships[membershipId];
+
+  const removeMembership = useCallback(() => {
+    dispatch(
+      removeMembershipFromProject({
+        membershipId,
+        projectId,
+      }),
+    );
+  }, [dispatch, projectId, membershipId]);
+
   return (
     <ScreenScaffold
       AppBar={
@@ -90,7 +104,7 @@ export const ManageTeamMemberScreen = ({
           title={t('projects.manage_member.confirm_removal_title')}
           body={t('projects.manage_member.confirm_removal_body')}
           actionName={t('projects.manage_member.confirm_removal_action')}
-          handleConfirm={() => {}}
+          handleConfirm={removeMembership}
         />
         <Text ml="14px" variant="caption">
           {t('projects.manage_member.remove_help')}
