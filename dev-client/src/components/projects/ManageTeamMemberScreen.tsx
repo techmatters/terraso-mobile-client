@@ -13,6 +13,7 @@ import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import ConfirmModal from '../common/ConfirmModal';
 
 type Props = {
   projectId: string;
@@ -71,17 +72,30 @@ export const ManageTeamMemberScreen = ({
 
       <Divider my="25px" width="80%" />
 
-      <Button
-        size="sm"
-        variant="ghost"
-        alignSelf="start"
-        width="60%"
-        ml="20px"
-        _text={{color: 'error.main'}}
-        _pressed={{backgroundColor: 'red.100'}}
-        leftIcon={<Icon name="delete" color="error.main" />}>
-        {t('projects.manage_member.remove').toLocaleUpperCase()}
-      </Button>
+      <VStack mx="20px">
+        <ConfirmModal
+          trigger={onOpen => (
+            <Button
+              size="sm"
+              variant="ghost"
+              alignSelf="start"
+              width="70%"
+              onPress={onOpen}
+              _text={{color: 'error.main'}}
+              _pressed={{backgroundColor: 'red.100'}}
+              leftIcon={<Icon name="delete" color="error.main" />}>
+              {t('projects.manage_member.remove').toLocaleUpperCase()}
+            </Button>
+          )}
+          title={t('projects.manage_member.confirm_removal_title')}
+          body={t('projects.manage_member.confirm_removal_body')}
+          actionName={t('projects.manage_member.confirm_removal_action')}
+          handleConfirm={() => {}}
+        />
+        <Text ml="14px" variant="caption">
+          {t('projects.manage_member.remove_help')}
+        </Text>
+      </VStack>
     </ScreenScaffold>
   );
 };

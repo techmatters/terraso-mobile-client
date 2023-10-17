@@ -1,6 +1,7 @@
 import {Button, HStack, Heading, Modal, Text, useDisclose} from 'native-base';
 import {ModalTrigger} from './Modal';
 import {useTranslation} from 'react-i18next';
+import {useCallback} from 'react';
 
 type Props = {
   trigger: ModalTrigger;
@@ -22,6 +23,10 @@ const ConfirmModal = ({
 }: Props) => {
   const {isOpen, onOpen, onClose} = useDisclose();
   const {t} = useTranslation();
+  const onConfirm = useCallback(() => {
+    handleConfirm();
+    onClose();
+  }, [handleConfirm]);
   return (
     <>
       {trigger(onOpen)}
@@ -48,7 +53,7 @@ const ConfirmModal = ({
                 {t('general.cancel')}
               </Button>
               <Button
-                onPress={handleConfirm}
+                onPress={onConfirm}
                 variant="confirmModal"
                 backgroundColor="error.main"
                 _text={{

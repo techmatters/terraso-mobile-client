@@ -182,7 +182,10 @@
       "contributor_help": "Can view, add, and edit site data.",
       "viewer_help": "Can view site data.",
       "remove": "Remove from project",
-      "remove_help": "Remove the team member's access to this project, retaining any data contributed to sites"
+      "remove_help": "Remove the team member's access to this project, retaining any data contributed to sites",
+      "confirm_removal_title": "Remove from Project?",
+      "confirm_removal_body": "This will remove the team member from the project, but will retain their contributed site data.",
+      "confirm_removal_action": "Remove"
     },
     "transfer_sites": {
       "heading": "Transfer existing sites",
