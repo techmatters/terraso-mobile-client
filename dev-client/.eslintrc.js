@@ -10,5 +10,12 @@ module.exports = {
         allowAsProps: true,
       },
     ],
+    'no-restricted-imports': 'off',
+    '@typescript-eslint/no-restricted-imports': [
+      'error',
+      {
+        patterns: ['./*', '../*'],
+      },
+    ],
   },
 };

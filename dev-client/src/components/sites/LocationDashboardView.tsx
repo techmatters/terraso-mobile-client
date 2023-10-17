@@ -1,13 +1,13 @@
-import {useDispatch, useSelector} from '../../model/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
-import RadioBlock from '../common/RadioBlock';
+import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {useCallback} from 'react';
 import {Box, Divider, Text, Column} from 'native-base';
-import {Accordion} from '../common/Accordion';
-import {StaticMapView} from '../common/Map';
+import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
+import {StaticMapView} from 'terraso-mobile-client/components/common/Map';
 import {StyleSheet} from 'react-native';
-import {Coords} from '../../model/map/mapSlice';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ScrollView} from 'react-native';
 
 const TEMP_ELEVATION = '1900 ft';

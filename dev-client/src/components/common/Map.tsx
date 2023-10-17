@@ -10,7 +10,7 @@ import {
   LATITUDE_MIN,
   LONGITUDE_MIN,
   LONGITUDE_MAX,
-} from '../../constants';
+} from 'terraso-mobile-client/constants';
 
 const coordsRegex = /^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/;
 export type CoordsParseErrorReason =

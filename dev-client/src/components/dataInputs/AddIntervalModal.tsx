@@ -6,8 +6,12 @@ import {
   LabelledDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {useTranslation} from 'react-i18next';
-import {intervalSchema, IntervalForm, IntervalFormInput} from './IntervalForm';
-import {useModal} from '../common/Modal';
+import {
+  intervalSchema,
+  IntervalForm,
+  IntervalFormInput,
+} from 'terraso-mobile-client/components/dataInputs/IntervalForm';
+import {useModal} from 'terraso-mobile-client/components/common/Modal';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;

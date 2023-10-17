@@ -17,7 +17,7 @@ import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import ProjectSettingsForm, {
   ProjectFormValues,
   projectValidationSchema,
-} from './CreateProjectView/Form';
+} from 'terraso-mobile-client/components/projects/CreateProjectView/Form';
 import {Formik} from 'formik';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
