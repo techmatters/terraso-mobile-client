@@ -144,7 +144,7 @@ export default function UserList({
           user={user}
           currentUserId={currentUserId}
           removeUser={userAction(membership)}
-          memberAction={memberAction(membership.id, user.id)}
+          memberAction={memberAction(user.id, membership.id)}
         />
       )}
       keyExtractor={([membership, _]) => membership.id}
