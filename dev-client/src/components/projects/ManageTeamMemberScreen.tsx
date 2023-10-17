@@ -4,6 +4,7 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   ProjectMembership,
   removeMembershipFromProject,
+  updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {
@@ -24,24 +25,21 @@ type Props = {
   membershipId: string;
 };
 
-type ViewProps = {
-  user: User;
-  membership: ProjectMembership;
-};
-
 export const ManageTeamMemberScreen = ({
   projectId,
   userId,
   membershipId,
 }: Props) => {
   const {t} = useTranslation();
-
-  const [selectedRole, setSelectedRole] = useState<UserRole>('manager');
   const dispatch = useDispatch();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const user = useSelector(state => state.account.users[userId]);
   const membership = project?.memberships[membershipId];
+
+  const [selectedRole, setSelectedRole] = useState<UserRole>(
+    membership.userRole,
+  );
 
   const removeMembership = useCallback(() => {
     dispatch(
@@ -51,6 +49,10 @@ export const ManageTeamMemberScreen = ({
       }),
     );
   }, [dispatch, projectId, membershipId]);
+
+  const updateUser = useCallback(() => {
+    dispatch(updateUserRole({projectId, userId, newRole: selectedRole}));
+  }, [dispatch, projectId, userId, selectedRole]);
 
   return (
     <ScreenScaffold
@@ -111,7 +113,7 @@ export const ManageTeamMemberScreen = ({
         </Text>
       </VStack>
 
-      <Button onPress={() => {}}>{t('general.save_fab')}</Button>
+      <Button onPress={updateUser}>{t('general.save_fab')}</Button>
     </ScreenScaffold>
   );
 };
