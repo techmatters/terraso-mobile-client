@@ -96,6 +96,8 @@ export const ManageTeamMemberScreen = ({
           {t('projects.manage_member.remove_help')}
         </Text>
       </VStack>
+
+      <Button onPress={() => {}}>{t('general.save_fab')}</Button>
     </ScreenScaffold>
   );
 };
