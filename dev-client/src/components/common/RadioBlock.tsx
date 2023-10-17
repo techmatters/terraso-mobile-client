@@ -11,6 +11,7 @@ import {
 type RadioOption = {
   text: string;
   isDisabled?: boolean;
+  helpText?: string;
 };
 
 type Props<Keys extends string> = {
@@ -55,14 +56,23 @@ export default function RadioBlock<T extends string>({
         onChange={onChange as (_: string) => void}
         {...radioGroupProps}>
         {Object.entries<RadioOption>(options).flatMap(
-          ([value, {text, isDisabled}]) => [
-            <Radio
-              key={value}
-              value={value}
-              isDisabled={isDisabled || allDisabled}>
-              {text}
-            </Radio>,
-          ],
+          ([value, {text, isDisabled, helpText}]) =>
+            [
+              <Radio
+                key={value}
+                value={value}
+                isDisabled={isDisabled || allDisabled}>
+                {text}
+              </Radio>,
+              helpText ? (
+                <FormControl.HelperText
+                  key={helpText + value}
+                  ml="15px"
+                  mt="-5px">
+                  {helpText}
+                </FormControl.HelperText>
+              ) : undefined,
+            ].filter(Boolean),
         )}
       </Radio.Group>
     </FormControl>

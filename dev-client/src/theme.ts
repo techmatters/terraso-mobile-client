@@ -324,6 +324,17 @@ export const theme = extendTheme({
         avoidKeyboard: true,
       },
     },
+    FormControlHelperText: {
+      baseStyle: {
+        _text: {
+          fontSize: '12px',
+          lineHeight: '19.92px',
+          fontWeight: 400,
+          color: 'text.primary',
+          letterSpacing: '0.4px',
+        },
+      },
+    },
   },
 });
 
