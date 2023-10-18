@@ -23,6 +23,9 @@ type Props<Keys extends string> = {
     defaultValue?: Keys;
     onChange?: (value: Keys) => void;
   };
+  labelProps?: {
+    variant: 'secondary';
+  };
 };
 
 type IconLabelProps = {
@@ -48,10 +51,11 @@ export default function RadioBlock<T extends string>({
   options,
   allDisabled = false,
   groupProps: {onChange, ...radioGroupProps},
+  labelProps,
 }: Props<T>) {
   return (
     <FormControl>
-      <FormControl.Label>{label}</FormControl.Label>
+      <FormControl.Label {...labelProps}>{label}</FormControl.Label>
       <Radio.Group
         onChange={onChange as (_: string) => void}
         {...radioGroupProps}>

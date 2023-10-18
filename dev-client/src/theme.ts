@@ -173,6 +173,15 @@ export const theme = extendTheme({
             letterSpacing: '0.15px',
           },
         },
+        secondary: {
+          _text: {
+            color: 'text.secondary',
+            fontSize: '16px',
+            fontWeight: 700,
+            lineHeight: '24px',
+            letterSpacing: '0.15px',
+          },
+        },
       },
       defaultProps: {
         _text: {
