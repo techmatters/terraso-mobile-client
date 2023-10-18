@@ -53,6 +53,18 @@ function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
   );
 }
 
+const UserWrapper = ({
+  isCurrentUser,
+  memberAction,
+  children,
+}: React.PropsWithChildren &
+  Pick<ItemProps, 'memberAction'> & {isCurrentUser: boolean}) =>
+  isCurrentUser ? (
+    <>{children}</>
+  ) : (
+    <Pressable onPress={memberAction}>{children}</Pressable>
+  );
+
 function UserItem({
   membership,
   user,
@@ -78,17 +90,10 @@ function UserItem({
     return name;
   }, [user, isCurrentUser, t]);
 
-  const UserWrapper = ({children}: React.PropsWithChildren) =>
-    isCurrentUser ? (
-      <>{children}</>
-    ) : (
-      <Pressable onPress={memberAction}>{children}</Pressable>
-    );
-
   return (
     <Box borderBottomWidth="1" width={275} py={2}>
       <VStack>
-        <UserWrapper>
+        <UserWrapper isCurrentUser={isCurrentUser} memberAction={memberAction}>
           <HStack space={3} justifyContent="space-between" alignItems="center">
             <Box>
               <Image

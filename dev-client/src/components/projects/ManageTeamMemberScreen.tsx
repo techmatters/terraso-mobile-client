@@ -1,16 +1,6 @@
-import {
-  Box,
-  Button,
-  Divider,
-  HStack,
-  ScrollView,
-  Text,
-  VStack,
-} from 'native-base';
+import {Box, Button, Divider, Text, VStack} from 'native-base';
 import {useCallback, useState} from 'react';
-import {User} from 'terraso-client-shared/account/accountSlice';
 import {
-  ProjectMembership,
   removeMembershipFromProject,
   updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
@@ -25,7 +15,7 @@ import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
-import ConfirmModal from '../common/ConfirmModal';
+import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = {
@@ -59,12 +49,12 @@ export const ManageTeamMemberScreen = ({
       }),
     );
     navigation.pop();
-  }, [dispatch, projectId, membershipId]);
+  }, [dispatch, projectId, membershipId, navigation]);
 
   const updateUser = useCallback(async () => {
     await dispatch(updateUserRole({projectId, userId, newRole: selectedRole}));
     navigation.pop();
-  }, [dispatch, projectId, userId, selectedRole]);
+  }, [dispatch, projectId, userId, selectedRole, navigation]);
 
   return (
     <ScreenScaffold

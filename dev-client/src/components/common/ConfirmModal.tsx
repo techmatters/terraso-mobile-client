@@ -1,5 +1,5 @@
 import {Button, HStack, Heading, Modal, Text, useDisclose} from 'native-base';
-import {ModalTrigger} from './Modal';
+import {ModalTrigger} from 'terraso-mobile-client/components/common/Modal';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
 
@@ -26,7 +26,7 @@ const ConfirmModal = ({
   const onConfirm = useCallback(() => {
     handleConfirm();
     onClose();
-  }, [handleConfirm]);
+  }, [handleConfirm, onClose]);
   return (
     <>
       {trigger(onOpen)}
