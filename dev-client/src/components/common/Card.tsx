@@ -1,6 +1,6 @@
 import {Box} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
-import {Pressable} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
 import {forwardRef} from 'react';
 
 const TRIANGLE_BORDER_WIDTH = 15;
@@ -67,7 +67,11 @@ export const Card = ({
   console.log('isPopover:', isPopover);
   return (
     <Pressable onPress={onPress}>
-      <Box variant="card" marginTop={isPopover ? '15px' : '0px'} {...boxProps}>
+      <Box
+        variant="card"
+        marginTop={isPopover ? '15px' : '0px'}
+        style={isPopover ? styles.shadow : {}}
+        {...boxProps}>
         {isPopover && <CardTriangle />}
         {children}
         {buttons}
@@ -75,3 +79,16 @@ export const Card = ({
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+});
