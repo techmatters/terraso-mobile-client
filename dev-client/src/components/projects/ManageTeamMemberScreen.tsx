@@ -18,6 +18,7 @@ import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import ConfirmModal from '../common/ConfirmModal';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = {
   projectId: string;
@@ -32,26 +33,29 @@ export const ManageTeamMemberScreen = ({
 }: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const user = useSelector(state => state.account.users[userId]);
   const membership = project?.memberships[membershipId];
 
   const [selectedRole, setSelectedRole] = useState<UserRole>(
-    membership.userRole,
+    membership ? membership.userRole : 'manager',
   );
 
-  const removeMembership = useCallback(() => {
-    dispatch(
+  const removeMembership = useCallback(async () => {
+    await dispatch(
       removeMembershipFromProject({
         membershipId,
         projectId,
       }),
     );
+    navigation.pop();
   }, [dispatch, projectId, membershipId]);
 
-  const updateUser = useCallback(() => {
-    dispatch(updateUserRole({projectId, userId, newRole: selectedRole}));
+  const updateUser = useCallback(async () => {
+    await dispatch(updateUserRole({projectId, userId, newRole: selectedRole}));
+    navigation.pop();
   }, [dispatch, projectId, userId, selectedRole]);
 
   return (
