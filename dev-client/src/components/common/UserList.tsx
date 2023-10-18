@@ -16,12 +16,14 @@ import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
+import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 
 type ListProps = {
   memberships: [ProjectMembership, User][];
   currentUserId?: string;
   userAction: (membership: ProjectMembership) => () => void;
   memberAction: (userId: string, memberId: string) => () => void;
+  currentUserRole: UserRole;
 };
 
 type ItemProps = {
@@ -30,6 +32,7 @@ type ItemProps = {
   currentUserId?: string;
   removeUser: () => void;
   memberAction: () => void;
+  currentUserRole: UserRole;
 };
 
 type TriggerProps = {
@@ -56,13 +59,17 @@ function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
 const UserWrapper = ({
   isCurrentUser,
   memberAction,
+  currentUserRole,
   children,
 }: React.PropsWithChildren &
-  Pick<ItemProps, 'memberAction'> & {isCurrentUser: boolean}) =>
-  isCurrentUser ? (
-    <>{children}</>
-  ) : (
+  Pick<ItemProps, 'memberAction'> & {
+    isCurrentUser: boolean;
+    currentUserRole: UserRole;
+  }) =>
+  !isCurrentUser && currentUserRole === 'manager' ? (
     <Pressable onPress={memberAction}>{children}</Pressable>
+  ) : (
+    <>{children}</>
   );
 
 function UserItem({
@@ -71,6 +78,7 @@ function UserItem({
   currentUserId,
   removeUser,
   memberAction,
+  currentUserRole,
 }: ItemProps) {
   const {t} = useTranslation();
   const isCurrentUser = useMemo(() => {
@@ -93,7 +101,10 @@ function UserItem({
   return (
     <Box borderBottomWidth="1" width={275} py={2}>
       <VStack>
-        <UserWrapper isCurrentUser={isCurrentUser} memberAction={memberAction}>
+        <UserWrapper
+          currentUserRole={currentUserRole}
+          isCurrentUser={isCurrentUser}
+          memberAction={memberAction}>
           <HStack space={3} justifyContent="space-between" alignItems="center">
             <Box>
               <Image
@@ -139,6 +150,7 @@ export default function UserList({
   userAction,
   currentUserId,
   memberAction,
+  currentUserRole,
 }: ListProps) {
   return (
     <FlatList
@@ -150,6 +162,7 @@ export default function UserList({
           currentUserId={currentUserId}
           removeUser={userAction(membership)}
           memberAction={memberAction(user.id, membership.id)}
+          currentUserRole={currentUserRole}
         />
       )}
       keyExtractor={([membership, _]) => membership.id}

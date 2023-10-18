@@ -10,7 +10,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useCallback} from 'react';
 import {
   ProjectMembership,
-  removeMembershipFromProject,
+  deleteUserFromProject,
 } from 'terraso-client-shared/project/projectSlice';
 import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
@@ -23,6 +23,12 @@ export default function ProjectTeamTab({route}: Props) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const currentUser = useSelector(state => state.account.currentUser);
+  const currentUserRole = useSelector(state => {
+    const memberships = Object.values(
+      state.project.projects[route.params.projectId]?.memberships ?? {},
+    ).filter(({userId}) => userId === currentUser?.data?.id);
+    return memberships.length > 0 ? memberships[0].userRole : 'viewer';
+  });
   const members = useSelector(state =>
     selectProjectMembershipsWithUsers(state, route.params.projectId),
   );
@@ -31,9 +37,9 @@ export default function ProjectTeamTab({route}: Props) {
     (membership: ProjectMembership) => {
       return async () => {
         dispatch(
-          removeMembershipFromProject({
-            membershipId: membership.id,
+          deleteUserFromProject({
             projectId: route.params.projectId,
+            userId: membership.userId,
           }),
         );
       };
@@ -70,6 +76,7 @@ export default function ProjectTeamTab({route}: Props) {
         currentUserId={currentUser.data?.id}
         userAction={removeMembership}
         memberAction={manageMember}
+        currentUserRole={currentUserRole}
       />
     </VStack>
   );

@@ -1,7 +1,7 @@
 import {Box, Button, Divider, Text, VStack} from 'native-base';
 import {useCallback, useState} from 'react';
 import {
-  removeMembershipFromProject,
+  deleteUserFromProject,
   updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -43,13 +43,13 @@ export const ManageTeamMemberScreen = ({
 
   const removeMembership = useCallback(async () => {
     await dispatch(
-      removeMembershipFromProject({
-        membershipId,
+      deleteUserFromProject({
+        userId,
         projectId,
       }),
     );
     navigation.pop();
-  }, [dispatch, projectId, membershipId, navigation]);
+  }, [dispatch, projectId, userId, navigation]);
 
   const updateUser = useCallback(async () => {
     await dispatch(updateUserRole({projectId, userId, newRole: selectedRole}));
