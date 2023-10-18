@@ -16,13 +16,13 @@ type SiteCardProps = {
   site: Site;
   onShowSiteOnMap?: (site: Site) => void;
   buttons?: React.ReactNode;
-  showTriangle?: boolean;
+  isPopover: boolean;
 };
 export const SiteCard = ({
   site,
   onShowSiteOnMap,
   buttons,
-  showTriangle,
+  isPopover,
 }: SiteCardProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
@@ -38,8 +38,11 @@ export const SiteCard = ({
   );
 
   return (
-    <Card onPress={onCardPress} buttons={buttons} showTriangle={showTriangle}>
-      <Heading variant="h6" color="primary.main">
+    <Card onPress={onCardPress} buttons={buttons} isPopover={isPopover}>
+      <Heading
+        variant="h6"
+        color="primary.main"
+        style={isPopover ? styles.popoverHeader : {}}>
         {site.name}
       </Heading>
       {project && <Heading size="md">{project.name}</Heading>}
@@ -77,4 +80,9 @@ export const SiteCard = ({
   );
 };
 
-const styles = StyleSheet.create({mapView: {height: 60, width: 60}});
+const styles = StyleSheet.create({
+  mapView: {height: 60, width: 60},
+  popoverHeader: {
+    paddingRight: 30,
+  },
+});
