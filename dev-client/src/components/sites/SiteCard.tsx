@@ -16,7 +16,7 @@ type SiteCardProps = {
   site: Site;
   onShowSiteOnMap?: (site: Site) => void;
   buttons?: React.ReactNode;
-  isPopover: boolean;
+  isPopover?: boolean;
 };
 export const SiteCard = ({
   site,
