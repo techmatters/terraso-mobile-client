@@ -10,7 +10,7 @@ import {
   ScreenCloseButton,
   ScreenScaffold,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
-import {formatNames} from 'terraso-mobile-client/util';
+import {formatName} from 'terraso-mobile-client/util';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
@@ -64,7 +64,7 @@ export const ManageTeamMemberScreen = ({
       <VStack mx="14px">
         <VStack mt="22px" mb="15px">
           <Text variant="body1" fontWeight={700}>
-            {formatNames(user.firstName, user.lastName)}
+            {formatName(user.firstName, user.lastName)}
           </Text>
           <Text numberOfLines={1} variant="body1">
             {user.email}
