@@ -25,6 +25,7 @@ import {Location, locationManager} from '@rnmapbox/maps';
 import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
 import {AddUserToProjectScreen} from 'terraso-mobile-client/components/projects/AddUserToProjectScreen';
+import {ManageTeamMemberScreen} from 'terraso-mobile-client/components/projects/ManageTeamMemberScreen';
 
 type UnknownToUndefined<T extends unknown> = unknown extends T ? undefined : T;
 export type ScreenDefinitions = Record<string, React.FC<any>>;
@@ -44,6 +45,7 @@ const screenDefinitions = {
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,
+  MANAGE_TEAM_MEMBER: ManageTeamMemberScreen,
 } satisfies ScreenDefinitions;
 
 type RootStackParamList = ParamList<typeof screenDefinitions>;

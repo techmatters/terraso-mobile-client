@@ -130,7 +130,12 @@
     },
     "team": {
       "add": "Add team members",
-      "leave_project": "LEAVE PROJECT"
+      "leave_project_modal": {
+        "trigger": "LEAVE PROJECT",
+        "title": "Leave Project?",
+        "body": "This will remove your access to the project, but data you have contributed will remain with the project.",
+        "action_name": "Leave"
+      }
     },
     "edit": {
       "inputHeader": "General Project Settings"
@@ -171,6 +176,17 @@
       "already_added": "User {{email}} already added to user list.",
       "empty_email": "Please enter an email"
     },
+    "manage_member": {
+      "project_role": "Project Role",
+      "manager_help": "Can view and edit all aspects of the projects and its affiliated sites.",
+      "contributor_help": "Can view, add, and edit site data.",
+      "viewer_help": "Can view site data.",
+      "remove": "Remove from project",
+      "remove_help": "Remove the team member's access to this project, retaining any data contributed to sites",
+      "confirm_removal_title": "Remove from Project?",
+      "confirm_removal_body": "This will remove the team member from the project, but will retain their contributed site data.",
+      "confirm_removal_action": "Remove"
+    },
     "transfer_sites": {
       "heading": "Transfer existing sites",
       "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project.",
@@ -209,6 +225,7 @@
       "contributor": "Contributor",
       "manager": "Manager"
     },
+    "cancel": "Cancel",
     "add": "ADD"
   },
   "screens": {
