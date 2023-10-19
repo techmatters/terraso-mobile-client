@@ -58,7 +58,11 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
 
     const renderSite = useCallback(
       ({item}: {item: Site}) => (
-        <SiteCard site={item} onShowSiteOnMap={showSiteOnMap} />
+        <SiteCard
+          site={item}
+          onShowSiteOnMap={showSiteOnMap}
+          isPopover={false}
+        />
       ),
       [showSiteOnMap],
     );

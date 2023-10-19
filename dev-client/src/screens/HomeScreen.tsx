@@ -111,6 +111,16 @@ export const HomeScreen = () => {
     [camera],
   );
 
+  const [finishedInitialCameraMove, setFinishedInitialCameraMove] =
+    useState(false);
+
+  const onMapFinishedLoading = useCallback(() => {
+    if (finishedInitialCameraMove !== true && initialLocation !== null) {
+      moveToPoint(initialLocation);
+      setFinishedInitialCameraMove(true);
+    }
+  }, [initialLocation, moveToPoint, finishedInitialCameraMove]);
+
   useEffect(() => {
     if (initialLocation !== null && camera.current !== undefined) {
       moveToPoint(initialLocation);
@@ -191,6 +201,7 @@ export const HomeScreen = () => {
               calloutState={calloutState}
               setCalloutState={setCalloutState}
               styleURL={mapStyleURL}
+              onMapFinishedLoading={onMapFinishedLoading}
             />
           </Box>
           <SiteListBottomSheet
