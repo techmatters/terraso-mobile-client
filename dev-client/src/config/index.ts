@@ -35,6 +35,10 @@ type AppConfig = {
   packageName: string;
   googleClientId: string;
   googleRedirectURI: string;
+  appleClientId: string;
+  appleRedirectURI: string;
+  microsoftClientId: string;
+  microsoftRedirectURI: string;
   mapboxAccessToken: string;
 };
 
@@ -44,10 +48,19 @@ if (Platform.OS === 'ios') {
   googleClientId = Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '';
   googleRedirectURI =
     `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
+  appleRedirectURI =
+    `${Config.APPLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
+  microsoftRedirectURI =
+    `${Config.MICOROSFT_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
 } else if (Platform.OS === 'android') {
   googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
   googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
+  appleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect` ?? '';
+  microsoftRedirectURI = `${PACKAGE_NAME}://oauth/redirect` ?? '';
 }
+
+appleClientId = Config.APPLE_OAUTH_MOBILE_CLIENT_ID ?? '';
+microsoftClientId = Config.MICROSOFT_OAUTH_MOBILE_CLIENT_ID ?? '';
 
 if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
   throw new Error('Config setting PUBLIC_MAPBOX_TOKEN not set');
@@ -57,5 +70,13 @@ export const APP_CONFIG: AppConfig = {
   packageName: PACKAGE_NAME,
   googleClientId: googleClientId,
   googleRedirectURI: googleRedirectURI,
+  appleClientId: appleClientId,
+  appleRedirectURI: appleRedirectURI,
+  microsoftClientId: microsoftClientId,
+  microsoftRedirectURI: microsoftRedirectURI,
   mapboxAccessToken: Config.PUBLIC_MAPBOX_TOKEN,
 };
+
+// to logout
+// removeToken (MMKV)
+// make backend call to invalidate session

@@ -13,6 +13,20 @@ const googleConfig = {
   scopes: ['openid', 'profile', 'email'],
 };
 
+const appleConfig = {
+  issuer: 'https://appleid.apple.com',
+  clientId: APP_CONFIG.appleClientId,
+  redirectUrl: APP_CONFIG.appleRedirectURI,
+  scopes: ['openid', 'profile', 'email'],
+};
+
+const microsoftConfig = {
+  issuer: 'https://login.microsoftonline.com/common/oauth2/v2.0/',
+  clientId: APP_CONFIG.microsoftClientId,
+  redirectUrl: APP_CONFIG.microsoftRedirectURI,
+  scopes: ['openid', 'profile', 'email', 'offline_access'],
+};
+
 interface AuthTokens {
   atoken: string;
   rtoken: string;
@@ -36,13 +50,22 @@ export async function exchangeToken(
 
 const apiConfig = getAPIConfig();
 
-export async function auth() {
-  let result = await authorize(googleConfig);
-  var platformOs = '';
-  if (Platform.OS === 'android') {
-    platformOs = 'google-android';
-  } else if (Platform.OS === 'ios') {
-    platformOs = 'google-ios';
+export async function auth(providerName) {
+  let result;
+  if (providerName === 'google') {
+    result = await authorize(googleConfig);
+    var platformOs = '';
+    if (Platform.OS === 'android') {
+      platformOs = 'google-android';
+    } else if (Platform.OS === 'ios') {
+      platformOs = 'google-ios';
+    }
+  } else if (providerName === 'apple') {
+    result = await authorize(appleConfig);
+  } else if (providerName === 'microsoft') {
+    result = await authorize(microsoftConfig);
+  } else {
+    console.error(`${providerName} is not a recognized OAuth provider.`);
   }
   let {atoken, rtoken} = await exchangeToken(
     result.idToken,

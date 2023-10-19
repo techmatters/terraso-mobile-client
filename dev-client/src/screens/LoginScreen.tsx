@@ -10,6 +10,8 @@ import {
   MaterialCommunityIcons,
 } from 'terraso-mobile-client/components/common/Icons';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
+import GoogleLogo from 'terraso-client-shared/assets/google.svg';
+import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -23,10 +25,12 @@ export const LoginScreen = () => {
   // it was navigated to while there is already user data
 
   const dispatch = useDispatch();
-  const onPress = useCallback(() => {
-    auth()
-      .then(() => dispatch(setHasAccessTokenAsync()))
-      .catch(e => console.error(e));
+  const onPress = useCallback((providerName) => {
+    return () => {
+      auth(providerName)
+        .then(() => dispatch(setHasAccessTokenAsync()))
+        .catch(e => console.error(e));
+    }
   }, [dispatch]);
 
   useEffect(() => {
@@ -52,13 +56,9 @@ export const LoginScreen = () => {
             bgColor="primary.contrast"
             _text={{color: 'primary.main'}}
             size="lg"
-            onPress={onPress}
+            onPress={onPress('google')}
             startIcon={
-              <Icon
-                as={MaterialCommunityIcons}
-                name="google"
-                color="primary.main"
-              />
+              <GoogleLogo />
             }>
             {t('account.google_login').toUpperCase()}
           </Button>
@@ -66,13 +66,9 @@ export const LoginScreen = () => {
             bgColor="primary.contrast"
             _text={{color: 'primary.main'}}
             size="lg"
-            onPress={onPress}
+            onPress={onPress('microsoft')}
             startIcon={
-              <Icon
-                as={MaterialCommunityIcons}
-                name="microsoft"
-                color="primary.main"
-              />
+              <MicrosoftLogo />
             }>
             {t('account.microsoft_login').toUpperCase()}
           </Button>
@@ -80,7 +76,7 @@ export const LoginScreen = () => {
             bgColor="primary.contrast"
             _text={{color: 'primary.main'}}
             size="lg"
-            onPress={onPress}
+            onPress={onPress('apple')}
             startIcon={
               <Icon
                 as={MaterialCommunityIcons}
