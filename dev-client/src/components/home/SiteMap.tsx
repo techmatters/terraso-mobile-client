@@ -24,6 +24,7 @@ import {siteFeatureCollection} from 'terraso-mobile-client/components/home/siteF
 import {repositionCamera} from 'terraso-mobile-client/components/home/repositionCamera';
 import {SiteMapCallout} from 'terraso-mobile-client/components/home/SiteMapCallout';
 
+const DEFAULT_LOCATION = [-98.0, 38.5];
 const MAX_EXPANSION_ZOOM = 15;
 
 export type SiteMapProps = {
@@ -244,7 +245,13 @@ const SiteMap = (
       scaleBarEnabled={false}
       styleURL={styleURL}
       onPress={onPress}>
-      <Camera ref={cameraRef} />
+      <Camera
+        ref={cameraRef}
+        defaultSettings={{
+          centerCoordinate: DEFAULT_LOCATION,
+          zoomLevel: 3,
+        }}
+      />
       <Mapbox.Images images={mapImages} />
       <Mapbox.ShapeSource id="selectedSiteSource" shape={selectedSiteFeature}>
         <Mapbox.SymbolLayer

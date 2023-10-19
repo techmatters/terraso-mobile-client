@@ -64,7 +64,6 @@ export const Card = ({
   isPopover,
   ...boxProps
 }: CardProps) => {
-  console.log('isPopover:', isPopover);
   return (
     <Pressable onPress={onPress}>
       <Box
