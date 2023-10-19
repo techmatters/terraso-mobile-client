@@ -54,23 +54,24 @@ type CardProps = {
   buttons?: React.ReactNode;
   children?: React.ReactNode;
   onPress?: () => void;
-  showTriangle?: Boolean;
+  isPopover?: Boolean;
 } & React.ComponentProps<typeof Box>;
 
 export const Card = ({
   buttons,
   onPress,
   children,
-  showTriangle,
+  isPopover = false,
   ...boxProps
 }: CardProps) => {
   return (
     <Pressable onPress={onPress}>
       <Box
         variant="card"
-        marginTop={showTriangle ? '15px' : '0px'}
+        marginTop={isPopover ? '15px' : '0px'}
+        shadow={isPopover ? 9 : undefined}
         {...boxProps}>
-        {showTriangle && <CardTriangle />}
+        {isPopover && <CardTriangle />}
         {children}
         {buttons}
       </Box>
