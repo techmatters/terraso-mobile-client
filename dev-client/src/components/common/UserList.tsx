@@ -17,6 +17,7 @@ import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
+import {formatName} from 'terraso-mobile-client/util';
 
 type ListProps = {
   memberships: [ProjectMembership, User][];
@@ -86,12 +87,8 @@ function UserItem({
   }, [user, currentUserId]);
 
   const userName = useMemo(() => {
-    let name = '';
-    if (user.lastName !== '') {
-      name += user.lastName;
-      name += ', ';
-    }
-    name += user.firstName;
+    let name = formatName(user.firstName, user.lastName);
+
     if (isCurrentUser) {
       name += ` (${t('general.you')})`;
     }
