@@ -20,6 +20,7 @@ export const theme = extendTheme({
     },
     error: {
       main: '#D32F2F',
+      contrast: '#FFFFFF',
     },
     grey: {
       200: '#EEEEEE',
@@ -33,6 +34,13 @@ export const theme = extendTheme({
     text: {
       primary: '#1A202C',
       secondary: '#1A202CCC',
+    },
+    m3: {
+      sys: {
+        light: {
+          outline: '#79747E',
+        },
+      },
     },
   },
   radii: {
@@ -112,6 +120,16 @@ export const theme = extendTheme({
           width: 'full',
           justifyContent: 'start',
         },
+        confirmModal: {
+          py: '10px',
+          px: '24px',
+          borderRadius: '4px',
+          _text: {
+            fontSize: '14px',
+            fontWeight: 400,
+            lineHeight: '20px',
+          },
+        },
       },
     },
     FAB: {
@@ -152,6 +170,15 @@ export const theme = extendTheme({
             fontSize: '12px',
             fontWeight: 400,
             lineHeight: '12px',
+            letterSpacing: '0.15px',
+          },
+        },
+        secondary: {
+          _text: {
+            color: 'text.secondary',
+            fontSize: '16px',
+            fontWeight: 700,
+            lineHeight: '24px',
             letterSpacing: '0.15px',
           },
         },
@@ -304,6 +331,17 @@ export const theme = extendTheme({
     Modal: {
       defaultProps: {
         avoidKeyboard: true,
+      },
+    },
+    FormControlHelperText: {
+      baseStyle: {
+        _text: {
+          fontSize: '12px',
+          lineHeight: '19.92px',
+          fontWeight: 400,
+          color: 'text.primary',
+          letterSpacing: '0.4px',
+        },
       },
     },
   },
