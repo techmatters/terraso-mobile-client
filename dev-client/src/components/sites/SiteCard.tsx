@@ -42,7 +42,7 @@ export const SiteCard = ({
       <Heading
         variant="h6"
         color="primary.main"
-        style={isPopover ? styles.popoverHeader : {}}>
+        pr={isPopover ? '30px' : undefined}>
         {site.name}
       </Heading>
       {project && <Heading size="md">{project.name}</Heading>}
@@ -80,9 +80,4 @@ export const SiteCard = ({
   );
 };
 
-const styles = StyleSheet.create({
-  mapView: {height: 60, width: 60},
-  popoverHeader: {
-    paddingRight: 30,
-  },
-});
+const styles = StyleSheet.create({mapView: {height: 60, width: 60}});
