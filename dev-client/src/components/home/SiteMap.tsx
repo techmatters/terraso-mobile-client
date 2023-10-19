@@ -33,6 +33,7 @@ export type SiteMapProps = {
   calloutState: CalloutState;
   setCalloutState: (state: CalloutState) => void;
   styleURL?: string;
+  onMapFinishedLoading?: () => void;
 };
 
 const SiteMap = (
@@ -42,6 +43,7 @@ const SiteMap = (
     setCalloutState,
     calloutState,
     styleURL,
+    onMapFinishedLoading,
   }: SiteMapProps,
   forwardedCameraRef: ForwardedRef<CameraRef>,
 ): JSX.Element => {
@@ -244,7 +246,8 @@ const SiteMap = (
       style={styles.mapView}
       scaleBarEnabled={false}
       styleURL={styleURL}
-      onPress={onPress}>
+      onPress={onPress}
+      onDidFinishLoadingMap={onMapFinishedLoading}>
       <Camera
         ref={cameraRef}
         defaultSettings={{
