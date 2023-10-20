@@ -119,9 +119,10 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       top={0}
       zIndex={1}
       px={3}
-      py={3}>
-      <HStack space={3}>
-        <View flex={1}>
+      py={3}
+      pointerEvents="box-none">
+      <HStack space={3} pointerEvents="box-none">
+        <View flex={1} pointerEvents="box-none">
           <Autocomplete
             data={suggestions}
             hideResults={hideResults}
