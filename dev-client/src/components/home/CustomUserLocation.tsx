@@ -23,15 +23,22 @@ const layerStyles = {
 };
 
 type CustomUserLocationProps = {
+  onUserLocationPress: (event?: GeoJSON.GeoJsonProperties) => void;
   updateUserLocation?: (location: Location) => void;
 };
 
 export const CustomUserLocation = ({
+  onUserLocationPress,
   updateUserLocation,
 }: CustomUserLocationProps) => {
+  const handleUserLocationPress = (event?: GeoJSON.GeoJsonProperties) => {
+    onUserLocationPress(event);
+  };
+
   return (
     <UserLocation
       onUpdate={updateUserLocation}
+      onPress={handleUserLocationPress}
       minDisplacement={USER_DISPLACEMENT_MIN_DISTANCE_M}>
       <CircleLayer
         key="mapboxUserLocationPulseCircle"

@@ -192,6 +192,16 @@ const SiteMap = (
     [calloutState, setCalloutState],
   );
 
+  const onUserLocationPress = useCallback(
+    async (event?: GeoJSON.GeoJsonProperties) => {
+      if (event != null && event.features[0] != null) {
+        const feature = event.features[0];
+        onPress(feature);
+      }
+    },
+    [onPress],
+  );
+
   const mapImages = useMemo(
     () => ({
       sitePin: Icon.getImageSourceSync(
@@ -300,7 +310,10 @@ const SiteMap = (
           style={mapStyles.temporarySiteLayer}
         />
       </Mapbox.ShapeSource>
-      <CustomUserLocation updateUserLocation={updateUserLocation} />
+      <CustomUserLocation
+        onUserLocationPress={onUserLocationPress}
+        updateUserLocation={updateUserLocation}
+      />
       <SiteMapCallout
         sites={sites}
         state={calloutState}
