@@ -21,7 +21,8 @@ const appleConfig = {
 };
 
 const microsoftConfig = {
-  issuer: 'https://login.microsoftonline.com/common/oauth2/v2.0/',
+  // issuer: 'https://login.microsoftonline.com/common/oauth2/v2.0/',
+  issuer: 'https://login.microsoftonline.com/common',
   clientId: APP_CONFIG.microsoftClientId,
   redirectUrl: APP_CONFIG.microsoftRedirectURI,
   scopes: ['openid', 'profile', 'email', 'offline_access'],
