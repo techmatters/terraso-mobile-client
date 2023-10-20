@@ -50,17 +50,16 @@ if (Platform.OS === 'ios') {
     `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
   appleRedirectURI =
     `${Config.APPLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
-  microsoftRedirectURI =
-    `${Config.MICOROSFT_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
+  microsoftRedirectURI = `msauth.${PACKAGE_NAME}://auth` ?? '';
 } else if (Platform.OS === 'android') {
   googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
   googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
   appleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect` ?? '';
-  microsoftRedirectURI = `${PACKAGE_NAME}://oauth/redirect` ?? '';
+  microsoftRedirectURI = `msauth://${PACKAGE_NAME}/${encodeURIComponent(Config.MICROSOFT_SIGNATURE_HASH)}` ?? '';
 }
 
 appleClientId = Config.APPLE_OAUTH_MOBILE_CLIENT_ID ?? '';
-microsoftClientId = Config.MICROSOFT_OAUTH_MOBILE_CLIENT_ID ?? '';
+microsoftClientId = Config.MICROSOFT_OAUTH_CLIENT_ID ?? '';
 
 if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
   throw new Error('Config setting PUBLIC_MAPBOX_TOKEN not set');
