@@ -161,7 +161,11 @@ const SiteMap = (
 
   const onPress = useCallback(
     async (feature: GeoJSON.Feature) => {
-      if (feature.geometry !== null && feature.geometry.type === 'Point') {
+      if (
+        calloutState.kind === 'none' &&
+        feature.geometry !== null &&
+        feature.geometry.type === 'Point'
+      ) {
         const currentZoom = await mapRef.current?.getZoom();
         if (!currentZoom) {
           console.error('Unable to fetch the current zoom level');
@@ -185,7 +189,7 @@ const SiteMap = (
         setCalloutState({kind: 'none'});
       }
     },
-    [setCalloutState],
+    [calloutState, setCalloutState],
   );
 
   const mapImages = useMemo(
