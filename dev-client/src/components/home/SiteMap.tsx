@@ -1,4 +1,4 @@
-import Mapbox, {Camera, Location, UserLocation} from '@rnmapbox/maps';
+import Mapbox, {Camera, Location} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {
   memo,
@@ -13,7 +13,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useTheme} from 'native-base';
 import {Keyboard, PixelRatio, Platform, StyleSheet} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
 import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen';
 import {
@@ -23,6 +22,7 @@ import {
 import {siteFeatureCollection} from 'terraso-mobile-client/components/home/siteFeatureCollection';
 import {repositionCamera} from 'terraso-mobile-client/components/home/repositionCamera';
 import {SiteMapCallout} from 'terraso-mobile-client/components/home/SiteMapCallout';
+import {CustomUserLocation} from 'terraso-mobile-client/components/home/CustomUserLocation';
 
 const DEFAULT_LOCATION = [-98.0, 38.5];
 const MAX_EXPANSION_ZOOM = 15;
@@ -277,6 +277,7 @@ const SiteMap = (
         />
         <Mapbox.CircleLayer
           id="siteClusterCircleLayer"
+          belowLayerID="sitesLayer"
           style={mapStyles.siteClusterCircleLayer}
           filter={['has', 'point_count']}
         />
@@ -295,10 +296,7 @@ const SiteMap = (
           style={mapStyles.temporarySiteLayer}
         />
       </Mapbox.ShapeSource>
-      <UserLocation
-        onUpdate={updateUserLocation}
-        minDisplacement={USER_DISPLACEMENT_MIN_DISTANCE_M}
-      />
+      <CustomUserLocation updateUserLocation={updateUserLocation} />
       <SiteMapCallout
         sites={sites}
         state={calloutState}
