@@ -33,7 +33,7 @@ export type SiteMapProps = {
   calloutState: CalloutState;
   setCalloutState: (state: CalloutState) => void;
   styleURL?: string;
-  onMapFinishedLoading?: () => void;
+  onMapFinishedLoading: () => void;
 };
 
 const SiteMap = (

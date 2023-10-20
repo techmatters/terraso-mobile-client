@@ -1,4 +1,3 @@
-import React, {FC} from 'react';
 import {UserLocation, CircleLayer, Location} from '@rnmapbox/maps';
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
 
@@ -23,33 +22,35 @@ const layerStyles = {
   },
 };
 
-interface UntappableUserLocationProps {
+type CustomUserLocationProps = {
   updateUserLocation?: (location: Location) => void;
-}
+};
 
-export const UntappableUserLocation: FC<UntappableUserLocationProps> = ({
+export const CustomUserLocation = ({
   updateUserLocation,
-}) => (
-  <UserLocation
-    onUpdate={updateUserLocation}
-    minDisplacement={USER_DISPLACEMENT_MIN_DISTANCE_M}>
-    <CircleLayer
-      key="mapboxUserLocationPulseCircle"
-      id="mapboxUserLocationPulseCircle"
-      belowLayerID="sitesLayer"
-      style={layerStyles.pulse}
-    />
-    <CircleLayer
-      key="mapboxUserLocationWhiteCircle"
-      id="mapboxUserLocationWhiteCircle"
-      belowLayerID="sitesLayer"
-      style={layerStyles.background}
-    />
-    <CircleLayer
-      key="mapboxUserLocationBlueCircle"
-      id="mapboxUserLocationBlueCircle"
-      aboveLayerID="mapboxUserLocationWhiteCircle"
-      style={layerStyles.foreground}
-    />
-  </UserLocation>
-);
+}: CustomUserLocationProps) => {
+  return (
+    <UserLocation
+      onUpdate={updateUserLocation}
+      minDisplacement={USER_DISPLACEMENT_MIN_DISTANCE_M}>
+      <CircleLayer
+        key="mapboxUserLocationPulseCircle"
+        id="mapboxUserLocationPulseCircle"
+        belowLayerID="sitesLayer"
+        style={layerStyles.pulse}
+      />
+      <CircleLayer
+        key="mapboxUserLocationWhiteCircle"
+        id="mapboxUserLocationWhiteCircle"
+        belowLayerID="sitesLayer"
+        style={layerStyles.background}
+      />
+      <CircleLayer
+        key="mapboxUserLocationBlueCircle"
+        id="mapboxUserLocationBlueCircle"
+        aboveLayerID="mapboxUserLocationWhiteCircle"
+        style={layerStyles.foreground}
+      />
+    </UserLocation>
+  );
+};
