@@ -190,8 +190,8 @@ const SiteMap = (
 
   const onUserLocationPress = useCallback(
     async (event?: GeoJSON.GeoJsonProperties) => {
-      if (event && event.features[0] !== null) {
-        const feature = event.features[0];
+      if (event?.features[0] !== null) {
+        const feature = event?.features[0];
         onPress(feature);
       }
     },
