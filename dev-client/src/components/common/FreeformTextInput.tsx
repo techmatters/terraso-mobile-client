@@ -1,9 +1,10 @@
-import {FormControl, Input} from 'native-base';
+import {FormControl, IInputProps, Input} from 'native-base';
 import {useCallback, useState} from 'react';
 
 type Props = {
   validationFunc: (input: string) => Promise<null | string>;
   placeholder?: string;
+  inputProps?: IInputProps;
 };
 
 /**
@@ -11,7 +12,11 @@ type Props = {
  * On submit, the result is validated. If incorrect, an error message
  * is displayed.
  */
-export const FreeformTextInput = ({validationFunc, placeholder}: Props) => {
+export const FreeformTextInput = ({
+  validationFunc,
+  placeholder,
+  inputProps,
+}: Props) => {
   const [hasError, setHasError] = useState<null | string>(null);
   const [textValue, setTextValue] = useState<string>('');
 
@@ -32,6 +37,7 @@ export const FreeformTextInput = ({validationFunc, placeholder}: Props) => {
         onSubmitEditing={handleSubmit}
         onChangeText={text => setTextValue(text)}
         value={textValue}
+        {...inputProps}
       />
       <FormControl.ErrorMessage>{hasError}</FormControl.ErrorMessage>
     </FormControl>
