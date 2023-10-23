@@ -20,9 +20,20 @@ const appleConfig = {
   scopes: ['openid', 'profile', 'email'],
 };
 
+/*
+  Using issuer fails, because MS returns issuer: "https://login.microsoftonline.com/{tenantid}/v2.0"
+ from https://login.microsoftonline.com/common//v2.0/.well-known/openid-configuration.
+
+  React Native App Auth trys to load "issuer", resulting in a 404 error and the JSON parsing fails with this error:
+  Error: JSON error parsing document at 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration': Invalid URL: issuer
+
+  Workaround is to pass serviceConfiguration directly. Note that Microsoft does ot have a revocationEndpoint.
+ */
 const microsoftConfig = {
-  // issuer: 'https://login.microsoftonline.com/common/oauth2/v2.0/',
-  issuer: 'https://login.microsoftonline.com/common',
+  serviceConfiguration: {
+    authorizationEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+    tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
+  },
   clientId: APP_CONFIG.microsoftClientId,
   redirectUrl: APP_CONFIG.microsoftRedirectURI,
   scopes: ['openid', 'profile', 'email', 'offline_access'],
