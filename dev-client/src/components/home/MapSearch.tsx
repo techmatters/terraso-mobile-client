@@ -96,6 +96,11 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
     Keyboard.dismiss();
   };
 
+  const clearQuery = () => {
+    setQuery('');
+    setHideResults(true);
+  };
+
   async function lookupFeature(mapboxId: string) {
     let {features} = await retrieveFeature(mapboxId);
     // TODO: For now we are just going to zoom to the first feature
@@ -114,9 +119,10 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       top={0}
       zIndex={1}
       px={3}
-      py={3}>
-      <HStack space={3}>
-        <View flex={1}>
+      py={3}
+      pointerEvents="box-none">
+      <HStack space={3} pointerEvents="box-none">
+        <View flex={1} pointerEvents="box-none">
           <Autocomplete
             data={suggestions}
             hideResults={hideResults}
@@ -151,6 +157,11 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
                 value={query}
                 placeholder={t('search.placeholder')}
                 InputLeftElement={<Icon ml={3} name="search" size="md" />}
+                InputRightElement={
+                  query.length > 0 ? (
+                    <Icon mr={3} name="close" size="sm" onPress={clearQuery} />
+                  ) : undefined
+                }
               />
             )}
           />
