@@ -43,16 +43,6 @@ export const ProjectListScreen = () => {
         />
       }>
       <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
-        {activeProjects.length === 0 && (
-          <>
-            <Heading size="sm">{t('projects.none.header')}</Heading>
-            <Text>{t('projects.none.info')}</Text>
-            <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
-              <IconButton name="open-in-new" _icon={{color: 'action.active'}} />
-              {t('projects.learn_more')}
-            </Link>
-          </>
-        )}
         <Box alignItems="flex-start" pb={3}>
           <AddButton
             text={t('projects.create_button')}
@@ -63,25 +53,39 @@ export const ProjectListScreen = () => {
         {isLoadingData ? (
           <Spinner size="lg" />
         ) : (
-          activeProjects.length > 0 && (
+          activeProjects.length === 0 && (
             <>
-              <SearchBar
-                query={query}
-                setQuery={setQuery}
-                placeholder={t('projects.search.placeholder')}
-                FilterOptions={<Text>Project filter placeholder</Text>}
-              />
-              <FlatList
-                data={searchedProjects}
-                renderItem={({item}) => <ProjectPreviewCard project={item} />}
-                ItemSeparatorComponent={() => <Box h="8px" />}
-                keyExtractor={project => project.id}
-                ListEmptyComponent={
-                  <Text>{t('projects.search.no_matches')}</Text>
-                }
-              />
+              <Heading size="sm">{t('projects.none.header')}</Heading>
+              <Text>{t('projects.none.info')}</Text>
+              <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
+                <IconButton
+                  name="open-in-new"
+                  _icon={{color: 'action.active'}}
+                />
+                {t('projects.learn_more')}
+              </Link>
             </>
           )
+        )}
+
+        {activeProjects.length > 0 && (
+          <>
+            <SearchBar
+              query={query}
+              setQuery={setQuery}
+              placeholder={t('projects.search.placeholder')}
+              FilterOptions={<Text>Project filter placeholder</Text>}
+            />
+            <FlatList
+              data={searchedProjects}
+              renderItem={({item}) => <ProjectPreviewCard project={item} />}
+              ItemSeparatorComponent={() => <Box h="8px" />}
+              keyExtractor={project => project.id}
+              ListEmptyComponent={
+                <Text>{t('projects.search.no_matches')}</Text>
+              }
+            />
+          </>
         )}
       </VStack>
     </ScreenScaffold>
