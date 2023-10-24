@@ -1,8 +1,5 @@
 import {HStack, Heading, Text, VStack} from 'native-base';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
-import {useTranslation} from 'react-i18next';
-import {useCallback, useMemo} from 'react';
-import SelectAllCheckboxes from 'terraso-mobile-client/components/common/SelectAllCheckboxes';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {
@@ -10,35 +7,10 @@ import {
   ScreenScaffold,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
-import {Site} from 'terraso-client-shared/site/siteSlice';
-
-type ItemProps = {
-  projectName: string;
-  sites: Site[];
-};
-
-const SiteTransferItem = ({projectName, sites}: ItemProps) => {
-  const items = sites.map(site => ({
-    value: site.id,
-    label: site.name,
-    key: site.id,
-  }));
-  const updateSelected = useCallback((currentItems: string[]) => {
-    console.debug(currentItems);
-  }, []);
-
-  const head = (
-    <HStack space={2} alignItems="center">
-      <Heading>{projectName}</Heading>
-      <Text>({items.length})</Text>
-    </HStack>
-  );
-  return (
-    <Accordion Head={head}>
-      <SelectAllCheckboxes items={items} onUpdate={updateSelected} />
-    </Accordion>
-  );
-};
+import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
+import {useTranslation} from 'react-i18next';
+import {groupBy} from 'terraso-mobile-client/util';
+import {useEffect, useMemo} from 'react';
 
 type Props = {projectId: string};
 
@@ -47,50 +19,36 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
 
   const projects = useSelector(state => state.project.projects);
   const project = projects[projectId];
-  const sites = useSelector(state => state.site.sites);
-  const siteList = useMemo(() => Object.values(sites), [sites]);
+  const sites = useSelector(state =>
+    selectProjectsWithTransferrableSites(state, 'manager'),
+  );
+
   const {
     results: searchedSites,
     query,
     setQuery,
-  } = useTextSearch({data: siteList, keys: ['name']});
+  } = useTextSearch({data: sites, keys: ['siteName']});
 
-  const sortedSitesByProject = useMemo(() => {
-    const nonProjectSites = searchedSites.filter(
-      site => site.projectId === undefined,
-    );
-    const projectSites = searchedSites.filter(
-      site => site.projectId !== undefined && site.projectId !== project.id,
-    );
+  const groupedByProject = useMemo(() => {
+    const clusters = new Map();
+    for (const site of searchedSites) {
+      const key = [site.projectId, site.projectName];
+      let current = null;
+      if (!clusters.has(key)) {
+        current = [];
+      } else {
+        current = clusters.get(key);
+      }
+      current.push(site);
+      clusters.set(key, current);
+    }
+    return Array.from(clusters) as [
+      [string, string],
+      (typeof searchedSites)[number][],
+    ][];
+  }, [searchedSites]);
 
-    const sitesByProject = projectSites.reduce(
-      (projectMap, site) =>
-        Object.assign(projectMap, {
-          [site.projectId!]: {...projectMap[site.projectId!], [site.id]: site},
-        }),
-      {} as Record<string, Record<string, Site>>,
-    );
-
-    return [
-      [undefined, nonProjectSites] as const,
-      ...Object.entries(sitesByProject)
-        .sort(([projectIdA], [projectIdB]) =>
-          projects[projectIdA].name.localeCompare(projects[projectIdB].name),
-        )
-        .map(
-          ([projIds, projSites]) =>
-            [projects[projIds], Object.values(projSites)] as const,
-        ),
-    ].map(
-      ([pId, projSites]) =>
-        [
-          pId,
-          projSites.sort((siteA, siteB) =>
-            siteA.name.localeCompare(siteB.name),
-          ),
-        ] as const,
-    );
-  }, [projects, project.id, searchedSites]);
+  useEffect(() => console.debug(groupedByProject), [groupedByProject]);
 
   return (
     <ScreenScaffold
@@ -104,17 +62,17 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           setQuery={setQuery}
           placeholder={t('site.search.placeholder')}
         />
-        {sortedSitesByProject.map(([itemProject, itemSites]) => {
-          return (
-            <SiteTransferItem
-              projectName={
-                itemProject?.name ?? t('projects.transfer_sites.unaffiliated')
-              }
-              sites={itemSites}
-              key={itemProject?.id ?? null}
-            />
-          );
-        })}
+        {groupedByProject.map(([[projectId, projectName], cluster]) => (
+          <Accordion
+            key={projectId}
+            Head={
+              <Text>
+                {projectName} {cluster.length}
+              </Text>
+            }>
+            <Text>World</Text>
+          </Accordion>
+        ))}
       </VStack>
     </ScreenScaffold>
   );
