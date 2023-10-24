@@ -10,6 +10,7 @@ import {
   Column,
   FormControl,
   Select,
+  Spinner,
 } from 'native-base';
 import {
   Dispatch,
@@ -19,6 +20,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
@@ -55,6 +57,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
     ref,
   ) => {
     const {t} = useTranslation();
+    const isLoadingData = useSelector(state => state.soilId.loading);
 
     const renderSite = useCallback(
       ({item}: {item: Site}) => (
@@ -97,7 +100,9 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
           </Row>
           {sites.length >= 0 && <SiteSearchBar {...searchBarProps} />}
         </Column>
-        {sites.length === 0 ? (
+        {isLoadingData ? (
+          <Spinner size="lg" />
+        ) : sites.length === 0 ? (
           <EmptySiteMessage />
         ) : (
           <BottomSheetFlatList

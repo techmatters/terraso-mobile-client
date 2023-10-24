@@ -7,7 +7,7 @@ import {
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import {Box, FlatList, Heading, Link, Text, VStack} from 'native-base';
+import {Box, FlatList, Heading, Link, Text, VStack, Spinner} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import AddButton from 'terraso-mobile-client/components/common/AddButton';
 import ProjectPreviewCard from 'terraso-mobile-client/components/projects/ProjectPreviewCard';
@@ -32,6 +32,7 @@ export const ProjectListScreen = () => {
     () => navigation.navigate('CREATE_PROJECT'),
     [navigation],
   );
+  const isLoadingData = useSelector(state => state.soilId.loading);
 
   return (
     <ScreenScaffold
@@ -59,7 +60,9 @@ export const ProjectListScreen = () => {
           />
         </Box>
 
-        {activeProjects.length > 0 && (
+        {isLoadingData ? (
+          <Spinner size="lg" />
+        ) : (activeProjects.length > 0 && (
           <>
             <SearchBar
               query={query}
