@@ -62,24 +62,26 @@ export const ProjectListScreen = () => {
 
         {isLoadingData ? (
           <Spinner size="lg" />
-        ) : (activeProjects.length > 0 && (
-          <>
-            <SearchBar
-              query={query}
-              setQuery={setQuery}
-              placeholder={t('projects.search.placeholder')}
-              FilterOptions={<Text>Project filter placeholder</Text>}
-            />
-            <FlatList
-              data={searchedProjects}
-              renderItem={({item}) => <ProjectPreviewCard project={item} />}
-              ItemSeparatorComponent={() => <Box h="8px" />}
-              keyExtractor={project => project.id}
-              ListEmptyComponent={
-                <Text>{t('projects.search.no_matches')}</Text>
-              }
-            />
-          </>
+        ) : (
+          activeProjects.length > 0 && (
+            <>
+              <SearchBar
+                query={query}
+                setQuery={setQuery}
+                placeholder={t('projects.search.placeholder')}
+                FilterOptions={<Text>Project filter placeholder</Text>}
+              />
+              <FlatList
+                data={searchedProjects}
+                renderItem={({item}) => <ProjectPreviewCard project={item} />}
+                ItemSeparatorComponent={() => <Box h="8px" />}
+                keyExtractor={project => project.id}
+                ListEmptyComponent={
+                  <Text>{t('projects.search.no_matches')}</Text>
+                }
+              />
+            </>
+          )
         )}
       </VStack>
     </ScreenScaffold>
