@@ -7,7 +7,7 @@ import {
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import {Box, FlatList, Heading, Link, Text, VStack} from 'native-base';
+import {Box, FlatList, Heading, Link, Text, VStack, Spinner} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import AddButton from 'terraso-mobile-client/components/common/AddButton';
 import ProjectPreviewCard from 'terraso-mobile-client/components/projects/ProjectPreviewCard';
@@ -32,6 +32,7 @@ export const ProjectListScreen = () => {
     () => navigation.navigate('CREATE_PROJECT'),
     [navigation],
   );
+  const isLoadingData = useSelector(state => state.soilId.loading);
 
   return (
     <ScreenScaffold
@@ -42,22 +43,30 @@ export const ProjectListScreen = () => {
         />
       }>
       <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
-        {activeProjects.length === 0 && (
-          <>
-            <Heading size="sm">{t('projects.none.header')}</Heading>
-            <Text>{t('projects.none.info')}</Text>
-            <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
-              <IconButton name="open-in-new" _icon={{color: 'action.active'}} />
-              {t('projects.learn_more')}
-            </Link>
-          </>
-        )}
         <Box alignItems="flex-start" pb={3}>
           <AddButton
             text={t('projects.create_button')}
             buttonProps={{onPress}}
           />
         </Box>
+
+        {isLoadingData ? (
+          <Spinner size="lg" />
+        ) : (
+          activeProjects.length === 0 && (
+            <>
+              <Heading size="sm">{t('projects.none.header')}</Heading>
+              <Text>{t('projects.none.info')}</Text>
+              <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
+                <IconButton
+                  name="open-in-new"
+                  _icon={{color: 'action.active'}}
+                />
+                {t('projects.learn_more')}
+              </Link>
+            </>
+          )
+        )}
 
         {activeProjects.length > 0 && (
           <>
