@@ -1,4 +1,4 @@
-import {HStack, Heading, Text, VStack} from 'native-base';
+import {Heading, Text, VStack} from 'native-base';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {useSelector} from 'terraso-mobile-client/model/store';
@@ -9,8 +9,10 @@ import {
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
-import {groupBy} from 'terraso-mobile-client/util';
 import {useEffect, useMemo} from 'react';
+import CheckboxGroup, {
+  useCheckboxHandlers,
+} from 'terraso-mobile-client/components/common/CheckboxGroup';
 
 type Props = {projectId: string};
 
@@ -32,7 +34,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const groupedByProject = useMemo(() => {
     const clusters = new Map();
     for (const site of searchedSites) {
-      const key = [site.projectId, site.projectName];
+      const key = projectId;
       let current = null;
       if (!clusters.has(key)) {
         current = [];
@@ -42,13 +44,23 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
       current.push(site);
       clusters.set(key, current);
     }
-    return Array.from(clusters) as [
-      [string, string],
-      (typeof searchedSites)[number][],
-    ][];
+    return Object.fromEntries(clusters) as Record<
+      string,
+      (typeof searchedSites)[number][]
+    >;
   }, [searchedSites]);
 
-  useEffect(() => console.debug(groupedByProject), [groupedByProject]);
+  const checkboxHandlers = useCheckboxHandlers(
+    Object.entries(groupedByProject).reduce(
+      (x, [projectId, fields]) => ({
+        ...x,
+        [projectId]: fields.length,
+      }),
+      {},
+    ),
+  );
+
+  // useEffect(() => console.debug(groupedByProject));
 
   return (
     <ScreenScaffold
@@ -62,17 +74,31 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           setQuery={setQuery}
           placeholder={t('site.search.placeholder')}
         />
-        {groupedByProject.map(([[projectId, projectName], cluster]) => (
-          <Accordion
-            key={projectId}
-            Head={
-              <Text>
-                {projectName} {cluster.length}
-              </Text>
-            }>
-            <Text>World</Text>
-          </Accordion>
-        ))}
+        {Object.entries(groupedByProject).map(
+          ([projectId, cluster]) =>
+            cluster &&
+            cluster.length && (
+              <Accordion
+                key={projectId}
+                Head={
+                  <Text>
+                    {cluster[0].projectName} {cluster.length}
+                  </Text>
+                }>
+                <CheckboxGroup
+                  checkboxes={cluster.map((site, i) => ({
+                    label: site.siteName,
+                    id: site.siteId,
+                    onValue: checkboxHandlers.onValueChanged(site.projectId, i),
+                    checked: checkboxHandlers.checkedValues[site.projectId][i],
+                  }))}
+                  allChecked={checkboxHandlers.allChecked[projectId]}
+                  onCheckAll={checkboxHandlers.onAllChecked(projectId)}
+                  groupName={projectId}
+                />
+              </Accordion>
+            ),
+        )}
       </VStack>
     </ScreenScaffold>
   );
