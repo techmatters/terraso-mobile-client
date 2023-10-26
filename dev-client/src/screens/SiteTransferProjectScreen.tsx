@@ -1,4 +1,4 @@
-import {Fab, FlatList, Heading, Text, VStack} from 'native-base';
+import {Box, Fab, FlatList, HStack, Heading, Text, VStack} from 'native-base';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -13,6 +13,8 @@ import {useCallback, useEffect, useMemo, useState} from 'react';
 import CheckboxGroup from 'terraso-mobile-client/components/common/CheckboxGroup';
 import {transferSites} from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {removeKeys} from 'terraso-mobile-client/util';
+import {FormTooltip} from 'terraso-mobile-client/components/common/Form';
 
 type Props = {projectId: string};
 
@@ -89,30 +91,6 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
 
   const [projState, setProjState] = useState<typeof projectRecord>({});
 
-  const removeKeys = (a: any, b: any) => {
-    const remove = [a, b];
-    let currA, currB;
-    while (remove.length) {
-      currA = remove.pop();
-      currB = remove.pop();
-      for (const keyA of Object.keys(currA)) {
-        if (!(keyA in currB)) {
-          delete currA[keyA];
-          continue;
-        }
-        const valA = currA[keyA];
-        const valB = currB[keyA];
-        if (typeof valA !== typeof valB) {
-          delete currA[keyA];
-          continue;
-        }
-        if (typeof valA === 'object' && !Array.isArray(valA) && valA !== null) {
-          remove.push(valA, valB);
-        }
-      }
-    }
-  };
-
   useEffect(() => {
     setProjState(latestState => {
       const newState = Object.assign({...latestState}, projectRecord);
@@ -147,14 +125,21 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     <ScreenScaffold
       BottomNavigation={null}
       AppBar={<AppBar title={project.name} />}>
-      <VStack space={4} p={4}>
-        <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
-        <Text>{t('projects.transfer_sites.description', '')}</Text>
-        <SearchBar
-          query={query}
-          setQuery={setQuery}
-          placeholder={t('site.search.placeholder')}
-        />
+      <VStack space="10px">
+        <VStack space="10px" px="12px" pt="5%">
+          <HStack>
+            <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
+            <FormTooltip icon="help">
+              {t('projects.transfer_sites.tooltip')}
+            </FormTooltip>
+          </HStack>
+          <Text>{t('projects.transfer_sites.description', '')}</Text>
+          <SearchBar
+            query={query}
+            setQuery={setQuery}
+            placeholder={t('site.search.placeholder')}
+          />
+        </VStack>
         <FlatList
           data={listData}
           renderItem={({
@@ -163,27 +148,34 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
             <Accordion
               key={projId}
               Head={
-                <Text>
-                  {projectName} - {projectSites.length}
+                <Text
+                  variant="body1"
+                  fontWeight={700}
+                  color="primary.contrast"
+                  py="14px">
+                  {projectName} ({projectSites.length})
                 </Text>
               }
+              initiallyOpen={projectSites.length > 0}
               disableOpen={projectSites.length === 0}>
               {projectSites.length > 0 ? (
-                <CheckboxGroup
-                  groupName={projectName}
-                  groupId={projId}
-                  checkboxes={projectSites
-                    .map(({siteId, siteName}) => ({
-                      label: siteName,
-                      id: siteId,
-                      checked:
-                        projState && projState[projId]
-                          ? projState[projId][siteId]
-                          : false,
-                    }))
-                    .sort((a, b) => a.label.localeCompare(b.label))}
-                  onChangeValue={onCheckboxChange}
-                />
+                <Box px="15px" my="15px">
+                  <CheckboxGroup
+                    groupName={projectName}
+                    groupId={projId}
+                    checkboxes={projectSites
+                      .map(({siteId, siteName}) => ({
+                        label: siteName,
+                        id: siteId,
+                        checked:
+                          projState && projState[projId]
+                            ? projState[projId][siteId]
+                            : false,
+                      }))
+                      .sort((a, b) => a.label.localeCompare(b.label))}
+                    onChangeValue={onCheckboxChange}
+                  />
+                </Box>
               ) : undefined}
             </Accordion>
           )}
