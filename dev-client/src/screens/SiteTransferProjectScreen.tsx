@@ -1,4 +1,4 @@
-import {Fab, Heading, Text, VStack} from 'native-base';
+import {Fab, FlatList, Heading, Text, VStack} from 'native-base';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -65,6 +65,11 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     }
     return displayed;
   }, [projectsExcludingCurrent, searchedSites, query]);
+
+  const listData = useMemo(
+    () => Object.entries(displayedProjects),
+    [displayedProjects],
+  );
 
   const projectRecord = useMemo(() => {
     const record: Record<string, Record<string, boolean>> = {};
@@ -144,8 +149,11 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           setQuery={setQuery}
           placeholder={t('site.search.placeholder')}
         />
-        {Object.entries(displayedProjects).map(
-          ([projId, {projectName, sites: projectSites}]) => (
+        <FlatList
+          data={listData}
+          renderItem={({
+            item: [projId, {projectName, sites: projectSites}],
+          }) => (
             <Accordion
               key={projId}
               Head={
@@ -169,8 +177,8 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
                 />
               ) : undefined}
             </Accordion>
-          ),
-        )}
+          )}
+        />
       </VStack>
       <Fab
         label={

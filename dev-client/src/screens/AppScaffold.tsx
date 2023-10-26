@@ -15,7 +15,7 @@ import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
 import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen';
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen';
-import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProject';
+import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen';
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen';
 import {useNavigation as useNavigationNative} from '@react-navigation/native';
 import {LocationDashboardScreen} from 'terraso-mobile-client/components/sites/LocationDashboardScreen';
