@@ -12,12 +12,14 @@ import {useTranslation} from 'react-i18next';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import CheckboxGroup from 'terraso-mobile-client/components/common/CheckboxGroup';
 import {transferSites} from 'terraso-client-shared/site/siteSlice';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = {projectId: string};
 
 export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const {projects, sites} = useSelector(state =>
@@ -130,14 +132,15 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     [setProjState],
   );
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     const siteIds = Object.values(projState).flatMap(projSites =>
       Object.entries(projSites)
         .filter(([_, checked]) => checked)
         .map(([siteId, _]) => siteId),
     );
     const payload = {projectId, siteIds};
-    return dispatch(transferSites(payload));
+    await dispatch(transferSites(payload));
+    return navigation.pop();
   }, [projState]);
 
   return (
