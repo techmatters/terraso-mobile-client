@@ -67,7 +67,10 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   }, [projectsExcludingCurrent, searchedSites, query]);
 
   const listData = useMemo(
-    () => Object.entries(displayedProjects),
+    () =>
+      Object.entries(displayedProjects).sort((a, b) =>
+        a[1].projectName.localeCompare(b[1].projectName),
+      ),
     [displayedProjects],
   );
 
@@ -166,14 +169,16 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
                 <CheckboxGroup
                   groupName={projectName}
                   groupId={projId}
-                  checkboxes={projectSites.map(({siteId, siteName}) => ({
-                    label: siteName,
-                    id: siteId,
-                    checked:
-                      projState && projState[projId]
-                        ? projState[projId][siteId]
-                        : false,
-                  }))}
+                  checkboxes={projectSites
+                    .map(({siteId, siteName}) => ({
+                      label: siteName,
+                      id: siteId,
+                      checked:
+                        projState && projState[projId]
+                          ? projState[projId][siteId]
+                          : false,
+                    }))
+                    .sort((a, b) => a.label.localeCompare(b.label))}
                   onChangeValue={onCheckboxChange}
                 />
               ) : undefined}
