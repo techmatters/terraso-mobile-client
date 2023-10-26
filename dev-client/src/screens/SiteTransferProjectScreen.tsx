@@ -160,7 +160,8 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
                 <Text>
                   {projectName} - {projectSites.length}
                 </Text>
-              }>
+              }
+              disableOpen={projectSites.length === 0}>
               {projectSites.length > 0 ? (
                 <CheckboxGroup
                   groupName={projectName}

@@ -6,9 +6,15 @@ type Props = {
   Head: ReactNode;
   children: ReactNode;
   initiallyOpen?: boolean;
+  disableOpen?: boolean;
 };
 
-export function Accordion({Head, children, initiallyOpen = false}: Props) {
+export function Accordion({
+  Head,
+  children,
+  initiallyOpen = false,
+  disableOpen = false,
+}: Props) {
   const [open, setOpen] = useState(initiallyOpen);
   const onPress = useCallback(() => {
     setOpen(!open);
@@ -23,11 +29,13 @@ export function Accordion({Head, children, initiallyOpen = false}: Props) {
         justifyContent="space-between"
         px="16px">
         {Head}
-        <IconButton
-          name={name}
-          onPress={onPress}
-          _icon={{color: 'primary.contrast'}}
-        />
+        {!disableOpen && (
+          <IconButton
+            name={name}
+            onPress={onPress}
+            _icon={{color: 'primary.contrast'}}
+          />
+        )}
       </HStack>
       {open && children}
     </Box>
