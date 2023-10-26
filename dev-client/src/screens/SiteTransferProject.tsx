@@ -9,58 +9,118 @@ import {
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
-import {useEffect, useMemo} from 'react';
-import CheckboxGroup, {
-  useCheckboxHandlers,
-} from 'terraso-mobile-client/components/common/CheckboxGroup';
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import CheckboxGroup from 'terraso-mobile-client/components/common/CheckboxGroup';
 
 type Props = {projectId: string};
 
 export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
 
-  const projects = useSelector(state => state.project.projects);
-  const project = projects[projectId];
-  const sites = useSelector(state =>
+  const project = useSelector(state => state.project.projects[projectId]);
+  const {projects, sites} = useSelector(state =>
     selectProjectsWithTransferrableSites(state, 'manager'),
   );
+  const sitesExcludingCurrent = useMemo(() => {
+    return sites.filter(site => site.projectId !== projectId);
+  }, [sites, projectId]);
+
+  const projectsExcludingCurrent = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let {[projectId]: _, ...rest} = projects;
+    return rest;
+  }, [projects, projectId]);
 
   const {
     results: searchedSites,
     query,
     setQuery,
-  } = useTextSearch({data: sites, keys: ['siteName']});
+  } = useTextSearch({data: sitesExcludingCurrent, keys: ['siteName']});
 
-  const groupedByProject = useMemo(() => {
-    const clusters = new Map();
-    for (const site of searchedSites) {
-      const key = projectId;
-      let current = null;
-      if (!clusters.has(key)) {
-        current = [];
-      } else {
-        current = clusters.get(key);
-      }
-      current.push(site);
-      clusters.set(key, current);
-    }
-    return Object.fromEntries(clusters) as Record<
+  const displayedProjects = useMemo(() => {
+    const displayed: Record<
       string,
-      (typeof searchedSites)[number][]
-    >;
-  }, [searchedSites]);
+      {projectName: string; sites: typeof searchedSites}
+    > = {};
+    for (let site of searchedSites) {
+      if (!(site.projectId in displayed)) {
+        displayed[site.projectId] = {
+          projectName: site.projectName,
+          sites: [],
+        };
+      }
+      displayed[site.projectId].sites.push(site);
+    }
+    if (!query) {
+      // want to display empty projects if not query!
+      for (const {projectId: projId, projectName} of Object.values(
+        projectsExcludingCurrent,
+      )) {
+        if (!(projId in displayed)) {
+          displayed[projId] = {projectName, sites: []};
+        }
+      }
+    }
+    return displayed;
+  }, [projectsExcludingCurrent, searchedSites, query]);
 
-  const checkboxHandlers = useCheckboxHandlers(
-    Object.entries(groupedByProject).reduce(
-      (x, [projectId, fields]) => ({
-        ...x,
-        [projectId]: fields.length,
-      }),
-      {},
-    ),
+  const projectRecord = useMemo(() => {
+    const record: Record<string, Record<string, boolean>> = {};
+    for (const site of sitesExcludingCurrent) {
+      if (!(site.projectId in record)) {
+        record[site.projectId] = {};
+      }
+      record[site.projectId][site.siteId] = false;
+    }
+    return record;
+  }, [sitesExcludingCurrent]);
+
+  const [projState, setProjState] = useState<typeof projectRecord>({});
+
+  const removeKeys = (a: any, b: any) => {
+    const remove = [a, b];
+    let currA, currB;
+    while (remove.length) {
+      currA = remove.pop();
+      currB = remove.pop();
+      for (const keyA of Object.keys(currA)) {
+        if (!(keyA in currB)) {
+          delete currA[keyA];
+          continue;
+        }
+        const valA = currA[keyA];
+        const valB = currB[keyA];
+        if (typeof valA !== typeof valB) {
+          delete currA[keyA];
+          continue;
+        }
+        if (typeof valA === 'object' && !Array.isArray(valA) && valA !== null) {
+          remove.push(valA, valB);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    setProjState(latestState => {
+      const newState = Object.assign({...latestState}, projectRecord);
+      removeKeys(newState, projectRecord);
+      return newState;
+    });
+  }, [projectRecord, setProjState]);
+
+  const onCheckboxChange = useCallback(
+    (groupId: string, checkboxId: string) => (checked: boolean) => {
+      setProjState(currState => {
+        const newState = {...currState};
+        newState[groupId][checkboxId] = checked;
+        return newState;
+      });
+    },
+    [setProjState],
   );
 
-  // useEffect(() => console.debug(groupedByProject));
+  // useEffect(() => console.debug(displayedProjects));
 
   return (
     <ScreenScaffold
@@ -74,30 +134,32 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           setQuery={setQuery}
           placeholder={t('site.search.placeholder')}
         />
-        {Object.entries(groupedByProject).map(
-          ([projectId, cluster]) =>
-            cluster &&
-            cluster.length && (
-              <Accordion
-                key={projectId}
-                Head={
-                  <Text>
-                    {cluster[0].projectName} {cluster.length}
-                  </Text>
-                }>
+        {Object.entries(displayedProjects).map(
+          ([projId, {projectName, sites: projectSites}]) => (
+            <Accordion
+              key={projId}
+              Head={
+                <Text>
+                  {projectName} - {projectSites.length}
+                </Text>
+              }>
+              {projectSites.length > 0 ? (
                 <CheckboxGroup
-                  checkboxes={cluster.map((site, i) => ({
-                    label: site.siteName,
-                    id: site.siteId,
-                    onValue: checkboxHandlers.onValueChanged(site.projectId, i),
-                    checked: checkboxHandlers.checkedValues[site.projectId][i],
+                  groupName={projectName}
+                  groupId={projId}
+                  checkboxes={projectSites.map(({siteId, siteName}) => ({
+                    label: siteName,
+                    id: siteId,
+                    checked:
+                      projState && projState[projId]
+                        ? projState[projId][siteId]
+                        : false,
                   }))}
-                  allChecked={checkboxHandlers.allChecked[projectId]}
-                  onCheckAll={checkboxHandlers.onAllChecked(projectId)}
-                  groupName={projectId}
+                  onChangeValue={onCheckboxChange}
                 />
-              </Accordion>
-            ),
+              ) : undefined}
+            </Accordion>
+          ),
         )}
       </VStack>
     </ScreenScaffold>
