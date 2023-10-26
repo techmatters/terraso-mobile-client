@@ -1,7 +1,7 @@
-import {Heading, Text, VStack} from 'native-base';
+import {Fab, Heading, Text, VStack} from 'native-base';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
-import {useSelector} from 'terraso-mobile-client/model/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {
   AppBar,
   ScreenScaffold,
@@ -11,11 +11,13 @@ import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/select
 import {useTranslation} from 'react-i18next';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import CheckboxGroup from 'terraso-mobile-client/components/common/CheckboxGroup';
+import {transferSites} from 'terraso-client-shared/site/siteSlice';
 
 type Props = {projectId: string};
 
 export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const {projects, sites} = useSelector(state =>
@@ -120,7 +122,15 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     [setProjState],
   );
 
-  // useEffect(() => console.debug(displayedProjects));
+  const onSubmit = useCallback(() => {
+    const siteIds = Object.values(projState).flatMap(projSites =>
+      Object.entries(projSites)
+        .filter(([_, checked]) => checked)
+        .map(([siteId, _]) => siteId),
+    );
+    const payload = {projectId, siteIds};
+    return dispatch(transferSites(payload));
+  }, [projState]);
 
   return (
     <ScreenScaffold
@@ -162,6 +172,14 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           ),
         )}
       </VStack>
+      <Fab
+        label={
+          <Text textTransform="uppercase" color="primary.contrast">
+            Transfer sites
+          </Text>
+        }
+        onPress={onSubmit}
+      />
     </ScreenScaffold>
   );
 };
