@@ -50,7 +50,6 @@
     "@react-native-community/eslint-config": "^3.2.0",
     "@tsconfig/react-native": "^3.0.2",
     "@types/jest": "^29.5.6",
-    "@types/lodash": "^4.14.200",
     "@types/react": "^18.2.33",
     "@types/react-native-vector-icons": "^6.4.16",
     "@types/react-test-renderer": "^18.0.5",
