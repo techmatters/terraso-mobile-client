@@ -12,9 +12,9 @@ type CheckboxProps = {
 type Props = {
   checkboxes: CheckboxProps[];
   groupName: string;
-  groupId: string;
+  groupId: string | symbol;
   onChangeValue: (
-    groupId: string,
+    groupId: string | symbol,
     checkboxId: string,
   ) => (checked: boolean) => void;
 };

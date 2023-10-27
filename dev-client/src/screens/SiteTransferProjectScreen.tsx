@@ -33,6 +33,11 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     [],
   );
 
+  const hasUnaffiliatedProject = (o: object) =>
+    Object.getOwnPropertySymbols(o).find(
+      symb => symb === UNAFFILIATED.projectId,
+    ) !== undefined;
+
   const project = useSelector(state => state.project.projects[projectId]);
   const {projects, sites, unaffiliatedSites} = useSelector(state =>
     selectProjectsWithTransferrableSites(state, 'manager'),
@@ -95,14 +100,11 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   }, [projectsExcludingCurrent, searchedSites, query]);
 
   const listData = useMemo(() => {
-    let pool = Object.entries(displayedProjects);
-    if (
-      Object.getOwnPropertySymbols(displayedProjects).find(
-        symb => symb === UNAFFILIATED.projectId,
-      ) !== undefined
-    ) {
+    let pool: [string | symbol, (typeof displayedProjects)[string]][] =
+      Object.entries(displayedProjects);
+    if (hasUnaffiliatedProject(displayedProjects)) {
       pool.push([
-        String(UNAFFILIATED.projectId),
+        UNAFFILIATED.projectId,
         displayedProjects[UNAFFILIATED.projectId],
       ]);
     }
@@ -118,7 +120,11 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const projectRecord = useMemo(() => {
     const record: Record<string | symbol, Record<string, boolean>> = {};
     for (const site of sitesExcludingCurrent) {
-      if (!(site.projectId in record)) {
+      if (
+        !(site.projectId in record) ||
+        (site.projectId === UNAFFILIATED.projectId &&
+          !hasUnaffiliatedProject(record))
+      ) {
         record[site.projectId] = {};
       }
       record[site.projectId][site.siteId] = false;
@@ -137,7 +143,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   }, [projectRecord, setProjState]);
 
   const onCheckboxChange = useCallback(
-    (groupId: string, checkboxId: string) => (checked: boolean) => {
+    (groupId: string | symbol, checkboxId: string) => (checked: boolean) => {
       setProjState(currState => {
         const newState = {...currState};
         newState[groupId][checkboxId] = checked;
@@ -148,7 +154,11 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   );
 
   const onSubmit = useCallback(async () => {
-    const siteIds = Object.values(projState).flatMap(projSites =>
+    const pool = Object.values(projState);
+    if (hasUnaffiliatedProject(projState)) {
+      pool.push(projState[UNAFFILIATED.projectId]);
+    }
+    const siteIds = pool.flatMap(projSites =>
       Object.entries(projSites)
         .filter(([_, checked]) => checked)
         .map(([siteId, _]) => siteId),
@@ -187,7 +197,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
             item: [projId, {projectName, sites: projectSites}],
           }) => (
             <Accordion
-              key={projId}
+              key={String(projId)}
               Head={
                 <Text
                   variant="body1"
