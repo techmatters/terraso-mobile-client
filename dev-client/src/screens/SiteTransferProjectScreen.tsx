@@ -23,10 +23,15 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const UNAFFILIATED = {
-    projectId: Symbol('unaffiliated'),
-    projectName: t('projects.transfer_sites.unaffiliated'),
-  };
+  // Don't want this re-rendering
+  // Otherwise it declares multiple symbols that are *not* equal
+  const UNAFFILIATED = useMemo(
+    () => ({
+      projectId: Symbol('unaffiliated'),
+      projectName: t('projects.transfer_sites.unaffiliated'),
+    }),
+    [],
+  );
 
   const project = useSelector(state => state.project.projects[projectId]);
   const {projects, sites, unaffiliatedSites} = useSelector(state =>
@@ -91,7 +96,11 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
 
   const listData = useMemo(() => {
     let pool = Object.entries(displayedProjects);
-    if (UNAFFILIATED.projectId in displayedProjects) {
+    if (
+      Object.getOwnPropertySymbols(displayedProjects).find(
+        symb => symb === UNAFFILIATED.projectId,
+      ) !== undefined
+    ) {
       pool.push([
         String(UNAFFILIATED.projectId),
         displayedProjects[UNAFFILIATED.projectId],
@@ -149,26 +158,30 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     return navigation.pop();
   }, [projState]);
 
+  const ListHeader = (
+    <VStack space="10px" px="12px" pt="5%">
+      <HStack>
+        <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
+        <FormTooltip icon="help">
+          {t('projects.transfer_sites.tooltip')}
+        </FormTooltip>
+      </HStack>
+      <Text>{t('projects.transfer_sites.description', '')}</Text>
+      <SearchBar
+        query={query}
+        setQuery={setQuery}
+        placeholder={t('site.search.placeholder')}
+      />
+    </VStack>
+  );
+
   return (
     <ScreenScaffold
       BottomNavigation={null}
       AppBar={<AppBar title={project.name} />}>
       <VStack space="10px">
-        <VStack space="10px" px="12px" pt="5%">
-          <HStack>
-            <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
-            <FormTooltip icon="help">
-              {t('projects.transfer_sites.tooltip')}
-            </FormTooltip>
-          </HStack>
-          <Text>{t('projects.transfer_sites.description', '')}</Text>
-          <SearchBar
-            query={query}
-            setQuery={setQuery}
-            placeholder={t('site.search.placeholder')}
-          />
-        </VStack>
         <FlatList
+          ListHeaderComponent={ListHeader}
           data={listData}
           renderItem={({
             item: [projId, {projectName, sites: projectSites}],
