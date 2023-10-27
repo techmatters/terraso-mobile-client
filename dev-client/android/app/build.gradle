@@ -176,7 +176,7 @@ dependencies {
         implementation jscFlavor
     }
 
-    implementation 'com.mapbox.maps:android:10.12.1'
+    implementation 'com.mapbox.maps:android:10.16.1'
 }
 
 class Version {
