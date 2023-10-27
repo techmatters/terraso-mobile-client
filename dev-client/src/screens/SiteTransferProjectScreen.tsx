@@ -23,18 +23,32 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
+  const UNAFFILIATED = {
+    projectId: Symbol('unaffiliated'),
+    projectName: t('projects.transfer_sites.unaffiliated'),
+  };
+
   const project = useSelector(state => state.project.projects[projectId]);
-  const {projects, sites} = useSelector(state =>
+  const {projects, sites, unaffiliatedSites} = useSelector(state =>
     selectProjectsWithTransferrableSites(state, 'manager'),
   );
   const sitesExcludingCurrent = useMemo(() => {
-    return sites.filter(site => site.projectId !== projectId);
+    const prospectiveSites = sites.filter(site => site.projectId !== projectId);
+    const unaffiliated = unaffiliatedSites.map(site => ({
+      ...site,
+      projectId: UNAFFILIATED.projectId,
+      projectName: UNAFFILIATED.projectName,
+    }));
+    return [...prospectiveSites, ...unaffiliated];
   }, [sites, projectId]);
 
-  const projectsExcludingCurrent = useMemo(() => {
+  const projectsExcludingCurrent: Record<
+    string | symbol,
+    {projectId: string | symbol; projectName: string}
+  > = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let {[projectId]: _, ...rest} = projects;
-    return rest;
+    return {...rest, [UNAFFILIATED.projectId]: UNAFFILIATED};
   }, [projects, projectId]);
 
   const {
@@ -45,13 +59,18 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
 
   const displayedProjects = useMemo(() => {
     const displayed: Record<
-      string,
-      {projectName: string; sites: typeof searchedSites}
+      string | symbol,
+      {
+        projectName: string;
+        projId: string | symbol;
+        sites: typeof searchedSites;
+      }
     > = {};
     for (let site of searchedSites) {
       if (!(site.projectId in displayed)) {
         displayed[site.projectId] = {
           projectName: site.projectName,
+          projId: site.projectId,
           sites: [],
         };
       }
@@ -63,23 +82,32 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
         projectsExcludingCurrent,
       )) {
         if (!(projId in displayed)) {
-          displayed[projId] = {projectName, sites: []};
+          displayed[projId] = {projectName, projId, sites: []};
         }
       }
     }
     return displayed;
   }, [projectsExcludingCurrent, searchedSites, query]);
 
-  const listData = useMemo(
-    () =>
-      Object.entries(displayedProjects).sort((a, b) =>
-        a[1].projectName.localeCompare(b[1].projectName),
-      ),
-    [displayedProjects],
-  );
+  const listData = useMemo(() => {
+    let pool = Object.entries(displayedProjects);
+    if (UNAFFILIATED.projectId in displayedProjects) {
+      pool.push([
+        String(UNAFFILIATED.projectId),
+        displayedProjects[UNAFFILIATED.projectId],
+      ]);
+    }
+    const projects = pool.sort((a, b) => {
+      if (a[1].projId === UNAFFILIATED.projectId) {
+        return -1;
+      }
+      return a[1].projectName.localeCompare(b[1].projectName);
+    });
+    return projects;
+  }, [displayedProjects]);
 
   const projectRecord = useMemo(() => {
-    const record: Record<string, Record<string, boolean>> = {};
+    const record: Record<string | symbol, Record<string, boolean>> = {};
     for (const site of sitesExcludingCurrent) {
       if (!(site.projectId in record)) {
         record[site.projectId] = {};
