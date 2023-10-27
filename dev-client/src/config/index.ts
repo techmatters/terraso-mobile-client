@@ -4,8 +4,14 @@ import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
 import {PACKAGE_NAME} from 'terraso-mobile-client/constants';
 
-const terrasoAPIURL =
-  Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
+let terrasoAPIURL;
+if (Platform.OS === 'ios') {
+  terrasoAPIURL =
+    Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
+} else if (Platform.OS === 'android') {
+  terrasoAPIURL =
+    Config.TERRASO_BACKEND_ANDROID ?? (Config.TERRASO_BACKEND  ?? 'https://api.staging.terraso.net');
+}
 
 const MMKV = new MMKVLoader().withEncryption().initialize();
 
