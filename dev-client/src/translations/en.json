@@ -190,7 +190,8 @@
     "transfer_sites": {
       "heading": "Transfer existing sites",
       "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project.",
-      "unaffiliated": "Unaffiliated"
+      "unaffiliated": "Unaffiliated",
+      "tooltip": "Sites you transfer to this project will inherit this project’s data settings, input requirements, and team members. Learn more..."
     },
     "form": {
       "name_min_length_error": "Project name must be at least {{min}} characters",
