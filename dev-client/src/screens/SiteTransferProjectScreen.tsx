@@ -18,20 +18,17 @@ import {FormTooltip} from 'terraso-mobile-client/components/common/Form';
 
 type Props = {projectId: string};
 
+const UNAFFILIATED = {
+  projectId: Symbol('unaffiliated'),
+  projectName: '',
+};
+
 export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  // Don't want this re-rendering
-  // Otherwise it declares multiple symbols that are *not* equal
-  const UNAFFILIATED = useMemo(
-    () => ({
-      projectId: Symbol('unaffiliated'),
-      projectName: t('projects.transfer_sites.unaffiliated'),
-    }),
-    [],
-  );
+  UNAFFILIATED.projectName = t('projects.transfer_sites.unaffiliated');
 
   const hasUnaffiliatedProject = (o: object) =>
     Object.getOwnPropertySymbols(o).find(
@@ -50,7 +47,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
       projectName: UNAFFILIATED.projectName,
     }));
     return [...prospectiveSites, ...unaffiliated];
-  }, [sites, projectId]);
+  }, [sites, projectId, unaffiliatedSites]);
 
   const projectsExcludingCurrent: Record<
     string | symbol,
@@ -108,13 +105,13 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
         displayedProjects[UNAFFILIATED.projectId],
       ]);
     }
-    const projects = pool.sort((a, b) => {
+    const sortedProjects = pool.sort((a, b) => {
       if (a[1].projId === UNAFFILIATED.projectId) {
         return -1;
       }
       return a[1].projectName.localeCompare(b[1].projectName);
     });
-    return projects;
+    return sortedProjects;
   }, [displayedProjects]);
 
   const projectRecord = useMemo(() => {
@@ -166,7 +163,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     const payload = {projectId, siteIds};
     await dispatch(transferSites(payload));
     return navigation.pop();
-  }, [projState]);
+  }, [projState, dispatch, navigation, projectId]);
 
   const ListHeader = (
     <VStack space="10px" px="12px" pt="5%">
