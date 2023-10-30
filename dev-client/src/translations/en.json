@@ -162,13 +162,13 @@
       "remove_site": "Remove from Project",
       "delete_site": "Delete Site",
       "delete_site_modal": {
-        "title": "Delete Site?",
-        "body": "This will permanently delete the site and all of its data. This cannot be undone.\n\nAlternatively, project managers can remove the site from this project to retain its data.",
+        "title": "Delete site?",
+        "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.\n\nProject managers can remove the site from this project to retain its data.",
         "action_name": "Delete"
       },
       "remove_site_modal": {
-        "title": "Remove Site from Project?",
-        "body": "This will remove the site from the project. It will become an unaffliated site.",
+        "title": "Remove site from project?",
+        "body": "This will remove the site {{siteName}} from the project {{projectName}}. It will become an unaffiliated site.",
         "action_name": "Remove Site"
       }
     },
