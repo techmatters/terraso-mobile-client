@@ -11,7 +11,8 @@ This repo contains the source code for Terraso’s mobile client modules.
 Install dependencies:
 
 ```sh
-$ brew install node watchman rbenv
+$ brew install node watchman rbenv openjdk@17
+$ sudo ln -sfn /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
 ```
 
 Configure rbenv:
@@ -43,7 +44,7 @@ $ bundle exec pod install
 ### Linux
 
 ```sh
-$ sudo apt install node watchman
+$ sudo apt install node watchman openjdk-17-jdk
 ```
 
 ## Android
@@ -114,6 +115,10 @@ jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256  -keystore ~/terraso
 ```
 
 # Env Setup
+
+## Java
+
+Ensure you are using a verison of Java [compatible with gradle](https://docs.gradle.org/current/userguide/compatibility.html). JDK 11 and JDK 17 both work with Gradle 7.5.1.
 
 ## Logging In
 
