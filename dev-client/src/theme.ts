@@ -182,6 +182,14 @@ export const theme = extendTheme({
             letterSpacing: '0.15px',
           },
         },
+        body1: {
+          _text: {
+            color: 'text.primary',
+            fontWeight: 400,
+            fontSize: '14px',
+            lineHeight: '24px',
+          },
+        },
       },
       defaultProps: {
         _text: {
