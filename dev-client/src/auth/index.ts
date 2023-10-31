@@ -63,7 +63,7 @@ export async function exchangeToken(
 
 const apiConfig = getAPIConfig();
 
-export async function auth(providerName) {
+export async function auth(providerName: String) {
   let result;
   let platformOs = providerName;
   if (providerName === 'google') {

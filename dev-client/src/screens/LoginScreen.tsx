@@ -26,7 +26,7 @@ export const LoginScreen = () => {
 
   const dispatch = useDispatch();
   const onPress = useCallback(
-    providerName => {
+    (providerName: String) => {
       return () => {
         auth(providerName)
           .then(() => dispatch(setHasAccessTokenAsync()))
