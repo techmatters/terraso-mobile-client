@@ -23,7 +23,11 @@ import {
   MaterialCommunityIcons,
 } from 'terraso-mobile-client/components/common/Icons';
 import {RootStackScreenProps} from 'terraso-mobile-client/screens/AppScaffold';
-import {Site, deleteSite} from 'terraso-client-shared/site/siteSlice';
+import {
+  Site,
+  deleteSite,
+  updateSite,
+} from 'terraso-client-shared/site/siteSlice';
 import {
   useDispatch,
   useSelector,
@@ -36,6 +40,7 @@ import {
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 import {CardTopRightButton} from 'terraso-mobile-client/components/common/Card';
+import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 
 type SiteMenuProps = {
   iconName: string;
@@ -69,8 +74,14 @@ const SiteMenu = ({site}: SiteProps) => {
     dispatch(removeSiteFromAllProjects(site.id));
   };
 
+  const removeSiteFromProjectCallback = async () => {
+    const input = {id: site.id, projectId: null};
+    return dispatch(updateSite(input));
+  };
+
   return (
     <Menu
+      closeOnSelect={true}
       trigger={triggerProps => (
         <CardTopRightButton
           as={MaterialCommunityIcons}
@@ -79,11 +90,32 @@ const SiteMenu = ({site}: SiteProps) => {
           {...triggerProps}
         />
       )}>
-      <SiteMenuItem iconName="remove" text={t('projects.sites.remove_site')} />
-      <SiteMenuItem
-        iconName="delete"
-        onPress={deleteSiteCallback}
-        text={t('projects.sites.delete_site')}
+      <ConfirmModal
+        trigger={onOpen => (
+          <SiteMenuItem
+            iconName="remove"
+            text={t('projects.sites.remove_site')}
+            onPress={onOpen}
+          />
+        )}
+        title={t('projects.sites.remove_site_modal.title')}
+        body={t('projects.sites.remove_site_modal.body', {siteName: site.name})}
+        actionName={t('projects.sites.remove_site_modal.action_name')}
+        handleConfirm={removeSiteFromProjectCallback}
+      />
+
+      <ConfirmModal
+        trigger={onOpen => (
+          <SiteMenuItem
+            iconName="delete"
+            onPress={onOpen}
+            text={t('projects.sites.delete_site')}
+          />
+        )}
+        title={t('projects.sites.delete_site_modal.title')}
+        body={t('projects.sites.delete_site_modal.body', {siteName: site.name})}
+        actionName={t('projects.sites.delete_site_modal.action_name')}
+        handleConfirm={deleteSiteCallback}
       />
     </Menu>
   );
