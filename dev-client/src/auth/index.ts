@@ -78,7 +78,7 @@ export async function auth(providerName: String) {
   } else if (providerName === 'microsoft') {
     result = await authorize(microsoftConfig);
   } else {
-    console.error(`${providerName} is not a recognized OAuth provider.`);
+    throw new Error(`${providerName} is not a recognized OAuth provider.`);
   }
   let {atoken, rtoken} = await exchangeToken(
     result.idToken,
