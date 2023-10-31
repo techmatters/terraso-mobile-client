@@ -150,17 +150,22 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     [setProjState],
   );
 
-  const onSubmit = useCallback(async () => {
+  const checkedSites = useMemo(() => {
     const pool = Object.values(projState);
     if (hasUnaffiliatedProject(projState)) {
       pool.push(projState[UNAFFILIATED.projectId]);
     }
-    const siteIds = pool.flatMap(projSites =>
+    return pool.flatMap(projSites =>
       Object.entries(projSites)
         .filter(([_, checked]) => checked)
         .map(([siteId, _]) => siteId),
     );
-    const payload = {projectId, siteIds};
+  }, [projState]);
+
+  const disabled = useMemo(() => checkedSites.length === 0, [checkedSites]);
+
+  const onSubmit = useCallback(async () => {
+    const payload = {projectId, siteIds: checkedSites};
     await dispatch(transferSites(payload));
     return navigation.pop();
   }, [projState, dispatch, navigation, projectId]);
@@ -190,11 +195,11 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
         <FlatList
           ListHeaderComponent={ListHeader}
           data={listData}
+          keyExtractor={([projId, _]) => String(projId)}
           renderItem={({
             item: [projId, {projectName, sites: projectSites}],
           }) => (
             <Accordion
-              key={String(projId)}
               Head={
                 <Text
                   variant="body1"
@@ -236,6 +241,9 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           </Text>
         }
         onPress={onSubmit}
+        disabled={disabled}
+        bgColor={disabled ? 'action.disabledBackground' : undefined}
+        color={disabled ? 'action.disabled' : undefined}
       />
     </ScreenScaffold>
   );

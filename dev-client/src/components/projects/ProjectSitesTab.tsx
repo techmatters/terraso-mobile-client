@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FlatList,
   HStack,
   Menu,
@@ -135,10 +136,6 @@ export default function ProjectSitesTab({
     keys: ['name'],
   });
 
-  const addSiteCallback = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {projectId: projectId});
-  }, [navigation, projectId]);
-
   const isEmpty = sites.length === 0;
 
   const full = (
@@ -166,22 +163,12 @@ export default function ProjectSitesTab({
   return (
     <VStack m={3} pb={5} space={3} h="100%">
       {isEmpty && <Text>{t('projects.sites.empty')}</Text>}
-      <Menu
-        shouldOverlapWithTrigger={false}
-        trigger={(props): JSX.Element => {
-          return (
-            <Box alignItems="flex-start">
-              <AddButton text={t('projects.sites.add')} buttonProps={props} />
-            </Box>
-          );
-        }}>
-        <Menu.Item onPress={addSiteCallback}>
-          {t('projects.sites.create') ?? ''}
-        </Menu.Item>
-        <Menu.Item onPress={transferCallback}>
-          {t('projects.sites.transfer') ?? ''}
-        </Menu.Item>
-      </Menu>
+      <Button
+        onPress={transferCallback}
+        alignSelf="flex-start"
+        _text={{textTransform: 'uppercase'}}>
+        {t('projects.sites.transfer') ?? ''}
+      </Button>
       {!isEmpty && full}
     </VStack>
   );
