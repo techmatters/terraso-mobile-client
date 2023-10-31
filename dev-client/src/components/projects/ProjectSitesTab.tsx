@@ -8,7 +8,6 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import AddButton from 'terraso-mobile-client/components/common/AddButton';
 import {useTranslation} from 'react-i18next';
 import {
   TabRoutes,

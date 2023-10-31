@@ -168,7 +168,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     const payload = {projectId, siteIds: checkedSites};
     await dispatch(transferSites(payload));
     return navigation.pop();
-  }, [projState, dispatch, navigation, projectId]);
+  }, [dispatch, navigation, projectId, checkedSites]);
 
   const ListHeader = (
     <VStack space="10px" px="12px" pt="5%">
