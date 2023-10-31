@@ -9,7 +9,7 @@ import {
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {memo, useCallback, useEffect, useMemo, useState} from 'react';
 import CheckboxGroup from 'terraso-mobile-client/components/common/CheckboxGroup';
 import {transferSites} from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
@@ -17,11 +17,32 @@ import {removeKeys} from 'terraso-mobile-client/util';
 import {FormTooltip} from 'terraso-mobile-client/components/common/Form';
 
 type Props = {projectId: string};
+type HeaderProps = {query: string; setQuery: (query: string) => void};
 
 const UNAFFILIATED = {
   projectId: Symbol('unaffiliated'),
   projectName: '',
 };
+
+const ListHeader = memo(({query, setQuery}: HeaderProps) => {
+  const {t} = useTranslation();
+  return (
+    <VStack space="10px" px="12px" pt="5%">
+      <HStack>
+        <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
+        <FormTooltip icon="help">
+          {t('projects.transfer_sites.tooltip')}
+        </FormTooltip>
+      </HStack>
+      <Text>{t('projects.transfer_sites.description', '')}</Text>
+      <SearchBar
+        query={query}
+        setQuery={setQuery}
+        placeholder={t('site.search.placeholder')}
+      />
+    </VStack>
+  );
+});
 
 export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
@@ -170,70 +191,49 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     return navigation.pop();
   }, [dispatch, navigation, projectId, checkedSites]);
 
-  const ListHeader = (
-    <VStack space="10px" px="12px" pt="5%">
-      <HStack>
-        <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
-        <FormTooltip icon="help">
-          {t('projects.transfer_sites.tooltip')}
-        </FormTooltip>
-      </HStack>
-      <Text>{t('projects.transfer_sites.description', '')}</Text>
-      <SearchBar
-        query={query}
-        setQuery={setQuery}
-        placeholder={t('site.search.placeholder')}
-      />
-    </VStack>
-  );
-
   return (
     <ScreenScaffold
       BottomNavigation={null}
       AppBar={<AppBar title={project.name} />}>
-      <VStack space="10px">
-        <FlatList
-          ListHeaderComponent={ListHeader}
-          data={listData}
-          keyExtractor={([projId, _]) => String(projId)}
-          renderItem={({
-            item: [projId, {projectName, sites: projectSites}],
-          }) => (
-            <Accordion
-              Head={
-                <Text
-                  variant="body1"
-                  fontWeight={700}
-                  color="primary.contrast"
-                  py="14px">
-                  {projectName} ({projectSites.length})
-                </Text>
-              }
-              initiallyOpen={projectSites.length > 0}
-              disableOpen={projectSites.length === 0}>
-              {projectSites.length > 0 ? (
-                <Box px="15px" my="15px">
-                  <CheckboxGroup
-                    groupName={projectName}
-                    groupId={projId}
-                    checkboxes={projectSites
-                      .map(({siteId, siteName}) => ({
-                        label: siteName,
-                        id: siteId,
-                        checked:
-                          projState && projState[projId]
-                            ? projState[projId][siteId]
-                            : false,
-                      }))
-                      .sort((a, b) => a.label.localeCompare(b.label))}
-                    onChangeValue={onCheckboxChange}
-                  />
-                </Box>
-              ) : undefined}
-            </Accordion>
-          )}
-        />
-      </VStack>
+      <ListHeader query={query} setQuery={setQuery} />
+      <FlatList
+        data={listData}
+        keyExtractor={([projId, _]) => String(projId)}
+        renderItem={({item: [projId, {projectName, sites: projectSites}]}) => (
+          <Accordion
+            Head={
+              <Text
+                variant="body1"
+                fontWeight={700}
+                color="primary.contrast"
+                py="14px">
+                {projectName} ({projectSites.length})
+              </Text>
+            }
+            initiallyOpen={projectSites.length > 0}
+            disableOpen={projectSites.length === 0}>
+            {projectSites.length > 0 ? (
+              <Box px="15px" my="15px">
+                <CheckboxGroup
+                  groupName={projectName}
+                  groupId={projId}
+                  checkboxes={projectSites
+                    .map(({siteId, siteName}) => ({
+                      label: siteName,
+                      id: siteId,
+                      checked:
+                        projState && projState[projId]
+                          ? projState[projId][siteId]
+                          : false,
+                    }))
+                    .sort((a, b) => a.label.localeCompare(b.label))}
+                  onChangeValue={onCheckboxChange}
+                />
+              </Box>
+            ) : undefined}
+          </Accordion>
+        )}
+      />
       <Fab
         label={
           <Text textTransform="uppercase" color="primary.contrast">
