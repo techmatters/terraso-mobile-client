@@ -13,10 +13,7 @@ export type TabStackParamList = {
     projectId: string;
   };
   [TabRoutes.SETTINGS]: {
-    name: string;
-    description: string;
     projectId: string;
-    privacy: ProjectPrivacy;
     downloadLink: string;
   };
   [TabRoutes.SITES]: {

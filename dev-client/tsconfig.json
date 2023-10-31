@@ -7,6 +7,11 @@
     }
   },
 
-  "include": ["src"],
+  "include": [
+    "src",
+    "../../../.emacs.d/backups/!home!work!code!terraso-mobile-client!dev-client!src!components!projects!CreateProjectView!EditForm.tsx~",
+    "../../../.emacs.d/backups/!home!work!code!terraso-mobile-client!dev-client!src!components!projects!CreateProjectView!EditFormProps.1.tsx~",
+    "../../../.emacs.d/backups/!home!work!code!terraso-mobile-client!dev-client!src!components!projects!CreateProjectView!EditFormProps.tsx~"
+  ],
   "exclude": ["dist"]
 }

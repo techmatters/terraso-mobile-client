@@ -1,5 +1,5 @@
-import {HStack, Heading, Input, VStack} from 'native-base';
-import {useFormikContext} from 'formik';
+import {Fab, HStack, Heading, Input, Radio, VStack} from 'native-base';
+import {Formik, useFormikContext} from 'formik';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
@@ -11,7 +11,11 @@ import {
   PROJECT_NAME_MIN_LENGTH,
 } from 'terraso-mobile-client/constants';
 import {TFunction} from 'i18next';
-import pick from 'lodash/fp/pick';
+import {
+  FormInput,
+  FormRadioGroup,
+} from 'terraso-mobile-client/components/common/Form';
+import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
 export const projectValidationFields = (t: TFunction) => ({
   name: yup
@@ -47,11 +51,11 @@ export const projectValidationSchema = (t: TFunction) =>
 
 export const editProjectValidationSchema = (t: TFunction) => {
   const fullSchema = projectValidationSchema(t);
-  const selectedFields = pick(fullSchema, ['name', 'description']);
-  const editFields = {
-    measurementUnits: yup.string().oneOf(['METRIC', 'IMPERIAL']),
-  };
-  return yup.object().shape({...selectedFields, ...editFields});
+  return fullSchema.pick(['name', 'description']).concat(
+    yup.object().shape({
+      measurementUnits: yup.string().oneOf(['METRIC', 'IMPERIAL']),
+    }),
+  );
 };
 
 export type ProjectFormValues = {
@@ -62,6 +66,72 @@ export type ProjectFormValues = {
 
 type Props = {
   editForm?: boolean;
+};
+
+type SharedOptions = {
+  showPlaceholders: boolean;
+};
+
+const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
+  return [
+    <FormInput
+      key="name"
+      name="name"
+      placeholder={showPlaceholders ? t('projects.add.name') : undefined}
+      variant="underlined"
+      id="project-form-name"
+      label={t('projects.add.name')}
+    />,
+    <FormInput
+      key="description"
+      name="description"
+      placeholder={showPlaceholders ? t('projects.add.description') : undefined}
+      variant="underlined"
+      id="project-form-description"
+      label={t('projects.add.description')}
+    />,
+  ];
+};
+
+type FormProps = Omit<ProjectUpdateMutationInput, 'id'> & {
+  onSubmit: (values: Omit<ProjectUpdateMutationInput, 'id'>) => void;
+};
+
+export const EditForm = ({
+  onSubmit,
+  name,
+  description,
+  measurementUnits,
+}: Omit<FormProps, 'privacy'>) => {
+  const {t} = useTranslation();
+  return (
+    <Formik<Omit<ProjectUpdateMutationInput, 'id'>>
+      validationSchema={editProjectValidationSchema(t)}
+      initialValues={{name, description, measurementUnits}}
+      onSubmit={onSubmit}>
+      {({handleSubmit, isValid, isSubmitting}) => (
+        <>
+          {SharedFormComponents(false, t)}
+          <FormRadioGroup
+            mt="15px"
+            name="measurementUnits"
+            values={['IMPERIAL', 'METRIC']}
+            renderRadio={value => (
+              <Radio value={value} key={value}>
+                {t('general.measurement_units.' + value)}
+              </Radio>
+            )}
+          />
+          <Fab
+            onPress={() => handleSubmit()}
+            disabled={!isValid || isSubmitting}
+            label={t('general.submit').toLocaleUpperCase()}
+            renderInPortal={false}
+          />
+        </>
+      )}
+    </Formik>
+  );
 };
 
 export default function Form({editForm = false}: Props) {
