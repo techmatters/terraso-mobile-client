@@ -64,9 +64,9 @@ const apiConfig = getAPIConfig();
 
 export async function auth(providerName) {
   let result;
+  let platformOs = providerName;
   if (providerName === 'google') {
     result = await authorize(googleConfig);
-    var platformOs = '';
     if (Platform.OS === 'android') {
       platformOs = 'google-android';
     } else if (Platform.OS === 'ios') {
