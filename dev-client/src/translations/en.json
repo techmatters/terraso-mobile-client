@@ -160,7 +160,17 @@
       "go_to": "Go to Site",
       "audit_log": "Audit Log",
       "remove_site": "Remove from Project",
-      "delete_site": "Delete Site"
+      "delete_site": "Delete Site",
+      "delete_site_modal": {
+        "title": "Delete site?",
+        "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.\n\nProject managers can remove the site from this project to retain its data.",
+        "action_name": "Delete"
+      },
+      "remove_site_modal": {
+        "title": "Remove site from project?",
+        "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
+        "action_name": "Remove Site"
+      }
     },
     "add": {
       "name": "Project Name",
