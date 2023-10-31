@@ -28,10 +28,13 @@
           <action android:name="android.intent.action.VIEW"/>
           <category android:name="android.intent.category.DEFAULT"/>
           <category android:name="android.intent.category.BROWSABLE"/>
-          <data android:scheme="org.landpks.terraso" android:path="oauth2redirect" />
-          <data android:scheme="org.terraso.landpks"
-            android:host="msauth"
-            android:path="/lvGC0B4SWYU8tNPHg/bdMjQinZQ=" />
+          <data android:scheme="org.terraso.landpks" />
+        </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW"/>
+          <category android:name="android.intent.category.DEFAULT"/>
+          <category android:name="android.intent.category.BROWSABLE"/>
+          <data android:scheme="org.terraso.landpks" android:host="msauth" android:path="/lvGC0B4SWYU8tNPHg/bdMjQinZQ=" />
         </intent-filter>
       </activity>
     </application>
