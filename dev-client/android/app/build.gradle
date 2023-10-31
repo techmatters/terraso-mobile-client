@@ -101,9 +101,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 50
         versionName '1.0.50'
-        manifestPlaceholders = [
-            appAuthRedirectScheme: "org.terraso.landpks"
-        ]
     }
     splits {
         abi {
