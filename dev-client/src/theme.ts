@@ -30,6 +30,8 @@ export const theme = extendTheme({
     action: {
       active: '#1A202C',
       active_subtle: '#1A202CB2',
+      disabled: '#1A202C61',
+      disabledBackground: '#EEEEEE',
     },
     text: {
       primary: '#1A202C',
