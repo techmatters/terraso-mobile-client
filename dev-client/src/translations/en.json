@@ -168,7 +168,7 @@
       },
       "remove_site_modal": {
         "title": "Remove site from project?",
-        "body": "This will remove the site {{siteName}} from the project {{projectName}}. It will become an unaffiliated site.",
+        "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
         "action_name": "Remove Site"
       }
     },
