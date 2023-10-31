@@ -6,11 +6,12 @@ import {PACKAGE_NAME} from 'terraso-mobile-client/constants';
 
 let terrasoAPIURL;
 if (Platform.OS === 'ios') {
-  terrasoAPIURL =
-    Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
+  terrasoAPIURL = Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
 } else if (Platform.OS === 'android') {
   terrasoAPIURL =
-    Config.TERRASO_BACKEND_ANDROID ?? (Config.TERRASO_BACKEND  ?? 'https://api.staging.terraso.net');
+    Config.TERRASO_BACKEND_ANDROID ??
+    Config.TERRASO_BACKEND ??
+    'https://api.staging.terraso.net';
 }
 
 const MMKV = new MMKVLoader().withEncryption().initialize();
@@ -61,7 +62,10 @@ if (Platform.OS === 'ios') {
   googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
   googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
   appleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect` ?? '';
-  microsoftRedirectURI = `${PACKAGE_NAME}://msauth/${encodeURIComponent(Config.MICROSOFT_SIGNATURE_HASH)}/` ?? '';
+  microsoftRedirectURI =
+    `${PACKAGE_NAME}://msauth/${encodeURIComponent(
+      Config.MICROSOFT_SIGNATURE_HASH,
+    )}/` ?? '';
 }
 
 appleClientId = Config.APPLE_OAUTH_MOBILE_CLIENT_ID ?? '';

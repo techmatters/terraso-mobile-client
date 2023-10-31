@@ -31,8 +31,9 @@ const appleConfig = {
  */
 const microsoftConfig = {
   serviceConfiguration: {
-    authorizationEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-    tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
+    authorizationEndpoint:
+      'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+    tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
   },
   clientId: APP_CONFIG.microsoftClientId,
   redirectUrl: APP_CONFIG.microsoftRedirectURI,

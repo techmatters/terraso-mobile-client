@@ -25,13 +25,16 @@ export const LoginScreen = () => {
   // it was navigated to while there is already user data
 
   const dispatch = useDispatch();
-  const onPress = useCallback((providerName) => {
-    return () => {
-      auth(providerName)
-        .then(() => dispatch(setHasAccessTokenAsync()))
-        .catch(e => console.error(e));
-    }
-  }, [dispatch]);
+  const onPress = useCallback(
+    providerName => {
+      return () => {
+        auth(providerName)
+          .then(() => dispatch(setHasAccessTokenAsync()))
+          .catch(e => console.error(e));
+      };
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     if (loggedIn) {
@@ -47,7 +50,12 @@ export const LoginScreen = () => {
           {t('login.title')}
         </Heading>
         <Box h="28px" />
-        <Heading variant="h5" color="primary.contrast" textAlign="center" pl={10} pr={10}>
+        <Heading
+          variant="h5"
+          color="primary.contrast"
+          textAlign="center"
+          pl={10}
+          pr={10}>
           {t('login.subtitle')}
         </Heading>
         <Box h="72px" />
@@ -57,9 +65,7 @@ export const LoginScreen = () => {
             _text={{color: 'primary.main'}}
             size="lg"
             onPress={onPress('google')}
-            startIcon={
-              <GoogleLogo />
-            }>
+            startIcon={<GoogleLogo />}>
             {t('account.google_login').toUpperCase()}
           </Button>
           <Button
@@ -67,9 +73,7 @@ export const LoginScreen = () => {
             _text={{color: 'primary.main'}}
             size="lg"
             onPress={onPress('microsoft')}
-            startIcon={
-              <MicrosoftLogo />
-            }>
+            startIcon={<MicrosoftLogo />}>
             {t('account.microsoft_login').toUpperCase()}
           </Button>
           <Button
