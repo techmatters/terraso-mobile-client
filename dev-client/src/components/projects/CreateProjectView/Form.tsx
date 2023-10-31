@@ -11,36 +11,48 @@ import {
   PROJECT_NAME_MIN_LENGTH,
 } from 'terraso-mobile-client/constants';
 import {TFunction} from 'i18next';
+import pick from 'lodash/fp/pick';
 
-export const projectValidationSchema = (t: TFunction) =>
-  yup.object().shape({
-    name: yup
-      .string()
-      .min(
-        PROJECT_NAME_MIN_LENGTH,
-        t('projects.form.name_min_length_error', {
-          min: PROJECT_NAME_MIN_LENGTH,
-        }),
-      )
-      .max(
-        PROJECT_NAME_MAX_LENGTH,
-        t('projects.form.name_max_length_error', {
-          max: PROJECT_NAME_MAX_LENGTH,
-        }),
-      )
-      .required(
-        t('projects.form.name_min_length_error', {
-          min: PROJECT_NAME_MIN_LENGTH,
-        }),
-      ),
-    description: yup.string().max(
-      PROJECT_DESCRIPTION_MAX_LENGTH,
-      t('projects.form.description_max_length_error', {
-        max: PROJECT_DESCRIPTION_MAX_LENGTH,
+export const projectValidationFields = (t: TFunction) => ({
+  name: yup
+    .string()
+    .min(
+      PROJECT_NAME_MIN_LENGTH,
+      t('projects.form.name_min_length_error', {
+        min: PROJECT_NAME_MIN_LENGTH,
+      }),
+    )
+    .max(
+      PROJECT_NAME_MAX_LENGTH,
+      t('projects.form.name_max_length_error', {
+        max: PROJECT_NAME_MAX_LENGTH,
+      }),
+    )
+    .required(
+      t('projects.form.name_min_length_error', {
+        min: PROJECT_NAME_MIN_LENGTH,
       }),
     ),
-    privacy: yup.string().oneOf(['PRIVATE', 'PUBLIC']).required(),
-  });
+  description: yup.string().max(
+    PROJECT_DESCRIPTION_MAX_LENGTH,
+    t('projects.form.description_max_length_error', {
+      max: PROJECT_DESCRIPTION_MAX_LENGTH,
+    }),
+  ),
+  privacy: yup.string().oneOf(['PRIVATE', 'PUBLIC']).required(),
+});
+
+export const projectValidationSchema = (t: TFunction) =>
+  yup.object().shape(projectValidationFields(t));
+
+export const editProjectValidationSchema = (t: TFunction) => {
+  const fullSchema = projectValidationSchema(t);
+  const selectedFields = pick(fullSchema, ['name', 'description']);
+  const editFields = {
+    measurementUnits: yup.string().oneOf(['METRIC', 'IMPERIAL']),
+  };
+  return yup.object().shape({...selectedFields, ...editFields});
+};
 
 export type ProjectFormValues = {
   name: string;

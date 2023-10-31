@@ -22,6 +22,7 @@
     "@rnmapbox/maps": "^10.0.15",
     "formik": "^2.4.5",
     "i18next": "^23.6.0",
+    "lodash": "^4.17.21",
     "native-base": "^3.4.28",
     "react": "18.2.0",
     "react-i18next": "^13.3.1",
