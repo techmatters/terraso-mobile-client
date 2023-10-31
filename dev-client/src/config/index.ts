@@ -49,8 +49,11 @@ type AppConfig = {
   mapboxAccessToken: string;
 };
 
-var googleClientId = '';
-var googleRedirectURI = '';
+let googleClientId = '';
+let googleRedirectURI = '';
+let appleRedirectURI = '';
+let microsoftRedirectURI = '';
+
 if (Platform.OS === 'ios') {
   googleClientId = Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '';
   googleRedirectURI =
@@ -68,8 +71,8 @@ if (Platform.OS === 'ios') {
     )}/` ?? '';
 }
 
-appleClientId = Config.APPLE_OAUTH_MOBILE_CLIENT_ID ?? '';
-microsoftClientId = Config.MICROSOFT_OAUTH_CLIENT_ID ?? '';
+let appleClientId = Config.APPLE_OAUTH_MOBILE_CLIENT_ID ?? '';
+let microsoftClientId = Config.MICROSOFT_OAUTH_CLIENT_ID ?? '';
 
 if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
   throw new Error('Config setting PUBLIC_MAPBOX_TOKEN not set');
