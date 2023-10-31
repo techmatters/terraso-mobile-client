@@ -51,8 +51,14 @@ type AppConfig = {
 
 let googleClientId = '';
 let googleRedirectURI = '';
+
+const appleClientId = Config.APPLE_OAUTH_MOBILE_CLIENT_ID ?? '';
 let appleRedirectURI = '';
+
+const microsoftClientId = Config.MICROSOFT_OAUTH_CLIENT_ID ?? '';
 let microsoftRedirectURI = '';
+
+const microsoftSignatureHash = Config.MICROSOFT_SIGNATURE_HASH ?? '';
 
 if (Platform.OS === 'ios') {
   googleClientId = Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '';
@@ -66,13 +72,9 @@ if (Platform.OS === 'ios') {
   googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
   appleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect` ?? '';
   microsoftRedirectURI =
-    `${PACKAGE_NAME}://msauth/${encodeURIComponent(
-      Config.MICROSOFT_SIGNATURE_HASH,
-    )}/` ?? '';
+    `${PACKAGE_NAME}://msauth/${encodeURIComponent(microsoftSignatureHash)}/` ??
+    '';
 }
-
-let appleClientId = Config.APPLE_OAUTH_MOBILE_CLIENT_ID ?? '';
-let microsoftClientId = Config.MICROSOFT_OAUTH_CLIENT_ID ?? '';
 
 if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
   throw new Error('Config setting PUBLIC_MAPBOX_TOKEN not set');
