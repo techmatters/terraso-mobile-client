@@ -109,7 +109,7 @@ export const EditForm = ({
         <>
           {SharedFormComponents(false, t)}
           <FormRadioGroup
-            mt="15px"
+            label={t('projects.settings.measurement_units')}
             name="measurementUnits"
             values={['IMPERIAL', 'METRIC']}
             renderRadio={value => (

@@ -150,7 +150,8 @@
       "delete": "Delete this project",
       "delete_button": "Delete",
       "delete_button_prompt": "Delete Project?",
-      "delete_description": "This will permanently delete the project’s data, as well as all of its sites and site data. This cannot be undone.\n\nAlternatively, project managers can transfer the sites out of this project to retain their data. "
+      "delete_description": "This will permanently delete the project’s data, as well as all of its sites and site data. This cannot be undone.\n\nAlternatively, project managers can transfer the sites out of this project to retain their data. ",
+      "measurement_units": "Units of Measurement"
     },
     "sites": {
       "empty": "This project has no sites yet.\n\nYou can transfer existing LandPKS sites to this project, or use the map on the Home screen to create new sites to add to this project.",
