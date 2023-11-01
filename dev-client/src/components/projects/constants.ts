@@ -1,5 +1,3 @@
-import {ProjectPrivacy} from 'terraso-mobile-client/types';
-
 export const enum TabRoutes {
   INPUTS = 'Inputs',
   TEAM = 'Team',

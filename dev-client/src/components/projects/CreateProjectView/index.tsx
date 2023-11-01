@@ -9,13 +9,21 @@ import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
+import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
 
 export default function CreateProjectView() {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const onSubmit = async (values: ProjectFormValues) => {
-    const {payload} = await dispatch(addProject(values));
+    const {payload} = await dispatch(
+      addProject({
+        ...values,
+        // select default measurement units for now
+        // TODO: Make this customizable depending on region
+        measurementUnits: PROJECT_DEFAULT_MEASUREMENT_UNITS,
+      }),
+    );
     if (payload !== undefined && 'project' in payload) {
       navigation.replace('PROJECT_VIEW', {projectId: payload.project.id});
     }

@@ -13,7 +13,6 @@ export default function IconLink({
   children,
   iconName,
   underlined,
-  onPress,
   ...props
 }: Props) {
   return (

@@ -68,10 +68,6 @@ type Props = {
   editForm?: boolean;
 };
 
-type SharedOptions = {
-  showPlaceholders: boolean;
-};
-
 const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
   return [
     <FormInput
