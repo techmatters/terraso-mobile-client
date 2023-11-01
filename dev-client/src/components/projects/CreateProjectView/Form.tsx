@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import ErrorMessage from 'terraso-mobile-client/components/common/ErrorMessage';
 import * as yup from 'yup';
 import {
+  MEASUREMENT_UNITS,
   PROJECT_DESCRIPTION_MAX_LENGTH,
   PROJECT_NAME_MAX_LENGTH,
   PROJECT_NAME_MIN_LENGTH,
@@ -53,7 +54,7 @@ export const editProjectValidationSchema = (t: TFunction) => {
   const fullSchema = projectValidationSchema(t);
   return fullSchema.pick(['name', 'description']).concat(
     yup.object().shape({
-      measurementUnits: yup.string().oneOf(['METRIC', 'IMPERIAL']),
+      measurementUnits: yup.string().oneOf(MEASUREMENT_UNITS),
     }),
   );
 };
@@ -111,7 +112,7 @@ export const EditForm = ({
           <FormRadioGroup
             label={t('projects.settings.measurement_units')}
             name="measurementUnits"
-            values={['IMPERIAL', 'METRIC']}
+            values={MEASUREMENT_UNITS}
             renderRadio={value => (
               <Radio value={value} key={value}>
                 {t('general.measurement_units.' + value)}
