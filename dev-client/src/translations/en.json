@@ -175,7 +175,7 @@
     },
     "add": {
       "name": "Project Name",
-      "description": "Project Description (optional)"
+      "description": "Project Description"
     },
     "add_user": {
       "heading": "Add Team Members",
@@ -240,7 +240,7 @@
       "IMPERIAL": "Imperial"
     },
     "cancel": "Cancel",
-    "add": "ADD",
+    "add": "Add",
     "submit": "submit"
   },
   "screens": {
