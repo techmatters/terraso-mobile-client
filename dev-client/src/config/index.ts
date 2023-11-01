@@ -52,8 +52,8 @@ type AppConfig = {
 let googleClientId = '';
 let googleRedirectURI = '';
 
-const appleClientId = Config.APPLE_OAUTH_MOBILE_CLIENT_ID ?? '';
-let appleRedirectURI = '';
+const appleClientId = Config.APPLE_OAUTH_CLIENT_ID ?? '';
+let appleRedirectURI = Config.APPLE_OAUTH_REDIRECT_URI ?? '';
 
 const microsoftClientId = Config.MICROSOFT_OAUTH_CLIENT_ID ?? '';
 let microsoftRedirectURI = '';
@@ -64,13 +64,10 @@ if (Platform.OS === 'ios') {
   googleClientId = Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '';
   googleRedirectURI =
     `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
-  appleRedirectURI =
-    `${Config.APPLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
   microsoftRedirectURI = `msauth.${PACKAGE_NAME}://auth/` ?? '';
 } else if (Platform.OS === 'android') {
   googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
   googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
-  appleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect` ?? '';
   microsoftRedirectURI =
     `${PACKAGE_NAME}://msauth/${encodeURIComponent(microsoftSignatureHash)}/` ??
     '';
