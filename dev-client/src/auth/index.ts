@@ -17,7 +17,7 @@ const appleConfig = {
   issuer: 'https://appleid.apple.com',
   clientId: APP_CONFIG.appleClientId,
   redirectUrl: APP_CONFIG.appleRedirectURI,
-  scopes: ['openid', 'profile', 'email'],
+  scopes: ['name', 'email'],
 };
 
 /*
