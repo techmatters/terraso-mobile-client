@@ -93,9 +93,9 @@
       "no_matches": "No sites match the current search and filter options."
     },
     "role": {
-      "MANAGER": "Manager",
-      "CONTRIBUTOR": "Contributor",
-      "VIEWER": "Viewer"
+      "manager": "Manager",
+      "contributor": "Contributor",
+      "viewer": "Viewer"
     },
     "tabs": {
       "SITE": "Site",

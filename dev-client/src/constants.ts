@@ -13,3 +13,4 @@ export const PROJECT_NAME_MIN_LENGTH = 3;
 export const PROJECT_DESCRIPTION_MAX_LENGTH = 240;
 export const BOTTOM_BAR_SIZE = '10%';
 export const FORM_LABEL_MAX = 10;
+export const USER_ROLES = ['viewer', 'contributor', 'manager'];
