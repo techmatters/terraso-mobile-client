@@ -5,11 +5,14 @@ import {
   MaterialCommunityIcons,
 } from 'terraso-mobile-client/components/common/Icons';
 import {createContext, useCallback, useContext, useState} from 'react';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StatusBar, View, LayoutChangeEvent} from 'react-native';
+import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
+import {signOut} from 'terraso-client-shared/account/accountSlice';
 
 const HeaderHeightContext = createContext<number | undefined>(undefined);
 export const useHeaderHeight = () => useContext(HeaderHeightContext);
@@ -66,6 +69,8 @@ export const AppBar = ({
 export const BottomNavigation = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const hasToken = useSelector(state => state.account.hasToken);
 
   const onHome = useCallback(() => navigation.navigate('HOME'), [navigation]);
 
@@ -73,6 +78,15 @@ export const BottomNavigation = () => {
     () => navigation.navigate('PROJECT_LIST'),
     [navigation],
   );
+
+  const onLogout = useCallback(() => {
+    dispatch(signOut());
+    if (!hasToken) {
+      navigation.navigate('LOGIN');
+    } else {
+      console.warn('token is still here');
+    }
+  }, [hasToken, navigation, dispatch]);
 
   return (
     <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
@@ -90,6 +104,19 @@ export const BottomNavigation = () => {
       <BottomNavIconButton
         name="settings"
         label={t('bottom_navigation.settings')}
+      />
+      <ConfirmModal
+        trigger={onOpen => (
+          <BottomNavIconButton
+            name="logout"
+            label={t('bottom_navigation.sign_out')}
+            onPress={onOpen}
+          />
+        )}
+        title="Sign out"
+        body="Sign out of Terraso?"
+        actionName="Sign out"
+        handleConfirm={onLogout}
       />
     </Row>
   );
