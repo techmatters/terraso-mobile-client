@@ -23,13 +23,14 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>org.terraso.landpks</string>
-		</dict>
-		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>org.terraso.landpks</string>
+				<string>msauth.org.terraso.landpks</string>
 			</array>
 		</dict>
 	</array>
@@ -42,7 +43,13 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
-		<dict/>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Terraso LandPKS uses your location to create sites.</string>

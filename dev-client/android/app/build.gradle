@@ -101,9 +101,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 50
         versionName '1.0.50'
-        manifestPlaceholders = [
-            appAuthRedirectScheme: "org.terraso.landpks"
-        ]
     }
     splits {
         abi {
@@ -169,14 +166,14 @@ dependencies {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
     }
 
-    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
+    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_FRESCO_VERSION}")
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
     }
 
-    implementation 'com.mapbox.maps:android:10.12.1'
+    implementation 'com.mapbox.maps:android:10.16.1'
 }
 
 class Version {
