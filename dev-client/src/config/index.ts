@@ -4,8 +4,15 @@ import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
 import {PACKAGE_NAME} from 'terraso-mobile-client/constants';
 
-const terrasoAPIURL =
-  Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
+let terrasoAPIURL;
+if (Platform.OS === 'ios') {
+  terrasoAPIURL = Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
+} else if (Platform.OS === 'android') {
+  terrasoAPIURL =
+    Config.TERRASO_BACKEND_ANDROID ??
+    Config.TERRASO_BACKEND ??
+    'https://api.staging.terraso.net';
+}
 
 const MMKV = new MMKVLoader().withEncryption().initialize();
 
@@ -35,18 +42,35 @@ type AppConfig = {
   packageName: string;
   googleClientId: string;
   googleRedirectURI: string;
+  appleClientId: string;
+  appleRedirectURI: string;
+  microsoftClientId: string;
+  microsoftRedirectURI: string;
   mapboxAccessToken: string;
 };
 
-var googleClientId = '';
-var googleRedirectURI = '';
+let googleClientId = '';
+let googleRedirectURI = '';
+
+const appleClientId = Config.APPLE_OAUTH_CLIENT_ID ?? '';
+let appleRedirectURI = Config.APPLE_OAUTH_REDIRECT_URI ?? '';
+
+const microsoftClientId = Config.MICROSOFT_OAUTH_CLIENT_ID ?? '';
+let microsoftRedirectURI = '';
+
+const microsoftSignatureHash = Config.MICROSOFT_SIGNATURE_HASH ?? '';
+
 if (Platform.OS === 'ios') {
   googleClientId = Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '';
   googleRedirectURI =
     `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
+  microsoftRedirectURI = `msauth.${PACKAGE_NAME}://auth/` ?? '';
 } else if (Platform.OS === 'android') {
   googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
   googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
+  microsoftRedirectURI =
+    `${PACKAGE_NAME}://msauth/${encodeURIComponent(microsoftSignatureHash)}/` ??
+    '';
 }
 
 if (Config.PUBLIC_MAPBOX_TOKEN === undefined) {
@@ -57,5 +81,13 @@ export const APP_CONFIG: AppConfig = {
   packageName: PACKAGE_NAME,
   googleClientId: googleClientId,
   googleRedirectURI: googleRedirectURI,
+  appleClientId: appleClientId,
+  appleRedirectURI: appleRedirectURI,
+  microsoftClientId: microsoftClientId,
+  microsoftRedirectURI: microsoftRedirectURI,
   mapboxAccessToken: Config.PUBLIC_MAPBOX_TOKEN,
 };
+
+// to logout
+// removeToken (MMKV)
+// make backend call to invalidate session
