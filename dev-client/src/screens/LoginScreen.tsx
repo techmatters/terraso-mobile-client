@@ -5,10 +5,10 @@ import {useEffect, useCallback} from 'react';
 import {auth} from 'terraso-mobile-client/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
-import {
-  Icon,
-  MaterialCommunityIcons,
-} from 'terraso-mobile-client/components/common/Icons';
+// import {
+//   Icon,
+//   MaterialCommunityIcons,
+// } from 'terraso-mobile-client/components/common/Icons';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
