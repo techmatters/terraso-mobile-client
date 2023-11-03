@@ -48,11 +48,14 @@
   "devDependencies": {
     "@babel/core": "^7.23.2",
     "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
     "@babel/runtime": "^7.23.2",
     "@react-native-community/eslint-config": "^3.2.0",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^12.3.2",
     "@tsconfig/react-native": "^3.0.2",
     "@types/base-64": "^1.0.1",
-    "@types/jest": "^29.5.6",
+    "@types/jest": "^29.5.7",
     "@types/react": "^18.2.33",
     "@types/react-native-vector-icons": "^6.4.16",
     "@types/react-test-renderer": "^18.0.5",
@@ -70,6 +73,9 @@
     "typescript": "^5.2.2"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
+    ]
   }
 }
