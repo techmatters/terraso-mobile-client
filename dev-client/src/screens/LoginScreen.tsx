@@ -76,6 +76,7 @@ export const LoginScreen = () => {
             startIcon={<MicrosoftLogo />}>
             {t('account.microsoft_login').toUpperCase()}
           </Button>
+          {/*
           <Button
             bgColor="primary.contrast"
             _text={{color: 'primary.main'}}
@@ -90,6 +91,7 @@ export const LoginScreen = () => {
             }>
             {t('account.apple_login').toUpperCase()}
           </Button>
+          */}
         </Button.Group>
       </Column>
       <Box flexGrow={3} />
