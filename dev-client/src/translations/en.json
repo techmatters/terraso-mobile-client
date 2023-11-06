@@ -89,7 +89,10 @@
     "notes": {
       "add_note_label": "ADD NOTE",
       "title": "Site Notes",
-      "add_title": "Site Note"
+      "add_title": "Site Note",
+      "done_button": "DONE",
+      "delete_button": "DELETE",
+      "note_by": "by"
     },
     "search": {
       "placeholder": "Search sites",

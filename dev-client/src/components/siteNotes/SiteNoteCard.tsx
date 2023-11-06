@@ -9,14 +9,17 @@ import {SiteNote} from 'terraso-client-shared/site/siteSlice';
 
 type Props = {
   note: SiteNote;
+  siteId: string;
 };
 
-export const SiteNoteCard = ({note}: Props) => {
+export const SiteNoteCard = ({note, siteId}: Props) => {
+  const {t} = useTranslation();
+
   return (
     <Card key={note.id} alignItems="flex-start" shadow={0} mb={3} ml={4} mr={4}>
       <HStack>
         <Text italic>
-          {formatDate(note.createdAt)} by {note.authorFirstName}{' '}
+          {formatDate(note.createdAt)} {t('site.notes.note_by')} {note.authorFirstName}{' '}
           {note.authorLastName}
         </Text>
         <Spacer />

@@ -1,9 +1,9 @@
 import {
   Icon as NativeIcon,
   IconButton as NativeIconButton,
-  Center,
   Text,
   Box,
+  HStack
 } from 'native-base';
 import React from 'react';
 import {Pressable} from 'react-native';
@@ -19,9 +19,10 @@ export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
   as?: any;
   name: string;
   label?: string;
+  textColor?: string;
 };
 export const IconButton = React.forwardRef(
-  ({as, name, label, ...props}: IconButtonProps, ref: React.Ref<unknown>) => {
+  ({as, name, label, textColor, ...props}: IconButtonProps, ref: React.Ref<unknown>) => {
     const icon = (
       <NativeIconButton
         ref={ref}
@@ -35,12 +36,12 @@ export const IconButton = React.forwardRef(
     return (
       <Pressable onPress={props.onPress}>
         <Box p="1">
-          {icon}
-          <Center>
-            <Text color="primary.contrast" fontSize="xs">
+          <HStack>
+            {icon}
+            <Text color={textColor || "primary.contrast"} fontSize="sm" pl={1}>
               {label}
             </Text>
-          </Center>
+          </HStack>
         </Box>
       </Pressable>
     );

@@ -1,4 +1,4 @@
-import {Button, Heading, HStack, Spacer} from 'native-base';
+import {Button, Heading, HStack, Spacer, Box} from 'native-base';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
@@ -12,6 +12,7 @@ import {
   deleteSiteNote,
   SiteNote,
 } from 'terraso-client-shared/site/siteSlice';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 
 type Props = {
   note: SiteNote;
@@ -77,16 +78,25 @@ export const EditSiteNoteModal = ({note}: Props) => {
             <Heading variant="h6">{t('site.notes.add_title')}</Heading>
             <SiteNoteForm {...formikProps} />
             <HStack>
-              <Button
-                onPress={() => {
-                  handleDelete(note);
-                }}
-                isDisabled={isSubmitting}>
-                Delete
-              </Button>
               <Spacer />
+              <Box pt={1} pr={5}>
+                <IconButton
+                  p={0}
+                  name="delete"
+                  label={t('site.notes.delete_button')}
+                  textColor="red.700"
+                  _icon={{
+                    color: 'red.700',
+                    size: '5',
+                  }}
+                  isDisabled={isSubmitting}
+                  onPress={() => {
+                    handleDelete(note);
+                  }}
+                />
+              </Box>
               <Button onPress={handleSubmit} isDisabled={isSubmitting}>
-                Submit
+                {t('site.notes.done_button')}
               </Button>
             </HStack>
           </>
