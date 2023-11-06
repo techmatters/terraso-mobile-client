@@ -92,7 +92,11 @@
       "add_title": "Site Note",
       "done_button": "DONE",
       "delete_button": "DELETE",
-      "note_by": "by"
+      "note_by": "by",
+      "confirm_removal_title": "Delete note?",
+      "confirm_removal_body": "This action cannot be undone.",
+      "confirm_removal_action": "Delete",
+      "confirm_removal_cancel": "Cancel",
     },
     "search": {
       "placeholder": "Search sites",

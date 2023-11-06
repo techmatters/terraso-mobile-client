@@ -1,4 +1,4 @@
-import {Button, Heading} from 'native-base';
+import {Button, Heading, HStack, Spacer} from 'native-base';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'terraso-mobile-client/model/store';
@@ -64,13 +64,12 @@ export const AddSiteNoteModal = ({siteId}: Props) => {
           <>
             <Heading variant="h6">{t('site.notes.add_title')}</Heading>
             <SiteNoteForm {...formikProps} />
-            <Button
-              onPress={() => {
-                handleSubmit();
-              }}
-              isDisabled={isSubmitting}>
-              Submit
-            </Button>
+            <HStack>
+              <Spacer />
+              <Button onPress={handleSubmit} isDisabled={isSubmitting}>
+                {t('site.notes.done_button')}
+              </Button>
+            </HStack>
           </>
         );
       }}

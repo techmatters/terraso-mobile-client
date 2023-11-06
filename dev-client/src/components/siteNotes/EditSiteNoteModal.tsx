@@ -13,6 +13,7 @@ import {
   SiteNote,
 } from 'terraso-client-shared/site/siteSlice';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
+import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 
 type Props = {
   note: SiteNote;
@@ -79,22 +80,30 @@ export const EditSiteNoteModal = ({note}: Props) => {
             <SiteNoteForm {...formikProps} />
             <HStack>
               <Spacer />
-              <Box pt={1} pr={5}>
-                <IconButton
-                  p={0}
-                  name="delete"
-                  label={t('site.notes.delete_button')}
-                  textColor="red.700"
-                  _icon={{
-                    color: 'red.700',
-                    size: '5',
-                  }}
-                  isDisabled={isSubmitting}
-                  onPress={() => {
-                    handleDelete(note);
-                  }}
-                />
-              </Box>
+              <ConfirmModal
+                trigger={onOpen => (
+                  <Box pt={1} pr={5}>
+                    <IconButton
+                      p={0}
+                      name="delete"
+                      label={t('site.notes.delete_button')}
+                      textColor="red.700"
+                      _icon={{
+                        color: 'red.700',
+                        size: '5',
+                      }}
+                      isDisabled={isSubmitting}
+                      onPress={onOpen}
+                    />
+                  </Box>
+                )}
+                title={t('site.notes.confirm_removal_title')}
+                body={t('site.notes.confirm_removal_body')}
+                actionName={t('site.notes.confirm_removal_action')}
+                handleConfirm={() => {
+                  handleDelete(note);
+                }}
+              />
               <Button onPress={handleSubmit} isDisabled={isSubmitting}>
                 {t('site.notes.done_button')}
               </Button>
