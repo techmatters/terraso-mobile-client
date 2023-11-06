@@ -87,7 +87,3 @@ export const APP_CONFIG: AppConfig = {
   microsoftRedirectURI: microsoftRedirectURI,
   mapboxAccessToken: Config.PUBLIC_MAPBOX_TOKEN,
 };
-
-// to logout
-// removeToken (MMKV)
-// make backend call to invalidate session

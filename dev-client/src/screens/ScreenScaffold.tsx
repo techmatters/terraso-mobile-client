@@ -4,12 +4,21 @@ import {
   IconButtonProps,
   MaterialCommunityIcons,
 } from 'terraso-mobile-client/components/common/Icons';
-import {createContext, useCallback, useContext, useState} from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StatusBar, View, LayoutChangeEvent} from 'react-native';
+import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
+import {signOut} from 'terraso-client-shared/account/accountSlice';
 
 const HeaderHeightContext = createContext<number | undefined>(undefined);
 export const useHeaderHeight = () => useContext(HeaderHeightContext);
@@ -66,6 +75,10 @@ export const AppBar = ({
 export const BottomNavigation = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const loggedIn = useSelector(
+    state => state.account.currentUser.data !== null,
+  );
 
   const onHome = useCallback(() => navigation.navigate('HOME'), [navigation]);
 
@@ -73,6 +86,16 @@ export const BottomNavigation = () => {
     () => navigation.navigate('PROJECT_LIST'),
     [navigation],
   );
+
+  const onLogout = useCallback(() => {
+    dispatch(signOut());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!loggedIn) {
+      navigation.navigate('LOGIN');
+    }
+  }, [loggedIn, navigation]);
 
   return (
     <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
@@ -90,6 +113,19 @@ export const BottomNavigation = () => {
       <BottomNavIconButton
         name="settings"
         label={t('bottom_navigation.settings')}
+      />
+      <ConfirmModal
+        trigger={onOpen => (
+          <BottomNavIconButton
+            name="logout"
+            label={t('bottom_navigation.sign_out')}
+            onPress={onOpen}
+          />
+        )}
+        title={t('logout.confirm_title')}
+        body={t('logout.confirm_body')}
+        actionName={t('logout.confirm_action')}
+        handleConfirm={onLogout}
       />
     </Row>
   );

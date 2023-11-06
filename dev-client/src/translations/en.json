@@ -253,6 +253,11 @@
     "subtitle": "Discover the potential of your land",
     "description": "LandPKS is a Terraso soil science tool."
   },
+  "logout": {
+    "confirm_title": "Sign out",
+    "confirm_body": "Sign out of Terraso?",
+    "confirm_action": "Sign out"
+  },
   "account": {
       "google_login": "Sign in with Google",
       "apple_login": "Sign in with Apple",
@@ -272,7 +277,8 @@
   "bottom_navigation": {
     "home": "Home",
     "projects": "Projects",
-    "settings": "Settings"
+    "settings": "Settings",
+    "sign_out": "Sign Out"
   },
   "geo": {
     "latitude": {
