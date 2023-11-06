@@ -4,7 +4,13 @@ import {
   IconButtonProps,
   MaterialCommunityIcons,
 } from 'terraso-mobile-client/components/common/Icons';
-import {createContext, useCallback, useContext, useState} from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
@@ -70,7 +76,9 @@ export const BottomNavigation = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const hasToken = useSelector(state => state.account.hasToken);
+  const loggedIn = useSelector(
+    state => state.account.currentUser.data !== null,
+  );
 
   const onHome = useCallback(() => navigation.navigate('HOME'), [navigation]);
 
@@ -81,12 +89,13 @@ export const BottomNavigation = () => {
 
   const onLogout = useCallback(() => {
     dispatch(signOut());
-    if (!hasToken) {
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!loggedIn) {
       navigation.navigate('LOGIN');
-    } else {
-      console.warn('token is still here');
     }
-  }, [hasToken, navigation, dispatch]);
+  }, [loggedIn, navigation]);
 
   return (
     <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
