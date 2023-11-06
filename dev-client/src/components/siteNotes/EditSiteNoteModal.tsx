@@ -12,7 +12,6 @@ import {
   deleteSiteNote,
   SiteNote,
 } from 'terraso-client-shared/site/siteSlice';
-import {Keyboard} from 'react-native';
 
 type Props = {
   note: SiteNote;
