@@ -7,6 +7,7 @@ import {useModal} from 'terraso-mobile-client/components/common/Modal';
 import * as yup from 'yup';
 import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {addSiteNote} from 'terraso-client-shared/site/siteSlice';
+import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 
 type Props = {
   siteId: string;
@@ -18,10 +19,11 @@ export const AddSiteNoteModal = ({siteId}: Props) => {
   const dispatch = useDispatch();
 
   const notesFormSchema = yup.object().shape({
-    content: yup
-      .string()
-      .required('Note is required')
-      .min(2, 'Note is too short'),
+    content: yup.string().required(
+      t('site.notes.min_length_error', {
+        min: SITE_NOTE_MIN_LENGTH,
+      }),
+    ),
   });
 
   const handleAddNote = async (content: string) => {
