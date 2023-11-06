@@ -15,6 +15,7 @@ import {
 import {LocationDashboardView} from 'terraso-mobile-client/components/sites/LocationDashboardView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {SiteNotesScreen} from 'terraso-mobile-client/components/siteNotes/SiteNotesScreen';
 import {SlopeScreen} from 'terraso-mobile-client/components/dataInputs/SlopeScreen';
 import {SoilScreen} from 'terraso-mobile-client/components/dataInputs/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/screens/TabBar';
@@ -28,6 +29,7 @@ const tabDefinitions = {
   SITE: LocationDashboardView,
   SLOPE: SlopeScreen,
   SOIL: SoilScreen,
+  NOTES: SiteNotesScreen,
 } satisfies ScreenDefinitions;
 type TabsParamList = ParamList<typeof tabDefinitions>;
 type ScreenName = keyof TabsParamList;

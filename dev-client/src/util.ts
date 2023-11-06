@@ -2,6 +2,11 @@ export const formatName = (firstName: string, lastName?: string) => {
   return [lastName, firstName].filter(Boolean).join(', ');
 };
 
+export const formatDate = (dateString: string) =>
+  new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'short',
+  }).format(new Date(dateString));
+
 export const removeKeys = (a: any, b: any) => {
   const remove = [a, b];
   let currA, currB;

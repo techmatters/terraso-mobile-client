@@ -86,6 +86,11 @@
         "bedrock_label": "BEDROCK"
       }
     },
+    "notes": {
+      "add_note_label": "ADD NOTE",
+      "title": "Site Notes",
+      "add_title": "Site Note"
+    },
     "search": {
       "placeholder": "Search sites",
       "filter_projects": "Filter sites by project:",
@@ -100,7 +105,8 @@
     "tabs": {
       "SITE": "Site",
       "SLOPE": "Slope",
-      "SOIL": "Soil"
+      "SOIL": "Soil",
+      "NOTES": "Notes"
     }
   },
   "projects": {
