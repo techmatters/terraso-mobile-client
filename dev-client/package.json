@@ -49,7 +49,7 @@
     "@babel/core": "^7.23.2",
     "@babel/preset-env": "^7.23.2",
     "@babel/runtime": "^7.23.2",
-    "@react-native-community/cli-doctor": "^11.3.9",
+    "@react-native-community/cli-doctor": "^12.0.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@tsconfig/react-native": "^3.0.2",
     "@types/base-64": "^1.0.1",
