@@ -67,10 +67,10 @@ export const Modal = forwardRef<ModalMethods, Props>(
             behavior="padding"
             keyboardVerticalOffset={100}>
             <NativeBaseModal.Content padding="18px">
-              <CardCloseButton onPress={onClose} />
               <ModalContext.Provider value={methods}>
                 {children}
               </ModalContext.Provider>
+              <CardCloseButton onPress={onClose} />
             </NativeBaseModal.Content>
           </KeyboardAvoidingView>
         </NativeBaseModal>
