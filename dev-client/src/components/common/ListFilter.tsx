@@ -1,57 +1,146 @@
-import {Input} from 'native-base';
-import {useCallback, useState} from 'react';
+import {Button, Input, Select} from 'native-base';
+import {useCallback, useMemo, useState} from 'react';
+import {Modal} from './Modal';
 
-type SearchOptions<ItemType> = {
-  key: keyof ItemType | ((item: ItemType) => string);
+type Getter<Item> = keyof Item | ((item: Item) => string);
+
+type InputFilterConfig<Item> = {
+  key: Getter<Item>;
+  placeholder: string;
 };
 
-type SearchConfigOptions<ItemType> = {
-  search: SearchOptions<ItemType>;
+type SelectFilterConfig<Item> = {
+  label: string;
+  key: keyof Item;
+  lookup: Record<string, string>;
+  choices: Record<string, string>;
 };
 
-export const useSearch = <ItemType,>(
-  {search}: SearchConfigOptions<ItemType>,
+export type SearchConfigOptions<Item> = {
+  inputFilter: InputFilterConfig<Item>;
+  selectFilters: Record<symbol, SelectFilterConfig<Item>>;
+};
+
+const getValue = <Item,>(item: Item, key: Getter<Item>) => {
+  if (!(key instanceof Function)) {
+    return String(item[key]);
+  }
+  return key(item);
+};
+
+export const useListFilter = <ItemType,>(
+  {inputFilter, selectFilters}: SearchConfigOptions<ItemType>,
   data: ItemType[],
 ) => {
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState(data);
+  const [selectFilterValues, setSelectFilterValues] = useState<
+    Record<symbol, string | null>
+  >(
+    Object.getOwnPropertySymbols(selectFilters || {}).reduce(
+      (x, y) => ({...x, [y]: null}),
+      {},
+    ),
+  );
 
-  let getValue: (item: ItemType) => string;
-  if (!(search.key instanceof Function)) {
-    getValue = (item: ItemType) => String(item[search.key as keyof ItemType]);
-  } else {
-    getValue = search.key;
-  }
+  const searchFiltered = useMemo(() => {
+    return data.filter(item => getValue(item, inputFilter.key).includes(query));
+  }, [query, data, getValue]);
 
-  const onChangeText = useCallback(
-    (text: string) => {
-      const newItems = data.filter(item => {
-        let value = getValue(item);
-        return value.includes(text);
+  const selectFiltered = useMemo(() => {
+    const ids = Object.getOwnPropertySymbols(selectFilters ?? {});
+    let result = searchFiltered;
+    for (const id of ids) {
+      const {key, lookup} = selectFilters[id];
+      result = result.filter(item => {
+        const value = lookup ? item[key] : lookup[key];
+        return value === selectFilterValues[id];
       });
-      setFilteredItems(newItems);
-      setQuery(text);
+    }
+    return result;
+  }, [searchFiltered, selectFilterValues]);
+
+  const selectFilterUpdate = useCallback(
+    (id: symbol) => (newValue: string) => {
+      setSelectFilterValues(state => {
+        return {...state, [id]: newValue};
+      });
     },
-    [setQuery, setFilteredItems, data, getValue],
+    [setSelectFilterValues],
   );
 
-  return {query, filteredItems, onChangeText};
+  const applyFilter = useCallback(() => {
+    setFilteredItems(selectFiltered);
+  }, [selectFiltered, setFilteredItems]);
+
+  return {query, filteredItems, selectFilterUpdate, setQuery, applyFilter};
 };
 
-type ListFilterProps = {
-  onChangeText: (text: string) => void;
-  query: string;
-  placeholder: string;
+type FilterModalProps<Item> = {
+  selectFilters: Record<symbol, SelectFilterConfig<Item>>;
+  selectFilterUpdate: (symbol: symbol) => (newValue: string) => void;
+  applyFilter: () => void;
 };
 
-const ListFilter = ({onChangeText, query, placeholder}: ListFilterProps) => {
+const FilterModalBody = <Item,>({
+  selectFilters,
+  selectFilterUpdate,
+  applyFilter,
+}: FilterModalProps<Item>) => {
+  const filters = useMemo(
+    () =>
+      Object.getOwnPropertySymbols(selectFilters).map(symbol => {
+        const config = selectFilters[symbol];
+        const options = Object.entries(config.choices).map(([value, label]) => (
+          <Select.Item value={value} label={label} key={value} />
+        ));
+        return (
+          <Select
+            onValueChange={selectFilterUpdate(symbol)}
+            key={String(symbol)}>
+            {options}
+          </Select>
+        );
+      }),
+    [selectFilters, selectFilterUpdate],
+  );
   return (
-    <Input
-      placeholder={placeholder}
-      onChangeText={onChangeText}
-      value={query}
-    />
+    <>
+      {filters}
+      <Button onPress={applyFilter}>Apply</Button>
+    </>
   );
+};
+
+type ListFilterProps<Item> = {
+  items: Item[];
+  options: SearchConfigOptions<Item>;
+  children: (value: {
+    filteredItems: Item[];
+    InputFilter: React.ReactNode;
+  }) => React.ReactNode;
+};
+
+const ListFilter = <Item,>({
+  items,
+  options,
+  children,
+}: ListFilterProps<Item>) => {
+  const {filteredItems, selectFilterUpdate, applyFilter, setQuery, query} =
+    useListFilter(options, items);
+  const InputFilter = (
+    <>
+      <Modal trigger={onOpen => <Button onPress={onOpen}>See Filters</Button>}>
+        <FilterModalBody
+          selectFilters={options.selectFilters}
+          selectFilterUpdate={selectFilterUpdate}
+          applyFilter={applyFilter}
+        />
+      </Modal>
+      <Input onChangeText={setQuery} value={query} />
+    </>
+  );
+  return children({filteredItems, InputFilter});
 };
 
 export default ListFilter;
