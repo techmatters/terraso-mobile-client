@@ -40,7 +40,7 @@ export const LoginScreen = () => {
     if (loggedIn) {
       navigation.replace('HOME');
     }
-  });
+  }, [loggedIn, navigation]);
 
   return (
     <Column bgColor="primary.main" alignItems="center" h="100%">
