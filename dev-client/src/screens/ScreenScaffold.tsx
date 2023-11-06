@@ -122,9 +122,9 @@ export const BottomNavigation = () => {
             onPress={onOpen}
           />
         )}
-        title="Sign out"
-        body="Sign out of Terraso?"
-        actionName="Sign out"
+        title={t('logout.confirm_title')}
+        body={t('logout.confirm_body')}
+        actionName={t('logout.confirm_action')}
         handleConfirm={onLogout}
       />
     </Row>
