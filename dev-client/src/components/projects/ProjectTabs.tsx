@@ -48,9 +48,6 @@ export default function ProjectTabs({project}: Props) {
         component={ProjectSettingsTab}
         initialParams={{
           projectId: project.id,
-          name: project.name,
-          description: project.description,
-          privacy: project.privacy,
           downloadLink: TEMP_DOWNLOAD_LINK,
         }}
       />
