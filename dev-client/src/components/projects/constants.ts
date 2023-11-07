@@ -1,5 +1,3 @@
-import {ProjectPrivacy} from 'terraso-mobile-client/types';
-
 export const enum TabRoutes {
   INPUTS = 'Inputs',
   TEAM = 'Team',
@@ -13,10 +11,7 @@ export type TabStackParamList = {
     projectId: string;
   };
   [TabRoutes.SETTINGS]: {
-    name: string;
-    description: string;
     projectId: string;
-    privacy: ProjectPrivacy;
     downloadLink: string;
   };
   [TabRoutes.SITES]: {
