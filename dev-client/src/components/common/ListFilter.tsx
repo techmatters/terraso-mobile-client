@@ -1,6 +1,6 @@
 import {Button, Input, Select} from 'native-base';
-import {useCallback, useMemo, useState} from 'react';
-import {Modal} from './Modal';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {Modal, ModalMethods} from './Modal';
 
 type Getter<Item> = keyof Item | ((item: Item) => string);
 
@@ -45,16 +45,20 @@ export const useListFilter = <ItemType,>(
 
   const selectFiltered = useMemo(() => {
     const ids = Object.getOwnPropertySymbols(selectFilters ?? {});
-    let result = filteredItems;
+    let result = data;
     for (const id of ids) {
+      if (selectFilterValues[id] === null) {
+        // select filter unset, do not apply
+        continue;
+      }
       const {key, lookup} = selectFilters![id];
       result = result.filter(item => {
-        const value = lookup ? item[key] : lookup[key];
+        const value = lookup ? lookup[String(item[key])] : item[key];
         return value === selectFilterValues[id];
       });
     }
     return result;
-  }, [filteredItems, selectFilterValues]);
+  }, [data, selectFilterValues]);
 
   const selectFilterUpdate = useCallback(
     (id: symbol) => (newValue: string) => {
@@ -70,10 +74,10 @@ export const useListFilter = <ItemType,>(
   }, [selectFiltered, setFilteredItems]);
 
   const searchFiltered = useMemo(() => {
-    return selectFiltered.filter(item =>
+    return filteredItems.filter(item =>
       getValue(item, inputFilter.key).includes(query),
     );
-  }, [query, selectFiltered, getValue]);
+  }, [query, filteredItems, getValue]);
 
   return {
     query,
@@ -108,6 +112,7 @@ const FilterModalBody = <Item,>({
             );
             return (
               <Select
+                testID="TEST"
                 onValueChange={selectFilterUpdate(symbol)}
                 key={String(symbol)}>
                 {options}
@@ -116,6 +121,7 @@ const FilterModalBody = <Item,>({
           }),
     [selectFilters, selectFilterUpdate],
   );
+
   return (
     <>
       {filters}
@@ -140,13 +146,21 @@ const ListFilter = <Item,>({
 }: ListFilterProps<Item>) => {
   const {filteredItems, selectFilterUpdate, applyFilter, setQuery, query} =
     useListFilter(options, items);
+  const modalRef = useRef<ModalMethods>(null);
+  const applyCallback = useCallback(() => {
+    applyFilter();
+    if (modalRef.current) {
+      modalRef.current.onClose();
+    }
+  }, [modalRef, applyFilter]);
   const InputFilter = (
     <>
-      <Modal trigger={onOpen => <Button onPress={onOpen}>See Filters</Button>}>
+      <Modal
+        trigger={onOpen => <Button onPress={onOpen}>Select filters</Button>}>
         <FilterModalBody
           selectFilters={options.selectFilters}
           selectFilterUpdate={selectFilterUpdate}
-          applyFilter={applyFilter}
+          applyFilter={applyCallback}
         />
       </Modal>
       <Input

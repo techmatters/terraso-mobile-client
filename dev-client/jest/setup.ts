@@ -43,3 +43,4 @@ setAPIConfig({
 // WARN  `new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.
 // Should look into why (probably some of our mocks?) and see if we can fix it
 global.console.warn = jest.fn();
+global.console.error = jest.fn();

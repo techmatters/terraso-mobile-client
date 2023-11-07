@@ -1,4 +1,10 @@
-import {render, screen, fireEvent} from '@testing-library/react-native';
+import {
+  act,
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react-native';
 import {FlatList, NativeBaseProvider, Text} from 'native-base';
 import ListFilter, {
   ListFilterProps,
@@ -75,7 +81,7 @@ test("Filter removes items that don't match query", () => {
   expect(screen.queryByText(sampleObjects[1].name)).toBeNull();
 });
 
-test.skip('Updating select filter removes items that do not match', () => {
+test('Updating select filter removes items that do not match', async () => {
   const role = Symbol('role');
 
   render(
@@ -102,19 +108,19 @@ test.skip('Updating select filter removes items that do not match', () => {
   const first = screen.getByText(sampleObjects[0].name);
   const second = screen.getByText(sampleObjects[1].name);
 
-  expect(first).not.toBeEmptyElement();
-  expect(second).not.toBeEmptyElement();
+  expect(first).not.toBeNull();
+  expect(second).not.toBeNull();
 
-  const filterIcon = screen.getByLabelText('Select filters');
+  const filterIcon = screen.getByText('Select filters');
   fireEvent.press(filterIcon);
 
-  const select = screen.getByRole('menu');
+  const select = screen.getByTestId('TEST', {includeHiddenElements: true});
   fireEvent.press(select);
   const managerBar = screen.getByText('Manager');
   fireEvent.press(managerBar);
   const applyButton = screen.getByText('Apply');
   fireEvent.press(applyButton);
 
-  expect(first).not.toBeEmptyElement();
-  expect(second).toBeEmptyElement();
+  expect(screen.queryByText(sampleObjects[0].name)).not.toBeNull();
+  expect(screen.queryByText(sampleObjects[1].name)).toBeNull();
 });
