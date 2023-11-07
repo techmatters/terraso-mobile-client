@@ -24,15 +24,6 @@ on:
         required: false
       APPLE_PRIVATE_KEY:
         required: false
-    env:
-      GOOGLE_OAUTH_IOS_CLIENT_ID:
-        required: false
-      GOOGLE_OAUTH_IOS_URI_SCHEME:
-        required: false
-      MICROSOFT_OAUTH_CLIENT_ID:
-        required: false
-      MICROSOFT_SIGNATURE_HASH:
-        required: false
 
 jobs:
   ios-build:
