@@ -1,18 +1,11 @@
-import {
-  Box,
-  Button,
-  Column,
-  Heading,
-  Row,
-  FlatList,
-} from 'native-base';
+import {useCallback} from 'react';
+import {Box, Button, Column, Heading, Row, FlatList} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
-import {Modal} from 'terraso-mobile-client/components/common/Modal';
 import SiteNote from 'terraso-client-shared/site/siteSlice';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {AddSiteNoteModal} from 'terraso-mobile-client/components/siteNotes/AddSiteNoteModal';
 import {SiteNoteCard} from 'terraso-mobile-client/components/siteNotes/SiteNoteCard';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 export type SiteNote = {
   id: string;
@@ -24,7 +17,12 @@ export type SiteNote = {
 
 export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
+  const navigation = useNavigation();
   const notes = useSelector(state => state.site.sites[siteId].notes);
+
+  const onAddNote = useCallback(() => {
+    navigation.navigate('ADD_SITE_NOTE', {siteId: siteId});
+  }, [navigation, siteId]);
 
   return (
     <BottomSheetModalProvider>
@@ -34,25 +32,21 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
         </Row>
         <Box height="16px" />
         <Box pl={4} pb={4} alignItems="flex-start">
-          <Modal
-            key={siteId}
-            trigger={onOpen => (
-              <Button
-                size="lg"
-                backgroundColor="primary.dark"
-                shadow={5}
-                onPress={onOpen}>
-                {t('site.notes.add_note_label')}
-              </Button>
-            )}>
-            <AddSiteNoteModal siteId={siteId} />
-          </Modal>
+          <Button
+            size="lg"
+            backgroundColor="primary.dark"
+            shadow={5}
+            onPress={onAddNote}>
+            {t('site.notes.add_note_label')}
+          </Button>
         </Box>
         <FlatList
           mb={130}
           data={Object.values(notes)}
           keyExtractor={note => note.id}
-          renderItem={({item: note}) => <SiteNoteCard siteId={siteId} note={note} />}
+          renderItem={({item: note}) => (
+            <SiteNoteCard siteId={siteId} note={note} />
+          )}
         />
       </Column>
     </BottomSheetModalProvider>
