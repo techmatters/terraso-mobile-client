@@ -6,6 +6,6 @@
       "terraso-mobile-client/*": ["./src/*"]
     }
   },
-  "include": ["src", "__tests__"],
+  "include": ["src", "__tests__", "jest"],
   "exclude": ["dist"]
 }

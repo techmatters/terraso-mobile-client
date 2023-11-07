@@ -43,13 +43,9 @@ export const useListFilter = <ItemType,>(
     ),
   );
 
-  const searchFiltered = useMemo(() => {
-    return data.filter(item => getValue(item, inputFilter.key).includes(query));
-  }, [query, data, getValue]);
-
   const selectFiltered = useMemo(() => {
     const ids = Object.getOwnPropertySymbols(selectFilters ?? {});
-    let result = searchFiltered;
+    let result = filteredItems;
     for (const id of ids) {
       const {key, lookup} = selectFilters![id];
       result = result.filter(item => {
@@ -58,7 +54,7 @@ export const useListFilter = <ItemType,>(
       });
     }
     return result;
-  }, [searchFiltered, selectFilterValues]);
+  }, [filteredItems, selectFilterValues]);
 
   const selectFilterUpdate = useCallback(
     (id: symbol) => (newValue: string) => {
@@ -73,7 +69,19 @@ export const useListFilter = <ItemType,>(
     setFilteredItems(selectFiltered);
   }, [selectFiltered, setFilteredItems]);
 
-  return {query, filteredItems, selectFilterUpdate, setQuery, applyFilter};
+  const searchFiltered = useMemo(() => {
+    return selectFiltered.filter(item =>
+      getValue(item, inputFilter.key).includes(query),
+    );
+  }, [query, selectFiltered, getValue]);
+
+  return {
+    query,
+    filteredItems: searchFiltered,
+    selectFilterUpdate,
+    setQuery,
+    applyFilter,
+  };
 };
 
 type FilterModalProps<Item> = {
@@ -141,7 +149,11 @@ const ListFilter = <Item,>({
           applyFilter={applyFilter}
         />
       </Modal>
-      <Input onChangeText={setQuery} value={query} />
+      <Input
+        onChangeText={setQuery}
+        value={query}
+        placeholder={options.inputFilter.placeholder}
+      />
     </>
   );
   return children({filteredItems, InputFilter});
