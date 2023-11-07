@@ -27,9 +27,7 @@ export const AddSiteNoteModal = ({siteId}: Props) => {
   });
 
   const handleAddNote = async (content: string) => {
-    console.log('handleAddNote');
     if (!content.trim()) {
-      console.log('note content is empty');
       return;
     }
 
@@ -40,11 +38,11 @@ export const AddSiteNoteModal = ({siteId}: Props) => {
       };
       const result = await dispatch(addSiteNote(siteNoteInput));
       if (result.payload && 'error' in result.payload) {
-        console.log(result.payload.error);
-        console.log(result.payload.parsedErrors);
+        console.error(result.payload.error);
+        console.error(result.payload.parsedErrors);
       }
     } catch (error) {
-      console.log('Failed to add note:', error);
+      console.error('Failed to add note:', error);
     } finally {
       onClose();
     }
@@ -55,10 +53,10 @@ export const AddSiteNoteModal = ({siteId}: Props) => {
       initialValues={{content: ''}}
       validationSchema={notesFormSchema}
       onSubmit={async (values, actions) => {
-        console.log('onSubmit');
         actions.setSubmitting(true);
-        await handleAddNote(values.content);
-        actions.setSubmitting(false);
+        await handleAddNote(values.content).then(() =>
+          actions.setSubmitting(false),
+        );
       }}>
       {formikProps => {
         const {handleSubmit, isSubmitting} = formikProps;

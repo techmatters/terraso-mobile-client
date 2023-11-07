@@ -97,7 +97,8 @@
       "confirm_removal_body": "This action cannot be undone.",
       "confirm_removal_action": "Delete",
       "confirm_removal_cancel": "Cancel",
-      "min_length_error": "Must be at least {{min}} characters"
+      "min_length_error": "Must be at least {{min}} characters",
+      "placeholder_text": "Start typing your note..."
     },
     "search": {
       "placeholder": "Search sites",

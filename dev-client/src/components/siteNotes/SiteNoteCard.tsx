@@ -19,8 +19,8 @@ export const SiteNoteCard = ({note, siteId}: Props) => {
     <Card key={note.id} alignItems="flex-start" shadow={0} mb={3} ml={4} mr={4}>
       <HStack>
         <Text italic>
-          {formatDate(note.createdAt)} {t('site.notes.note_by')} {note.authorFirstName}{' '}
-          {note.authorLastName}
+          {formatDate(note.createdAt)} {t('site.notes.note_by')}{' '}
+          {note.authorFirstName} {note.authorLastName}
         </Text>
         <Spacer />
         <Modal
