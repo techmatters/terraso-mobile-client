@@ -39,7 +39,9 @@ jobs:
         if: ${{ inputs.upload == 'true' }}
         working-directory: ./dev-client/android
         run: |
-          echo "GOOGLE_OAUTH_ANDROID_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}" >> .env
+          echo "GOOGLE_OAUTH_ANDROID_CLIENT_ID=${{ env.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}" >> .env
+          echo "MICROSOFT_OAUTH_CLIENT_ID=${{ env.MICROSOFT_OAUTH_CLIENT_ID }}" >> .env
+          echo "MICROSOFT_SIGNATURE_HASH=${{ env.MICROSOFT_SIGNATURE_HASH }}" >> .env
           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
 
       - name: Set up Node.js
