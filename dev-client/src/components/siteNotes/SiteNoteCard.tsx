@@ -1,11 +1,11 @@
+import {useCallback} from 'react';
 import {Text, HStack, Spacer} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {Modal} from 'terraso-mobile-client/components/common/Modal';
 import {Card} from 'terraso-mobile-client/components/common/Card';
 import {formatDate} from 'terraso-mobile-client/util';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
-import {EditSiteNoteModal} from 'terraso-mobile-client/components/siteNotes/EditSiteNoteModal';
 import {SiteNote} from 'terraso-client-shared/site/siteSlice';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = {
   note: SiteNote;
@@ -14,6 +14,11 @@ type Props = {
 
 export const SiteNoteCard = ({note, siteId}: Props) => {
   const {t} = useTranslation();
+  const navigation = useNavigation();
+
+  const onEditNote = useCallback(() => {
+    navigation.navigate('EDIT_SITE_NOTE', {note: note});
+  }, [navigation, note]);
 
   return (
     <Card key={note.id} alignItems="flex-start" shadow={0} mb={3} ml={4} mr={4}>
@@ -23,21 +28,15 @@ export const SiteNoteCard = ({note, siteId}: Props) => {
           {note.authorFirstName} {note.authorLastName}
         </Text>
         <Spacer />
-        <Modal
-          key={siteId}
-          trigger={onOpen => (
-            <IconButton
-              p={0}
-              name="edit"
-              _icon={{
-                color: 'grey.600',
-                size: '5',
-              }}
-              onPress={onOpen}
-            />
-          )}>
-          <EditSiteNoteModal note={note} />
-        </Modal>
+        <IconButton
+          p={0}
+          name="edit"
+          _icon={{
+            color: 'grey.600',
+            size: '5',
+          }}
+          onPress={onEditNote}
+        />
       </HStack>
       <Text pt={1} fontSize="md">
         {note.content}

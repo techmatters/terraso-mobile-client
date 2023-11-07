@@ -21,10 +21,8 @@ export const SiteNoteForm = () => {
           value={values.content}
           onChangeText={handleChange('content')}
           onBlur={handleBlur('content')}
-          autoCapitalize="none"
-          autoCorrect={false}
           multiline
-          numberOfLines={5}
+          numberOfLines={15}
           textAlignVertical="top"
         />
       </Box>
