@@ -1,4 +1,3 @@
-import '@testing-library/jest-native';
 import {render, screen, fireEvent} from '@testing-library/react-native';
 import {FlatList, NativeBaseProvider, Text} from 'native-base';
 import ListFilter, {
@@ -6,30 +5,15 @@ import ListFilter, {
 } from 'terraso-mobile-client/components/common/ListFilter';
 import {theme} from 'terraso-mobile-client/theme';
 
-// include this line for mocking react-native-gesture-handler
-import 'react-native-gesture-handler/jestSetup';
-
-// include this section and the NativeAnimatedHelper section for mocking react-native-reanimated
-jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
-
-  // The mock for `call` immediately calls the callback which is incorrect
-  // So we override it with a no-op
-  Reanimated.default.call = () => {};
-
-  return Reanimated;
+/* TODO: set up a custom jest environment that runs that code
+   before EVERY test
+   see https://jestjs.io/docs/configuration#testenvironment-string*/
+beforeEach(() => {
+  // Install the in-memory adapter
+  let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
+  mmkvMock.unmock(); // Cleanup if already mocked
+  mmkvMock.mock(); // Mock the storage
 });
-
-// Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
-
-jest.mock('@gorhom/bottom-sheet', () => 'BottomSheet');
-jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
-jest.mock(
-  'react-native-vector-icons/MaterialCommunityIcons',
-  () => 'MaterialCommunityIcons',
-);
-//jest.mock('@react-navigation/elements/assets', () => 'Assets');
 
 type TestObject = {
   name: string;
@@ -87,8 +71,8 @@ test("Filter removes items that don't match query", () => {
 
   fireEvent.changeText(input, 'Passes');
 
-  expect(first).not.toBeEmptyElement();
-  expect(second).toBeEmptyElement();
+  expect(screen.queryByText(sampleObjects[0].name)).not.toBeNull();
+  expect(screen.queryByText(sampleObjects[1].name)).toBeNull();
 });
 
 test.skip('Updating select filter removes items that do not match', () => {
