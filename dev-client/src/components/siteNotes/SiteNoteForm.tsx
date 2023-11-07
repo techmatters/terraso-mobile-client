@@ -1,6 +1,6 @@
 import {useTranslation} from 'react-i18next';
 import {FormInput} from 'terraso-mobile-client/components/common/Form';
-import {Box, Text} from 'native-base';
+import {Box} from 'native-base';
 import {useFormikContext} from 'formik';
 import {KeyboardAvoidingView, TextInput} from 'react-native';
 import {useRef, useEffect} from 'react';
