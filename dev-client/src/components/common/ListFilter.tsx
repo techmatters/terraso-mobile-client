@@ -16,9 +16,9 @@ type SelectFilterConfig<Item> = {
   choices: Record<string, string>;
 };
 
-export type SearchConfigOptions<Item> = {
+export type FilterConfigOptions<Item> = {
   inputFilter: InputFilterConfig<Item>;
-  selectFilters: Record<symbol, SelectFilterConfig<Item>>;
+  selectFilters?: Record<symbol, SelectFilterConfig<Item>>;
 };
 
 const getValue = <Item,>(item: Item, key: Getter<Item>) => {
@@ -29,7 +29,7 @@ const getValue = <Item,>(item: Item, key: Getter<Item>) => {
 };
 
 export const useListFilter = <ItemType,>(
-  {inputFilter, selectFilters}: SearchConfigOptions<ItemType>,
+  {inputFilter, selectFilters}: FilterConfigOptions<ItemType>,
   data: ItemType[],
 ) => {
   const [query, setQuery] = useState('');
@@ -51,7 +51,7 @@ export const useListFilter = <ItemType,>(
     const ids = Object.getOwnPropertySymbols(selectFilters ?? {});
     let result = searchFiltered;
     for (const id of ids) {
-      const {key, lookup} = selectFilters[id];
+      const {key, lookup} = selectFilters![id];
       result = result.filter(item => {
         const value = lookup ? item[key] : lookup[key];
         return value === selectFilterValues[id];
@@ -77,7 +77,7 @@ export const useListFilter = <ItemType,>(
 };
 
 type FilterModalProps<Item> = {
-  selectFilters: Record<symbol, SelectFilterConfig<Item>>;
+  selectFilters?: Record<symbol, SelectFilterConfig<Item>>;
   selectFilterUpdate: (symbol: symbol) => (newValue: string) => void;
   applyFilter: () => void;
 };
@@ -89,19 +89,23 @@ const FilterModalBody = <Item,>({
 }: FilterModalProps<Item>) => {
   const filters = useMemo(
     () =>
-      Object.getOwnPropertySymbols(selectFilters).map(symbol => {
-        const config = selectFilters[symbol];
-        const options = Object.entries(config.choices).map(([value, label]) => (
-          <Select.Item value={value} label={label} key={value} />
-        ));
-        return (
-          <Select
-            onValueChange={selectFilterUpdate(symbol)}
-            key={String(symbol)}>
-            {options}
-          </Select>
-        );
-      }),
+      selectFilters === undefined
+        ? []
+        : Object.getOwnPropertySymbols(selectFilters).map(symbol => {
+            const config = selectFilters[symbol];
+            const options = Object.entries(config.choices).map(
+              ([value, label]) => (
+                <Select.Item value={value} label={label} key={value} />
+              ),
+            );
+            return (
+              <Select
+                onValueChange={selectFilterUpdate(symbol)}
+                key={String(symbol)}>
+                {options}
+              </Select>
+            );
+          }),
     [selectFilters, selectFilterUpdate],
   );
   return (
@@ -112,9 +116,9 @@ const FilterModalBody = <Item,>({
   );
 };
 
-type ListFilterProps<Item> = {
+export type ListFilterProps<Item> = {
   items: Item[];
-  options: SearchConfigOptions<Item>;
+  options: FilterConfigOptions<Item>;
   children: (value: {
     filteredItems: Item[];
     InputFilter: React.ReactNode;
