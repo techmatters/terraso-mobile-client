@@ -67,6 +67,8 @@ const screenDefinitions = {
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,
   MANAGE_TEAM_MEMBER: ManageTeamMemberScreen,
+  ADD_SITE_NOTE: AddSiteNoteScreen,
+  EDIT_SITE_NOTE: EditSiteNoteScreen,
 } satisfies ScreenDefinitions;
 
 const modalScreenDefinitions = {
