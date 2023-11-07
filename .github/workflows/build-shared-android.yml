@@ -8,8 +8,6 @@ on:
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
-      GOOGLE_OAUTH_ANDROID_CLIENT_ID:
-        required: false
       PUBLIC_MAPBOX_TOKEN:
         required: false
       ANDROID_SIGNING_KEY:
@@ -21,6 +19,13 @@ on:
       ANDROID_KEY_PASSWORD:
         required: false
       ANDROID_SERVICE_ACCOUNT_JSON_TEXT:
+        required: false
+    env:
+      GOOGLE_OAUTH_ANDROID_CLIENT_ID:
+        required: false
+      MICROSOFT_OAUTH_CLIENT_ID:
+        required: false
+      MICROSOFT_SIGNATURE_HASH:
         required: false
 
 jobs:
