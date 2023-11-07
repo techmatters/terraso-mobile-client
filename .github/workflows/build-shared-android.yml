@@ -20,13 +20,6 @@ on:
         required: false
       ANDROID_SERVICE_ACCOUNT_JSON_TEXT:
         required: false
-    env:
-      GOOGLE_OAUTH_ANDROID_CLIENT_ID:
-        required: false
-      MICROSOFT_OAUTH_CLIENT_ID:
-        required: false
-      MICROSOFT_SIGNATURE_HASH:
-        required: false
 
 jobs:
   android-build:
