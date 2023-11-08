@@ -8,14 +8,51 @@ type InputFilterConfig<Item> = {
   key: Getter<Item>;
 };
 
-type SelectFilterConfig<Item> = {
+type SelectFilterConfig<Item, S> = {
   key: keyof Item;
-  lookup: Record<string, string>;
+  lookup: Record<string, S[keyof S]>;
 };
 
-export type FilterConfigOptions<Item, S> = {
-  inputFilter: InputFilterConfig<Item>;
-  selectFilters?: Record<keyof S, SelectFilterConfig<Item>>;
+export type FilterConfig<Item, S> = {
+  textInput: InputFilterConfig<Item>;
+  select?: Record<keyof S, SelectFilterConfig<Item, S>>;
+};
+
+export type OptionMapping<T> = {[Property in keyof T]: string};
+
+type FilterModalProps<SelectIDs extends OptionMapping<SelectIDs>> = {
+  selectFilters?: SelectFilterDisplayConfig<SelectIDs>;
+  selectFilterUpdate: (id: keyof SelectIDs) => (newValue: string) => void;
+  applyFilter: () => void;
+};
+
+type FilterDisplayConfig = {
+  label: string;
+  placeholder: string;
+};
+
+type TextInputFilterDisplayConfig = FilterDisplayConfig;
+
+type SelectFilterDisplayConfig<T extends OptionMapping<T>> = {
+  [Property in keyof T]: {
+    options: Record<T[Property], string>;
+  } & FilterDisplayConfig;
+};
+
+export type ListFilterProps<
+  Item,
+  SelectIDs extends {[Property in keyof SelectIDs]: string} = {},
+> = {
+  items: Item[];
+  filterConfig: FilterConfig<Item, SelectIDs>;
+  displayConfig: {
+    textInput: TextInputFilterDisplayConfig;
+    select?: SelectFilterDisplayConfig<SelectIDs>;
+  };
+  children: (value: {
+    filteredItems: Item[];
+    InputFilter: React.ReactNode;
+  }) => React.ReactNode;
 };
 
 const getValue = <Item,>(item: Item, key: Getter<Item>) => {
@@ -26,7 +63,7 @@ const getValue = <Item,>(item: Item, key: Getter<Item>) => {
 };
 
 export const useListFilter = <ItemType, S>(
-  {inputFilter, selectFilters}: FilterConfigOptions<ItemType, S>,
+  {textInput: inputFilter, select: selectFilters}: FilterConfig<ItemType, S>,
   data: ItemType[],
 ) => {
   const [query, setQuery] = useState('');
@@ -87,14 +124,6 @@ export const useListFilter = <ItemType, S>(
   };
 };
 
-export type OptionMapping<T> = {[Property in keyof T]: string};
-
-type FilterModalProps<SelectIDs extends OptionMapping<SelectIDs>> = {
-  selectFilters?: SelectFilterDisplayConfig<SelectIDs>;
-  selectFilterUpdate: (id: keyof SelectIDs) => (newValue: string) => void;
-  applyFilter: () => void;
-};
-
 const FilterModalBody = <SelectIDs extends OptionMapping<SelectIDs>>({
   selectFilters,
   selectFilterUpdate,
@@ -139,38 +168,9 @@ const FilterModalBody = <SelectIDs extends OptionMapping<SelectIDs>>({
   );
 };
 
-type TextInputFilterDisplayConfig = {
-  label: string;
-  placeholder: string;
-};
-
-type SelectFilterDisplayConfig<T extends {[Property in keyof T]: string}> = {
-  [Property in keyof T]: {
-    label: string;
-    placeholder: string;
-    options: Record<T[Property], string>;
-  };
-};
-
-export type ListFilterProps<
-  Item,
-  SelectIDs extends {[Property in keyof SelectIDs]: string} = {},
-> = {
-  items: Item[];
-  filterOptions: FilterConfigOptions<Item, SelectIDs>;
-  displayConfig: {
-    textInput: TextInputFilterDisplayConfig;
-    select?: SelectFilterDisplayConfig<SelectIDs>;
-  };
-  children: (value: {
-    filteredItems: Item[];
-    InputFilter: React.ReactNode;
-  }) => React.ReactNode;
-};
-
 const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
   items,
-  filterOptions,
+  filterConfig: filterOptions,
   displayConfig,
   children,
 }: ListFilterProps<Item, SelectIDs>) => {
