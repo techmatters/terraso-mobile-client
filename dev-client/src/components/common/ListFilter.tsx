@@ -23,6 +23,7 @@ export type OptionMapping<T> = {[Property in keyof T]: string};
 type FilterModalProps<SelectIDs extends OptionMapping<SelectIDs>> = {
   selectFilters?: SelectFilterDisplayConfig<SelectIDs>;
   selectFilterUpdate: (id: keyof SelectIDs) => (newValue: string) => void;
+  filterValues: Record<keyof SelectIDs, string>;
   applyFilter: () => void;
 };
 
@@ -119,6 +120,7 @@ export const useListFilter = <ItemType, S>(
     query,
     filteredItems: searchFiltered,
     selectFilterUpdate,
+    selectFilterValues,
     setQuery,
     applyFilter,
   };
@@ -127,6 +129,7 @@ export const useListFilter = <ItemType, S>(
 const FilterModalBody = <SelectIDs extends OptionMapping<SelectIDs>>({
   selectFilters,
   selectFilterUpdate,
+  filterValues,
   applyFilter,
 }: FilterModalProps<SelectIDs>) => {
   const filters = useMemo(() => {
@@ -151,7 +154,8 @@ const FilterModalBody = <SelectIDs extends OptionMapping<SelectIDs>>({
           <Select
             placeholder={selectPlaceholder}
             onValueChange={selectFilterUpdate(selectKey)}
-            key={selectKey}>
+            key={selectKey}
+            selectedValue={filterValues[selectKey]}>
             {items}
           </Select>
         </>,
@@ -174,8 +178,14 @@ const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
   displayConfig,
   children,
 }: ListFilterProps<Item, SelectIDs>) => {
-  const {filteredItems, selectFilterUpdate, applyFilter, setQuery, query} =
-    useListFilter(filterConfig, items);
+  const {
+    filteredItems,
+    selectFilterUpdate,
+    selectFilterValues,
+    applyFilter,
+    setQuery,
+    query,
+  } = useListFilter(filterConfig, items);
   const modalRef = useRef<ModalMethods>(null);
   const applyCallback = useCallback(() => {
     applyFilter();
@@ -186,10 +196,12 @@ const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
   const InputFilter = (
     <>
       <Modal
-        trigger={onOpen => <Button onPress={onOpen}>Select filters</Button>}>
+        trigger={onOpen => <Button onPress={onOpen}>Select filters</Button>}
+        ref={modalRef}>
         <FilterModalBody
           selectFilters={displayConfig.select}
           selectFilterUpdate={selectFilterUpdate}
+          filterValues={selectFilterValues}
           applyFilter={applyCallback}
         />
       </Modal>
