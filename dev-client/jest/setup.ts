@@ -16,6 +16,10 @@ jest.mock('react-native-reanimated', () => {
 
 // Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+//jest.mock(
+//'native-base/lib/commonjs/components/composites/Transitions/Transition',
+//  () => 'Transition',
+//);
 
 jest.mock('@gorhom/bottom-sheet', () => 'BottomSheet');
 jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
@@ -43,4 +47,8 @@ setAPIConfig({
 // WARN  `new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.
 // Should look into why (probably some of our mocks?) and see if we can fix it
 global.console.warn = jest.fn();
+// TODO: Disable errors as well. We get:
+// Warning: An update to ForwardRef inside a test was not wrapped in act(...).
+// for native base animations. Would be nice to figure out how to disable this
+// For now, just silence
 global.console.error = jest.fn();

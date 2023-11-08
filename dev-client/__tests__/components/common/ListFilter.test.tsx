@@ -8,6 +8,7 @@ import {
 import {FlatList, NativeBaseProvider, Text} from 'native-base';
 import ListFilter, {
   ListFilterProps,
+  OptionMapping,
 } from 'terraso-mobile-client/components/common/ListFilter';
 import {theme} from 'terraso-mobile-client/theme';
 
@@ -20,6 +21,23 @@ beforeEach(() => {
   mmkvMock.unmock(); // Cleanup if already mocked
   mmkvMock.mock(); // Mock the storage
 });
+
+const activateSelectFilter = (
+  selectPlaceholder: string,
+  optionText: string,
+) => {
+  const filterIcon = screen.getByText('Select filters');
+  fireEvent.press(filterIcon);
+
+  const select = screen.getByPlaceholderText(selectPlaceholder, {
+    includeHiddenElements: true,
+  });
+  fireEvent.press(select);
+  const managerBar = screen.getByText(optionText);
+  fireEvent.press(managerBar);
+  const applyButton = screen.getByText('Apply');
+  fireEvent.press(applyButton);
+};
 
 type TestObject = {
   name: string;
@@ -36,10 +54,12 @@ const inset = {
   insets: {top: 0, left: 0, right: 0, bottom: 0},
 };
 
-const Test = (props: Omit<ListFilterProps<TestObject>, 'children'>) => {
+const Test = <S extends OptionMapping<S>>(
+  props: Omit<ListFilterProps<TestObject, S>, 'children'>,
+) => {
   return (
     <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
-      <ListFilter<TestObject> {...props}>
+      <ListFilter<TestObject, S> {...props}>
         {({filteredItems, InputFilter}) => (
           <>
             {InputFilter}
@@ -58,10 +78,15 @@ test("Filter removes items that don't match query", () => {
   render(
     <Test
       items={sampleObjects}
-      options={{
+      filterOptions={{
         inputFilter: {
           key: 'name',
+        },
+      }}
+      displayConfig={{
+        textInput: {
           placeholder: 'Search',
+          label: 'Filter objects',
         },
       }}
     />,
@@ -82,22 +107,31 @@ test("Filter removes items that don't match query", () => {
 });
 
 test('Updating select filter removes items that do not match', async () => {
-  const role = Symbol('role');
-
   render(
     <Test
       items={sampleObjects}
-      options={{
-        inputFilter: {key: 'name', placeholder: 'Search'},
+      filterOptions={{
+        inputFilter: {key: 'name'},
         selectFilters: {
-          [role]: {
-            label: 'User Role',
+          role: {
             key: 'id',
             lookup: {'1': 'manager', '2': 'viewer'},
-            choices: {
+          },
+        },
+      }}
+      displayConfig={{
+        textInput: {
+          placeholder: 'Search',
+          label: 'string',
+        },
+        select: {
+          role: {
+            label: 'Role',
+            placeholder: 'Project role',
+            options: {
               manager: 'Manager',
-              viewer: 'Viewer',
               contributor: 'Contributor',
+              viewer: 'Viewer',
             },
           },
         },
@@ -111,15 +145,7 @@ test('Updating select filter removes items that do not match', async () => {
   expect(first).not.toBeNull();
   expect(second).not.toBeNull();
 
-  const filterIcon = screen.getByText('Select filters');
-  fireEvent.press(filterIcon);
-
-  const select = screen.getByTestId('TEST', {includeHiddenElements: true});
-  fireEvent.press(select);
-  const managerBar = screen.getByText('Manager');
-  fireEvent.press(managerBar);
-  const applyButton = screen.getByText('Apply');
-  fireEvent.press(applyButton);
+  activateSelectFilter('Project role', 'Manager');
 
   expect(screen.queryByText(sampleObjects[0].name)).not.toBeNull();
   expect(screen.queryByText(sampleObjects[1].name)).toBeNull();
