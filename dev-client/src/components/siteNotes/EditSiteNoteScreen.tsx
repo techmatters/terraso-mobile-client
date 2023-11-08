@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import {Button, Heading, HStack, Spacer, Box} from 'native-base';
+import {Button, Heading, HStack, Spacer, Box, Fab} from 'native-base';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'terraso-mobile-client/model/store';
@@ -91,10 +91,10 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                         <IconButton
                           p={0}
                           name="delete"
-                          label={t('site.notes.delete_button')}
-                          textColor="red.700"
+                          label={t('general.delete_fab')}
+                          textColor="error.main"
                           _icon={{
-                            color: 'red.700',
+                            color: 'error.main',
                             size: '5',
                           }}
                           isDisabled={isSubmitting}
@@ -104,13 +104,17 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                     )}
                     title={t('site.notes.confirm_removal_title')}
                     body={t('site.notes.confirm_removal_body')}
-                    actionName={t('site.notes.confirm_removal_action')}
+                    actionName={t('general.delete_fab')}
                     handleConfirm={() => {
                       handleDelete(note);
                     }}
                   />
-                  <Button onPress={handleSubmit} isDisabled={isSubmitting}>
-                    {t('site.notes.done_button')}
+                  <Button
+                    onPress={handleSubmit}
+                    isDisabled={isSubmitting}
+                    shadow={1}
+                    size={'lg'}>
+                    {t('general.done_fab')}
                   </Button>
                 </HStack>
               </>
