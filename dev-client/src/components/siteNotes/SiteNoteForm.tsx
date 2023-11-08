@@ -36,7 +36,6 @@ export const SiteNoteForm = () => {
             onChangeText={handleChange('content')}
             onBlur={handleBlur('content')}
             multiline
-            minHeight={500}
             textAlignVertical="top"
           />
         </KeyboardAvoidingView>

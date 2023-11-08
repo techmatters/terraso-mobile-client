@@ -1,4 +1,13 @@
-import {Button, Heading, HStack, Spacer, Box, Fab} from 'native-base';
+import {
+  Button,
+  Heading,
+  HStack,
+  Spacer,
+  Box,
+  VStack,
+  Fab,
+  Text,
+} from 'native-base';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'terraso-mobile-client/model/store';
@@ -58,29 +67,31 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
 
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
-      <KeyboardAvoidingView behavior="position">
-        <Box pt={10} pl={5} pr={5} pb={10}>
-          <Formik
-            initialValues={{content: ''}}
-            validationSchema={notesFormSchema}
-            onSubmit={async (values, actions) => {
-              actions.setSubmitting(true);
-              await handleAddNote(values.content).then(() =>
-                actions.setSubmitting(false),
-              );
-            }}>
-            {formikProps => {
-              const {handleSubmit, isSubmitting} = formikProps;
-              return (
-                <>
-                  <Heading variant="h6" pb={7}>
-                    {t('site.notes.add_title')}
-                  </Heading>
-                  <SiteNoteForm {...formikProps} />
-                  <HStack>
-                    <Spacer />
-                    <ConfirmModal
-                      trigger={onOpen => (
+      <KeyboardAvoidingView behavior="height">
+        <Formik
+          initialValues={{content: ''}}
+          validationSchema={notesFormSchema}
+          onSubmit={async (values, actions) => {
+            actions.setSubmitting(true);
+            await handleAddNote(values.content).then(() =>
+              actions.setSubmitting(false),
+            );
+          }}>
+          {formikProps => {
+            const {handleSubmit, isSubmitting} = formikProps;
+            return (
+              <VStack pt={10} pl={5} pr={5} pb={10}>
+                <Heading variant="h6" pb={7}>
+                  {t('site.notes.add_title')}
+                </Heading>
+                <SiteNoteForm {...formikProps} />
+                <HStack>
+                  <Spacer />
+                  <ConfirmModal
+                    trigger={onOpen => (
+                      <Fab
+                        label={t('general.delete_fab')}
+                      >
                         <Box pt={1} pr={5}>
                           <IconButton
                             p={0}
@@ -95,27 +106,26 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
                             onPress={onOpen}
                           />
                         </Box>
-                      )}
-                      title={t('site.notes.confirm_removal_title')}
-                      body={t('site.notes.confirm_removal_body')}
-                      actionName={t('general.delete_fab')}
-                      handleConfirm={() => {
-                        handleDelete();
-                      }}
-                    />
-                    <Button
-                      onPress={handleSubmit}
-                      isDisabled={isSubmitting}
-                      size={'lg'}
-                      shadow={1}>
-                      {t('general.done_fab')}
-                    </Button>
-                  </HStack>
-                </>
-              );
-            }}
-          </Formik>
-        </Box>
+                      </Fab>
+                    )}
+                    title={t('site.notes.confirm_removal_title')}
+                    body={t('site.notes.confirm_removal_body')}
+                    actionName={t('general.delete_fab')}
+                    handleConfirm={() => {
+                      handleDelete();
+                    }}
+                  />
+                  <Fab
+                    label={t('general.done_fab')}
+                    onPress={handleSubmit}
+                    isDisabled={isSubmitting}
+                    size={'lg'}
+                  />
+                </HStack>
+              </VStack>
+            );
+          }}
+        </Formik>
       </KeyboardAvoidingView>
     </ScreenScaffold>
   );
