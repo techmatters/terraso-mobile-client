@@ -90,13 +90,9 @@
       "add_note_label": "ADD NOTE",
       "title": "Site Notes",
       "add_title": "Site Note",
-      "done_button": "DONE",
-      "delete_button": "DELETE",
       "note_by": "by",
       "confirm_removal_title": "Delete note?",
       "confirm_removal_body": "This action cannot be undone.",
-      "confirm_removal_action": "Delete",
-      "confirm_removal_cancel": "Cancel",
       "min_length_error": "Must be at least {{min}} characters",
       "placeholder_text": "Start typing your note..."
     },
@@ -256,7 +252,10 @@
     },
     "cancel": "Cancel",
     "add": "Add",
-    "submit": "submit"
+    "submit": "submit",
+    "cancel_fab": "CANCEL",
+    "delete_fab": "DELETE",
+    "done_fab": "DONE"
   },
   "screens": {
     "HOME": "LandPKS",
