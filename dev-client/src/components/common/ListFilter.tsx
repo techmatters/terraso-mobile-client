@@ -170,12 +170,12 @@ const FilterModalBody = <SelectIDs extends OptionMapping<SelectIDs>>({
 
 const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
   items,
-  filterConfig: filterOptions,
+  filterConfig,
   displayConfig,
   children,
 }: ListFilterProps<Item, SelectIDs>) => {
   const {filteredItems, selectFilterUpdate, applyFilter, setQuery, query} =
-    useListFilter(filterOptions, items);
+    useListFilter(filterConfig, items);
   const modalRef = useRef<ModalMethods>(null);
   const applyCallback = useCallback(() => {
     applyFilter();
