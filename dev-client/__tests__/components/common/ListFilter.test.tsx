@@ -1,12 +1,7 @@
-import {
-  act,
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-} from '@testing-library/react-native';
+import {render, screen, fireEvent} from '@testing-library/react-native';
 import {FlatList, NativeBaseProvider, Text} from 'native-base';
 import ListFilter, {
+  FilterConfig,
   ListFilterProps,
   OptionMapping,
 } from 'terraso-mobile-client/components/common/ListFilter';
@@ -21,6 +16,12 @@ beforeEach(() => {
   mmkvMock.unmock(); // Cleanup if already mocked
   mmkvMock.mock(); // Mock the storage
 });
+
+const activateTextInputFilter = (filterText: string) => {
+  const input = screen.getByPlaceholderText('Search');
+
+  fireEvent.changeText(input, filterText);
+};
 
 const activateSelectFilter = (
   selectPlaceholder: string,
@@ -39,14 +40,28 @@ const activateSelectFilter = (
   fireEvent.press(applyButton);
 };
 
+const assertNull = (...indexes: number[]) => {
+  indexes.forEach(i =>
+    expect(screen.queryByText(sampleObjects[i].name)).toBeNull(),
+  );
+};
+
+const assertNotNull = (...indexes: number[]) => {
+  indexes.forEach(i =>
+    expect(screen.queryByText(sampleObjects[i].name)).not.toBeNull(),
+  );
+};
+
 type TestObject = {
   name: string;
   id: string;
 };
 
 const sampleObjects: TestObject[] = [
-  {name: 'Passes filter', id: '1'},
-  {name: 'Fails filter', id: '2'},
+  {name: 'Alice', id: '1'},
+  {name: 'Bob', id: '2'},
+  {name: 'Carlos', id: '3'},
+  {name: 'Carla', id: '4'},
 ];
 
 const inset = {
@@ -78,8 +93,8 @@ test("Filter removes items that don't match query", () => {
   render(
     <Test
       items={sampleObjects}
-      filterOptions={{
-        inputFilter: {
+      filterConfig={{
+        textInput: {
           key: 'name',
         },
       }}
@@ -98,44 +113,53 @@ test("Filter removes items that don't match query", () => {
   expect(first).not.toBeEmptyElement();
   expect(second).not.toBeEmptyElement();
 
-  const input = screen.getByPlaceholderText('Search');
+  activateTextInputFilter('Alice');
 
-  fireEvent.changeText(input, 'Passes');
-
-  expect(screen.queryByText(sampleObjects[0].name)).not.toBeNull();
-  expect(screen.queryByText(sampleObjects[1].name)).toBeNull();
+  assertNull(1, 2, 3);
+  assertNotNull(0);
 });
+
+const SELECT_FILTER_CONF: FilterConfig<
+  TestObject,
+  {role: 'manager' | 'viewer' | 'contributor'}
+> = {
+  textInput: {key: 'name'},
+  select: {
+    role: {
+      key: 'id',
+      lookup: {
+        '1': 'manager',
+        '2': 'viewer',
+        '3': 'viewer',
+        '4': 'contributor',
+      },
+    },
+  },
+};
+const SELECT_DISPLAY_CONF = {
+  textInput: {
+    placeholder: 'Search',
+    label: 'string',
+  },
+  select: {
+    role: {
+      label: 'Role',
+      placeholder: 'Project role',
+      options: {
+        manager: 'Manager',
+        contributor: 'Contributor',
+        viewer: 'Viewer',
+      },
+    },
+  },
+};
 
 test('Updating select filter removes items that do not match', async () => {
   render(
-    <Test
+    <Test<{role: 'manager' | 'viewer' | 'contributor'}>
       items={sampleObjects}
-      filterOptions={{
-        inputFilter: {key: 'name'},
-        selectFilters: {
-          role: {
-            key: 'id',
-            lookup: {'1': 'manager', '2': 'viewer'},
-          },
-        },
-      }}
-      displayConfig={{
-        textInput: {
-          placeholder: 'Search',
-          label: 'string',
-        },
-        select: {
-          role: {
-            label: 'Role',
-            placeholder: 'Project role',
-            options: {
-              manager: 'Manager',
-              contributor: 'Contributor',
-              viewer: 'Viewer',
-            },
-          },
-        },
-      }}
+      filterConfig={SELECT_FILTER_CONF}
+      displayConfig={SELECT_DISPLAY_CONF}
     />,
   );
 
@@ -147,6 +171,38 @@ test('Updating select filter removes items that do not match', async () => {
 
   activateSelectFilter('Project role', 'Manager');
 
-  expect(screen.queryByText(sampleObjects[0].name)).not.toBeNull();
-  expect(screen.queryByText(sampleObjects[1].name)).toBeNull();
+  assertNull(1, 2, 3);
+  assertNotNull(0);
+});
+
+test('Updating text input and select filters works', () => {
+  render(
+    <Test<{role: 'manager' | 'viewer' | 'contributor'}>
+      items={sampleObjects}
+      filterConfig={SELECT_FILTER_CONF}
+      displayConfig={SELECT_DISPLAY_CONF}
+    />,
+  );
+
+  activateSelectFilter('Project role', 'Viewer');
+  activateTextInputFilter('Carl');
+
+  assertNull(0, 1, 3);
+  assertNotNull(2);
+});
+
+test('Updating select filters and then text input works', () => {
+  render(
+    <Test<{role: 'manager' | 'viewer' | 'contributor'}>
+      items={sampleObjects}
+      filterConfig={SELECT_FILTER_CONF}
+      displayConfig={SELECT_DISPLAY_CONF}
+    />,
+  );
+
+  activateTextInputFilter('Carl');
+  activateSelectFilter('Project role', 'Viewer');
+
+  assertNull(0, 1, 3);
+  assertNotNull(2);
 });
