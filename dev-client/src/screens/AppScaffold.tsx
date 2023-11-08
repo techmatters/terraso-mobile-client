@@ -31,6 +31,7 @@ import {ManageTeamMemberScreen} from 'terraso-mobile-client/components/projects/
 
 type UnknownToUndefined<T extends unknown> = unknown extends T ? undefined : T;
 export type ScreenDefinitions = Record<string, React.FC<any>>;
+export type ModalScreenDefinitions = Record<string, React.FC<any>>;
 export type ParamList<T extends ScreenDefinitions> = {
   [K in keyof T]: UnknownToUndefined<React.ComponentProps<T[K]>>;
 };
@@ -48,9 +49,12 @@ const screenDefinitions = {
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,
   MANAGE_TEAM_MEMBER: ManageTeamMemberScreen,
+} satisfies ScreenDefinitions;
+
+const modalScreenDefinitions = {
   ADD_SITE_NOTE: AddSiteNoteScreen,
   EDIT_SITE_NOTE: EditSiteNoteScreen,
-} satisfies ScreenDefinitions;
+} satisfies ModalScreenDefinitions;
 
 type RootStackParamList = ParamList<typeof screenDefinitions>;
 type ScreenName = keyof RootStackParamList;
@@ -66,6 +70,16 @@ const screens = Object.entries(screenDefinitions).map(([name, Screen]) => (
     children={props => <Screen {...((props.route.params ?? {}) as any)} />}
   />
 ));
+
+const modalScreens = Object.entries(modalScreenDefinitions).map(
+  ([name, Screen]) => (
+    <RootStack.Screen
+      name={name as ScreenName}
+      key={name}
+      children={props => <Screen {...((props.route.params ?? {}) as any)} />}
+    />
+  ),
+);
 
 export const useNavigation = <Name extends ScreenName = ScreenName>() =>
   useNavigationNative<NativeStackNavigationProp<RootStackParamList, Name>>();
@@ -100,7 +114,10 @@ export function AppScaffold() {
     <RootStack.Navigator
       initialRouteName={!hasToken ? 'LOGIN' : 'HOME'}
       screenOptions={defaultScreenOptions}>
-      {screens}
+      <RootStack.Group>{screens}</RootStack.Group>
+      <RootStack.Group screenOptions={{presentation: 'modal'}}>
+        {modalScreens}
+      </RootStack.Group>
     </RootStack.Navigator>
   );
 }
