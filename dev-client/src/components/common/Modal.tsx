@@ -18,7 +18,7 @@ import {Pressable, StyleSheet} from 'react-native';
 import {useDisclose, Modal as NativeBaseModal} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 
-type ModalMethods = {
+export type ModalMethods = {
   onClose: () => void;
   onOpen: () => void;
 };
