@@ -23,19 +23,27 @@ const activateTextInputFilter = (filterText: string) => {
   fireEvent.changeText(input, filterText);
 };
 
+const openModal = () => {
+  const filterIcon = screen.getByText('Select filters');
+  fireEvent.press(filterIcon);
+};
+
 const activateSelectFilter = (
   selectPlaceholder: string,
   optionText: string,
 ) => {
-  const filterIcon = screen.getByText('Select filters');
-  fireEvent.press(filterIcon);
+  openModal();
 
-  const select = screen.getByPlaceholderText(selectPlaceholder, {
-    includeHiddenElements: true,
-  });
+  const select = screen.getByPlaceholderText(
+    selectPlaceholder,
+    // little NativeBase thing :)
+    {
+      includeHiddenElements: true,
+    },
+  );
   fireEvent.press(select);
-  const managerBar = screen.getByText(optionText);
-  fireEvent.press(managerBar);
+  const option = screen.getByText(optionText);
+  fireEvent.press(option);
   const applyButton = screen.getByText('Apply');
   fireEvent.press(applyButton);
 };
@@ -206,4 +214,27 @@ test('Updating select filters and then text input works', () => {
 
   assertNull(0, 1, 3);
   assertNotNull(2);
+});
+
+test('Selecting input is persisted after apply', () => {
+  render(
+    <Test<{role: 'manager' | 'viewer' | 'contributor'}>
+      items={sampleObjects}
+      filterConfig={SELECT_FILTER_CONF}
+      displayConfig={SELECT_DISPLAY_CONF}
+    />,
+  );
+
+  activateSelectFilter('Project role', 'Contributor');
+  openModal();
+  // NOTE: seems accessibility state not set properly by NativeBase
+  //  expect(screen.getByText('Contributor')).toHaveAccessibilityState({
+  //    selected: true,
+  //  });
+  expect(
+    screen.getByPlaceholderText('Project role', {
+      // NativeBase
+      includeHiddenElements: true,
+    }),
+  ).toHaveProp('value', 'Contributor');
 });
