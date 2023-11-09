@@ -35,7 +35,6 @@ type FilterModalProps<SelectIDs extends OptionMapping<SelectIDs>> = {
 };
 
 type FilterDisplayConfig = {
-  label: string;
   placeholder: string;
 };
 
@@ -44,6 +43,7 @@ type TextInputFilterDisplayConfig = FilterDisplayConfig;
 type SelectFilterDisplayConfig<T extends OptionMapping<T>> = {
   [Property in keyof T]: {
     options: Record<T[Property], string>;
+    label: string;
   } & FilterDisplayConfig;
 };
 
@@ -235,6 +235,7 @@ const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
               }}
             />
             <Input
+              accessibilityLabel={t('listfilter.text_input_label')}
               flex={1}
               onChangeText={setQuery}
               value={query}
