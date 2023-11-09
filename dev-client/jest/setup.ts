@@ -1,4 +1,5 @@
 import '@testing-library/jest-native';
+import 'terraso-mobile-client/translations';
 // include this line for mocking react-native-gesture-handler
 import 'react-native-gesture-handler/jestSetup';
 import {setAPIConfig} from 'terraso-client-shared/config';
@@ -16,10 +17,6 @@ jest.mock('react-native-reanimated', () => {
 
 // Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
-//jest.mock(
-//'native-base/lib/commonjs/components/composites/Transitions/Transition',
-//  () => 'Transition',
-//);
 
 jest.mock('@gorhom/bottom-sheet', () => 'BottomSheet');
 jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');

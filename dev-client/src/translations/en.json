@@ -263,9 +263,9 @@
     "confirm_action": "Sign out"
   },
   "account": {
-      "google_login": "Sign in with Google",
-      "apple_login": "Sign in with Apple",
-      "microsoft_login": "Sign in with Microsoft",
+    "google_login": "Sign in with Google",
+    "apple_login": "Sign in with Apple",
+    "microsoft_login": "Sign in with Microsoft"
   },
   "privacy": {
     "label": "Data Privacy",
@@ -297,6 +297,11 @@
       "inline": "elevation",
       "title": "Elevation"
     }
+  },
+  "listfilter": {
+    "open_modal_label": "Update list filters",
+    "num_filters_label": "Number of filters applied",
+    "clear_search_label": "Clear search filter"
   },
   "soil": {
     "bedrock": "Bedrock",

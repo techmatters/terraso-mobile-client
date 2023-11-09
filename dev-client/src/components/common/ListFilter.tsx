@@ -6,6 +6,8 @@ import {
 } from 'terraso-mobile-client/components/common/Modal';
 import EmbadgedIcon from 'terraso-mobile-client/components/common/EmbadgedIcon';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {normalizeText} from 'terraso-mobile-client/util';
+import {useTranslation} from 'react-i18next';
 
 type Getter<Item> = keyof Item | ((item: Item) => string);
 
@@ -60,13 +62,6 @@ export type ListFilterProps<
     InputFilter: React.ReactNode;
   }) => React.ReactNode;
 };
-
-const normalizeText = (text: string) =>
-  text
-    .trim()
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, ''); // unicode range for combining diacritical marks
 
 const getValue = <Item,>(item: Item, key: Getter<Item>) => {
   if (!(key instanceof Function)) {
@@ -195,6 +190,7 @@ const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
   displayConfig,
   children,
 }: ListFilterProps<Item, SelectIDs>) => {
+  const {t} = useTranslation();
   const {
     filteredItems,
     selectFilterUpdate,
@@ -230,9 +226,9 @@ const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
               iconName="filter-list"
               onPress={onOpen}
               badgeNum={numFilters}
-              accessibilityLabel="Update list filters"
+              accessibilityLabel={t('listfilter.open_modal_label')}
               _badge={{
-                accessibilityLabel: 'Filters applied',
+                accessibilityLabel: t('listfilter.num_filters_label'),
               }}
               _iconButton={{
                 variant: 'filterIcon',
@@ -252,7 +248,7 @@ const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
                   <IconButton
                     name="close"
                     onPress={clearTextInputFilter}
-                    accessibilityLabel="Clear search filter"
+                    accessibilityLabel={t('listfilter.clear_search_label')}
                     _icon={{
                       color: 'action.active',
                     }}

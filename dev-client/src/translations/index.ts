@@ -29,8 +29,7 @@ i18n.use(initReactI18next).init({
     },
   },
   lng: 'en',
-  // TODO: make this depend on the build
-  debug: true,
+  debug: __DEV__ && process.env.NODE_ENV !== 'test',
   fallbackLng: 'en',
   interpolation: {
     // react already escapes HTML tags by default
