@@ -77,9 +77,7 @@ export const HomeScreen = () => {
     setQuery: setSitesQuery,
   } = useTextSearch({data: siteList, keys: ['name']});
   const [siteFilter, setSiteFilter] = useState({});
-  const siteProjectRoles = useSelector(state =>
-    selectSitesAndUserRoles(state, currentUserID),
-  );
+  const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
   const filteredSites = useFilterSites(
     searchedSites,
     siteProjectRoles,
