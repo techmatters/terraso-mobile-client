@@ -265,9 +265,9 @@ test('Badge number updated when filter applied', () => {
       displayConfig={SELECT_DISPLAY_CONF}
     />,
   );
-  expect(screen.queryByLabelText('Filters applied')).toBeNull();
+  expect(screen.queryByLabelText('Number of filters applied')).toBeNull();
   activateSelectFilter('Project role', 'Manager');
-  const badge = screen.getByLabelText('Filters applied');
+  const badge = screen.getByLabelText('Number of filters applied');
   expect(badge).toHaveTextContent('1');
   activateSelectFilter('Privacy', 'Public');
   expect(badge).toHaveTextContent('2');

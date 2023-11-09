@@ -25,3 +25,10 @@ export const removeKeys = (a: any, b: any) => {
     }
   }
 };
+
+export const normalizeText = (text: string) =>
+  text
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, ''); // unicode range for combining diacritical marks
