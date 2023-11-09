@@ -82,6 +82,18 @@ export const theme = extendTheme({
           borderRadius: '100px',
           padding: '4px',
         },
+        notification: {
+          bg: 'primary.lightest',
+          _text: {
+            fontSize: '12px',
+          },
+          position: 'absolute',
+          top: '-10px',
+          right: '-10px',
+          rounded: 'full',
+          px: '6.5px',
+          zIndex: 1,
+        },
       },
     },
     Button: {
@@ -261,6 +273,11 @@ export const theme = extendTheme({
             color: 'primary.contrast',
             size: 'md',
           },
+        },
+        filterIcon: {
+          bg: 'primary.contrast',
+          borderRadius: 'full',
+          _icon: {color: 'action.active', size: 'sm'},
         },
       },
     },

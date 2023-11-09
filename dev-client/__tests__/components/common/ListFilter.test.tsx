@@ -24,7 +24,7 @@ const activateTextInputFilter = (filterText: string) => {
 };
 
 const openModal = () => {
-  const filterIcon = screen.getByText('Select filters');
+  const filterIcon = screen.getByLabelText('Update list filters');
   fireEvent.press(filterIcon);
 };
 
@@ -63,13 +63,14 @@ const assertNotNull = (...indexes: number[]) => {
 type TestObject = {
   name: string;
   id: string;
+  privacy: 'private' | 'public';
 };
 
 const sampleObjects: TestObject[] = [
-  {name: 'Alice', id: '1'},
-  {name: 'Bob', id: '2'},
-  {name: 'Carlos', id: '3'},
-  {name: 'Carla', id: '4'},
+  {name: 'Alice', id: '1', privacy: 'private'},
+  {name: 'Bob', id: '2', privacy: 'private'},
+  {name: 'Carlos', id: '3', privacy: 'public'},
+  {name: 'Carla', id: '4', privacy: 'private'},
 ];
 
 const inset = {
@@ -130,7 +131,7 @@ test("Filter removes items that don't match query", () => {
 
 const SELECT_FILTER_CONF: FilterConfig<
   TestObject,
-  {role: 'manager' | 'viewer' | 'contributor'}
+  {role: 'manager' | 'viewer' | 'contributor'; privacy: 'private' | 'public'}
 > = {
   textInput: {key: 'name'},
   select: {
@@ -142,6 +143,9 @@ const SELECT_FILTER_CONF: FilterConfig<
         '3': 'viewer',
         '4': 'contributor',
       },
+    },
+    privacy: {
+      key: 'privacy',
     },
   },
 };
@@ -160,12 +164,20 @@ const SELECT_DISPLAY_CONF = {
         viewer: 'Viewer',
       },
     },
+    privacy: {
+      label: 'Privacy',
+      placeholder: 'Privacy',
+      options: {
+        private: 'Private',
+        public: 'Public',
+      },
+    },
   },
 };
 
 test('Updating select filter removes items that do not match', async () => {
   render(
-    <Test<{role: 'manager' | 'viewer' | 'contributor'}>
+    <Test
       items={sampleObjects}
       filterConfig={SELECT_FILTER_CONF}
       displayConfig={SELECT_DISPLAY_CONF}
@@ -186,7 +198,7 @@ test('Updating select filter removes items that do not match', async () => {
 
 test('Updating text input and select filters works', () => {
   render(
-    <Test<{role: 'manager' | 'viewer' | 'contributor'}>
+    <Test
       items={sampleObjects}
       filterConfig={SELECT_FILTER_CONF}
       displayConfig={SELECT_DISPLAY_CONF}
@@ -202,7 +214,7 @@ test('Updating text input and select filters works', () => {
 
 test('Updating select filters and then text input works', () => {
   render(
-    <Test<{role: 'manager' | 'viewer' | 'contributor'}>
+    <Test
       items={sampleObjects}
       filterConfig={SELECT_FILTER_CONF}
       displayConfig={SELECT_DISPLAY_CONF}
@@ -218,15 +230,21 @@ test('Updating select filters and then text input works', () => {
 
 test('Selecting input is persisted after apply', () => {
   render(
-    <Test<{role: 'manager' | 'viewer' | 'contributor'}>
+    <Test
       items={sampleObjects}
       filterConfig={SELECT_FILTER_CONF}
       displayConfig={SELECT_DISPLAY_CONF}
     />,
   );
 
+  expect(
+    screen.getByPlaceholderText('Project role', {
+      // NativeBase
+      includeHiddenElements: true,
+    }),
+  ).toHaveProp('value', undefined);
+
   activateSelectFilter('Project role', 'Contributor');
-  openModal();
   // NOTE: seems accessibility state not set properly by NativeBase
   //  expect(screen.getByText('Contributor')).toHaveAccessibilityState({
   //    selected: true,
@@ -237,4 +255,20 @@ test('Selecting input is persisted after apply', () => {
       includeHiddenElements: true,
     }),
   ).toHaveProp('value', 'Contributor');
+});
+
+test('Badge number updated when filter applied', () => {
+  render(
+    <Test
+      items={sampleObjects}
+      filterConfig={SELECT_FILTER_CONF}
+      displayConfig={SELECT_DISPLAY_CONF}
+    />,
+  );
+  expect(screen.queryByLabelText('Filters applied')).toBeNull();
+  activateSelectFilter('Project role', 'Manager');
+  const badge = screen.getByLabelText('Filters applied');
+  expect(badge).toHaveTextContent('1');
+  activateSelectFilter('Privacy', 'Public');
+  expect(badge).toHaveTextContent('2');
 });

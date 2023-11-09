@@ -57,7 +57,13 @@ export const ProjectListScreen = () => {
           RightButton={<AppBarIconButton name="help" />}
         />
       }>
-      <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
+      <VStack
+        bg="grey.200"
+        p={5}
+        flexGrow={1}
+        flexShrink={0}
+        flexBasis="70%"
+        space="10px">
         <Box alignItems="flex-start" pb={3}>
           <AddButton
             text={t('projects.create_button')}

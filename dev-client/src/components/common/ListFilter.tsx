@@ -1,6 +1,11 @@
-import {Button, Input, Select, Text} from 'native-base';
+import {Button, FormControl, HStack, Input, Select, VStack} from 'native-base';
 import {useCallback, useMemo, useRef, useState} from 'react';
-import {Modal, ModalMethods} from './Modal';
+import {
+  Modal,
+  ModalMethods,
+} from 'terraso-mobile-client/components/common/Modal';
+import EmbadgedIcon from 'terraso-mobile-client/components/common/EmbadgedIcon';
+import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 
 type Getter<Item> = keyof Item | ((item: Item) => string);
 
@@ -10,7 +15,7 @@ type InputFilterConfig<Item> = {
 
 type SelectFilterConfig<Item, S> = {
   key: keyof Item;
-  lookup: Record<string, S[keyof S]>;
+  lookup?: Record<string, S[keyof S]>;
 };
 
 export type FilterConfig<Item, S> = {
@@ -23,7 +28,7 @@ export type OptionMapping<T> = {[Property in keyof T]: string};
 type FilterModalProps<SelectIDs extends OptionMapping<SelectIDs>> = {
   selectFilters?: SelectFilterDisplayConfig<SelectIDs>;
   selectFilterUpdate: (id: keyof SelectIDs) => (newValue: string) => void;
-  filterValues: Record<keyof SelectIDs, string>;
+  filterValues: Record<keyof SelectIDs, string | null>;
   applyFilter: () => void;
 };
 
@@ -56,6 +61,13 @@ export type ListFilterProps<
   }) => React.ReactNode;
 };
 
+const normalizeText = (text: string) =>
+  text
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, ''); // unicode range for combining diacritical marks
+
 const getValue = <Item,>(item: Item, key: Getter<Item>) => {
   if (!(key instanceof Function)) {
     return String(item[key]);
@@ -78,6 +90,8 @@ export const useListFilter = <ItemType, S>(
     ),
   );
 
+  const normalizedQuery = useMemo(() => normalizeText(query), [query]);
+
   const selectFiltered = useMemo(() => {
     if (selectFilters === undefined) {
       return data;
@@ -95,7 +109,7 @@ export const useListFilter = <ItemType, S>(
       });
     }
     return result;
-  }, [data, selectFilterValues]);
+  }, [data, selectFilterValues, selectFilters]);
 
   const selectFilterUpdate = useCallback(
     (id: keyof S) => (newValue: string) => {
@@ -111,10 +125,11 @@ export const useListFilter = <ItemType, S>(
   }, [selectFiltered, setFilteredItems]);
 
   const searchFiltered = useMemo(() => {
-    return filteredItems.filter(item =>
-      getValue(item, inputFilter.key).includes(query),
-    );
-  }, [query, filteredItems, getValue]);
+    return filteredItems.filter(item => {
+      const normalizedValue = normalizeText(getValue(item, inputFilter.key));
+      return normalizedValue.indexOf(normalizedQuery) !== -1;
+    });
+  }, [filteredItems, normalizedQuery, inputFilter]);
 
   return {
     query,
@@ -149,26 +164,28 @@ const FilterModalBody = <SelectIDs extends OptionMapping<SelectIDs>>({
         items.push(<Select.Item value={value} label={label} key={value} />);
       }
       selects.push(
-        <>
-          <Text>{selectLabel}</Text>
+        <FormControl key={selectKey}>
+          <FormControl.Label>{selectLabel}</FormControl.Label>
           <Select
             placeholder={selectPlaceholder}
             onValueChange={selectFilterUpdate(selectKey)}
-            key={selectKey}
-            selectedValue={filterValues[selectKey]}>
+            selectedValue={filterValues[selectKey] || undefined}
+            dropdownIcon={<Icon name="arrow-drop-down" />}
+            color="text.primary"
+            variant="underlined">
             {items}
           </Select>
-        </>,
+        </FormControl>,
       );
     }
     return selects;
-  }, [selectFilters, selectFilterUpdate]);
+  }, [selectFilters, selectFilterUpdate, filterValues]);
 
   return (
-    <>
+    <VStack space="25px" my="25px">
       {filters}
       <Button onPress={applyFilter}>Apply</Button>
-    </>
+    </VStack>
   );
 };
 
@@ -193,10 +210,58 @@ const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
       modalRef.current.onClose();
     }
   }, [modalRef, applyFilter]);
+
+  const numFilters = useMemo(
+    () =>
+      Object.values(selectFilterValues).filter(item => item !== null).length,
+    [selectFilterValues],
+  );
+
+  const clearTextInputFilter = useCallback(() => {
+    setQuery('');
+  }, [setQuery]);
+
   const InputFilter = (
     <>
       <Modal
-        trigger={onOpen => <Button onPress={onOpen}>Select filters</Button>}
+        trigger={onOpen => (
+          <HStack space="20px" mb="15px">
+            <EmbadgedIcon
+              iconName="filter-list"
+              onPress={onOpen}
+              badgeNum={numFilters}
+              accessibilityLabel="Update list filters"
+              _badge={{
+                accessibilityLabel: 'Filters applied',
+              }}
+              _iconButton={{
+                variant: 'filterIcon',
+              }}
+            />
+            <Input
+              flex={1}
+              onChangeText={setQuery}
+              value={query}
+              placeholder={displayConfig.textInput.placeholder}
+              bg="background.default"
+              pl="8px"
+              py="6px"
+              InputLeftElement={<Icon ml="16px" name="search" />}
+              InputRightElement={
+                query.length === 0 ? undefined : (
+                  <IconButton
+                    name="close"
+                    onPress={clearTextInputFilter}
+                    accessibilityLabel="Clear search filter"
+                    _icon={{
+                      color: 'action.active',
+                    }}
+                  />
+                )
+              }
+            />
+          </HStack>
+        )}
         ref={modalRef}>
         <FilterModalBody
           selectFilters={displayConfig.select}
@@ -205,11 +270,6 @@ const ListFilter = <Item, SelectIDs extends OptionMapping<SelectIDs>>({
           applyFilter={applyCallback}
         />
       </Modal>
-      <Input
-        onChangeText={setQuery}
-        value={query}
-        placeholder={displayConfig.textInput.placeholder}
-      />
     </>
   );
   return children({filteredItems, InputFilter});
