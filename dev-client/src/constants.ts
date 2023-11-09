@@ -14,3 +14,5 @@ export const PROJECT_DESCRIPTION_MAX_LENGTH = 240;
 export const BOTTOM_BAR_SIZE = '10%';
 export const FORM_LABEL_MAX = 10;
 export const USER_ROLES = ['viewer', 'contributor', 'manager'];
+export const PROJECT_DEFAULT_MEASUREMENT_UNITS = 'METRIC';
+export const MEASUREMENT_UNITS = ['METRIC', 'IMPERIAL'];

@@ -8,10 +8,6 @@ on:
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
-      GOOGLE_OAUTH_IOS_CLIENT_ID:
-        required: false
-      GOOGLE_OAUTH_IOS_URI_SCHEME:
-        required: false
       PUBLIC_MAPBOX_TOKEN:
         required: false
       IOS_P12_BASE64:
@@ -27,6 +23,14 @@ on:
       APPLE_KEY_ID:
         required: false
       APPLE_PRIVATE_KEY:
+        required: false
+      GOOGLE_OAUTH_IOS_CLIENT_ID:
+        required: false
+      GOOGLE_OAUTH_IOS_URI_SCHEME:
+        required: false
+      MICROSOFT_OAUTH_CLIENT_ID:
+        required: false
+      MICROSOFT_SIGNATURE_HASH:
         required: false
 
 jobs:
@@ -52,9 +56,11 @@ jobs:
         if: ${{ inputs.upload == 'true' }}
         working-directory: ./dev-client
         run: |
-           echo "GOOGLE_OAUTH_IOS_CLIENT_ID =${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}" >> .env
-           echo "GOOGLE_OAUTH_IOS_URI_SCHEME =${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}" >> .env
-           echo "PUBLIC_MAPBOX_TOKEN =${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
+           echo "GOOGLE_OAUTH_IOS_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}" >> .env
+           echo "GOOGLE_OAUTH_IOS_URI_SCHEME=${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}" >> .env
+           echo "MICROSOFT_OAUTH_CLIENT_ID=${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}" >> .env
+           echo "MICROSOFT_SIGNATURE_HASH=${{ secrets.MICROSOFT_SIGNATURE_HASH }}" >> .env
+           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
