@@ -114,6 +114,8 @@
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
     "go_to": "Go to Project",
+    "search_placeholder": "Search",
+    "role_filter_label": "Filter projects by role",
     "inputs": {
       "units": {
         "heading": "Units of Measurement",
@@ -301,7 +303,8 @@
   "listfilter": {
     "open_modal_label": "Update list filters",
     "num_filters_label": "Number of filters applied",
-    "clear_search_label": "Clear search filter"
+    "clear_search_label": "Clear search filter",
+    "text_input_label": "Filter list by search input"
   },
   "soil": {
     "bedrock": "Bedrock",

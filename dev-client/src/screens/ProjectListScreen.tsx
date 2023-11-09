@@ -88,17 +88,16 @@ export const ProjectListScreen = () => {
             }}
             displayConfig={{
               textInput: {
-                placeholder: 'Search',
-                label: 'We will getrid of this',
+                placeholder: t('projects.search_placeholder'),
               },
               select: {
                 role: {
-                  label: 'Filter projects by role',
+                  label: t('projects.role_filter_label'),
                   placeholder: '',
                   options: {
-                    manager: 'Manager',
-                    contributor: 'Contributor',
-                    viewer: 'Viewer',
+                    manager: t('general.role.manager'),
+                    contributor: t('general.role.contributor'),
+                    viewer: t('general.role.viewer'),
                   },
                 },
               },
