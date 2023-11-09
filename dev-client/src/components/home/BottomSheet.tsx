@@ -29,6 +29,7 @@ import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {SiteFilter} from 'terraso-mobile-client/components/sites/filter';
 import {ProjectSelect} from 'terraso-mobile-client/components/projects/ProjectSelect';
+import {USER_ROLES} from 'terraso-mobile-client/constants';
 
 const EmptySiteMessage = () => {
   const {t} = useTranslation();
@@ -174,7 +175,7 @@ const SiteFilterModal = ({filter, setFilter}: SiteFilterModalProps) => {
         <Select
           selectedValue={filter.role}
           onValueChange={role => setFilter(prev => ({...prev, role}) as any)}>
-          {['MANAGER', 'CONTRIBUTOR', 'VIEWER'].map(role => (
+          {USER_ROLES.map(role => (
             <Select.Item
               label={t(`site.role.${role}`)}
               value={role}

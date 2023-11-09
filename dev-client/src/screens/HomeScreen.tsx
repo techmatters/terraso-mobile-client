@@ -35,6 +35,7 @@ import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 import {useFilterSites} from 'terraso-mobile-client/components/sites/filter';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
+import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
 
 export type CalloutState =
   | {
@@ -76,7 +77,14 @@ export const HomeScreen = () => {
     setQuery: setSitesQuery,
   } = useTextSearch({data: siteList, keys: ['name']});
   const [siteFilter, setSiteFilter] = useState({});
-  const filteredSites = useFilterSites(searchedSites, siteFilter);
+  const siteProjectRoles = useSelector(state =>
+    selectSitesAndUserRoles(state, currentUserID),
+  );
+  const filteredSites = useFilterSites(
+    searchedSites,
+    siteProjectRoles,
+    siteFilter,
+  );
   const filteredSitesById = Object.fromEntries(
     filteredSites.map(site => [site.id, site]),
   );
