@@ -24,7 +24,7 @@ export function Accordion({
   return (
     <Box>
       <HStack
-        backgroundColor="primary.main"
+        backgroundColor="primary.dark"
         alignItems="center"
         justifyContent="space-between"
         px="16px">

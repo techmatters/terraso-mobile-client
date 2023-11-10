@@ -1,16 +1,14 @@
-import {useCallback} from 'react';
-import {Button, Heading, HStack, Spacer, Box, Fab} from 'native-base';
+import {Button, Heading, HStack, Spacer, Box} from 'native-base';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'terraso-mobile-client/model/store';
 import {SiteNoteForm} from 'terraso-mobile-client/components/siteNotes/SiteNoteForm';
 import * as yup from 'yup';
-import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
-  updateSiteNote,
-  deleteSiteNote,
-  SiteNote,
-} from 'terraso-client-shared/site/siteSlice';
+  updateProject,
+  Project,
+} from 'terraso-client-shared/project/projectSlice';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
@@ -18,72 +16,57 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = {
-  note: SiteNote;
+  project: Project;
 };
 
-export const EditSiteNoteScreen = ({note}: Props) => {
+export const EditProjectInstructionsScreen = ({project}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const notesFormSchema = yup.object().shape({
-    content: yup.string().required(
-      t('site.notes.min_length_error', {
-        min: SITE_NOTE_MIN_LENGTH,
-      }),
-    ),
-  });
-
-  const handleUpdateNote = async (content: string) => {
-    if (!content.trim()) {
-      return;
-    }
-
+  const handleUpdateProject = async (content: string) => {
     try {
-      const siteNoteInput: SiteNoteUpdateMutationInput = {
-        id: note.id,
-        content: content,
+      const projectInput: ProjectUpdateMutationInput = {
+        id: project.id,
+        siteInstructions: content,
       };
-      const result = await dispatch(updateSiteNote(siteNoteInput));
+      const result = await dispatch(updateProject(projectInput));
       if (result.payload && 'error' in result.payload) {
         console.error(result.payload.error);
         console.error(result.payload.parsedErrors);
       }
     } catch (error) {
-      console.error('Failed to update note:', error);
+      console.error('Failed to update project:', error);
     } finally {
       navigation.pop();
     }
   };
 
-  const handleDelete = useCallback(
-    async (note: SiteNote, setSubmitting) => {
-      setSubmitting(true);
-      await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
-      setSubmitting(false);
-    },
-    [navigation, dispatch],
-  );
+  const handleDelete = async setSubmitting => {
+    setSubmitting(true);
+    await handleUpdateProject('');
+    setSubmitting(false);
+  };
 
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
       <Box pt={10} pl={5} pr={5} pb={10}>
         <Formik
-          initialValues={{content: note.content}}
-          validationSchema={notesFormSchema}
+          initialValues={{content: project.siteInstructions}}
           onSubmit={async (values, actions) => {
             actions.setSubmitting(true);
-            await handleUpdateNote(values.content).then(() =>
+            await handleUpdateProject(values.content).then(() =>
               actions.setSubmitting(false),
             );
           }}>
           {formikProps => {
-            const {handleSubmit, isSubmitting, setSubmitting, values} = formikProps;
+            const {handleSubmit, setSubmitting, isSubmitting, values} =
+              formikProps;
 
             return (
               <>
                 <Heading variant="h6" pb={7}>
-                  {t('site.notes.add_title')}
+                  {t('projects.inputs.instructions.title')}
                 </Heading>
                 <SiteNoteForm {...formikProps} />
                 <HStack>
@@ -105,7 +88,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                             if (values.content) {
                               onOpen();
                             } else {
-                              handleDelete(note, setSubmitting);
+                              handleDelete(setSubmitting);
                             }
                           }}
                         />
@@ -115,7 +98,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                     body={t('site.notes.confirm_removal_body')}
                     actionName={t('general.delete_fab')}
                     handleConfirm={() => {
-                      handleDelete(note, setSubmitting);
+                      handleDelete(setSubmitting);
                     }}
                   />
                   <Button
