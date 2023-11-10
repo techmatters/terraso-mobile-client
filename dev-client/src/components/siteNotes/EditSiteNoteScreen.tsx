@@ -11,7 +11,7 @@ import {
   deleteSiteNote,
   SiteNote,
 } from 'terraso-client-shared/site/siteSlice';
-import {IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {HorizontalIconButton} from 'terraso-mobile-client/components/common/Icons';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -92,7 +92,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                   <ConfirmModal
                     trigger={onOpen => (
                       <Box pt={1} pr={5}>
-                        <IconButton
+                        <HorizontalIconButton
                           p={0}
                           name="delete"
                           label={t('general.delete_fab')}
