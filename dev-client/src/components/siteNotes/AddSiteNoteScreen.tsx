@@ -1,4 +1,4 @@
-import {Heading, HStack, Spacer, Box, VStack, Fab} from 'native-base';
+import {Heading, HStack, Spacer, Box, VStack, Button} from 'native-base';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'terraso-mobile-client/model/store';
@@ -69,7 +69,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
             );
           }}>
           {formikProps => {
-            const {handleSubmit, isSubmitting} = formikProps;
+            const {handleSubmit, isSubmitting, setSubmitting, values} = formikProps;
             return (
               <VStack pt={10} pl={5} pr={5} pb={10}>
                 <Heading variant="h6" pb={7}>
@@ -80,36 +80,41 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
                   <Spacer />
                   <ConfirmModal
                     trigger={onOpen => (
-                      <Fab label={t('general.delete_fab')}>
-                        <Box pt={1} pr={5}>
-                          <IconButton
-                            p={0}
-                            name="delete"
-                            label={t('general.delete_fab')}
-                            textColor="error.main"
-                            _icon={{
-                              color: 'error.main',
-                              size: '5',
-                            }}
-                            isDisabled={isSubmitting}
-                            onPress={onOpen}
-                          />
-                        </Box>
-                      </Fab>
+                      <Box pt={1} pr={5}>
+                        <IconButton
+                          p={0}
+                          name="delete"
+                          label={t('general.delete_fab')}
+                          textColor="error.main"
+                          _icon={{
+                            color: 'error.main',
+                            size: '5',
+                          }}
+                          isDisabled={isSubmitting}
+                          onPress={() => {
+                            if (values.content) {
+                              onOpen();
+                            } else {
+                              handleDelete(setSubmitting);
+                            }
+                          }}
+                        />
+                      </Box>
                     )}
                     title={t('site.notes.confirm_removal_title')}
                     body={t('site.notes.confirm_removal_body')}
                     actionName={t('general.delete_fab')}
                     handleConfirm={() => {
-                      handleDelete();
+                      handleDelete(setSubmitting);
                     }}
                   />
-                  <Fab
-                    label={t('general.done_fab')}
+                  <Button
                     onPress={handleSubmit}
                     isDisabled={isSubmitting}
-                    size={'lg'}
-                  />
+                    shadow={1}
+                    size={'lg'}>
+                    {t('general.done_fab')}
+                  </Button>
                 </HStack>
               </VStack>
             );
