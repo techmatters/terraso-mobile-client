@@ -72,11 +72,6 @@ const screenDefinitions = {
 const modalScreenDefinitions = {
   ADD_SITE_NOTE: AddSiteNoteScreen,
   EDIT_SITE_NOTE: EditSiteNoteScreen,
-} satisfies ModalScreenDefinitions;
-
-const modalScreenDefinitions = {
-  ADD_SITE_NOTE: AddSiteNoteScreen,
-  EDIT_SITE_NOTE: EditSiteNoteScreen,
   EDIT_PROJECT_INSTRUCTIONS: EditProjectInstructionsScreen,
 } satisfies ModalScreenDefinitions;
 

@@ -57,7 +57,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
   };
 
   const handleDelete = useCallback(
-    async (note: SiteNote, setSubmitting) => {
+    async setSubmitting => {
       setSubmitting(true);
       await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
       setSubmitting(false);
@@ -106,7 +106,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                             if (values.content) {
                               onOpen();
                             } else {
-                              handleDelete(note, setSubmitting);
+                              handleDelete(setSubmitting);
                             }
                           }}
                         />
@@ -116,7 +116,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                     body={t('site.notes.confirm_removal_body')}
                     actionName={t('general.delete_fab')}
                     handleConfirm={() => {
-                      handleDelete(note, setSubmitting);
+                      handleDelete(setSubmitting);
                     }}
                   />
                   <Button

@@ -9,7 +9,6 @@ import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = {
   note: SiteNote;
-  siteId: string;
 };
 
 export const SiteNoteCard = ({note}: Props) => {
