@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import {Button, Heading, HStack, Spacer, Box, Fab} from 'native-base';
+import {Button, Heading, HStack, Spacer, Box} from 'native-base';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'terraso-mobile-client/model/store';
@@ -78,7 +78,8 @@ export const EditSiteNoteScreen = ({note}: Props) => {
             );
           }}>
           {formikProps => {
-            const {handleSubmit, isSubmitting, setSubmitting, values} = formikProps;
+            const {handleSubmit, isSubmitting, setSubmitting, values} =
+              formikProps;
 
             return (
               <>

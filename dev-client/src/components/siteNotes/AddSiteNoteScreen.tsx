@@ -1,13 +1,4 @@
-import {
-  Button,
-  Heading,
-  HStack,
-  Spacer,
-  Box,
-  VStack,
-  Fab,
-  Text,
-} from 'native-base';
+import {Heading, HStack, Spacer, Box, VStack, Fab} from 'native-base';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'terraso-mobile-client/model/store';
@@ -89,9 +80,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
                   <Spacer />
                   <ConfirmModal
                     trigger={onOpen => (
-                      <Fab
-                        label={t('general.delete_fab')}
-                      >
+                      <Fab label={t('general.delete_fab')}>
                         <Box pt={1} pr={5}>
                           <IconButton
                             p={0}
