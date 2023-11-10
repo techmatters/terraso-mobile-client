@@ -9,6 +9,7 @@ import {StaticMapView} from 'terraso-mobile-client/components/common/Map';
 import {StyleSheet} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ScrollView} from 'react-native';
+import {ProjectInstructionsButton} from 'terraso-mobile-client/components/sites/ProjectInstructionsButton';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';
@@ -64,6 +65,7 @@ const LocationPrediction = ({
 export const LocationDashboardView = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
   );
@@ -154,6 +156,9 @@ export const LocationDashboardView = ({siteId, coords}: Props) => {
                 })}
               />
             </>
+          )}
+          {project?.siteInstructions && (
+            <ProjectInstructionsButton project={project} />
           )}
         </Box>
       </Accordion>
