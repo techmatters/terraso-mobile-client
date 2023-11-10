@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import SiteNote from 'terraso-client-shared/site/siteSlice';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {SiteNoteCard} from 'terraso-mobile-client/components/siteNotes/SiteNoteCard';
+import {SiteInstructionsCard} from 'terraso-mobile-client/components/siteNotes/SiteInstructionsCard';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 export type SiteNote = {
@@ -18,7 +19,12 @@ export type SiteNote = {
 export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const notes = useSelector(state => state.site.sites[siteId].notes);
+  const site = useSelector(state => state.site.sites[siteId]);
+  const project = useSelector(state =>
+    site.projectId === undefined
+      ? undefined
+      : state.project.projects[site.projectId],
+  );
 
   const onAddNote = useCallback(() => {
     navigation.navigate('ADD_SITE_NOTE', {siteId: siteId});
@@ -31,6 +37,9 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
           <Heading variant="h6">{t('site.notes.title')}</Heading>
         </Row>
         <Box height="16px" />
+        {project?.siteInstructions && (
+          <SiteInstructionsCard siteInstructions={project?.siteInstructions} />
+        )}
         <Box pl={4} pb={4} alignItems="flex-start">
           <Button
             size="lg"
@@ -42,7 +51,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
         </Box>
         <FlatList
           mb={130}
-          data={Object.values(notes)}
+          data={Object.values(site.notes)}
           keyExtractor={note => note.id}
           renderItem={({item: note}) => <SiteNoteCard note={note} />}
         />
