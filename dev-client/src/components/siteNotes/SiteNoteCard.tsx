@@ -19,8 +19,19 @@ export const SiteNoteCard = ({note}: Props) => {
     navigation.navigate('EDIT_SITE_NOTE', {note: note});
   }, [navigation, note]);
 
+  const onShowNote = useCallback(() => {
+    navigation.navigate('READ_NOTE', {content: note.content});
+  }, [navigation, note.content]);
+
   return (
-    <Card key={note.id} alignItems="flex-start" shadow={0} mb={3} ml={4} mr={4}>
+    <Card
+      key={note.id}
+      alignItems="flex-start"
+      shadow={0}
+      mb={3}
+      ml={4}
+      mr={4}
+      onPress={onShowNote}>
       <HStack>
         <Text italic>
           {formatDate(note.createdAt)} {t('site.notes.note_by')}{' '}
@@ -37,7 +48,7 @@ export const SiteNoteCard = ({note}: Props) => {
           onPress={onEditNote}
         />
       </HStack>
-      <Text pt={1} fontSize="md">
+      <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">
         {note.content}
       </Text>
     </Card>
