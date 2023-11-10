@@ -13,7 +13,8 @@ export const ProjectInstructionsButton = ({project}: Props) => {
   const navigation = useNavigation();
 
   const onShowNote = useCallback(() => {
-    return () => navigation.navigate('READ_NOTE', { content: project.siteInstructions });
+    return () =>
+      navigation.navigate('READ_NOTE', {content: project.siteInstructions});
   }, [navigation, project.siteInstructions]);
 
   return (
