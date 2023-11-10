@@ -8,7 +8,7 @@ import {
   updateProject,
   Project,
 } from 'terraso-client-shared/project/projectSlice';
-import {IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {HorizontalIconButton} from 'terraso-mobile-client/components/common/Icons';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
@@ -72,7 +72,7 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
                   <ConfirmModal
                     trigger={onOpen => (
                       <Box pt={1} pr={5}>
-                        <IconButton
+                        <HorizontalIconButton
                           p={0}
                           name="delete"
                           label={t('general.delete_fab')}
