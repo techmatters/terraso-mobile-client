@@ -62,7 +62,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
       await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
       setSubmitting(false);
     },
-    [navigation, dispatch],
+    [navigation, dispatch, note],
   );
 
   return (

@@ -1,4 +1,4 @@
-import {Heading, HStack, Spacer, Box, VStack, Button, Text} from 'native-base';
+import {Heading, HStack, Spacer, VStack, Button, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';

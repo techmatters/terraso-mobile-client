@@ -20,13 +20,9 @@ export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
   as?: any;
   name: string;
   label?: string;
-  textColor?: string;
 };
 export const IconButton = React.forwardRef(
-  (
-    {as, name, label, textColor, ...props}: IconButtonProps,
-    ref: React.Ref<unknown>,
-  ) => {
+  ({as, name, label, ...props}: IconButtonProps, ref: React.Ref<unknown>) => {
     const icon = (
       <NativeIconButton
         ref={ref}

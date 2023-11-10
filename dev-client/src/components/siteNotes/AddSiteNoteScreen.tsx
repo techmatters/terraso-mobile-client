@@ -69,7 +69,8 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
             );
           }}>
           {formikProps => {
-            const {handleSubmit, isSubmitting, setSubmitting, values} = formikProps;
+            const {handleSubmit, isSubmitting, setSubmitting, values} =
+              formikProps;
             return (
               <VStack pt={10} pl={5} pr={5} pb={10}>
                 <Heading variant="h6" pb={7}>
