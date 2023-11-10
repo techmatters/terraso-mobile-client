@@ -99,7 +99,6 @@ test("Filter removes items that don't match query", () => {
       displayConfig={{
         textInput: {
           placeholder: 'Search',
-          label: 'Filter objects',
         },
       }}
     />,
