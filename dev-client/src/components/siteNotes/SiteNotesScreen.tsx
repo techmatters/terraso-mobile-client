@@ -1,6 +1,6 @@
 import {useCallback} from 'react';
 import {Box, Button, Column, Heading, Row, FlatList} from 'native-base';
-import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
+import {useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import SiteNote from 'terraso-client-shared/site/siteSlice';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';

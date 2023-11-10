@@ -3,7 +3,6 @@ import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'terraso-mobile-client/model/store';
 import {SiteNoteForm} from 'terraso-mobile-client/components/siteNotes/SiteNoteForm';
-import * as yup from 'yup';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   updateProject,
@@ -11,7 +10,6 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
-import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
