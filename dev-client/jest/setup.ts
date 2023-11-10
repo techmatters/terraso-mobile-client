@@ -49,3 +49,10 @@ global.console.warn = jest.fn();
 // for native base animations. Would be nice to figure out how to disable this
 // For now, just silence
 global.console.error = jest.fn();
+
+beforeEach(() => {
+  // Install the in-memory adapter
+  let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
+  mmkvMock.unmock(); // Cleanup if already mocked
+  mmkvMock.mock(); // Mock the storage
+});

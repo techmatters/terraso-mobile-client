@@ -1,21 +1,11 @@
-import {render, screen, fireEvent} from '@testing-library/react-native';
-import {FlatList, NativeBaseProvider, Text} from 'native-base';
+import {screen, fireEvent} from '@testing-library/react-native';
+import {customRender as render} from '@testing/utils';
+import {FlatList, Text} from 'native-base';
 import ListFilter, {
   FilterConfig,
   ListFilterProps,
   OptionMapping,
 } from 'terraso-mobile-client/components/common/ListFilter';
-import {theme} from 'terraso-mobile-client/theme';
-
-/* TODO: set up a custom jest environment that runs that code
-   before EVERY test
-   see https://jestjs.io/docs/configuration#testenvironment-string*/
-beforeEach(() => {
-  // Install the in-memory adapter
-  let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
-  mmkvMock.unmock(); // Cleanup if already mocked
-  mmkvMock.mock(); // Mock the storage
-});
 
 const activateTextInputFilter = (filterText: string) => {
   const input = screen.getByPlaceholderText('Search');
@@ -83,19 +73,17 @@ const Test = <S extends OptionMapping<S>>(
   props: Omit<ListFilterProps<TestObject, S>, 'children'>,
 ) => {
   return (
-    <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
-      <ListFilter<TestObject, S> {...props}>
-        {({filteredItems, InputFilter}) => (
-          <>
-            {InputFilter}
-            <FlatList
-              data={filteredItems}
-              renderItem={({item}) => <Text>{item.name}</Text>}
-            />
-          </>
-        )}
-      </ListFilter>
-    </NativeBaseProvider>
+    <ListFilter<TestObject, S> {...props}>
+      {({filteredItems, InputFilter}) => (
+        <>
+          {InputFilter}
+          <FlatList
+            data={filteredItems}
+            renderItem={({item}) => <Text>{item.name}</Text>}
+          />
+        </>
+      )}
+    </ListFilter>
   );
 };
 

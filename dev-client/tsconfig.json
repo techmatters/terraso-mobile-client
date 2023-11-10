@@ -3,7 +3,8 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "paths": {
-      "terraso-mobile-client/*": ["./src/*"]
+      "terraso-mobile-client/*": ["./src/*"],
+      "@testing/*": ["./jest/*"]
     }
   },
   "include": ["src", "__tests__", "jest"],
