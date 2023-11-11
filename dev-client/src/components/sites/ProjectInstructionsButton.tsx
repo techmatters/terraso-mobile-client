@@ -17,6 +17,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
     return () =>
       navigation.navigate('READ_NOTE', {
         content: project.siteInstructions || '',
+        isSiteInstructions: true,
       });
   }, [navigation, project.siteInstructions]);
 
