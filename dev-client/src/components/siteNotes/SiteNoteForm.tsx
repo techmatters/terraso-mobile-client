@@ -37,7 +37,7 @@ export const SiteNoteForm = ({
       onChangeText={onChangeContent}
       onBlur={onBlurContent}
       multiline
-      maxHeight={320}
+      maxHeight={200}
       overflow={'scroll'}
       textAlignVertical="top"
     />
