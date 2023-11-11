@@ -34,7 +34,7 @@ export const ProjectInputTab = ({
   const project = useSelector(state => state.project.projects[projectId]);
 
   const onEditInstructions = useCallback(() => {
-    return navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});
+    navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});
   }, [navigation, project]);
 
   return (

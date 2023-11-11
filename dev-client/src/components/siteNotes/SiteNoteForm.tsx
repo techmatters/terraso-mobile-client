@@ -1,18 +1,21 @@
 import {useTranslation} from 'react-i18next';
 import {FormInput} from 'terraso-mobile-client/components/common/Form';
 import {Box} from 'native-base';
-import {useFormikContext} from 'formik';
 import {KeyboardAvoidingView, TextInput} from 'react-native';
 import {useRef, useEffect} from 'react';
 
-export type SiteNoteFormInput = {
+type SiteNoteFormProps = {
   content: string;
+  onChangeContent: (text: string) => void;
+  onBlurContent: (e: any) => void;
 };
 
-export const SiteNoteForm = () => {
+export const SiteNoteForm = ({
+  content,
+  onChangeContent,
+  onBlurContent,
+}: SiteNoteFormProps) => {
   const {t} = useTranslation();
-  const {values, handleChange, handleBlur} =
-    useFormikContext<SiteNoteFormInput>();
   const formInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
@@ -32,9 +35,9 @@ export const SiteNoteForm = () => {
             backgroundColor={'transparent'}
             name="content"
             placeholder={t('site.notes.placeholder_text')}
-            value={values.content}
-            onChangeText={handleChange('content')}
-            onBlur={handleBlur('content')}
+            value={content}
+            onChangeText={onChangeContent}
+            onBlur={onBlurContent}
             multiline
             textAlignVertical="top"
           />

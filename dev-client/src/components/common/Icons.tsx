@@ -54,11 +54,11 @@ export type HorizontalIconButtonProps = React.ComponentProps<
   as?: any;
   name: string;
   label?: string;
-  textColor?: string;
+  colorScheme?: string;
 };
 export const HorizontalIconButton = React.forwardRef(
   (
-    {as, name, label, textColor, ...props}: IconButtonProps,
+    {as, name, label, colorScheme, ...props}: IconButtonProps,
     ref: React.Ref<unknown>,
   ) => {
     const icon = (
@@ -76,7 +76,10 @@ export const HorizontalIconButton = React.forwardRef(
         <Box p="1">
           <HStack>
             {icon}
-            <Text color={textColor || 'primary.contrast'} fontSize="sm" pl={1}>
+            <Text
+              color={colorScheme || 'primary.contrast'}
+              fontSize="sm"
+              pl={1}>
               {label}
             </Text>
           </HStack>

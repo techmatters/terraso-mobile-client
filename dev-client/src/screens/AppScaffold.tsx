@@ -60,7 +60,12 @@ const modalScreenDefinitions = {
   READ_NOTE: ReadNoteScreen,
 } satisfies ModalScreenDefinitions;
 
-type RootStackParamList = ParamList<typeof screenDefinitions>;
+const combinedScreenDefinitions = {
+  ...screenDefinitions,
+  ...modalScreenDefinitions,
+} satisfies ScreenDefinitions;
+
+type RootStackParamList = ParamList<typeof combinedScreenDefinitions>;
 type ScreenName = keyof RootStackParamList;
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -115,11 +120,16 @@ export function AppScaffold() {
   }, [dispatch]);
 
   return (
-    <RootStack.Navigator
-      initialRouteName={!hasToken ? 'LOGIN' : 'HOME'}
-      screenOptions={defaultScreenOptions}>
-      <RootStack.Group>{screens}</RootStack.Group>
-      <RootStack.Group screenOptions={{presentation: 'modal'}}>
+    <RootStack.Navigator initialRouteName={!hasToken ? 'LOGIN' : 'HOME'}>
+      <RootStack.Group screenOptions={defaultScreenOptions}>
+        {screens}
+      </RootStack.Group>
+      <RootStack.Group
+        screenOptions={{
+          headerShown: false,
+          presentation: 'modal',
+          animation: 'slide_from_bottom',
+        }}>
         {modalScreens}
       </RootStack.Group>
     </RootStack.Navigator>

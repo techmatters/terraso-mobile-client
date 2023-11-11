@@ -12,6 +12,7 @@ import {HorizontalIconButton} from 'terraso-mobile-client/components/common/Icon
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {Keyboard} from 'react-native';
 
 type Props = {
   project: Project;
@@ -23,6 +24,7 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
   const dispatch = useDispatch();
 
   const handleUpdateProject = async (content: string) => {
+    Keyboard.dismiss();
     try {
       const projectInput: ProjectUpdateMutationInput = {
         id: project.id,
@@ -40,7 +42,10 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
     }
   };
 
-  const handleDelete = async setSubmitting => {
+  const handleDelete = async (
+    setSubmitting: (isSubmitting: boolean) => void,
+  ) => {
+    Keyboard.dismiss();
     setSubmitting(true);
     await handleUpdateProject('');
     setSubmitting(false);
@@ -53,7 +58,7 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
           initialValues={{content: project.siteInstructions}}
           onSubmit={async (values, actions) => {
             actions.setSubmitting(true);
-            await handleUpdateProject(values.content).then(() =>
+            await handleUpdateProject(values.content || '').then(() =>
               actions.setSubmitting(false),
             );
           }}>
@@ -66,7 +71,11 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
                 <Heading variant="h6" pb={7}>
                   {t('projects.inputs.instructions.title')}
                 </Heading>
-                <SiteNoteForm {...formikProps} />
+                <SiteNoteForm
+                  content={formikProps.values.content || ''}
+                  onChangeContent={formikProps.handleChange('content')}
+                  onBlurContent={formikProps.handleBlur('content')}
+                />
                 <HStack>
                   <Spacer />
                   <ConfirmModal
@@ -76,7 +85,7 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
                           p={0}
                           name="delete"
                           label={t('general.delete_fab')}
-                          textColor="error.main"
+                          colorScheme="error.main"
                           _icon={{
                             color: 'error.main',
                             size: '5',
@@ -100,7 +109,7 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
                     }}
                   />
                   <Button
-                    onPress={handleSubmit}
+                    onPress={() => handleSubmit()}
                     isDisabled={isSubmitting}
                     shadow={1}
                     size={'lg'}>
