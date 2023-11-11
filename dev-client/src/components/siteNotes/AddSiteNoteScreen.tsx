@@ -12,6 +12,7 @@ import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {KeyboardAvoidingView} from 'react-native';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {HorizontalIconButton} from 'terraso-mobile-client/components/common/Icons';
+import {Keyboard} from 'react-native';
 
 type Props = {
   siteId: string;
@@ -34,7 +35,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
     if (!content.trim()) {
       return;
     }
-
+    Keyboard.dismiss();
     try {
       const siteNoteInput: SiteNoteAddMutationInput = {
         siteId,
@@ -69,14 +70,17 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
             );
           }}>
           {formikProps => {
-            const {handleSubmit, isSubmitting, setSubmitting, values} =
-              formikProps;
+            const {handleSubmit, isSubmitting, values} = formikProps;
             return (
               <VStack pt={10} pl={5} pr={5} pb={10}>
                 <Heading variant="h6" pb={7}>
                   {t('site.notes.add_title')}
                 </Heading>
-                <SiteNoteForm {...formikProps} />
+                <SiteNoteForm
+                  content={formikProps.values.content || ''}
+                  onChangeContent={formikProps.handleChange('content')}
+                  onBlurContent={formikProps.handleBlur('content')}
+                />
                 <HStack>
                   <Spacer />
                   <ConfirmModal
@@ -86,7 +90,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
                           p={0}
                           name="delete"
                           label={t('general.delete_fab')}
-                          textColor="error.main"
+                          colorScheme="error.main"
                           _icon={{
                             color: 'error.main',
                             size: '5',
@@ -96,7 +100,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
                             if (values.content) {
                               onOpen();
                             } else {
-                              handleDelete(setSubmitting);
+                              handleDelete();
                             }
                           }}
                         />
@@ -106,11 +110,11 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
                     body={t('site.notes.confirm_removal_body')}
                     actionName={t('general.delete_fab')}
                     handleConfirm={() => {
-                      handleDelete(setSubmitting);
+                      handleDelete();
                     }}
                   />
                   <Button
-                    onPress={handleSubmit}
+                    onPress={() => handleSubmit()}
                     isDisabled={isSubmitting}
                     shadow={1}
                     size={'lg'}>

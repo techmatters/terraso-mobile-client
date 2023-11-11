@@ -16,6 +16,7 @@ import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {Keyboard} from 'react-native';
 
 type Props = {
   note: SiteNote;
@@ -38,7 +39,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
     if (!content.trim()) {
       return;
     }
-
+    Keyboard.dismiss();
     try {
       const siteNoteInput: SiteNoteUpdateMutationInput = {
         id: note.id,
@@ -57,7 +58,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
   };
 
   const handleDelete = useCallback(
-    async setSubmitting => {
+    async (setSubmitting: (isSubmitting: boolean) => void) => {
       setSubmitting(true);
       await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
       setSubmitting(false);
@@ -86,7 +87,11 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                 <Heading variant="h6" pb={7}>
                   {t('site.notes.add_title')}
                 </Heading>
-                <SiteNoteForm {...formikProps} />
+                <SiteNoteForm
+                  content={formikProps.values.content || ''}
+                  onChangeContent={formikProps.handleChange('content')}
+                  onBlurContent={formikProps.handleBlur('content')}
+                />
                 <HStack>
                   <Spacer />
                   <ConfirmModal
@@ -96,7 +101,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                           p={0}
                           name="delete"
                           label={t('general.delete_fab')}
-                          textColor="error.main"
+                          colorScheme="error.main"
                           _icon={{
                             color: 'error.main',
                             size: '5',
@@ -120,7 +125,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                     }}
                   />
                   <Button
-                    onPress={handleSubmit}
+                    onPress={() => handleSubmit()}
                     isDisabled={isSubmitting}
                     shadow={1}
                     size={'lg'}>
