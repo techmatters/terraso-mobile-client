@@ -14,7 +14,10 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
   const navigation = useNavigation();
 
   const onShowNote = useCallback(() => {
-    navigation.navigate('READ_NOTE', {content: siteInstructions});
+    navigation.navigate('READ_NOTE', {
+      content: siteInstructions,
+      isSiteInstructions: true,
+    });
   }, [navigation, siteInstructions]);
 
   return (
@@ -27,11 +30,11 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
       onPress={onShowNote}>
       <HStack>
         <Icon name="place" color="primary.dark" size="sm" mr="1" />
-        <Text bold fontSize="md" numberOfLines={3} ellipsizeMode="tail">
+        <Text bold fontSize="md">
           {t('site.notes.projectInstructions')}
         </Text>
       </HStack>
-      <Text pt={1} fontSize="md">
+      <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">
         {siteInstructions}
       </Text>
     </Card>

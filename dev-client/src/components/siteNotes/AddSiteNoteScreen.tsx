@@ -9,10 +9,9 @@ import {addSiteNote} from 'terraso-client-shared/site/siteSlice';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import {KeyboardAvoidingView} from 'react-native';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {HorizontalIconButton} from 'terraso-mobile-client/components/common/Icons';
-import {Keyboard} from 'react-native';
+import {Keyboard, KeyboardAvoidingView} from 'react-native';
 
 type Props = {
   siteId: string;
@@ -59,7 +58,8 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
 
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
-      <KeyboardAvoidingView behavior="height">
+      {/* eslint-disable-next-line react-native/no-inline-styles */}
+      <KeyboardAvoidingView behavior="height" style={{flex: 1}}>
         <Formik
           initialValues={{content: ''}}
           validationSchema={notesFormSchema}
@@ -72,15 +72,17 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
           {formikProps => {
             const {handleSubmit, isSubmitting, values} = formikProps;
             return (
-              <VStack pt={10} pl={5} pr={5} pb={10}>
+              <VStack pt={10} pl={5} pr={5} pb={10} flex={1}>
                 <Heading variant="h6" pb={7}>
                   {t('site.notes.add_title')}
                 </Heading>
-                <SiteNoteForm
-                  content={formikProps.values.content || ''}
-                  onChangeContent={formikProps.handleChange('content')}
-                  onBlurContent={formikProps.handleBlur('content')}
-                />
+                <Box flexGrow={1}>
+                  <SiteNoteForm
+                    content={formikProps.values.content || ''}
+                    onChangeContent={formikProps.handleChange('content')}
+                    onBlurContent={formikProps.handleBlur('content')}
+                  />
+                </Box>
                 <HStack>
                   <Spacer />
                   <ConfirmModal
