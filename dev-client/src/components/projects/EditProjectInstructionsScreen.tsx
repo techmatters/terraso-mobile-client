@@ -12,7 +12,7 @@ import {HorizontalIconButton} from 'terraso-mobile-client/components/common/Icon
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import {Keyboard, KeyboardAvoidingView} from 'react-native';
+import {Keyboard, KeyboardAvoidingView, Platform} from 'react-native';
 
 type Props = {
   project: Project;
@@ -53,8 +53,10 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
 
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
-      {/* eslint-disable-next-line react-native/no-inline-styles */}
-      <KeyboardAvoidingView behavior="height" style={{flex: 1}}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{flex: 1}}>
         <Box pt={10} pl={5} pr={5} pb={10} flex={1}>
           <Formik
             initialValues={{content: project.siteInstructions}}
@@ -80,7 +82,7 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
                       onBlurContent={formikProps.handleBlur('content')}
                     />
                   </Box>
-                  <HStack>
+                  <HStack pb={4}>
                     <Spacer />
                     <ConfirmModal
                       trigger={onOpen => (

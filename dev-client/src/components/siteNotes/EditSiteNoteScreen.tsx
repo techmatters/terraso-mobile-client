@@ -16,7 +16,7 @@ import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import {Keyboard, KeyboardAvoidingView} from 'react-native';
+import {Keyboard, KeyboardAvoidingView, Platform} from 'react-native';
 
 type Props = {
   note: SiteNote;
@@ -68,8 +68,10 @@ export const EditSiteNoteScreen = ({note}: Props) => {
 
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
-      {/* eslint-disable-next-line react-native/no-inline-styles */}
-      <KeyboardAvoidingView behavior="height" style={{flex: 1}}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{flex: 1}}>
         <Box pt={10} pl={5} pr={5} pb={10} flex={1}>
           <Formik
             initialValues={{content: note.content}}
@@ -96,7 +98,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                       onBlurContent={formikProps.handleBlur('content')}
                     />
                   </Box>
-                  <HStack>
+                  <HStack pb={4}>
                     <Spacer />
                     <ConfirmModal
                       trigger={onOpen => (
