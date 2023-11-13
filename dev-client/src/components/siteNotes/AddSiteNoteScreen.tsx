@@ -59,7 +59,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Handle platform-specific keyboard avoidance
         // eslint-disable-next-line react-native/no-inline-styles
         style={{flex: 1}}>
         <Formik

@@ -54,7 +54,7 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Handle platform-specific keyboard avoidance
         // eslint-disable-next-line react-native/no-inline-styles
         style={{flex: 1}}>
         <Box pt={10} pl={5} pr={5} pb={10} flex={1}>
