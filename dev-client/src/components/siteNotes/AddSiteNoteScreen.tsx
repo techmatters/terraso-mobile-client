@@ -93,7 +93,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
                         <HorizontalIconButton
                           p={0}
                           name="delete"
-                          label={t('general.delete_fab')}
+                          label={t('general.delete_fab').toLocaleUpperCase()}
                           colorScheme="error.main"
                           _icon={{
                             color: 'error.main',
@@ -122,7 +122,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
                     isDisabled={isSubmitting}
                     shadow={1}
                     size={'lg'}>
-                    {t('general.done_fab')}
+                    {t('general.done_fab').toLocaleUpperCase()}
                   </Button>
                 </HStack>
               </VStack>
