@@ -115,6 +115,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                             isDisabled={isSubmitting}
                             onPress={() => {
                               if (values.content) {
+                                Keyboard.dismiss();
                                 onOpen();
                               } else {
                                 handleDelete(setSubmitting);
