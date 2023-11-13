@@ -38,7 +38,7 @@ export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
         <HStack>
           <Spacer />
           <Button onPress={handleClose} shadow={1} size={'lg'}>
-            {t('general.close_fab')}
+            {t('general.close_fab').toLocaleUpperCase()}
           </Button>
         </HStack>
       </VStack>

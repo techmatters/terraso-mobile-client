@@ -34,7 +34,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
         <HStack>
           <Icon color="primary.contrast" size={'sm'} mr={2} name={'place'} />
           <Text color="primary.contrast">
-            {t('projects.inputs.instructions.add_label')}
+            {t('projects.inputs.instructions.add_label').toLocaleUpperCase()}
           </Text>
         </HStack>
       </Button>
