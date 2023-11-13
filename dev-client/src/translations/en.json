@@ -87,14 +87,14 @@
       }
     },
     "notes": {
-      "add_note_label": "ADD NOTE",
+      "add_note_label": "Add Note",
       "title": "Site Notes",
       "add_title": "Site Note",
       "note_by": "by",
       "confirm_removal_title": "Delete note?",
-      "confirm_removal_body": "This action cannot be undone.",
+      "confirm_removal_body": "Are you sure you want to remove this note?",
       "min_length_error": "Must be at least {{min}} characters",
-      "placeholder_text": "Start typing your note...",
+      "placeholder_text": "Start typing your note…",
       "projectInstructions": "Site Instructions"
     },
     "search": {
@@ -143,7 +143,7 @@
         "title": "Pinned Site Note",
         "screen_title": "Site Instructions",
         "description": "This content will display at the top of the Notes section of each site in this project.",
-        "add_label": "NOTE"
+        "add_label": "Note"
       }
     },
     "team": {
@@ -260,10 +260,10 @@
     "cancel": "Cancel",
     "add": "Add",
     "submit": "submit",
-    "cancel_fab": "CANCEL",
-    "delete_fab": "DELETE",
-    "done_fab": "DONE",
-    "close_fab": "CLOSE"
+    "cancel_fab": "Cancel",
+    "delete_fab": "Delete",
+    "done_fab": "Done",
+    "close_fab": "Close"
   },
   "screens": {
     "HOME": "LandPKS",
