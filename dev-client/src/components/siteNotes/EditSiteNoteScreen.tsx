@@ -93,7 +93,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
                   </Heading>
                   <Box flexGrow={1}>
                     <SiteNoteForm
-                      content={formikProps.values.content || ''}
+                      content={formikProps.values.content}
                       onChangeContent={formikProps.handleChange('content')}
                       onBlurContent={formikProps.handleBlur('content')}
                     />
