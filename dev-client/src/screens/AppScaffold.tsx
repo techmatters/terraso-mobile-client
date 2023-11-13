@@ -130,7 +130,6 @@ export function AppScaffold() {
       <RootStack.Group
         screenOptions={{
           headerShown: false,
-          presentation: 'modal',
           animation: 'slide_from_bottom',
         }}>
         {modalScreens}
