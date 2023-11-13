@@ -99,6 +99,7 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
                             isDisabled={isSubmitting}
                             onPress={() => {
                               if (values.content) {
+                                Keyboard.dismiss();
                                 onOpen();
                               } else {
                                 handleDelete(setSubmitting);
