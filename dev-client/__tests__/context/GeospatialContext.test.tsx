@@ -11,7 +11,7 @@ const TestComponent = ({mock}: Props) => {
   const {sortedSites} = useContext(GeospatialContext);
   useEffect(() => {
     mock(sortedSites);
-  }, [sortedSites]);
+  }, [sortedSites, mock]);
   return <></>;
 };
 

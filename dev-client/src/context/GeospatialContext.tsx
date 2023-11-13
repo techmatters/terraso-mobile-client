@@ -1,5 +1,4 @@
 import {createContext, useMemo} from 'react';
-import {useSelector} from 'terraso-mobile-client/model/store';
 import haversine from 'haversine';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 

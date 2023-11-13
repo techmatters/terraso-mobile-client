@@ -28,7 +28,6 @@ jest.mock('react-native-app-auth', () => 'AppAuth');
 jest.mock('@rnmapbox/maps', () => 'Mapbox');
 
 let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
-mmkvMock.unmock(); // Cleanup if already mocked
 mmkvMock.mock(); // Mock the storage
 
 setAPIConfig({
@@ -52,7 +51,6 @@ global.console.error = jest.fn();
 
 beforeEach(() => {
   // Install the in-memory adapter
-  let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
   mmkvMock.unmock(); // Cleanup if already mocked
   mmkvMock.mock(); // Mock the storage
 });

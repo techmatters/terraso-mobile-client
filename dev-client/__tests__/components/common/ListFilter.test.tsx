@@ -1,11 +1,14 @@
 import {screen, fireEvent} from '@testing-library/react-native';
 import {customRender as render} from '@testing/utils';
 import {FlatList, Text} from 'native-base';
-import ListFilter, {
-  FilterConfig,
-  ListFilterProps,
-  OptionMapping,
+import {
+  SelectFilter,
+  TextInputFilter,
+  useListFilter,
+  ListFilterProvider,
+  ListFilterModal,
 } from 'terraso-mobile-client/components/common/ListFilter';
+import {normalizeText} from 'terraso-mobile-client/util';
 
 const activateTextInputFilter = (filterText: string) => {
   const input = screen.getByPlaceholderText('Search');
@@ -63,46 +66,86 @@ const sampleObjects: TestObject[] = [
   {name: 'Carla', id: '4', privacy: 'private'},
 ];
 
-const inset = {
-  frame: {x: 0, y: 0, width: 0, height: 0},
-  insets: {top: 0, left: 0, right: 0, bottom: 0},
+const SampleList = () => {
+  const {filteredItems} = useListFilter<TestObject>();
+  return (
+    <FlatList
+      data={filteredItems}
+      renderItem={({item}) => <Text>{item.name}</Text>}
+    />
+  );
 };
 
-// TODO: Define a custom render method that takes care of wrapper code for us
-const Test = <S extends OptionMapping<S>>(
-  props: Omit<ListFilterProps<TestObject, S>, 'children'>,
-) => {
+const Test = () => {
   return (
-    <ListFilter<TestObject, S> {...props}>
-      {({filteredItems, InputFilter}) => (
-        <>
-          {InputFilter}
-          <FlatList
-            data={filteredItems}
-            renderItem={({item}) => <Text>{item.name}</Text>}
+    <>
+      <ListFilterProvider
+        items={sampleObjects}
+        filters={{
+          search: {
+            kind: 'filter',
+            f: (val: string) => (comp: string) =>
+              normalizeText(comp).includes(val),
+            preprocess: normalizeText,
+            lookup: {key: 'name'},
+            hide: true,
+          },
+          role: {
+            kind: 'filter',
+            f: (val: string) => (comp: string) => val === comp,
+            lookup: {
+              record: {
+                '1': 'manager',
+                '2': 'viewer',
+                '3': 'viewer',
+                '4': 'contributor',
+              },
+              key: 'id',
+            },
+          },
+          privacy: {
+            kind: 'filter',
+            f: (val: string) => (comp: string) => val === comp,
+            lookup: {key: 'privacy'},
+          },
+        }}>
+        <ListFilterModal
+          searchInput={
+            <TextInputFilter
+              placeholder="Search"
+              label="Search"
+              name="search"
+            />
+          }>
+          <SelectFilter
+            key="role"
+            name="role"
+            itemKey="id"
+            options={{
+              manager: 'Manager',
+              contributor: 'Contributor',
+              viewer: 'Viewer',
+            }}
+            placeholder="Project role"
+            label="Role"
           />
-        </>
-      )}
-    </ListFilter>
+          <SelectFilter
+            key="privacy"
+            name="privacy"
+            itemKey="privacy"
+            label="Privacy"
+            placeholder="Privacy"
+            options={{private: 'Private', public: 'Public'}}
+          />
+        </ListFilterModal>
+        <SampleList />
+      </ListFilterProvider>
+    </>
   );
 };
 
 test("Filter removes items that don't match query", () => {
-  render(
-    <Test
-      items={sampleObjects}
-      filterConfig={{
-        textInput: {
-          key: 'name',
-        },
-      }}
-      displayConfig={{
-        textInput: {
-          placeholder: 'Search',
-        },
-      }}
-    />,
-  );
+  render(<Test />);
 
   const first = screen.getByText(sampleObjects[0].name);
   const second = screen.getByText(sampleObjects[1].name);
@@ -116,60 +159,8 @@ test("Filter removes items that don't match query", () => {
   assertNotNull(0);
 });
 
-const SELECT_FILTER_CONF: FilterConfig<
-  TestObject,
-  {role: 'manager' | 'viewer' | 'contributor'; privacy: 'private' | 'public'}
-> = {
-  textInput: {key: 'name'},
-  select: {
-    role: {
-      key: 'id',
-      lookup: {
-        '1': 'manager',
-        '2': 'viewer',
-        '3': 'viewer',
-        '4': 'contributor',
-      },
-    },
-    privacy: {
-      key: 'privacy',
-    },
-  },
-};
-const SELECT_DISPLAY_CONF = {
-  textInput: {
-    placeholder: 'Search',
-    label: 'string',
-  },
-  select: {
-    role: {
-      label: 'Role',
-      placeholder: 'Project role',
-      options: {
-        manager: 'Manager',
-        contributor: 'Contributor',
-        viewer: 'Viewer',
-      },
-    },
-    privacy: {
-      label: 'Privacy',
-      placeholder: 'Privacy',
-      options: {
-        private: 'Private',
-        public: 'Public',
-      },
-    },
-  },
-};
-
 test('Updating select filter removes items that do not match', async () => {
-  render(
-    <Test
-      items={sampleObjects}
-      filterConfig={SELECT_FILTER_CONF}
-      displayConfig={SELECT_DISPLAY_CONF}
-    />,
-  );
+  render(<Test />);
 
   const first = screen.getByText(sampleObjects[0].name);
   const second = screen.getByText(sampleObjects[1].name);
@@ -184,13 +175,7 @@ test('Updating select filter removes items that do not match', async () => {
 });
 
 test('Updating text input and select filters works', () => {
-  render(
-    <Test
-      items={sampleObjects}
-      filterConfig={SELECT_FILTER_CONF}
-      displayConfig={SELECT_DISPLAY_CONF}
-    />,
-  );
+  render(<Test />);
 
   activateSelectFilter('Project role', 'Viewer');
   activateTextInputFilter('Carl');
@@ -200,13 +185,7 @@ test('Updating text input and select filters works', () => {
 });
 
 test('Updating select filters and then text input works', () => {
-  render(
-    <Test
-      items={sampleObjects}
-      filterConfig={SELECT_FILTER_CONF}
-      displayConfig={SELECT_DISPLAY_CONF}
-    />,
-  );
+  render(<Test />);
 
   activateTextInputFilter('Carl');
   activateSelectFilter('Project role', 'Viewer');
@@ -216,13 +195,7 @@ test('Updating select filters and then text input works', () => {
 });
 
 test('Selecting input is persisted after apply', () => {
-  render(
-    <Test
-      items={sampleObjects}
-      filterConfig={SELECT_FILTER_CONF}
-      displayConfig={SELECT_DISPLAY_CONF}
-    />,
-  );
+  render(<Test />);
 
   expect(
     screen.getByPlaceholderText('Project role', {
@@ -245,17 +218,13 @@ test('Selecting input is persisted after apply', () => {
 });
 
 test('Badge number updated when filter applied', () => {
-  render(
-    <Test
-      items={sampleObjects}
-      filterConfig={SELECT_FILTER_CONF}
-      displayConfig={SELECT_DISPLAY_CONF}
-    />,
-  );
+  render(<Test />);
   expect(screen.queryByLabelText('Number of filters applied')).toBeNull();
   activateSelectFilter('Project role', 'Manager');
   const badge = screen.getByLabelText('Number of filters applied');
   expect(badge).toHaveTextContent('1');
   activateSelectFilter('Privacy', 'Public');
+  expect(badge).toHaveTextContent('2');
+  activateTextInputFilter('A');
   expect(badge).toHaveTextContent('2');
 });
