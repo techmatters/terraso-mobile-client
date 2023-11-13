@@ -116,6 +116,9 @@ export function AppScaffold() {
   const dispatch = useDispatch();
   const hasToken = useSelector(state => state.account.hasToken);
   const currentUser = useSelector(state => state.account.currentUser.data);
+  const loggedIn = useSelector(
+    state => state.account.currentUser.data !== null,
+  );
 
   useEffect(() => {
     if (!hasToken) {
@@ -137,7 +140,7 @@ export function AppScaffold() {
   }, [dispatch]);
 
   return (
-    <RootStack.Navigator initialRouteName={!hasToken ? 'LOGIN' : 'HOME'}>
+    <RootStack.Navigator initialRouteName={!loggedIn ? 'LOGIN' : 'HOME'}>
       <RootStack.Group screenOptions={defaultScreenOptions}>
         {screens}
       </RootStack.Group>
