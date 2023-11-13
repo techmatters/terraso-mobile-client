@@ -78,7 +78,7 @@ export const HorizontalIconButton = React.forwardRef(
             {icon}
             <Text
               color={colorScheme || 'primary.contrast'}
-              fontSize="sm"
+              fontSize="md"
               pl={1}>
               {label}
             </Text>
