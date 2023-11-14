@@ -174,7 +174,7 @@ export const CreateSiteView = ({
         ...parseCoords(coords),
       });
       if (createdSite !== undefined) {
-        navigation.replace('LOCATION_DASHBOARD', {siteId: createdSite.id});
+        navigation.replace('HOME');
       }
     },
     [createSiteCallback, navigation, validationSchema],
