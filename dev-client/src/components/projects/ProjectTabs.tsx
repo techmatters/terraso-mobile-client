@@ -71,7 +71,9 @@ export default function ProjectTabs({project}: Props) {
       <Tab.Screen
         name={TabRoutes.INPUTS}
         component={ProjectInputTab}
-        initialParams={{projectId: project.id}}
+        initialParams={{
+          projectId: project.id,
+        }}
       />
       <Tab.Screen
         name={TabRoutes.TEAM}

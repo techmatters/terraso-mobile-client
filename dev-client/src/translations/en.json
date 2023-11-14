@@ -137,6 +137,11 @@
         "survey": "USDA NRCS Soil Survey",
         "grids": "SoilGrids",
         "a11yLabel": "default soil information source"
+      },
+      "instructions": {
+        "title": "Pinned Site Note",
+        "description": "This content will display at the top of the Notes section of each site in this project.",
+        "add_label": "NOTE"
       }
     },
     "team": {

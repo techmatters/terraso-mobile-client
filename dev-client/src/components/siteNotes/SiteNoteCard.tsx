@@ -9,10 +9,9 @@ import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = {
   note: SiteNote;
-  siteId: string;
 };
 
-export const SiteNoteCard = ({note, siteId}: Props) => {
+export const SiteNoteCard = ({note}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
@@ -32,7 +31,7 @@ export const SiteNoteCard = ({note, siteId}: Props) => {
           p={0}
           name="edit"
           _icon={{
-            color: 'grey.600',
+            color: 'primary.dark',
             size: '5',
           }}
           onPress={onEditNote}

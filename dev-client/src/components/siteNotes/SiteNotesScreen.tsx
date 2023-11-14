@@ -44,9 +44,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
           mb={130}
           data={Object.values(notes)}
           keyExtractor={note => note.id}
-          renderItem={({item: note}) => (
-            <SiteNoteCard siteId={siteId} note={note} />
-          )}
+          renderItem={({item: note}) => <SiteNoteCard note={note} />}
         />
       </Column>
     </BottomSheetModalProvider>
