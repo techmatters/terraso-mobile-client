@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Row, Text, Box} from 'native-base';
+import {Button, Row, Text, Box, HStack} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {FormSwitch} from 'terraso-mobile-client/components/common/Form';
@@ -65,11 +65,18 @@ export const ProjectInputTab = ({
         </Text>
         <Button
           mt={2}
+          pl={4}
+          pr={4}
           size="lg"
           backgroundColor="primary.dark"
           shadow={5}
           onPress={onEditInstructions}>
-          {t('projects.inputs.instructions.add_label')}
+          <HStack>
+            <Icon color="primary.contrast" size={'sm'} mr={2} name={'edit'} />
+            <Text color="primary.contrast">
+              {t('projects.inputs.instructions.add_label')}
+            </Text>
+          </HStack>
         </Button>
       </Box>
       <Accordion

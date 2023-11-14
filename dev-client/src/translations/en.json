@@ -261,7 +261,8 @@
     "submit": "submit",
     "cancel_fab": "CANCEL",
     "delete_fab": "DELETE",
-    "done_fab": "DONE"
+    "done_fab": "DONE",
+    "close_fab": "CLOSE"
   },
   "screens": {
     "HOME": "LandPKS",

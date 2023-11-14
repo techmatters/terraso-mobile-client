@@ -36,6 +36,7 @@ import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTrans
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen';
 import {AddSiteNoteScreen} from 'terraso-mobile-client/components/siteNotes/AddSiteNoteScreen';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/components/siteNotes/EditSiteNoteScreen';
+import {ReadNoteScreen} from 'terraso-mobile-client/components/siteNotes/ReadNoteScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/components/projects/EditProjectInstructionsScreen';
 import {useNavigation as useNavigationNative} from '@react-navigation/native';
 import {LocationDashboardScreen} from 'terraso-mobile-client/components/sites/LocationDashboardScreen';
@@ -73,6 +74,7 @@ const modalScreenDefinitions = {
   ADD_SITE_NOTE: AddSiteNoteScreen,
   EDIT_SITE_NOTE: EditSiteNoteScreen,
   EDIT_PROJECT_INSTRUCTIONS: EditProjectInstructionsScreen,
+  READ_NOTE: ReadNoteScreen,
 } satisfies ModalScreenDefinitions;
 
 type RootStackParamList = ParamList<typeof screenDefinitions>;
