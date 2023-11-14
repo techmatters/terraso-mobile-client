@@ -27,7 +27,7 @@ import {
   Row,
   Text,
   Spacer,
-  Pressable,
+  // Pressable,
 } from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
@@ -79,6 +79,8 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           onChangeText={setName}
           leftElement={<Icon ml="12px" name="edit" />}
         />
+        {/*
+          TODO: Uncomment button after feature is written.
         <Pressable
           variant="subtle"
           w="full"
@@ -98,6 +100,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             <Icon name="arrow-forward-ios" />
           </Row>
         </Pressable>
+          */}
         <FormControl>
           <FormControl.Label>
             <IconLabel
@@ -114,6 +117,8 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           endIcon={<Icon name="info" />}>
           {t('site.dashboard.copy_download_link_button').toUpperCase()}
         </Button>
+        {/*
+          TODO: Uncomment button after archiving code is done.
         <FormControl alignItems="flex-start">
           <Button
             pl={0}
@@ -126,6 +131,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             {t('site.dashboard.archive_button_help_text')}
           </FormControl.HelperText>
         </FormControl>
+        */}
         <ConfirmModal
           trigger={onOpen => (
             <Button
