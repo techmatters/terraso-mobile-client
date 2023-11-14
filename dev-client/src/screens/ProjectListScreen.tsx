@@ -28,8 +28,8 @@ import {Box, FlatList, Heading, Link, Text, VStack, Spinner} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import AddButton from 'terraso-mobile-client/components/common/AddButton';
 import ProjectPreviewCard from 'terraso-mobile-client/components/projects/ProjectPreviewCard';
-import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
-import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
+import ListFilter from 'terraso-mobile-client/components/common/ListFilter';
+import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
@@ -37,11 +37,9 @@ export const ProjectListScreen = () => {
     () => Object.values(allProjects).filter(project => !project.archived),
     [allProjects],
   );
-  const {
-    results: searchedProjects,
-    query,
-    setQuery,
-  } = useTextSearch({data: activeProjects, keys: ['name']});
+  const projectRoleLookup = useSelector(state =>
+    selectProjectUserRolesMap(state),
+  );
 
   const {t} = useTranslation();
   const navigation = useNavigation();
@@ -86,23 +84,51 @@ export const ProjectListScreen = () => {
         )}
 
         {activeProjects.length > 0 && (
-          <>
-            <SearchBar
-              query={query}
-              setQuery={setQuery}
-              placeholder={t('projects.search.placeholder')}
-              FilterOptions={<Text>Project filter placeholder</Text>}
-            />
-            <FlatList
-              data={searchedProjects}
-              renderItem={({item}) => <ProjectPreviewCard project={item} />}
-              ItemSeparatorComponent={() => <Box h="8px" />}
-              keyExtractor={project => project.id}
-              ListEmptyComponent={
-                <Text>{t('projects.search.no_matches')}</Text>
-              }
-            />
-          </>
+          <ListFilter
+            items={activeProjects}
+            filterConfig={{
+              textInput: {
+                key: 'name',
+              },
+              select: {
+                role: {
+                  key: 'id',
+                  lookup: projectRoleLookup,
+                },
+              },
+            }}
+            displayConfig={{
+              textInput: {
+                placeholder: 'Search',
+                label: 'We will getrid of this',
+              },
+              select: {
+                role: {
+                  label: 'Filter projects by role',
+                  placeholder: '',
+                  options: {
+                    manager: 'Manager',
+                    contributor: 'Contributor',
+                    viewer: 'Viewer',
+                  },
+                },
+              },
+            }}>
+            {({filteredItems, InputFilter}) => (
+              <>
+                {InputFilter}
+                <FlatList
+                  data={filteredItems}
+                  renderItem={({item}) => <ProjectPreviewCard project={item} />}
+                  ItemSeparatorComponent={() => <Box h="8px" />}
+                  keyExtractor={project => project.id}
+                  ListEmptyComponent={
+                    <Text>{t('projects.search.no_matches')}</Text>
+                  }
+                />
+              </>
+            )}
+          </ListFilter>
         )}
       </VStack>
     </ScreenScaffold>

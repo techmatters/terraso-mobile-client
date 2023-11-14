@@ -69,6 +69,7 @@ const inset = {
   insets: {top: 0, left: 0, right: 0, bottom: 0},
 };
 
+// TODO: Define a custom render method that takes care of wrapper code for us
 const Test = <S extends OptionMapping<S>>(
   props: Omit<ListFilterProps<TestObject, S>, 'children'>,
 ) => {
