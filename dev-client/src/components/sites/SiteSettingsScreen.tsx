@@ -20,13 +20,13 @@ import {
   Fab,
   Input,
   Button,
-  useTheme,
+  // useTheme,
   FormControl,
   Select,
   Column,
-  Row,
-  Text,
-  Spacer,
+  // Row,
+  // Text,
+  // Spacer,
   // Pressable,
 } from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -47,15 +47,15 @@ type Props = {
 export const SiteSettingsScreen = ({siteId}: Props) => {
   const dispatch = useDispatch();
   const {t} = useTranslation();
-  const {colors} = useTheme();
+  // const {colors} = useTheme();
   const {navigate} = useNavigation();
   const site = useSelector(state => state.site.sites[siteId]);
   const [name, setName] = useState(site.name);
 
-  const onTeamPress = useCallback(
-    () => navigate('SITE_TEAM_SETTINGS', {siteId}),
-    [siteId, navigate],
-  );
+  // const onTeamPress = useCallback(
+  //   () => navigate('SITE_TEAM_SETTINGS', {siteId}),
+  //   [siteId, navigate],
+  // );
 
   const onSave = useCallback(
     () => dispatch(updateSite({id: site.id, name})),
