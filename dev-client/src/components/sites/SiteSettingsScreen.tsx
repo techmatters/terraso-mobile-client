@@ -76,7 +76,6 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
         <Input
           value={name}
           onChangeText={setName}
-          leftElement={<Icon ml="12px" name="edit" />}
         />
         {/*
           TODO: Uncomment button after feature is written.
