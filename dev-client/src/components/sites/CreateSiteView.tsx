@@ -15,15 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Text,
-  Fab,
-  FormControl,
-  ScrollView,
-  VStack,
-  Column,
-  Link,
-} from 'native-base';
+import {Text, Fab, FormControl, ScrollView, VStack} from 'native-base';
 import {useCallback, useMemo, useEffect} from 'react';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
@@ -44,19 +36,15 @@ import {
   FormInput,
   FormRadio,
   FormRadioGroup,
-  FormHelperText,
   FormLabel,
   FormTooltip,
 } from 'terraso-mobile-client/components/common/Form';
-
-type LocationInputOptions = 'manual' | 'gps' | 'pin';
 
 type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,
   'coords'
 > & {
   coords: string;
-  locationSource: LocationInputOptions;
 };
 
 const CreateSiteForm = ({
@@ -69,19 +57,9 @@ const CreateSiteForm = ({
 }: FormikProps<FormState> & {sitePin: Coords | undefined}) => {
   const {t} = useTranslation();
 
-  const {coords: userCoords, accuracyM} = useSelector(
-    state => state.map.userLocation,
-  );
+  const {accuracyM} = useSelector(state => state.map.userLocation);
 
-  const currentCoords = useMemo(
-    () =>
-      values.locationSource === 'gps'
-        ? userCoords
-        : values.locationSource === 'pin'
-        ? sitePin
-        : undefined,
-    [values.locationSource, userCoords, sitePin],
-  );
+  const currentCoords = useMemo(() => sitePin, [sitePin]);
 
   useEffect(() => {
     if (currentCoords && values.coords !== coordsToString(currentCoords)) {
@@ -97,49 +75,30 @@ const CreateSiteForm = ({
 
   return (
     <VStack p="16px" pt="30px" space="18px">
-      <FormInput name="name" placeholder={t('site.create.name_placeholder')} />
-      <FormRadioGroup
-        name="locationSource"
-        label={t('site.create.location_label')}
-        values={[...(sitePin ? ['pin'] : []), 'gps', 'manual']}
-        renderRadio={value => {
-          if (value !== 'gps' || accuracyM === null) {
-            return (
-              <FormRadio value={value}>{t(`site.create.${value}`)}</FormRadio>
-            );
-          }
-          return (
-            <FormRadio value={value} _stack={{alignItems: 'flex-start'}}>
-              <Column pt="6px">
-                <Text variant="body1">{t(`site.create.${value}`)}</Text>
-                <Text variant="body2">
-                  {t('site.create.location_accuracy', {
-                    accuracyM: Math.round(accuracyM),
-                  })}
-                </Text>
-              </Column>
-            </FormRadio>
-          );
-        }}
-      />
+      <FormField name="name">
+        <FormLabel>{t('site.create.name_label')}</FormLabel>
+        <FormInput placeholder={t('site.create.name_placeholder')} />
+      </FormField>
       <FormField name="coords">
-        <FormControl.Label variant="subtle">
-          {t('site.create.coords_label')}
-        </FormControl.Label>
+        <FormLabel>{t('site.create.location_label')}</FormLabel>
+        <Text>
+          {t('site.create.location_accuracy', {accuracyM: accuracyM})}
+        </Text>
         <FormInput
-          variant="underlined"
           keyboardType="decimal-pad"
           onChange={() => handleChange('locationSource')('manual')}
         />
-        {values.locationSource === 'manual' && (
-          <FormHelperText>{t('site.create.coords_help')}</FormHelperText>
-        )}
+        <FormControl.Label variant="subtle">
+          {t('site.create.coords_label')}
+        </FormControl.Label>
       </FormField>
       <FormField name="projectId">
         <FormLabel>
           {t('site.create.add_to_project_label')}
           <FormTooltip icon="help">
-            {t('site.create.add_to_project_tooltip')}
+            <Text color="primary.contrast" variant="body1">
+              {t('site.create.add_to_project_tooltip')}
+            </Text>
           </FormTooltip>
         </FormLabel>
         <ProjectSelect
@@ -153,10 +112,12 @@ const CreateSiteForm = ({
         <FormLabel>
           {t('privacy.label')}
           <FormTooltip icon="help">
-            {t('site.create.privacy_tooltip')}
-            <Link _text={{color: 'primary.lightest'}}>
-              {t('site.create.privacy_tooltip_link')}
-            </Link>
+            <Text color="primary.contrast" variant="body1">
+              {t('site.create.privacy_tooltip')}
+              <Text underline color="primary.lightest">
+                {t('site.create.privacy_tooltip_link')}
+              </Text>
+            </Text>
           </FormTooltip>
         </FormLabel>
         <FormRadioGroup
@@ -200,12 +161,8 @@ export const CreateSiteView = ({
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
 
-  const defaultLocationSource = sitePin
-    ? 'pin'
-    : userLocation.coords
-    ? 'gps'
-    : 'manual';
-  const defaultCoords = sitePin ?? userLocation.coords;
+  const defaultLocationSource = 'pin';
+  const defaultCoords = userLocation.coords;
 
   const navigation = useNavigation();
 
