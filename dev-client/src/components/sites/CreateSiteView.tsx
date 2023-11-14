@@ -86,7 +86,6 @@ const CreateSiteForm = ({
         </Text>
         <FormInput
           keyboardType="decimal-pad"
-          onChange={() => handleChange('locationSource')('manual')}
         />
         <FormControl.Label variant="subtle">
           {t('site.create.coords_label')}
@@ -167,7 +166,7 @@ export const CreateSiteView = ({
   const navigation = useNavigation();
 
   const onSave = useCallback(
-    async ({locationSource: _, ...form}: FormState) => {
+    async ({...form}: FormState) => {
       const {coords, ...site} = validationSchema.cast(form);
       const createdSite = await createSiteCallback({
         ...site,
@@ -190,7 +189,6 @@ export const CreateSiteView = ({
           coords: defaultCoords ? coordsToString(defaultCoords) : '',
           projectId: defaultProject?.id,
           privacy: defaultProject?.privacy ?? 'PUBLIC',
-          locationSource: defaultLocationSource,
         }}>
         {props => <CreateSiteForm {...props} sitePin={sitePin} />}
       </Formik>
