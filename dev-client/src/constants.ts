@@ -34,3 +34,4 @@ export const USER_ROLES = ['viewer', 'contributor', 'manager'];
 export const PROJECT_DEFAULT_MEASUREMENT_UNITS = 'METRIC';
 export const MEASUREMENT_UNITS = ['METRIC', 'IMPERIAL'];
 export const SITE_NOTE_MIN_LENGTH = 3;
+export const LOCALE = 'en-US';

@@ -15,12 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {LOCALE} from 'terraso-mobile-client/constants';
+
 export const formatName = (firstName: string, lastName?: string) => {
   return [lastName, firstName].filter(Boolean).join(', ');
 };
 
 export const formatDate = (dateString: string) =>
-  new Intl.DateTimeFormat('en-US', {
+  new Intl.DateTimeFormat(LOCALE, {
     dateStyle: 'short',
   }).format(new Date(dateString));
 
