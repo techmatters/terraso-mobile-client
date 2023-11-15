@@ -170,7 +170,9 @@ export const CreateSiteView = ({
         ...parseCoords(coords),
       });
       if (createdSite !== undefined) {
-        navigation.replace('HOME');
+        navigation.replace('HOME', {
+          site: createdSite,
+        });
       }
     },
     [createSiteCallback, navigation, validationSchema],

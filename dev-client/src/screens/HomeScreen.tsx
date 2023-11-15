@@ -76,7 +76,11 @@ export type CalloutState =
 
 const STARTING_ZOOM_LEVEL = 12;
 
-export const HomeScreen = () => {
+type Props = {
+  site?: Site;
+};
+
+export const HomeScreen = ({site}: Props) => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
@@ -103,7 +107,7 @@ export const HomeScreen = () => {
     siteFilter,
   );
   const filteredSitesById = Object.fromEntries(
-    filteredSites.map(site => [site.id, site]),
+    filteredSites.map(currentSite => [currentSite.id, currentSite]),
   );
 
   useEffect(() => {
@@ -111,6 +115,12 @@ export const HomeScreen = () => {
       dispatch(fetchSoilDataForUser(currentUserID));
     }
   }, [dispatch, currentUserID]);
+
+  useEffect(() => {
+    if (site !== undefined) {
+      showSiteOnMap(site);
+    }
+  }, [site, showSiteOnMap]);
 
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
   const [initialLocation, setInitialLocation] = useState<Coords | null>(
@@ -177,9 +187,9 @@ export const HomeScreen = () => {
   );
 
   const showSiteOnMap = useCallback(
-    (site: Site) => {
-      moveToPoint(site);
-      setCalloutState({kind: 'site', siteId: site.id});
+    (targetSite: Site) => {
+      moveToPoint(targetSite);
+      setCalloutState({kind: 'site', siteId: targetSite.id});
       siteListBottomSheetRef.current?.collapse();
     },
     [moveToPoint, setCalloutState],
