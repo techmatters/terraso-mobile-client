@@ -231,6 +231,7 @@ export const HomeScreen = () => {
           </Box>
           <SiteListBottomSheet
             ref={siteListBottomSheetRef}
+            snapIndex={1}
             sites={siteList}
             filteredSites={filteredSites}
             showSiteOnMap={showSiteOnMap}

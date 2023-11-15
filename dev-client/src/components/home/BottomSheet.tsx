@@ -68,10 +68,18 @@ type Props = {
   filteredSites: Site[];
   showSiteOnMap: (site: Site) => void;
   onCreateSite: () => void;
+  snapIndex?: number;
 } & SiteSearchBarProps;
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   (
-    {sites, filteredSites, showSiteOnMap, onCreateSite, ...searchBarProps},
+    {
+      sites,
+      filteredSites,
+      showSiteOnMap,
+      onCreateSite,
+      snapIndex,
+      ...searchBarProps
+    },
     ref,
   ) => {
     const {t} = useTranslation();
@@ -104,6 +112,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
       <BottomSheet
         ref={ref}
         snapPoints={snapPoints}
+        index={snapIndex}
         backgroundStyle={backgroundStyle}
         handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
         <Column px="16px">
