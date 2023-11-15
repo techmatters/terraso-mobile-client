@@ -158,7 +158,6 @@ export const CreateSiteView = ({
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
 
-  const defaultLocationSource = 'pin';
   const defaultCoords = userLocation.coords;
 
   const navigation = useNavigation();
