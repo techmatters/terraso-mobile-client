@@ -22,15 +22,9 @@ import {useRef, useEffect} from 'react';
 
 type SiteNoteFormProps = {
   content: string;
-  onChangeContent: (text: string) => void;
-  onBlurContent: (e: any) => void;
 };
 
-export const SiteNoteForm = ({
-  content,
-  onChangeContent,
-  onBlurContent,
-}: SiteNoteFormProps) => {
+export const SiteNoteForm = ({content}: SiteNoteFormProps) => {
   const {t} = useTranslation();
   const formInputRef = useRef<TextInput>(null);
 
@@ -51,8 +45,6 @@ export const SiteNoteForm = ({
       name="content"
       placeholder={t('site.notes.placeholder_text')}
       value={content}
-      onChangeText={onChangeContent}
-      onBlur={onBlurContent}
       multiline
       maxHeight={200}
       overflow={'scroll'}
