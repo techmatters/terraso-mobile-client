@@ -116,6 +116,8 @@ export const HomeScreen = ({site}: Props) => {
     }
   }, [dispatch, currentUserID]);
 
+  // When a site is created, we pass site to HomeScreen
+  // and then center that site on the map.
   useEffect(() => {
     if (site !== undefined) {
       showSiteOnMap(site);
