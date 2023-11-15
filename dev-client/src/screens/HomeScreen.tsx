@@ -30,7 +30,6 @@ import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {SiteListBottomSheet} from 'terraso-mobile-client/components/home/BottomSheet';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {
   AppBarIconButton,
   AppBar,
@@ -80,7 +79,6 @@ const STARTING_ZOOM_LEVEL = 12;
 export const HomeScreen = () => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
-  const navigation = useNavigation();
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>({
     kind: 'none',
@@ -186,16 +184,6 @@ export const HomeScreen = () => {
     },
     [moveToPoint, setCalloutState],
   );
-
-  const onCreateSite = useCallback(() => {
-    navigation.navigate(
-      'CREATE_SITE',
-      calloutState.kind === 'location'
-        ? {coords: calloutState.coords}
-        : undefined,
-    );
-    setCalloutState({kind: 'none'});
-  }, [navigation, calloutState]);
 
   const onInfo = useCallback(
     () => infoBottomSheetRef.current?.present(),
