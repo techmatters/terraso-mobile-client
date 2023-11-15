@@ -84,9 +84,7 @@ const CreateSiteForm = ({
         <Text>
           {t('site.create.location_accuracy', {accuracyM: accuracyM})}
         </Text>
-        <FormInput
-          keyboardType="decimal-pad"
-        />
+        <FormInput keyboardType="decimal-pad" />
         <FormControl.Label variant="subtle">
           {t('site.create.coords_label')}
         </FormControl.Label>
