@@ -120,7 +120,6 @@ const Test = () => {
           <SelectFilter
             key="role"
             name="role"
-            itemKey="id"
             options={{
               manager: 'Manager',
               contributor: 'Contributor',
@@ -132,7 +131,6 @@ const Test = () => {
           <SelectFilter
             key="privacy"
             name="privacy"
-            itemKey="privacy"
             label="Privacy"
             placeholder="Privacy"
             options={{private: 'Private', public: 'Public'}}

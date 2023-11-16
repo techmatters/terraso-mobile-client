@@ -7,12 +7,18 @@ import {
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import {Box, FlatList, Heading, Link, Text, VStack, Spinner} from 'native-base';
+import {Box, Heading, Link, Text, VStack, Spinner} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import AddButton from 'terraso-mobile-client/components/common/AddButton';
-import ProjectPreviewCard from 'terraso-mobile-client/components/projects/ProjectPreviewCard';
-import ListFilter from 'terraso-mobile-client/components/common/ListFilter';
+import {
+  ListFilterModal,
+  ListFilterProvider,
+  SelectFilter,
+  TextInputFilter,
+} from 'terraso-mobile-client/components/common/ListFilter';
 import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
+import ProjectList from 'terraso-mobile-client/components/projects/ProjectList';
+import {equals, normalizeText, searchText} from 'terraso-mobile-client/util';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
@@ -73,50 +79,43 @@ export const ProjectListScreen = () => {
         )}
 
         {activeProjects.length > 0 && (
-          <ListFilter
+          <ListFilterProvider
             items={activeProjects}
-            filterConfig={{
-              textInput: {
-                key: 'name',
+            filters={{
+              search: {
+                kind: 'filter',
+                f: searchText,
+                preprocess: normalizeText,
+                lookup: {key: 'name'},
+                hide: true,
               },
-              select: {
-                role: {
-                  key: 'id',
-                  lookup: projectRoleLookup,
-                },
-              },
-            }}
-            displayConfig={{
-              textInput: {
-                placeholder: t('projects.search_placeholder'),
-              },
-              select: {
-                role: {
-                  label: t('projects.role_filter_label'),
-                  placeholder: '',
-                  options: {
-                    manager: t('general.role.manager'),
-                    contributor: t('general.role.contributor'),
-                    viewer: t('general.role.viewer'),
-                  },
-                },
+              role: {
+                kind: 'filter',
+                f: equals,
+                lookup: {key: 'id', record: projectRoleLookup},
               },
             }}>
-            {({filteredItems, InputFilter}) => (
-              <>
-                {InputFilter}
-                <FlatList
-                  data={filteredItems}
-                  renderItem={({item}) => <ProjectPreviewCard project={item} />}
-                  ItemSeparatorComponent={() => <Box h="8px" />}
-                  keyExtractor={project => project.id}
-                  ListEmptyComponent={
-                    <Text>{t('projects.search.no_matches')}</Text>
-                  }
+            <ListFilterModal
+              searchInput={
+                <TextInputFilter
+                  name="search"
+                  label={t('projects.search_label')}
+                  placeholder={t('projects.search_placeholder')}
                 />
-              </>
-            )}
-          </ListFilter>
+              }>
+              <SelectFilter
+                name="role"
+                label={t('projects.role_filter_label')}
+                placeholder=""
+                options={{
+                  manager: t('general.role.manager'),
+                  contributor: t('general.role.contributor'),
+                  viewer: t('general.role.viewer'),
+                }}
+              />
+            </ListFilterModal>
+            <ProjectList />
+          </ListFilterProvider>
         )}
       </VStack>
     </ScreenScaffold>

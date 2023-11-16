@@ -32,3 +32,8 @@ export const normalizeText = (text: string) =>
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, ''); // unicode range for combining diacritical marks
+
+export const searchText = (needle: string) => (haystack: string) =>
+  normalizeText(haystack).includes(needle);
+
+export const equals = (a: any) => (b: any) => a === b;

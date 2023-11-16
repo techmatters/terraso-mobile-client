@@ -1,25 +1,20 @@
-import {
-  Button,
-  FormControl,
-  HStack,
-  Input,
-  Select,
-  VStack,
-  useDisclose,
-} from 'native-base';
+import {Button, FormControl, HStack, Input, Select, VStack} from 'native-base';
 import {
   createContext,
-  memo,
   useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import EmbadgedIcon from 'terraso-mobile-client/components/common/EmbadgedIcon';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
-import {Modal} from 'terraso-mobile-client/components/common/Modal';
+import {
+  Modal,
+  ModalMethods,
+} from 'terraso-mobile-client/components/common/Modal';
 
 type Lookup<Item> = {record?: Record<string, string>; key: keyof Item};
 
@@ -175,24 +170,21 @@ export function useListFilter<Item>(
   };
 }
 
-type SelectFilterProps<Item, FilterNames extends string> = {
+type SelectFilterProps<FilterNames extends string> = {
   placeholder: string;
   label: string;
   options: Record<string, string>;
-  itemKey: keyof Item;
   lookup?: Record<string, string>;
   name: FilterNames;
 };
 
-export const SelectFilter = <Item, FilterNames extends string>({
+export const SelectFilter = <FilterNames extends string>({
   name,
-  itemKey,
   options,
   placeholder,
   label,
-  lookup,
-}: SelectFilterProps<Item, FilterNames>) => {
-  const {setValue, value} = useListFilter<Item>(name);
+}: SelectFilterProps<FilterNames>) => {
+  const {setValue, value} = useListFilter<any>(name);
 
   const onValueChange = useCallback(
     (newValue: string) => {
@@ -267,17 +259,18 @@ export const TextInputFilter = <Item,>({
   );
 };
 
-type FilterModalBodyProps = React.PropsWithChildren;
+type FilterModalBodyProps = {onClose?: () => void} & React.PropsWithChildren;
 
-export const FilterModalBody = memo(({children}: FilterModalBodyProps) => {
+export const FilterModalBody = ({onClose, children}: FilterModalBodyProps) => {
   const {t} = useTranslation();
   const {applyFilters} = useListFilter<any>();
-  const {onClose: closeModal} = useDisclose();
 
   const onPress = useCallback(() => {
     applyFilters();
-    closeModal();
-  }, [applyFilters, closeModal]);
+    if (onClose) {
+      onClose();
+    }
+  }, [applyFilters, onClose]);
 
   return (
     <VStack space="25px" my="25px" testID="MODAL">
@@ -285,7 +278,7 @@ export const FilterModalBody = memo(({children}: FilterModalBodyProps) => {
       <Button onPress={onPress}>{t('general.apply')}</Button>
     </VStack>
   );
-});
+};
 
 type FilterModalTriggerProps = {
   onOpen: () => void;
@@ -322,13 +315,19 @@ type ModalProps = {searchInput: React.ReactNode} & React.PropsWithChildren;
 export const ListFilterModal = ({searchInput, children}: ModalProps) => {
   // exceptionally do not use hook here; need to pass the context value to the modal
   const value = useContext(ListFilterContext);
+  const ref = useRef<ModalMethods>(null);
+  const onClose = useMemo(() => {
+    return ref.current !== null ? ref.current.onClose : undefined;
+  }, [ref]);
+
   return (
     <Modal
+      ref={ref}
       trigger={onOpen => (
         <FilterModalTrigger onOpen={onOpen}>{searchInput}</FilterModalTrigger>
       )}>
       <FilterForwarder value={value}>
-        <FilterModalBody>{children}</FilterModalBody>
+        <FilterModalBody onClose={onClose}>{children}</FilterModalBody>
       </FilterForwarder>
     </Modal>
   );
