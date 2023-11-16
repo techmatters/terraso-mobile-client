@@ -14,17 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import {NativeModules, Platform} from 'react-native';
 
-import {LOCALE} from 'terraso-mobile-client/constants';
+export const getSystemLocale = () => {
+  let locale;
+  if (Platform.OS === 'ios') {
+    locale =
+      NativeModules.SettingsManager.settings.AppleLocale ||
+      NativeModules.SettingsManager.settings.AppleLanguages[0];
+  } else if (Platform.OS === 'android') {
+    locale = NativeModules.I18nManager.localeIdentifier;
+  } else {
+    locale = 'en-US';
+  }
+
+  return locale.replace('_', '-');
+};
+
+export const formatDate = (dateString: string) => {
+  const locale = getSystemLocale();
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'short',
+  }).format(new Date(dateString));
+};
 
 export const formatName = (firstName: string, lastName?: string) => {
   return [lastName, firstName].filter(Boolean).join(', ');
 };
-
-export const formatDate = (dateString: string) =>
-  new Intl.DateTimeFormat(LOCALE, {
-    dateStyle: 'short',
-  }).format(new Date(dateString));
 
 export const removeKeys = (a: any, b: any) => {
   const remove = [a, b];
