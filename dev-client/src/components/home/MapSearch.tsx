@@ -82,24 +82,39 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   }
 
   async function querySuggestions(queryText: string) {
-    if (queryText.length >= 2) {
-      try {
-        const {suggestions: newSuggestions} =
-          await makeSuggestionsApiCall(queryText);
-        setSuggestions(newSuggestions);
-      } catch (e: any) {
-        if (e.name !== 'AbortError') {
-          throw e;
-        }
+    const coordRegex =
+      /^([-+]?[1-8]?\d(?:\.\d+)?),\s*([-+]?180(?:\.0+)?|[-+]?((1[0-7]\d)|([1-9]?\d))(?:\.\d+)?)$/;
+
+    if (coordRegex.test(queryText)) {
+      const [latitude, longitude] = queryText.split(',').map(Number);
+      if (
+        latitude >= -90 &&
+        latitude <= 90 &&
+        longitude >= -180 &&
+        longitude <= 180
+      ) {
+        zoomTo && zoomTo({latitude, longitude});
       }
-    } else if (queryText.length === 0) {
-      setAbortController(current => {
-        if (current !== null) {
-          current.abort();
+    } else {
+      if (queryText.length >= 2) {
+        try {
+          const {suggestions: newSuggestions} =
+            await makeSuggestionsApiCall(queryText);
+          setSuggestions(newSuggestions);
+        } catch (e: any) {
+          if (e.name !== 'AbortError') {
+            throw e;
+          }
         }
-        return null;
-      });
-      setSuggestions([]);
+      } else if (queryText.length === 0) {
+        setAbortController(current => {
+          if (current !== null) {
+            current.abort();
+          }
+          return null;
+        });
+        setSuggestions([]);
+      }
     }
   }
 

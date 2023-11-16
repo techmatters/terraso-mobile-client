@@ -69,3 +69,17 @@ export const removeKeys = (a: any, b: any) => {
     }
   }
 };
+
+export const isValidCoordinates = (input: string) => {
+  const coordRegex =
+    /^([-+]?[1-8]?\d(?:\.\d+)?),\s*([-+]?180(?:\.0+)?|[-+]?((1[0-7]\d)|([1-9]?\d))(?:\.\d+)?)$/;
+
+  if (!coordRegex.test(input)) {
+    return false;
+  }
+
+  const [latitude, longitude] = input.split(',').map(Number);
+  return (
+    latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180
+  );
+};
