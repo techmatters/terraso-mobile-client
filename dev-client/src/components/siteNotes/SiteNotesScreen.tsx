@@ -60,8 +60,9 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
           size="lg"
           backgroundColor="primary.dark"
           shadow={5}
-          onPress={onAddNote}>
-          {t('site.notes.add_note_label').toLocaleUpperCase()}
+          onPress={onAddNote}
+          _text={{textTransform: 'uppercase'}}>
+          {t('site.notes.add_note_label')}
         </Button>
       </Box>
       <FlatList

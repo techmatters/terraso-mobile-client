@@ -15,46 +15,111 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import React, {forwardRef, useRef, useImperativeHandle} from 'react';
 import {Formik, FormikProps} from 'formik';
+import {HStack, Spacer, Box, Button} from 'native-base';
 import * as yup from 'yup';
-import {useTranslation} from 'react-i18next';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {KeyboardAvoidingView, Platform} from 'react-native';
+import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
+import {HorizontalIconButton} from 'terraso-mobile-client/components/common/Icons';
+import {useTranslation} from 'react-i18next';
 
 interface ScreenFormWrapperProps {
   initialValues: {
     content: string;
   };
   onSubmit: (values: {content: string}) => void | Promise<void>;
+  onDelete: () => void;
   children: (formikProps: FormikProps<{content: string}>) => JSX.Element;
+  isSubmitting: boolean;
 }
 
-export const ScreenFormWrapper = ({
-  initialValues,
-  onSubmit,
-  children,
-}: ScreenFormWrapperProps) => {
-  const {t} = useTranslation();
-  const notesFormSchema = yup.object().shape({
-    content: yup
-      .string()
-      .required(t('site.notes.min_length_error', {min: SITE_NOTE_MIN_LENGTH})),
-  });
+export const ScreenFormWrapper = forwardRef(
+  (
+    {
+      initialValues,
+      onSubmit,
+      onDelete,
+      children,
+      isSubmitting,
+    }: ScreenFormWrapperProps,
+    ref,
+  ) => {
+    const formikRef = useRef<FormikProps<{content: string}>>(null);
+    const {t} = useTranslation();
+    const notesFormSchema = yup.object().shape({
+      content: yup
+        .string()
+        .required(
+          t('site.notes.min_length_error', {min: SITE_NOTE_MIN_LENGTH}),
+        ),
+    });
 
-  return (
-    <ScreenScaffold BottomNavigation={null} AppBar={null}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Handle platform-specific keyboard avoidance
-        // eslint-disable-next-line react-native/no-inline-styles
-        style={{flex: 1}}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={notesFormSchema}
-          onSubmit={onSubmit}>
-          {formikProps => <>{children(formikProps)}</>}
-        </Formik>
-      </KeyboardAvoidingView>
-    </ScreenScaffold>
-  );
-};
+    useImperativeHandle(ref, () => ({
+      handleSubmit: () => {
+        if (formikRef.current) {
+          formikRef.current.handleSubmit();
+        }
+      },
+    }));
+
+    const handlePressSubmit = () => {
+      if (formikRef.current) {
+        formikRef.current.handleSubmit();
+      }
+    };
+
+    return (
+      <ScreenScaffold BottomNavigation={null} AppBar={null}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Handle platform-specific keyboard avoidance
+          // eslint-disable-next-line react-native/no-inline-styles
+          style={{flex: 1}}>
+          <Formik
+            innerRef={formikRef}
+            initialValues={initialValues}
+            validationSchema={notesFormSchema}
+            onSubmit={onSubmit}>
+            {children}
+          </Formik>
+          <HStack pr={5} pb={10}>
+            <Spacer />
+            <ConfirmModal
+              trigger={onOpen => (
+                <Box pt={1} pr={5}>
+                  <HorizontalIconButton
+                    p={0}
+                    name="delete"
+                    isUppercase={true}
+                    label={t('general.delete_fab')}
+                    colorScheme="error.main"
+                    _icon={{
+                      color: 'error.main',
+                      size: '5',
+                    }}
+                    isDisabled={isSubmitting}
+                    onPress={onOpen}
+                  />
+                </Box>
+              )}
+              title={t('site.notes.confirm_removal_title')}
+              body={t('site.notes.confirm_removal_body')}
+              actionName={t('general.delete_fab')}
+              handleConfirm={onDelete}
+            />
+            <Button
+              onPress={handlePressSubmit}
+              isDisabled={isSubmitting}
+              shadow={1}
+              size={'lg'}
+              _text={{textTransform: 'uppercase'}}>
+              {t('general.done_fab')}
+            </Button>
+          </HStack>
+        </KeyboardAvoidingView>
+      </ScreenScaffold>
+    );
+  },
+);

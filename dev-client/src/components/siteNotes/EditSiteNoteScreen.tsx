@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
-import {Heading, HStack, Spacer, Box, VStack, Button} from 'native-base';
+import {useCallback, useState, useRef} from 'react';
+import {Heading, Box, VStack} from 'native-base';
 import {useDispatch} from 'terraso-mobile-client/model/store';
 import {SiteNoteForm} from 'terraso-mobile-client/components/siteNotes/SiteNoteForm';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/common/ScreenFormWrapper';
@@ -28,8 +28,6 @@ import {
   SiteNote,
 } from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
-import {HorizontalIconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Keyboard} from 'react-native';
 
 type Props = {
@@ -37,91 +35,55 @@ type Props = {
 };
 
 export const EditSiteNoteScreen = ({note}: Props) => {
+  const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleUpdateNote = async ({content}: {content: string}) => {
     if (!content.trim()) {
       return;
     }
     Keyboard.dismiss();
+    setIsSubmitting(true);
     try {
       const siteNoteInput: SiteNoteUpdateMutationInput = {
         id: note.id,
         content: content,
       };
-      const result = await dispatch(updateSiteNote(siteNoteInput));
-      if (result.payload && 'error' in result.payload) {
-        console.error(result.payload.error);
-        console.error(result.payload.parsedErrors);
-      }
+      await dispatch(updateSiteNote(siteNoteInput));
     } catch (error) {
       console.error('Failed to update note:', error);
     } finally {
+      setIsSubmitting(false);
       navigation.pop();
     }
   };
 
-  const handleDelete = useCallback(
-    async (setSubmitting: (isSubmitting: boolean) => void) => {
-      setSubmitting(true);
-      await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
-      setSubmitting(false);
-    },
-    [navigation, dispatch, note],
-  );
+  const handleDelete = useCallback(async () => {
+    setIsSubmitting(true);
+    await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
+    setIsSubmitting(false);
+  }, [navigation, dispatch, note]);
 
   return (
     <ScreenFormWrapper
+      ref={formWrapperRef}
       initialValues={{content: note.content}}
-      onSubmit={handleUpdateNote}>
-      {formikProps => {
-        const {handleSubmit, isSubmitting} = formikProps;
-
-        return (
-          <VStack pt={10} pl={5} pr={5} pb={10} flex={1}>
-            <Heading variant="h6" pb={7}>
-              {t('site.notes.edit_title')}
-            </Heading>
-            <Box flexGrow={1}>
-              <SiteNoteForm content={formikProps.values.content} />
-            </Box>
-            <HStack pb={4}>
-              <Spacer />
-              <ConfirmModal
-                trigger={onOpen => (
-                  <Box pt={1} pr={5}>
-                    <HorizontalIconButton
-                      p={0}
-                      name="delete"
-                      label={t('general.delete_fab').toLocaleUpperCase()}
-                      colorScheme="error.main"
-                      _icon={{
-                        color: 'error.main',
-                        size: '5',
-                      }}
-                      isDisabled={isSubmitting}
-                      onPress={onOpen}
-                    />
-                  </Box>
-                )}
-                title={t('site.notes.confirm_removal_title')}
-                body={t('site.notes.confirm_removal_body')}
-                actionName={t('general.delete_fab')}
-                handleConfirm={() => handleDelete(() => {})}
-              />
-              <Button
-                onPress={() => handleSubmit()}
-                isDisabled={isSubmitting}
-                shadow={1}
-                size={'lg'}>
-                {t('general.done_fab').toLocaleUpperCase()}
-              </Button>
-            </HStack>
-          </VStack>
-        );
-      }}
+      onSubmit={handleUpdateNote}
+      onDelete={handleDelete}
+      isSubmitting={isSubmitting}>
+      {formikProps => (
+        <VStack pt={10} pl={5} pr={5} pb={10} flex={1}>
+          <Heading variant="h6" pb={7}>
+            {t('site.notes.edit_title')}
+          </Heading>
+          <Box flexGrow={1}>
+            <SiteNoteForm content={formikProps.values.content} />
+          </Box>
+        </VStack>
+      )}
     </ScreenFormWrapper>
   );
 };

@@ -51,7 +51,7 @@ export const ProjectInputTab = ({
   const project = useSelector(state => state.project.projects[projectId]);
 
   const onEditInstructions = useCallback(() => {
-    navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});
+    return navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});
   }, [navigation, project]);
 
   return (
@@ -73,7 +73,7 @@ export const ProjectInputTab = ({
           onPress={onEditInstructions}>
           <HStack>
             <Icon color="primary.contrast" size={'sm'} mr={2} name={'edit'} />
-            <Text color="primary.contrast">
+            <Text color="primary.contrast" textTransform={'uppercase'}>
               {t('projects.inputs.instructions.add_label')}
             </Text>
           </HStack>

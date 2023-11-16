@@ -50,8 +50,8 @@ export const ProjectInstructionsButton = ({project}: Props) => {
         onPress={onShowNote()}>
         <HStack>
           <Icon color="primary.contrast" size={'sm'} mr={2} name={'place'} />
-          <Text color="primary.contrast">
-            {t('projects.inputs.instructions.add_label').toLocaleUpperCase()}
+          <Text color="primary.contrast" textTransform={'uppercase'}>
+            {t('projects.inputs.instructions.add_label')}
           </Text>
         </HStack>
       </Button>

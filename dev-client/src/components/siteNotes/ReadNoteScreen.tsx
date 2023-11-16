@@ -54,8 +54,12 @@ export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
         </ScrollView>
         <HStack>
           <Spacer />
-          <Button onPress={handleClose} shadow={1} size={'lg'}>
-            {t('general.close_fab').toLocaleUpperCase()}
+          <Button
+            onPress={handleClose}
+            shadow={1}
+            size={'lg'}
+            _text={{textTransform: 'uppercase'}}>
+            {t('general.close_fab')}
           </Button>
         </HStack>
       </VStack>
