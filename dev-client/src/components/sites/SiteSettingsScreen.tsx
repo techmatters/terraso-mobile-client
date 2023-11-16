@@ -73,11 +73,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
       BottomNavigation={null}
       AppBar={<AppBar title={site.name} />}>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
-        <Input
-          value={name}
-          onChangeText={setName}
-          leftElement={<Icon ml="12px" name="edit" />}
-        />
+        <Input value={name} onChangeText={setName} />
         {/*
           TODO: Uncomment button after feature is written.
         <Pressable
