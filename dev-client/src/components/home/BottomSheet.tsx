@@ -39,7 +39,7 @@ import {
 } from 'react';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
@@ -53,12 +53,11 @@ const EmptySiteMessage = () => {
 
   return (
     <Text px="17px" variant="body1">
-      <Text>{t('site.empty.info')}</Text>
-      <Text>{'\n\n'}</Text>
-      <Link isUnderlined={false} _text={{variant: 'body1'}}>
-        {t('site.empty.link') + ' '}
-        <Icon name="open-in-new" />
-      </Link>
+      <Trans i18nKey="site.empty.info">
+        <Text underline onPress={() => Linking.openURL(t('site.empty.link_url'))} color="primary.main">
+          link_text
+        </Text>
+      </Trans>
     </Text>
   );
 };

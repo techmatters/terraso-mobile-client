@@ -25,8 +25,8 @@
     "annual_precip_avg": "Annual precipitation avg",
     "elevation": "Elevation",
     "empty": {
-      "info": "You have not created any sites. Create a site with the button above or by finding the location on the map.\n\nA site allows you to collect and save data, learn more about your land and its potential, and share with others.",
-      "link": "Learn more about using LandPKS"
+      "info": "You have not created any sites. Create a site with the button above or by finding the location on the map.\n\nA site allows you to collect and save data, learn more about your land and its potential, and share with others.\n\n<0>Learn more about using LandPKS</0>.",
+      "link_url": "https://landpotential.org/"
     },
     "create": {
       "title": "Create Site",
