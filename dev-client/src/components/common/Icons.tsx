@@ -76,7 +76,14 @@ export type HorizontalIconButtonProps = React.ComponentProps<
 };
 export const HorizontalIconButton = React.forwardRef(
   (
-    {as, name, label, colorScheme, isUppercase, ...props}: IconButtonProps,
+    {
+      as,
+      name,
+      label,
+      colorScheme,
+      isUppercase,
+      ...props
+    }: HorizontalIconButtonProps,
     ref: React.Ref<unknown>,
   ) => {
     const icon = (
