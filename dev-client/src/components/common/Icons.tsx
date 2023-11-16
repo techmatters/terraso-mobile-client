@@ -72,10 +72,11 @@ export type HorizontalIconButtonProps = React.ComponentProps<
   name: string;
   label?: string;
   colorScheme?: string;
+  isUppercase?: boolean;
 };
 export const HorizontalIconButton = React.forwardRef(
   (
-    {as, name, label, colorScheme, ...props}: IconButtonProps,
+    {as, name, label, colorScheme, isUppercase, ...props}: IconButtonProps,
     ref: React.Ref<unknown>,
   ) => {
     const icon = (
@@ -85,9 +86,7 @@ export const HorizontalIconButton = React.forwardRef(
         {...props}
       />
     );
-    if (label === undefined) {
-      return icon;
-    }
+
     return (
       <Pressable onPress={props.onPress}>
         <Box p="1">
@@ -96,7 +95,8 @@ export const HorizontalIconButton = React.forwardRef(
             <Text
               color={colorScheme || 'primary.contrast'}
               fontSize="md"
-              pl={1}>
+              pl={1}
+              textTransform={isUppercase ? 'uppercase' : 'none'}>
               {label}
             </Text>
           </HStack>
