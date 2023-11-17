@@ -7,7 +7,7 @@
       "list1": "Tap the map to drop a pin and get more information about that location.",
       "list2": "Tap the location icon <icon /> to find your current location",
       "list3": "Enter coordinates, address, or search term in the search bar",
-      "description2": "<0>Find more information and guides</0> in the side menu to the left or at <1>landpotential.org</1>.",
+      "description2": "<0>Find more information and guides</0> in the side menu to the left or at <1>landpotential.org</1> <icon />.",
       "link_url": "https://landpotential.org/"
     }
   },
@@ -25,7 +25,7 @@
     "annual_precip_avg": "Annual precipitation avg",
     "elevation": "Elevation",
     "empty": {
-      "info": "You have not created any sites. Create a site with the button above or by finding the location on the map.\n\nA site allows you to collect and save data, learn more about your land and its potential, and share with others.\n\n<0>Learn more about using LandPKS</0>.",
+      "info": "You have not created any sites. Create a site with the button above or by finding the location on the map.\n\nA site allows you to collect and save data, learn more about your land and its potential, and share with others.\n\n<0>Learn more about using LandPKS</0> <icon />.",
       "link_url": "https://landpotential.org/"
     },
     "create": {
