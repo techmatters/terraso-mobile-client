@@ -94,7 +94,7 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
       key="name"
       name="name"
       placeholder={showPlaceholders ? t('projects.add.name') : undefined}
-      variant="underlined"
+      variant="outline"
       id="project-form-name"
       label={t('projects.add.name')}
     />,
@@ -102,7 +102,7 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
       key="description"
       name="description"
       placeholder={showPlaceholders ? t('projects.add.description') : undefined}
-      variant="underlined"
+      variant="outline"
       numberOfLines={3}
       id="project-form-description"
       label={t('projects.add.description')}
