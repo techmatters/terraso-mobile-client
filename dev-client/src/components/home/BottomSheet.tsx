@@ -8,28 +8,22 @@ import {
   Link,
   useTheme,
   Column,
-  FormControl,
-  Select,
   Spinner,
 } from 'native-base';
-import {
-  Dispatch,
-  SetStateAction,
-  forwardRef,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import {forwardRef, useCallback, useMemo} from 'react';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
-import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
-import {SiteFilter} from 'terraso-mobile-client/components/sites/filter';
-import {ProjectSelect} from 'terraso-mobile-client/components/projects/ProjectSelect';
 import {USER_ROLES} from 'terraso-mobile-client/constants';
+import {
+  TextInputFilter,
+  useListFilter,
+  ListFilterModal,
+  SelectFilter,
+} from 'terraso-mobile-client/components/common/ListFilter';
 
 const EmptySiteMessage = () => {
   const {t} = useTranslation();
@@ -48,17 +42,15 @@ const EmptySiteMessage = () => {
 
 type Props = {
   sites: Site[];
-  filteredSites: Site[];
   showSiteOnMap: (site: Site) => void;
   onCreateSite: () => void;
-} & SiteSearchBarProps;
+};
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
-  (
-    {sites, filteredSites, showSiteOnMap, onCreateSite, ...searchBarProps},
-    ref,
-  ) => {
+  ({sites, showSiteOnMap, onCreateSite}, ref) => {
     const {t} = useTranslation();
     const isLoadingData = useSelector(state => state.soilId.loading);
+
+    const {filteredItems: filteredSites} = useListFilter<Site>();
 
     const renderSite = useCallback(
       ({item}: {item: Site}) => (
@@ -99,7 +91,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
               {t('site.create.title').toUpperCase()}
             </Button>
           </Row>
-          {sites.length >= 0 && <SiteSearchBar {...searchBarProps} />}
+          {sites.length >= 0 && <SiteFilterModal />}
         </Column>
         {isLoadingData ? (
           <Spinner size="lg" />
@@ -121,69 +113,40 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   },
 );
 
-type SiteSearchBarProps = {
-  query: string;
-  setQuery: (query: string) => void;
-  filter: SiteFilter;
-  setFilter: (filter: SiteFilter) => void;
-};
-const SiteSearchBar = ({
-  query,
-  setQuery,
-  filter,
-  setFilter,
-}: SiteSearchBarProps) => {
+const SiteFilterModal = () => {
   const {t} = useTranslation();
-  const numFilters = Object.values(filter).filter(
-    value => value !== undefined,
-  ).length;
-  const [tempFilter, setTempFilter] = useState(filter);
-
-  return (
-    <SearchBar
-      query={query}
-      setQuery={setQuery}
-      numFilters={numFilters}
-      placeholder={t('site.search.placeholder')}
-      FilterOptions={
-        <SiteFilterModal filter={tempFilter} setFilter={setTempFilter} />
-      }
-      onApplyFilter={() => setFilter(tempFilter)}
-    />
+  const projects = useSelector(state => state.project.projects);
+  const projectOptions = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.values(projects).map(project => [project.id, project.name]),
+      ),
+    [projects],
   );
-};
 
-type SiteFilterModalProps = {
-  filter: SiteFilter;
-  setFilter: Dispatch<SetStateAction<SiteFilter>>;
-};
-const SiteFilterModal = ({filter, setFilter}: SiteFilterModalProps) => {
-  const {t} = useTranslation();
+  const roleOptions = Object.fromEntries(
+    USER_ROLES.map(role => [role, t(`site.role.${role}`)]),
+  );
+
   return (
-    <Column>
-      <FormControl>
-        <FormControl.Label>
-          {t('site.search.filter_projects')}
-        </FormControl.Label>
-        <ProjectSelect
-          projectId={filter.projectId}
-          setProjectId={projectId => setFilter(prev => ({...prev, projectId}))}
+    <ListFilterModal
+      searchInput={
+        <TextInputFilter
+          placeholder={t('site.search.placeholder')}
+          label={t('site.search.accessibility_label')}
+          name="search"
         />
-      </FormControl>
-      <FormControl>
-        <FormControl.Label>{t('site.search.filter_role')}</FormControl.Label>
-        <Select
-          selectedValue={filter.role}
-          onValueChange={role => setFilter(prev => ({...prev, role}) as any)}>
-          {USER_ROLES.map(role => (
-            <Select.Item
-              label={t(`site.role.${role}`)}
-              value={role}
-              key={role}
-            />
-          ))}
-        </Select>
-      </FormControl>
-    </Column>
+      }>
+      <SelectFilter
+        label={t('site.search.filter_projects')}
+        options={projectOptions}
+        name="project"
+      />
+      <SelectFilter
+        label={t('site.search.filter_role')}
+        options={roleOptions}
+        name="role"
+      />
+    </ListFilterModal>
   );
 };

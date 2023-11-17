@@ -16,12 +16,15 @@ import {
   ModalMethods,
 } from 'terraso-mobile-client/components/common/Modal';
 
-type Lookup<Item> = {record?: Record<string, string>; key: keyof Item};
+type Lookup<Item> = {
+  record?: Record<string, string | undefined>;
+  key: keyof Item;
+};
 
 type FilterFn<Item> =
   | {
       kind: 'filter';
-      f: (val: string) => (comp: string) => boolean;
+      f: (val: string) => (comp: string | undefined) => boolean;
       preprocess?: (val: string) => string;
       lookup: Lookup<Item>;
       hide?: true;
@@ -101,7 +104,7 @@ export const ListFilterProvider = <Item, Filters extends string>({
             if (fn.preprocess) {
               processed = fn.preprocess(processed);
             }
-            let getFilterVal: (val: Item) => string;
+            let getFilterVal: (val: Item) => string | undefined;
             if (fn.lookup.record !== undefined) {
               getFilterVal = (val: Item) =>
                 fn.lookup.record![String(val[fn.lookup.key as keyof Item])];
@@ -125,6 +128,11 @@ export const ListFilterProvider = <Item, Filters extends string>({
       setNeedsUpdate(false);
     }
   }, [itemsWithFiltersApplied, needsUpdate, setNeedsUpdate]);
+
+  // reload filtered items if items changes
+  useEffect(() => {
+    setNeedsUpdate(true);
+  }, [items]);
 
   const value: ListFilterState<Item, Filters> = {
     values,
@@ -171,10 +179,9 @@ export function useListFilter<Item>(
 }
 
 type SelectFilterProps<FilterNames extends string> = {
-  placeholder: string;
+  placeholder?: string;
   label: string;
   options: Record<string, string>;
-  lookup?: Record<string, string>;
   name: FilterNames;
 };
 
@@ -267,7 +274,9 @@ export const FilterModalBody = ({onClose, children}: FilterModalBodyProps) => {
 
   const onPress = useCallback(() => {
     applyFilters();
+    console.debug(onClose);
     if (onClose) {
+      console.debug('should close');
       onClose();
     }
   }, [applyFilters, onClose]);
@@ -316,8 +325,13 @@ export const ListFilterModal = ({searchInput, children}: ModalProps) => {
   // exceptionally do not use hook here; need to pass the context value to the modal
   const value = useContext(ListFilterContext);
   const ref = useRef<ModalMethods>(null);
-  const onClose = useMemo(() => {
-    return ref.current !== null ? ref.current.onClose : undefined;
+  useEffect(() => {
+    console.debug('ref: ', ref);
+  }, [ref]);
+  const onClose = useCallback(() => {
+    if (ref.current !== null) {
+      ref.current.onClose();
+    }
   }, [ref]);
 
   return (

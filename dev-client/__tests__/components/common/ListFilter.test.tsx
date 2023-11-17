@@ -8,7 +8,7 @@ import {
   ListFilterProvider,
   ListFilterModal,
 } from 'terraso-mobile-client/components/common/ListFilter';
-import {normalizeText} from 'terraso-mobile-client/util';
+import {normalizeText, searchText} from 'terraso-mobile-client/util';
 
 const activateTextInputFilter = (filterText: string) => {
   const input = screen.getByPlaceholderText('Search');
@@ -76,23 +76,22 @@ const SampleList = () => {
   );
 };
 
-const Test = () => {
+const Test = ({items}: {items?: TestObject[]}) => {
   return (
     <>
       <ListFilterProvider
-        items={sampleObjects}
+        items={items !== undefined ? items : sampleObjects}
         filters={{
           search: {
             kind: 'filter',
-            f: (val: string) => (comp: string) =>
-              normalizeText(comp).includes(val),
+            f: searchText,
             preprocess: normalizeText,
             lookup: {key: 'name'},
             hide: true,
           },
           role: {
             kind: 'filter',
-            f: (val: string) => (comp: string) => val === comp,
+            f: (val: string) => (comp: string | undefined) => val === comp,
             lookup: {
               record: {
                 '1': 'manager',
@@ -105,7 +104,7 @@ const Test = () => {
           },
           privacy: {
             kind: 'filter',
-            f: (val: string) => (comp: string) => val === comp,
+            f: (val: string) => (comp: string | undefined) => val === comp,
             lookup: {key: 'privacy'},
           },
         }}>
@@ -225,4 +224,19 @@ test('Badge number updated when filter applied', () => {
   expect(badge).toHaveTextContent('2');
   activateTextInputFilter('A');
   expect(badge).toHaveTextContent('2');
+});
+
+test('Filtered items update when props updated', () => {
+  const {rerender} = render(<Test />);
+  activateTextInputFilter('Al');
+  assertNull(1, 2, 3);
+  assertNotNull(0);
+  const newItems: TestObject[] = [
+    ...sampleObjects,
+    {name: 'Alex', id: '5', privacy: 'public'},
+  ];
+  rerender(<Test items={newItems} />);
+  assertNull(1, 2, 3);
+  assertNotNull(0);
+  expect(screen.queryByText('Alex')).not.toBeNull();
 });

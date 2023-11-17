@@ -32,10 +32,10 @@ import {Trans, useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
-import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
-import {useFilterSites} from 'terraso-mobile-client/components/sites/filter';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
+import {ListFilterProvider} from 'terraso-mobile-client/components/common/ListFilter';
+import {equals, normalizeText, searchText} from 'terraso-mobile-client/util';
 
 export type CalloutState =
   | {
@@ -71,21 +71,7 @@ export const HomeScreen = () => {
   const siteList = useMemo(() => Object.values(sites), [sites]);
   const dispatch = useDispatch();
   const camera = useRef<Camera>(null);
-  const {
-    results: searchedSites,
-    query: sitesQuery,
-    setQuery: setSitesQuery,
-  } = useTextSearch({data: siteList, keys: ['name']});
-  const [siteFilter, setSiteFilter] = useState({});
   const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
-  const filteredSites = useFilterSites(
-    searchedSites,
-    siteProjectRoles,
-    siteFilter,
-  );
-  const filteredSitesById = Object.fromEntries(
-    filteredSites.map(site => [site.id, site]),
-  );
 
   useEffect(() => {
     if (currentUserID !== undefined) {
@@ -187,43 +173,66 @@ export const HomeScreen = () => {
 
   return (
     <BottomSheetModalProvider>
-      <ScreenScaffold
-        AppBar={
-          <AppBar
-            LeftButton={<AppBarIconButton name="menu" />}
-            RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
-          />
-        }>
-        <Box flex={1}>
-          <Box flex={1} zIndex={-1}>
-            <MapSearch
-              zoomTo={searchFunction}
-              zoomToUser={moveToUser}
-              toggleMapLayer={toggleMapLayer}
+      <ListFilterProvider
+        items={siteList}
+        filters={{
+          search: {
+            kind: 'filter',
+            f: searchText,
+            preprocess: normalizeText,
+            lookup: {
+              key: 'name',
+            },
+            hide: true,
+          },
+          project: {
+            kind: 'filter',
+            f: equals,
+            lookup: {
+              key: 'projectId',
+            },
+          },
+          role: {
+            kind: 'filter',
+            f: equals,
+            lookup: {
+              record: siteProjectRoles,
+              key: 'id',
+            },
+          },
+        }}>
+        <ScreenScaffold
+          AppBar={
+            <AppBar
+              LeftButton={<AppBarIconButton name="menu" />}
+              RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
             />
-            <SiteMap
-              sites={filteredSitesById}
-              ref={camera}
-              calloutState={calloutState}
-              setCalloutState={setCalloutState}
-              styleURL={mapStyleURL}
-              onMapFinishedLoading={onMapFinishedLoading}
+          }>
+          <Box flex={1}>
+            <Box flex={1} zIndex={-1}>
+              <MapSearch
+                zoomTo={searchFunction}
+                zoomToUser={moveToUser}
+                toggleMapLayer={toggleMapLayer}
+              />
+              <SiteMap
+                ref={camera}
+                calloutState={calloutState}
+                setCalloutState={setCalloutState}
+                styleURL={mapStyleURL}
+                onMapFinishedLoading={onMapFinishedLoading}
+              />
+            </Box>
+            <SiteListBottomSheet
+              ref={siteListBottomSheetRef}
+              sites={siteList}
+              showSiteOnMap={showSiteOnMap}
+              onCreateSite={onCreateSite}
             />
           </Box>
-          <SiteListBottomSheet
-            ref={siteListBottomSheetRef}
-            sites={siteList}
-            filteredSites={filteredSites}
-            showSiteOnMap={showSiteOnMap}
-            onCreateSite={onCreateSite}
-            query={sitesQuery}
-            setQuery={setSitesQuery}
-            filter={siteFilter}
-            setFilter={setSiteFilter}
-          />
-        </Box>
-        <InfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
-      </ScreenScaffold>
+          <InfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
+        </ScreenScaffold>
+      </ListFilterProvider>
     </BottomSheetModalProvider>
   );
 };

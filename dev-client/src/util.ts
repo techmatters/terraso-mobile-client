@@ -33,7 +33,7 @@ export const normalizeText = (text: string) =>
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, ''); // unicode range for combining diacritical marks
 
-export const searchText = (needle: string) => (haystack: string) =>
-  normalizeText(haystack).includes(needle);
+export const searchText = (needle: string) => (haystack?: string) =>
+  haystack !== undefined ? normalizeText(haystack).includes(needle) : false;
 
 export const equals = (a: any) => (b: any) => a === b;
