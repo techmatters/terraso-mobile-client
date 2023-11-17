@@ -26,7 +26,7 @@ import {
 } from 'native-base';
 import {Formik, useFormikContext} from 'formik';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
-import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import ErrorMessage from 'terraso-mobile-client/components/common/ErrorMessage';
 import * as yup from 'yup';
