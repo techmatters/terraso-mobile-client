@@ -118,11 +118,15 @@ export const FormTextArea = memo((props: TextAreaProps) => {
   const {value, onChange, onBlur} = useFieldContext(props.name);
   return (
     <FormFieldWrapper {...props}>
-      <TextArea value={value} onChangeText={onChange} onBlur={onBlur} {...props} />
+      <TextArea
+        value={value}
+        onChangeText={onChange}
+        onBlur={onBlur}
+        {...props}
+      />
     </FormFieldWrapper>
   );
 });
-
 
 type SwitchProps = WrapperProps &
   Omit<React.ComponentProps<typeof Switch>, 'onChange' | 'onValueChange'> & {

@@ -15,7 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Fab, HStack, Heading, Input, Radio, TextArea, VStack} from 'native-base';
+import {
+  Fab,
+  HStack,
+  Heading,
+  Input,
+  Radio,
+  TextArea,
+  VStack,
+} from 'native-base';
 import {Formik, useFormikContext} from 'formik';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
@@ -171,10 +179,7 @@ export default function Form({editForm = false}: Props) {
     <VStack space={3}>
       {EditHeader}
       <FormLabel>{t('projects.create.name_label')}</FormLabel>
-      <Input
-        placeholder={t('projects.add.name')}
-        {...inputParams('name')}
-      />
+      <Input placeholder={t('projects.add.name')} {...inputParams('name')} />
       <ErrorMessage fieldName="name" />
 
       <FormLabel>{t('projects.create.description_label')}</FormLabel>

@@ -92,9 +92,7 @@ export default function ProjectSettingsTab({
           href={downloadLink}>
           {t('projects.settings.copy_download_link').toUpperCase()}
         </IconLink>
-        <Text ml={10}>
-          {t('projects.settings.download_link_description')}
-        </Text>
+        <Text ml={10}>{t('projects.settings.download_link_description')}</Text>
         {/*
         <IconLink
           iconName="archive"
