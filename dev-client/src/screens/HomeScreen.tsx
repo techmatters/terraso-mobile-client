@@ -47,7 +47,10 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
-import {LocationIcon, LinkNewWindowIcon} from 'terraso-mobile-client/components/common/Icons';
+import {
+  LocationIcon,
+  LinkNewWindowIcon,
+} from 'terraso-mobile-client/components/common/Icons';
 import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
@@ -325,9 +328,11 @@ const LandPKSInfo = () => {
           </Text>
         </HStack>
         <Text variant="body1">
-          <Trans i18nKey="home.info.description2" components={{
-            icon: <LinkNewWindowIcon />,
-          }}>
+          <Trans
+            i18nKey="home.info.description2"
+            components={{
+              icon: <LinkNewWindowIcon />,
+            }}>
             <Text bold>first</Text>
             <Text
               underline
