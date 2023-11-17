@@ -22,7 +22,6 @@ import {
   Row,
   Heading,
   Text,
-  Link,
   useTheme,
   Column,
   FormControl,
@@ -54,10 +53,14 @@ const EmptySiteMessage = () => {
   return (
     <Text px="17px" variant="body1">
       <Trans i18nKey="site.empty.info">
-        <Text underline onPress={() => Linking.openURL(t('site.empty.link_url'))} color="primary.main">
+        <Text
+          underline
+          onPress={() => Linking.openURL(t('site.empty.link_url'))}
+          color="primary.main">
           link_text
         </Text>
       </Trans>
+      <Icon name="open-in-new" color="primary.main" />
     </Text>
   );
 };

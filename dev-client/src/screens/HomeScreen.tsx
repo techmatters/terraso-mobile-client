@@ -24,7 +24,7 @@ import {
   useState,
   useMemo,
 } from 'react';
-import {Linking} from 'react-native';
+import {Linking, View} from 'react-native';
 import Mapbox, {Camera} from '@rnmapbox/maps';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -38,7 +38,7 @@ import {
   useHeaderHeight,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import MapSearch from 'terraso-mobile-client/components/home/MapSearch';
-import {Box, Column, Heading, HStack, Image, Link, Text} from 'native-base';
+import {Box, Column, Heading, HStack, Image, Text} from 'native-base';
 import {coordsToPosition} from 'terraso-mobile-client/components/common/Map';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -272,6 +272,15 @@ const BackdropComponent = (props: BottomSheetBackdropProps) => (
   <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
 );
 
+const LocationIcon = () => {
+  return (
+    // eslint-disable-next-line react-native/no-inline-styles
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <Icon name="my-location" color="black" size="14" />
+    </View>
+  );
+};
+
 const LandPKSInfo = () => {
   const {t} = useTranslation();
 
@@ -289,35 +298,52 @@ const LandPKSInfo = () => {
           alt={t('home.info.intro_image_alt')}
         />
         <Text variant="body1">
-          <Trans
-            i18nKey="home.info.description"
-          >
+          <Trans i18nKey="home.info.description">
             <Text bold>first</Text>
             <Text>second</Text>
             <Text bold>third</Text>
           </Trans>
         </Text>
         <HStack key={1}>
-          <Text variant="body1" mr={2}>1</Text>
-          <Text variant="body1" mr={2}>{t('home.info.list1')}</Text>
+          <Text variant="body1" mr={2}>
+            1
+          </Text>
+          <Text variant="body1" mr={2}>
+            {t('home.info.list1')}
+          </Text>
         </HStack>
         <HStack key={2}>
-          <Text variant="body1" mr={2}>2</Text>
-          <Text variant="body1" mr={2}>{t('home.info.list2')}</Text>
+          <Text variant="body1" mr={2}>
+            2
+          </Text>
+          <Text variant="body1">
+            <Trans
+              i18nKey="home.info.list2"
+              components={{
+                icon: <LocationIcon />,
+              }}
+            />
+          </Text>
         </HStack>
         <HStack key={3}>
-          <Text variant="body1" mr={2}>3</Text>
-          <Text variant="body1" mr={2}>{t('home.info.list3')}</Text>
+          <Text variant="body1" mr={2}>
+            3
+          </Text>
+          <Text variant="body1" mr={2}>
+            {t('home.info.list3')}
+          </Text>
         </HStack>
         <Text variant="body1">
           <Trans i18nKey="home.info.description2">
             <Text bold>first</Text>
-            <Text underline onPress={() => Linking.openURL(t('home.info.link_url'))} color="primary.main">
+            <Text
+              underline
+              onPress={() => Linking.openURL(t('home.info.link_url'))}
+              color="primary.main">
               link_text
             </Text>
           </Trans>
         </Text>
-
       </Column>
     </BottomSheetScrollView>
   );
