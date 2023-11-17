@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Fab, HStack, Heading, Input, Radio, VStack} from 'native-base';
+import {Fab, HStack, Heading, Input, Radio, TextArea, VStack} from 'native-base';
 import {Formik, useFormikContext} from 'formik';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
@@ -33,6 +33,7 @@ import {
   FormInput,
   FormLabel,
   FormRadioGroup,
+  FormTextArea,
 } from 'terraso-mobile-client/components/common/Form';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
@@ -97,11 +98,12 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
       id="project-form-name"
       label={t('projects.add.name')}
     />,
-    <FormInput
+    <FormTextArea
       key="description"
       name="description"
       placeholder={showPlaceholders ? t('projects.add.description') : undefined}
       variant="underlined"
+      numberOfLines={3}
       id="project-form-description"
       label={t('projects.add.description')}
     />,
@@ -165,23 +167,21 @@ export default function Form({editForm = false}: Props) {
     <></>
   );
 
-  const pencilIcon = editForm ? <Icon name="edit" ml={2} /> : undefined;
-
   return (
     <VStack space={3}>
       {EditHeader}
       <FormLabel>{t('projects.create.name_label')}</FormLabel>
       <Input
         placeholder={t('projects.add.name')}
-        InputLeftElement={pencilIcon}
         {...inputParams('name')}
       />
       <ErrorMessage fieldName="name" />
 
       <FormLabel>{t('projects.create.description_label')}</FormLabel>
-      <Input
+      <TextArea
         placeholder={t('projects.add.description')}
-        InputLeftElement={pencilIcon}
+        numberOfLines={3}
+        fontSize={16}
         {...inputParams('description')}
       />
       <ErrorMessage fieldName="description" />
