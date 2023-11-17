@@ -24,7 +24,7 @@ import {
   useState,
   useMemo,
 } from 'react';
-import {Linking, View} from 'react-native';
+import {Linking} from 'react-native';
 import Mapbox, {Camera} from '@rnmapbox/maps';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -47,7 +47,7 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import {LocationIcon, LinkNewWindowIcon} from 'terraso-mobile-client/components/common/Icons';
 import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
@@ -272,15 +272,6 @@ const BackdropComponent = (props: BottomSheetBackdropProps) => (
   <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
 );
 
-const LocationIcon = () => {
-  return (
-    // eslint-disable-next-line react-native/no-inline-styles
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Icon name="my-location" color="black" size="14" />
-    </View>
-  );
-};
-
 const LandPKSInfo = () => {
   const {t} = useTranslation();
 
@@ -334,7 +325,9 @@ const LandPKSInfo = () => {
           </Text>
         </HStack>
         <Text variant="body1">
-          <Trans i18nKey="home.info.description2">
+          <Trans i18nKey="home.info.description2" components={{
+            icon: <LinkNewWindowIcon />,
+          }}>
             <Text bold>first</Text>
             <Text
               underline
