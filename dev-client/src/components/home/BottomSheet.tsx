@@ -36,6 +36,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import {Linking} from 'react-native';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Trans, useTranslation} from 'react-i18next';
