@@ -114,6 +114,13 @@
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
     "go_to": "Go to Project",
+    "create": {
+      "public": "Public",
+      "private": "Private",
+      "name_label": "Project Name",
+      "description_label": "Project Description",
+      "privacy_label": "Data Privacy"
+    },
     "inputs": {
       "units": {
         "heading": "Units of Measurement",
@@ -219,8 +226,6 @@
     "last_modified": "Last Modified",
     "sites": "sites",
     "users": "users",
-    "project_private": "Private",
-    "project_public": "Public",
     "save": "Save",
     "save_fab": "SAVE",
     "modified_by": "Last modified {{date}} by {{user}}",

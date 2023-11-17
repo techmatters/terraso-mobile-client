@@ -31,6 +31,7 @@ import {
 import {TFunction} from 'i18next';
 import {
   FormInput,
+  FormLabel,
   FormRadioGroup,
 } from 'terraso-mobile-client/components/common/Form';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
@@ -169,12 +170,15 @@ export default function Form({editForm = false}: Props) {
   return (
     <VStack space={3}>
       {EditHeader}
+      <FormLabel>{t('projects.create.name_label')}</FormLabel>
       <Input
         placeholder={t('projects.add.name')}
         InputLeftElement={pencilIcon}
         {...inputParams('name')}
       />
       <ErrorMessage fieldName="name" />
+
+      <FormLabel>{t('projects.create.description_label')}</FormLabel>
       <Input
         placeholder={t('projects.add.description')}
         InputLeftElement={pencilIcon}
@@ -184,13 +188,13 @@ export default function Form({editForm = false}: Props) {
       <RadioBlock
         label={
           <HStack alignItems="center">
-            <Heading size="sm">Data Privacy</Heading>
+            <Heading size="sm">{t('projects.create.privacy_label')}</Heading>
             <IconButton name="info" _icon={{color: 'action.active'}} />
           </HStack>
         }
         options={{
-          PUBLIC: {text: t('projects.add.public')},
-          PRIVATE: {text: t('projects.add.private')},
+          PUBLIC: {text: t('projects.create.public')},
+          PRIVATE: {text: t('projects.create.private')},
         }}
         groupProps={{
           value: values.privacy,
