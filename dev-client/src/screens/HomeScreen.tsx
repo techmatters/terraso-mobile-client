@@ -110,6 +110,28 @@ export const HomeScreen = ({site}: Props) => {
     filteredSites.map(currentSite => [currentSite.id, currentSite]),
   );
 
+  const moveToPoint = useCallback(
+    (coords: Coords) => {
+      // TODO: flyTo, zoomTo don't seem to work, find out why
+      //camera.current?.flyTo([longitude, latitude]);
+      //camera.current?.zoomTo(STARTING_ZOOM_LEVEL);
+      camera.current?.setCamera({
+        centerCoordinate: coordsToPosition(coords),
+        zoomLevel: STARTING_ZOOM_LEVEL,
+      });
+    },
+    [camera],
+  );
+
+  const showSiteOnMap = useCallback(
+    (targetSite: Site) => {
+      moveToPoint(targetSite);
+      setCalloutState({kind: 'site', siteId: targetSite.id});
+      siteListBottomSheetRef.current?.collapse();
+    },
+    [moveToPoint, setCalloutState],
+  );
+
   useEffect(() => {
     if (currentUserID !== undefined) {
       dispatch(fetchSoilDataForUser(currentUserID));
@@ -134,19 +156,6 @@ export const HomeScreen = ({site}: Props) => {
       setInitialLocation(currentUserCoords);
     }
   }, [initialLocation, currentUserCoords, setInitialLocation]);
-
-  const moveToPoint = useCallback(
-    (coords: Coords) => {
-      // TODO: flyTo, zoomTo don't seem to work, find out why
-      //camera.current?.flyTo([longitude, latitude]);
-      //camera.current?.zoomTo(STARTING_ZOOM_LEVEL);
-      camera.current?.setCamera({
-        centerCoordinate: coordsToPosition(coords),
-        zoomLevel: STARTING_ZOOM_LEVEL,
-      });
-    },
-    [camera],
-  );
 
   const [finishedInitialCameraMove, setFinishedInitialCameraMove] =
     useState(false);
@@ -186,15 +195,6 @@ export const HomeScreen = ({site}: Props) => {
           : Mapbox.StyleURL.Street,
       ),
     [mapStyleURL, setMapStyleURL],
-  );
-
-  const showSiteOnMap = useCallback(
-    (targetSite: Site) => {
-      moveToPoint(targetSite);
-      setCalloutState({kind: 'site', siteId: targetSite.id});
-      siteListBottomSheetRef.current?.collapse();
-    },
-    [moveToPoint, setCalloutState],
   );
 
   const onInfo = useCallback(
