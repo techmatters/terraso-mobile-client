@@ -149,6 +149,7 @@
     },
     "settings": {
       "copy_download_link": "Copy project download link",
+      "download_link_description": "A zipped file of all the project’s assets including a .csv file of site data, field notes, audit logs, and photos. Anyone with this link can view all the assets.",
       "cancel": "Cancel",
       "archive": "Archive this project",
       "archive_button": "Archive",
