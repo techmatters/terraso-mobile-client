@@ -26,6 +26,7 @@ import {
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Keyboard} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {isValidCoordinates} from 'terraso-mobile-client/util';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
@@ -82,10 +83,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   }
 
   async function querySuggestions(queryText: string) {
-    const coordRegex =
-      /^([-+]?[1-8]?\d(?:\.\d+)?),\s*([-+]?180(?:\.0+)?|[-+]?((1[0-7]\d)|([1-9]?\d))(?:\.\d+)?)$/;
-
-    if (coordRegex.test(queryText)) {
+    if (isValidCoordinates(queryText)) {
       const [latitude, longitude] = queryText.split(',').map(Number);
       if (
         latitude >= -90 &&

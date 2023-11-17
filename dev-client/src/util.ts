@@ -38,6 +38,8 @@ export const formatDate = (dateString: string) => {
   }).format(new Date(dateString));
 };
 
+import {isValidLongitude, isValidLatitude} from 'terraso-client-shared/utils';
+
 export const formatName = (firstName: string, lastName?: string) => {
   return [lastName, firstName].filter(Boolean).join(', ');
 };
@@ -79,7 +81,6 @@ export const isValidCoordinates = (input: string) => {
   }
 
   const [latitude, longitude] = input.split(',').map(Number);
-  return (
-    latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180
-  );
+
+  return isValidLatitude(latitude) && isValidLongitude(longitude);
 };
