@@ -64,7 +64,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
 
   const onDelete = useCallback(async () => {
     // TODO: confirm successful deletion before navigating home
-    navigate('HOME');
+    navigate('HOME', {});
     await dispatch(deleteSite(site));
   }, [dispatch, navigate, site]);
 
