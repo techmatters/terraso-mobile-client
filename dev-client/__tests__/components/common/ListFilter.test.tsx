@@ -70,6 +70,7 @@ const SampleList = () => {
   const {filteredItems} = useListFilter<TestObject>();
   return (
     <FlatList
+      testID="LIST"
       data={filteredItems}
       renderItem={({item}) => <Text>{item.name}</Text>}
     />
@@ -107,6 +108,15 @@ const Test = ({items}: {items?: TestObject[]}) => {
             f: (val: string) => (comp: string | undefined) => val === comp,
             lookup: {key: 'privacy'},
           },
+          nameRev: {
+            kind: 'sorting',
+            options: {
+              nameRev: {
+                key: 'name',
+                order: 'descending',
+              },
+            },
+          },
         }}>
         <ListFilterModal
           searchInput={
@@ -133,6 +143,13 @@ const Test = ({items}: {items?: TestObject[]}) => {
             label="Privacy"
             placeholder="Privacy"
             options={{private: 'Private', public: 'Public'}}
+          />
+          <SelectFilter
+            key="nameRev"
+            name="nameRev"
+            label="Sort"
+            placeholder="Sort"
+            options={{nameRev: 'Name (reverse alphabetical)'}}
           />
         </ListFilterModal>
         <SampleList />
@@ -239,4 +256,12 @@ test('Filtered items update when props updated', () => {
   assertNull(1, 2, 3);
   assertNotNull(0);
   expect(screen.queryByText('Alex')).not.toBeNull();
+});
+
+test.only('Sort items by reverse', () => {
+  render(<Test />);
+  activateSelectFilter('Sort', 'Name (reverse alphabetical)');
+  const list = screen.queryByTestId('LIST');
+  expect(list).not.toBeNull();
+  expect(list).toHaveTextContent('CarlosCarlaBobAlice');
 });

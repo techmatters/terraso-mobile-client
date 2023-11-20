@@ -21,6 +21,10 @@ type Lookup<Item> = {
   key: keyof Item;
 };
 
+type SortingOption<Item> = {
+  order: 'ascending' | 'descending';
+} & Lookup<Item>;
+
 type FilterFn<Item> =
   | {
       kind: 'filter';
@@ -31,8 +35,7 @@ type FilterFn<Item> =
     }
   | {
       kind: 'sorting';
-      f: (val: string) => (item: Item[]) => Item[];
-      lookup: Lookup<Item>;
+      options: Record<string, SortingOption<Item>>;
     };
 
 export type ListFilterState<Item, FilterNames extends string> = {
@@ -80,7 +83,7 @@ export const ListFilterProvider = <Item, Filters extends string>({
   const numFilters = useMemo(
     () =>
       Object.entries<FilterFn<Item>>(filters)
-        .filter(([, f]) => !('hide' in f && f.hide))
+        .filter(([, f]) => f.kind === 'filter' && !('hide' in f && f.hide))
         .map(([name]) => values[name])
         .filter(val => val !== undefined).length,
     [values, filters],
@@ -114,7 +117,29 @@ export const ListFilterProvider = <Item, Filters extends string>({
             return x.filter(item => fn.f(processed)(getFilterVal(item)));
 
           case 'sorting':
-            return fn.f(currentVal)(x);
+            const options = fn.options[name];
+            if (options === undefined) {
+              console.warn(
+                'Trying to sort with an undefined sorting configuration; ignoring',
+              );
+              return x;
+            }
+            const {key, record: lookupRecord, order} = options;
+            const getValue = (a: Item) =>
+              String(
+                lookupRecord === undefined
+                  ? a[key]
+                  : lookupRecord[String(a[key])],
+              );
+            return x.sort((a, b) => {
+              const valA = getValue(a);
+              const valB = getValue(b);
+              if (order === 'ascending') {
+                return valA?.localeCompare(valB);
+              } else {
+                return valB?.localeCompare(valA);
+              }
+            });
         }
       },
       items,
@@ -274,9 +299,7 @@ export const FilterModalBody = ({onClose, children}: FilterModalBodyProps) => {
 
   const onPress = useCallback(() => {
     applyFilters();
-    console.debug(onClose);
     if (onClose) {
-      console.debug('should close');
       onClose();
     }
   }, [applyFilters, onClose]);
@@ -325,9 +348,6 @@ export const ListFilterModal = ({searchInput, children}: ModalProps) => {
   // exceptionally do not use hook here; need to pass the context value to the modal
   const value = useContext(ListFilterContext);
   const ref = useRef<ModalMethods>(null);
-  useEffect(() => {
-    console.debug('ref: ', ref);
-  }, [ref]);
   const onClose = useCallback(() => {
     if (ref.current !== null) {
       ref.current.onClose();
