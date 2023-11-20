@@ -61,29 +61,28 @@ export default function ProjectTabs({project}: Props) {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
-        name={TabRoutes.SETTINGS}
-        component={ProjectSettingsTab}
-        initialParams={{
-          projectId: project.id,
-          downloadLink: TEMP_DOWNLOAD_LINK,
-        }}
-      />
-      <Tab.Screen
         name={TabRoutes.INPUTS}
         component={ProjectInputTab}
         initialParams={{projectId: project.id}}
+      />
+      <Tab.Screen
+        name={TabRoutes.SITES}
+        component={ProjectSitesTab}
+        initialParams={{
+          projectId: project.id,
+        }}
       />
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamTab}
         initialParams={{projectId: project.id}}
       />
-
       <Tab.Screen
-        name={TabRoutes.SITES}
-        component={ProjectSitesTab}
+        name={TabRoutes.SETTINGS}
+        component={ProjectSettingsTab}
         initialParams={{
           projectId: project.id,
+          downloadLink: TEMP_DOWNLOAD_LINK,
         }}
       />
     </Tab.Navigator>
