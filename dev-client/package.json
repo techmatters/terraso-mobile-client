@@ -31,7 +31,7 @@
     "react-native-autocomplete-input": "^5.4.0",
     "react-native-config": "^1.5.1",
     "react-native-gesture-handler": "software-mansion/react-native-gesture-handler#17bbcde",
-    "react-native-get-random-values": "^1.9.0",
+    "react-native-get-random-values": "^1.10.0",
     "react-native-gradle-plugin": "^0.71.19",
     "react-native-mmkv-storage": "^0.9.1",
     "react-native-pager-view": "^6.2.2",
