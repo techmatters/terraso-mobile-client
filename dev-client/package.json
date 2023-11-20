@@ -22,7 +22,7 @@
     "@rnmapbox/maps": "^10.0.15",
     "base-64": "^1.0.0",
     "formik": "^2.4.5",
-    "i18next": "^23.6.0",
+    "i18next": "^23.7.6",
     "native-base": "^3.4.28",
     "react": "18.2.0",
     "react-i18next": "^13.5.0",
