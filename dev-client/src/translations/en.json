@@ -65,6 +65,11 @@
       "archive_button": "Archive this site",
       "archive_button_help_text": "Mark this site read-only",
       "delete_button": "Delete this site",
+      "delete_site_modal": {
+        "title": "Delete site?",
+        "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.",
+        "action_name": "Delete"
+      },
       "location_accuracy": "Location Accuracy",
       "last_modified": {
         "label": "Last Modified",
