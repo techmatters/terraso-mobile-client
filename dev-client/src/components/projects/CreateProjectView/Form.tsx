@@ -15,10 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Fab, HStack, Heading, Input, Radio, VStack} from 'native-base';
+import {
+  Fab,
+  HStack,
+  Heading,
+  Input,
+  Radio,
+  TextArea,
+  VStack,
+} from 'native-base';
 import {Formik, useFormikContext} from 'formik';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
-import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import ErrorMessage from 'terraso-mobile-client/components/common/ErrorMessage';
 import * as yup from 'yup';
@@ -31,7 +39,9 @@ import {
 import {TFunction} from 'i18next';
 import {
   FormInput,
+  FormLabel,
   FormRadioGroup,
+  FormTextArea,
 } from 'terraso-mobile-client/components/common/Form';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
@@ -92,16 +102,17 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
       key="name"
       name="name"
       placeholder={showPlaceholders ? t('projects.add.name') : undefined}
-      variant="underlined"
+      variant="outline"
       id="project-form-name"
       label={t('projects.add.name')}
     />,
-    <FormInput
+    <FormTextArea
       key="description"
       name="description"
       placeholder={showPlaceholders ? t('projects.add.description') : undefined}
-      variant="underlined"
-      id="project-form-description"
+      variant="outline"
+      numberOfLines={3}
+      autoCompleteType="off"
       label={t('projects.add.description')}
     />,
   ];
@@ -164,33 +175,32 @@ export default function Form({editForm = false}: Props) {
     <></>
   );
 
-  const pencilIcon = editForm ? <Icon name="edit" ml={2} /> : undefined;
-
   return (
     <VStack space={3}>
       {EditHeader}
-      <Input
-        placeholder={t('projects.add.name')}
-        InputLeftElement={pencilIcon}
-        {...inputParams('name')}
-      />
+      <FormLabel>{t('projects.create.name_label')}</FormLabel>
+      <Input placeholder={t('projects.add.name')} {...inputParams('name')} />
       <ErrorMessage fieldName="name" />
-      <Input
+
+      <FormLabel>{t('projects.create.description_label')}</FormLabel>
+      <TextArea
         placeholder={t('projects.add.description')}
-        InputLeftElement={pencilIcon}
+        numberOfLines={3}
+        fontSize={16}
+        autoCompleteType="off"
         {...inputParams('description')}
       />
       <ErrorMessage fieldName="description" />
       <RadioBlock
         label={
           <HStack alignItems="center">
-            <Heading size="sm">Data Privacy</Heading>
+            <Heading size="sm">{t('projects.create.privacy_label')}</Heading>
             <IconButton name="info" _icon={{color: 'action.active'}} />
           </HStack>
         }
         options={{
-          PUBLIC: {text: t('projects.add.public')},
-          PRIVATE: {text: t('projects.add.private')},
+          PUBLIC: {text: t('projects.create.public')},
+          PRIVATE: {text: t('projects.create.private')},
         }}
         groupProps={{
           value: values.privacy,

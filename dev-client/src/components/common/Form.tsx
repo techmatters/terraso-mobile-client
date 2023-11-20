@@ -25,6 +25,7 @@ import {
   Checkbox,
   Row,
   Text,
+  TextArea,
 } from 'native-base';
 import {createContext, memo, useContext} from 'react';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
@@ -108,6 +109,21 @@ export const FormInput = memo((props: InputProps) => {
   return (
     <FormFieldWrapper {...props}>
       <Input value={value} onChangeText={onChange} onBlur={onBlur} {...props} />
+    </FormFieldWrapper>
+  );
+});
+
+type TextAreaProps = WrapperProps & React.ComponentProps<typeof TextArea>;
+export const FormTextArea = memo((props: TextAreaProps) => {
+  const {value, onChange, onBlur} = useFieldContext(props.name);
+  return (
+    <FormFieldWrapper {...props}>
+      <TextArea
+        value={value}
+        onChangeText={onChange}
+        onBlur={onBlur}
+        {...props}
+      />
     </FormFieldWrapper>
   );
 });
