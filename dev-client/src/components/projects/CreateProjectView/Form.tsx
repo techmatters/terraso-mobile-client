@@ -112,7 +112,7 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
       placeholder={showPlaceholders ? t('projects.add.description') : undefined}
       variant="outline"
       numberOfLines={3}
-      id="project-form-description"
+      autoCompleteType="off"
       label={t('projects.add.description')}
     />,
   ];
@@ -187,6 +187,7 @@ export default function Form({editForm = false}: Props) {
         placeholder={t('projects.add.description')}
         numberOfLines={3}
         fontSize={16}
+        autoCompleteType="off"
         {...inputParams('description')}
       />
       <ErrorMessage fieldName="description" />
