@@ -1,6 +1,7 @@
-import {createContext, useMemo} from 'react';
+import {createContext, useEffect, useMemo, useState} from 'react';
 import haversine from 'haversine';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {USER_DISTANCE_CONTEXT_CACHE} from 'terraso-mobile-client/constants';
 
 type GeospatialInfo = {
   /* list of site IDs, sorted with respect to user's current location */
@@ -24,8 +25,30 @@ export const GeospatialProvider = ({
   userLocation,
   children,
 }: ProviderProps) => {
-  const siteDistances = useMemo(() => {
+  const [lastUserLocation, setLastUserLocation] = useState<Coords | null>(
+    userLocation,
+  );
+
+  useEffect(() => {
+    if (!lastUserLocation) {
+      if (userLocation) {
+        setLastUserLocation(userLocation);
+      }
+      return;
+    }
     if (!userLocation) {
+      setLastUserLocation(null);
+      return;
+    }
+    if (
+      haversine(userLocation, lastUserLocation) > USER_DISTANCE_CONTEXT_CACHE
+    ) {
+      setLastUserLocation(userLocation);
+    }
+  }, [userLocation, lastUserLocation, setLastUserLocation]);
+
+  const siteDistances = useMemo(() => {
+    if (!lastUserLocation) {
       return null;
     }
     return sites
@@ -34,12 +57,12 @@ export const GeospatialProvider = ({
         location: {latitude, longitude},
       }))
       .map(({id, location}) => ({
-        d: haversine(location, userLocation),
+        d: haversine(location, lastUserLocation),
         siteId: id,
       }))
       .sort(({d: d1}, {d: d2}) => d1 - d2)
       .map(({siteId}) => siteId);
-  }, [sites, userLocation]);
+  }, [sites, lastUserLocation]);
 
   return (
     <GeospatialContext.Provider value={{sortedSites: siteDistances}}>

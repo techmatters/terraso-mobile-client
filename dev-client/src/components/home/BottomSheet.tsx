@@ -115,17 +115,20 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
 
 const SiteFilterModal = () => {
   const {t} = useTranslation();
-  const projects = useSelector(state => state.project.projects);
-  const projectOptions = useMemo(
-    () =>
-      Object.fromEntries(
-        Object.values(projects).map(project => [project.id, project.name]),
-      ),
-    [projects],
-  );
 
   const roleOptions = Object.fromEntries(
     USER_ROLES.map(role => [role, t(`site.role.${role}`)]),
+  );
+
+  const sortOptions = Object.fromEntries(
+    [
+      'nameAsc',
+      'nameDesc',
+      'lastModAsc',
+      'lastModDesc',
+      'distanceAsc',
+      'distanceDesc',
+    ].map(label => [label, t('site.search.sort.' + label)]),
   );
 
   return (
@@ -138,9 +141,9 @@ const SiteFilterModal = () => {
         />
       }>
       <SelectFilter
-        label={t('site.search.filter_projects')}
-        options={projectOptions}
-        name="project"
+        label={t('site.search.sort.label')}
+        options={sortOptions}
+        name="sort"
       />
       <SelectFilter
         label={t('site.search.filter_role')}

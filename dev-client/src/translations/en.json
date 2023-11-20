@@ -91,7 +91,16 @@
       "accessibility_label": "Filter sites by site name",
       "filter_projects": "Filter sites by project:",
       "filter_role": "Filter sites by role",
-      "no_matches": "No sites match the current search and filter options."
+      "no_matches": "No sites match the current search and filter options.",
+      "sort": {
+        "label": "Sort projects by:",
+        "nameAsc": "Name (A to Z)",
+        "nameDesc": "Name (Z to A)",
+        "lastModAsc": "Last Modified (most recent)",
+        "lastModDesc": "Last Modified (least recent)",
+        "distanceAsc": "Distance (closest)",
+        "distanceDesc": "Distance (furthest)"
+      }
     },
     "role": {
       "manager": "Manager",

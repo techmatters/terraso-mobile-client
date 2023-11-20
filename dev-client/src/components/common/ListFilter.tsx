@@ -117,10 +117,15 @@ export const ListFilterProvider = <Item, Filters extends string>({
             return x.filter(item => fn.f(processed)(getFilterVal(item)));
 
           case 'sorting':
-            const options = fn.options[name];
+            const selectedVal = values[name];
+            if (selectedVal === undefined) {
+              return x;
+            }
+            const options = fn.options[selectedVal];
             if (options === undefined) {
               console.warn(
                 'Trying to sort with an undefined sorting configuration; ignoring',
+                name,
               );
               return x;
             }

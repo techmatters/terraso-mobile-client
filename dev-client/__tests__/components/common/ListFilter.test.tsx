@@ -21,10 +21,7 @@ const openModal = () => {
   fireEvent.press(filterIcon);
 };
 
-const activateSelectFilter = (
-  selectPlaceholder: string,
-  optionText: string,
-) => {
+const changeSelectFilter = (selectPlaceholder: string, optionText: string) => {
   openModal();
 
   const select = screen.getByPlaceholderText(
@@ -37,6 +34,13 @@ const activateSelectFilter = (
   fireEvent.press(select);
   const option = screen.getByText(optionText);
   fireEvent.press(option);
+};
+
+const activateSelectFilter = (
+  selectPlaceholder: string,
+  optionText: string,
+) => {
+  changeSelectFilter(selectPlaceholder, optionText);
   const applyButton = screen.getByText('Apply');
   fireEvent.press(applyButton);
 };
@@ -108,7 +112,7 @@ const Test = ({items}: {items?: TestObject[]}) => {
             f: (val: string) => (comp: string | undefined) => val === comp,
             lookup: {key: 'privacy'},
           },
-          nameRev: {
+          sort: {
             kind: 'sorting',
             options: {
               nameRev: {
@@ -145,8 +149,8 @@ const Test = ({items}: {items?: TestObject[]}) => {
             options={{private: 'Private', public: 'Public'}}
           />
           <SelectFilter
-            key="nameRev"
-            name="nameRev"
+            key="sort"
+            name="sort"
             label="Sort"
             placeholder="Sort"
             options={{nameRev: 'Name (reverse alphabetical)'}}
@@ -258,7 +262,7 @@ test('Filtered items update when props updated', () => {
   expect(screen.queryByText('Alex')).not.toBeNull();
 });
 
-test.only('Sort items by reverse', () => {
+test('Sort items by reverse', () => {
   render(<Test />);
   activateSelectFilter('Sort', 'Name (reverse alphabetical)');
   const list = screen.queryByTestId('LIST');

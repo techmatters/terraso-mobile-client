@@ -185,19 +185,33 @@ export const HomeScreen = () => {
             },
             hide: true,
           },
-          project: {
-            kind: 'filter',
-            f: equals,
-            lookup: {
-              key: 'projectId',
-            },
-          },
           role: {
             kind: 'filter',
             f: equals,
             lookup: {
               record: siteProjectRoles,
               key: 'id',
+            },
+          },
+          sort: {
+            kind: 'sorting',
+            options: {
+              nameDesc: {
+                key: 'name',
+                order: 'descending',
+              },
+              nameAsc: {
+                key: 'name',
+                order: 'ascending',
+              },
+              lastModDesc: {
+                key: 'updatedAt',
+                order: 'descending',
+              },
+              lastModAsc: {
+                key: 'updatedAt',
+                order: 'ascending',
+              },
             },
           },
         }}>

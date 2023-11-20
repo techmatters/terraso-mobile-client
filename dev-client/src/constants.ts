@@ -16,3 +16,4 @@ export const FORM_LABEL_MAX = 10;
 export const USER_ROLES = ['viewer', 'contributor', 'manager'];
 export const PROJECT_DEFAULT_MEASUREMENT_UNITS = 'METRIC';
 export const MEASUREMENT_UNITS = ['METRIC', 'IMPERIAL'];
+export const USER_DISTANCE_CONTEXT_CACHE = 5;
