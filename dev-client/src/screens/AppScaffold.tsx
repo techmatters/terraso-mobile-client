@@ -34,6 +34,10 @@ import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectSc
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen';
 import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen';
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen';
+import {AddSiteNoteScreen} from 'terraso-mobile-client/components/siteNotes/AddSiteNoteScreen';
+import {EditSiteNoteScreen} from 'terraso-mobile-client/components/siteNotes/EditSiteNoteScreen';
+import {ReadNoteScreen} from 'terraso-mobile-client/components/siteNotes/ReadNoteScreen';
+import {EditProjectInstructionsScreen} from 'terraso-mobile-client/components/projects/EditProjectInstructionsScreen';
 import {useNavigation as useNavigationNative} from '@react-navigation/native';
 import {LocationDashboardScreen} from 'terraso-mobile-client/components/sites/LocationDashboardScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/components/sites/SiteSettingsScreen';
@@ -46,6 +50,7 @@ import {ManageTeamMemberScreen} from 'terraso-mobile-client/components/projects/
 
 type UnknownToUndefined<T extends unknown> = unknown extends T ? undefined : T;
 export type ScreenDefinitions = Record<string, React.FC<any>>;
+export type ModalScreenDefinitions = Record<string, React.FC<any>>;
 export type ParamList<T extends ScreenDefinitions> = {
   [K in keyof T]: UnknownToUndefined<React.ComponentProps<T[K]>>;
 };
@@ -65,7 +70,19 @@ const screenDefinitions = {
   MANAGE_TEAM_MEMBER: ManageTeamMemberScreen,
 } satisfies ScreenDefinitions;
 
-type RootStackParamList = ParamList<typeof screenDefinitions>;
+const modalScreenDefinitions = {
+  ADD_SITE_NOTE: AddSiteNoteScreen,
+  EDIT_SITE_NOTE: EditSiteNoteScreen,
+  EDIT_PROJECT_INSTRUCTIONS: EditProjectInstructionsScreen,
+  READ_NOTE: ReadNoteScreen,
+} satisfies ModalScreenDefinitions;
+
+const combinedScreenDefinitions = {
+  ...screenDefinitions,
+  ...modalScreenDefinitions,
+} satisfies ScreenDefinitions;
+
+type RootStackParamList = ParamList<typeof combinedScreenDefinitions>;
 type ScreenName = keyof RootStackParamList;
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -80,6 +97,16 @@ const screens = Object.entries(screenDefinitions).map(([name, Screen]) => (
   />
 ));
 
+const modalScreens = Object.entries(modalScreenDefinitions).map(
+  ([name, Screen]) => (
+    <RootStack.Screen
+      name={name as ScreenName}
+      key={name}
+      children={props => <Screen {...((props.route.params ?? {}) as any)} />}
+    />
+  ),
+);
+
 export const useNavigation = <Name extends ScreenName = ScreenName>() =>
   useNavigationNative<NativeStackNavigationProp<RootStackParamList, Name>>();
 
@@ -89,6 +116,9 @@ export function AppScaffold() {
   const dispatch = useDispatch();
   const hasToken = useSelector(state => state.account.hasToken);
   const currentUser = useSelector(state => state.account.currentUser.data);
+  const loggedIn = useSelector(
+    state => state.account.currentUser.data !== null,
+  );
 
   useEffect(() => {
     if (!hasToken) {
@@ -110,10 +140,17 @@ export function AppScaffold() {
   }, [dispatch]);
 
   return (
-    <RootStack.Navigator
-      initialRouteName={!hasToken ? 'LOGIN' : 'HOME'}
-      screenOptions={defaultScreenOptions}>
-      {screens}
+    <RootStack.Navigator initialRouteName={loggedIn ? 'HOME' : 'LOGIN'}>
+      <RootStack.Group screenOptions={defaultScreenOptions}>
+        {screens}
+      </RootStack.Group>
+      <RootStack.Group
+        screenOptions={{
+          headerShown: false,
+          animation: 'slide_from_bottom',
+        }}>
+        {modalScreens}
+      </RootStack.Group>
     </RootStack.Navigator>
   );
 }
