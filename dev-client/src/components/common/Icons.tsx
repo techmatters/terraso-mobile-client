@@ -18,9 +18,10 @@
 import {
   Icon as NativeIcon,
   IconButton as NativeIconButton,
-  Center,
   Text,
   Box,
+  HStack,
+  Center,
 } from 'native-base';
 import React from 'react';
 import {Pressable} from 'react-native';
@@ -58,6 +59,54 @@ export const IconButton = React.forwardRef(
               {label}
             </Text>
           </Center>
+        </Box>
+      </Pressable>
+    );
+  },
+);
+
+export type HorizontalIconButtonProps = React.ComponentProps<
+  typeof NativeIconButton
+> & {
+  as?: any;
+  name: string;
+  label?: string;
+  colorScheme?: string;
+  isUppercase?: boolean;
+};
+export const HorizontalIconButton = React.forwardRef(
+  (
+    {
+      as,
+      name,
+      label,
+      colorScheme,
+      isUppercase,
+      ...props
+    }: HorizontalIconButtonProps,
+    ref: React.Ref<unknown>,
+  ) => {
+    const icon = (
+      <NativeIconButton
+        ref={ref}
+        icon={<Icon as={as} name={name} />}
+        {...props}
+      />
+    );
+
+    return (
+      <Pressable onPress={props.onPress}>
+        <Box p="1">
+          <HStack>
+            {icon}
+            <Text
+              color={colorScheme || 'primary.contrast'}
+              fontSize="md"
+              pl={1}
+              textTransform={isUppercase ? 'uppercase' : 'none'}>
+              {label}
+            </Text>
+          </HStack>
         </Box>
       </Pressable>
     );

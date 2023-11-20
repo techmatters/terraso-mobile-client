@@ -15,9 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Row, Text} from 'native-base';
+import {Button, Row, Text, Box, HStack} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {FormSwitch} from 'terraso-mobile-client/components/common/Form';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -39,6 +38,7 @@ import {AddIntervalModal} from 'terraso-mobile-client/components/dataInputs/AddI
 import {useMemo, useCallback} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'react-native';
+import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 export const ProjectInputTab = ({
@@ -47,40 +47,53 @@ export const ProjectInputTab = ({
   },
 }: Props) => {
   const {t} = useTranslation();
+  const navigation = useNavigation();
+  const project = useSelector(state => state.project.projects[projectId]);
+
+  const onEditInstructions = useCallback(() => {
+    return navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});
+  }, [navigation, project]);
 
   return (
     <ScrollView>
-      <RadioBlock<'imperial' | 'metric'>
-        label={t('projects.inputs.units.heading')}
-        options={{
-          imperial: {text: t('projects.inputs.units.imperial')},
-          metric: {text: t('projects.inputs.units.metric')},
-        }}
-        groupProps={{
-          name: 'measurement-units',
-          accessibilityLabel: t('projects.inputs.units.a11yLabel'),
-          defaultValue: 'imperial',
-        }}
-      />
-      <RadioBlock<'soil-survey' | 'soil-grids'>
-        label={t('projects.inputs.soil_source.heading')}
-        options={{
-          'soil-survey': {text: t('projects.inputs.soil_source.survey')},
-          'soil-grids': {
-            text: t('projects.inputs.soil_source.grids'),
-          },
-        }}
-        groupProps={{
-          name: 'information-source',
-          accessibilityLabel: t('projects.inputs.soil_source.a11yLabel'),
-          defaultValue: 'soil-survey',
-        }}
-      />
-      <Accordion Head={<Text>{t('soil.pit')}</Text>}>
+      <Box p={4} alignItems="flex-start">
+        <Text bold fontSize={'md'}>
+          {t('projects.inputs.instructions.title')}
+        </Text>
+        <Text fontSize={'md'}>
+          {t('projects.inputs.instructions.description')}
+        </Text>
+        <Button
+          mt={2}
+          pl={4}
+          pr={4}
+          size="lg"
+          backgroundColor="primary.dark"
+          shadow={5}
+          onPress={onEditInstructions}>
+          <HStack>
+            <Icon color="primary.contrast" size={'sm'} mr={2} name={'edit'} />
+            <Text color="primary.contrast" textTransform={'uppercase'}>
+              {t('projects.inputs.instructions.add_label')}
+            </Text>
+          </HStack>
+        </Button>
+      </Box>
+      <Accordion
+        Head={
+          <Text pt={3} pb={3} fontSize={'md'} color={'primary.contrast'}>
+            {t('soil.pit')}
+          </Text>
+        }>
         <SoilPitSettings projectId={projectId} />
       </Accordion>
+      <Box height={4} />
       <Accordion
-        Head={<Text>{t('soil.project_settings.required_data_title')}</Text>}>
+        Head={
+          <Text pt={3} pb={3} fontSize={'md'} color={'primary.contrast'}>
+            {t('soil.project_settings.required_data_title')}
+          </Text>
+        }>
         <RequiredDataSettings projectId={projectId} />
       </Accordion>
     </ScrollView>

@@ -124,8 +124,9 @@ export const ManageTeamMemberScreen = ({
                 onPress={onOpen}
                 _text={{color: 'error.main'}}
                 _pressed={{backgroundColor: 'red.100'}}
+                textTransform={'uppercase'}
                 leftIcon={<Icon name="delete" color="error.main" />}>
-                {t('projects.manage_member.remove').toLocaleUpperCase()}
+                {t('projects.manage_member.remove')}
               </Button>
             )}
             title={t('projects.manage_member.confirm_removal_title')}
