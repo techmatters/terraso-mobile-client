@@ -69,9 +69,9 @@ export default function ProjectSettingsTab({
   const closeArchiveProject = () => {
     setIsArchiveModalOpen(false);
   };
-  const openArchiveProject = () => {
-    setIsArchiveModalOpen(true);
-  };
+  // const openArchiveProject = () => {
+  //   setIsArchiveModalOpen(true);
+  // };
   const triggerArchiveProject = () => {
     setIsDeleteModalOpen(false);
     dispatch(archiveProject({id: projectId, archived: true}));
@@ -92,12 +92,14 @@ export default function ProjectSettingsTab({
           href={downloadLink}>
           {t('projects.settings.copy_download_link').toUpperCase()}
         </IconLink>
+        {/*
         <IconLink
           iconName="archive"
           isUnderlined={false}
           onPress={openArchiveProject}>
           {t('projects.settings.archive').toUpperCase()}
         </IconLink>
+          */}
         <IconLink
           iconName="delete-forever"
           underlined={false}

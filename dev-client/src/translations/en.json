@@ -25,7 +25,7 @@
     "placeholder": "Search"
   },
   "site": {
-    "list_title": "Sites",
+    "list_title": "Site List",
     "last_updated": "Last Modified: {{date}} by {{name}}",
     "progress": "Progress: {{progress}}",
     "members": "{{members}} Members",

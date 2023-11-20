@@ -20,14 +20,14 @@ import {
   Fab,
   Input,
   Button,
-  useTheme,
+  // useTheme,
   FormControl,
   Select,
   Column,
-  Row,
-  Text,
-  Spacer,
-  Pressable,
+  // Row,
+  // Text,
+  // Spacer,
+  // Pressable,
 } from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
@@ -47,15 +47,15 @@ type Props = {
 export const SiteSettingsScreen = ({siteId}: Props) => {
   const dispatch = useDispatch();
   const {t} = useTranslation();
-  const {colors} = useTheme();
+  // const {colors} = useTheme();
   const {navigate} = useNavigation();
   const site = useSelector(state => state.site.sites[siteId]);
   const [name, setName] = useState(site.name);
 
-  const onTeamPress = useCallback(
-    () => navigate('SITE_TEAM_SETTINGS', {siteId}),
-    [siteId, navigate],
-  );
+  // const onTeamPress = useCallback(
+  //   () => navigate('SITE_TEAM_SETTINGS', {siteId}),
+  //   [siteId, navigate],
+  // );
 
   const onSave = useCallback(
     () => dispatch(updateSite({id: site.id, name})),
@@ -73,11 +73,9 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
       BottomNavigation={null}
       AppBar={<AppBar title={site.name} />}>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
-        <Input
-          value={name}
-          onChangeText={setName}
-          leftElement={<Icon ml="12px" name="edit" />}
-        />
+        <Input value={name} onChangeText={setName} />
+        {/*
+          TODO: Uncomment button after feature is written.
         <Pressable
           variant="subtle"
           w="full"
@@ -97,6 +95,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             <Icon name="arrow-forward-ios" />
           </Row>
         </Pressable>
+          */}
         <FormControl>
           <FormControl.Label>
             <IconLabel
@@ -113,6 +112,8 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           endIcon={<Icon name="info" />}>
           {t('site.dashboard.copy_download_link_button').toUpperCase()}
         </Button>
+        {/*
+          TODO: Uncomment button after archiving code is done.
         <FormControl alignItems="flex-start">
           <Button
             pl={0}
@@ -125,6 +126,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             {t('site.dashboard.archive_button_help_text')}
           </FormControl.HelperText>
         </FormControl>
+        */}
         <Button
           pl={0}
           variant="link"
