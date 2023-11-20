@@ -127,6 +127,13 @@
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
     "go_to": "Go to Project",
+    "create": {
+      "public": "Public",
+      "private": "Private",
+      "name_label": "Project Name",
+      "description_label": "Project Description",
+      "privacy_label": "Data Privacy"
+    },
     "inputs": {
       "units": {
         "heading": "Units of Measurement",
@@ -161,6 +168,7 @@
     },
     "settings": {
       "copy_download_link": "Copy project download link",
+      "download_link_description": "A zipped file of all the project’s assets including a .csv file of site data, field notes, audit logs, and photos. Anyone with this link can view all the assets.",
       "cancel": "Cancel",
       "archive": "Archive this project",
       "archive_button": "Archive",
@@ -238,8 +246,6 @@
     "last_modified": "Last Modified",
     "sites": "sites",
     "users": "users",
-    "project_private": "Private",
-    "project_public": "Public",
     "save": "Save",
     "save_fab": "SAVE",
     "modified_by": "Last modified {{date}} by {{user}}",

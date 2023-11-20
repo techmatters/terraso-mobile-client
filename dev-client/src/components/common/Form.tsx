@@ -25,6 +25,7 @@ import {
   Checkbox,
   Row,
   Text,
+  TextArea,
 } from 'native-base';
 import {
   createContext,
@@ -137,6 +138,21 @@ export const FormInput = memo(
     );
   }),
 );
+
+type TextAreaProps = WrapperProps & React.ComponentProps<typeof TextArea>;
+export const FormTextArea = memo((props: TextAreaProps) => {
+  const {value, onChange, onBlur} = useFieldContext(props.name);
+  return (
+    <FormFieldWrapper {...props}>
+      <TextArea
+        value={value}
+        onChangeText={onChange}
+        onBlur={onBlur}
+        {...props}
+      />
+    </FormFieldWrapper>
+  );
+});
 
 type SwitchProps = WrapperProps &
   Omit<React.ComponentProps<typeof Switch>, 'onChange' | 'onValueChange'> & {

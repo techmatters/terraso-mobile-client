@@ -16,7 +16,7 @@
  */
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AlertDialog, Button, VStack} from 'native-base';
+import {AlertDialog, Button, Text, VStack} from 'native-base';
 import {
   TabRoutes,
   TabStackParamList,
@@ -92,6 +92,7 @@ export default function ProjectSettingsTab({
           href={downloadLink}>
           {t('projects.settings.copy_download_link').toUpperCase()}
         </IconLink>
+        <Text ml={10}>{t('projects.settings.download_link_description')}</Text>
         <IconLink
           iconName="archive"
           isUnderlined={false}
