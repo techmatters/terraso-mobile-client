@@ -38,7 +38,7 @@ import {
   useHeaderHeight,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import MapSearch from 'terraso-mobile-client/components/home/MapSearch';
-import {Box, Column, Heading, HStack, Image, Text} from 'native-base';
+import {Box, Column, FlatList, Heading, HStack, Image, Text} from 'native-base';
 import {coordsToPosition} from 'terraso-mobile-client/components/common/Map';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -298,35 +298,20 @@ const LandPKSInfo = () => {
             <Text bold>third</Text>
           </Trans>
         </Text>
-        <HStack key={1}>
-          <Text variant="body1" mr={2}>
-            1
-          </Text>
-          <Text variant="body1" mr={2}>
-            {t('home.info.list1')}
-          </Text>
-        </HStack>
-        <HStack key={2}>
-          <Text variant="body1" mr={2}>
-            2
-          </Text>
-          <Text variant="body1">
-            <Trans
-              i18nKey="home.info.list2"
-              components={{
-                icon: <LocationIcon />,
-              }}
-            />
-          </Text>
-        </HStack>
-        <HStack key={3}>
-          <Text variant="body1" mr={2}>
-            3
-          </Text>
-          <Text variant="body1" mr={2}>
-            {t('home.info.list3')}
-          </Text>
-        </HStack>
+        <FlatList
+          data={['home.info.list1', 'home.info.list2', 'home.info.list3']}
+          renderItem={({index, item}) => (
+            <HStack key={index}>
+              <Text variant="body1" mr={2}>
+                {index + 1}
+              </Text>
+              <Text variant="body1" mr={2}>
+                <Trans i18nKey={item} components={{icon: <LocationIcon />}} />
+              </Text>
+            </HStack>
+          )}
+          keyExtractor={item => item}
+        />
         <Text variant="body1">
           <Trans
             i18nKey="home.info.description2"
