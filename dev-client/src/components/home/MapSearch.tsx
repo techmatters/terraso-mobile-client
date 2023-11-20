@@ -85,14 +85,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   async function querySuggestions(queryText: string) {
     if (isValidCoordinates(queryText)) {
       const [latitude, longitude] = queryText.split(',').map(Number);
-      if (
-        latitude >= -90 &&
-        latitude <= 90 &&
-        longitude >= -180 &&
-        longitude <= 180
-      ) {
-        zoomTo && zoomTo({latitude, longitude});
-      }
+      zoomTo && zoomTo({latitude, longitude});
     } else {
       if (queryText.length >= 2) {
         try {
