@@ -19,7 +19,7 @@ import {useCallback} from 'react';
 import {Text, HStack, Spacer} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/common/Card';
-import {formatDate} from 'terraso-mobile-client/util';
+import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {SiteNote} from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
@@ -51,8 +51,10 @@ export const SiteNoteCard = ({note}: Props) => {
       onPress={onShowNote}>
       <HStack>
         <Text italic>
-          {formatDate(note.createdAt)} {t('site.notes.note_by')}{' '}
-          {note.authorFirstName} {note.authorLastName}
+          {t('site.notes.note_attribution', {
+            createdAt: formatDate(note.createdAt),
+            name: formatFullName(note.authorFirstName, note.authorLastName),
+          })}
         </Text>
         <Spacer />
         <IconButton

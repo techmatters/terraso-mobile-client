@@ -41,7 +41,6 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleUpdateProject = async ({content}: {content: string}) => {
-    console.log('handleUpdateProject');
     Keyboard.dismiss();
     setIsSubmitting(true);
     try {

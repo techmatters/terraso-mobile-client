@@ -42,6 +42,10 @@ export const formatName = (firstName: string, lastName?: string) => {
   return [lastName, firstName].filter(Boolean).join(', ');
 };
 
+export const formatFullName = (firstName: string, lastName?: string) => {
+  return firstName + ' ' + lastName;
+};
+
 export const removeKeys = (a: any, b: any) => {
   const remove = [a, b];
   let currA, currB;

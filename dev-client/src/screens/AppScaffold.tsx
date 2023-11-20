@@ -140,7 +140,7 @@ export function AppScaffold() {
   }, [dispatch]);
 
   return (
-    <RootStack.Navigator initialRouteName={!loggedIn ? 'LOGIN' : 'HOME'}>
+    <RootStack.Navigator initialRouteName={loggedIn ? 'HOME' : 'LOGIN'}>
       <RootStack.Group screenOptions={defaultScreenOptions}>
         {screens}
       </RootStack.Group>

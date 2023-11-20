@@ -91,7 +91,7 @@
       "title": "Site Notes",
       "add_title": "Site Note",
       "edit_title": "Site Note",
-      "note_by": "by",
+      "note_attribution": "{{createdAt}} by {{name}}",
       "confirm_removal_title": "Delete note?",
       "confirm_removal_body": "Are you sure you want to remove this note?",
       "min_length_error": "Must be at least {{min}} characters",
