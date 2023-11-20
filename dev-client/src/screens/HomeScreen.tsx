@@ -304,6 +304,7 @@ const LandPKSInfo = () => {
             <HStack key={index}>
               <Text variant="body1" mr={2}>
                 {index + 1}
+                {'.'}
               </Text>
               <Text variant="body1" mr={2}>
                 <Trans i18nKey={item} components={{icon: <LocationIcon />}} />
