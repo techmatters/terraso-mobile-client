@@ -39,10 +39,7 @@ import {Linking} from 'react-native';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Trans, useTranslation} from 'react-i18next';
-import {
-  Icon,
-  LinkNewWindowIcon,
-} from 'terraso-mobile-client/components/common/Icons';
+import {LinkNewWindowIcon} from 'terraso-mobile-client/components/common/Icons';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
@@ -75,19 +72,11 @@ type Props = {
   sites: Site[];
   filteredSites: Site[];
   showSiteOnMap: (site: Site) => void;
-  onCreateSite: () => void;
   snapIndex?: number;
 } & SiteSearchBarProps;
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   (
-    {
-      sites,
-      filteredSites,
-      showSiteOnMap,
-      onCreateSite,
-      snapIndex,
-      ...searchBarProps
-    },
+    {sites, filteredSites, showSiteOnMap, snapIndex, ...searchBarProps},
     ref,
   ) => {
     const {t} = useTranslation();
