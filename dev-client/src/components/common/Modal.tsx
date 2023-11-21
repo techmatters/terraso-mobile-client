@@ -19,6 +19,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -55,7 +56,7 @@ export const Modal = forwardRef<ModalHandle, Props>(
     const {isOpen, onOpen, onClose} = useDisclose();
     const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
 
-    useMemo(() => {
+    useEffect(() => {
       if (!isOpen && closeHook) {
         closeHook();
       }
