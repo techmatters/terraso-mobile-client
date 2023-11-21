@@ -24,7 +24,7 @@ import {
   Center,
 } from 'native-base';
 import React from 'react';
-import {Pressable} from 'react-native';
+import {View, Pressable} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 export {default as MaterialCommunityIcons} from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -112,3 +112,20 @@ export const HorizontalIconButton = React.forwardRef(
     );
   },
 );
+export const LocationIcon = () => {
+  return (
+    // eslint-disable-next-line react-native/no-inline-styles
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <Icon name="my-location" color="black" size="14" />
+    </View>
+  );
+};
+
+export const LinkNewWindowIcon = () => {
+  return (
+    // eslint-disable-next-line react-native/no-inline-styles
+    <View style={{flexDirection: 'row'}}>
+      <Icon name="open-in-new" color="primary.main" size="14" />
+    </View>
+  );
+};
