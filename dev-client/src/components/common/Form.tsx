@@ -1,3 +1,20 @@
+/*
+ * Copyright © 2023 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
 import {ErrorMessage as FormikErrorMessage, useFormikContext} from 'formik';
 import {
   FormControl,
@@ -8,8 +25,17 @@ import {
   Checkbox,
   Row,
   Text,
+  TextArea,
 } from 'native-base';
-import {createContext, memo, useContext} from 'react';
+import {
+  createContext,
+  memo,
+  useContext,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
+import {TextInput} from 'react-native';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 
 type FieldContextType<Name extends string = string, T = string> = {
@@ -86,11 +112,44 @@ export const FormFieldWrapper = memo(
 );
 
 type InputProps = WrapperProps & React.ComponentProps<typeof Input>;
-export const FormInput = memo((props: InputProps) => {
+export const FormInput = memo(
+  forwardRef((props: InputProps, ref) => {
+    const {value, onChange, onBlur} = useFieldContext(props.name);
+    const inputRef = useRef<TextInput>(null);
+
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      },
+    }));
+
+    return (
+      <FormFieldWrapper {...props}>
+        <Input
+          ref={inputRef}
+          value={value}
+          onChangeText={onChange}
+          onBlur={onBlur}
+          {...props}
+        />
+      </FormFieldWrapper>
+    );
+  }),
+);
+
+type TextAreaProps = WrapperProps & React.ComponentProps<typeof TextArea>;
+export const FormTextArea = memo((props: TextAreaProps) => {
   const {value, onChange, onBlur} = useFieldContext(props.name);
   return (
     <FormFieldWrapper {...props}>
-      <Input value={value} onChangeText={onChange} onBlur={onBlur} {...props} />
+      <TextArea
+        value={value}
+        onChangeText={onChange}
+        onBlur={onBlur}
+        {...props}
+      />
     </FormFieldWrapper>
   );
 });

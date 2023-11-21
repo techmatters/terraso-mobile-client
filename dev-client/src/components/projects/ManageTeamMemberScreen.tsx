@@ -1,3 +1,20 @@
+/*
+ * Copyright © 2023 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
 import {Box, Button, Divider, Text, VStack} from 'native-base';
 import {useCallback, useState} from 'react';
 import {
@@ -107,8 +124,9 @@ export const ManageTeamMemberScreen = ({
                 onPress={onOpen}
                 _text={{color: 'error.main'}}
                 _pressed={{backgroundColor: 'red.100'}}
+                textTransform={'uppercase'}
                 leftIcon={<Icon name="delete" color="error.main" />}>
-                {t('projects.manage_member.remove').toLocaleUpperCase()}
+                {t('projects.manage_member.remove')}
               </Button>
             )}
             title={t('projects.manage_member.confirm_removal_title')}

@@ -1,3 +1,20 @@
+/*
+ * Copyright © 2023 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
@@ -9,6 +26,7 @@ import {StaticMapView} from 'terraso-mobile-client/components/common/Map';
 import {StyleSheet} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ScrollView} from 'react-native';
+import {ProjectInstructionsButton} from 'terraso-mobile-client/components/sites/ProjectInstructionsButton';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';
@@ -64,6 +82,7 @@ const LocationPrediction = ({
 export const LocationDashboardView = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
   );
@@ -154,6 +173,9 @@ export const LocationDashboardView = ({siteId, coords}: Props) => {
                 })}
               />
             </>
+          )}
+          {project?.siteInstructions && (
+            <ProjectInstructionsButton project={project} />
           )}
         </Box>
       </Accordion>
