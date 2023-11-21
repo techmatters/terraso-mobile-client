@@ -22,7 +22,6 @@ import {
   Row,
   Heading,
   Text,
-  Link,
   useTheme,
   Column,
   FormControl,
@@ -37,10 +36,14 @@ import {
   useMemo,
   useState,
 } from 'react';
+import {Linking} from 'react-native';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import {Trans, useTranslation} from 'react-i18next';
+import {
+  Icon,
+  LinkNewWindowIcon,
+} from 'terraso-mobile-client/components/common/Icons';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
@@ -53,12 +56,18 @@ const EmptySiteMessage = () => {
 
   return (
     <Text px="17px" variant="body1">
-      <Text>{t('site.empty.info')}</Text>
-      <Text>{'\n\n'}</Text>
-      <Link isUnderlined={false} _text={{variant: 'body1'}}>
-        {t('site.empty.link') + ' '}
-        <Icon name="open-in-new" />
-      </Link>
+      <Trans
+        i18nKey="site.empty.info"
+        components={{
+          icon: <LinkNewWindowIcon />,
+        }}>
+        <Text
+          underline
+          onPress={() => Linking.openURL(t('site.empty.link_url'))}
+          color="primary.main">
+          link_text
+        </Text>
+      </Trans>
     </Text>
   );
 };
@@ -68,10 +77,18 @@ type Props = {
   filteredSites: Site[];
   showSiteOnMap: (site: Site) => void;
   onCreateSite: () => void;
+  snapIndex?: number;
 } & SiteSearchBarProps;
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   (
-    {sites, filteredSites, showSiteOnMap, onCreateSite, ...searchBarProps},
+    {
+      sites,
+      filteredSites,
+      showSiteOnMap,
+      onCreateSite,
+      snapIndex,
+      ...searchBarProps
+    },
     ref,
   ) => {
     const {t} = useTranslation();
@@ -104,6 +121,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
       <BottomSheet
         ref={ref}
         snapPoints={snapPoints}
+        index={snapIndex}
         backgroundStyle={backgroundStyle}
         handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
         <Column px="16px">
