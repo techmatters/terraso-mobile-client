@@ -38,7 +38,6 @@ import {KeyboardAvoidingView} from 'react-native';
 export type ModalHandle = {
   onClose: () => void;
   onOpen: () => void;
-  isOpen: boolean;
 };
 
 export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
@@ -48,19 +47,16 @@ export const useModal = () => useContext(ModalContext);
 
 type Props = React.PropsWithChildren<{
   trigger?: ModalTrigger;
-  closeHook: () => void;
+  closeHook?: () => void;
 }>;
 
 export const Modal = forwardRef<ModalHandle, Props>(
   ({children, trigger, closeHook}, forwardedRef) => {
     const {isOpen, onOpen, onClose} = useDisclose();
-    const handle = useMemo(
-      () => ({onClose, onOpen, isOpen}),
-      [onOpen, onClose, isOpen],
-    );
+    const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
 
     useMemo(() => {
-      if (!isOpen) {
+      if (!isOpen && closeHook) {
         closeHook();
       }
     }, [isOpen, closeHook]);

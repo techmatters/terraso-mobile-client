@@ -172,7 +172,7 @@ export const ListFilterProvider = <Item, Filters extends string>({
       setAppliedValues(values);
       setNeedsUpdate(false);
     }
-  }, [itemsWithFiltersApplied, needsUpdate, setNeedsUpdate]);
+  }, [itemsWithFiltersApplied, needsUpdate, setNeedsUpdate, values]);
 
   // reload filtered items if items changes
   useEffect(() => {
