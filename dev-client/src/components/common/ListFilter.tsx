@@ -13,7 +13,7 @@ import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import {
   Modal,
-  ModalMethods,
+  ModalHandle,
 } from 'terraso-mobile-client/components/common/Modal';
 
 type Lookup<Item> = {
@@ -43,6 +43,7 @@ export type ListFilterState<Item, FilterNames extends string> = {
   values: Record<string, string | undefined>;
   setValue: (key: FilterNames) => (newValue: string | undefined) => void;
   applyFilters: () => void;
+  clearUnapplied: () => void;
   numFilters: number;
 };
 
@@ -51,6 +52,7 @@ const ListFilterContext = createContext<ListFilterState<any, any>>({
   values: {},
   setValue: () => () => {},
   applyFilters: () => {},
+  clearUnapplied: () => {},
   numFilters: 0,
 });
 
@@ -61,7 +63,12 @@ type ContextHook<Item, Name> = Name extends string
       applyFilters: () => void;
       numFilters: number;
     }
-  : {applyFilters: () => void; numFilters: number; filteredItems: Item[]};
+  : {
+      applyFilters: () => void;
+      clearUnapplied: () => void;
+      numFilters: number;
+      filteredItems: Item[];
+    };
 
 type ProviderProps<Item, Filters extends string> = {
   items: Item[];
@@ -74,6 +81,9 @@ export const ListFilterProvider = <Item, Filters extends string>({
   children,
 }: ProviderProps<Item, Filters>) => {
   const [values, setValues] = useState<Record<string, string | undefined>>({});
+  const [appliedValues, setAppliedValues] = useState<
+    Record<string, string | undefined>
+  >({});
   const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
   const [filteredItems, setFilteredItems] = useState<Item[]>(items);
 
@@ -84,9 +94,9 @@ export const ListFilterProvider = <Item, Filters extends string>({
     () =>
       Object.entries<FilterFn<Item>>(filters)
         .filter(([, f]) => f.kind === 'filter' && !('hide' in f && f.hide))
-        .map(([name]) => values[name])
+        .map(([name]) => appliedValues[name])
         .filter(val => val !== undefined).length,
-    [values, filters],
+    [appliedValues, filters],
   );
 
   const applyFilters = useCallback(
@@ -152,9 +162,14 @@ export const ListFilterProvider = <Item, Filters extends string>({
     return res;
   }, [items, values, filters]);
 
+  const clearUnapplied = useCallback(() => {
+    setValues(appliedValues);
+  }, [setValues, appliedValues]);
+
   useEffect(() => {
     if (needsUpdate) {
       setFilteredItems(itemsWithFiltersApplied);
+      setAppliedValues(values);
       setNeedsUpdate(false);
     }
   }, [itemsWithFiltersApplied, needsUpdate, setNeedsUpdate]);
@@ -169,6 +184,7 @@ export const ListFilterProvider = <Item, Filters extends string>({
     filteredItems,
     setValue,
     applyFilters,
+    clearUnapplied,
     numFilters,
   };
 
@@ -352,16 +368,17 @@ type ModalProps = {searchInput: React.ReactNode} & React.PropsWithChildren;
 export const ListFilterModal = ({searchInput, children}: ModalProps) => {
   // exceptionally do not use hook here; need to pass the context value to the modal
   const value = useContext(ListFilterContext);
-  const ref = useRef<ModalMethods>(null);
+  const modalRef = useRef<ModalHandle>(null);
   const onClose = useCallback(() => {
-    if (ref.current !== null) {
-      ref.current.onClose();
+    if (modalRef.current !== null) {
+      modalRef.current.onClose();
     }
-  }, [ref]);
+  }, [modalRef]);
 
   return (
     <Modal
-      ref={ref}
+      ref={modalRef}
+      closeHook={value.clearUnapplied}
       trigger={onOpen => (
         <FilterModalTrigger onOpen={onOpen}>{searchInput}</FilterModalTrigger>
       )}>
