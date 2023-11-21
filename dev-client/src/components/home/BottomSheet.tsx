@@ -18,7 +18,6 @@
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {
   Box,
-  Button,
   Row,
   Heading,
   Text,
@@ -127,12 +126,6 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
         <Column px="16px">
           <Row justifyContent="space-between" alignItems="center" pb="4">
             <Heading variant="h6">{t('site.list_title')}</Heading>
-            <Button
-              size="sm"
-              onPress={onCreateSite}
-              startIcon={<Icon name="add" />}>
-              {t('site.create.title').toUpperCase()}
-            </Button>
           </Row>
           {sites.length >= 0 && <SiteSearchBar {...searchBarProps} />}
         </Column>
