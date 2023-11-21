@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Row, Heading, Column} from 'native-base';
+import {Box, Row, Heading, Column, useTheme} from 'native-base';
 import {
   IconButton,
   IconButtonProps,
@@ -32,8 +32,8 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {StatusBar, View, LayoutChangeEvent} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {StatusBar, View, LayoutChangeEvent, StyleSheet} from 'react-native';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 import {signOut} from 'terraso-client-shared/account/accountSlice';
 
@@ -69,15 +69,9 @@ export const AppBar = ({
 }: AppBarProps) => {
   const {t} = useTranslation();
   const route = useRoute();
-  const safeAreaTopInset = useSafeAreaInsets().top;
 
   return (
-    <Row
-      px="8px"
-      py="4px"
-      pt={`${safeAreaTopInset}px`}
-      minHeight="56px"
-      bg="primary.main">
+    <Row px="8px" py="4px" minHeight="56px" bg="primary.main">
       <Row flex={1} space="24px" alignItems="center">
         {LeftButton}
         <Heading variant="h6" color="primary.contrast">
@@ -158,6 +152,8 @@ export const ScreenScaffold = ({
   AppBar: PropsAppBar = <AppBar />,
   BottomNavigation: PropsBottomNavigation = <BottomNavigation />,
 }: Props) => {
+  const {colors} = useTheme();
+
   const [headerHeight, setHeaderHeight] = useState<number | undefined>(
     undefined,
   );
@@ -168,7 +164,11 @@ export const ScreenScaffold = ({
   );
 
   return (
-    <>
+    <SafeAreaView
+      style={[
+        styles.safeAreaContainer,
+        {backgroundColor: colors.primary.main},
+      ]}>
       <StatusBar
         barStyle="light-content"
         translucent
@@ -181,6 +181,12 @@ export const ScreenScaffold = ({
         </HeaderHeightContext.Provider>
         {PropsBottomNavigation}
       </Column>
-    </>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  safeAreaContainer: {
+    flex: 1,
+  },
+});
