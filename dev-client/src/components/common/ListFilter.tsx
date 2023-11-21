@@ -146,7 +146,8 @@ export const ListFilterProvider = <Item, Filters extends string>({
                   ? a[key]
                   : lookupRecord[String(a[key])],
               );
-            return x.sort((a, b) => {
+            // make a copy of X, because sort works in place
+            return [...x].sort((a, b) => {
               const valA = getValue(a);
               const valB = getValue(b);
               if (order === 'ascending') {

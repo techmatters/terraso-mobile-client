@@ -54,6 +54,9 @@ export const ProjectListScreen = () => {
     [navigation],
   );
   const isLoadingData = useSelector(state => state.soilId.loading);
+  const SORT_OPTIONS = Object.fromEntries(
+    ['nameAsc', 'nameDesc'].map(name => [name, t('projects.search.' + name)]),
+  );
 
   return (
     <ScreenScaffold
@@ -111,6 +114,19 @@ export const ProjectListScreen = () => {
                 f: equals,
                 lookup: {key: 'id', record: projectRoleLookup},
               },
+              sort: {
+                kind: 'sorting',
+                options: {
+                  nameAsc: {
+                    key: 'name',
+                    order: 'ascending',
+                  },
+                  nameDesc: {
+                    key: 'name',
+                    order: 'descending',
+                  },
+                },
+              },
             }}>
             <ListFilterModal
               searchInput={
@@ -120,6 +136,11 @@ export const ProjectListScreen = () => {
                   placeholder={t('projects.search_placeholder')}
                 />
               }>
+              <SelectFilter
+                name="sort"
+                label={t('projects.sort_label')}
+                options={SORT_OPTIONS}
+              />
               <SelectFilter
                 name="role"
                 label={t('projects.role_filter_label')}

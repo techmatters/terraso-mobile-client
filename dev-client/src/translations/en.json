@@ -247,9 +247,12 @@
       "name_max_length_error": "Project name must be at most {{max}} characters",
       "description_max_length_error": "Project description must be at most {{max}} characters"
     },
+    "sort_label": "Sort projects by:",
     "search": {
       "placeholder": "Search projects",
-      "no_matches": "No projects match the current search and filter options."
+      "no_matches": "No projects match the current search and filter options.",
+      "nameAsc": "Sort (A to Z)",
+      "nameDesc": "Sort (Z to A)"
     }
   },
   "badge": {
