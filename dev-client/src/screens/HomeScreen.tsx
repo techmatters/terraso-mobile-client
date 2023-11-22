@@ -51,8 +51,12 @@ import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
-import {ListFilterProvider} from 'terraso-mobile-client/components/common/ListFilter';
+import {
+  ListFilterProvider,
+  SortingOption,
+} from 'terraso-mobile-client/components/common/ListFilter';
 import {equals, normalizeText, searchText} from 'terraso-mobile-client/util';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 
 export type CalloutState =
   | {
@@ -188,6 +192,24 @@ export const HomeScreen = () => {
     [infoBottomSheetRef],
   );
 
+  const {siteDistances} = useGeospatialContext();
+
+  const distanceSorting: Record<string, SortingOption<Site>> | undefined =
+    siteDistances === null
+      ? undefined
+      : {
+          distanceAsc: {
+            record: siteDistances,
+            key: 'id',
+            order: 'ascending',
+          },
+          distanceDesc: {
+            record: siteDistances,
+            key: 'id',
+            order: 'descending',
+          },
+        };
+
   return (
     <BottomSheetModalProvider>
       <ListFilterProvider
@@ -229,6 +251,7 @@ export const HomeScreen = () => {
                 key: 'updatedAt',
                 order: 'ascending',
               },
+              ...distanceSorting,
             },
           },
         }}>

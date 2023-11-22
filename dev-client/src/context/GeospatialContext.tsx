@@ -1,19 +1,23 @@
-import {createContext, useEffect, useMemo, useState} from 'react';
+import {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import haversine from 'haversine';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {USER_DISTANCE_CONTEXT_CACHE} from 'terraso-mobile-client/constants';
 
 type GeospatialInfo = {
   /* list of site IDs, sorted with respect to user's current location */
-  sortedSites: string[] | null;
+  siteDistances: Record<string, number> | null;
 };
 
 /**
  * Context that provides information about geospatial objects
  */
-export const GeospatialContext = createContext<GeospatialInfo>({
-  sortedSites: null,
+const GeospatialContext = createContext<GeospatialInfo>({
+  siteDistances: null,
 });
+
+export const useGeospatialContext = () => {
+  return useContext(GeospatialContext);
+};
 
 type ProviderProps = {
   sites: (Coords & {id: string})[];
@@ -51,21 +55,18 @@ export const GeospatialProvider = ({
     if (!lastUserLocation) {
       return null;
     }
-    return sites
-      .map(({latitude, longitude, id}) => ({
-        id,
-        location: {latitude, longitude},
-      }))
-      .map(({id, location}) => ({
-        d: haversine(location, lastUserLocation),
-        siteId: id,
-      }))
-      .sort(({d: d1}, {d: d2}) => d1 - d2)
-      .map(({siteId}) => siteId);
+    return Object.fromEntries(
+      sites
+        .map(({latitude, longitude, id}) => ({
+          id,
+          location: {latitude, longitude},
+        }))
+        .map(({id, location}) => [id, haversine(location, lastUserLocation)]),
+    );
   }, [sites, lastUserLocation]);
 
   return (
-    <GeospatialContext.Provider value={{sortedSites: siteDistances}}>
+    <GeospatialContext.Provider value={{siteDistances}}>
       {children}
     </GeospatialContext.Provider>
   );

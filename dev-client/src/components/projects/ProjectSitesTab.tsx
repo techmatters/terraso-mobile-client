@@ -58,6 +58,9 @@ import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 import {CardTopRightButton} from 'terraso-mobile-client/components/common/Card';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
+import {ListFilterProvider, useListFilter} from '../common/ListFilter';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {normalizeText, searchText} from 'terraso-mobile-client/util';
 
 type SiteMenuProps = {
   iconName: string;
@@ -138,6 +141,23 @@ const SiteMenu = ({site}: SiteProps) => {
   );
 };
 
+const SiteCardList = () => {
+  const {t} = useTranslation();
+  const {filteredItems: sites} = useListFilter<Site>();
+
+  return (
+    <FlatList
+      data={sites}
+      renderItem={({item: site}) => (
+        <SiteCard site={site} buttons={<SiteMenu site={site} />} />
+      )}
+      keyExtractor={site => site.id}
+      ItemSeparatorComponent={() => <Box h="8px" />}
+      ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
+    />
+  );
+};
+
 type Props = CompositeScreenProps<
   MaterialTopTabScreenProps<TabStackParamList, TabRoutes.SITES>,
   RootStackScreenProps
@@ -175,37 +195,58 @@ export default function ProjectSitesTab({
   );
 
   const sites = useSelector(state => selectProjectSites(state, projectId));
-  const {
-    results: searchedSites,
-    query,
-    setQuery,
-  } = useTextSearch({
-    data: sites,
-    keys: ['name'],
-  });
+
+  const sortNames = ['nameAsc', 'lastModAsc'];
+
+  const {siteDistances} = useGeospatialContext();
+  let distanceSorting = undefined;
+  if (siteDistances !== null) {
+    distanceSorting = {
+      distanceAsc: {
+        name: 'id',
+        record: siteDistances,
+        order: 'ascending',
+      },
+    };
+    sortNames.push('distanceAsc');
+  }
+
+  const sortingOptions = Object.fromEntries(
+    sortNames.map(label => [label, t('project.site.search.' + label)]),
+  );
 
   const isEmpty = sites.length === 0;
 
   const full = (
-    <>
-      <SearchBar
-        mb="18px"
-        query={query}
-        setQuery={setQuery}
-        placeholder={t('site.search.placeholder')}
-        FilterOptions={<Text>Site filter placeholder</Text>}
-        filterIcon="sort"
-      />
-      <FlatList
-        data={searchedSites}
-        renderItem={({item: site}) => (
-          <SiteCard site={site} buttons={<SiteMenu site={site} />} />
-        )}
-        keyExtractor={site => site.id}
-        ItemSeparatorComponent={() => <Box h="8px" />}
-        ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
-      />
-    </>
+    <ListFilterProvider
+      items={sites}
+      filters={{
+        search: {
+          kind: 'filter',
+          f: searchText,
+          preprocess: normalizeText,
+          lookup: {
+            key: 'name',
+          },
+          hide: true,
+        },
+        sort: {
+          kind: 'sorting',
+          options: {
+            nameAsc: {
+              key: 'name',
+              order: 'ascending',
+            },
+            updatedAtAsc: {
+              key: 'name',
+              order: 'ascending',
+            },
+            ...distanceSorting,
+          },
+        },
+      }}>
+      <SiteCardList />
+    </ListFilterProvider>
   );
 
   return (

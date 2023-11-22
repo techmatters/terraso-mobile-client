@@ -41,6 +41,7 @@ import {
   ListFilterModal,
   SelectFilter,
 } from 'terraso-mobile-client/components/common/ListFilter';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 
 const EmptySiteMessage = () => {
   const {t} = useTranslation();
@@ -91,6 +92,9 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
       () => ({backgroundColor: colors.grey[300]}),
       [colors],
     );
+    const {siteDistances} = useGeospatialContext();
+
+    const useDistance = useMemo(() => siteDistances === null, [siteDistances]);
 
     return (
       <BottomSheet
@@ -108,7 +112,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
               {t('site.create.title').toUpperCase()}
             </Button>
           </Row>
-          {sites.length >= 0 && <SiteFilterModal />}
+          {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
         </Column>
         {isLoadingData ? (
           <Spinner size="lg" />
@@ -130,12 +134,20 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   },
 );
 
-const SiteFilterModal = () => {
+type ModalProps = {
+  useDistance: boolean;
+};
+
+const SiteFilterModal = ({useDistance}: ModalProps) => {
   const {t} = useTranslation();
 
   const roleOptions = Object.fromEntries(
     USER_ROLES.map(role => [role, t(`site.role.${role}`)]),
   );
+
+  const distanceSortingOptions = useDistance
+    ? ['distanceAsc', 'distanceDesc']
+    : [];
 
   const sortOptions = Object.fromEntries(
     [
@@ -143,8 +155,7 @@ const SiteFilterModal = () => {
       'nameDesc',
       'lastModAsc',
       'lastModDesc',
-      'distanceAsc',
-      'distanceDesc',
+      [...distanceSortingOptions],
     ].map(label => [label, t('site.search.sort.' + label)]),
   );
 

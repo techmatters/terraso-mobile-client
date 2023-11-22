@@ -1,4 +1,12 @@
-import {Button, FormControl, HStack, Input, Select, VStack} from 'native-base';
+import {
+  Button,
+  FormControl,
+  HStack,
+  Input,
+  Radio,
+  Select,
+  VStack,
+} from 'native-base';
 import {
   createContext,
   useCallback,
@@ -15,13 +23,14 @@ import {
   Modal,
   ModalHandle,
 } from 'terraso-mobile-client/components/common/Modal';
+import {sortCompare} from 'terraso-mobile-client/util';
 
 type Lookup<Item> = {
-  record?: Record<string, string | undefined>;
+  record?: Record<string, string | number | undefined>;
   key: keyof Item;
 };
 
-type SortingOption<Item> = {
+export type SortingOption<Item> = {
   order: 'ascending' | 'descending';
 } & Lookup<Item>;
 
@@ -117,12 +126,21 @@ export const ListFilterProvider = <Item, Filters extends string>({
             if (fn.preprocess) {
               processed = fn.preprocess(processed);
             }
-            let getFilterVal: (val: Item) => string | undefined;
+            let getFilterVal: (val: Item) => string | number | undefined;
             if (fn.lookup.record !== undefined) {
               getFilterVal = (val: Item) =>
                 fn.lookup.record![String(val[fn.lookup.key as keyof Item])];
             } else {
-              getFilterVal = (val: Item) => String(val[fn.lookup.key]);
+              getFilterVal = (val: Item) => {
+                let itemVal = val[fn.lookup.key];
+                if (
+                  typeof itemVal === 'number' ||
+                  typeof itemVal === 'undefined' ||
+                  typeof itemVal === 'string'
+                )
+                  return itemVal;
+                return String(val[fn.lookup.key]);
+              };
             }
             return x.filter(item => fn.f(processed)(getFilterVal(item)));
 
@@ -140,21 +158,27 @@ export const ListFilterProvider = <Item, Filters extends string>({
               return x;
             }
             const {key, record: lookupRecord, order} = options;
-            const getValue = (a: Item) =>
-              String(
-                lookupRecord === undefined
-                  ? a[key]
-                  : lookupRecord[String(a[key])],
-              );
-            // make a copy of X, because sort works in place
+            const getValue = (a: Item): string | number | undefined => {
+              let val;
+              if (lookupRecord === undefined) {
+                val = a[key];
+              } else {
+                val = lookupRecord[String(a[key])];
+              }
+              if (
+                val === undefined ||
+                typeof val === 'string' ||
+                typeof val === 'number'
+              ) {
+                return val as undefined | number | string;
+              }
+              return String(val);
+            };
+            // make a copy of x, because sort modifies in place
             return [...x].sort((a, b) => {
               const valA = getValue(a);
               const valB = getValue(b);
-              if (order === 'ascending') {
-                return valA?.localeCompare(valB);
-              } else {
-                return valB?.localeCompare(valA);
-              }
+              return sortCompare(valA, valB, order);
             });
         }
       },
@@ -225,7 +249,7 @@ export function useListFilter<Item>(
   };
 }
 
-type SelectFilterProps<FilterNames extends string> = {
+type OptionFilterProps<FilterNames extends string> = {
   placeholder?: string;
   label: string;
   options: Record<string, string>;
@@ -237,7 +261,7 @@ export const SelectFilter = <FilterNames extends string>({
   options,
   placeholder,
   label,
-}: SelectFilterProps<FilterNames>) => {
+}: OptionFilterProps<FilterNames>) => {
   const {setValue, value} = useListFilter<any>(name);
 
   const onValueChange = useCallback(
@@ -268,13 +292,9 @@ type TextInputProps = {
   name: string;
 };
 
-export const TextInputFilter = <Item,>({
-  placeholder,
-  label,
-  name,
-}: TextInputProps) => {
+export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
   const {t} = useTranslation();
-  const {value, setValue, applyFilters} = useListFilter<Item>(name);
+  const {value, setValue, applyFilters} = useListFilter<any>(name);
 
   const onChangeText = useCallback(
     (newText: string) => {
@@ -310,6 +330,25 @@ export const TextInputFilter = <Item,>({
         ) : undefined
       }
     />
+  );
+};
+
+export const RadioFilter = <FilterNames extends string>({
+  label,
+  options,
+  name,
+}: Omit<OptionFilterProps<FilterNames>, 'placeholder'>) => {
+  const {setValue, value} = useListFilter<any>(name);
+
+  return (
+    <FormControl>
+      <FormControl.Label>{label}</FormControl.Label>
+      <Radio.Group name={name} value={value} onChange={setValue}>
+        {Object.entries(options).map(([optionName, optionLabel]) => (
+          <Radio value={optionName}>{optionLabel}</Radio>
+        ))}
+      </Radio.Group>
+    </FormControl>
   );
 };
 

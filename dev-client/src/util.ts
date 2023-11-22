@@ -81,3 +81,31 @@ export const searchText = (needle: string) => (haystack?: string) =>
   haystack !== undefined ? normalizeText(haystack).includes(needle) : false;
 
 export const equals = (a: any) => (b: any) => a === b;
+
+export const sortCompare = (
+  valA: string | number | undefined,
+  valB: string | number | undefined,
+  order: 'ascending' | 'descending',
+): number => {
+  const orderMult = order === 'ascending' ? 1 : -1;
+  if (valA === undefined && valB === undefined) {
+    return 0;
+  }
+  if (valA === undefined) {
+    return orderMult * -1;
+  }
+  if (valB === undefined) {
+    return orderMult;
+  }
+  if (typeof valA === 'string' && typeof valB === 'string') {
+    return orderMult * valA.localeCompare(valB);
+  }
+
+  if (valA < valB) {
+    return orderMult * -1;
+  } else if (valA === valB) {
+    return 0;
+  } else {
+    return orderMult;
+  }
+};
