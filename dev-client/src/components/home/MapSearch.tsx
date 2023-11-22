@@ -26,6 +26,7 @@ import {
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Keyboard} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {isValidCoordinates} from 'terraso-mobile-client/util';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
@@ -82,24 +83,29 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   }
 
   async function querySuggestions(queryText: string) {
-    if (queryText.length >= 2) {
-      try {
-        const {suggestions: newSuggestions} =
-          await makeSuggestionsApiCall(queryText);
-        setSuggestions(newSuggestions);
-      } catch (e: any) {
-        if (e.name !== 'AbortError') {
-          throw e;
+    if (isValidCoordinates(queryText)) {
+      const [latitude, longitude] = queryText.split(',').map(Number);
+      zoomTo && zoomTo({latitude, longitude});
+    } else {
+      if (queryText.length >= 2) {
+        try {
+          const {suggestions: newSuggestions} =
+            await makeSuggestionsApiCall(queryText);
+          setSuggestions(newSuggestions);
+        } catch (e: any) {
+          if (e.name !== 'AbortError') {
+            throw e;
+          }
         }
+      } else if (queryText.length === 0) {
+        setAbortController(current => {
+          if (current !== null) {
+            current.abort();
+          }
+          return null;
+        });
+        setSuggestions([]);
       }
-    } else if (queryText.length === 0) {
-      setAbortController(current => {
-        if (current !== null) {
-          current.abort();
-        }
-        return null;
-      });
-      setSuggestions([]);
     }
   }
 
