@@ -97,7 +97,10 @@ export const BottomNavigation = () => {
     state => state.account.currentUser.data !== null,
   );
 
-  const onHome = useCallback(() => navigation.navigate('HOME'), [navigation]);
+  const onHome = useCallback(
+    () => navigation.navigate('HOME', {}),
+    [navigation],
+  );
 
   const onProject = useCallback(
     () => navigation.navigate('PROJECT_LIST'),
