@@ -18,7 +18,6 @@
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {
   Box,
-  Button,
   Row,
   Heading,
   Text,
@@ -40,10 +39,7 @@ import {Linking} from 'react-native';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Trans, useTranslation} from 'react-i18next';
-import {
-  Icon,
-  LinkNewWindowIcon,
-} from 'terraso-mobile-client/components/common/Icons';
+import {LinkNewWindowIcon} from 'terraso-mobile-client/components/common/Icons';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
@@ -76,19 +72,11 @@ type Props = {
   sites: Site[];
   filteredSites: Site[];
   showSiteOnMap: (site: Site) => void;
-  onCreateSite: () => void;
   snapIndex?: number;
 } & SiteSearchBarProps;
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   (
-    {
-      sites,
-      filteredSites,
-      showSiteOnMap,
-      onCreateSite,
-      snapIndex,
-      ...searchBarProps
-    },
+    {sites, filteredSites, showSiteOnMap, snapIndex, ...searchBarProps},
     ref,
   ) => {
     const {t} = useTranslation();
@@ -127,12 +115,6 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
         <Column px="16px">
           <Row justifyContent="space-between" alignItems="center" pb="4">
             <Heading variant="h6">{t('site.list_title')}</Heading>
-            <Button
-              size="sm"
-              onPress={onCreateSite}
-              startIcon={<Icon name="add" />}>
-              {t('site.create.title').toUpperCase()}
-            </Button>
           </Row>
           {sites.length >= 0 && <SiteSearchBar {...searchBarProps} />}
         </Column>

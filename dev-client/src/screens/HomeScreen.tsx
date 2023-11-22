@@ -30,7 +30,6 @@ import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {SiteListBottomSheet} from 'terraso-mobile-client/components/home/BottomSheet';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {
   AppBarIconButton,
   AppBar,
@@ -77,10 +76,13 @@ export type CalloutState =
 
 const STARTING_ZOOM_LEVEL = 12;
 
-export const HomeScreen = () => {
+type Props = {
+  site?: Site;
+};
+
+export const HomeScreen = ({site}: Props) => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
-  const navigation = useNavigation();
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>({
     kind: 'none',
@@ -98,34 +100,15 @@ export const HomeScreen = () => {
     setQuery: setSitesQuery,
   } = useTextSearch({data: siteList, keys: ['name']});
   const [siteFilter, setSiteFilter] = useState({});
-  const siteProjectRoles = useSelector(state =>
-    selectSitesAndUserRoles(state, currentUserID),
-  );
+  const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
   const filteredSites = useFilterSites(
     searchedSites,
     siteProjectRoles,
     siteFilter,
   );
   const filteredSitesById = Object.fromEntries(
-    filteredSites.map(site => [site.id, site]),
+    filteredSites.map(currentSite => [currentSite.id, currentSite]),
   );
-
-  useEffect(() => {
-    if (currentUserID !== undefined) {
-      dispatch(fetchSoilDataForUser(currentUserID));
-    }
-  }, [dispatch, currentUserID]);
-
-  const currentUserCoords = useSelector(state => state.map.userLocation.coords);
-  const [initialLocation, setInitialLocation] = useState<Coords | null>(
-    currentUserCoords,
-  );
-
-  useEffect(() => {
-    if (initialLocation === null && currentUserCoords !== null) {
-      setInitialLocation(currentUserCoords);
-    }
-  }, [initialLocation, currentUserCoords, setInitialLocation]);
 
   const moveToPoint = useCallback(
     (coords: Coords) => {
@@ -139,6 +122,40 @@ export const HomeScreen = () => {
     },
     [camera],
   );
+
+  const showSiteOnMap = useCallback(
+    (targetSite: Site) => {
+      moveToPoint(targetSite);
+      setCalloutState({kind: 'site', siteId: targetSite.id});
+      siteListBottomSheetRef.current?.collapse();
+    },
+    [moveToPoint, setCalloutState],
+  );
+
+  useEffect(() => {
+    if (currentUserID !== undefined) {
+      dispatch(fetchSoilDataForUser(currentUserID));
+    }
+  }, [dispatch, currentUserID]);
+
+  // When a site is created, we pass site to HomeScreen
+  // and then center that site on the map.
+  useEffect(() => {
+    if (site !== undefined) {
+      showSiteOnMap(site);
+    }
+  }, [site, showSiteOnMap]);
+
+  const currentUserCoords = useSelector(state => state.map.userLocation.coords);
+  const [initialLocation, setInitialLocation] = useState<Coords | null>(
+    currentUserCoords,
+  );
+
+  useEffect(() => {
+    if (initialLocation === null && currentUserCoords !== null) {
+      setInitialLocation(currentUserCoords);
+    }
+  }, [initialLocation, currentUserCoords, setInitialLocation]);
 
   const [finishedInitialCameraMove, setFinishedInitialCameraMove] =
     useState(false);
@@ -180,25 +197,6 @@ export const HomeScreen = () => {
     [mapStyleURL, setMapStyleURL],
   );
 
-  const showSiteOnMap = useCallback(
-    (site: Site) => {
-      moveToPoint(site);
-      setCalloutState({kind: 'site', siteId: site.id});
-      siteListBottomSheetRef.current?.collapse();
-    },
-    [moveToPoint, setCalloutState],
-  );
-
-  const onCreateSite = useCallback(() => {
-    navigation.navigate(
-      'CREATE_SITE',
-      calloutState.kind === 'location'
-        ? {coords: calloutState.coords}
-        : undefined,
-    );
-    setCalloutState({kind: 'none'});
-  }, [navigation, calloutState]);
-
   const onInfo = useCallback(
     () => infoBottomSheetRef.current?.present(),
     [infoBottomSheetRef],
@@ -239,7 +237,6 @@ export const HomeScreen = () => {
             sites={siteList}
             filteredSites={filteredSites}
             showSiteOnMap={showSiteOnMap}
-            onCreateSite={onCreateSite}
             query={sitesQuery}
             setQuery={setSitesQuery}
             filter={siteFilter}
