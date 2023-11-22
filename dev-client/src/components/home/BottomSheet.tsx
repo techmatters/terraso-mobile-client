@@ -47,6 +47,7 @@ import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBa
 import {SiteFilter} from 'terraso-mobile-client/components/sites/filter';
 import {ProjectSelect} from 'terraso-mobile-client/components/projects/ProjectSelect';
 import {USER_ROLES} from 'terraso-mobile-client/constants';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const EmptySiteMessage = () => {
   const {t} = useTranslation();
@@ -63,6 +64,24 @@ const EmptySiteMessage = () => {
   );
 };
 
+/**
+ * This function calculated the initial snap value to the bottom sheet depending on the device specifications.
+ * To adjust this function consider change the result variable to desired minimum and maximum value
+ * @param bottomInsets Bottom insets value of the device
+ * @returns Starting snap value in %
+ */
+const getStartingSnapValue = (bottomInsets: number) => {
+  // We set the maximum bottom insets as 34 which is the currently maximum for a device
+  const weight0 = 1 - bottomInsets / 34; // Weight for 13
+  const weight34 = 1 - weight0; // Weight for 16
+
+  // Use the weights to calculate a weighted average
+  const result = weight0 * 13 + weight34 * 16;
+
+  // Round the result
+  return Math.round(result);
+};
+
 type Props = {
   sites: Site[];
   filteredSites: Site[];
@@ -76,6 +95,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   ) => {
     const {t} = useTranslation();
     const isLoadingData = useSelector(state => state.soilId.loading);
+    const deviceBottomInsets = useSafeAreaInsets().bottom;
 
     const renderSite = useCallback(
       ({item}: {item: Site}) => (
@@ -89,8 +109,12 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
     );
 
     const snapPoints = useMemo(
-      () => ['15%', sites.length === 0 ? '50%' : '75%', '100%'],
-      [sites.length],
+      () => [
+        `${getStartingSnapValue(deviceBottomInsets)}%`,
+        sites.length === 0 ? '50%' : '75%',
+        '100%',
+      ],
+      [sites.length, deviceBottomInsets],
     );
 
     const {colors} = useTheme();
