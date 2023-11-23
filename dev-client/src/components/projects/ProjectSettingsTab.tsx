@@ -16,7 +16,7 @@
  */
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AlertDialog, Button, ScrollView, Text, VStack} from 'native-base';
+import {AlertDialog, Button, Text, VStack} from 'native-base';
 import {
   TabRoutes,
   TabStackParamList,

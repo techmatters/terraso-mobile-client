@@ -1,17 +1,21 @@
 import {render} from '@testing-library/react-native';
-import {useContext, useEffect} from 'react';
+import {useEffect} from 'react';
 import {
-  GeospatialContext,
-  GeospatialProvider,
+  useGeospatialContext,
+  GeospatialProviderInjected as GeospatialProvider,
 } from 'terraso-mobile-client/context/GeospatialContext';
 
 type Props = {mock: jest.Mock<any, any, any>};
 
 const TestComponent = ({mock}: Props) => {
-  const {sortedSites} = useContext(GeospatialContext);
+  const {siteDistances} = useGeospatialContext();
   useEffect(() => {
-    mock(sortedSites);
-  }, [sortedSites, mock]);
+    mock(
+      Object.entries(siteDistances || {})
+        .sort(([, distanceA], [, distanceB]) => distanceA - distanceB)
+        .map(([name]) => name),
+    );
+  }, [siteDistances, mock]);
   return <></>;
 };
 

@@ -60,9 +60,10 @@ import {
   ListFilterModal,
   ListFilterProvider,
   RadioFilter,
+  SortingOption,
   TextInputFilter,
   useListFilter,
-} from '../common/ListFilter';
+} from 'terraso-mobile-client/components/common/ListFilter';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {normalizeText, searchText} from 'terraso-mobile-client/util';
 
@@ -203,7 +204,7 @@ export default function ProjectSitesTab({
   const sortNames = ['nameAsc', 'updatedAtAsc'];
 
   const {siteDistances} = useGeospatialContext();
-  let distanceSorting = undefined;
+  let distanceSorting: Record<string, SortingOption<Site>> | undefined;
   if (siteDistances !== null) {
     distanceSorting = {
       distanceAsc: {

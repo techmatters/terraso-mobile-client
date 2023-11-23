@@ -25,14 +25,14 @@ import {
 } from 'terraso-mobile-client/components/common/Modal';
 import {sortCompare} from 'terraso-mobile-client/util';
 
-type Lookup<Item> = {
-  record?: Record<string, string | number | undefined>;
+type Lookup<Item, RecordValue = string> = {
+  record?: Record<string, RecordValue | undefined>;
   key: keyof Item;
 };
 
 export type SortingOption<Item> = {
   order: 'ascending' | 'descending';
-} & Lookup<Item>;
+} & Lookup<Item, number | string>;
 
 type FilterFn<Item> =
   | {
@@ -126,7 +126,7 @@ export const ListFilterProvider = <Item, Filters extends string>({
             if (fn.preprocess) {
               processed = fn.preprocess(processed);
             }
-            let getFilterVal: (val: Item) => string | number | undefined;
+            let getFilterVal: (val: Item) => string | undefined;
             if (fn.lookup.record !== undefined) {
               getFilterVal = (val: Item) =>
                 fn.lookup.record![String(val[fn.lookup.key as keyof Item])];
@@ -134,11 +134,11 @@ export const ListFilterProvider = <Item, Filters extends string>({
               getFilterVal = (val: Item) => {
                 let itemVal = val[fn.lookup.key];
                 if (
-                  typeof itemVal === 'number' ||
                   typeof itemVal === 'undefined' ||
                   typeof itemVal === 'string'
-                )
+                ) {
                   return itemVal;
+                }
                 return String(val[fn.lookup.key]);
               };
             }
