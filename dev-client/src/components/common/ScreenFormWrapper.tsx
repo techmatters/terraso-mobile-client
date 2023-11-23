@@ -88,7 +88,7 @@ export const ScreenFormWrapper = forwardRef(
             <Spacer />
             <ConfirmModal
               trigger={onOpen => (
-                <Box pt={1} pr={5}>
+                <Box pt={2} pr={5}>
                   <HorizontalIconButton
                     p={0}
                     name="delete"

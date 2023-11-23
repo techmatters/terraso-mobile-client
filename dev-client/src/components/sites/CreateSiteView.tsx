@@ -39,6 +39,7 @@ import {
   FormLabel,
   FormTooltip,
 } from 'terraso-mobile-client/components/common/Form';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 
 type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,
@@ -54,11 +55,13 @@ const CreateSiteForm = ({
   setValues,
   values,
   sitePin,
-}: FormikProps<FormState> & {sitePin: Coords | undefined}) => {
+  onInfoPress,
+}: FormikProps<FormState> & {
+  sitePin: Coords | undefined;
+  onInfoPress: () => void;
+}) => {
   const {t} = useTranslation();
-
   const {accuracyM} = useSelector(state => state.map.userLocation);
-
   const currentCoords = useMemo(() => sitePin, [sitePin]);
 
   useEffect(() => {
@@ -108,14 +111,15 @@ const CreateSiteForm = ({
       <FormField name="privacy">
         <FormLabel>
           {t('privacy.label')}
-          <FormTooltip icon="help">
-            <Text color="primary.contrast" variant="body1">
-              {t('site.create.privacy_tooltip')}
-              <Text underline color="primary.lightest">
-                {t('site.create.privacy_tooltip_link')}
-              </Text>
-            </Text>
-          </FormTooltip>
+          <IconButton
+            pt={0}
+            pb={0}
+            pl={2}
+            size="md"
+            name="info"
+            onPress={onInfoPress}
+            _icon={{color: 'primary'}}
+          />
         </FormLabel>
         <FormRadioGroup
           values={['PUBLIC', 'PRIVATE']}
@@ -143,16 +147,17 @@ type Props = {
   createSiteCallback: (
     input: SiteAddMutationInput,
   ) => Promise<Site | undefined>;
+  onInfoPress: () => void;
 };
 
 export const CreateSiteView = ({
   defaultProjectId,
   createSiteCallback,
   sitePin,
+  onInfoPress,
 }: Props) => {
   const {t} = useTranslation();
   const validationSchema = useMemo(() => siteValidationSchema(t), [t]);
-
   const userLocation = useSelector(state => state.map.userLocation);
   const defaultProject = useSelector(state =>
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
@@ -189,7 +194,13 @@ export const CreateSiteView = ({
           projectId: defaultProject?.id,
           privacy: defaultProject?.privacy ?? 'PUBLIC',
         }}>
-        {props => <CreateSiteForm {...props} sitePin={sitePin} />}
+        {props => (
+          <CreateSiteForm
+            {...props}
+            sitePin={sitePin}
+            onInfoPress={onInfoPress}
+          />
+        )}
       </Formik>
     </ScrollView>
   );
