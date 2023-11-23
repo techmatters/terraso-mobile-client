@@ -16,22 +16,13 @@
  */
 
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
-import {
-  Box,
-  Button,
-  Row,
-  Heading,
-  Text,
-  Link,
-  useTheme,
-  Column,
-  Spinner,
-} from 'native-base';
+import {Box, Row, Heading, Text, useTheme, Column, Spinner} from 'native-base';
 import {forwardRef, useCallback, useMemo} from 'react';
+import {Linking} from 'react-native';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import {Trans, useTranslation} from 'react-i18next';
+import {LinkNewWindowIcon} from 'terraso-mobile-client/components/common/Icons';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 import {USER_ROLES} from 'terraso-mobile-client/constants';
@@ -48,12 +39,18 @@ const EmptySiteMessage = () => {
 
   return (
     <Text px="17px" variant="body1">
-      <Text>{t('site.empty.info')}</Text>
-      <Text>{'\n\n'}</Text>
-      <Link isUnderlined={false} _text={{variant: 'body1'}}>
-        {t('site.empty.link') + ' '}
-        <Icon name="open-in-new" />
-      </Link>
+      <Trans
+        i18nKey="site.empty.info"
+        components={{
+          icon: <LinkNewWindowIcon />,
+        }}>
+        <Text
+          underline
+          onPress={() => Linking.openURL(t('site.empty.link_url'))}
+          color="primary.main">
+          link_text
+        </Text>
+      </Trans>
     </Text>
   );
 };
@@ -61,10 +58,10 @@ const EmptySiteMessage = () => {
 type Props = {
   sites: Site[];
   showSiteOnMap: (site: Site) => void;
-  onCreateSite: () => void;
+  snapIndex?: number;
 };
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
-  ({sites, showSiteOnMap, onCreateSite}, ref) => {
+  ({sites, showSiteOnMap, snapIndex}, ref) => {
     const {t} = useTranslation();
     const isLoadingData = useSelector(state => state.soilId.loading);
 
@@ -100,17 +97,12 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
       <BottomSheet
         ref={ref}
         snapPoints={snapPoints}
+        index={snapIndex}
         backgroundStyle={backgroundStyle}
         handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
         <Column px="16px">
           <Row justifyContent="space-between" alignItems="center" pb="4">
             <Heading variant="h6">{t('site.list_title')}</Heading>
-            <Button
-              size="sm"
-              onPress={onCreateSite}
-              startIcon={<Icon name="add" />}>
-              {t('site.create.title').toUpperCase()}
-            </Button>
           </Row>
           {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
         </Column>

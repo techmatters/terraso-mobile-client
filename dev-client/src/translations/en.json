@@ -3,22 +3,12 @@
     "info": {
       "title": "Soil Science in Your Hands",
       "intro_image_alt": "",
-      "description": {
-        "lead": "Discover the potential use and value of your land.",
-        "body": "Accurately determine the soil type and other features of your land to gain insights for grazing and farming options, carbon sequestration, and more."
-      },
-      "location": {
-        "lead": "To find a specific location,",
-        "body": "enter a search term or coordinates in the search bar, or tap the location icon <icon /> on the map to use your GPS."
-      },
-      "search": {
-        "lead": "Search sites you have created",
-        "body": "in the site list by name or notes."
-      },
-      "learn_more": {
-        "lead": "Find more information and guides",
-        "body": "in the side menu to the left or at <landpks href='https://landpotential.org'>landpotential.org</landpks>"
-      }
+      "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land to gain insights for grazing and farming options, carbon sequestration, and more.\n\n<2>There are three ways to use the map:</2>",
+      "list1": "Tap the map to drop a pin and get more information about that location.",
+      "list2": "Tap the location icon <icon /> to find your current location",
+      "list3": "Enter coordinates, address, or search term in the search bar",
+      "description2": "<0>Find more information and guides</0> in the side menu to the left or at <1>landpotential.org</1> <icon />.",
+      "link_url": "https://landpotential.org/"
     }
   },
   "search": {
@@ -35,23 +25,24 @@
     "annual_precip_avg": "Annual precipitation avg",
     "elevation": "Elevation",
     "empty": {
-      "info": "You have not created any sites. Create a site with the button above or by finding the location on the map.\n\nA site allows you to collect and save data, learn more about your land and its potential, and share with others.",
-      "link": "Learn more about using LandPKS"
+      "info": "You have not created any sites. Create a site with the button above or by finding the location on the map.\n\nA site allows you to collect and save data, learn more about your land and its potential, and share with others.\n\n<0>Learn more about using LandPKS</0> <icon />.",
+      "link_url": "https://landpotential.org/"
     },
     "create": {
       "title": "Create Site",
       "gps": "Use my current location (GPS)",
       "pin": "Use map pin",
       "manual": "Enter coordinates",
+      "name_label": "Site Name",
       "location_label": "Site Location",
-      "location_accuracy": "Accuracy: {{accuracyM}}m",
+      "location_accuracy": "GPS accuracy: {{accuracyM}}m",
       "coords_label": "Latitude, Longitude",
       "coords_help": "Enter decimal degrees, with latitude and longitude separated by a comma.",
       "name_placeholder": "Site name",
       "add_to_project_label": "Add to Project",
       "add_to_project_tooltip": "The site will inherit the settings of the project, including data collection requirements and team members. Create new projects using the Projects tab in the bottom navigation.",
       "privacy_tooltip": "Public projects will sync data to public data portals. ",
-      "privacy_tooltip_link": "Learn more..."
+      "privacy_tooltip_link": "Learn more"
     },
     "form": {
       "name_min_length_error": "Site name must be at least {{min}} characters",

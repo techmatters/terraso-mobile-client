@@ -24,12 +24,12 @@ import {
   useState,
   useMemo,
 } from 'react';
+import {Linking} from 'react-native';
 import Mapbox, {Camera} from '@rnmapbox/maps';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {SiteListBottomSheet} from 'terraso-mobile-client/components/home/BottomSheet';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {
   AppBarIconButton,
   AppBar,
@@ -37,7 +37,7 @@ import {
   useHeaderHeight,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import MapSearch from 'terraso-mobile-client/components/home/MapSearch';
-import {Box, Column, Heading, Image, Link, Text} from 'native-base';
+import {Box, Column, FlatList, Heading, HStack, Image, Text} from 'native-base';
 import {coordsToPosition} from 'terraso-mobile-client/components/common/Map';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -46,7 +46,10 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import {
+  LocationIcon,
+  LinkNewWindowIcon,
+} from 'terraso-mobile-client/components/common/Icons';
 import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
@@ -77,10 +80,13 @@ export type CalloutState =
 
 const STARTING_ZOOM_LEVEL = 12;
 
-export const HomeScreen = () => {
+type Props = {
+  site?: Site;
+};
+
+export const HomeScreen = ({site}: Props) => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
-  const navigation = useNavigation();
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>({
     kind: 'none',
@@ -94,23 +100,6 @@ export const HomeScreen = () => {
   const camera = useRef<Camera>(null);
   const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
 
-  useEffect(() => {
-    if (currentUserID !== undefined) {
-      dispatch(fetchSoilDataForUser(currentUserID));
-    }
-  }, [dispatch, currentUserID]);
-
-  const currentUserCoords = useSelector(state => state.map.userLocation.coords);
-  const [initialLocation, setInitialLocation] = useState<Coords | null>(
-    currentUserCoords,
-  );
-
-  useEffect(() => {
-    if (initialLocation === null && currentUserCoords !== null) {
-      setInitialLocation(currentUserCoords);
-    }
-  }, [initialLocation, currentUserCoords, setInitialLocation]);
-
   const moveToPoint = useCallback(
     (coords: Coords) => {
       // TODO: flyTo, zoomTo don't seem to work, find out why
@@ -123,6 +112,40 @@ export const HomeScreen = () => {
     },
     [camera],
   );
+
+  const showSiteOnMap = useCallback(
+    (targetSite: Site) => {
+      moveToPoint(targetSite);
+      setCalloutState({kind: 'site', siteId: targetSite.id});
+      siteListBottomSheetRef.current?.collapse();
+    },
+    [moveToPoint, setCalloutState],
+  );
+
+  useEffect(() => {
+    if (currentUserID !== undefined) {
+      dispatch(fetchSoilDataForUser(currentUserID));
+    }
+  }, [dispatch, currentUserID]);
+
+  // When a site is created, we pass site to HomeScreen
+  // and then center that site on the map.
+  useEffect(() => {
+    if (site !== undefined) {
+      showSiteOnMap(site);
+    }
+  }, [site, showSiteOnMap]);
+
+  const currentUserCoords = useSelector(state => state.map.userLocation.coords);
+  const [initialLocation, setInitialLocation] = useState<Coords | null>(
+    currentUserCoords,
+  );
+
+  useEffect(() => {
+    if (initialLocation === null && currentUserCoords !== null) {
+      setInitialLocation(currentUserCoords);
+    }
+  }, [initialLocation, currentUserCoords, setInitialLocation]);
 
   const [finishedInitialCameraMove, setFinishedInitialCameraMove] =
     useState(false);
@@ -163,25 +186,6 @@ export const HomeScreen = () => {
       ),
     [mapStyleURL, setMapStyleURL],
   );
-
-  const showSiteOnMap = useCallback(
-    (site: Site) => {
-      moveToPoint(site);
-      setCalloutState({kind: 'site', siteId: site.id});
-      siteListBottomSheetRef.current?.collapse();
-    },
-    [moveToPoint, setCalloutState],
-  );
-
-  const onCreateSite = useCallback(() => {
-    navigation.navigate(
-      'CREATE_SITE',
-      calloutState.kind === 'location'
-        ? {coords: calloutState.coords}
-        : undefined,
-    );
-    setCalloutState({kind: 'none'});
-  }, [navigation, calloutState]);
 
   const onInfo = useCallback(
     () => infoBottomSheetRef.current?.present(),
@@ -283,7 +287,7 @@ export const HomeScreen = () => {
               ref={siteListBottomSheetRef}
               sites={siteList}
               showSiteOnMap={showSiteOnMap}
-              onCreateSite={onCreateSite}
+              snapIndex={1}
             />
           </Box>
           <InfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
@@ -321,50 +325,53 @@ const LandPKSInfo = () => {
 
   return (
     <BottomSheetScrollView>
-      <Column space={3} pb="65%" px={5} mt="48px">
+      <Column space={3} pb="65%" pt={5} px={5} mt="48px">
         <Heading w="full" textAlign="center">
           {t('home.info.title')}
         </Heading>
         <Image
           source={require('terraso-mobile-client/assets/landpks_intro_image.png')}
           w="100%"
-          h="30%"
+          h="25%"
           resizeMode="contain"
           alt={t('home.info.intro_image_alt')}
         />
-        <Text>
-          <Text bold>{t('home.info.description.lead')} </Text>
-          {t('home.info.description.body')}
+        <Text variant="body1">
+          <Trans i18nKey="home.info.description">
+            <Text bold>first</Text>
+            <Text>second</Text>
+            <Text bold>third</Text>
+          </Trans>
         </Text>
-        <Text alignItems="center">
-          <Text bold>{t('home.info.location.lead')} </Text>
+        <FlatList
+          data={['home.info.list1', 'home.info.list2', 'home.info.list3']}
+          renderItem={({index, item}) => (
+            <HStack key={index}>
+              <Text variant="body1" mr={2}>
+                {index + 1}
+                {'.'}
+              </Text>
+              <Text variant="body1" mr={2}>
+                <Trans i18nKey={item} components={{icon: <LocationIcon />}} />
+              </Text>
+            </HStack>
+          )}
+          keyExtractor={item => item}
+        />
+        <Text variant="body1">
           <Trans
-            i18nKey="home.info.location.body"
+            i18nKey="home.info.description2"
             components={{
-              icon: (
-                <Icon
-                  name="my-location"
-                  color="action.active"
-                  position="relative"
-                />
-              ),
-            }}
-          />
-        </Text>
-        <Text>
-          <Text bold>{t('home.info.search.lead')} </Text>
-          {t('home.info.search.body')}
-        </Text>
-        <Text>
-          <Text bold>{t('home.info.learn_more.lead')} </Text>
-          <Trans
-            i18nKey="home.info.learn_more.body"
-            components={{
-              // note: "link" is a reserved word for the Trans component, cannot use as key here
-              // see https://react.i18next.com/latest/trans-component#alternative-usage-which-lists-the-components-v11.6.0
-              landpks: <Link isExternal pt={2} />,
-            }}
-          />
+              icon: <LinkNewWindowIcon />,
+            }}>
+            <Text bold>first</Text>
+            <Text
+              underline
+              onPress={() => Linking.openURL(t('home.info.link_url'))}
+              color="primary.main">
+              link_text
+            </Text>
+          </Trans>
         </Text>
       </Column>
     </BottomSheetScrollView>
