@@ -29,7 +29,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} title={project?.name} />}>
-      <ProjectTabs project={project} />
+      <ProjectTabs projectId={projectId} />
     </ScreenScaffold>
   );
 };

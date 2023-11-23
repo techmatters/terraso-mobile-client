@@ -32,7 +32,6 @@ import {
 } from 'terraso-mobile-client/components/projects/constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
 import {
@@ -55,10 +54,15 @@ import {
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
-import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
 import {CardTopRightButton} from 'terraso-mobile-client/components/common/Card';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
-import {ListFilterProvider, useListFilter} from '../common/ListFilter';
+import {
+  ListFilterModal,
+  ListFilterProvider,
+  RadioFilter,
+  TextInputFilter,
+  useListFilter,
+} from '../common/ListFilter';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {normalizeText, searchText} from 'terraso-mobile-client/util';
 
@@ -196,14 +200,14 @@ export default function ProjectSitesTab({
 
   const sites = useSelector(state => selectProjectSites(state, projectId));
 
-  const sortNames = ['nameAsc', 'lastModAsc'];
+  const sortNames = ['nameAsc', 'updatedAtAsc'];
 
   const {siteDistances} = useGeospatialContext();
   let distanceSorting = undefined;
   if (siteDistances !== null) {
     distanceSorting = {
       distanceAsc: {
-        name: 'id',
+        key: 'id',
         record: siteDistances,
         order: 'ascending',
       },
@@ -212,7 +216,7 @@ export default function ProjectSitesTab({
   }
 
   const sortingOptions = Object.fromEntries(
-    sortNames.map(label => [label, t('project.site.search.' + label)]),
+    sortNames.map(label => [label, t('projects.sites.sort.' + label)]),
   );
 
   const isEmpty = sites.length === 0;
@@ -245,6 +249,20 @@ export default function ProjectSitesTab({
           },
         },
       }}>
+      <ListFilterModal
+        searchInput={
+          <TextInputFilter
+            name="search"
+            placeholder={t('site.search.placeholder')}
+            label={t('site.search.accessibility_label')}
+          />
+        }>
+        <RadioFilter
+          name="sort"
+          label={t('projects.sites.sort.label')}
+          options={sortingOptions}
+        />
+      </ListFilterModal>
       <SiteCardList />
     </ListFilterProvider>
   );

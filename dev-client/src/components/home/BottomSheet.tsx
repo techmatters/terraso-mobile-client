@@ -94,7 +94,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
     );
     const {siteDistances} = useGeospatialContext();
 
-    const useDistance = useMemo(() => siteDistances === null, [siteDistances]);
+    const useDistance = useMemo(() => siteDistances !== null, [siteDistances]);
 
     return (
       <BottomSheet
@@ -155,7 +155,7 @@ const SiteFilterModal = ({useDistance}: ModalProps) => {
       'nameDesc',
       'lastModAsc',
       'lastModDesc',
-      [...distanceSortingOptions],
+      ...distanceSortingOptions,
     ].map(label => [label, t('site.search.sort.' + label)]),
   );
 

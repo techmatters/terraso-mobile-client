@@ -2,6 +2,7 @@ import {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import haversine from 'haversine';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {USER_DISTANCE_CONTEXT_CACHE} from 'terraso-mobile-client/constants';
+import {AppState, useSelector} from 'terraso-mobile-client/model/store';
 
 type GeospatialInfo = {
   /* list of site IDs, sorted with respect to user's current location */
@@ -24,7 +25,25 @@ type ProviderProps = {
   userLocation: Coords | null;
 } & React.PropsWithChildren;
 
-export const GeospatialProvider = ({
+export const GeospatialProvider = ({children}: React.PropsWithChildren) => {
+  const sites = useSelector((state: AppState) => state.site.sites);
+  const userLocation = useSelector(state => state.map.userLocation);
+
+  const userCoords = useMemo(
+    () => userLocation && userLocation.coords,
+    [userLocation],
+  );
+
+  return (
+    <GeospatialProviderInjected
+      sites={Object.values(sites)}
+      userLocation={userCoords}>
+      {children}
+    </GeospatialProviderInjected>
+  );
+};
+
+export const GeospatialProviderInjected = ({
   sites,
   userLocation,
   children,

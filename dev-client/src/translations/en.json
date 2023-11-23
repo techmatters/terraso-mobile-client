@@ -211,6 +211,16 @@
         "title": "Remove site from project?",
         "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
         "action_name": "Remove Site"
+      },
+      "search": {
+        "placeholder": "Search",
+        "accessility_label": "Search for sites"
+      },
+      "sort": {
+        "label": "Sort sites by:",
+        "nameAsc": "Site name (A to Z)",
+        "updatedAtAsc": "Date modified (most recent)",
+        "distanceAsc": "Distance (nearest to me)"
       }
     },
     "add": {

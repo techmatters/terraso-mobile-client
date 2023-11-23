@@ -153,7 +153,7 @@ export const ListFilterProvider = <Item, Filters extends string>({
             if (options === undefined) {
               console.warn(
                 'Trying to sort with an undefined sorting configuration; ignoring',
-                name,
+                selectedVal,
               );
               return x;
             }
@@ -345,7 +345,9 @@ export const RadioFilter = <FilterNames extends string>({
       <FormControl.Label>{label}</FormControl.Label>
       <Radio.Group name={name} value={value} onChange={setValue}>
         {Object.entries(options).map(([optionName, optionLabel]) => (
-          <Radio value={optionName}>{optionLabel}</Radio>
+          <Radio value={optionName} key={optionName} size="sm">
+            {optionLabel}
+          </Radio>
         ))}
       </Radio.Group>
     </FormControl>

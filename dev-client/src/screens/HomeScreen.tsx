@@ -195,20 +195,22 @@ export const HomeScreen = () => {
   const {siteDistances} = useGeospatialContext();
 
   const distanceSorting: Record<string, SortingOption<Site>> | undefined =
-    siteDistances === null
-      ? undefined
-      : {
-          distanceAsc: {
-            record: siteDistances,
-            key: 'id',
-            order: 'ascending',
-          },
-          distanceDesc: {
-            record: siteDistances,
-            key: 'id',
-            order: 'descending',
-          },
-        };
+    useMemo(() => {
+      return siteDistances === null
+        ? undefined
+        : {
+            distanceAsc: {
+              record: siteDistances,
+              key: 'id',
+              order: 'ascending',
+            },
+            distanceDesc: {
+              record: siteDistances,
+              key: 'id',
+              order: 'descending',
+            },
+          };
+    }, [siteDistances]);
 
   return (
     <BottomSheetModalProvider>
