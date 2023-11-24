@@ -20,13 +20,15 @@ import {useTranslation} from 'react-i18next';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {useCallback} from 'react';
-import {Box, Divider, Text, Column} from 'native-base';
+import {Box, Divider, Text, Column, HStack} from 'native-base';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {StaticMapView} from 'terraso-mobile-client/components/common/Map';
 import {StyleSheet} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ScrollView} from 'react-native';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/components/sites/ProjectInstructionsButton';
+import {IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {useInfoPress} from 'terraso-mobile-client/components/sites/LocationDashboardScreen';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';
@@ -40,7 +42,10 @@ const TEMP_SOIL_ID_CONFIDENCE = '80%';
 const TEMP_ECO_SITE_ID_CONFIDENCE = '80%';
 const TEMP_LCC_CONFIDENCE = '80%';
 
-type Props = {siteId?: string; coords?: Coords};
+type Props = {
+  siteId?: string;
+  coords?: Coords;
+};
 
 const LocationDetail = ({label, value}: {label: string; value: string}) => (
   <Text variant="body1">
@@ -82,6 +87,7 @@ const LocationPrediction = ({
 export const LocationDashboardView = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const {onInfoPress} = useInfoPress();
 
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
@@ -125,23 +131,36 @@ export const LocationDashboardView = ({siteId, coords}: Props) => {
             />
           )}
           {site && !project && (
-            <RadioBlock
-              label={
-                <Text variant="body1" bold>
-                  {t('site.dashboard.privacy')}
-                </Text>
-              }
-              options={{
-                PUBLIC: {text: t('privacy.PUBLIC.title')},
-                PRIVATE: {text: t('privacy.PRIVATE.title')},
-              }}
-              groupProps={{
-                name: 'site-privacy',
-                onChange: onSitePrivacyChanged,
-                value: site.privacy,
-                ml: '',
-              }}
-            />
+            <HStack>
+              <RadioBlock
+                label={
+                  <HStack>
+                    <Text variant="body1" bold>
+                      {t('site.dashboard.privacy')}
+                    </Text>
+                    <IconButton
+                      pt={0}
+                      pb={0}
+                      pl={2}
+                      size="md"
+                      name="info"
+                      onPress={onInfoPress}
+                      _icon={{color: 'primary'}}
+                    />
+                  </HStack>
+                }
+                options={{
+                  PUBLIC: {text: t('privacy.PUBLIC.title')},
+                  PRIVATE: {text: t('privacy.PRIVATE.title')},
+                }}
+                groupProps={{
+                  name: 'site-privacy',
+                  onChange: onSitePrivacyChanged,
+                  value: site.privacy,
+                  ml: '',
+                }}
+              />
+            </HStack>
           )}
           <LocationDetail
             label={t('geo.latitude.title')}

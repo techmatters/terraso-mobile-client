@@ -22,7 +22,8 @@ import {
 } from 'terraso-mobile-client/screens/AppScaffold';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
-import {useMemo} from 'react';
+import {useMemo, useCallback, useRef, createContext, useContext} from 'react';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {
   AppBar,
   AppBarIconButton,
@@ -39,8 +40,16 @@ import {useDefaultTabOptions} from 'terraso-mobile-client/screens/TabBar';
 import {SpeedDial} from 'terraso-mobile-client/components/common/SpeedDial';
 import {Button} from 'native-base';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
+import {InfoModal} from 'terraso-mobile-client/components/common/infoModals/InfoModal';
 
-type Props = {siteId?: string; coords?: Coords};
+const InfoPressContext = createContext({onInfoPress: () => {}});
+
+export const useInfoPress = () => useContext(InfoPressContext);
+
+type Props = {
+  siteId?: string;
+  coords?: Coords;
+};
 
 const tabDefinitions = {
   SITE: LocationDashboardView,
@@ -56,7 +65,6 @@ const Tab = createMaterialTopTabNavigator<TabsParamList>();
 const LocationDashboardTabs = (params: {siteId: string}) => {
   const {t} = useTranslation();
   const defaultOptions = useDefaultTabOptions();
-
   const tabs = useMemo(
     () =>
       Object.entries(tabDefinitions).map(([name, View]) => (
@@ -92,6 +100,7 @@ const LocationDashboardTabs = (params: {siteId: string}) => {
 export const LocationDashboardScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const infoModalRef = useRef<BottomSheetModal>(null);
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
   );
@@ -115,20 +124,34 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
     [siteId, coords, navigation],
   );
 
+  const onInfoPress = useCallback(
+    () => infoModalRef.current?.present(),
+    [infoModalRef],
+  );
+  const onInfoClose = useCallback(
+    () => infoModalRef.current?.dismiss(),
+    [infoModalRef],
+  );
+
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar
-          LeftButton={<ScreenCloseButton />}
-          RightButton={appBarRightButton}
-          title={site?.name ?? t('site.dashboard.default_title')}
-        />
-      }>
-      {siteId ? (
-        <LocationDashboardTabs siteId={siteId} />
-      ) : (
-        <LocationDashboardView siteId={siteId} coords={coords} />
-      )}
-    </ScreenScaffold>
+    <InfoPressContext.Provider value={{onInfoPress}}>
+      <BottomSheetModalProvider>
+        <ScreenScaffold
+          AppBar={
+            <AppBar
+              LeftButton={<ScreenCloseButton />}
+              RightButton={appBarRightButton}
+              title={site?.name ?? t('site.dashboard.default_title')}
+            />
+          }>
+          {siteId ? (
+            <LocationDashboardTabs siteId={siteId} />
+          ) : (
+            <LocationDashboardView siteId={siteId} coords={coords} />
+          )}
+        </ScreenScaffold>
+        <InfoModal ref={infoModalRef} onClose={onInfoClose} />
+      </BottomSheetModalProvider>
+    </InfoPressContext.Provider>
   );
 };
