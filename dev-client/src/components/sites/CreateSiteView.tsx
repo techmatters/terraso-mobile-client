@@ -15,8 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Text, Fab, FormControl, ScrollView, VStack} from 'native-base';
+import {
+  Text,
+  FormControl,
+  ScrollView,
+  VStack,
+  Spacer,
+  Button,
+  KeyboardAvoidingView,
+  Box,
+} from 'native-base';
 import {useCallback, useMemo, useEffect} from 'react';
+import {Platform} from 'react-native';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {siteValidationSchema} from 'terraso-mobile-client/components/sites/validation';
@@ -77,67 +87,82 @@ const CreateSiteForm = ({
   );
 
   return (
-    <VStack p="16px" pt="30px" space="18px">
-      <FormField name="name">
-        <FormLabel>{t('site.create.name_label')}</FormLabel>
-        <FormInput placeholder={t('site.create.name_placeholder')} />
-      </FormField>
-      <FormField name="coords">
-        <FormLabel>{t('site.create.location_label')}</FormLabel>
-        <Text>
-          {t('site.create.location_accuracy', {accuracyM: accuracyM})}
-        </Text>
-        <FormInput keyboardType="decimal-pad" />
-        <FormControl.Label variant="subtle">
-          {t('site.create.coords_label')}
-        </FormControl.Label>
-      </FormField>
-      <FormField name="projectId">
-        <FormLabel>
-          {t('site.create.add_to_project_label')}
-          <FormTooltip icon="help">
-            <Text color="primary.contrast" variant="body1">
-              {t('site.create.add_to_project_tooltip')}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      flex={1}
+      keyboardVerticalOffset={40}>
+      <ScrollView>
+        <VStack p="16px" pt="30px" space="18px">
+          <FormField name="name">
+            <FormLabel>{t('site.create.name_label')}</FormLabel>
+            <FormInput placeholder={t('site.create.name_placeholder')} />
+          </FormField>
+          <FormField name="coords">
+            <FormLabel>{t('site.create.location_label')}</FormLabel>
+            <Text>
+              {t('site.create.location_accuracy', {accuracyM: accuracyM})}
             </Text>
-          </FormTooltip>
-        </FormLabel>
-        <ProjectSelect
-          projectId={values.projectId}
-          setProjectId={projectId =>
-            setValues(current => ({...current, projectId}))
-          }
-        />
-      </FormField>
-      <FormField name="privacy">
-        <FormLabel>
-          {t('privacy.label')}
-          <IconButton
-            pt={0}
-            pb={0}
-            pl={2}
-            size="md"
-            name="info"
-            onPress={onInfoPress}
-            _icon={{color: 'primary'}}
-          />
-        </FormLabel>
-        <FormRadioGroup
-          values={['PUBLIC', 'PRIVATE']}
-          variant="oneLine"
-          value={projectPrivacy ?? values.privacy}
-          renderRadio={value => (
-            <FormRadio value={value} isDisabled={projectPrivacy !== undefined}>
-              {t(`privacy.${value}.title`)}
-            </FormRadio>
-          )}
-        />
-      </FormField>
-      <Fab
-        label={t('general.save_fab')}
-        onPress={() => handleSubmit()}
-        disabled={isSubmitting}
-      />
-    </VStack>
+            <FormInput keyboardType="decimal-pad" />
+            <FormControl.Label variant="subtle">
+              {t('site.create.coords_label')}
+            </FormControl.Label>
+          </FormField>
+          <FormField name="projectId">
+            <FormLabel>
+              {t('site.create.add_to_project_label')}
+              <FormTooltip icon="help">
+                <Text color="primary.contrast" variant="body1">
+                  {t('site.create.add_to_project_tooltip')}
+                </Text>
+              </FormTooltip>
+            </FormLabel>
+            <ProjectSelect
+              projectId={values.projectId}
+              setProjectId={projectId =>
+                setValues(current => ({...current, projectId}))
+              }
+            />
+          </FormField>
+          <FormField name="privacy">
+            <FormLabel>
+              {t('privacy.label')}
+              <IconButton
+                pt={0}
+                pb={0}
+                pl={2}
+                size="md"
+                name="info"
+                onPress={onInfoPress}
+                _icon={{color: 'primary'}}
+              />
+            </FormLabel>
+            <FormRadioGroup
+              values={['PUBLIC', 'PRIVATE']}
+              variant="oneLine"
+              value={projectPrivacy ?? values.privacy}
+              renderRadio={value => (
+                <FormRadio
+                  value={value}
+                  isDisabled={projectPrivacy !== undefined}>
+                  {t(`privacy.${value}.title`)}
+                </FormRadio>
+              )}
+            />
+          </FormField>
+          <Spacer />
+        </VStack>
+      </ScrollView>
+      <Box position="absolute" bottom={10} right={3} p={3}>
+        <Button
+          onPress={() => handleSubmit()}
+          disabled={isSubmitting}
+          shadow={5}
+          size={'lg'}
+          _text={{textTransform: 'uppercase'}}>
+          {t('general.save_fab')}
+        </Button>
+      </Box>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -184,24 +209,22 @@ export const CreateSiteView = ({
   );
 
   return (
-    <ScrollView>
-      <Formik<FormState>
-        onSubmit={onSave}
-        validationSchema={validationSchema}
-        initialValues={{
-          name: '',
-          coords: defaultCoords ? coordsToString(defaultCoords) : '',
-          projectId: defaultProject?.id,
-          privacy: defaultProject?.privacy ?? 'PUBLIC',
-        }}>
-        {props => (
-          <CreateSiteForm
-            {...props}
-            sitePin={sitePin}
-            onInfoPress={onInfoPress}
-          />
-        )}
-      </Formik>
-    </ScrollView>
+    <Formik<FormState>
+      onSubmit={onSave}
+      validationSchema={validationSchema}
+      initialValues={{
+        name: '',
+        coords: defaultCoords ? coordsToString(defaultCoords) : '',
+        projectId: defaultProject?.id,
+        privacy: defaultProject?.privacy ?? 'PUBLIC',
+      }}>
+      {props => (
+        <CreateSiteForm
+          {...props}
+          sitePin={sitePin}
+          onInfoPress={onInfoPress}
+        />
+      )}
+    </Formik>
   );
 };
