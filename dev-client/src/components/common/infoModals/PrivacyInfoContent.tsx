@@ -1,4 +1,4 @@
-import {Column, Heading, Text} from 'native-base';
+import {Column, Heading, Text, Box} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
@@ -25,14 +25,17 @@ export const PrivacyInfoContent = () => {
             <Text>second</Text>
           </Trans>
         </Text>
-        <HorizontalIconButton
-          name={'open-in-new'}
-          label={t('general.info.data_portal_link_text')}
-          isUppercase={true}
-          onPress={() =>
-            Linking.openURL(t('general.info.data_portal_link_url'))
-          }
-        />
+        <Box pt={1} pb={1}>
+          <HorizontalIconButton
+            name={'open-in-new'}
+            label={t('general.info.data_portal_link_text')}
+            colorScheme="primary.main"
+            isUppercase={true}
+            onPress={() =>
+              Linking.openURL(t('general.info.data_portal_link_url'))
+            }
+          />
+        </Box>
         <Text variant="body1">
           <Trans i18nKey="general.info.privacy_item3">
             <Text bold>first</Text>
@@ -57,14 +60,17 @@ export const PrivacyInfoContent = () => {
             <Text>second</Text>
           </Trans>
         </Text>
-        <HorizontalIconButton
-          name={'open-in-new'}
-          label={"t('general.info.privacy_policy_link_text')"}
-          isUppercase={true}
-          onPress={() =>
-            Linking.openURL(t('general.info.privacy_policy_link_url'))
-          }
-        />
+        <Box pt={1} pb={1}>
+          <HorizontalIconButton
+            name={'open-in-new'}
+            label={t('general.info.privacy_policy_link_text')}
+            colorScheme="primary.main"
+            isUppercase={true}
+            onPress={() =>
+              Linking.openURL(t('general.info.privacy_policy_link_url'))
+            }
+          />
+        </Box>
       </Column>
     </BottomSheetScrollView>
   );
