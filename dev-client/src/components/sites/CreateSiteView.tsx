@@ -133,7 +133,7 @@ const CreateSiteForm = ({
                 size="md"
                 name="info"
                 onPress={onInfoPress}
-                _icon={{color: 'primary'}}
+                _icon={{color: 'action.active'}}
               />
             </FormLabel>
             <FormRadioGroup

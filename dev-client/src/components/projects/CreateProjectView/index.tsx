@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Fab, ScrollView} from 'native-base';
+import {Box, Button, KeyboardAvoidingView, ScrollView} from 'native-base';
 import Form, {
   ProjectFormValues,
   projectValidationSchema,
@@ -26,9 +26,14 @@ import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
+import {Platform} from 'react-native';
 import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
 
-export default function CreateProjectView() {
+type Props = {
+  onInfoPress: () => void;
+};
+
+export const CreateProjectView = ({onInfoPress}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -58,21 +63,25 @@ export default function CreateProjectView() {
       }}>
       {({isSubmitting, handleSubmit}) => {
         return (
-          <>
+          <KeyboardAvoidingView flex={1}>
             <ScrollView bg="background.default">
               <Box pt="20%" mx={5}>
-                <Form />
+                <Form onInfoPress={onInfoPress} />
               </Box>
             </ScrollView>
-            <Fab
-              label={t('general.save_fab')}
-              onPress={() => handleSubmit()}
-              disabled={isSubmitting}
-              renderInPortal={false}
-            />
-          </>
+            <Box position="absolute" bottom={8} right={3} p={3}>
+              <Button
+                onPress={() => handleSubmit()}
+                disabled={isSubmitting}
+                shadow={5}
+                size={'lg'}
+                _text={{textTransform: 'uppercase'}}>
+                {t('general.save_fab')}
+              </Button>
+            </Box>
+          </KeyboardAvoidingView>
         );
       }}
     </Formik>
   );
-}
+};
