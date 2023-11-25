@@ -26,7 +26,6 @@ import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
-import {Platform} from 'react-native';
 import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
 
 type Props = {
