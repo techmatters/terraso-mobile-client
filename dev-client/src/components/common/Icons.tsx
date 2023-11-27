@@ -88,6 +88,7 @@ export const HorizontalIconButton = React.forwardRef(
   ) => {
     const icon = (
       <NativeIconButton
+        p={0}
         ref={ref}
         icon={<Icon as={as} name={name} />}
         {...props}
@@ -96,7 +97,7 @@ export const HorizontalIconButton = React.forwardRef(
 
     return (
       <Pressable onPress={props.onPress}>
-        <Box p="1">
+        <Box>
           <HStack>
             {icon}
             <Text

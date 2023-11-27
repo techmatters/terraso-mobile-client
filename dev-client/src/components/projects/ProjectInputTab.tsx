@@ -18,6 +18,7 @@
 import {Button, Row, Text, Box, HStack} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
+import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {FormSwitch} from 'terraso-mobile-client/components/common/Form';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {
@@ -32,6 +33,7 @@ import {
   updateProjectDepthInterval,
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+import {updateProject} from 'terraso-client-shared/project/projectSlice';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {Modal} from 'terraso-mobile-client/components/common/Modal';
 import {AddIntervalModal} from 'terraso-mobile-client/components/dataInputs/AddIntervalModal';
@@ -39,6 +41,7 @@ import {useMemo, useCallback} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useInfoPress} from 'terraso-mobile-client/screens/ProjectViewScreen';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 export const ProjectInputTab = ({
@@ -49,14 +52,52 @@ export const ProjectInputTab = ({
   const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state => state.project.projects[projectId]);
+  const dispatch = useDispatch();
+  const onInfoPress = useInfoPress();
 
   const onEditInstructions = useCallback(() => {
     return navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});
   }, [navigation, project]);
 
+  const onProjectPrivacyChanged = useCallback(
+    (privacy: 'PRIVATE' | 'PUBLIC') =>
+      dispatch(updateProject({id: project!.id, privacy})),
+    [project, dispatch],
+  );
+
   return (
     <ScrollView>
       <Box p={4} alignItems="flex-start">
+        <HStack pb={4}>
+          <RadioBlock
+            label={
+              <HStack>
+                <Text variant="body1" bold>
+                  {t('site.dashboard.privacy')}
+                </Text>
+                <IconButton
+                  pt={0}
+                  pb={0}
+                  pl={2}
+                  size="md"
+                  name="info"
+                  onPress={onInfoPress}
+                  _icon={{color: 'action.active'}}
+                />
+              </HStack>
+            }
+            options={{
+              PUBLIC: {text: t('privacy.public.title')},
+              PRIVATE: {text: t('privacy.private.title')},
+            }}
+            groupProps={{
+              name: 'project-privacy',
+              onChange: onProjectPrivacyChanged,
+              value: project.privacy,
+              ml: '',
+            }}
+          />
+        </HStack>
         <Text bold fontSize={'md'}>
           {t('projects.inputs.instructions.title')}
         </Text>
