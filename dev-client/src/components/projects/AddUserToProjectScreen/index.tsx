@@ -31,7 +31,7 @@ import MembershipControlList, {
 import {addUserToProject} from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
-import {useKeyboardOpen} from 'terraso-mobile-client/hooks';
+import {useKeyboardOpen} from 'terraso-mobile-client/hooks/index.hooks';
 
 type Props = {
   projectId: string;
