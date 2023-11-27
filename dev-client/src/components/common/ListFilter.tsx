@@ -40,7 +40,7 @@ import {
   ModalHandle,
 } from 'terraso-mobile-client/components/common/Modal';
 import {sortCompare} from 'terraso-mobile-client/util';
-import {NullableSelect} from './NullableSelect';
+import {NullableSelect} from 'terraso-mobile-client/components/common/NullableSelect';
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;

@@ -19,7 +19,7 @@ import {Select} from 'native-base';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {NullableSelect} from '../common/NullableSelect';
+import {NullableSelect} from 'terraso-mobile-client/components/common/NullableSelect';
 
 type ProjectSelectProps = {
   projectId: string | undefined;
