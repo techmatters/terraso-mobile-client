@@ -408,7 +408,10 @@ export const FilterModalTrigger = ({
 type ModalProps = {searchInput: React.ReactNode} & React.PropsWithChildren;
 
 export const ListFilterModal = ({searchInput, children}: ModalProps) => {
-  // exceptionally do not use hook here; need to pass the context value to the modal
+  // exceptionally do not use hook here; need to pass the context value to the modal as prop
+  // this is because NativeBase Modals are rerendered in the element tree
+  // and do not receive context from providers not defined above NativeBaseProvider
+  // see https://nativebase.hashnode.dev/how-the-overlay-component-works-in-nativebase#heading-portalprovider
   const value = useContext(ListFilterContext);
   const modalRef = useRef<ModalHandle>(null);
   const onClose = useCallback(() => {

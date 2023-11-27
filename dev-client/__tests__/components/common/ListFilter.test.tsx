@@ -27,6 +27,7 @@ const changeSelectFilter = (selectPlaceholder: string, optionText: string) => {
   const select = screen.getByPlaceholderText(
     selectPlaceholder,
     // little NativeBase thing :)
+    // it appears the select is implemented using a text input that is hidden
     {
       includeHiddenElements: true,
     },
