@@ -43,7 +43,7 @@ import {LinkNewWindowIcon} from 'terraso-mobile-client/components/common/Icons';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
-import {SiteFilter} from 'terraso-mobile-client/components/sites/filter';
+import {SiteFilter} from 'terraso-mobile-client/components/sites/filter.hooks';
 import {ProjectSelect} from 'terraso-mobile-client/components/projects/ProjectSelect';
 import {USER_ROLES} from 'terraso-mobile-client/constants';
 

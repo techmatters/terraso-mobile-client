@@ -29,7 +29,7 @@ import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import AddButton from 'terraso-mobile-client/components/common/AddButton';
 import ProjectPreviewCard from 'terraso-mobile-client/components/projects/ProjectPreviewCard';
 import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
-import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
+import {useTextSearch} from 'terraso-mobile-client/components/common/search/search.hooks';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);

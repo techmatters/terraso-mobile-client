@@ -23,7 +23,7 @@ import {
   AppBar,
   ScreenScaffold,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
+import {useTextSearch} from 'terraso-mobile-client/components/common/search/search.hooks';
 import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
 import {memo, useCallback, useEffect, useMemo, useState} from 'react';

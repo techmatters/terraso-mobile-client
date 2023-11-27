@@ -55,7 +55,7 @@ import {
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
-import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
+import {useTextSearch} from 'terraso-mobile-client/components/common/search/search.hooks';
 import {CardTopRightButton} from 'terraso-mobile-client/components/common/Card';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 

@@ -52,8 +52,8 @@ import {
 } from 'terraso-mobile-client/components/common/Icons';
 import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
-import {useTextSearch} from 'terraso-mobile-client/components/common/search/search';
-import {useFilterSites} from 'terraso-mobile-client/components/sites/filter';
+import {useTextSearch} from 'terraso-mobile-client/components/common/search/search.hooks';
+import {useFilterSites} from 'terraso-mobile-client/components/sites/filter.hooks';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
 
