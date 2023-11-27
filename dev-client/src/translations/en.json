@@ -287,7 +287,11 @@
     "cancel_fab": "Cancel",
     "delete_fab": "Delete",
     "done_fab": "Done",
-    "close_fab": "Close"
+    "close_fab": "Close",
+    "filter": {
+      "no_sort": "None",
+      "no_role": "None"
+    }
   },
   "screens": {
     "HOME": "LandPKS",

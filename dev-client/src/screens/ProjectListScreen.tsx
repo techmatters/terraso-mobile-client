@@ -140,6 +140,7 @@ export const ProjectListScreen = () => {
                 name="sort"
                 label={t('projects.sort_label')}
                 options={SORT_OPTIONS}
+                nullableOption={t('general.filter.no_sort')}
               />
               <SelectFilter
                 name="role"
@@ -150,6 +151,7 @@ export const ProjectListScreen = () => {
                   contributor: t('general.role.contributor'),
                   viewer: t('general.role.viewer'),
                 }}
+                nullableOption={t('general.filter.no_role')}
               />
             </ListFilterModal>
             <ProjectList />

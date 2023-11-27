@@ -270,17 +270,18 @@ type OptionFilterProps<FilterNames extends string> = {
   label: string;
   options: Record<string, string>;
   name: FilterNames;
-} & Omit<
-  React.ComponentProps<typeof NullableSelect>,
-  'selectedValue' | 'onValueChange'
->;
+};
 
 export const SelectFilter = <FilterNames extends string>({
   name,
   options,
   label,
   ...selectProps
-}: OptionFilterProps<FilterNames>) => {
+}: OptionFilterProps<FilterNames> &
+  Omit<
+    React.ComponentProps<typeof NullableSelect>,
+    'selectedValue' | 'onValueChange'
+  >) => {
   const {setValue, value} = useListFilter<any>(name);
 
   const onValueChange = useCallback(
