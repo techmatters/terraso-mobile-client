@@ -144,7 +144,7 @@ const CreateSiteForm = ({
                 <FormRadio
                   value={value}
                   isDisabled={projectPrivacy !== undefined}>
-                  {t(`privacy.${value}.title`)}
+                  {t(`privacy.${value.toLowerCase()}.title`)}
                 </FormRadio>
               )}
             />

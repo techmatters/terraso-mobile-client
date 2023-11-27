@@ -302,11 +302,11 @@
   },
   "privacy": {
     "label": "Data Privacy",
-    "PUBLIC": {
+    "public": {
       "inline": "public",
       "title": "Public"
     },
-    "PRIVATE": {
+    "private": {
       "inline": "private",
       "title": "Private"
     }

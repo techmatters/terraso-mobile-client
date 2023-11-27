@@ -150,8 +150,8 @@ export const LocationDashboardView = ({siteId, coords}: Props) => {
                   </HStack>
                 }
                 options={{
-                  PUBLIC: {text: t('privacy.PUBLIC.title')},
-                  PRIVATE: {text: t('privacy.PRIVATE.title')},
+                  PUBLIC: {text: t('privacy.public.title')},
+                  PRIVATE: {text: t('privacy.private.title')},
                 }}
                 groupProps={{
                   name: 'site-privacy',
