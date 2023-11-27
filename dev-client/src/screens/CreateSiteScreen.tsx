@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {useCallback, useRef} from 'react';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {CreateSiteView} from 'terraso-mobile-client/components/sites/CreateSiteView';
 import {useDispatch} from 'terraso-mobile-client/model/store';
 import {
@@ -29,6 +30,7 @@ import {
   ScreenCloseButton,
   ScreenScaffold,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
+import {InfoModal} from 'terraso-mobile-client/components/common/infoModals/InfoModal';
 
 type Props =
   | {
@@ -42,6 +44,7 @@ type Props =
 
 export const CreateSiteScreen = (props: Props = {}) => {
   const dispatch = useDispatch();
+  const infoModalRef = useRef<BottomSheetModal>(null);
 
   const createSiteCallback = useCallback(
     async (input: SiteAddMutationInput) => {
@@ -59,15 +62,28 @@ export const CreateSiteScreen = (props: Props = {}) => {
     [dispatch],
   );
 
+  const onInfo = useCallback(
+    () => infoModalRef.current?.present(),
+    [infoModalRef],
+  );
+  const onInfoClose = useCallback(
+    () => infoModalRef.current?.dismiss(),
+    [infoModalRef],
+  );
+
   return (
-    <ScreenScaffold
-      BottomNavigation={null}
-      AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
-      <CreateSiteView
-        createSiteCallback={createSiteCallback}
-        defaultProjectId={'projectId' in props ? props.projectId : undefined}
-        sitePin={'coords' in props ? props.coords : undefined}
-      />
-    </ScreenScaffold>
+    <BottomSheetModalProvider>
+      <ScreenScaffold
+        BottomNavigation={null}
+        AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
+        <CreateSiteView
+          createSiteCallback={createSiteCallback}
+          defaultProjectId={'projectId' in props ? props.projectId : undefined}
+          sitePin={'coords' in props ? props.coords : undefined}
+          onInfoPress={onInfo}
+        />
+      </ScreenScaffold>
+      <InfoModal ref={infoModalRef} onClose={onInfoClose} />
+    </BottomSheetModalProvider>
   );
 };

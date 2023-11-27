@@ -15,17 +15,34 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import CreateProjectView from 'terraso-mobile-client/components/projects/CreateProjectView';
+import {useCallback, useRef} from 'react';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {CreateProjectView} from 'terraso-mobile-client/components/projects/CreateProjectView';
 import {
   AppBar,
   ScreenCloseButton,
   ScreenScaffold,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
+import {InfoModal} from 'terraso-mobile-client/components/common/infoModals/InfoModal';
 
 export const CreateProjectScreen = () => {
+  const infoModalRef = useRef<BottomSheetModal>(null);
+
+  const onInfoPress = useCallback(
+    () => infoModalRef.current?.present(),
+    [infoModalRef],
+  );
+  const onInfoClose = useCallback(
+    () => infoModalRef.current?.dismiss(),
+    [infoModalRef],
+  );
+
   return (
-    <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
-      <CreateProjectView />
-    </ScreenScaffold>
+    <BottomSheetModalProvider>
+      <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
+        <CreateProjectView onInfoPress={onInfoPress} />
+      </ScreenScaffold>
+      <InfoModal ref={infoModalRef} onClose={onInfoClose} />
+    </BottomSheetModalProvider>
   );
 };

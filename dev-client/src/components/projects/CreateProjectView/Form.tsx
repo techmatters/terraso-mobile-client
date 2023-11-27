@@ -94,6 +94,7 @@ export type ProjectFormValues = {
 
 type Props = {
   editForm?: boolean;
+  onInfoPress: () => void;
 };
 
 const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
@@ -159,7 +160,7 @@ export const EditForm = ({
   );
 };
 
-export default function Form({editForm = false}: Props) {
+export default function Form({editForm = false, onInfoPress}: Props) {
   const {t} = useTranslation();
   const {handleChange, handleBlur, values} =
     useFormikContext<ProjectFormValues>();
@@ -195,7 +196,11 @@ export default function Form({editForm = false}: Props) {
         label={
           <HStack alignItems="center">
             <Heading size="sm">{t('projects.create.privacy_label')}</Heading>
-            <IconButton name="info" _icon={{color: 'action.active'}} />
+            <IconButton
+              name="info"
+              onPress={onInfoPress}
+              _icon={{color: 'action.active'}}
+            />
           </HStack>
         }
         options={{
