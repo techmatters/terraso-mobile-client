@@ -42,7 +42,7 @@ import {Button} from 'native-base';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {InfoModal} from 'terraso-mobile-client/components/common/infoModals/InfoModal';
 
-const InfoPressContext = createContext({onInfoPress: () => {}});
+const InfoPressContext = createContext(() => {});
 
 export const useInfoPress = () => useContext(InfoPressContext);
 
@@ -134,7 +134,7 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
   );
 
   return (
-    <InfoPressContext.Provider value={{onInfoPress}}>
+    <InfoPressContext.Provider value={onInfoPress}>
       <BottomSheetModalProvider>
         <ScreenScaffold
           AppBar={

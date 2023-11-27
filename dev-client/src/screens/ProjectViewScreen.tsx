@@ -28,7 +28,7 @@ import {InfoModal} from 'terraso-mobile-client/components/common/infoModals/Info
 
 type Props = {projectId: string};
 
-const InfoPressContext = createContext({onInfoPress: () => {}});
+const InfoPressContext = createContext(() => {});
 
 export const useInfoPress = () => useContext(InfoPressContext);
 
@@ -46,7 +46,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
   );
 
   return (
-    <InfoPressContext.Provider value={{onInfoPress}}>
+    <InfoPressContext.Provider value={onInfoPress}>
       <BottomSheetModalProvider>
         <ScreenScaffold
           AppBar={

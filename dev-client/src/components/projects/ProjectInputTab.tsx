@@ -53,7 +53,7 @@ export const ProjectInputTab = ({
   const navigation = useNavigation();
   const project = useSelector(state => state.project.projects[projectId]);
   const dispatch = useDispatch();
-  const {onInfoPress} = useInfoPress();
+  const onInfoPress = useInfoPress();
 
   const onEditInstructions = useCallback(() => {
     return navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});

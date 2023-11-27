@@ -87,7 +87,7 @@ const LocationPrediction = ({
 export const LocationDashboardView = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const {onInfoPress} = useInfoPress();
+  const onInfoPress = useInfoPress();
 
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
