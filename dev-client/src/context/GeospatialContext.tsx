@@ -17,7 +17,7 @@
 import {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import haversine from 'haversine';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
-import {USER_DISTANCE_CONTEXT_CACHE} from 'terraso-mobile-client/constants';
+import {GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE} from 'terraso-mobile-client/constants';
 import {AppState, useSelector} from 'terraso-mobile-client/model/store';
 
 type GeospatialInfo = {
@@ -80,7 +80,8 @@ export const GeospatialProviderInjected = ({
       return;
     }
     if (
-      haversine(userLocation, lastUserLocation) > USER_DISTANCE_CONTEXT_CACHE
+      haversine(userLocation, lastUserLocation) >
+      GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE
     ) {
       setLastUserLocation(userLocation);
     }
