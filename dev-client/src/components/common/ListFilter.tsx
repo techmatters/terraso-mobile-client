@@ -285,8 +285,8 @@ export const SelectFilter = <FilterNames extends string>({
   const {setValue, value} = useListFilter<any>(name);
 
   const onValueChange = useCallback(
-    (newValue: string) => {
-      return setValue(newValue === '' ? undefined : newValue);
+    (newValue: string | undefined) => {
+      return setValue(newValue);
     },
     [setValue],
   );

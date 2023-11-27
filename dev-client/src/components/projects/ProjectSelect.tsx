@@ -18,6 +18,8 @@
 import {Select} from 'native-base';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+import {NullableSelect} from '../common/NullableSelect';
 
 type ProjectSelectProps = {
   projectId: string | undefined;
@@ -27,13 +29,18 @@ export const ProjectSelect = ({
   projectId,
   setProjectId,
 }: ProjectSelectProps) => {
+  const {t} = useTranslation();
   const projects = useSelector(state => state.project.projects);
   const projectList = useMemo(() => Object.values(projects), [projects]);
+
   return (
-    <Select selectedValue={projectId} onValueChange={setProjectId}>
+    <NullableSelect
+      selectedValue={projectId}
+      onValueChange={setProjectId}
+      nullableOption={t('general.nullable_option')}>
       {projectList.map(project => (
         <Select.Item label={project.name} value={project.id} key={project.id} />
       ))}
-    </Select>
+    </NullableSelect>
   );
 };

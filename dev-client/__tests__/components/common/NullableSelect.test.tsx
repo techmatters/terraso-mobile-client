@@ -11,7 +11,7 @@ const changeSelectInput = (label: string, optionText: string) => {
 };
 
 test('Value of select reset when nullable option selected', () => {
-  const mock = jest.fn((newValue: string) => newValue);
+  const mock = jest.fn((newValue: string | undefined) => newValue);
   render(
     <NullableSelect
       nullableOption="Unset"
@@ -21,6 +21,6 @@ test('Value of select reset when nullable option selected', () => {
     </NullableSelect>,
   );
   changeSelectInput('Change user role', 'Unset');
-  expect(mock.mock.calls[0][0]).toBe('');
+  expect(mock.mock.calls[0][0]).toBe(undefined);
   expect(screen.queryAllByText('Unset')).not.toBeNull();
 });

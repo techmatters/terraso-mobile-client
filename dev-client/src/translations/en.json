@@ -291,7 +291,8 @@
     "filter": {
       "no_sort": "None",
       "no_role": "None"
-    }
+    },
+    "nullable_option": "None"
   },
   "screens": {
     "HOME": "LandPKS",
