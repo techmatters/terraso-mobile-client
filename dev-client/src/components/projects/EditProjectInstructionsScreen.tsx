@@ -26,7 +26,7 @@ import {
   updateProject,
   Project,
 } from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
 import {Keyboard} from 'react-native';
 
 type Props = {

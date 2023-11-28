@@ -31,7 +31,7 @@ import {
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from './useNavigation';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StatusBar, View, LayoutChangeEvent} from 'react-native';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';

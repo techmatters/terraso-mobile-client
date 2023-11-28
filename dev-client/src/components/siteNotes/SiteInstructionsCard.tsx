@@ -20,7 +20,7 @@ import {Text, HStack} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/common/Card';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
 
 type Props = {
   siteInstructions: string;

@@ -16,15 +16,7 @@
  */
 
 import SiteMap from 'terraso-mobile-client/components/home/SiteMap';
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-} from 'react';
-import {Linking} from 'react-native';
+import {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import Mapbox, {Camera} from '@rnmapbox/maps';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -34,28 +26,19 @@ import {
   AppBarIconButton,
   AppBar,
   ScreenScaffold,
-  useHeaderHeight,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import MapSearch from 'terraso-mobile-client/components/home/MapSearch';
-import {Box, Column, FlatList, Heading, HStack, Image, Text} from 'native-base';
+import {Box} from 'native-base';
 import {coordsToPosition} from 'terraso-mobile-client/components/common/Map';
 import BottomSheet, {
-  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
-import {Trans, useTranslation} from 'react-i18next';
-import {
-  LocationIcon,
-  LinkNewWindowIcon,
-} from 'terraso-mobile-client/components/common/Icons';
-import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
-import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search.hooks';
 import {useFilterSites} from 'terraso-mobile-client/components/sites/filter.hooks';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
+import {InfoModal} from 'terraso-mobile-client/components/home/InfoModal';
 
 export type CalloutState =
   | {
@@ -246,86 +229,5 @@ export const HomeScreen = ({site}: Props) => {
         <InfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
       </ScreenScaffold>
     </BottomSheetModalProvider>
-  );
-};
-
-const InfoModal = forwardRef<BottomSheetModal, {onClose: () => void}>(
-  ({onClose}, ref) => {
-    const headerHeight = useHeaderHeight();
-    return (
-      <BottomSheetModal
-        ref={ref}
-        snapPoints={['100%']}
-        handleComponent={null}
-        topInset={headerHeight}
-        backdropComponent={BackdropComponent}>
-        <LandPKSInfo />
-        <Box position="absolute" top="18px" right="23px">
-          <CardCloseButton onPress={onClose} />
-        </Box>
-      </BottomSheetModal>
-    );
-  },
-);
-
-const BackdropComponent = (props: BottomSheetBackdropProps) => (
-  <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
-);
-
-const LandPKSInfo = () => {
-  const {t} = useTranslation();
-
-  return (
-    <BottomSheetScrollView>
-      <Column space={3} pb="65%" pt={5} px={5} mt="48px">
-        <Heading w="full" textAlign="center">
-          {t('home.info.title')}
-        </Heading>
-        <Image
-          source={require('terraso-mobile-client/assets/landpks_intro_image.png')}
-          w="100%"
-          h="25%"
-          resizeMode="contain"
-          alt={t('home.info.intro_image_alt')}
-        />
-        <Text variant="body1">
-          <Trans i18nKey="home.info.description">
-            <Text bold>first</Text>
-            <Text>second</Text>
-            <Text bold>third</Text>
-          </Trans>
-        </Text>
-        <FlatList
-          data={['home.info.list1', 'home.info.list2', 'home.info.list3']}
-          renderItem={({index, item}) => (
-            <HStack key={index}>
-              <Text variant="body1" mr={2}>
-                {index + 1}
-                {'.'}
-              </Text>
-              <Text variant="body1" mr={2}>
-                <Trans i18nKey={item} components={{icon: <LocationIcon />}} />
-              </Text>
-            </HStack>
-          )}
-          keyExtractor={item => item}
-        />
-        <Text variant="body1">
-          <Trans
-            i18nKey="home.info.description2"
-            components={{
-              icon: <LinkNewWindowIcon />,
-            }}>
-            <Text bold>first</Text>
-            <Text
-              underline
-              onPress={() => Linking.openURL(t('home.info.link_url'))}
-              color="primary.main">
-              link_text
-            </Text>
-          </Trans>
-        </Text>
-      </Column>
-    </BottomSheetScrollView>
   );
 };

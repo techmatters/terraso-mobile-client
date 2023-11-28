@@ -30,7 +30,7 @@ import {
   Pressable,
 } from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import {IconLabel} from 'terraso-mobile-client/components/common/RadioBlock';

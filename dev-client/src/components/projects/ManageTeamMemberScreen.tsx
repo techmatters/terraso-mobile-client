@@ -33,7 +33,7 @@ import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
 
 type Props = {
   projectId: string;

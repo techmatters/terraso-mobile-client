@@ -29,7 +29,7 @@ import MembershipControlList, {
   UserWithRole,
 } from 'terraso-mobile-client/components/projects/AddUserToProjectScreen/MembershipControlList';
 import {addUserToProject} from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useKeyboardOpen} from 'terraso-mobile-client/hooks/index.hooks';
 

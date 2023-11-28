@@ -16,10 +16,10 @@
  */
 
 import {
-  useNavigation,
   ParamList,
   ScreenDefinitions,
 } from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from './useNavigation';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';

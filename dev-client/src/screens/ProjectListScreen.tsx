@@ -23,7 +23,7 @@ import {
   ScreenScaffold,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from './useNavigation';
 import {Box, FlatList, Heading, Link, Text, VStack, Spinner} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import AddButton from 'terraso-mobile-client/components/common/AddButton';

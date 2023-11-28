@@ -18,7 +18,6 @@
 import {
   NativeStackNavigationOptions,
   NativeStackScreenProps,
-  NativeStackNavigationProp,
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
@@ -38,8 +37,7 @@ import {AddSiteNoteScreen} from 'terraso-mobile-client/components/siteNotes/AddS
 import {EditSiteNoteScreen} from 'terraso-mobile-client/components/siteNotes/EditSiteNoteScreen';
 import {ReadNoteScreen} from 'terraso-mobile-client/components/siteNotes/ReadNoteScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/components/projects/EditProjectInstructionsScreen';
-import {useNavigation as useNavigationNative} from '@react-navigation/native';
-import {LocationDashboardScreen} from 'terraso-mobile-client/components/sites/LocationDashboardScreen';
+import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationDashboardScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/components/sites/SiteSettingsScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/components/sites/SiteTeamSettings';
 import {Location, locationManager} from '@rnmapbox/maps';
@@ -82,8 +80,8 @@ const combinedScreenDefinitions = {
   ...modalScreenDefinitions,
 } satisfies ScreenDefinitions;
 
-type RootStackParamList = ParamList<typeof combinedScreenDefinitions>;
-type ScreenName = keyof RootStackParamList;
+export type RootStackParamList = ParamList<typeof combinedScreenDefinitions>;
+export type ScreenName = keyof RootStackParamList;
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -106,9 +104,6 @@ const modalScreens = Object.entries(modalScreenDefinitions).map(
     />
   ),
 );
-
-export const useNavigation = <Name extends ScreenName = ScreenName>() =>
-  useNavigationNative<NativeStackNavigationProp<RootStackParamList, Name>>();
 
 const defaultScreenOptions: NativeStackNavigationOptions = {headerShown: false};
 

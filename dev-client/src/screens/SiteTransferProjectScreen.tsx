@@ -15,8 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Fab, FlatList, HStack, Heading, Text, VStack} from 'native-base';
-import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
+import {Box, Fab, FlatList, Text} from 'native-base';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {
@@ -26,40 +25,20 @@ import {
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search.hooks';
 import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
-import {memo, useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import CheckboxGroup from 'terraso-mobile-client/components/common/CheckboxGroup';
 import {transferSites} from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
+import {useNavigation} from './useNavigation';
 import {removeKeys} from 'terraso-mobile-client/util';
-import {FormTooltip} from 'terraso-mobile-client/components/common/Form';
+import {ListHeader} from 'terraso-mobile-client/components/sites/ListHeader';
 
 type Props = {projectId: string};
-type HeaderProps = {query: string; setQuery: (query: string) => void};
+export type HeaderProps = {query: string; setQuery: (query: string) => void};
 
 const UNAFFILIATED = {
   projectId: Symbol('unaffiliated'),
   projectName: '',
 };
-
-const ListHeader = memo(({query, setQuery}: HeaderProps) => {
-  const {t} = useTranslation();
-  return (
-    <VStack space="10px" px="12px" pt="5%">
-      <HStack>
-        <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
-        <FormTooltip icon="help">
-          {t('projects.transfer_sites.tooltip')}
-        </FormTooltip>
-      </HStack>
-      <Text>{t('projects.transfer_sites.description', '')}</Text>
-      <SearchBar
-        query={query}
-        setQuery={setQuery}
-        placeholder={t('site.search.placeholder')}
-      />
-    </VStack>
-  );
-});
 
 export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
