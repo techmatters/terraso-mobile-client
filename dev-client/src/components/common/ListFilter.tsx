@@ -40,6 +40,7 @@ import {
   ModalHandle,
 } from 'terraso-mobile-client/components/common/Modal';
 import {sortCompare} from 'terraso-mobile-client/util';
+import {NullableSelect} from 'terraso-mobile-client/components/common/NullableSelect';
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;
@@ -266,7 +267,6 @@ export function useListFilter<Item>(
 }
 
 type OptionFilterProps<FilterNames extends string> = {
-  placeholder?: string;
   label: string;
   options: Record<string, string>;
   name: FilterNames;
@@ -275,13 +275,17 @@ type OptionFilterProps<FilterNames extends string> = {
 export const SelectFilter = <FilterNames extends string>({
   name,
   options,
-  placeholder,
   label,
-}: OptionFilterProps<FilterNames>) => {
+  ...selectProps
+}: OptionFilterProps<FilterNames> &
+  Omit<
+    React.ComponentProps<typeof NullableSelect>,
+    'selectedValue' | 'onValueChange'
+  >) => {
   const {setValue, value} = useListFilter<any>(name);
 
   const onValueChange = useCallback(
-    (newValue: string) => {
+    (newValue: string | undefined) => {
       return setValue(newValue);
     },
     [setValue],
@@ -290,14 +294,14 @@ export const SelectFilter = <FilterNames extends string>({
   return (
     <FormControl>
       <FormControl.Label>{label}</FormControl.Label>
-      <Select
+      <NullableSelect
+        {...selectProps}
         selectedValue={value}
-        onValueChange={onValueChange}
-        placeholder={placeholder}>
+        onValueChange={onValueChange}>
         {Object.entries(options).map(([optionKey, itemLabel]) => (
           <Select.Item value={optionKey} key={optionKey} label={itemLabel} />
         ))}
-      </Select>
+      </NullableSelect>
     </FormControl>
   );
 };
