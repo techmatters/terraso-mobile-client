@@ -14,18 +14,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import {render} from '@testing-library/react-native';
+import {NativeBaseProvider} from 'native-base';
+import {theme} from 'terraso-mobile-client/theme';
 
-/**
- * @format
- */
+// NativeBase: https://docs.nativebase.io/testing
+const nativeBaseInset = {
+  frame: {x: 0, y: 0, width: 0, height: 0},
+  insets: {top: 0, left: 0, right: 0, bottom: 0},
+};
 
-import 'react-native';
-import React from 'react';
-import App from 'terraso-mobile-client/App';
+const TestWrapper = ({children}: React.PropsWithChildren) => {
+  return (
+    <NativeBaseProvider theme={theme} initialWindowMetrics={nativeBaseInset}>
+      {children}
+    </NativeBaseProvider>
+  );
+};
 
-// Note: test renderer must be required after react-native.
-import renderer from 'react-test-renderer';
-
-it('renders correctly', () => {
-  renderer.create(<App />);
-});
+export const customRender: typeof render = (ui, options) => {
+  return render(ui, {wrapper: TestWrapper, ...options});
+};

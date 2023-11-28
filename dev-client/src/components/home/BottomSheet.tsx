@@ -16,25 +16,8 @@
  */
 
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
-import {
-  Box,
-  Row,
-  Heading,
-  Text,
-  useTheme,
-  Column,
-  FormControl,
-  Select,
-  Spinner,
-} from 'native-base';
-import {
-  Dispatch,
-  SetStateAction,
-  forwardRef,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import {Box, Row, Heading, Text, useTheme, Column, Spinner} from 'native-base';
+import {forwardRef, useCallback, useMemo} from 'react';
 import {Linking} from 'react-native';
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
@@ -42,10 +25,14 @@ import {Trans, useTranslation} from 'react-i18next';
 import {LinkNewWindowIcon} from 'terraso-mobile-client/components/common/Icons';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
-import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
-import {SiteFilter} from 'terraso-mobile-client/components/sites/filter.hooks';
-import {ProjectSelect} from 'terraso-mobile-client/components/projects/ProjectSelect';
 import {USER_ROLES} from 'terraso-mobile-client/constants';
+import {
+  TextInputFilter,
+  useListFilter,
+  ListFilterModal,
+  SelectFilter,
+} from 'terraso-mobile-client/components/common/ListFilter';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const EmptySiteMessage = () => {
@@ -89,18 +76,16 @@ const getStartingSnapValue = (bottomInsets: number) => {
 
 type Props = {
   sites: Site[];
-  filteredSites: Site[];
   showSiteOnMap: (site: Site) => void;
   snapIndex?: number;
-} & SiteSearchBarProps;
+};
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
-  (
-    {sites, filteredSites, showSiteOnMap, snapIndex, ...searchBarProps},
-    ref,
-  ) => {
+  ({sites, showSiteOnMap, snapIndex}, ref) => {
     const {t} = useTranslation();
     const isLoadingData = useSelector(state => state.soilId.loading);
     const deviceBottomInsets = useSafeAreaInsets().bottom;
+
+    const {filteredItems: filteredSites} = useListFilter<Site>();
 
     const renderSite = useCallback(
       ({item}: {item: Site}) => (
@@ -128,6 +113,9 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
       () => ({backgroundColor: colors.grey[300]}),
       [colors],
     );
+    const {siteDistances} = useGeospatialContext();
+
+    const useDistance = useMemo(() => siteDistances !== null, [siteDistances]);
 
     return (
       <BottomSheet
@@ -140,7 +128,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
           <Row justifyContent="space-between" alignItems="center" pb="4">
             <Heading variant="h6">{t('site.list_title')}</Heading>
           </Row>
-          {sites.length >= 0 && <SiteSearchBar {...searchBarProps} />}
+          {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
         </Column>
         {isLoadingData ? (
           <Spinner size="lg" />
@@ -162,69 +150,50 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   },
 );
 
-type SiteSearchBarProps = {
-  query: string;
-  setQuery: (query: string) => void;
-  filter: SiteFilter;
-  setFilter: (filter: SiteFilter) => void;
+type ModalProps = {
+  useDistance: boolean;
 };
-const SiteSearchBar = ({
-  query,
-  setQuery,
-  filter,
-  setFilter,
-}: SiteSearchBarProps) => {
-  const {t} = useTranslation();
-  const numFilters = Object.values(filter).filter(
-    value => value !== undefined,
-  ).length;
-  const [tempFilter, setTempFilter] = useState(filter);
 
-  return (
-    <SearchBar
-      query={query}
-      setQuery={setQuery}
-      numFilters={numFilters}
-      placeholder={t('site.search.placeholder')}
-      FilterOptions={
-        <SiteFilterModal filter={tempFilter} setFilter={setTempFilter} />
-      }
-      onApplyFilter={() => setFilter(tempFilter)}
-    />
+const SiteFilterModal = ({useDistance}: ModalProps) => {
+  const {t} = useTranslation();
+
+  const roleOptions = Object.fromEntries(
+    USER_ROLES.map(role => [role, t(`site.role.${role}`)]),
   );
-};
 
-type SiteFilterModalProps = {
-  filter: SiteFilter;
-  setFilter: Dispatch<SetStateAction<SiteFilter>>;
-};
-const SiteFilterModal = ({filter, setFilter}: SiteFilterModalProps) => {
-  const {t} = useTranslation();
+  const distanceSortingOptions = useDistance
+    ? ['distanceAsc', 'distanceDesc']
+    : [];
+
+  const sortOptions = Object.fromEntries(
+    [
+      'nameAsc',
+      'nameDesc',
+      'lastModAsc',
+      'lastModDesc',
+      ...distanceSortingOptions,
+    ].map(label => [label, t('site.search.sort.' + label)]),
+  );
+
   return (
-    <Column>
-      <FormControl>
-        <FormControl.Label>
-          {t('site.search.filter_projects')}
-        </FormControl.Label>
-        <ProjectSelect
-          projectId={filter.projectId}
-          setProjectId={projectId => setFilter(prev => ({...prev, projectId}))}
+    <ListFilterModal
+      searchInput={
+        <TextInputFilter
+          placeholder={t('site.search.placeholder')}
+          label={t('site.search.accessibility_label')}
+          name="search"
         />
-      </FormControl>
-      <FormControl>
-        <FormControl.Label>{t('site.search.filter_role')}</FormControl.Label>
-        <Select
-          selectedValue={filter.role}
-          onValueChange={role => setFilter(prev => ({...prev, role}) as any)}>
-          {USER_ROLES.map(role => (
-            <Select.Item
-              label={t(`site.role.${role}`)}
-              value={role}
-              key={role}
-            />
-          ))}
-        </Select>
-      </FormControl>
-    </Column>
+      }>
+      <SelectFilter
+        label={t('site.search.sort.label')}
+        options={sortOptions}
+        name="sort"
+      />
+      <SelectFilter
+        label={t('site.search.filter_role')}
+        options={roleOptions}
+        name="role"
+      />
+    </ListFilterModal>
   );
 };

@@ -32,7 +32,6 @@ import {
 } from 'terraso-mobile-client/components/projects/constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBar';
 import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
 import {
@@ -55,9 +54,18 @@ import {
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
 import {SiteCard} from 'terraso-mobile-client/components/sites/SiteCard';
-import {useTextSearch} from 'terraso-mobile-client/components/common/search/search.hooks';
 import {CardTopRightButton} from 'terraso-mobile-client/components/common/Card';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
+import {
+  ListFilterModal,
+  ListFilterProvider,
+  RadioFilter,
+  SortingOption,
+  TextInputFilter,
+  useListFilter,
+} from 'terraso-mobile-client/components/common/ListFilter';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {normalizeText, searchText} from 'terraso-mobile-client/util';
 
 type SiteMenuProps = {
   iconName: string;
@@ -138,6 +146,23 @@ const SiteMenu = ({site}: SiteProps) => {
   );
 };
 
+const SiteCardList = () => {
+  const {t} = useTranslation();
+  const {filteredItems: sites} = useListFilter<Site>();
+
+  return (
+    <FlatList
+      data={sites}
+      renderItem={({item: site}) => (
+        <SiteCard site={site} buttons={<SiteMenu site={site} />} />
+      )}
+      keyExtractor={site => site.id}
+      ItemSeparatorComponent={() => <Box h="8px" />}
+      ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
+    />
+  );
+};
+
 type Props = CompositeScreenProps<
   MaterialTopTabScreenProps<TabStackParamList, TabRoutes.SITES>,
   RootStackScreenProps
@@ -175,37 +200,72 @@ export default function ProjectSitesTab({
   );
 
   const sites = useSelector(state => selectProjectSites(state, projectId));
-  const {
-    results: searchedSites,
-    query,
-    setQuery,
-  } = useTextSearch({
-    data: sites,
-    keys: ['name'],
-  });
+
+  const sortNames = ['nameAsc', 'updatedAtAsc'];
+
+  const {siteDistances} = useGeospatialContext();
+  let distanceSorting: Record<string, SortingOption<Site>> | undefined;
+  if (siteDistances !== null) {
+    distanceSorting = {
+      distanceAsc: {
+        key: 'id',
+        record: siteDistances,
+        order: 'ascending',
+      },
+    };
+    sortNames.push('distanceAsc');
+  }
+
+  const sortingOptions = Object.fromEntries(
+    sortNames.map(label => [label, t('projects.sites.sort.' + label)]),
+  );
 
   const isEmpty = sites.length === 0;
 
   const full = (
-    <>
-      <SearchBar
-        mb="18px"
-        query={query}
-        setQuery={setQuery}
-        placeholder={t('site.search.placeholder')}
-        FilterOptions={<Text>Site filter placeholder</Text>}
-        filterIcon="sort"
-      />
-      <FlatList
-        data={searchedSites}
-        renderItem={({item: site}) => (
-          <SiteCard site={site} buttons={<SiteMenu site={site} />} />
-        )}
-        keyExtractor={site => site.id}
-        ItemSeparatorComponent={() => <Box h="8px" />}
-        ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
-      />
-    </>
+    <ListFilterProvider
+      items={sites}
+      filters={{
+        search: {
+          kind: 'filter',
+          f: searchText,
+          preprocess: normalizeText,
+          lookup: {
+            key: 'name',
+          },
+          hide: true,
+        },
+        sort: {
+          kind: 'sorting',
+          options: {
+            nameAsc: {
+              key: 'name',
+              order: 'ascending',
+            },
+            updatedAtAsc: {
+              key: 'name',
+              order: 'ascending',
+            },
+            ...distanceSorting,
+          },
+        },
+      }}>
+      <ListFilterModal
+        searchInput={
+          <TextInputFilter
+            name="search"
+            placeholder={t('site.search.placeholder')}
+            label={t('site.search.accessibility_label')}
+          />
+        }>
+        <RadioFilter
+          name="sort"
+          label={t('projects.sites.sort.label')}
+          options={sortingOptions}
+        />
+      </ListFilterModal>
+      <SiteCardList />
+    </ListFilterProvider>
   );
 
   return (
