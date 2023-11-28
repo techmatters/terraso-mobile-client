@@ -28,7 +28,7 @@ type Props = {
   accessibilityLabel?: string;
 } & React.ComponentProps<typeof Pressable>;
 
-const EmbadgedIcon = ({
+const BadgedIcon = ({
   badgeNum,
   iconName,
   onPress,
@@ -54,4 +54,4 @@ const EmbadgedIcon = ({
   );
 };
 
-export default EmbadgedIcon;
+export default BadgedIcon;

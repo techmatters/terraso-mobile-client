@@ -32,7 +32,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import EmbadgedIcon from 'terraso-mobile-client/components/common/EmbadgedIcon';
+import BadgedIcon from 'terraso-mobile-client/components/common/EmbadgedIcon';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import {
@@ -404,7 +404,7 @@ export const FilterModalTrigger = ({
 
   return (
     <HStack space="20px" mb="15px">
-      <EmbadgedIcon
+      <BadgedIcon
         iconName="filter-list"
         onPress={onOpen}
         badgeNum={numFilters}
