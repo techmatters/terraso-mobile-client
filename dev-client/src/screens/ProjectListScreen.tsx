@@ -35,7 +35,8 @@ import {
 } from 'terraso-mobile-client/components/common/ListFilter';
 import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
 import ProjectList from 'terraso-mobile-client/components/projects/ProjectList';
-import {equals, normalizeText, searchText} from 'terraso-mobile-client/util';
+import {equals, searchText} from 'terraso-mobile-client/util';
+import {normalizeText} from 'terraso-client-shared/utils';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
