@@ -52,7 +52,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
           AppBar={
             <AppBar LeftButton={<ScreenCloseButton />} title={project?.name} />
           }>
-          <ProjectTabs project={project} />
+          <ProjectTabs projectId={projectId} />
         </ScreenScaffold>
         <InfoModal ref={infoModalRef} onClose={onInfoClose} />
       </BottomSheetModalProvider>

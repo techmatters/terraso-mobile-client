@@ -30,7 +30,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 import {NativeBaseProvider} from 'native-base';
 import {theme} from 'terraso-mobile-client/theme';
-import {LoginProvider} from 'terraso-mobile-client/context/LoginContext';
 import {AppScaffold} from 'terraso-mobile-client/screens/AppScaffold';
 import 'terraso-mobile-client/translations';
 import {checkAndroidPermissions} from 'terraso-mobile-client/native';
@@ -41,6 +40,7 @@ import {createStore} from 'terraso-mobile-client/model/store';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {LogBox} from 'react-native';
+import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 LogBox.ignoreLogs([
@@ -60,9 +60,9 @@ function App(): JSX.Element {
       <Provider store={store}>
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
-            <LoginProvider>
+            <GeospatialProvider>
               <AppScaffold />
-            </LoginProvider>
+            </GeospatialProvider>
           </NavigationContainer>
         </NativeBaseProvider>
       </Provider>
