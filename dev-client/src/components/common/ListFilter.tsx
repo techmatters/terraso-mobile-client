@@ -32,7 +32,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import BadgedIcon from 'terraso-mobile-client/components/common/EmbadgedIcon';
+import BadgedIcon from 'terraso-mobile-client/components/common/BadgedIcon';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import {
