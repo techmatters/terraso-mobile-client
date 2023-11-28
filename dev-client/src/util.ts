@@ -15,7 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {NativeModules, Platform} from 'react-native';
-import {isValidLongitude, isValidLatitude} from 'terraso-client-shared/utils';
+import {
+  isValidLongitude,
+  isValidLatitude,
+  normalizeText,
+} from 'terraso-client-shared/utils';
 
 export const getSystemLocale = () => {
   let locale;
@@ -70,13 +74,6 @@ export const removeKeys = (a: any, b: any) => {
     }
   }
 };
-
-export const normalizeText = (text: string) =>
-  text
-    .trim()
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, ''); // unicode range for combining diacritical marks
 
 export const searchText = (needle: string) => (haystack?: string) =>
   haystack !== undefined ? normalizeText(haystack).includes(needle) : false;
