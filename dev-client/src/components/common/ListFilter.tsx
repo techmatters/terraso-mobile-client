@@ -1,5 +1,5 @@
 /*
- * Copyright © ${YEAR} Technology Matters
+ * Copyright © 2023 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -32,7 +32,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import EmbadgedIcon from 'terraso-mobile-client/components/common/EmbadgedIcon';
+import BadgedIcon from 'terraso-mobile-client/components/common/BadgedIcon';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import {
@@ -408,7 +408,7 @@ export const FilterModalTrigger = ({
 
   return (
     <HStack space="20px" mb="15px">
-      <EmbadgedIcon
+      <BadgedIcon
         iconName="filter-list"
         onPress={onOpen}
         badgeNum={numFilters}

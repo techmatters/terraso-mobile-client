@@ -1,5 +1,5 @@
 /*
- * Copyright © ${YEAR} Technology Matters
+ * Copyright © 2023 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -28,7 +28,7 @@ type Props = {
   accessibilityLabel?: string;
 } & React.ComponentProps<typeof Pressable>;
 
-const EmbadgedIcon = ({
+const BadgedIcon = ({
   badgeNum,
   iconName,
   onPress,
@@ -54,4 +54,4 @@ const EmbadgedIcon = ({
   );
 };
 
-export default EmbadgedIcon;
+export default BadgedIcon;
