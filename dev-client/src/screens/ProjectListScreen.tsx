@@ -55,7 +55,7 @@ export const ProjectListScreen = () => {
   );
   const isLoadingData = useSelector(state => state.soilId.loading);
   const SORT_OPTIONS = Object.fromEntries(
-    ['nameAsc', 'nameDesc'].map(name => [name, t('projects.search.' + name)]),
+    ['nameAsc', 'nameDesc'].map(name => [name, t(`projects.search.${name}`)]),
   );
 
   return (
