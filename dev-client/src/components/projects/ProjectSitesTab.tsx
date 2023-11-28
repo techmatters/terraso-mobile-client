@@ -65,7 +65,8 @@ import {
   useListFilter,
 } from 'terraso-mobile-client/components/common/ListFilter';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {normalizeText, searchText} from 'terraso-mobile-client/util';
+import {searchText} from 'terraso-mobile-client/util';
+import {normalizeText} from 'terraso-client-shared/utils';
 
 type SiteMenuProps = {
   iconName: string;

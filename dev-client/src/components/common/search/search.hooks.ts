@@ -16,18 +16,12 @@
  */
 
 import {useMemo, useState} from 'react';
+import {normalizeText} from 'terraso-client-shared/utils';
 
 type TextSearchOptions<K extends string, T extends Record<K, string>> = {
   data: T[];
   keys: K[];
 };
-
-const normalizeText = (text: string) =>
-  text
-    .trim()
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, ''); // unicode range for combining diacritical marks
 
 export const useTextSearch = <K extends string, T extends Record<K, string>>({
   data,
