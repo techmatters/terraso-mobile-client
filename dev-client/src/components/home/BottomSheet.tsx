@@ -79,6 +79,7 @@ type Props = {
   showSiteOnMap: (site: Site) => void;
   snapIndex?: number;
 };
+
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   ({sites, showSiteOnMap, snapIndex}, ref) => {
     const {t} = useTranslation();
@@ -188,11 +189,13 @@ const SiteFilterModal = ({useDistance}: ModalProps) => {
         label={t('site.search.sort.label')}
         options={sortOptions}
         name="sort"
+        nullableOption={t('general.filter.no_sort')}
       />
       <SelectFilter
         label={t('site.search.filter_role')}
         options={roleOptions}
         name="role"
+        nullableOption={t('general.filter.no_role')}
       />
     </ListFilterModal>
   );

@@ -27,9 +27,11 @@ const TestComponent = ({mock}: Props) => {
   const {siteDistances} = useGeospatialContext();
   useEffect(() => {
     mock(
-      Object.entries(siteDistances || {})
-        .sort(([, distanceA], [, distanceB]) => distanceA - distanceB)
-        .map(([name]) => name),
+      siteDistances === null
+        ? null
+        : Object.entries(siteDistances)
+            .sort(([, distanceA], [, distanceB]) => distanceA - distanceB)
+            .map(([name]) => name),
     );
   }, [siteDistances, mock]);
   return <></>;
