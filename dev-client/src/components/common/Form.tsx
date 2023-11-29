@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import CheckBox from '@react-native-community/checkbox';
 import {ErrorMessage as FormikErrorMessage, useFormikContext} from 'formik';
 import {
   FormControl,
@@ -22,7 +23,6 @@ import {
   Radio,
   Popover,
   Switch,
-  Checkbox,
   Row,
   Text,
   TextArea,
@@ -34,6 +34,7 @@ import {
   useRef,
   useImperativeHandle,
   forwardRef,
+  useCallback,
 } from 'react';
 import {TextInput} from 'react-native';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
@@ -58,6 +59,15 @@ export const useFieldContext = <
     | undefined;
   const formikContext = useFormikContext<FormValues>();
 
+  const onChange = useCallback(
+    (value: Value) => {
+      if (name !== undefined) {
+        formikContext.setFieldValue(name, value);
+      }
+    },
+    [formikContext, name],
+  );
+
   return name === undefined
     ? fieldContext!
     : formikContext === undefined
@@ -65,7 +75,7 @@ export const useFieldContext = <
       : {
           name,
           value: formikContext.values[name] as Value,
-          onChange: formikContext.handleChange(name) as (_: Value) => void,
+          onChange,
           onBlur: formikContext.handleBlur(name) as unknown as () => void,
         };
 };
@@ -177,16 +187,15 @@ export const FormSwitch = memo(
 );
 
 type CheckboxProps = WrapperProps &
-  Omit<React.ComponentProps<typeof Checkbox>, 'value'> & {value?: boolean};
+  Omit<React.ComponentProps<typeof CheckBox>, 'value'> & {value?: boolean};
 export const FormCheckbox = memo(
   ({value: isChecked, ...props}: CheckboxProps) => {
     const {value, onChange} = useFieldContext<boolean>(props.name);
     return (
       <FormFieldWrapper errorMessage={null} {...props}>
-        <Checkbox
-          value=""
-          isChecked={isChecked ?? value}
-          onChange={onChange}
+        <CheckBox
+          value={isChecked ?? value}
+          onValueChange={onChange}
           {...props}
         />
       </FormFieldWrapper>
