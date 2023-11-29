@@ -195,11 +195,7 @@ export const FormCheckbox = memo(
       <FormFieldWrapper errorMessage={null} {...props}>
         <CheckBox
           value={isChecked ?? value}
-          onValueChange={value => {
-            if (onChange) {
-              onChange(value);
-            }
-          }}
+          onValueChange={onChange}
           {...props}
         />
       </FormFieldWrapper>
