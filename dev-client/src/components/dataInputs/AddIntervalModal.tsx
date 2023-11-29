@@ -24,11 +24,11 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {useTranslation} from 'react-i18next';
 import {
-  intervalSchema,
   IntervalForm,
   IntervalFormInput,
 } from 'terraso-mobile-client/components/dataInputs/IntervalForm';
-import {useModal} from 'terraso-mobile-client/components/modals/Modal';
+import {intervalSchema} from 'terraso-mobile-client/components/dataInputs/intervalSchema';
+import {useModal} from 'terraso-mobile-client/components/common/modals/Modal';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;

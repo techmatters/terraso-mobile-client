@@ -25,7 +25,7 @@ import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {checkUserInProject} from 'terraso-client-shared/account/accountService';
 import MembershipControlList, {
   UserWithRole,
-} from 'terraso-mobile-client/screens/AddUserToProjectScreen/MembershipControlList';
+} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MembershipControlList';
 import {addUserToProject} from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';

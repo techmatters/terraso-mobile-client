@@ -21,9 +21,9 @@ import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {AddIntervalModal} from 'terraso-mobile-client/components/dataInputs/AddIntervalModal';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {Modal} from 'terraso-mobile-client/components/modals/Modal';
-import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
-import {EditIntervalModal} from 'terraso-mobile-client/components/dataInputs/EditIntervalModal';
+import {Modal} from 'terraso-mobile-client/components/common/modals/Modal';
+import {BottomSheetModal} from 'terraso-mobile-client/components/common/modals/BottomSheetModal';
+import {EditIntervalModalContent} from 'terraso-mobile-client/components/dataInputs/EditIntervalModalContent';
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
@@ -139,7 +139,10 @@ const DepthIntervalEditor = ({
             onPress={onOpen}
           />
         )}>
-        <EditIntervalModal siteId={siteId} depthInterval={depthInterval} />
+        <EditIntervalModalContent
+          siteId={siteId}
+          depthInterval={depthInterval}
+        />
       </BottomSheetModal>
     </Row>
   );

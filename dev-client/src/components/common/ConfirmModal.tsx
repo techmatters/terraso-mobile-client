@@ -16,7 +16,7 @@
  */
 
 import {Button, HStack, Heading, Modal, Text, useDisclose} from 'native-base';
-import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
+import {ModalTrigger} from 'terraso-mobile-client/components/common/modals/Modal';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
 
