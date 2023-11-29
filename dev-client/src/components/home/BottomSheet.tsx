@@ -63,12 +63,16 @@ const EmptySiteMessage = () => {
  * @returns Starting snap value in %
  */
 const getStartingSnapValue = (bottomInsets: number) => {
+  // Set minimum and maximum snap values (percentage)
+  const minimumSnapValue = 13;
+  const maximumSnapValue = 16;
+
   // We set the maximum bottom insets as 34 which is the currently maximum for a device
   const weight0 = 1 - bottomInsets / 34; // Weight for 13
   const weight34 = 1 - weight0; // Weight for 16
 
   // Use the weights to calculate a weighted average
-  const result = weight0 * 13 + weight34 * 16;
+  const result = weight0 * minimumSnapValue + weight34 * maximumSnapValue;
 
   // Round the result
   return Math.round(result);
