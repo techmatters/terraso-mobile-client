@@ -22,18 +22,16 @@ import {
   updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
-import {
-  AppBar,
-  ScreenCloseButton,
-  ScreenScaffold,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/buttons/ScreenCloseButton';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
 import {formatName} from 'terraso-mobile-client/util';
 import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
 import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 
 type Props = {
   projectId: string;

@@ -16,7 +16,7 @@
  */
 
 import {Box, Button, Column, Heading, Text} from 'native-base';
-import {useNavigation} from './useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {useEffect, useCallback} from 'react';
 import {auth} from 'terraso-mobile-client/auth';

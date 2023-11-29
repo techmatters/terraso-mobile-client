@@ -22,11 +22,9 @@ import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {SiteListBottomSheet} from 'terraso-mobile-client/components/home/BottomSheet';
-import {
-  AppBarIconButton,
-  AppBar,
-  ScreenScaffold,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {AppBarIconButton} from 'terraso-mobile-client/navigation/buttons/AppBarIconButton';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
 import MapSearch from 'terraso-mobile-client/components/home/MapSearch';
 import {Box} from 'native-base';
 import {coordsToPosition} from 'terraso-mobile-client/components/common/Map';

@@ -26,21 +26,21 @@
 import 'react-native-get-random-values';
 
 import {useEffect, useMemo} from 'react';
+import {PermissionsAndroid, LogBox} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
-import Mapbox from '@rnmapbox/maps';
 import {NativeBaseProvider} from 'native-base';
+import Mapbox from '@rnmapbox/maps';
+
+import 'terraso-mobile-client/translations';
+import 'terraso-mobile-client/config';
 import {theme} from 'terraso-mobile-client/theme';
 import {LoginProvider} from 'terraso-mobile-client/context/LoginContext';
-import {AppScaffold} from 'terraso-mobile-client/screens/AppScaffold';
-import 'terraso-mobile-client/translations';
-import {checkAndroidPermissions} from 'terraso-mobile-client/native';
-import {PermissionsAndroid} from 'react-native';
-import {Provider} from 'react-redux';
-import 'terraso-mobile-client/config';
+import {RootNavigator} from 'terraso-mobile-client/navigation/RootNavigator';
 import {createStore} from 'terraso-mobile-client/model/store';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
-import {LogBox} from 'react-native';
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 LogBox.ignoreLogs([
@@ -49,19 +49,20 @@ LogBox.ignoreLogs([
 
 function App(): JSX.Element {
   const store = useMemo(createStore, []);
+
   useEffect(() =>
     checkAndroidPermissions(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     ),
   );
+
   return (
-    // eslint-disable-next-line react-native/no-inline-styles
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={style}>
       <Provider store={store}>
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
             <LoginProvider>
-              <AppScaffold />
+              <RootNavigator />
             </LoginProvider>
           </NavigationContainer>
         </NativeBaseProvider>
@@ -69,5 +70,7 @@ function App(): JSX.Element {
     </GestureHandlerRootView>
   );
 }
+
+const style = {flex: 1};
 
 export default App;

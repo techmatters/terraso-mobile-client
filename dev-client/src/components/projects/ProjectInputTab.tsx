@@ -33,12 +33,12 @@ import {
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
-import {Modal} from 'terraso-mobile-client/components/common/Modal';
+import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {AddIntervalModal} from 'terraso-mobile-client/components/dataInputs/AddIntervalModal';
 import {useMemo, useCallback} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'react-native';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 export const ProjectInputTab = ({

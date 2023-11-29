@@ -31,7 +31,7 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 

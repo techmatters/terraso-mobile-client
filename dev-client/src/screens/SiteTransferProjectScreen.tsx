@@ -18,27 +18,24 @@
 import {Box, Fab, FlatList, Text} from 'native-base';
 import {Accordion} from 'terraso-mobile-client/components/common/Accordion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
-import {
-  AppBar,
-  ScreenScaffold,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
 import {useTextSearch} from 'terraso-mobile-client/components/common/search/search.hooks';
 import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import CheckboxGroup from 'terraso-mobile-client/components/common/CheckboxGroup';
 import {transferSites} from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from './useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {removeKeys} from 'terraso-mobile-client/util';
 import {ListHeader} from 'terraso-mobile-client/components/sites/ListHeader';
-
-type Props = {projectId: string};
-export type HeaderProps = {query: string; setQuery: (query: string) => void};
 
 const UNAFFILIATED = {
   projectId: Symbol('unaffiliated'),
   projectName: '',
 };
+
+type Props = {projectId: string};
 
 export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();

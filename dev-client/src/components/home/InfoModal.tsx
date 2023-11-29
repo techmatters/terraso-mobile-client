@@ -1,5 +1,5 @@
 import {forwardRef} from 'react';
-import {useHeaderHeight} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useHeaderHeight} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {Box} from 'native-base';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';

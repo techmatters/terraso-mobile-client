@@ -28,7 +28,7 @@ import {
   IntervalForm,
   IntervalFormInput,
 } from 'terraso-mobile-client/components/dataInputs/IntervalForm';
-import {useModal} from 'terraso-mobile-client/components/common/Modal';
+import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;

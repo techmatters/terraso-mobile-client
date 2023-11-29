@@ -39,7 +39,7 @@ import {
   Icon,
   MaterialCommunityIcons,
 } from 'terraso-mobile-client/components/common/Icons';
-import {RootStackScreenProps} from 'terraso-mobile-client/screens/AppScaffold';
+import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {
   Site,
   deleteSite,

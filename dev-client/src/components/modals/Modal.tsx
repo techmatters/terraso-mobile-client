@@ -21,31 +21,28 @@ import {
   useContext,
   useImperativeHandle,
   useMemo,
-  useRef,
 } from 'react';
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
-  BottomSheetScrollView,
-  BottomSheetModal as GorhomBottomSheetModal,
 } from '@gorhom/bottom-sheet';
-import {useHeaderHeight} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {Pressable, StyleSheet} from 'react-native';
 import {useDisclose, Modal as NativeBaseModal} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 
-type ModalMethods = {
+export type ModalMethods = {
   onClose: () => void;
   onOpen: () => void;
 };
 
-export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
+export const ModalContext = createContext<ModalMethods | undefined>(undefined);
 
-const ModalContext = createContext<ModalMethods | undefined>(undefined);
 export const useModal = () => useContext(ModalContext);
 
-type Props = React.PropsWithChildren<{
+export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
+
+export type Props = React.PropsWithChildren<{
   trigger?: ModalTrigger;
 }>;
 
@@ -79,45 +76,7 @@ export const Modal = forwardRef<ModalMethods, Props>(
   },
 );
 
-export const BottomSheetModal = forwardRef<ModalMethods, Props>(
-  ({children, trigger}, forwardedRef) => {
-    const headerHeight = useHeaderHeight();
-    const ref = useRef<GorhomBottomSheetModal>(null);
-    const methods = useMemo(
-      () => ({
-        onClose: () => ref.current?.dismiss(),
-        onOpen: () => ref.current?.present(),
-      }),
-      [ref],
-    );
-    useImperativeHandle(forwardedRef, () => methods, [methods]);
-
-    return (
-      <>
-        {trigger && (
-          <Pressable onPress={methods.onOpen}>
-            {trigger(methods.onOpen)}
-          </Pressable>
-        )}
-        <GorhomBottomSheetModal
-          ref={ref}
-          handleComponent={null}
-          topInset={headerHeight}
-          backdropComponent={BackdropComponent}
-          enableDynamicSizing>
-          <ModalContext.Provider value={methods}>
-            <BottomSheetScrollView>
-              {children}
-              <CardCloseButton onPress={methods.onClose} />
-            </BottomSheetScrollView>
-          </ModalContext.Provider>
-        </GorhomBottomSheetModal>
-      </>
-    );
-  },
-);
-
-const BackdropComponent = (props: BottomSheetBackdropProps) => (
+export const BackdropComponent = (props: BottomSheetBackdropProps) => (
   <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
 );
 

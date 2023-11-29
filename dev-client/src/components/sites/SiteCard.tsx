@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {Box, Heading, Text, Badge, Row} from 'native-base';
 import {useCallback} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';

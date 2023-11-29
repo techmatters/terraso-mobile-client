@@ -21,6 +21,7 @@ import {useMemo} from 'react';
 
 export const useDefaultTabOptions = (): MaterialTopTabNavigationOptions => {
   const {colors} = useTheme();
+
   return useMemo(
     () => ({
       tabBarScrollEnabled: true,

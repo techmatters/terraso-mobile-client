@@ -22,7 +22,7 @@ import {useTranslation} from 'react-i18next';
 import SiteNote from 'terraso-client-shared/site/siteSlice';
 import {SiteNoteCard} from 'terraso-mobile-client/components/siteNotes/SiteNoteCard';
 import {SiteInstructionsCard} from 'terraso-mobile-client/components/siteNotes/SiteInstructionsCard';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 
 export type SiteNote = {
   id: string;

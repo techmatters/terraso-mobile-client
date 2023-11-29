@@ -16,10 +16,8 @@
  */
 
 import ProjectTabs from 'terraso-mobile-client/components/projects/ProjectTabs';
-import {
-  AppBar,
-  ScreenScaffold,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
 import {useSelector} from 'terraso-mobile-client/model/store';
 
 type Props = {projectId: string};

@@ -26,7 +26,7 @@ import {
 } from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 
 type Props = {
   content: string;

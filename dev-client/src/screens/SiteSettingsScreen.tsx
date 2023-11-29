@@ -30,15 +30,13 @@ import {
   Pressable,
 } from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {useTranslation} from 'react-i18next';
 import {IconLabel} from 'terraso-mobile-client/components/common/RadioBlock';
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
-import {
-  ScreenScaffold,
-  AppBar,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
 
 type Props = {
   siteId: string;

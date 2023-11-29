@@ -16,11 +16,9 @@
  */
 
 import CreateProjectView from 'terraso-mobile-client/components/projects/CreateProjectView';
-import {
-  AppBar,
-  ScreenCloseButton,
-  ScreenScaffold,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/buttons/ScreenCloseButton';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
 
 export const CreateProjectScreen = () => {
   return (

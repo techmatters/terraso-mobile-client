@@ -15,147 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Row, Heading, Column} from 'native-base';
-import {
-  IconButton,
-  IconButtonProps,
-  MaterialCommunityIcons,
-} from 'terraso-mobile-client/components/common/Icons';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
-import {useTranslation} from 'react-i18next';
-import {useRoute} from '@react-navigation/native';
-import {useNavigation} from './useNavigation';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Box, Column} from 'native-base';
+import {useCallback, useState} from 'react';
 import {StatusBar, View, LayoutChangeEvent} from 'react-native';
-import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
-import {signOut} from 'terraso-client-shared/account/accountSlice';
-
-const HeaderHeightContext = createContext<number | undefined>(undefined);
-export const useHeaderHeight = () => useContext(HeaderHeightContext);
-
-const BottomNavIconButton = (props: IconButtonProps & {label: string}) => (
-  <IconButton pb={0} _icon={{color: 'primary.contrast'}} {...props} />
-);
-
-export const AppBarIconButton = (props: IconButtonProps) => (
-  <IconButton size="md" _icon={{color: 'primary.contrast'}} {...props} />
-);
-
-export const ScreenBackButton = ({icon = 'arrow-back'}: {icon?: string}) => {
-  const navigation = useNavigation();
-  const goBack = useCallback(() => navigation.pop(), [navigation]);
-  return <AppBarIconButton name={icon} onPress={goBack} />;
-};
-
-export const ScreenCloseButton = () => <ScreenBackButton icon="close" />;
-
-type AppBarProps = {
-  LeftButton?: React.ReactNode;
-  RightButton?: React.ReactNode;
-  title?: string;
-};
-
-export const AppBar = ({
-  LeftButton = <ScreenBackButton />,
-  RightButton,
-  title,
-}: AppBarProps) => {
-  const {t} = useTranslation();
-  const route = useRoute();
-  const safeAreaTopInset = useSafeAreaInsets().top;
-
-  return (
-    <Row
-      px="8px"
-      py="4px"
-      pt={`${safeAreaTopInset}px`}
-      minHeight="56px"
-      bg="primary.main">
-      <Row flex={1} space="24px" alignItems="center">
-        {LeftButton}
-        <Heading variant="h6" color="primary.contrast">
-          {title ?? t(`screens.${route.name}`)}
-        </Heading>
-      </Row>
-      {RightButton}
-    </Row>
-  );
-};
-
-export const BottomNavigation = () => {
-  const {t} = useTranslation();
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const loggedIn = useSelector(
-    state => state.account.currentUser.data !== null,
-  );
-
-  const onHome = useCallback(
-    () => navigation.navigate('HOME', {}),
-    [navigation],
-  );
-
-  const onProject = useCallback(
-    () => navigation.navigate('PROJECT_LIST'),
-    [navigation],
-  );
-
-  const onLogout = useCallback(() => {
-    dispatch(signOut());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!loggedIn) {
-      navigation.navigate('LOGIN');
-    }
-  }, [loggedIn, navigation]);
-
-  return (
-    <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
-      <BottomNavIconButton
-        name="location-pin"
-        label={t('bottom_navigation.home')}
-        onPress={onHome}
-      />
-      <BottomNavIconButton
-        as={MaterialCommunityIcons}
-        name="briefcase"
-        label={t('bottom_navigation.projects')}
-        onPress={onProject}
-      />
-      <BottomNavIconButton
-        name="settings"
-        label={t('bottom_navigation.settings')}
-      />
-      <ConfirmModal
-        trigger={onOpen => (
-          <BottomNavIconButton
-            name="logout"
-            label={t('bottom_navigation.sign_out')}
-            onPress={onOpen}
-          />
-        )}
-        title={t('logout.confirm_title')}
-        body={t('logout.confirm_body')}
-        actionName={t('logout.confirm_action')}
-        handleConfirm={onLogout}
-      />
-    </Row>
-  );
-};
+import {BottomNavigation} from 'terraso-mobile-client/navigation/BottomNavigation';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
+import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 
 type Props = {
   children: React.ReactNode;
   AppBar?: React.ReactNode;
   BottomNavigation?: React.ReactNode;
 };
+
 export const ScreenScaffold = ({
   children,
   AppBar: PropsAppBar = <AppBar />,

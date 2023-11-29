@@ -39,7 +39,7 @@ import {
   FormCheckbox,
   FormSwitch,
 } from 'terraso-mobile-client/components/common/Form';
-import {useModal} from 'terraso-mobile-client/components/common/Modal';
+import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -50,6 +50,7 @@ type Props = {
   siteId: string;
   depthInterval: DepthInterval;
 };
+
 export const EditIntervalModal = ({siteId, depthInterval}: Props) => {
   const {t} = useTranslation();
   const soilData = useSelector(state => state.soilId.soilData[siteId]);

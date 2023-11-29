@@ -18,7 +18,7 @@
 import {useCallback} from 'react';
 import {Button, Column, Divider, Row, Box} from 'native-base';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {useTranslation} from 'react-i18next';
 import {
   Card,

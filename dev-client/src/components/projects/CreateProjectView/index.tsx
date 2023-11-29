@@ -22,7 +22,7 @@ import Form, {
 } from 'terraso-mobile-client/components/projects/CreateProjectView/Form';
 import {addProject} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch} from 'terraso-mobile-client/model/store';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';

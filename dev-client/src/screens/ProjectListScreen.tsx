@@ -17,13 +17,11 @@
 
 import {useCallback, useMemo} from 'react';
 import {useSelector} from 'terraso-mobile-client/model/store';
-import {
-  AppBar,
-  AppBarIconButton,
-  ScreenScaffold,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {AppBarIconButton} from 'terraso-mobile-client/navigation/buttons/AppBarIconButton';
+import {AppBar} from 'terraso-mobile-client//navigation/AppBar';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from './useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {Box, FlatList, Heading, Link, Text, VStack, Spinner} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import AddButton from 'terraso-mobile-client/components/common/AddButton';

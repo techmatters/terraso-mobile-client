@@ -15,12 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation as useNavigationNative} from '@react-navigation/native';
+import {
+  RootStackParamList,
+  ScreenName,
+} from 'terraso-mobile-client/navigation/types';
 
-export const MainMenuBar = () => (
-  <IconButton name="menu" _icon={{color: 'primary.contrast'}} />
-);
-
-export const MapInfoIcon = () => (
-  <IconButton name="info" _icon={{color: 'primary.contrast'}} />
-);
+export const useNavigation = <Name extends ScreenName = ScreenName>() =>
+  useNavigationNative<NativeStackNavigationProp<RootStackParamList, Name>>();

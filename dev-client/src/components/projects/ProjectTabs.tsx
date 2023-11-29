@@ -26,7 +26,7 @@ import ProjectSettingsTab from 'terraso-mobile-client/components/projects/Projec
 import ProjectSitesTab from 'terraso-mobile-client/components/projects/ProjectSitesTab';
 import {Icon} from 'terraso-mobile-client/components/common/Icons';
 import {Project} from 'terraso-client-shared/project/projectSlice';
-import {useDefaultTabOptions} from 'terraso-mobile-client/screens/TabBar';
+import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/useDefaultTabOptions';
 
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
 

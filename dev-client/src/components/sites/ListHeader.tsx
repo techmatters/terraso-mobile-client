@@ -3,9 +3,10 @@ import {SearchBar} from 'terraso-mobile-client/components/common/search/SearchBa
 import {useTranslation} from 'react-i18next';
 import {memo} from 'react';
 import {FormTooltip} from 'terraso-mobile-client/components/common/Form';
-import {HeaderProps} from 'terraso-mobile-client/screens/SiteTransferProjectScreen';
 
-export const ListHeader = memo(({query, setQuery}: HeaderProps) => {
+type Props = {query: string; setQuery: (query: string) => void};
+
+export const ListHeader = memo(({query, setQuery}: Props) => {
   const {t} = useTranslation();
   return (
     <VStack space="10px" px="12px" pt="5%">

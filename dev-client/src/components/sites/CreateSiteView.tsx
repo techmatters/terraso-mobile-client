@@ -18,7 +18,7 @@
 import {ScrollView} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/components/sites/validation';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from 'terraso-mobile-client/model/store';

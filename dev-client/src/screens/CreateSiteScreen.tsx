@@ -24,11 +24,9 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
-import {
-  AppBar,
-  ScreenCloseButton,
-  ScreenScaffold,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/buttons/ScreenCloseButton';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
 
 type Props =
   | {

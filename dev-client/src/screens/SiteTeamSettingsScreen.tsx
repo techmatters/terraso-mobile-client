@@ -17,14 +17,13 @@
 
 import {useSelector} from 'terraso-mobile-client/model/store';
 import {Text} from 'native-base';
-import {
-  ScreenScaffold,
-  AppBar,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
 
 type Props = {
   siteId: string;
 };
+
 export const SiteTeamSettingsScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
   return (

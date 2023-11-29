@@ -30,7 +30,7 @@ import {
   updateProject,
   archiveProject,
 } from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 import {EditForm} from 'terraso-mobile-client/components/projects/CreateProjectView/Form';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 

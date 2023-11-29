@@ -22,7 +22,7 @@ import {Card} from 'terraso-mobile-client/components/common/Card';
 import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 import {SiteNote} from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from 'terraso-mobile-client/screens/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
 
 type Props = {
   note: SiteNote;
