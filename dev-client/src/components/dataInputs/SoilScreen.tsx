@@ -42,20 +42,31 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     const projectId = state.site.sites[siteId].projectId;
     return projectId ? state.soilId.projectSettings[projectId] : undefined;
   });
+
+  const projectDepthIntervals = useMemo(() => {
+    return project?.depthIntervals ?? [];
+  }, [project]);
+
+  const soilDataDepthIntervals = useMemo(() => {
+    return soilData?.depthIntervals ?? [];
+  }, [soilData]);
+
+  const validSoilDataDepthIntervals = useMemo(() => {
+    return soilDataDepthIntervals.filter(({depthInterval: a}) =>
+      projectDepthIntervals.every(
+        ({depthInterval: b}) => a.end <= b.start || a.start >= b.end,
+      ),
+    );
+  }, [projectDepthIntervals, soilDataDepthIntervals]);
+
   const allIntervals = useMemo(
     () =>
-      (project?.depthIntervals ?? [])
-        .concat(
-          soilData?.depthIntervals?.filter(
-            ({depthInterval: a}) =>
-              project?.depthIntervals?.every(
-                ({depthInterval: b}) => a.end <= b.start || a.start >= b.end,
-              ),
-          ) ?? [],
-        )
+      projectDepthIntervals
+        .concat(validSoilDataDepthIntervals)
         .sort((a, b) => a.depthInterval.start - b.depthInterval.start),
-    [project?.depthIntervals, soilData?.depthIntervals],
+    [projectDepthIntervals, validSoilDataDepthIntervals],
   );
+
   const existingIntervals = useMemo(
     () => allIntervals.map(interval => interval.depthInterval),
     [allIntervals],
