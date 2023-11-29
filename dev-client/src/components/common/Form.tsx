@@ -65,19 +65,19 @@ export const useFieldContext = <
         formikContext.setFieldValue(name, value);
       }
     },
-    [formikContext.values, name],
+    [formikContext, name],
   );
 
   return name === undefined
     ? fieldContext!
     : formikContext === undefined
-    ? {}
-    : {
-        name,
-        value: formikContext.values[name] as Value,
-        onChange,
-        onBlur: formikContext.handleBlur(name) as unknown as () => void,
-      };
+      ? {}
+      : {
+          name,
+          value: formikContext.values[name] as Value,
+          onChange,
+          onBlur: formikContext.handleBlur(name) as unknown as () => void,
+        };
 };
 
 type FormFieldProps<Name extends string> = React.PropsWithChildren<{
@@ -187,7 +187,7 @@ export const FormSwitch = memo(
 );
 
 type CheckboxProps = WrapperProps &
-  Omit<React.ComponentProps<typeof Checkbox>, 'value'> & {value?: boolean};
+  Omit<React.ComponentProps<typeof CheckBox>, 'value'> & {value?: boolean};
 export const FormCheckbox = memo(
   ({value: isChecked, ...props}: CheckboxProps) => {
     const {value, onChange} = useFieldContext<boolean>(props.name);
