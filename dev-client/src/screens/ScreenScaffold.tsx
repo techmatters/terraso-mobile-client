@@ -177,7 +177,7 @@ export const ScreenScaffold = ({
         translucent
         backgroundColor={'#00000000'}
       />
-      <Column flex={1}>
+      <Column backgroundColor={colors.white} flex={1}>
         <View onLayout={onLayout}>{PropsAppBar}</View>
         <HeaderHeightContext.Provider value={headerHeight ?? 0}>
           <Box flex={1}>{children}</Box>

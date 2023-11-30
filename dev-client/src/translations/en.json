@@ -156,6 +156,13 @@
         "screen_title": "Site Instructions",
         "description": "This content will display at the top of the Notes section of each site in this project.",
         "add_label": "Note"
+      },
+      "depth_intervals": {
+        "title": "Soil Pit Depth Intervals",
+        "landPks": "LandPKS",
+        "nrcs": "NRCS",
+        "custom": "Custom…",
+        "none": "None specified"
       }
     },
     "team": {
