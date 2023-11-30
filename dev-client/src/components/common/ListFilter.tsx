@@ -44,7 +44,7 @@ import {NullableSelect} from 'terraso-mobile-client/components/common/NullableSe
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;
-  key: keyof Item;
+  key: keyof Item | string[];
 };
 
 export type SortingOption<Item> = {
@@ -101,7 +101,10 @@ type ProviderProps<Item, Filters extends string> = {
   filters: {[Property in Filters]: FilterFn<Item>};
 } & React.PropsWithChildren;
 
-export const ListFilterProvider = <Item, Filters extends string>({
+export const ListFilterProvider = <
+  Item extends object,
+  Filters extends string,
+>({
   items,
   filters,
   children,
@@ -130,6 +133,35 @@ export const ListFilterProvider = <Item, Filters extends string>({
     [setNeedsUpdate],
   );
 
+  const getNestedObjectValues = (item: any, keyPath: string): string[] => {
+    const keys = keyPath.split('.');
+    let targetProperty = keys.pop();
+
+    if (typeof targetProperty !== 'string' || keys.length === 0) {
+      return [];
+    }
+
+    let currentObject = item;
+    for (const key of keys) {
+      if (currentObject && typeof currentObject === 'object') {
+        currentObject = currentObject[key];
+      } else {
+        return [];
+      }
+    }
+
+    if (typeof currentObject !== 'object' || currentObject === null) {
+      return [];
+    }
+
+    return Object.values(currentObject as Record<string, any>)
+      .filter(subItem => subItem && typeof subItem === 'object')
+      .map(subItem => {
+        return subItem[targetProperty as keyof typeof subItem];
+      })
+      .filter(value => value != null);
+  };
+
   const itemsWithFiltersApplied = useMemo(() => {
     const res: Item[] = Object.entries<FilterFn<Item>>(filters).reduce(
       (x, [name, fn]) => {
@@ -149,14 +181,20 @@ export const ListFilterProvider = <Item, Filters extends string>({
                 fn.lookup.record![String(val[fn.lookup.key as keyof Item])];
             } else {
               getFilterVal = (val: Item) => {
-                let itemVal = val[fn.lookup.key];
-                if (
-                  typeof itemVal === 'undefined' ||
-                  typeof itemVal === 'string'
-                ) {
-                  return itemVal;
-                }
-                return String(val[fn.lookup.key]);
+                const keys = Array.isArray(fn.lookup.key)
+                  ? fn.lookup.key
+                  : [fn.lookup.key];
+                return keys
+                  .map(key => {
+                    if (typeof key === 'string' && key.includes('.')) {
+                      const itemVal = getNestedObjectValues(val, key);
+                      return String(itemVal);
+                    } else {
+                      let itemVal = val[key as keyof Item];
+                      return String(itemVal);
+                    }
+                  })
+                  .join(' ');
               };
             }
             return x.filter(item => fn.f(processed)(getFilterVal(item)));
@@ -177,11 +215,14 @@ export const ListFilterProvider = <Item, Filters extends string>({
             const {key, record: lookupRecord, order} = options;
             const getValue = (a: Item): string | number | undefined => {
               let val;
-              if (lookupRecord === undefined) {
-                val = a[key];
-              } else {
-                val = lookupRecord[String(a[key])];
+              if (typeof key === 'string' && key in a) {
+                if (lookupRecord === undefined) {
+                  val = a[key as keyof Item];
+                } else {
+                  val = lookupRecord[String(a[key as keyof Item])];
+                }
               }
+
               if (
                 val === undefined ||
                 typeof val === 'string' ||
