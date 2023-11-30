@@ -227,7 +227,7 @@ export const HomeScreen = ({site}: Props) => {
             f: searchText,
             preprocess: normalizeText,
             lookup: {
-              key: 'name',
+              key: ['name', 'notes.content'],
             },
             hide: true,
           },
