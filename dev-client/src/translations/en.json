@@ -404,7 +404,7 @@
       "end_label": "To ({{unit}})",
       "update_modal": {
         "title": "Change depth?",
-        "body": "Data that has been entered at this depth will be deleted. This action can not be undone.",
+        "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
         "action": "Change"
       }
     }
