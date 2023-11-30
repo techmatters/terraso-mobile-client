@@ -37,3 +37,5 @@ export type TabStackParamList = {
     projectId: string;
   };
 };
+
+export const DepthPresets = ['landPks', 'nrcs', 'custom', 'none'];
