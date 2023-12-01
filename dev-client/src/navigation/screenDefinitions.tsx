@@ -17,20 +17,20 @@
 
 import React from 'react';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
-import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen';
+import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
-import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen';
-import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen';
-import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen';
-import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen';
+import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
+import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
+import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
 import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/AddSiteNoteScreen';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/EditSiteNoteScreen';
 import {ReadNoteScreen} from 'terraso-mobile-client/screens/ReadNoteScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
 import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationDashboardScreen';
-import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen';
+import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
-import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen';
+import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
 import {RootStack, ScreenName} from 'terraso-mobile-client/navigation/types';
 

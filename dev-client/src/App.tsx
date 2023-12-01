@@ -25,7 +25,7 @@
 // react-native-get-random-values needed for uuid - https://github.com/uuidjs/uuid#react-native--expo
 import 'react-native-get-random-values';
 
-import {useEffect, useMemo} from 'react';
+import {useEffect} from 'react';
 import {PermissionsAndroid, LogBox} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
@@ -36,9 +36,8 @@ import Mapbox from '@rnmapbox/maps';
 import 'terraso-mobile-client/translations';
 import 'terraso-mobile-client/config';
 import {theme} from 'terraso-mobile-client/theme';
-import {LoginProvider} from 'terraso-mobile-client/context/LoginContext';
-import {RootNavigator} from 'terraso-mobile-client/navigation/RootNavigator';
-import {createStore} from 'terraso-mobile-client/model/store';
+import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
+import {createStore} from 'terraso-mobile-client/store';
 import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 
@@ -61,9 +60,7 @@ function App(): JSX.Element {
       <Provider store={store}>
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
-            <LoginProvider>
-              <RootNavigator />
-            </LoginProvider>
+            <RootNavigator />
           </NavigationContainer>
         </NativeBaseProvider>
       </Provider>

@@ -15,10 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import ProjectTabs from 'terraso-mobile-client/components/projects/ProjectTabs';
+import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
-import {useSelector} from 'terraso-mobile-client/model/store';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {projectId: string};
 
@@ -27,7 +27,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} title={project?.name} />}>
-      <ProjectTabs project={project} />
+      <ProjectTabNavigator project={project} />
     </ScreenScaffold>
   );
 };

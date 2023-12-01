@@ -16,7 +16,7 @@
  */
 
 import {HStack, Image, Select, Text, VStack} from 'native-base';
-import {Icon, IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {formatName} from 'terraso-mobile-client/util';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useTranslation} from 'react-i18next';

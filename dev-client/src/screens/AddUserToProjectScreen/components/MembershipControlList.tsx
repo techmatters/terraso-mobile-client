@@ -18,7 +18,7 @@
 import {Divider, FlatList} from 'native-base';
 
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
-import {UserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/UserDisplay';
+import {UserDisplay} from '#screens/AddUserToProjectScreen/components/UserDisplay';
 
 export type UserWithRole = {user: UserFields; role: UserRole};
 

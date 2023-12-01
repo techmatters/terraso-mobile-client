@@ -18,8 +18,8 @@
 import {Box, Column} from 'native-base';
 import {useCallback, useState} from 'react';
 import {StatusBar, View, LayoutChangeEvent} from 'react-native';
-import {BottomNavigation} from 'terraso-mobile-client/navigation/BottomNavigation';
-import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
+import {BottomNavigator} from 'terraso-mobile-client/navigation/navigators/BottomNavigator';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 
 type Props = {
@@ -31,7 +31,7 @@ type Props = {
 export const ScreenScaffold = ({
   children,
   AppBar: PropsAppBar = <AppBar />,
-  BottomNavigation: PropsBottomNavigation = <BottomNavigation />,
+  BottomNavigation: PropsBottomNavigation = <BottomNavigator />,
 }: Props) => {
   const [headerHeight, setHeaderHeight] = useState<number | undefined>(
     undefined,

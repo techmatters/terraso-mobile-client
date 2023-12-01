@@ -15,10 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useSelector} from 'terraso-mobile-client/model/store';
+import {useSelector} from 'terraso-mobile-client/store';
 import {Text} from 'native-base';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 
 type Props = {
   siteId: string;

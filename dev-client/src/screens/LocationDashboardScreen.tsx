@@ -15,17 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
-import {useSelector} from 'terraso-mobile-client/model/store';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/buttons/ScreenCloseButton';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/buttons/AppBarIconButton';
-import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
-import {LocationDashboardView} from 'terraso-mobile-client/components/sites/LocationDashboardView';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
+import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
-import {LocationDashboardTabs} from 'terraso-mobile-client/navigation/LocationDashboardTabs';
+import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
 
 type Props = {siteId?: string; coords?: Coords};
 
@@ -65,9 +65,9 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
         />
       }>
       {siteId ? (
-        <LocationDashboardTabs siteId={siteId} />
+        <LocationDashboardTabNavigator siteId={siteId} />
       ) : (
-        <LocationDashboardView siteId={siteId} coords={coords} />
+        <SiteScreen siteId={siteId} coords={coords} />
       )}
     </ScreenScaffold>
   );

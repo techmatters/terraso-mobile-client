@@ -21,17 +21,17 @@ import {
   deleteUserFromProject,
   updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
-import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/buttons/ScreenCloseButton';
-import {AppBar} from 'terraso-mobile-client/navigation/AppBar';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {formatName} from 'terraso-mobile-client/util';
-import RadioBlock from 'terraso-mobile-client/components/common/RadioBlock';
+import RadioBlock from 'terraso-mobile-client/components/RadioBlock';
 import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Icon} from 'terraso-mobile-client/components/common/Icons';
-import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
-import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
+import {Icon} from 'terraso-mobile-client/components/Icons';
+import ConfirmModal from 'terraso-mobile-client/components/ConfirmModal';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
   projectId: string;

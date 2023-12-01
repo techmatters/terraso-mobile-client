@@ -17,9 +17,9 @@
 
 import {useCallback, useState, useRef} from 'react';
 import {Heading, Box, VStack} from 'native-base';
-import {useDispatch} from 'terraso-mobile-client/model/store';
-import {SiteNoteForm} from 'terraso-mobile-client/components/siteNotes/SiteNoteForm';
-import {ScreenFormWrapper} from 'terraso-mobile-client/components/common/ScreenFormWrapper';
+import {useDispatch} from 'terraso-mobile-client/store';
+import {SiteNoteForm} from 'terraso-mobile-client/components/SiteNoteForm';
+import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {useTranslation} from 'react-i18next';
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
@@ -27,7 +27,7 @@ import {
   deleteSiteNote,
   SiteNote,
 } from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/useNavigation';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Keyboard} from 'react-native';
 
 type Props = {
