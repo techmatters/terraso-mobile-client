@@ -21,3 +21,16 @@ declare module '*.svg' {
   const content: React.FC<SvgProps>;
   export default content;
 }
+
+declare global {
+  function btoa(input: string): string;
+  function atob(input: string): string;
+}
+
+declare var process: {
+  env: {
+    NODE_ENV: 'development' | 'production' | 'test';
+  };
+};
+
+declare var global: global;
