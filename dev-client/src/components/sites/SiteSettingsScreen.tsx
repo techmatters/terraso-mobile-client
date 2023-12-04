@@ -137,9 +137,9 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
               {t('site.dashboard.delete_button').toUpperCase()}
             </Button>
           )}
-          title={t('dashboard.delete_site_modal.title')}
-          body={t('dashboard.delete_site_modal.body', {siteName: site.name})}
-          actionName={t('dashboard.delete_site_modal.action_name')}
+          title={t('site.dashboard.delete_site_modal.title')}
+          body={t('site.dashboard.delete_site_modal.body', {siteName: site.name})}
+          actionName={t('site.dashboard.delete_site_modal.action_name')}
           handleConfirm={onDelete}
         />
       </Column>
