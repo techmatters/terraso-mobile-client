@@ -6,6 +6,7 @@
     "android": "react-native run-android --list-devices",
     "ios": "react-native run-ios",
     "lint": "eslint .",
+    "lint-js": "npm run lint",
     "format": "eslint . --fix",
     "format-js": "npm run format",
     "start": "react-native start",
