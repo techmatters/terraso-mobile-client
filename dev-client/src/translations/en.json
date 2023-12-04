@@ -418,7 +418,12 @@
       "label_placeholder": "Label",
       "apply_to_all_label": "Apply to all to intervals",
       "start_label": "From ({{unit}})",
-      "end_label": "To ({{unit}})"
+      "end_label": "To ({{unit}})",
+      "update_modal": {
+        "title": "Change depth?",
+        "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
+        "action": "Change"
+      }
     }
   }
 }
