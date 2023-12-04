@@ -71,13 +71,13 @@ export const useFieldContext = <
   return name === undefined
     ? fieldContext!
     : formikContext === undefined
-      ? {}
-      : {
-          name,
-          value: formikContext.values[name] as Value,
-          onChange,
-          onBlur: formikContext.handleBlur(name) as unknown as () => void,
-        };
+    ? {}
+    : {
+        name,
+        value: formikContext.values[name] as Value,
+        onChange,
+        onBlur: formikContext.handleBlur(name) as unknown as () => void,
+      };
 };
 
 type FormFieldProps<Name extends string> = React.PropsWithChildren<{
