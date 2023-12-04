@@ -39,6 +39,7 @@ import {
   ScreenScaffold,
   AppBar,
 } from 'terraso-mobile-client/screens/ScreenScaffold';
+import ConfirmModal from 'terraso-mobile-client/components/common/ConfirmModal';
 
 type Props = {
   siteId: string;
@@ -125,14 +126,24 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             {t('site.dashboard.archive_button_help_text')}
           </FormControl.HelperText>
         </FormControl>
-        <Button
-          pl={0}
-          variant="link"
-          _text={{color: 'error.main'}}
-          startIcon={<Icon color="error.main" name="delete-forever" />}
-          onPress={onDelete}>
-          {t('site.dashboard.delete_button').toUpperCase()}
-        </Button>
+        <ConfirmModal
+          trigger={onOpen => (
+            <Button
+              pl={0}
+              variant="link"
+              _text={{color: 'error.main'}}
+              startIcon={<Icon color="error.main" name="delete-forever" />}
+              onPress={onOpen}>
+              {t('site.dashboard.delete_button').toUpperCase()}
+            </Button>
+          )}
+          title={t('site.dashboard.delete_site_modal.title')}
+          body={t('site.dashboard.delete_site_modal.body', {
+            siteName: site.name,
+          })}
+          actionName={t('site.dashboard.delete_site_modal.action_name')}
+          handleConfirm={onDelete}
+        />
       </Column>
       <Fab label={t('general.save_fab')} onPress={onSave} />
     </ScreenScaffold>
