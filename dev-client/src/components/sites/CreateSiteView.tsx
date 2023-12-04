@@ -100,7 +100,9 @@ const CreateSiteForm = ({
           <FormField name="coords">
             <FormLabel>{t('site.create.location_label')}</FormLabel>
             <Text>
-              {t('site.create.location_accuracy', {accuracyM: accuracyM})}
+              {t('site.create.location_accuracy', {
+                accuracyM: accuracyM?.toFixed(5),
+              })}
             </Text>
             <FormInput keyboardType="decimal-pad" />
             <FormControl.Label variant="subtle">
