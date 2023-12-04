@@ -35,7 +35,8 @@ import {
 } from 'terraso-mobile-client/components/common/ListFilter';
 import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
 import ProjectList from 'terraso-mobile-client/components/projects/ProjectList';
-import {equals, normalizeText, searchText} from 'terraso-mobile-client/util';
+import {equals, searchText} from 'terraso-mobile-client/util';
+import {normalizeText} from 'terraso-client-shared/utils';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
@@ -55,7 +56,7 @@ export const ProjectListScreen = () => {
   );
   const isLoadingData = useSelector(state => state.soilId.loading);
   const SORT_OPTIONS = Object.fromEntries(
-    ['nameAsc', 'nameDesc'].map(name => [name, t('projects.search.' + name)]),
+    ['nameAsc', 'nameDesc'].map(name => [name, t(`projects.search.${name}`)]),
   );
 
   return (
@@ -140,6 +141,7 @@ export const ProjectListScreen = () => {
                 name="sort"
                 label={t('projects.sort_label')}
                 options={SORT_OPTIONS}
+                nullableOption={t('general.filter.no_sort')}
               />
               <SelectFilter
                 name="role"
@@ -150,6 +152,7 @@ export const ProjectListScreen = () => {
                   contributor: t('general.role.contributor'),
                   viewer: t('general.role.viewer'),
                 }}
+                nullableOption={t('general.filter.no_role')}
               />
             </ListFilterModal>
             <ProjectList />

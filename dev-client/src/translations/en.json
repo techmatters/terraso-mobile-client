@@ -156,6 +156,13 @@
         "screen_title": "Site Instructions",
         "description": "This content will display at the top of the Notes section of each site in this project.",
         "add_label": "Note"
+      },
+      "depth_intervals": {
+        "title": "Soil Pit Depth Intervals",
+        "landPks": "LandPKS",
+        "nrcs": "NRCS",
+        "custom": "Custom…",
+        "none": "None specified"
       }
     },
     "team": {
@@ -288,6 +295,11 @@
     "delete_fab": "Delete",
     "done_fab": "Done",
     "close_fab": "Close",
+    "filter": {
+      "no_sort": "None",
+      "no_role": "None"
+    },
+    "nullable_option": "None",
     "info": {
       "privacy_title": "LandPKS Data Privacy",
       "privacy_item1": "<0>The data visible in public sites</0> includes all data entered into the LandPKS mobile app except for personally identifiable information (PII).",

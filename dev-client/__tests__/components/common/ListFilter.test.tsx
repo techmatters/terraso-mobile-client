@@ -18,6 +18,7 @@
 import {screen, fireEvent} from '@testing-library/react-native';
 import {customRender as render} from '@testing/utils';
 import {FlatList, Text} from 'native-base';
+import {normalizeText} from 'terraso-client-shared/utils';
 import {
   SelectFilter,
   TextInputFilter,
@@ -25,7 +26,7 @@ import {
   ListFilterProvider,
   ListFilterModal,
 } from 'terraso-mobile-client/components/common/ListFilter';
-import {normalizeText, searchText} from 'terraso-mobile-client/util';
+import {searchText} from 'terraso-mobile-client/util';
 
 const activateTextInputFilter = (filterText: string) => {
   const input = screen.getByPlaceholderText('Search');
@@ -158,6 +159,7 @@ const Test = ({items}: {items?: TestObject[]}) => {
             }}
             placeholder="Project role"
             label="Role"
+            nullableOption="No project"
           />
           <SelectFilter
             key="privacy"
@@ -165,6 +167,7 @@ const Test = ({items}: {items?: TestObject[]}) => {
             label="Privacy"
             placeholder="Privacy"
             options={{private: 'Private', public: 'Public'}}
+            nullableOption="No filter"
           />
           <SelectFilter
             key="sort"
@@ -172,6 +175,7 @@ const Test = ({items}: {items?: TestObject[]}) => {
             label="Sort"
             placeholder="Sort"
             options={{nameRev: 'Name (reverse alphabetical)'}}
+            nullableOption="No sorting"
           />
         </ListFilterModal>
         <SampleList />
@@ -286,4 +290,13 @@ test('Sort items by reverse', () => {
   const list = screen.queryByTestId('LIST');
   expect(list).not.toBeNull();
   expect(list).toHaveTextContent('CarlosCarlaBobAlice');
+});
+
+test('Reset filter to None shows all items', () => {
+  render(<Test />);
+  activateSelectFilter('Project role', 'Manager');
+  assertNotNull(0);
+  assertNull(1, 2, 3);
+  activateSelectFilter('Project role', 'No project');
+  assertNotNull(0, 1, 2, 3);
 });

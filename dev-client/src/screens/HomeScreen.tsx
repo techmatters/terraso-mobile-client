@@ -58,8 +58,9 @@ import {
   ListFilterProvider,
   SortingOption,
 } from 'terraso-mobile-client/components/common/ListFilter';
-import {equals, normalizeText, searchText} from 'terraso-mobile-client/util';
+import {equals, searchText} from 'terraso-mobile-client/util';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {normalizeText} from 'terraso-client-shared/utils';
 
 export type CalloutState =
   | {
@@ -226,7 +227,7 @@ export const HomeScreen = ({site}: Props) => {
             f: searchText,
             preprocess: normalizeText,
             lookup: {
-              key: 'name',
+              key: ['name', 'notes.content'],
             },
             hide: true,
           },

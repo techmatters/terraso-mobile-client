@@ -15,27 +15,32 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-export const enum TabRoutes {
-  INPUTS = 'Inputs',
-  TEAM = 'Team',
-  SETTINGS = 'Settings',
-  SITES = 'Sites',
-}
+import {Select} from 'native-base';
+import {useCallback} from 'react';
 
-export type TabStackParamList = {
-  [TabRoutes.INPUTS]: {
-    projectId: string;
-  };
-  [TabRoutes.TEAM]: {
-    projectId: string;
-  };
-  [TabRoutes.SETTINGS]: {
-    projectId: string;
-    downloadLink: string;
-  };
-  [TabRoutes.SITES]: {
-    projectId: string;
-  };
+type Props = {
+  nullableOption: string;
+  onValueChange: (newValue: string | undefined) => void;
+} & Omit<React.ComponentProps<typeof Select>, 'onValueChange'> &
+  React.PropsWithChildren;
+
+export const NullableSelect = ({
+  nullableOption,
+  children,
+  onValueChange,
+  ...selectProps
+}: Props) => {
+  const changeWrapper = useCallback(
+    (newValue: string) => {
+      newValue === '' ? onValueChange(undefined) : onValueChange(newValue);
+    },
+    [onValueChange],
+  );
+
+  return (
+    <Select {...selectProps} onValueChange={changeWrapper}>
+      <Select.Item value="" label={nullableOption} />
+      {children}
+    </Select>
+  );
 };
-
-export const DepthPresets = ['landPks', 'nrcs', 'custom', 'none'];
