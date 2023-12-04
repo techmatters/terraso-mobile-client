@@ -60,7 +60,7 @@
     "@types/base-64": "^1.0.2",
     "@types/haversine": "^1.1.8",
     "@types/jest": "^29.5.10",
-    "@types/react": "^18.2.36",
+    "@types/react": "^18.2.41",
     "@types/react-native-vector-icons": "^6.4.16",
     "@types/uuid": "^9.0.6",
     "babel-jest": "^29.7.0",
