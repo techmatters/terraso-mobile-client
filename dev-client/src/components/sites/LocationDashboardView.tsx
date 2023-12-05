@@ -127,7 +127,7 @@ export const LocationDashboardView = ({siteId, coords}: Props) => {
           {project && (
             <LocationDetail
               label={t('site.dashboard.privacy')}
-              value={t(`privacy.${project.privacy}.title`)}
+              value={t(`privacy.${project.privacy.toLowerCase()}.title`)}
             />
           )}
           {site && !project && (
