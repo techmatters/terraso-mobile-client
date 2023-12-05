@@ -8,6 +8,12 @@ body:
     placeholder: 1.0.0 (40)
   validations:
     required: true
+- type: input
+  id: email
+  attributes:
+    label: Account
+    placeholder: jdoe@example.com
+    description: Provide an email address only if the problem is account-related/account-specific.
 - type: checkboxes
   id: platform
   attributes:
