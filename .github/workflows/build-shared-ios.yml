@@ -39,6 +39,8 @@ jobs:
   ios-build:
     name: iOS Build
     runs-on: macos-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
     steps:
       - name: Check out git repository

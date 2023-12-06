@@ -33,6 +33,8 @@ jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
     steps:
       - name: Check out git repository
