@@ -22,6 +22,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@rnmapbox/maps": "^10.0.15",
+    "@sentry/react-native": "^5.14.1",
     "base-64": "^1.0.0",
     "formik": "^2.4.5",
     "haversine": "^1.1.1",

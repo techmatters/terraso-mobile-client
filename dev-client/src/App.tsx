@@ -41,6 +41,11 @@ import {createStore} from 'terraso-mobile-client/store';
 import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://d63f01e62cdd4baf3786ebba823f261d@o4506299756642304.ingest.sentry.io/4506299761623040',
+});
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 LogBox.ignoreLogs([
