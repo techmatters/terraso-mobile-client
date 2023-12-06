@@ -177,6 +177,9 @@ export const theme = extendTheme({
         bottom: '24px',
         shadow: 6,
       },
+      defaultProps: {
+        _text: {textTransform: 'uppercase'},
+      },
     },
     Select: {
       baseStyle: {

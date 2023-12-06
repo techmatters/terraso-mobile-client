@@ -277,6 +277,7 @@
     "users": "users",
     "save": "Save",
     "save_fab": "SAVE",
+    "last_modified_by": "last modified {{user}}, {{date}}",
     "select_all": "Select All",
     "you": "you",
     "details": "Details",
@@ -427,17 +428,23 @@
   },
   "slope": {
     "title": "Slope",
-    "steepness": "Steepness",
-    "steepness_labels": {
-      "FLAT": "Flat 0-2%",
-      "GENTLE": "Gentle 1-15%",
-      "MODERATE": "Moderate 5-10%",
-      "ROLLING": "Rolling 10-15%",
-      "HILLY": "Hilly 15-30%",
-      "STEEP": "Steep 30-50%",
-      "MODERATELY_STEEP": "Moderately Steep 50-60%",
-      "VERY_STEEP": "Very Steep 60-100%",
-      "STEEPEST": "Steepest 100%+"
+    "steepness": {
+      "short_title": "Steepness",
+      "long_title": "Slope Steepness",
+      "description": "Enter steepness manually, using the slope meter, or selecting from the images below.",
+      "manual_label": "Manual",
+      "slope_meter": "Slope Meter",
+      "labels": {
+        "FLAT": "Flat 0-2%",
+        "GENTLE": "Gentle 1-15%",
+        "MODERATE": "Moderate 5-10%",
+        "ROLLING": "Rolling 10-15%",
+        "HILLY": "Hilly 15-30%",
+        "STEEP": "Steep 30-50%",
+        "MODERATELY_STEEP": "Moderately Steep 50-60%",
+        "VERY_STEEP": "Very Steep 60-100%",
+        "STEEPEST": "Steepest 100%+"
+      }
     },
     "shape_labels": {
       "CONCAVE": "Concave",

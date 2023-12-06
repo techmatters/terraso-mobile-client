@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {TFunction} from 'i18next';
 import {Box, Column, Heading, Row, Text} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -23,6 +24,7 @@ import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {SoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 type DataSummaryCardProps = {
   complete: boolean;
@@ -52,29 +54,29 @@ const DataSummaryCard = ({
   </Pressable>
 );
 
-export const SlopeScreen = ({siteId}: {siteId: string}) => {
-  const {t} = useTranslation();
-  const {
-    slopeSteepnessDegree,
-    slopeSteepnessPercent,
-    slopeSteepnessSelect,
-    downSlope,
-    crossSlope,
-  } = useSelector(state => state.soilId.soilData[siteId]);
-  const navigation = useNavigation();
-
-  const steepnessValue = slopeSteepnessSelect
-    ? t(`slope.steepness_labels.${slopeSteepnessSelect}`)
+export const renderSlopeValue = (
+  t: TFunction,
+  {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
+) =>
+  slopeSteepnessSelect
+    ? t(`slope.steepness.labels.${slopeSteepnessSelect}`)
     : slopeSteepnessPercent
-      ? t(`${slopeSteepnessPercent.toFixed(0)}%`)
+      ? `${slopeSteepnessPercent.toFixed(0)}%`
       : slopeSteepnessDegree
-        ? t(`${slopeSteepnessDegree}°`)
+        ? `${slopeSteepnessDegree}°`
         : undefined;
 
+export const SlopeScreen = ({siteId}: {siteId: string}) => {
+  const {t} = useTranslation();
+  const soilData = useSelector(state => state.soilId.soilData[siteId]);
+  const navigation = useNavigation();
+
+  const steepnessValue = renderSlopeValue(t, soilData);
+
   const shapeValue =
-    downSlope && crossSlope
-      ? `${t(`slope.shape_labels.${downSlope}`)} ${t(
-          `slope.shape_labels.${crossSlope}`,
+    soilData.downSlope && soilData.crossSlope
+      ? `${t(`slope.shape_labels.${soilData.downSlope}`)} ${t(
+          `slope.shape_labels.${soilData.crossSlope}`,
         )}`
       : undefined;
 
@@ -98,7 +100,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
       </Row>
       <DataSummaryCard
         complete={steepnessValue !== undefined}
-        label={t('slope.steepness').toUpperCase()}
+        label={t('slope.steepness.short_title').toUpperCase()}
         value={steepnessValue}
         onPress={onSteepness}
       />
