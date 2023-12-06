@@ -26,6 +26,8 @@ on:
         required: false
       MICROSOFT_SIGNATURE_HASH:
         required: false
+      SENTRY_DSN:
+        required: false
 
 jobs:
   android-build:
@@ -49,6 +51,7 @@ jobs:
           echo "MICROSOFT_OAUTH_CLIENT_ID=${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}" >> .env
           echo "MICROSOFT_SIGNATURE_HASH=${{ secrets.MICROSOFT_SIGNATURE_HASH }}" >> .env
           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
