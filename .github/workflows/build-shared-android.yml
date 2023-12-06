@@ -57,7 +57,7 @@ jobs:
           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
           echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
           cp sentry.properties.example sentry.properties
-          echo "auth.token=${{ secrets.SETRY_AUTH_TOKEN }}" >> sentry.properties
+          echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> sentry.properties
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
