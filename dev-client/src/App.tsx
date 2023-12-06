@@ -44,7 +44,7 @@ import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContex
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
-  dsn: 'https://d63f01e62cdd4baf3786ebba823f261d@o4506299756642304.ingest.sentry.io/4506299761623040',
+  dsn: APP_CONFIG.sentryDsn,
 });
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
