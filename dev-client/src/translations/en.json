@@ -424,5 +424,26 @@
         "action": "Change"
       }
     }
+  },
+  "slope": {
+    "title": "Slope",
+    "steepness": "Steepness",
+    "steepness_labels": {
+      "FLAT": "Flat 0-2%",
+      "GENTLE": "Gentle 1-15%",
+      "MODERATE": "Moderate 5-10%",
+      "ROLLING": "Rolling 10-15%",
+      "HILLY": "Hilly 15-30%",
+      "STEEP": "Steep 30-50%",
+      "MODERATELY_STEEP": "Moderately Steep 50-60%",
+      "VERY_STEEP": "Very Steep 60-100%",
+      "STEEPEST": "Steepest 100%+"
+    },
+    "shape_labels": {
+      "CONCAVE": "Concave",
+      "CONVEX": "Convex",
+      "LINEAR": "Linear"
+    },
+    "shape": "Shape"
   }
 }
