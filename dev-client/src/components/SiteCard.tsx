@@ -76,7 +76,7 @@ export const SiteCard = ({
         <Box w="4" />
         <Badge
           variant="chip"
-          backgroundColor="primary.lightest"
+          backgroundColor="primary.lighter"
           startIcon={<Icon name="people" />}>
           1
         </Badge>

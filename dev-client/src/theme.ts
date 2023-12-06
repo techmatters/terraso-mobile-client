@@ -22,7 +22,8 @@ export const theme = extendTheme({
     primary: {
       main: '#276749',
       contrast: '#FFFFFF',
-      lightest: '#9AE6B4',
+      lighter: '#93E39B',
+      lightest: '#E2FFE5',
       dark: '#22543D',
       // TODO: This is used for the colorScheme value for Radio
       // We should figure out how the color scheme stuff works and see if we can

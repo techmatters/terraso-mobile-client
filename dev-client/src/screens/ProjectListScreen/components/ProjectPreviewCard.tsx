@@ -58,13 +58,13 @@ export const ProjectPreviewCard = ({project}: Props) => {
         <Text>30%</Text>
         <Badge
           variant="chip"
-          backgroundColor="primary.lightest"
+          backgroundColor="primary.lighter"
           startIcon={<Icon name="location-on" />}>
           {Object.keys(project.sites).length}
         </Badge>
         <Badge
           variant="chip"
-          backgroundColor="primary.lightest"
+          backgroundColor="primary.lighter"
           startIcon={<Icon name="people-alt" />}>
           {Object.keys(project.memberships).length}
         </Badge>
