@@ -34,6 +34,8 @@ on:
         required: false
       SENTRY_DSN:
         required: false
+      SENTRY_AUTH_TOKEN:
+        required: false
 
 jobs:
   ios-build:
