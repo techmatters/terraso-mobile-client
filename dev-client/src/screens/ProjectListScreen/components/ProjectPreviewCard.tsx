@@ -22,6 +22,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {Project} from 'terraso-client-shared/project/projectSlice';
+import {formatDate} from 'terraso-mobile-client/util';
 
 type Props = {
   project: Project;
@@ -50,7 +51,7 @@ export const ProjectPreviewCard = ({project}: Props) => {
       </HStack>
       {project.description.length > 0 && <Text>{project.description}</Text>}
       <Text variant="subtitle2" color="text.secondary" mb="16px">
-        {t('general.last_modified')}: {project.updatedAt}
+        {t('general.last_modified')}: {formatDate(project.updatedAt)}
       </Text>
       <HStack space={2} alignItems="center">
         {/* TODO: Progress still not stored on backend */}
