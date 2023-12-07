@@ -87,7 +87,9 @@ type Props = {
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   ({sites, showSiteOnMap, snapIndex}, ref) => {
     const {t} = useTranslation();
-    const isLoadingData = useSelector(state => state.soilId.loading);
+    const isLoadingData = useSelector(
+      state => state.soilId.status === 'loading',
+    );
     const deviceBottomInsets = useSafeAreaInsets().bottom;
 
     const {filteredItems: filteredSites} = useListFilter<Site>();

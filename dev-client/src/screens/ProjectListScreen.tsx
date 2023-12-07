@@ -54,7 +54,7 @@ export const ProjectListScreen = () => {
     () => navigation.navigate('CREATE_PROJECT'),
     [navigation],
   );
-  const isLoadingData = useSelector(state => state.soilId.loading);
+  const isLoadingData = useSelector(state => state.soilId.status === 'loading');
   const SORT_OPTIONS = Object.fromEntries(
     ['nameAsc', 'nameDesc'].map(name => [name, t(`projects.search.${name}`)]),
   );
