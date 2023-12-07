@@ -41,7 +41,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {LogBox} from 'react-native';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
-import {Toasts} from './screens/Toasts';
+import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 LogBox.ignoreLogs([

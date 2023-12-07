@@ -9,13 +9,15 @@ export const Toasts = () => {
   const {t} = useTranslation();
   const toast = useToast();
   const soilIdStatus = useSelector(state => state.soilId.status);
+
   useEffect(() => {
-    if (soilIdStatus == 'error') {
+    if (soilIdStatus === 'error') {
       toast.show({
         description: t('errors.soilId'),
       });
       dispatch(setSoilIdStatus('ready'));
     }
-  }, [soilIdStatus]);
+  }, [soilIdStatus, dispatch, toast, t]);
+
   return <></>;
 };

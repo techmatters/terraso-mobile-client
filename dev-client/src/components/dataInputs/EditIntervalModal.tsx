@@ -19,7 +19,6 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {
   DepthInterval,
   sameDepth,
-  updateSoilDataDepthInterval,
   updateSoilDataDepthIntervalAsync,
   soilPitMethods,
   methodEnabled,
