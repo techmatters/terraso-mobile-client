@@ -18,49 +18,89 @@
 import {Box, Button, Column, Row, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useModal} from 'terraso-mobile-client/components/Modal';
-import {useSelector} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import * as yup from 'yup';
 import {useMemo} from 'react';
 import {Formik} from 'formik';
+import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 type Props = {
   siteId: string;
+};
+
+type FormInput = {
+  slopeSteepnessPercent: string | undefined;
+  slopeSteepnessDegree: string | undefined;
 };
 
 export const ManualSteepnessModal = ({siteId}: Props) => {
   const {t} = useTranslation();
   const onClose = useModal()!.onClose;
   const soilData = useSelector(state => state.soilId.soilData[siteId]);
+  const dispatch = useDispatch();
 
   const schema = useMemo(
     () =>
       yup.object({
         slopeSteepnessPercent: yup
           .number()
-          .typeError(t('slope.steepness.percentage_help'))
           .nullable()
+          .optional()
+          .typeError(t('slope.steepness.percentage_help'))
           .min(0, t('slope.steepness.percentage_help')),
         slopeSteepnessDegree: yup
           .number()
-          .typeError(t('slope.steepness.percentage_help'))
           .nullable()
+          .optional()
+          .typeError(t('slope.steepness.percentage_help'))
           .min(0, t('slope.steepness.degree_help'))
           .max(90, t('slope.steepness.degree_help')),
       }),
     [t],
   );
 
-  const onSubmit = async (_: yup.InferType<typeof schema>) => {
-    // const {label, ...depthInterval} = schema.cast(values);
-    // await parentOnSubmit({label: label ?? '', depthInterval});
+  const onSubmit = async ({
+    slopeSteepnessPercent,
+    slopeSteepnessDegree,
+  }: FormInput) => {
+    if (slopeSteepnessPercent) {
+      await dispatch(
+        updateSoilData({
+          siteId,
+          slopeSteepnessSelect: null,
+          slopeSteepnessPercent: parseInt(slopeSteepnessPercent, 10),
+          slopeSteepnessDegree: null,
+        }),
+      );
+    } else if (slopeSteepnessDegree) {
+      await dispatch(
+        updateSoilData({
+          siteId,
+          slopeSteepnessSelect: null,
+          slopeSteepnessPercent: null,
+          slopeSteepnessDegree: parseInt(slopeSteepnessDegree, 10),
+        }),
+      );
+    } else {
+      await dispatch(
+        updateSoilData({
+          siteId,
+          slopeSteepnessPercent: null,
+          slopeSteepnessDegree: null,
+        }),
+      );
+    }
     onClose();
   };
 
   return (
-    <Formik
+    <Formik<FormInput>
       validationSchema={schema}
-      initialValues={soilData}
+      initialValues={{
+        slopeSteepnessPercent: soilData.slopeSteepnessPercent?.toString(),
+        slopeSteepnessDegree: soilData.slopeSteepnessDegree?.toString(),
+      }}
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
         <Column alignItems="center">
