@@ -17,6 +17,7 @@
 
 import {Select} from 'native-base';
 import {useCallback} from 'react';
+import {Icon} from 'terraso-mobile-client/components/common/Icons';
 
 type Props = {
   nullableOption: string;
@@ -38,7 +39,10 @@ export const NullableSelect = ({
   );
 
   return (
-    <Select {...selectProps} onValueChange={changeWrapper}>
+    <Select
+      dropdownIcon={<Icon name="arrow-drop-down" />}
+      {...selectProps}
+      onValueChange={changeWrapper}>
       <Select.Item value="" label={nullableOption} />
       {children}
     </Select>
