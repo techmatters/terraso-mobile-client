@@ -64,6 +64,7 @@ type AppConfig = {
   microsoftRedirectURI: string;
   mapboxAccessToken: string;
   sentryDsn: string;
+  environment: string;
 };
 
 let googleClientId = '';
@@ -98,6 +99,10 @@ if (Config.SENTRY_DSN === undefined) {
   throw new Error('Config setting SENTRY_DSN not set');
 }
 
+if (Config.ENV === undefined) {
+  throw new Error('Config setting ENV not set');
+}
+
 export const APP_CONFIG: AppConfig = {
   packageName: PACKAGE_NAME,
   googleClientId: googleClientId,
@@ -108,4 +113,5 @@ export const APP_CONFIG: AppConfig = {
   microsoftRedirectURI: microsoftRedirectURI,
   mapboxAccessToken: Config.PUBLIC_MAPBOX_TOKEN,
   sentryDsn: Config.SENTRY_DSN,
+  environment: Config.ENV,
 };

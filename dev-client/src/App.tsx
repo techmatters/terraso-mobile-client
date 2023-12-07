@@ -45,6 +45,7 @@ import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
   dsn: APP_CONFIG.sentryDsn,
+  environment: APP_CONFIG.environment,
 });
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
