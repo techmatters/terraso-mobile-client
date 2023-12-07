@@ -62,10 +62,7 @@ interface AuthTokens {
   rtoken: string;
 }
 
-export async function exchangeToken(
-  identityJwt: string,
-  provider: OAuthProvider,
-) {
+async function exchangeToken(identityJwt: string, provider: OAuthProvider) {
   const payload = await request<AuthTokens>({
     path: '/auth/token-exchange',
     body: {provider, jwt: identityJwt},

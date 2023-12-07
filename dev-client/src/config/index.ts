@@ -22,6 +22,7 @@ import {Platform} from 'react-native';
 import {PACKAGE_NAME} from 'terraso-mobile-client/constants';
 
 let terrasoAPIURL;
+
 if (Platform.OS === 'ios') {
   terrasoAPIURL = Config.TERRASO_BACKEND ?? 'https://api.staging.terraso.net';
 } else if (Platform.OS === 'android') {
@@ -33,7 +34,7 @@ if (Platform.OS === 'ios') {
 
 const MMKV = new MMKVLoader().withEncryption().initialize();
 
-const apiConfig = setAPIConfig({
+setAPIConfig({
   terrasoAPIURL: terrasoAPIURL,
   graphQLEndpoint: terrasoAPIURL + '/graphql',
   tokenStorage: {
@@ -50,8 +51,6 @@ const apiConfig = setAPIConfig({
   // TODO: pick out logger
   logger: (_severity, args) => console.log(args),
 } as TerrasoAPIConfig);
-
-export const getConfig = apiConfig;
 
 // NOTE: This will be changed to be more general at some point, for now it's just grabbing
 // values from the config setup

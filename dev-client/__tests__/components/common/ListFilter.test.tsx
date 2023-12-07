@@ -25,7 +25,7 @@ import {
   useListFilter,
   ListFilterProvider,
   ListFilterModal,
-} from 'terraso-mobile-client/components/common/ListFilter';
+} from 'terraso-mobile-client/components/ListFilter';
 import {searchText} from 'terraso-mobile-client/util';
 
 const activateTextInputFilter = (filterText: string) => {
