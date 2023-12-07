@@ -1,0 +1,167 @@
+/*
+ * Copyright © 2023 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {AlertDialog, Button, Text, VStack} from 'native-base';
+import {
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/navigation/constants';
+import {useTranslation} from 'react-i18next';
+import IconLink from 'terraso-mobile-client/components/IconLink';
+import {useRef, useState} from 'react';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  deleteProject,
+  updateProject,
+  archiveProject,
+} from 'terraso-client-shared/project/projectSlice';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {EditForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/Form';
+import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+
+type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
+
+export function ProjectSettingsScreen({
+  route: {
+    params: {downloadLink, projectId},
+  },
+}: Props) {
+  const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const {name, description, privacy, measurementUnits} = useSelector(
+    state => state.project.projects[projectId],
+  );
+
+  const onSubmit = async (values: Omit<ProjectUpdateMutationInput, 'id'>) => {
+    await dispatch(updateProject({...values, id: projectId, privacy}));
+  };
+
+  const navigation = useNavigation();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const cancelRef = useRef(null);
+  const closeDeleteProject = () => {
+    setIsDeleteModalOpen(false);
+  };
+  const openDeleteProject = () => {
+    setIsDeleteModalOpen(true);
+  };
+  const triggerDeleteProject = () => {
+    setIsDeleteModalOpen(false);
+    dispatch(deleteProject({id: projectId}));
+    navigation.navigate('PROJECT_LIST');
+  };
+  const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
+  const closeArchiveProject = () => {
+    setIsArchiveModalOpen(false);
+  };
+  // const openArchiveProject = () => {
+  //   setIsArchiveModalOpen(true);
+  // };
+  const triggerArchiveProject = () => {
+    setIsDeleteModalOpen(false);
+    dispatch(archiveProject({id: projectId, archived: true}));
+    navigation.navigate('PROJECT_LIST');
+  };
+  return (
+    <VStack px={2} py={4} space={2} m={3} height="100%">
+      <EditForm
+        onSubmit={onSubmit}
+        name={name}
+        description={description}
+        measurementUnits={measurementUnits}
+      />
+      <VStack space={1}>
+        <IconLink
+          iconName="content-copy"
+          isUnderlined={false}
+          href={downloadLink}>
+          {t('projects.settings.copy_download_link').toUpperCase()}
+        </IconLink>
+        <Text ml={10}>{t('projects.settings.download_link_description')}</Text>
+        {/*
+        <IconLink
+          iconName="archive"
+          isUnderlined={false}
+          onPress={openArchiveProject}>
+          {t('projects.settings.archive').toUpperCase()}
+        </IconLink>
+          */}
+        <IconLink
+          iconName="delete-forever"
+          underlined={false}
+          onPress={openDeleteProject}>
+          {t('projects.settings.delete').toUpperCase()}
+        </IconLink>
+      </VStack>
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isArchiveModalOpen}
+        onClose={closeArchiveProject}>
+        <AlertDialog.Content>
+          <AlertDialog.CloseButton />
+          <AlertDialog.Header>
+            {t('projects.settings.archive_button_prompt')}
+          </AlertDialog.Header>
+          <AlertDialog.Body>
+            {t('projects.settings.archive_description')}
+          </AlertDialog.Body>
+          <AlertDialog.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="unstyled"
+                colorScheme="coolGray"
+                onPress={closeArchiveProject}>
+                {t('projects.settings.cancel')}
+              </Button>
+              <Button colorScheme="danger" onPress={triggerArchiveProject}>
+                {t('projects.settings.archive_button')}
+              </Button>
+            </Button.Group>
+          </AlertDialog.Footer>
+        </AlertDialog.Content>
+      </AlertDialog>
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteProject}>
+        <AlertDialog.Content>
+          <AlertDialog.CloseButton />
+          <AlertDialog.Header>
+            {t('projects.settings.delete_button_prompt')}
+          </AlertDialog.Header>
+          <AlertDialog.Body>
+            {t('projects.settings.delete_description')}
+          </AlertDialog.Body>
+          <AlertDialog.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="unstyled"
+                colorScheme="coolGray"
+                onPress={closeDeleteProject}>
+                {t('projects.settings.cancel')}
+              </Button>
+              <Button colorScheme="danger" onPress={triggerDeleteProject}>
+                {t('projects.settings.delete_button')}
+              </Button>
+            </Button.Group>
+          </AlertDialog.Footer>
+        </AlertDialog.Content>
+      </AlertDialog>
+    </VStack>
+  );
+}

@@ -15,22 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createContext, useContext, useCallback, useRef} from 'react';
-import ProjectTabs from 'terraso-mobile-client/components/projects/ProjectTabs';
-import {
-  AppBar,
-  ScreenCloseButton,
-  ScreenScaffold,
-} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useCallback, useRef} from 'react';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {useSelector} from 'terraso-mobile-client/model/store';
-import {InfoModal} from 'terraso-mobile-client/components/common/infoModals/InfoModal';
+import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
+import {useSelector} from 'terraso-mobile-client/store';
+import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
+import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 
 type Props = {projectId: string};
-
-const InfoPressContext = createContext(() => {});
-
-export const useInfoPress = () => useContext(InfoPressContext);
 
 export const ProjectViewScreen = ({projectId}: Props) => {
   const project = useSelector(state => state.project.projects[projectId]);
@@ -46,16 +41,16 @@ export const ProjectViewScreen = ({projectId}: Props) => {
   );
 
   return (
-    <InfoPressContext.Provider value={onInfoPress}>
+    <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
       <BottomSheetModalProvider>
         <ScreenScaffold
           AppBar={
             <AppBar LeftButton={<ScreenCloseButton />} title={project?.name} />
           }>
-          <ProjectTabs projectId={projectId} />
+          <ProjectTabNavigator projectId={projectId} />
         </ScreenScaffold>
-        <InfoModal ref={infoModalRef} onClose={onInfoClose} />
+        <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
       </BottomSheetModalProvider>
-    </InfoPressContext.Provider>
+    </BottomSheetPrivacyModalContext.Provider>
   );
 };

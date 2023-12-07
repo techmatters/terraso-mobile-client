@@ -16,8 +16,8 @@
  */
 
 import {Box, Button, Column, Heading, Text} from 'native-base';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
-import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useEffect, useCallback} from 'react';
 import {auth} from 'terraso-mobile-client/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';

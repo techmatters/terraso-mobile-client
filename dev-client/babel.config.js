@@ -8,7 +8,6 @@ module.exports = api => {
       '@babel/preset-typescript',
     ],
     plugins: [
-      'react-native-reanimated/plugin',
       [
         'babel-plugin-root-import',
         {
@@ -16,6 +15,7 @@ module.exports = api => {
           rootPathSuffix: './src',
         },
       ],
+      'react-native-reanimated/plugin',
     ],
   };
 };
