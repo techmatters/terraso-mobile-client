@@ -49,9 +49,9 @@ import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModa
 import {useMemo, useCallback} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView, Switch} from 'react-native';
-import {useNavigation} from 'terraso-mobile-client/screens/AppScaffold';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {DepthPresets} from 'terraso-mobile-client/constants';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 

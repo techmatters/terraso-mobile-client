@@ -1,7 +1,7 @@
 import {screen, fireEvent} from '@testing-library/react-native';
 import {customRender as render} from '@testing/utils';
 import {Select} from 'native-base';
-import {NullableSelect} from 'terraso-mobile-client/components/common/NullableSelect';
+import {NullableSelect} from 'terraso-mobile-client/components/NullableSelect';
 
 const changeSelectInput = (label: string, optionText: string) => {
   const select = screen.getByLabelText(label, {includeHiddenElements: true});

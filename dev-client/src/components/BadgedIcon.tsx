@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Badge, Pressable} from 'native-base';
-import {IconButton} from 'terraso-mobile-client/components/common/Icons';
+import {IconButton} from 'terraso-mobile-client/components/Icons';
 
 type Props = {
   _badge?: {} & Omit<React.ComponentProps<typeof Badge>, 'variant'>;
