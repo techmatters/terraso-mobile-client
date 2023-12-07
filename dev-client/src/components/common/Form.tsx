@@ -22,7 +22,6 @@ import {
   Input,
   Radio,
   Popover,
-  Switch,
   Row,
   Text,
   TextArea,
@@ -36,7 +35,7 @@ import {
   forwardRef,
   useCallback,
 } from 'react';
-import {TextInput} from 'react-native';
+import {Switch, TextInput} from 'react-native';
 import {IconButton} from 'terraso-mobile-client/components/common/Icons';
 
 type FieldContextType<Name extends string = string, T = string> = {

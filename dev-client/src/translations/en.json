@@ -319,6 +319,9 @@
       "privacy_policy_link_text": "LandPKS Privacy Policy"
     }
   },
+  "errors": {
+    "soilId": "Error saving soil ID info to backend."
+  },
   "screens": {
     "HOME": "LandPKS",
     "PROJECT_LIST": "Projects",

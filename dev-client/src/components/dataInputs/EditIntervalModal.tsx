@@ -20,6 +20,7 @@ import {
   DepthInterval,
   sameDepth,
   updateSoilDataDepthInterval,
+  updateSoilDataDepthIntervalAsync,
   soilPitMethods,
   methodEnabled,
   SoilDataDepthInterval,
@@ -90,7 +91,7 @@ export const EditIntervalModal = ({siteId, depthInterval}: Props) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {start, end, applyToAll, ...newInterval} = schema.cast(values);
       await dispatch(
-        updateSoilDataDepthInterval({
+        updateSoilDataDepthIntervalAsync({
           siteId,
           ...newInterval,
           depthInterval: {start, end},
@@ -124,15 +125,15 @@ export const EditIntervalModal = ({siteId, depthInterval}: Props) => {
             <FormSwitch
               name={methodEnabled(method)}
               value={interval[methodEnabled(method)]}
-              onChange={value =>
+              onChange={value => {
                 dispatch(
-                  updateSoilDataDepthInterval({
+                  updateSoilDataDepthIntervalAsync({
                     siteId,
                     depthInterval,
                     [methodEnabled(method)]: value,
                   }),
-                )
-              }
+                );
+              }}
               label={t(`soil.collection_method.${method}`)}
             />
           ))}
