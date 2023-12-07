@@ -1,8 +1,8 @@
 import {useToast} from 'native-base';
 import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useDispatch, useSelector} from 'terraso-mobile-client/model/store';
 import {setSoilIdStatus} from 'terraso-client-shared/soilId/soilIdSlice';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const Toasts = () => {
   const dispatch = useDispatch();

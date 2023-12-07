@@ -26,6 +26,7 @@ export type UserLocation = {
   coords: Coords | null;
   accuracyM: number | null;
 };
+
 const initialState = {
   userLocation: {
     coords: null,
@@ -33,7 +34,10 @@ const initialState = {
   } as UserLocation,
 };
 
-const mapSlice = createSlice({
+const {
+  reducer,
+  actions: {updateLocation},
+} = createSlice({
   name: 'map',
   initialState,
   reducers: {
@@ -43,5 +47,4 @@ const mapSlice = createSlice({
   },
 });
 
-export const {updateLocation} = mapSlice.actions;
-export default mapSlice.reducer;
+export {updateLocation, reducer};
