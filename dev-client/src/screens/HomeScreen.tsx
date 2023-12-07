@@ -54,12 +54,8 @@ import {CardCloseButton} from 'terraso-mobile-client/components/common/Card';
 import {BottomSheetBackdropProps} from '@gorhom/bottom-sheet';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
-import {
-  ListFilterProvider,
-  SortingOption,
-} from 'terraso-mobile-client/components/common/ListFilter';
+import {ListFilterProvider} from 'terraso-mobile-client/components/common/ListFilter';
 import {equals, searchText} from 'terraso-mobile-client/util';
-import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {normalizeText} from 'terraso-client-shared/utils';
 
 export type CalloutState =
@@ -197,26 +193,6 @@ export const HomeScreen = ({site}: Props) => {
     [infoBottomSheetRef],
   );
 
-  const {siteDistances} = useGeospatialContext();
-
-  const distanceSorting: Record<string, SortingOption<Site>> | undefined =
-    useMemo(() => {
-      return siteDistances === null
-        ? undefined
-        : {
-            distanceAsc: {
-              record: siteDistances,
-              key: 'id',
-              order: 'ascending',
-            },
-            distanceDesc: {
-              record: siteDistances,
-              key: 'id',
-              order: 'descending',
-            },
-          };
-    }, [siteDistances]);
-
   return (
     <BottomSheetModalProvider>
       <ListFilterProvider
@@ -239,26 +215,11 @@ export const HomeScreen = ({site}: Props) => {
               key: 'id',
             },
           },
-          sort: {
-            kind: 'sorting',
-            options: {
-              nameDesc: {
-                key: 'name',
-                order: 'descending',
-              },
-              nameAsc: {
-                key: 'name',
-                order: 'ascending',
-              },
-              lastModDesc: {
-                key: 'updatedAt',
-                order: 'descending',
-              },
-              lastModAsc: {
-                key: 'updatedAt',
-                order: 'ascending',
-              },
-              ...distanceSorting,
+          project: {
+            kind: 'filter',
+            f: equals,
+            lookup: {
+              key: 'projectId',
             },
           },
         }}>

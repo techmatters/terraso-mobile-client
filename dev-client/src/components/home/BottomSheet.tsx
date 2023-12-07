@@ -32,7 +32,6 @@ import {
   ListFilterModal,
   SelectFilter,
 } from 'terraso-mobile-client/components/common/ListFilter';
-import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const EmptySiteMessage = () => {
@@ -118,9 +117,6 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
       () => ({backgroundColor: colors.grey[300]}),
       [colors],
     );
-    const {siteDistances} = useGeospatialContext();
-
-    const useDistance = useMemo(() => siteDistances !== null, [siteDistances]);
 
     return (
       <BottomSheet
@@ -133,7 +129,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
           <Row justifyContent="space-between" alignItems="center" pb="4">
             <Heading variant="h6">{t('site.list_title')}</Heading>
           </Row>
-          {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
+          {sites.length >= 0 && <SiteFilterModal />}
         </Column>
         {isLoadingData ? (
           <Spinner size="lg" />
@@ -155,29 +151,22 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   },
 );
 
-type ModalProps = {
-  useDistance: boolean;
-};
-
-const SiteFilterModal = ({useDistance}: ModalProps) => {
+const SiteFilterModal = () => {
   const {t} = useTranslation();
 
   const roleOptions = Object.fromEntries(
     USER_ROLES.map(role => [role, t(`site.role.${role}`)]),
   );
 
-  const distanceSortingOptions = useDistance
-    ? ['distanceAsc', 'distanceDesc']
-    : [];
+  const projects = useSelector(state => state.project.projects);
 
-  const sortOptions = Object.fromEntries(
-    [
-      'nameAsc',
-      'nameDesc',
-      'lastModAsc',
-      'lastModDesc',
-      ...distanceSortingOptions,
-    ].map(label => [label, t('site.search.sort.' + label)]),
+  const projectOptions = useMemo(
+    () => ({
+      ...Object.fromEntries(
+        Object.values(projects).map(({id, name}) => [id, name]),
+      ),
+    }),
+    [projects],
   );
 
   return (
@@ -190,10 +179,10 @@ const SiteFilterModal = ({useDistance}: ModalProps) => {
         />
       }>
       <SelectFilter
-        label={t('site.search.sort.label')}
-        options={sortOptions}
-        name="sort"
-        nullableOption={t('general.filter.no_sort')}
+        label={t('site.search.filter_projects')}
+        options={projectOptions}
+        name="project"
+        nullableOption={t('general.filter.no_project')}
       />
       <SelectFilter
         label={t('site.search.filter_role')}

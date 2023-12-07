@@ -97,7 +97,7 @@
     "search": {
       "placeholder": "Search sites",
       "accessibility_label": "Filter sites by site name",
-      "filter_projects": "Filter sites by project:",
+      "filter_projects": "Filter sites by project",
       "filter_role": "Filter sites by role",
       "no_matches": "No sites match the current search and filter options.",
       "sort": {
@@ -302,7 +302,8 @@
     "close_fab": "Close",
     "filter": {
       "no_sort": "None",
-      "no_role": "None"
+      "no_role": "None",
+      "no_project": "None"
     },
     "nullable_option": "None",
     "info": {
