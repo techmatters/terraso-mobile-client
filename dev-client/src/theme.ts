@@ -20,15 +20,15 @@ import {extendTheme} from 'native-base';
 export const theme = extendTheme({
   colors: {
     primary: {
-      main: '#276749',
+      main: '#028843',
       contrast: '#FFFFFF',
       lighter: '#93E39B',
       lightest: '#E2FFE5',
-      dark: '#22543D',
+      dark: '#00582B',
       // TODO: This is used for the colorScheme value for Radio
       // We should figure out how the color scheme stuff works and see if we can
       // map our current variables to 100, 200 values etc.
-      600: '#276749',
+      600: '#028843',
     },
     background: {
       default: '#FFFFFF',
