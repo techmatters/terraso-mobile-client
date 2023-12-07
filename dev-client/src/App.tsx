@@ -78,4 +78,4 @@ function App(): JSX.Element {
 
 const style = {flex: 1};
 
-export default App;
+export default Sentry.wrap(App);
