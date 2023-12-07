@@ -39,6 +39,8 @@ import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useModal} from 'terraso-mobile-client/components/Modal';
 
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
     applyToAll: boolean;
@@ -75,6 +77,11 @@ export const EditIntervalModalContent = ({siteId, depthInterval}: Props) => {
         ),
       }),
     [t, existingIntervals],
+  );
+
+  const showUpdateWarning = useMemo(
+    () => soilData.depthDependentData.length > 0,
+    [soilData],
   );
 
   const onSubmit = useCallback(
@@ -134,16 +141,43 @@ export const EditIntervalModalContent = ({siteId, depthInterval}: Props) => {
             label={t('soil.depth_interval.apply_to_all_label')}
           />
           <Row>
-            <Button
-              size="lg"
-              mx="auto"
-              onPress={() => handleSubmit()}
-              isDisabled={!isValid || isSubmitting}>
-              {t('general.add')}
-            </Button>
+            {showUpdateWarning ? (
+              <ConfirmModal
+                trigger={onOpen => (
+                  <AddButton
+                    action={onOpen}
+                    isDisabled={!isValid || isSubmitting}
+                  />
+                )}
+                title={t('soil.depth_interval.update_modal.title')}
+                body={t('soil.depth_interval.update_modal.body')}
+                actionName={t('soil.depth_interval.update_modal.action')}
+                handleConfirm={() => handleSubmit()}
+              />
+            ) : (
+              <AddButton
+                action={() => handleSubmit()}
+                isDisabled={!isValid || isSubmitting}
+              />
+            )}
           </Row>
         </>
       )}
     </Formik>
+  );
+};
+
+type AddButtonProps = {
+  action: () => void;
+  isDisabled: boolean;
+};
+
+const AddButton = ({action, isDisabled}: AddButtonProps) => {
+  const {t} = useTranslation();
+
+  return (
+    <Button size="lg" mx="auto" onPress={action} isDisabled={isDisabled}>
+      {t('general.add')}
+    </Button>
   );
 };

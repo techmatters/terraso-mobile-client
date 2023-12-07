@@ -15,16 +15,32 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {Select} from 'native-base';
+import {useCallback} from 'react';
 
-// TODO: Merge newest main branch changes
-export const CreateProjectScreenWrapper = () => {
+type Props = {
+  nullableOption: string;
+  onValueChange: (newValue: string | undefined) => void;
+} & Omit<React.ComponentProps<typeof Select>, 'onValueChange'> &
+  React.PropsWithChildren;
+
+export const NullableSelect = ({
+  nullableOption,
+  children,
+  onValueChange,
+  ...selectProps
+}: Props) => {
+  const changeWrapper = useCallback(
+    (newValue: string) => {
+      newValue === '' ? onValueChange(undefined) : onValueChange(newValue);
+    },
+    [onValueChange],
+  );
+
   return (
-    <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
-      <CreateProjectScreen />
-    </ScreenScaffold>
+    <Select {...selectProps} onValueChange={changeWrapper}>
+      <Select.Item value="" label={nullableOption} />
+      {children}
+    </Select>
   );
 };

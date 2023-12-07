@@ -65,6 +65,11 @@
       "archive_button": "Archive this site",
       "archive_button_help_text": "Mark this site read-only",
       "delete_button": "Delete this site",
+      "delete_site_modal": {
+        "title": "Delete site?",
+        "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.",
+        "action_name": "Delete"
+      },
       "location_accuracy": "Location Accuracy",
       "last_modified": {
         "label": "Last Modified",
@@ -91,9 +96,19 @@
     },
     "search": {
       "placeholder": "Search sites",
+      "accessibility_label": "Filter sites by site name",
       "filter_projects": "Filter sites by project:",
       "filter_role": "Filter sites by role",
-      "no_matches": "No sites match the current search and filter options."
+      "no_matches": "No sites match the current search and filter options.",
+      "sort": {
+        "label": "Sort projects by:",
+        "nameAsc": "Name (A to Z)",
+        "nameDesc": "Name (Z to A)",
+        "lastModAsc": "Last Modified (most recent)",
+        "lastModDesc": "Last Modified (least recent)",
+        "distanceAsc": "Distance (closest)",
+        "distanceDesc": "Distance (furthest)"
+      }
     },
     "role": {
       "manager": "Manager",
@@ -118,6 +133,9 @@
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
     "go_to": "Go to Project",
+    "search_placeholder": "Search",
+    "search_label": "Enter text to filter projects by name",
+    "role_filter_label": "Filter projects by role",
     "create": {
       "public": "Public",
       "private": "Private",
@@ -143,6 +161,13 @@
         "screen_title": "Site Instructions",
         "description": "This content will display at the top of the Notes section of each site in this project.",
         "add_label": "Note"
+      },
+      "depth_intervals": {
+        "title": "Soil Pit Depth Intervals",
+        "landPks": "LandPKS",
+        "nrcs": "NRCS",
+        "custom": "Custom…",
+        "none": "None specified"
       }
     },
     "team": {
@@ -189,6 +214,16 @@
         "title": "Remove site from project?",
         "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
         "action_name": "Remove Site"
+      },
+      "search": {
+        "placeholder": "Search",
+        "accessility_label": "Search for sites"
+      },
+      "sort": {
+        "label": "Sort sites by:",
+        "nameAsc": "Site name (A to Z)",
+        "updatedAtAsc": "Date modified (most recent)",
+        "distanceAsc": "Distance (nearest to me)"
       }
     },
     "add": {
@@ -225,9 +260,12 @@
       "name_max_length_error": "Project name must be at most {{max}} characters",
       "description_max_length_error": "Project description must be at most {{max}} characters"
     },
+    "sort_label": "Sort projects by:",
     "search": {
       "placeholder": "Search projects",
-      "no_matches": "No projects match the current search and filter options."
+      "no_matches": "No projects match the current search and filter options.",
+      "nameAsc": "Sort (A to Z)",
+      "nameDesc": "Sort (Z to A)"
     }
   },
   "badge": {
@@ -261,7 +299,25 @@
     "cancel_fab": "Cancel",
     "delete_fab": "Delete",
     "done_fab": "Done",
-    "close_fab": "Close"
+    "close_fab": "Close",
+    "filter": {
+      "no_sort": "None",
+      "no_role": "None"
+    },
+    "nullable_option": "None",
+    "info": {
+      "privacy_title": "LandPKS Data Privacy",
+      "privacy_item1": "<0>The data visible in public sites</0> includes all data entered into the LandPKS mobile app except for personally identifiable information (PII).",
+      "privacy_item2": "<0>Public sites</0> are visible to anyone on the LandPKS data portal. This means anyone can view information about this site.",
+      "privacy_item3": "<0>Unaffiliated private sites</0> are only visible to you. You can change the privacy of the site at any time.",
+      "privacy_item4": "<0>A project’s privacy setting determines the privacy of its affiliated sites.</0> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time.",
+      "privacy_item5": "<0>When a site is transferred to a project,</0> the project will determine the site’s privacy setting.",
+      "privacy_item6": "Read more about our data privacy policy:",
+      "data_portal_link_url": "https://landpotential.org/",
+      "data_portal_link_text": "LandPKS Data Portal",
+      "privacy_policy_link_url": "https://landpotential.org/",
+      "privacy_policy_link_text": "LandPKS Privacy Policy"
+    }
   },
   "screens": {
     "HOME": "LandPKS",
@@ -283,17 +339,17 @@
     "confirm_action": "Sign out"
   },
   "account": {
-      "google_login": "Sign in with Google",
-      "apple_login": "Sign in with Apple",
-      "microsoft_login": "Sign in with Microsoft"
+    "google_login": "Sign in with Google",
+    "apple_login": "Sign in with Apple",
+    "microsoft_login": "Sign in with Microsoft"
   },
   "privacy": {
     "label": "Data Privacy",
-    "PUBLIC": {
+    "public": {
       "inline": "public",
       "title": "Public"
     },
-    "PRIVATE": {
+    "private": {
       "inline": "private",
       "title": "Private"
     }
@@ -317,6 +373,12 @@
       "inline": "elevation",
       "title": "Elevation"
     }
+  },
+  "listfilter": {
+    "open_modal_label": "Update list filters",
+    "num_filters_label": "Number of filters applied",
+    "clear_search_label": "Clear search filter",
+    "text_input_label": "Filter list by search input"
   },
   "soil": {
     "bedrock": "Bedrock",
@@ -356,7 +418,12 @@
       "label_placeholder": "Label",
       "apply_to_all_label": "Apply to all to intervals",
       "start_label": "From ({{unit}})",
-      "end_label": "To ({{unit}})"
+      "end_label": "To ({{unit}})",
+      "update_modal": {
+        "title": "Change depth?",
+        "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
+        "action": "Change"
+      }
     }
   }
 }

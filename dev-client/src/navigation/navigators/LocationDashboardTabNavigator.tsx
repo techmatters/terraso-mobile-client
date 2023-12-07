@@ -15,18 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
+import {Button} from 'native-base';
+import {useTranslation} from 'react-i18next';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
 import {ParamList} from 'terraso-mobile-client/navigation/types';
 import {ScreenDefinitions} from 'terraso-mobile-client/navigation/screenDefinitions';
-import {useTranslation} from 'react-i18next';
-import {useMemo} from 'react';
 import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {SiteNotesScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/SiteNotesScreen';
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen';
 import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {SpeedDial} from 'terraso-mobile-client/navigation/components/SpeedDial';
-import {Button} from 'native-base';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 
 const tabDefinitions = {
@@ -44,7 +45,6 @@ const Tab = createMaterialTopTabNavigator<TabsParamList>();
 export const LocationDashboardTabNavigator = (params: {siteId: string}) => {
   const {t} = useTranslation();
   const defaultOptions = useDefaultTabOptions();
-
   const tabs = useMemo(
     () =>
       Object.entries(tabDefinitions).map(([name, View]) => (

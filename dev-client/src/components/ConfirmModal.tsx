@@ -31,7 +31,7 @@ type Props = {
 /**
  * Modal presented to a user when asked to confirm a decision
  */
-const ConfirmModal = ({
+export const ConfirmModal = ({
   title,
   body,
   actionName,
@@ -87,5 +87,3 @@ const ConfirmModal = ({
     </>
   );
 };
-
-export default ConfirmModal;

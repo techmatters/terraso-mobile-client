@@ -24,13 +24,13 @@ import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {Pressable} from 'react-native';
 import {
-  ModalMethods,
+  ModalHandle,
   Props,
   ModalContext,
 } from 'terraso-mobile-client/components/Modal';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
 
-export const BottomSheetModal = forwardRef<ModalMethods, Props>(
+export const BottomSheetModal = forwardRef<ModalHandle, Props>(
   ({children, trigger}, forwardedRef) => {
     const headerHeight = useHeaderHeight();
     const ref = useRef<GorhomBottomSheetModal>(null);

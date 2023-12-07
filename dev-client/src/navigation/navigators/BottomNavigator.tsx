@@ -21,7 +21,7 @@ import {useCallback, useEffect} from 'react';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import ConfirmModal from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {signOut} from 'terraso-client-shared/account/accountSlice';
 import {BottomNavIconButton} from 'terraso-mobile-client/navigation/components/BottomNavIconButton';
 

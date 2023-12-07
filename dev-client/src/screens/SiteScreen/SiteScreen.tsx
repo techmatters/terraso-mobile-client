@@ -15,18 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {useTranslation} from 'react-i18next';
-import RadioBlock from 'terraso-mobile-client/components/RadioBlock';
-import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {useCallback} from 'react';
-import {Box, Divider, Text, Column} from 'native-base';
+import {StyleSheet, ScrollView} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {Box, Divider, Text, Column, HStack} from 'native-base';
+
+import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
-import {StyleSheet} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
-import {ScrollView} from 'react-native';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScreen/components/ProjectInstructionsButton';
+
+import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';
@@ -40,7 +43,10 @@ const TEMP_SOIL_ID_CONFIDENCE = '80%';
 const TEMP_ECO_SITE_ID_CONFIDENCE = '80%';
 const TEMP_LCC_CONFIDENCE = '80%';
 
-type Props = {siteId?: string; coords?: Coords};
+type Props = {
+  siteId?: string;
+  coords?: Coords;
+};
 
 const LocationDetail = ({label, value}: {label: string; value: string}) => (
   <Text variant="body1">
@@ -54,6 +60,7 @@ type LocationPredictionProps = {
   prediction: string;
   confidence: string;
 };
+
 const LocationPrediction = ({
   label,
   prediction,
@@ -82,6 +89,7 @@ const LocationPrediction = ({
 export const SiteScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const onInfoPress = useInfoPress();
 
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
@@ -121,27 +129,40 @@ export const SiteScreen = ({siteId, coords}: Props) => {
           {project && (
             <LocationDetail
               label={t('site.dashboard.privacy')}
-              value={t(`privacy.${project.privacy}.title`)}
+              value={t(`privacy.${project.privacy.toLowerCase()}.title`)}
             />
           )}
           {site && !project && (
-            <RadioBlock
-              label={
-                <Text variant="body1" bold>
-                  {t('site.dashboard.privacy')}
-                </Text>
-              }
-              options={{
-                PUBLIC: {text: t('privacy.PUBLIC.title')},
-                PRIVATE: {text: t('privacy.PRIVATE.title')},
-              }}
-              groupProps={{
-                name: 'site-privacy',
-                onChange: onSitePrivacyChanged,
-                value: site.privacy,
-                ml: '',
-              }}
-            />
+            <HStack>
+              <RadioBlock
+                label={
+                  <HStack>
+                    <Text variant="body1" bold>
+                      {t('site.dashboard.privacy')}
+                    </Text>
+                    <IconButton
+                      pt={0}
+                      pb={0}
+                      pl={2}
+                      size="md"
+                      name="info"
+                      onPress={onInfoPress}
+                      _icon={{color: 'primary'}}
+                    />
+                  </HStack>
+                }
+                options={{
+                  PUBLIC: {text: t('privacy.public.title')},
+                  PRIVATE: {text: t('privacy.private.title')},
+                }}
+                groupProps={{
+                  name: 'site-privacy',
+                  onChange: onSitePrivacyChanged,
+                  value: site.privacy,
+                  ml: '',
+                }}
+              />
+            </HStack>
           )}
           <LocationDetail
             label={t('geo.latitude.title')}

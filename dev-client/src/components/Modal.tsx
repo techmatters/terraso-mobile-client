@@ -19,6 +19,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useEffect,
   useImperativeHandle,
   useMemo,
 } from 'react';
@@ -27,12 +28,12 @@ import {Pressable, StyleSheet} from 'react-native';
 import {useDisclose, Modal as NativeBaseModal} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 
-export type ModalMethods = {
+export type ModalHandle = {
   onClose: () => void;
   onOpen: () => void;
 };
 
-export const ModalContext = createContext<ModalMethods | undefined>(undefined);
+export const ModalContext = createContext<ModalHandle | undefined>(undefined);
 
 export const useModal = () => useContext(ModalContext);
 
@@ -40,18 +41,27 @@ export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
 
 export type Props = React.PropsWithChildren<{
   trigger?: ModalTrigger;
+  closeHook?: () => void;
 }>;
 
-export const Modal = forwardRef<ModalMethods, Props>(
-  ({children, trigger}, forwardedRef) => {
+export const Modal = forwardRef<ModalHandle, Props>(
+  ({children, trigger, closeHook}, forwardedRef) => {
     const {isOpen, onOpen, onClose} = useDisclose();
-    const methods = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
-    useImperativeHandle(forwardedRef, () => methods, [methods]);
+    const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
+
+    useEffect(() => {
+      if (!isOpen && closeHook) {
+        closeHook();
+      }
+    }, [isOpen, closeHook]);
+
+    useImperativeHandle(forwardedRef, () => handle, [handle]);
+
     return (
       <>
         {trigger && (
-          <Pressable onPress={methods.onOpen}>
-            {trigger(methods.onOpen)}
+          <Pressable onPress={handle.onOpen}>
+            {trigger(handle.onOpen)}
           </Pressable>
         )}
         <NativeBaseModal isOpen={isOpen} onClose={onClose}>
@@ -60,7 +70,7 @@ export const Modal = forwardRef<ModalMethods, Props>(
             behavior="padding"
             keyboardVerticalOffset={100}>
             <NativeBaseModal.Content padding="18px">
-              <ModalContext.Provider value={methods}>
+              <ModalContext.Provider value={handle}>
                 {children}
               </ModalContext.Provider>
               <CardCloseButton onPress={onClose} />

@@ -22,12 +22,19 @@ import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppB
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Box, FlatList, Heading, Link, Text, VStack, Spinner} from 'native-base';
+import {Box, Heading, Link, Text, VStack, Spinner} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
-import {ProjectPreviewCard} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectPreviewCard';
-import {SearchBar} from 'terraso-mobile-client/components/SearchBar';
-import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
+import {
+  ListFilterModal,
+  ListFilterProvider,
+  SelectFilter,
+  TextInputFilter,
+} from 'terraso-mobile-client/components/ListFilter';
+import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
+import {normalizeText} from 'terraso-client-shared/utils';
+import {equals, searchText} from 'terraso-mobile-client/util';
+import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
@@ -35,11 +42,9 @@ export const ProjectListScreen = () => {
     () => Object.values(allProjects).filter(project => !project.archived),
     [allProjects],
   );
-  const {
-    results: searchedProjects,
-    query,
-    setQuery,
-  } = useTextSearch({data: activeProjects, keys: ['name']});
+  const projectRoleLookup = useSelector(state =>
+    selectProjectUserRolesMap(state),
+  );
 
   const {t} = useTranslation();
   const navigation = useNavigation();
@@ -48,6 +53,9 @@ export const ProjectListScreen = () => {
     [navigation],
   );
   const isLoadingData = useSelector(state => state.soilId.loading);
+  const SORT_OPTIONS = Object.fromEntries(
+    ['nameAsc', 'nameDesc'].map(name => [name, t(`projects.search.${name}`)]),
+  );
 
   return (
     <ScreenScaffold
@@ -57,7 +65,13 @@ export const ProjectListScreen = () => {
           RightButton={<AppBarIconButton name="help" />}
         />
       }>
-      <VStack bg="grey.200" p={5} flexGrow={1} flexShrink={0} flexBasis="70%">
+      <VStack
+        bg="grey.200"
+        p={5}
+        flexGrow={1}
+        flexShrink={0}
+        flexBasis="70%"
+        space="10px">
         <Box alignItems="flex-start" pb={3}>
           <AddButton
             text={t('projects.create_button')}
@@ -84,23 +98,63 @@ export const ProjectListScreen = () => {
         )}
 
         {activeProjects.length > 0 && (
-          <>
-            <SearchBar
-              query={query}
-              setQuery={setQuery}
-              placeholder={t('projects.search.placeholder')}
-              FilterOptions={<Text>Project filter placeholder</Text>}
-            />
-            <FlatList
-              data={searchedProjects}
-              renderItem={({item}) => <ProjectPreviewCard project={item} />}
-              ItemSeparatorComponent={() => <Box h="8px" />}
-              keyExtractor={project => project.id}
-              ListEmptyComponent={
-                <Text>{t('projects.search.no_matches')}</Text>
-              }
-            />
-          </>
+          <ListFilterProvider
+            items={activeProjects}
+            filters={{
+              search: {
+                kind: 'filter',
+                f: searchText,
+                preprocess: normalizeText,
+                lookup: {key: 'name'},
+                hide: true,
+              },
+              role: {
+                kind: 'filter',
+                f: equals,
+                lookup: {key: 'id', record: projectRoleLookup},
+              },
+              sort: {
+                kind: 'sorting',
+                options: {
+                  nameAsc: {
+                    key: 'name',
+                    order: 'ascending',
+                  },
+                  nameDesc: {
+                    key: 'name',
+                    order: 'descending',
+                  },
+                },
+              },
+            }}>
+            <ListFilterModal
+              searchInput={
+                <TextInputFilter
+                  name="search"
+                  label={t('projects.search_label')}
+                  placeholder={t('projects.search_placeholder')}
+                />
+              }>
+              <SelectFilter
+                name="sort"
+                label={t('projects.sort_label')}
+                options={SORT_OPTIONS}
+                nullableOption={t('general.filter.no_sort')}
+              />
+              <SelectFilter
+                name="role"
+                label={t('projects.role_filter_label')}
+                placeholder=""
+                options={{
+                  manager: t('general.role.manager'),
+                  contributor: t('general.role.contributor'),
+                  viewer: t('general.role.viewer'),
+                }}
+                nullableOption={t('general.filter.no_role')}
+              />
+            </ListFilterModal>
+            <ProjectList />
+          </ListFilterProvider>
         )}
       </VStack>
     </ScreenScaffold>

@@ -25,7 +25,6 @@ import {
 import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettingsScreen';
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {Project} from 'terraso-client-shared/project/projectSlice';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
@@ -36,9 +35,9 @@ type ScreenOptions = React.ComponentProps<
   (typeof Tab)['Navigator']
 >['screenOptions'];
 
-type Props = {project: Project};
+type Props = {projectId: string};
 
-export const ProjectTabNavigator = ({project}: Props) => {
+export const ProjectTabNavigator = ({projectId}: Props) => {
   const defaultTabOptions = useDefaultTabOptions();
 
   const tabIconNames: Record<keyof TabStackParamList, string> = {
@@ -65,26 +64,26 @@ export const ProjectTabNavigator = ({project}: Props) => {
         name={TabRoutes.INPUTS}
         component={ProjectInputScreen}
         initialParams={{
-          projectId: project.id,
+          projectId,
         }}
       />
       <Tab.Screen
         name={TabRoutes.SITES}
         component={ProjectSitesScreen}
         initialParams={{
-          projectId: project.id,
+          projectId,
         }}
       />
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamScreen}
-        initialParams={{projectId: project.id}}
+        initialParams={{projectId}}
       />
       <Tab.Screen
         name={TabRoutes.SETTINGS}
         component={ProjectSettingsScreen}
         initialParams={{
-          projectId: project.id,
+          projectId,
           downloadLink: TEMP_DOWNLOAD_LINK,
         }}
       />

@@ -15,34 +15,35 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
-import {Box, Row, Heading, Text, useTheme, Column, Spinner} from 'native-base';
 import {forwardRef, useCallback, useMemo} from 'react';
+import {Box, Row, Heading, Text, useTheme, Column, Spinner} from 'native-base';
+import {useTranslation} from 'react-i18next';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
+
 import {useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {useTranslation} from 'react-i18next';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
-import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
-import {
-  Props as SiteSearchBarProps,
-  SiteSearchBar,
-} from 'terraso-mobile-client/screens/HomeScreen/components/SiteSearchBar';
 import {EmptySiteMessage} from 'terraso-mobile-client/screens/HomeScreen/components/EmptySiteMessage';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {SiteFilterModal} from 'terraso-mobile-client/screens/HomeScreen/components/SiteFilterModal';
+import {getStartingSnapValue} from 'terraso-mobile-client/screens/HomeScreen/utils/getStartingSnapValue';
+import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 
 type Props = {
   sites: Site[];
-  filteredSites: Site[];
   showSiteOnMap: (site: Site) => void;
   snapIndex?: number;
-} & SiteSearchBarProps;
+};
 
 export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
-  (
-    {sites, filteredSites, showSiteOnMap, snapIndex, ...searchBarProps},
-    ref,
-  ) => {
+  ({sites, showSiteOnMap, snapIndex}, ref) => {
     const {t} = useTranslation();
     const isLoadingData = useSelector(state => state.soilId.loading);
+    const deviceBottomInsets = useSafeAreaInsets().bottom;
+
+    const {filteredItems: filteredSites} = useListFilter<Site>();
 
     const renderSite = useCallback(
       ({item}: {item: Site}) => (
@@ -56,8 +57,12 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
     );
 
     const snapPoints = useMemo(
-      () => ['15%', sites.length === 0 ? '50%' : '75%', '100%'],
-      [sites.length],
+      () => [
+        `${getStartingSnapValue(deviceBottomInsets)}%`,
+        sites.length === 0 ? '50%' : '75%',
+        '100%',
+      ],
+      [sites.length, deviceBottomInsets],
     );
 
     const {colors} = useTheme();
@@ -66,6 +71,9 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
       () => ({backgroundColor: colors.grey[300]}),
       [colors],
     );
+    const {siteDistances} = useGeospatialContext();
+
+    const useDistance = useMemo(() => siteDistances !== null, [siteDistances]);
 
     return (
       <BottomSheet
@@ -78,7 +86,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
           <Row justifyContent="space-between" alignItems="center" pb="4">
             <Heading variant="h6">{t('site.list_title')}</Heading>
           </Row>
-          {sites.length >= 0 && <SiteSearchBar {...searchBarProps} />}
+          {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
         </Column>
         {isLoadingData ? (
           <Spinner size="lg" />

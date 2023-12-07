@@ -18,7 +18,6 @@
 import {Row, Heading} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
 
 type Props = {
@@ -34,15 +33,9 @@ export const AppBar = ({
 }: Props) => {
   const {t} = useTranslation();
   const route = useRoute();
-  const safeAreaTopInset = useSafeAreaInsets().top;
 
   return (
-    <Row
-      px="8px"
-      py="4px"
-      pt={`${safeAreaTopInset}px`}
-      minHeight="56px"
-      bg="primary.main">
+    <Row px="8px" py="4px" minHeight="56px" bg="primary.main">
       <Row flex={1} space="24px" alignItems="center">
         {LeftButton}
         <Heading variant="h6" color="primary.contrast">

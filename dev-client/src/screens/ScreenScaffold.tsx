@@ -15,12 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Column} from 'native-base';
 import {useCallback, useState} from 'react';
-import {StatusBar, View, LayoutChangeEvent} from 'react-native';
+import {StatusBar, View, LayoutChangeEvent, StyleSheet} from 'react-native';
+import {Box, Column, useTheme} from 'native-base';
+
 import {BottomNavigator} from 'terraso-mobile-client/navigation/navigators/BottomNavigator';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 type Props = {
   children: React.ReactNode;
@@ -33,6 +35,8 @@ export const ScreenScaffold = ({
   AppBar: PropsAppBar = <AppBar />,
   BottomNavigation: PropsBottomNavigation = <BottomNavigator />,
 }: Props) => {
+  const {colors} = useTheme();
+
   const [headerHeight, setHeaderHeight] = useState<number | undefined>(
     undefined,
   );
@@ -43,19 +47,29 @@ export const ScreenScaffold = ({
   );
 
   return (
-    <>
+    <SafeAreaView
+      style={[
+        styles.safeAreaContainer,
+        {backgroundColor: colors.primary.main},
+      ]}>
       <StatusBar
         barStyle="light-content"
         translucent
         backgroundColor={'#00000000'}
       />
-      <Column flex={1}>
+      <Column backgroundColor={colors.white} flex={1}>
         <View onLayout={onLayout}>{PropsAppBar}</View>
         <HeaderHeightContext.Provider value={headerHeight ?? 0}>
           <Box flex={1}>{children}</Box>
         </HeaderHeightContext.Provider>
         {PropsBottomNavigation}
       </Column>
-    </>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  safeAreaContainer: {
+    flex: 1,
+  },
+});

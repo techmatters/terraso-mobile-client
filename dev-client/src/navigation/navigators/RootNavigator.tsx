@@ -56,11 +56,23 @@ export const RootNavigator = () => {
   }, [hasToken, currentUser, dispatch]);
 
   useEffect(() => {
-    const listener = ({coords}: Location) =>
+    locationManager.getLastKnownLocation().then(initCoords => {
+      if (initCoords !== null) {
+        dispatch(
+          updateLocation({
+            coords: initCoords.coords,
+            accuracyM: initCoords.coords.accuracy ?? null,
+          }),
+        );
+      }
+    });
+
+    // add listener to update location on user movement
+    const listener = ({coords}: Location) => {
       dispatch(
         updateLocation({coords: coords, accuracyM: coords.accuracy ?? null}),
       );
-
+    };
     locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
     locationManager.addListener(listener);
 

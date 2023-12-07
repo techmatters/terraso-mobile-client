@@ -37,13 +37,13 @@ type Props<Keys extends string> = {
   };
 };
 
-export default function RadioBlock<T extends string>({
+export const RadioBlock = <T extends string>({
   label,
   options,
   allDisabled = false,
   groupProps: {onChange, ...radioGroupProps},
   labelProps,
-}: Props<T>) {
+}: Props<T>) => {
   return (
     <FormControl>
       <FormControl.Label {...labelProps}>{label}</FormControl.Label>
@@ -72,4 +72,4 @@ export default function RadioBlock<T extends string>({
       </Radio.Group>
     </FormControl>
   );
-}
+};

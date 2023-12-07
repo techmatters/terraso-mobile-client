@@ -15,12 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ScrollView} from 'native-base';
 import {useCallback, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Formik} from 'formik';
+
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
-import {useTranslation} from 'react-i18next';
 import {useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
@@ -28,7 +29,6 @@ import {
   coordsToString,
   parseCoords,
 } from 'terraso-mobile-client/components/StaticMapView';
-import {Formik} from 'formik';
 import {
   CreateSiteForm,
   FormState,
@@ -40,16 +40,17 @@ type Props = {
   createSiteCallback: (
     input: SiteAddMutationInput,
   ) => Promise<Site | undefined>;
+  onInfoPress: () => void;
 };
 
 export const CreateSiteView = ({
   defaultProjectId,
   createSiteCallback,
   sitePin,
+  onInfoPress,
 }: Props) => {
   const {t} = useTranslation();
   const validationSchema = useMemo(() => siteValidationSchema(t), [t]);
-
   const userLocation = useSelector(state => state.map.userLocation);
   const defaultProject = useSelector(state =>
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
@@ -76,18 +77,22 @@ export const CreateSiteView = ({
   );
 
   return (
-    <ScrollView>
-      <Formik<FormState>
-        onSubmit={onSave}
-        validationSchema={validationSchema}
-        initialValues={{
-          name: '',
-          coords: defaultCoords ? coordsToString(defaultCoords) : '',
-          projectId: defaultProject?.id,
-          privacy: defaultProject?.privacy ?? 'PUBLIC',
-        }}>
-        {props => <CreateSiteForm {...props} sitePin={sitePin} />}
-      </Formik>
-    </ScrollView>
+    <Formik<FormState>
+      onSubmit={onSave}
+      validationSchema={validationSchema}
+      initialValues={{
+        name: '',
+        coords: defaultCoords ? coordsToString(defaultCoords) : '',
+        projectId: defaultProject?.id,
+        privacy: defaultProject?.privacy ?? 'PUBLIC',
+      }}>
+      {props => (
+        <CreateSiteForm
+          {...props}
+          sitePin={sitePin}
+          onInfoPress={onInfoPress}
+        />
+      )}
+    </Formik>
   );
 };

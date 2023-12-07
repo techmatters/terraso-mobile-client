@@ -25,7 +25,7 @@ import {
   VStack,
 } from 'native-base';
 import {Formik, useFormikContext} from 'formik';
-import RadioBlock from 'terraso-mobile-client/components/RadioBlock';
+import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
 import ErrorMessage from 'terraso-mobile-client/screens/CreateProjectScreen/components/ErrorMessage';
@@ -92,6 +92,7 @@ export type ProjectFormValues = {
 
 type Props = {
   editForm?: boolean;
+  onInfoPress: () => void;
 };
 
 const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
@@ -157,7 +158,7 @@ export const EditForm = ({
   );
 };
 
-export default function Form({editForm = false}: Props) {
+export default function Form({editForm = false, onInfoPress}: Props) {
   const {t} = useTranslation();
   const {handleChange, handleBlur, values} =
     useFormikContext<ProjectFormValues>();
@@ -193,7 +194,11 @@ export default function Form({editForm = false}: Props) {
         label={
           <HStack alignItems="center">
             <Heading size="sm">{t('projects.create.privacy_label')}</Heading>
-            <IconButton name="info" _icon={{color: 'action.active'}} />
+            <IconButton
+              name="info"
+              onPress={onInfoPress}
+              _icon={{color: 'action.active'}}
+            />
           </HStack>
         }
         options={{

@@ -15,10 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo, useCallback, useRef} from 'react';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {useTranslation} from 'react-i18next';
+
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useSelector} from 'terraso-mobile-client/store';
-import {useTranslation} from 'react-i18next';
-import {useMemo} from 'react';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
@@ -26,12 +28,15 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
+import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
+import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 
 type Props = {siteId?: string; coords?: Coords};
 
 export const LocationDashboardScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const infoModalRef = useRef<BottomSheetModal>(null);
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
   );
@@ -55,20 +60,34 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
     [siteId, coords, navigation],
   );
 
+  const onInfoPress = useCallback(
+    () => infoModalRef.current?.present(),
+    [infoModalRef],
+  );
+  const onInfoClose = useCallback(
+    () => infoModalRef.current?.dismiss(),
+    [infoModalRef],
+  );
+
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar
-          LeftButton={<ScreenCloseButton />}
-          RightButton={appBarRightButton}
-          title={site?.name ?? t('site.dashboard.default_title')}
-        />
-      }>
-      {siteId ? (
-        <LocationDashboardTabNavigator siteId={siteId} />
-      ) : (
-        <SiteScreen siteId={siteId} coords={coords} />
-      )}
-    </ScreenScaffold>
+    <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
+      <BottomSheetModalProvider>
+        <ScreenScaffold
+          AppBar={
+            <AppBar
+              LeftButton={<ScreenCloseButton />}
+              RightButton={appBarRightButton}
+              title={site?.name ?? t('site.dashboard.default_title')}
+            />
+          }>
+          {siteId ? (
+            <LocationDashboardTabNavigator siteId={siteId} />
+          ) : (
+            <SiteScreen siteId={siteId} coords={coords} />
+          )}
+        </ScreenScaffold>
+        <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
+      </BottomSheetModalProvider>
+    </BottomSheetPrivacyModalContext.Provider>
   );
 };

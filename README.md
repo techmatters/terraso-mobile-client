@@ -2,6 +2,18 @@
 
 This repo contains the source code for Terraso’s mobile client modules.
 
+## Contributing
+
+Before contributing to the project, it's recommended that you set up
+your local git running the following command:
+
+```sh
+$ make setup-git-hooks
+```
+
+This will activate two git hooks to automatically check JavaScript code
+style and commit message structure before each commit.
+
 # Installation
 
 ## Dependencies

@@ -32,7 +32,7 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
-import ConfirmModal from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {formatName} from 'terraso-mobile-client/util';
 

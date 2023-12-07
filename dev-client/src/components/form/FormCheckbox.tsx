@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Checkbox} from 'native-base';
+import CheckBox from '@react-native-community/checkbox';
 import {memo} from 'react';
 import {
   Props as FormFieldWrapperProps,
@@ -24,16 +24,15 @@ import {
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 
 type Props = FormFieldWrapperProps &
-  Omit<React.ComponentProps<typeof Checkbox>, 'value'> & {value?: boolean};
+  Omit<React.ComponentProps<typeof CheckBox>, 'value'> & {value?: boolean};
 
 export const FormCheckbox = memo(({value: isChecked, ...props}: Props) => {
   const {value, onChange} = useFieldContext<boolean>(props.name);
   return (
     <FormFieldWrapper errorMessage={null} {...props}>
-      <Checkbox
-        value=""
-        isChecked={isChecked ?? value}
-        onChange={onChange}
+      <CheckBox
+        value={isChecked ?? value}
+        onValueChange={onChange}
         {...props}
       />
     </FormFieldWrapper>

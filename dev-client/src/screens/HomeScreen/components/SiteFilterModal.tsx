@@ -15,45 +15,61 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Column, FormControl, Select} from 'native-base';
-import {Dispatch, SetStateAction} from 'react';
 import {useTranslation} from 'react-i18next';
-import {SiteFilter} from 'terraso-mobile-client/screens/HomeScreen/hooks/useFilterSites';
-import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
+
 import {USER_ROLES} from 'terraso-mobile-client/constants';
+import {
+  TextInputFilter,
+  ListFilterModal,
+  SelectFilter,
+} from 'terraso-mobile-client/components/ListFilter';
 
 type Props = {
-  filter: SiteFilter;
-  setFilter: Dispatch<SetStateAction<SiteFilter>>;
+  useDistance: boolean;
 };
 
-export const SiteFilterModal = ({filter, setFilter}: Props) => {
+export const SiteFilterModal = ({useDistance}: Props) => {
   const {t} = useTranslation();
+
+  const roleOptions = Object.fromEntries(
+    USER_ROLES.map(role => [role, t(`site.role.${role}`)]),
+  );
+
+  const distanceSortingOptions = useDistance
+    ? ['distanceAsc', 'distanceDesc']
+    : [];
+
+  const sortOptions = Object.fromEntries(
+    [
+      'nameAsc',
+      'nameDesc',
+      'lastModAsc',
+      'lastModDesc',
+      ...distanceSortingOptions,
+    ].map(label => [label, t('site.search.sort.' + label)]),
+  );
+
   return (
-    <Column>
-      <FormControl>
-        <FormControl.Label>
-          {t('site.search.filter_projects')}
-        </FormControl.Label>
-        <ProjectSelect
-          projectId={filter.projectId}
-          setProjectId={projectId => setFilter(prev => ({...prev, projectId}))}
+    <ListFilterModal
+      searchInput={
+        <TextInputFilter
+          placeholder={t('site.search.placeholder')}
+          label={t('site.search.accessibility_label')}
+          name="search"
         />
-      </FormControl>
-      <FormControl>
-        <FormControl.Label>{t('site.search.filter_role')}</FormControl.Label>
-        <Select
-          selectedValue={filter.role}
-          onValueChange={role => setFilter(prev => ({...prev, role}) as any)}>
-          {USER_ROLES.map(role => (
-            <Select.Item
-              label={t(`site.role.${role}`)}
-              value={role}
-              key={role}
-            />
-          ))}
-        </Select>
-      </FormControl>
-    </Column>
+      }>
+      <SelectFilter
+        label={t('site.search.sort.label')}
+        options={sortOptions}
+        name="sort"
+        nullableOption={t('general.filter.no_sort')}
+      />
+      <SelectFilter
+        label={t('site.search.filter_role')}
+        options={roleOptions}
+        name="role"
+        nullableOption={t('general.filter.no_role')}
+      />
+    </ListFilterModal>
   );
 };

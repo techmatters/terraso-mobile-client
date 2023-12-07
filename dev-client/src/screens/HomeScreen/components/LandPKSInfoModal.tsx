@@ -27,7 +27,7 @@ type Props = {
   onClose: () => void;
 };
 
-export const InfoModal = forwardRef<BottomSheetModal, Props>(
+export const LandPKSInfoModal = forwardRef<BottomSheetModal, Props>(
   ({onClose}, ref) => {
     const headerHeight = useHeaderHeight();
 

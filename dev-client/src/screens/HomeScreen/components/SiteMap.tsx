@@ -40,13 +40,13 @@ import {siteFeatureCollection} from 'terraso-mobile-client/screens/HomeScreen/ut
 import {repositionCamera} from 'terraso-mobile-client/screens/HomeScreen/utils/repositionCamera';
 import {SiteMapCallout} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMapCallout';
 import {CustomUserLocation} from 'terraso-mobile-client/screens/HomeScreen/components/CustomUserLocation';
+import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 
 const DEFAULT_LOCATION = [-98.0, 38.5];
 const MAX_EXPANSION_ZOOM = 15;
 
 type Props = {
   updateUserLocation?: (location: Location) => void;
-  sites: Record<string, Site>;
   calloutState: CalloutState;
   setCalloutState: (state: CalloutState) => void;
   styleURL?: string;
@@ -56,7 +56,6 @@ type Props = {
 const SiteMap = (
   {
     updateUserLocation,
-    sites,
     setCalloutState,
     calloutState,
     styleURL,
@@ -68,6 +67,10 @@ const SiteMap = (
   const shapeSourceRef = useRef<Mapbox.ShapeSource>(null);
   const cameraRef = useRef<Mapbox.Camera>(null);
   useImperativeHandle(forwardedCameraRef, () => cameraRef.current!);
+
+  const {filteredItems: filteredSites} = useListFilter<Site>();
+
+  const sites = Object.fromEntries(filteredSites.map(site => [site.id, site]));
 
   const selectedSite =
     calloutState.kind === 'site' ? sites[calloutState.siteId] : null;

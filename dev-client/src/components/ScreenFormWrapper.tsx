@@ -22,7 +22,7 @@ import * as yup from 'yup';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {KeyboardAvoidingView, Platform} from 'react-native';
-import ConfirmModal from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {HorizontalIconButton} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
 
@@ -79,7 +79,7 @@ export const ScreenFormWrapper = forwardRef(
             <Spacer />
             <ConfirmModal
               trigger={onOpen => (
-                <Box pt={1} pr={5}>
+                <Box pt={2} pr={5}>
                   <HorizontalIconButton
                     p={0}
                     name="delete"

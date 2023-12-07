@@ -32,11 +32,16 @@ import BottomSheet, {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
-import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
-import {useFilterSites} from 'terraso-mobile-client/screens/HomeScreen/hooks/useFilterSites';
+import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
-import {InfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/InfoModal';
+import {
+  ListFilterProvider,
+  SortingOption,
+} from 'terraso-mobile-client/components/ListFilter';
+import {equals, searchText} from 'terraso-mobile-client/util';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {normalizeText} from 'terraso-client-shared/utils';
 
 export type CalloutState =
   | {
@@ -75,21 +80,7 @@ export const HomeScreen = ({site}: Props) => {
   const siteList = useMemo(() => Object.values(sites), [sites]);
   const dispatch = useDispatch();
   const camera = useRef<Camera>(null);
-  const {
-    results: searchedSites,
-    query: sitesQuery,
-    setQuery: setSitesQuery,
-  } = useTextSearch({data: siteList, keys: ['name']});
-  const [siteFilter, setSiteFilter] = useState({});
   const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
-  const filteredSites = useFilterSites(
-    searchedSites,
-    siteProjectRoles,
-    siteFilter,
-  );
-  const filteredSitesById = Object.fromEntries(
-    filteredSites.map(currentSite => [currentSite.id, currentSite]),
-  );
 
   const moveToPoint = useCallback(
     (coords: Coords) => {
@@ -187,45 +178,103 @@ export const HomeScreen = ({site}: Props) => {
     [infoBottomSheetRef],
   );
 
+  const {siteDistances} = useGeospatialContext();
+
+  const distanceSorting: Record<string, SortingOption<Site>> | undefined =
+    useMemo(() => {
+      return siteDistances === null
+        ? undefined
+        : {
+            distanceAsc: {
+              record: siteDistances,
+              key: 'id',
+              order: 'ascending',
+            },
+            distanceDesc: {
+              record: siteDistances,
+              key: 'id',
+              order: 'descending',
+            },
+          };
+    }, [siteDistances]);
+
   return (
     <BottomSheetModalProvider>
-      <ScreenScaffold
-        AppBar={
-          <AppBar
-            LeftButton={<AppBarIconButton name="menu" />}
-            RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
-          />
-        }>
-        <Box flex={1}>
-          <Box flex={1} zIndex={-1}>
-            <MapSearch
-              zoomTo={searchFunction}
-              zoomToUser={moveToUser}
-              toggleMapLayer={toggleMapLayer}
+      <ListFilterProvider
+        items={siteList}
+        filters={{
+          search: {
+            kind: 'filter',
+            f: searchText,
+            preprocess: normalizeText,
+            lookup: {
+              key: ['name', 'notes.content'],
+            },
+            hide: true,
+          },
+          role: {
+            kind: 'filter',
+            f: equals,
+            lookup: {
+              record: siteProjectRoles,
+              key: 'id',
+            },
+          },
+          sort: {
+            kind: 'sorting',
+            options: {
+              nameDesc: {
+                key: 'name',
+                order: 'descending',
+              },
+              nameAsc: {
+                key: 'name',
+                order: 'ascending',
+              },
+              lastModDesc: {
+                key: 'updatedAt',
+                order: 'descending',
+              },
+              lastModAsc: {
+                key: 'updatedAt',
+                order: 'ascending',
+              },
+              ...distanceSorting,
+            },
+          },
+        }}>
+        <ScreenScaffold
+          AppBar={
+            <AppBar
+              LeftButton={<AppBarIconButton name="menu" />}
+              RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
             />
-            <SiteMap
-              sites={filteredSitesById}
-              ref={camera}
-              calloutState={calloutState}
-              setCalloutState={setCalloutState}
-              styleURL={mapStyleURL}
-              onMapFinishedLoading={onMapFinishedLoading}
+          }>
+          <Box flex={1}>
+            <Box flex={1} zIndex={-1}>
+              <MapSearch
+                zoomTo={searchFunction}
+                zoomToUser={moveToUser}
+                toggleMapLayer={toggleMapLayer}
+              />
+              <SiteMap
+                ref={camera}
+                calloutState={calloutState}
+                setCalloutState={setCalloutState}
+                styleURL={mapStyleURL}
+                onMapFinishedLoading={onMapFinishedLoading}
+              />
+            </Box>
+            <SiteListBottomSheet
+              ref={siteListBottomSheetRef}
+              sites={siteList}
+              showSiteOnMap={showSiteOnMap}
+              snapIndex={1}
             />
           </Box>
-          <SiteListBottomSheet
-            ref={siteListBottomSheetRef}
-            snapIndex={1}
-            sites={siteList}
-            filteredSites={filteredSites}
-            showSiteOnMap={showSiteOnMap}
-            query={sitesQuery}
-            setQuery={setSitesQuery}
-            filter={siteFilter}
-            setFilter={setSiteFilter}
-          />
-        </Box>
-        <InfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
-      </ScreenScaffold>
+          <LandPKSInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
+        </ScreenScaffold>
+      </ListFilterProvider>
     </BottomSheetModalProvider>
   );
 };

@@ -15,10 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
-import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
+import {useCallback, useRef} from 'react';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+
 import {useDispatch} from 'terraso-mobile-client/store';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
 import {
   addSite,
   fetchSitesForProject,
@@ -27,6 +29,7 @@ import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql'
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
 
 type Props =
   | {
@@ -40,6 +43,7 @@ type Props =
 
 export const CreateSiteScreen = (props: Props = {}) => {
   const dispatch = useDispatch();
+  const infoModalRef = useRef<BottomSheetModal>(null);
 
   const createSiteCallback = useCallback(
     async (input: SiteAddMutationInput) => {
@@ -57,15 +61,28 @@ export const CreateSiteScreen = (props: Props = {}) => {
     [dispatch],
   );
 
+  const onInfo = useCallback(
+    () => infoModalRef.current?.present(),
+    [infoModalRef],
+  );
+  const onInfoClose = useCallback(
+    () => infoModalRef.current?.dismiss(),
+    [infoModalRef],
+  );
+
   return (
-    <ScreenScaffold
-      BottomNavigation={null}
-      AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
-      <CreateSiteView
-        createSiteCallback={createSiteCallback}
-        defaultProjectId={'projectId' in props ? props.projectId : undefined}
-        sitePin={'coords' in props ? props.coords : undefined}
-      />
-    </ScreenScaffold>
+    <BottomSheetModalProvider>
+      <ScreenScaffold
+        BottomNavigation={null}
+        AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
+        <CreateSiteView
+          createSiteCallback={createSiteCallback}
+          defaultProjectId={'projectId' in props ? props.projectId : undefined}
+          sitePin={'coords' in props ? props.coords : undefined}
+          onInfoPress={onInfo}
+        />
+      </ScreenScaffold>
+      <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
+    </BottomSheetModalProvider>
   );
 };

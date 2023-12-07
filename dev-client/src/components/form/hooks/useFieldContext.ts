@@ -16,7 +16,7 @@
  */
 
 import {useFormikContext} from 'formik';
-import {createContext, useContext} from 'react';
+import {createContext, useContext, useCallback} from 'react';
 
 type FieldContextType<Name extends string = string, T = string> = {
   name?: Name;
@@ -42,6 +42,15 @@ export const useFieldContext = <
 
   const formikContext = useFormikContext<FormValues>();
 
+  const onChange = useCallback(
+    (value: Value) => {
+      if (name !== undefined) {
+        formikContext.setFieldValue(name, value);
+      }
+    },
+    [formikContext, name],
+  );
+
   return name === undefined
     ? fieldContext!
     : formikContext === undefined
@@ -49,7 +58,7 @@ export const useFieldContext = <
       : {
           name,
           value: formikContext.values[name] as Value,
-          onChange: formikContext.handleChange(name) as (_: Value) => void,
+          onChange,
           onBlur: formikContext.handleBlur(name) as unknown as () => void,
         };
 };
