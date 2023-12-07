@@ -19,6 +19,8 @@ import {ImageRadio} from 'terraso-mobile-client/components/ImageRadio';
 import {useCallback, useMemo} from 'react';
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {Modal} from 'terraso-mobile-client/components/Modal';
+import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
 
 type Props = {
   siteId: string;
@@ -47,7 +49,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
       Object.fromEntries(
         Object.entries(STEEPNESS_IMAGES).map(([value, image]) => [
           value,
-          {label: t(`slope.steepness.labels.${value}`), image},
+          {label: t(`slope.steepness.select_labels.${value}`), image},
         ]),
       ),
     [t],
@@ -80,11 +82,17 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
           <Text variant="body1">{t('slope.steepness.description')}</Text>
           <Box height="30px" />
           <Row justifyContent="space-between">
-            <Button
-              _text={{textTransform: 'uppercase'}}
-              rightIcon={<Icon name="chevron-right" />}>
-              {t('slope.steepness.manual_label')}
-            </Button>
+            <Modal
+              trigger={onOpen => (
+                <Button
+                  onPress={onOpen}
+                  _text={{textTransform: 'uppercase'}}
+                  rightIcon={<Icon name="chevron-right" />}>
+                  {t('slope.steepness.manual_label')}
+                </Button>
+              )}>
+              <ManualSteepnessModal siteId={siteId} />
+            </Modal>
             <Button
               _text={{textTransform: 'uppercase'}}
               rightIcon={<Icon name="chevron-right" />}>

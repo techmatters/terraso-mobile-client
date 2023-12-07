@@ -59,7 +59,7 @@ export const renderSlopeValue = (
   {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
 ) =>
   slopeSteepnessSelect
-    ? t(`slope.steepness.labels.${slopeSteepnessSelect}`)
+    ? t(`slope.steepness.select_labels.${slopeSteepnessSelect}`)
     : slopeSteepnessPercent
       ? `${slopeSteepnessPercent.toFixed(0)}%`
       : slopeSteepnessDegree
