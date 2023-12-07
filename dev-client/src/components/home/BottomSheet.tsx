@@ -32,6 +32,7 @@ import {
   ListFilterModal,
   SelectFilter,
 } from 'terraso-mobile-client/components/common/ListFilter';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const EmptySiteMessage = () => {
@@ -117,6 +118,9 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
       () => ({backgroundColor: colors.grey[300]}),
       [colors],
     );
+    const {siteDistances} = useGeospatialContext();
+
+    const useDistance = useMemo(() => siteDistances !== null, [siteDistances]);
 
     return (
       <BottomSheet
@@ -129,7 +133,7 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
           <Row justifyContent="space-between" alignItems="center" pb="4">
             <Heading variant="h6">{t('site.list_title')}</Heading>
           </Row>
-          {sites.length >= 0 && <SiteFilterModal />}
+          {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
         </Column>
         {isLoadingData ? (
           <Spinner size="lg" />
@@ -151,7 +155,11 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
   },
 );
 
-const SiteFilterModal = () => {
+type ModalProps = {
+  useDistance: boolean;
+};
+
+const SiteFilterModal = ({useDistance}: ModalProps) => {
   const {t} = useTranslation();
 
   const roleOptions = Object.fromEntries(
@@ -169,6 +177,20 @@ const SiteFilterModal = () => {
     [projects],
   );
 
+  const distanceSortingOptions = useDistance
+    ? ['distanceAsc', 'distanceDesc']
+    : [];
+
+  const sortOptions = Object.fromEntries(
+    [
+      'nameAsc',
+      'nameDesc',
+      'lastModAsc',
+      'lastModDesc',
+      ...distanceSortingOptions,
+    ].map(label => [label, t('site.search.sort.' + label)]),
+  );
+
   return (
     <ListFilterModal
       searchInput={
@@ -179,13 +201,21 @@ const SiteFilterModal = () => {
         />
       }>
       <SelectFilter
-        label={t('site.search.filter_projects')}
+        label={t('site.search.filter_projects') + ':'}
         options={projectOptions}
         name="project"
         nullableOption={t('general.filter.no_project')}
       />
+
       <SelectFilter
-        label={t('site.search.filter_role')}
+        label={t('site.search.sort.label') + ':'}
+        options={sortOptions}
+        name="sort"
+        nullableOption={t('general.filter.no_sort')}
+      />
+
+      <SelectFilter
+        label={t('site.search.filter_role') + ':'}
         options={roleOptions}
         name="role"
         nullableOption={t('general.filter.no_role')}
