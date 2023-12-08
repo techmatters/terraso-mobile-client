@@ -26,11 +26,11 @@
 import 'react-native-get-random-values';
 
 import {useEffect} from 'react';
-import {PermissionsAndroid, LogBox} from 'react-native';
+import {PermissionsAndroid, LogBox, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
-import {NativeBaseProvider} from 'native-base';
+import {Box, NativeBaseProvider} from 'native-base';
 import Mapbox from '@rnmapbox/maps';
 
 import 'terraso-mobile-client/translations';
@@ -41,6 +41,7 @@ import {createStore} from 'terraso-mobile-client/store';
 import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
+import {TextInput} from './components/TextInput';
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 LogBox.ignoreLogs([
@@ -57,6 +58,7 @@ function App(): JSX.Element {
   );
 
   return (
+    /*
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
         <NativeBaseProvider theme={theme}>
@@ -67,7 +69,14 @@ function App(): JSX.Element {
           </NavigationContainer>
         </NativeBaseProvider>
       </Provider>
-    </GestureHandlerRootView>
+      </GestureHandlerRootView> */
+    <NativeBaseProvider theme={theme}>
+      <View>
+        <Box>
+          <TextInput label="Site Name" />
+        </Box>
+      </View>
+    </NativeBaseProvider>
   );
 }
 
