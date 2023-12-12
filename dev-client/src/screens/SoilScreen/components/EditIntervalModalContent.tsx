@@ -86,9 +86,7 @@ export const EditIntervalModalContent = ({siteId, depthInterval}: Props) => {
 
   const onSubmit = useCallback(
     async (values: EditIntervalFormInput) => {
-      // TODO: actually use the applyToAll variable
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const {start, end, applyToAll, ...newInterval} = schema.cast(values);
+      const {start, end, ...newInterval} = schema.cast(values);
       await dispatch(
         updateSoilDataDepthIntervalAsync({
           siteId,
