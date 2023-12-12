@@ -316,7 +316,8 @@
       "data_portal_link_text": "LandPKS Data Portal",
       "privacy_policy_link_url": "https://landpotential.org/",
       "privacy_policy_link_text": "LandPKS Privacy Policy"
-    }
+    },
+    "required": "required"
   },
   "errors": {
     "soilId": "Error saving soil ID info to backend."

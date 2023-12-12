@@ -22,7 +22,9 @@ import {
   updateSoilDataDepthIntervalAsync,
   soilPitMethods,
   methodEnabled,
+  methodRequired,
   SoilDataDepthInterval,
+  SoilPitMethod,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 import {useMemo, useCallback} from 'react';
@@ -49,9 +51,14 @@ type EditIntervalFormInput = IntervalFormInput &
 type Props = {
   siteId: string;
   depthInterval: DepthInterval;
+  requiredInputs: string[];
 };
 
-export const EditIntervalModalContent = ({siteId, depthInterval}: Props) => {
+export const EditIntervalModalContent = ({
+  siteId,
+  depthInterval,
+  requiredInputs,
+}: Props) => {
   const {t} = useTranslation();
   const soilData = useSelector(state => state.soilId.soilData[siteId]);
   const dispatch = useDispatch();
@@ -64,6 +71,20 @@ export const EditIntervalModalContent = ({siteId, depthInterval}: Props) => {
   const interval = useMemo(
     () => soilData.depthIntervals.find(sameDepth({depthInterval}))!,
     [soilData.depthIntervals, depthInterval],
+  );
+
+  const requiredInputsSet = useMemo(
+    () => new Set(requiredInputs),
+    [requiredInputs],
+  );
+
+  const inputsWithRequired = useMemo(
+    () =>
+      soilPitMethods.map(
+        method =>
+          [method, requiredInputsSet.has(method)] as [SoilPitMethod, boolean],
+      ),
+    [requiredInputsSet],
   );
 
   const schema = useMemo(
@@ -82,6 +103,19 @@ export const EditIntervalModalContent = ({siteId, depthInterval}: Props) => {
   const showUpdateWarning = useMemo(
     () => soilData.depthDependentData.length > 0,
     [soilData],
+  );
+
+  const updateSwitch = useCallback(
+    (method: SoilPitMethod) => (newValue: boolean) => {
+      dispatch(
+        updateSoilDataDepthIntervalAsync({
+          siteId,
+          depthInterval,
+          [methodEnabled(method)]: newValue,
+        }),
+      );
+    },
+    [dispatch],
   );
 
   const onSubmit = useCallback(
@@ -118,20 +152,13 @@ export const EditIntervalModalContent = ({siteId, depthInterval}: Props) => {
           <Heading variant="h6">
             {t('soil.depth_interval.data_inputs_title')}
           </Heading>
-          {soilPitMethods.map(method => (
-            <FormSwitch
-              name={methodEnabled(method)}
+          {inputsWithRequired.map(([method, isRequired]) => (
+            <InputFormSwitch
+              method={method}
+              isRequired={isRequired}
               value={interval[methodEnabled(method)]}
-              onChange={value => {
-                dispatch(
-                  updateSoilDataDepthIntervalAsync({
-                    siteId,
-                    depthInterval,
-                    [methodEnabled(method)]: value,
-                  }),
-                );
-              }}
-              label={t(`soil.collection_method.${method}`)}
+              updateEnabled={updateSwitch(method)}
+              key={method}
             />
           ))}
           <FormCheckbox
@@ -177,5 +204,38 @@ const AddButton = ({action, isDisabled}: AddButtonProps) => {
     <Button size="lg" mx="auto" onPress={action} isDisabled={isDisabled}>
       {t('general.add')}
     </Button>
+  );
+};
+
+type SwitchProps = {
+  method: SoilPitMethod;
+  isRequired: boolean;
+  value: boolean;
+  updateEnabled: (newValue: boolean) => void;
+};
+
+const InputFormSwitch = ({
+  method,
+  isRequired,
+  value,
+  updateEnabled,
+}: SwitchProps) => {
+  const {t} = useTranslation();
+
+  const label = useMemo(
+    () =>
+      t(`soil.collection_method.${method}`) +
+      (isRequired ? ` (${t('general.required')})` : ''),
+    [method, isRequired],
+  );
+
+  return (
+    <FormSwitch
+      name={methodEnabled(method)}
+      value={isRequired || value}
+      disabled={isRequired}
+      onChange={updateEnabled}
+      label={label}
+    />
   );
 };
