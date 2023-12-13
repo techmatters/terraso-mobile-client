@@ -36,3 +36,5 @@ export const MEASUREMENT_UNITS = ['METRIC', 'IMPERIAL'];
 export const GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE = 5;
 export const SITE_NOTE_MIN_LENGTH = 3;
 export const LOCALE = 'en-US';
+
+export const DepthPresets = ['landPks', 'nrcs', 'custom', 'none'];
