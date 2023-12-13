@@ -26,19 +26,32 @@ export type IntervalFormInput = {
   end: string;
 };
 
-export const IntervalForm = () => {
+type Props = {
+  hideLabel?: boolean;
+  disableDepth?: boolean;
+};
+
+export const IntervalForm = ({
+  hideLabel = false,
+  disableDepth = false,
+}: Props) => {
   const {t} = useTranslation();
   return (
     <>
-      <FormInput
-        name="label"
-        helpText={t('soil.depth_interval.label_help', {
-          max: FORM_LABEL_MAX,
-        })}
-        placeholder={t('soil.depth_interval.label_placeholder')}
-        variant="underlined"
-      />
-      <Box height="20px" />
+      {!hideLabel && (
+        <>
+          <FormInput
+            name="label"
+            helpText={t('soil.depth_interval.label_help', {
+              max: FORM_LABEL_MAX,
+            })}
+            placeholder={t('soil.depth_interval.label_placeholder')}
+            variant="underlined"
+            isReadOnly={hideLabel}
+          />
+          <Box height="20px" />
+        </>
+      )}
       <Row justifyContent="space-between" space="40px">
         <Box flex={1}>
           <FormInput
@@ -47,6 +60,7 @@ export const IntervalForm = () => {
             placeholder={t('soil.depth_interval.start_label', {
               unit: 'cm',
             })}
+            isReadOnly={disableDepth}
           />
         </Box>
         <Box flex={1}>
@@ -56,6 +70,7 @@ export const IntervalForm = () => {
             placeholder={t('soil.depth_interval.end_label', {
               unit: 'cm',
             })}
+            isReadOnly={disableDepth}
           />
         </Box>
       </Row>

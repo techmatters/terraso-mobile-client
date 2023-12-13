@@ -22,7 +22,6 @@ import {
   updateSoilDataDepthIntervalAsync,
   soilPitMethods,
   methodEnabled,
-  methodRequired,
   SoilDataDepthInterval,
   SoilPitMethod,
 } from 'terraso-client-shared/soilId/soilIdSlice';
@@ -52,12 +51,14 @@ type Props = {
   siteId: string;
   depthInterval: DepthInterval;
   requiredInputs: string[];
+  customPreset: boolean;
 };
 
 export const EditIntervalModalContent = ({
   siteId,
   depthInterval,
   requiredInputs,
+  customPreset,
 }: Props) => {
   const {t} = useTranslation();
   const soilData = useSelector(state => state.soilId.soilData[siteId]);
@@ -115,7 +116,7 @@ export const EditIntervalModalContent = ({
         }),
       );
     },
-    [dispatch],
+    [dispatch, depthInterval, siteId],
   );
 
   const onSubmit = useCallback(
@@ -147,7 +148,10 @@ export const EditIntervalModalContent = ({
         <>
           <Heading variant="h6">{t('soil.depth_interval.edit_title')}</Heading>
           <Box height="20px" />
-          <IntervalForm />
+          <IntervalForm
+            hideLabel={!customPreset}
+            disableDepth={!customPreset}
+          />
           <Box height="50px" />
           <Heading variant="h6">
             {t('soil.depth_interval.data_inputs_title')}
@@ -226,7 +230,7 @@ const InputFormSwitch = ({
     () =>
       t(`soil.collection_method.${method}`) +
       (isRequired ? ` (${t('general.required')})` : ''),
-    [method, isRequired],
+    [method, isRequired, t],
   );
 
   return (

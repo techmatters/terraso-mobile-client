@@ -27,7 +27,6 @@ import {EditIntervalModalContent} from 'terraso-mobile-client/screens/SoilScreen
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
-  ProjectSoilSettings,
   SoilData,
   methodRequired,
   soilPitMethods,
@@ -85,6 +84,31 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     [siteId, dispatch],
   );
 
+  const preset = useMemo(() => {
+    if (project !== undefined) {
+      if (project.depthIntervalPreset === 'CUSTOM') {
+        return 'PROJECT_CUSTOM';
+      }
+      if (project.depthIntervalPreset !== 'NONE') {
+        // project preset takes precedence over site
+        return project.depthIntervalPreset;
+      }
+    }
+    if (
+      soilData === undefined ||
+      soilData.depthIntervalPreset === null ||
+      soilData.depthIntervalPreset === undefined
+    ) {
+      return 'NONE';
+    }
+    if (soilData.depthIntervalPreset === 'CUSTOM') {
+      return 'CUSTOM';
+    }
+    return soilData.depthIntervalPreset;
+  }, [project, soilData]);
+
+  const customPreset = useMemo(() => preset === 'CUSTOM', [preset]);
+
   return (
     <BottomSheetModalProvider>
       <Column backgroundColor="grey.300">
@@ -92,8 +116,13 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           <Heading variant="h6">{t('soil.surface')}</Heading>
         </Row>
         <Box height="16px" />
-        <Row backgroundColor="background.default" px="16px" py="12px">
+        <Row
+          backgroundColor="background.default"
+          px="16px"
+          py="12px"
+          justifyContent="space-between">
           <Heading variant="h6">{t('soil.pit')}</Heading>
+          <IconButton name="tune" color="action.active" />
         </Row>
         {allIntervals.map(interval => (
           <DepthIntervalEditor
@@ -101,6 +130,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
             siteId={siteId}
             interval={interval}
             requiredInputs={projectRequiredInputs}
+            customPreset={customPreset}
           />
         ))}
         <Modal
@@ -137,10 +167,12 @@ const DepthIntervalEditor = ({
   siteId,
   interval: {label, depthInterval},
   requiredInputs,
+  customPreset,
 }: {
   siteId: string;
   interval: LabelledDepthInterval;
   requiredInputs: string[];
+  customPreset: boolean;
 }) => {
   return (
     <Row
@@ -164,6 +196,7 @@ const DepthIntervalEditor = ({
           siteId={siteId}
           depthInterval={depthInterval}
           requiredInputs={requiredInputs}
+          customPreset={customPreset}
         />
       </BottomSheetModal>
     </Row>
