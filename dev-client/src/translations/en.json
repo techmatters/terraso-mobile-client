@@ -97,11 +97,11 @@
     "search": {
       "placeholder": "Search sites",
       "accessibility_label": "Filter sites by site name",
-      "filter_projects": "Filter sites by project",
-      "filter_role": "Filter sites by role",
+      "filter_projects": "Filter sites by project:",
+      "filter_role": "Filter sites by role:",
       "no_matches": "No sites match the current search and filter options.",
       "sort": {
-        "label": "Sort projects by",
+        "label": "Sort projects by:",
         "nameAsc": "Name (A to Z)",
         "nameDesc": "Name (Z to A)",
         "lastModAsc": "Last Modified (most recent)",
@@ -220,7 +220,7 @@
         "accessility_label": "Search for sites"
       },
       "sort": {
-        "label": "Sort sites by:",
+        "label": "Sort sites by",
         "nameAsc": "Site name (A to Z)",
         "updatedAtAsc": "Date modified (most recent)",
         "distanceAsc": "Distance (nearest to me)"
