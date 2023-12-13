@@ -109,6 +109,13 @@ jobs:
         working-directory: ./dev-client/android
         run: ./gradlew bundleRelease
 
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: android-artifacts
+          path: android/*
+
       - name: Sign Android app bundle
         if: ${{ inputs.upload == 'true' }}
         uses: r0adkll/sign-android-release@v1
