@@ -29,6 +29,7 @@ import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {SpeedDial} from 'terraso-mobile-client/navigation/components/SpeedDial';
 import {Icon} from 'terraso-mobile-client/components/Icons';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 
 const tabDefinitions = {
   SITE: SiteScreen,
@@ -61,7 +62,9 @@ export const LocationDashboardTabNavigator = (params: {siteId: string}) => {
 
   return (
     <>
-      <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
+      <SiteRoleContextProvider siteId={params.siteId}>
+        <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
+      </SiteRoleContextProvider>
       <SpeedDial>
         <Button variant="speedDial" leftIcon={<Icon name="description" />}>
           {t('site.dashboard.speed_dial.note_label')}

@@ -40,5 +40,5 @@ export const RestrictBySiteRole = ({role, children}: RestrictSiteRoleProps) => {
     return role === siteRole;
   }, [siteRole, role]);
 
-  return display ? {children} : <></>;
+  return display ? children : <></>;
 };

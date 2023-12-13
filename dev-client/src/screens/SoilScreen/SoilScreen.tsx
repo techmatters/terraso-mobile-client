@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Column, Heading, Row} from 'native-base';
+import {Box, Button, Column, Heading, Row, Text} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -32,6 +32,11 @@ import {
   soilPitMethods,
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {DepthPresets} from 'terraso-mobile-client/constants';
+import {Formik} from 'formik';
+import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
+import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -122,7 +127,13 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           py="12px"
           justifyContent="space-between">
           <Heading variant="h6">{t('soil.pit')}</Heading>
-          <IconButton name="tune" color="action.active" />
+          <RestrictBySiteRole
+            role={[
+              {kind: 'site', role: 'owner'},
+              {kind: 'project', role: 'manager'},
+            ]}>
+            <ChangePresetModal />
+          </RestrictBySiteRole>
         </Row>
         {allIntervals.map(interval => (
           <DepthIntervalEditor
@@ -133,31 +144,38 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
             customPreset={customPreset}
           />
         ))}
-        <Modal
-          trigger={onOpen => (
-            <Button
-              size="lg"
-              variant="fullWidth"
-              backgroundColor="primary.dark"
-              justifyContent="start"
-              _text={{
-                color: 'primary.contrast',
-              }}
-              _icon={{
-                color: 'primary.contrast',
-              }}
-              width="full"
-              borderRadius="0px"
-              leftIcon={<Icon name="add" />}
-              onPress={onOpen}>
-              {t('soil.add_depth_label')}
-            </Button>
-          )}>
-          <AddIntervalModal
-            onSubmit={onAddDepthInterval}
-            existingIntervals={existingIntervals}
-          />
-        </Modal>
+        <RestrictBySiteRole
+          role={[
+            {kind: 'site', role: 'owner'},
+            {kind: 'project', role: 'manager'},
+            {kind: 'project', role: 'contributor'},
+          ]}>
+          <Modal
+            trigger={onOpen => (
+              <Button
+                size="lg"
+                variant="fullWidth"
+                backgroundColor="primary.dark"
+                justifyContent="start"
+                _text={{
+                  color: 'primary.contrast',
+                }}
+                _icon={{
+                  color: 'primary.contrast',
+                }}
+                width="full"
+                borderRadius="0px"
+                leftIcon={<Icon name="add" />}
+                onPress={onOpen}>
+                {t('soil.add_depth_label')}
+              </Button>
+            )}>
+            <AddIntervalModal
+              onSubmit={onAddDepthInterval}
+              existingIntervals={existingIntervals}
+            />
+          </Modal>
+        </RestrictBySiteRole>
       </Column>
     </BottomSheetModalProvider>
   );
@@ -200,5 +218,43 @@ const DepthIntervalEditor = ({
         />
       </BottomSheetModal>
     </Row>
+  );
+};
+
+const ChangePresetModal = ({}: {}) => {
+  return (
+    <Modal
+      trigger={onOpen => (
+        <IconButton
+          name="tune"
+          _icon={{color: 'action.active'}}
+          onPress={onOpen}
+        />
+      )}>
+      <Heading variant="h6">Change soil pit depths</Heading>
+      <Text variant="body-1">
+        Data already entered for a depth will be deleted when the depth interval
+        is changed.
+      </Text>
+
+      <Formik initialValues={{}} onSubmit={() => {}}>
+        {({handleSubmit, isValid, isSubmitting}) => (
+          <>
+            <FormRadioGroup
+              name="preset"
+              values={DepthPresets}
+              renderRadio={value => (
+                <FormRadio value={value}>{value}</FormRadio>
+              )}
+            />
+            <Button
+              onPress={handleSubmit}
+              isDisabled={!isValid || isSubmitting}>
+              Submit
+            </Button>
+          </>
+        )}
+      </Formik>
+    </Modal>
   );
 };
