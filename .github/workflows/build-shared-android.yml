@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'true' && 'true' || 'false' }}
+      SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
 
     steps:
       - name: Check out git repository
