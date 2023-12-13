@@ -113,8 +113,8 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: android-artifacts
-          path: dev-client/android/*
+          name: dev-client-artifacts
+          path: dev-client/*
 
       - name: Sign Android app bundle
         if: ${{ inputs.upload == 'true' }}
