@@ -220,6 +220,13 @@ export const HomeScreen = ({site}: Props) => {
               key: 'id',
             },
           },
+          project: {
+            kind: 'filter',
+            f: equals,
+            lookup: {
+              key: 'projectId',
+            },
+          },
           sort: {
             kind: 'sorting',
             options: {
