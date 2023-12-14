@@ -20,7 +20,7 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-ios/.xcode.env.local
+dev-client/ios/.xcode.env.local
 
 # VS Code
 .vscode

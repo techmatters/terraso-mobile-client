@@ -26,11 +26,18 @@ on:
         required: false
       MICROSOFT_SIGNATURE_HASH:
         required: false
+      SENTRY_DSN:
+        required: false
+      SENTRY_AUTH_TOKEN:
+        required: false
 
 jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
 
     steps:
       - name: Check out git repository
@@ -49,6 +56,9 @@ jobs:
           echo "MICROSOFT_OAUTH_CLIENT_ID=${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}" >> .env
           echo "MICROSOFT_SIGNATURE_HASH=${{ secrets.MICROSOFT_SIGNATURE_HASH }}" >> .env
           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
+          cp ../sentry.properties.example sentry.properties
+          echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> sentry.properties
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
