@@ -27,12 +27,14 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {SoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 type DataSummaryCardProps = {
+  required: boolean;
   complete: boolean;
   label: string;
   value?: string;
   onPress: () => void;
 };
 const DataSummaryCard = ({
+  required,
   complete,
   label,
   value,
@@ -43,7 +45,18 @@ const DataSummaryCard = ({
       backgroundColor={complete ? 'primary.lightest' : 'primary.contrast'}
       p="15px">
       <Box width="37px">
-        {complete && <Icon color="primary.dark" name="check-circle" />}
+        {(complete || required) && (
+          <Icon
+            color={complete ? 'primary.dark' : undefined}
+            name={
+              complete && required
+                ? 'check-circle'
+                : complete
+                  ? 'check'
+                  : 'radio-button-unchecked'
+            }
+          />
+        )}
       </Box>
       <Text variant="body1" fontWeight={700}>
         {label}
@@ -69,6 +82,13 @@ export const renderSlopeValue = (
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
   const soilData = useSelector(state => state.soilId.soilData[siteId]);
+  const required = useSelector(state => {
+    const projectId = state.site.sites[siteId].projectId;
+    if (projectId === undefined) {
+      return false;
+    }
+    return state.soilId.projectSettings[projectId].slopeRequired;
+  });
   const navigation = useNavigation();
 
   const steepnessValue = renderSlopeValue(t, soilData);
@@ -94,17 +114,18 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
     <Column space="1px">
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
         <Heading variant="h6">{t('slope.title')}</Heading>
-        <FormTooltip icon="info">
-          {/* TODO: fill out this tooltip */}
-        </FormTooltip>
+        {/* TODO */}
+        <FormTooltip icon="info">Unimplemented tooltip</FormTooltip>
       </Row>
       <DataSummaryCard
+        required={required}
         complete={steepnessValue !== undefined}
         label={t('slope.steepness.short_title').toLocaleUpperCase()}
         value={steepnessValue}
         onPress={onSteepness}
       />
       <DataSummaryCard
+        required={required}
         complete={shapeValue !== undefined}
         label={t('slope.shape.title').toLocaleUpperCase()}
         value={shapeValue}
