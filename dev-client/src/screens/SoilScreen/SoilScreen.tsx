@@ -15,7 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Column, Heading, Row, Text} from 'native-base';
+import {
+  Box,
+  Button,
+  Column,
+  FlatList,
+  Heading,
+  Pressable,
+  Row,
+  Text,
+} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -119,66 +128,79 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
 
   return (
     <BottomSheetModalProvider>
-      <Column backgroundColor="grey.300">
-        <Row backgroundColor="background.default" px="16px" py="12px">
-          <Heading variant="h6">{t('soil.surface')}</Heading>
-        </Row>
-        <Box height="16px" />
-        <Row
-          backgroundColor="background.default"
-          px="16px"
-          py="12px"
-          justifyContent="space-between">
-          <Heading variant="h6">{t('soil.pit')}</Heading>
-          <RestrictBySiteRole
-            role={[
-              {kind: 'site', role: 'owner'},
-              {kind: 'project', role: 'manager'},
-            ]}>
-            <ChangePresetModal />
-          </RestrictBySiteRole>
-        </Row>
-        {allIntervals.map(interval => (
-          <DepthIntervalEditor
-            key={`${interval.depthInterval.start}:${interval.depthInterval.end}`}
-            siteId={siteId}
-            interval={interval}
-            requiredInputs={projectRequiredInputs}
-            customPreset={customPreset}
-          />
-        ))}
-        <RestrictBySiteRole
-          role={[
-            {kind: 'site', role: 'owner'},
-            {kind: 'project', role: 'manager'},
-            {kind: 'project', role: 'contributor'},
-          ]}>
-          <Modal
-            trigger={onOpen => (
-              <Button
-                size="lg"
-                variant="fullWidth"
-                backgroundColor="primary.dark"
-                justifyContent="start"
-                _text={{
-                  color: 'primary.contrast',
-                }}
-                _icon={{
-                  color: 'primary.contrast',
-                }}
-                width="full"
-                borderRadius="0px"
-                leftIcon={<Icon name="add" />}
-                onPress={onOpen}>
-                {t('soil.add_depth_label')}
-              </Button>
-            )}>
-            <AddIntervalModal
-              onSubmit={onAddDepthInterval}
-              existingIntervals={existingIntervals}
-            />
-          </Modal>
-        </RestrictBySiteRole>
+      <Column backgroundColor="grey.300" flex="1" width="100%">
+        <FlatList
+          data={allIntervals}
+          renderItem={({item: interval}) => (
+            <Column>
+              <DepthIntervalEditor
+                siteId={siteId}
+                interval={interval}
+                requiredInputs={projectRequiredInputs}
+                customPreset={customPreset}
+              />
+              <InputsList project={project} />
+            </Column>
+          )}
+          keyExtractor={({depthInterval: {start, end}}) => `${start}:${end}`}
+          ListHeaderComponent={
+            <>
+              <Row backgroundColor="background.default" px="16px" py="12px">
+                <Heading variant="h6">{t('soil.surface')}</Heading>
+              </Row>
+              <Box height="16px" />
+              <Row
+                backgroundColor="background.default"
+                px="16px"
+                py="12px"
+                justifyContent="space-between">
+                <Heading variant="h6">{t('soil.pit')}</Heading>
+                <RestrictBySiteRole
+                  role={[
+                    {kind: 'site', role: 'owner'},
+                    {kind: 'project', role: 'manager'},
+                  ]}>
+                  <ChangePresetModal />
+                </RestrictBySiteRole>
+              </Row>
+            </>
+          }
+          ListFooterComponent={
+            <RestrictBySiteRole
+              role={[
+                {kind: 'site', role: 'owner'},
+                {kind: 'project', role: 'manager'},
+                {kind: 'project', role: 'contributor'},
+              ]}>
+              <Modal
+                trigger={onOpen => (
+                  <Button
+                    size="lg"
+                    variant="fullWidth"
+                    backgroundColor="primary.dark"
+                    justifyContent="start"
+                    _text={{
+                      color: 'primary.contrast',
+                    }}
+                    _icon={{
+                      color: 'primary.contrast',
+                    }}
+                    width="full"
+                    borderRadius="0px"
+                    leftIcon={<Icon name="add" />}
+                    onPress={onOpen}>
+                    {t('soil.add_depth_label')}
+                  </Button>
+                )}>
+                <DepthIntervalEditor
+                  siteId={siteId}
+                  requiredInputs={projectRequiredInputs}
+                  customPreset={customPreset}
+                />
+              </Modal>
+            </RestrictBySiteRole>
+          }
+        />
       </Column>
     </BottomSheetModalProvider>
   );
@@ -224,7 +246,44 @@ const DepthIntervalEditor = ({
   );
 };
 
+type InputListProps = {
+  project?: ProjectSoilSettings;
+};
+
+const InputsList = ({project}: InputListProps) => {
+  const {t} = useTranslation();
+  const requiredMethods = project
+    ? soilPitMethods.filter(method => project[methodRequired(method)])
+    : ['soilTexture', 'soilColor', 'soilStructure'];
+
+  return (
+    <>
+      {requiredMethods.map(method => (
+        // TODO: eventually should take users to relevant screen
+        <Pressable key={method} onPress={() => {}}>
+          <Box
+            _text={{
+              textTransform: 'uppercase',
+              fontSize: '14px',
+              lineHeight: '14px',
+              fontWeight: 700,
+              letterSpacing: 0.4,
+            }}
+            py="15px"
+            pl="50px"
+            backgroundColor="primary.contrast"
+            borderColor="grey.300"
+            borderWidth={1}>
+            {t(`soil.collection_method.${method}`)}
+          </Box>
+        </Pressable>
+      ))}
+    </>
+  );
+};
+
 const ChangePresetModal = ({}: {}) => {
+  const {t} = useTranslation();
   return (
     <Modal
       trigger={onOpen => (
@@ -234,30 +293,37 @@ const ChangePresetModal = ({}: {}) => {
           onPress={onOpen}
         />
       )}>
-      <Heading variant="h6">Change soil pit depths</Heading>
-      <Text variant="body-1">
-        Data already entered for a depth will be deleted when the depth interval
-        is changed.
-      </Text>
+      <Column space="10px">
+        <Heading variant="h6" fontSize="20px" mr="20px">
+          Change soil pit depths
+        </Heading>
+        <Text variant="body-1">
+          Data already entered for a depth will be deleted when the depth
+          interval is changed.
+        </Text>
 
-      <Formik initialValues={{}} onSubmit={() => {}}>
-        {({handleSubmit, isValid, isSubmitting}) => (
-          <>
-            <FormRadioGroup
-              name="preset"
-              values={DepthPresets}
-              renderRadio={value => (
-                <FormRadio value={value}>{value}</FormRadio>
-              )}
-            />
-            <Button
-              onPress={handleSubmit}
-              isDisabled={!isValid || isSubmitting}>
-              Submit
-            </Button>
-          </>
-        )}
-      </Formik>
+        <Formik initialValues={{}} onSubmit={() => {}}>
+          {({handleSubmit, isValid, isSubmitting}) => (
+            <>
+              <FormRadioGroup
+                name="preset"
+                label="Depth Intervals"
+                values={DepthPresets}
+                renderRadio={value => (
+                  <FormRadio value={value} key={value} size="sm">
+                    {t(`projects.inputs.depth_intervals.${value}`)}
+                  </FormRadio>
+                )}
+              />
+              <Button
+                onPress={handleSubmit}
+                isDisabled={!isValid || isSubmitting}>
+                Save
+              </Button>
+            </>
+          )}
+        </Formik>
+      </Column>
     </Modal>
   );
 };

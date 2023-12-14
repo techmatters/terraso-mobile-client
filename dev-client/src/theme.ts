@@ -350,6 +350,7 @@ export const theme = extendTheme({
           fontSize: '20px',
           fontWeight: 500,
           lineHeight: '32px',
+          letterSpacing: 0.15,
         },
       },
     },
