@@ -21,6 +21,7 @@ import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/g
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
+import {StyleSheet} from 'react-native';
 
 type Props = {
   siteId: string;
@@ -71,7 +72,9 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar title={name} />} BottomNavigation={null}>
-      <ScrollView bg="primary.contrast" pb="50px">
+      <ScrollView
+        bg="primary.contrast"
+        _contentContainerStyle={styles.scrollContentContainer}>
         <Column>
           <Column p="15px" bg="primary.contrast">
             <Heading variant="h6">{t('slope.steepness.long_title')}</Heading>
@@ -114,3 +117,9 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
     </ScreenScaffold>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollContentContainer: {
+    paddingBottom: 100,
+  },
+});
