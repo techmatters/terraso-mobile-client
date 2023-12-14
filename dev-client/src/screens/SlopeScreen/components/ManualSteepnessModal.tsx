@@ -111,6 +111,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
           <Row justifyContent="space-between" space="40px">
             <Box flex={1}>
               <FormInput
+                keyboardType="numeric"
                 name="slopeSteepnessPercent"
                 variant="underlined"
                 helpText={t('slope.steepness.percentage_help')}
@@ -119,6 +120,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
             </Box>
             <Box flex={1}>
               <FormInput
+                keyboardType="numeric"
                 name="slopeSteepnessDegree"
                 variant="underlined"
                 helpText={t('slope.steepness.degree_help')}
