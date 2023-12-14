@@ -27,15 +27,15 @@ type Props = {
 };
 
 const STEEPNESS_IMAGES = {
-  FLAT: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  GENTLE: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  MODERATE: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  ROLLING: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  HILLY: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  STEEP: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  MODERATELY_STEEP: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  VERY_STEEP: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  STEEPEST: require('terraso-mobile-client/assets/landpks_intro_image.png'),
+  FLAT: require('terraso-mobile-client/assets/slope/steepness/flat.png'),
+  GENTLE: require('terraso-mobile-client/assets/slope/steepness/gentle.png'),
+  MODERATE: require('terraso-mobile-client/assets/slope/steepness/moderate.png'),
+  ROLLING: require('terraso-mobile-client/assets/slope/steepness/rolling.png'),
+  HILLY: require('terraso-mobile-client/assets/slope/steepness/hilly.png'),
+  STEEP: require('terraso-mobile-client/assets/slope/steepness/steep.png'),
+  MODERATELY_STEEP: require('terraso-mobile-client/assets/slope/steepness/steep.png'),
+  VERY_STEEP: require('terraso-mobile-client/assets/slope/steepness/very_steep.png'),
+  STEEPEST: require('terraso-mobile-client/assets/slope/steepness/very_steep.png'),
 } satisfies Record<SoilIdSoilDataSlopeSteepnessSelectChoices, any>;
 
 export const SlopeSteepnessScreen = ({siteId}: Props) => {

@@ -18,11 +18,17 @@ type Props = {
   siteId: string;
 };
 
-const SHAPE_IMAGES = {
-  CONCAVE: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  CONVEX: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-  LINEAR: require('terraso-mobile-client/assets/landpks_intro_image.png'),
+const DOWN_SLOPE_IMAGES = {
+  CONCAVE: require('terraso-mobile-client/assets/slope/shape/down-slope-concave.png'),
+  CONVEX: require('terraso-mobile-client/assets/slope/shape/down-slope-convex.png'),
+  LINEAR: require('terraso-mobile-client/assets/slope/shape/down-slope-linear.png'),
 } satisfies Record<SoilIdSoilDataDownSlopeChoices, any>;
+
+const CROSS_SLOPE_IMAGES = {
+  CONCAVE: require('terraso-mobile-client/assets/slope/shape/cross-slope-concave.png'),
+  CONVEX: require('terraso-mobile-client/assets/slope/shape/cross-slope-convex.png'),
+  LINEAR: require('terraso-mobile-client/assets/slope/shape/cross-slope-linear.png'),
+} satisfies Record<SoilIdSoilDataCrossSlopeChoices, any>;
 
 export const SlopeShapeScreen = ({siteId}: Props) => {
   const name = useSelector(state => state.site.sites[siteId].name);
@@ -32,10 +38,21 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
   );
   const dispatch = useDispatch();
 
-  const shapeOptions = useMemo(
+  const downSlopeOptions = useMemo(
     () =>
       Object.fromEntries(
-        Object.entries(SHAPE_IMAGES).map(([value, image]) => [
+        Object.entries(DOWN_SLOPE_IMAGES).map(([value, image]) => [
+          value,
+          {label: t(`slope.shape.select_labels.${value}`), image},
+        ]),
+      ),
+    [t],
+  );
+
+  const crossSlopeOptions = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(CROSS_SLOPE_IMAGES).map(([value, image]) => [
           value,
           {label: t(`slope.shape.select_labels.${value}`), image},
         ]),
@@ -83,7 +100,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
             <Heading variant="h6">{t('slope.shape.down_slope')}</Heading>
             <ImageRadio
               value={downSlope}
-              options={shapeOptions as any}
+              options={downSlopeOptions as any}
               onChange={onDownSlopeChange}
             />
           </Column>
@@ -92,7 +109,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
             <Heading variant="h6">{t('slope.shape.cross_slope')}</Heading>
             <ImageRadio
               value={crossSlope}
-              options={shapeOptions as any}
+              options={crossSlopeOptions as any}
               onChange={onCrossSlopeChange}
             />
           </Column>
