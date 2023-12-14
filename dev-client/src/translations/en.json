@@ -451,11 +451,16 @@
         "STEEPEST": "Steepest 100%+"
       }
     },
-    "shape_labels": {
-      "CONCAVE": "Concave",
-      "CONVEX": "Convex",
-      "LINEAR": "Linear"
-    },
-    "shape": "Shape"
+    "shape": {
+      "title": "Shape",
+      "long_title": "Slope Shape",
+      "down_slope": "Down Slope",
+      "cross_slope": "Cross Slope",
+      "select_labels": {
+        "CONCAVE": "Concave",
+        "CONVEX": "Convex",
+        "LINEAR": "Linear"
+      }
+    }
   }
 }

@@ -75,8 +75,8 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
 
   const shapeValue =
     soilData.downSlope && soilData.crossSlope
-      ? `${t(`slope.shape_labels.${soilData.downSlope}`)} ${t(
-          `slope.shape_labels.${soilData.crossSlope}`,
+      ? `${t(`slope.shape.select_labels.${soilData.downSlope}`)} ${t(
+          `slope.shape.select_labels.${soilData.crossSlope}`,
         )}`
       : undefined;
 
@@ -100,13 +100,13 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
       </Row>
       <DataSummaryCard
         complete={steepnessValue !== undefined}
-        label={t('slope.steepness.short_title').toUpperCase()}
+        label={t('slope.steepness.short_title').toLocaleUpperCase()}
         value={steepnessValue}
         onPress={onSteepness}
       />
       <DataSummaryCard
         complete={shapeValue !== undefined}
-        label={t('slope.shape').toUpperCase()}
+        label={t('slope.shape.title').toLocaleUpperCase()}
         value={shapeValue}
         onPress={onShape}
       />

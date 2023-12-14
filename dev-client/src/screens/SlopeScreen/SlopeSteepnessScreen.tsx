@@ -36,7 +36,7 @@ const STEEPNESS_IMAGES = {
   MODERATELY_STEEP: require('terraso-mobile-client/assets/landpks_intro_image.png'),
   VERY_STEEP: require('terraso-mobile-client/assets/landpks_intro_image.png'),
   STEEPEST: require('terraso-mobile-client/assets/landpks_intro_image.png'),
-} as const;
+} satisfies Record<SoilIdSoilDataSlopeSteepnessSelectChoices, any>;
 
 export const SlopeSteepnessScreen = ({siteId}: Props) => {
   const name = useSelector(state => state.site.sites[siteId].name);

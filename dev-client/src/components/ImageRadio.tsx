@@ -1,5 +1,11 @@
-import {Box, Column, Row, Text} from 'native-base';
-import {Image, ImageSourcePropType, Pressable} from 'react-native';
+import {Box, Row, Text, useToken} from 'native-base';
+import {
+  Image,
+  ImageSourcePropType,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 type Option = {
   label: string;
@@ -16,29 +22,29 @@ export const ImageRadio = <Value extends string>({
   options,
   onChange,
 }: Props<Value>) => {
+  const bg = useToken('colors', 'primary.lighter');
+
   return (
     <Row p="18px" flexWrap="wrap" justifyContent="space-between">
       {Object.entries<Option>(options).flatMap(
         ([optionValue, {label, image}], index) => [
           <Pressable
             key={optionValue}
-            style={{width: '40%', flexGrow: 1}}
+            style={[
+              styles.pressable,
+              {
+                backgroundColor: value === optionValue ? bg : undefined,
+              },
+            ]}
             onPress={() => onChange(optionValue as Value)}>
-            <Column
-              alignItems="center"
-              p="10px"
-              bg={value === optionValue ? 'primary.lighter' : undefined}>
-              <Image
-                resizeMode="contain"
-                style={{width: '100%', height: 120}}
-                source={image}
-              />
-              <Text
-                variant="body1"
-                fontWeight={value === optionValue ? 700 : undefined}>
-                {label}
-              </Text>
-            </Column>
+            <View style={styles.imageContainer}>
+              <Image resizeMode="contain" style={styles.image} source={image} />
+            </View>
+            <Text
+              variant="body1"
+              fontWeight={value === optionValue ? 700 : undefined}>
+              {label}
+            </Text>
           </Pressable>,
           index % 2 === 0 && (
             <Box
@@ -53,3 +59,20 @@ export const ImageRadio = <Value extends string>({
     </Row>
   );
 };
+
+const styles = StyleSheet.create({
+  pressable: {
+    maxWidth: 175,
+    flexGrow: 1,
+    alignItems: 'center',
+    padding: 10,
+  },
+  imageContainer: {
+    width: '100%',
+    aspectRatio: '1/1',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+});
