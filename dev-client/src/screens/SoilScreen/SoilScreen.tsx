@@ -112,7 +112,10 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     return soilData.depthIntervalPreset;
   }, [project, soilData]);
 
-  const customPreset = useMemo(() => preset === 'CUSTOM', [preset]);
+  const customPreset = useMemo(
+    () => preset === 'CUSTOM' || preset === 'NONE',
+    [preset],
+  );
 
   return (
     <BottomSheetModalProvider>

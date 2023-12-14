@@ -66,7 +66,10 @@ export const EditIntervalModalContent = ({
   const onClose = useModal()!.onClose;
 
   const existingIntervals = useMemo(
-    () => soilData.depthIntervals.map(interval => interval.depthInterval),
+    () =>
+      soilData.depthIntervals
+        .map(interval => interval.depthInterval)
+        .filter(({start}) => depthInterval.start !== start),
     [soilData.depthIntervals],
   );
   const interval = useMemo(
@@ -139,8 +142,8 @@ export const EditIntervalModalContent = ({
       validationSchema={schema}
       initialValues={{
         ...interval,
-        start: '',
-        end: '',
+        start: String(interval.depthInterval.start),
+        end: String(interval.depthInterval.end),
         applyToAll: false,
       }}
       onSubmit={onSubmit}>
