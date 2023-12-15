@@ -15,12 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AlertDialog, Button, Text, VStack} from 'native-base';
-import {
-  TabRoutes,
-  TabStackParamList,
-} from 'terraso-mobile-client/navigation/constants';
 import {useTranslation} from 'react-i18next';
 import IconLink from 'terraso-mobile-client/components/IconLink';
 import {useRef, useState} from 'react';
@@ -30,17 +25,23 @@ import {
   updateProject,
   archiveProject,
 } from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+
 import {EditForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/Form';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  BottomTabNavigatorScreens,
+  ProjectTabNavigatorScreenProps,
+  ProjectTabNavigatorScreens,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
+import {useProjectDataContext} from 'terraso-mobile-client/navigation/hooks/useProjectDataContext';
 
-type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
+type Props =
+  ProjectTabNavigatorScreenProps<ProjectTabNavigatorScreens.SETTINGS>;
 
-export function ProjectSettingsScreen({
-  route: {
-    params: {downloadLink, projectId},
-  },
-}: Props) {
+export function ProjectSettingsScreen({navigation}: Props) {
+  const {projectId, downloadLink} = useProjectDataContext();
+
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const {name, description, privacy, measurementUnits} = useSelector(
@@ -51,7 +52,6 @@ export function ProjectSettingsScreen({
     await dispatch(updateProject({...values, id: projectId, privacy}));
   };
 
-  const navigation = useNavigation();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const cancelRef = useRef(null);
   const closeDeleteProject = () => {
@@ -63,7 +63,9 @@ export function ProjectSettingsScreen({
   const triggerDeleteProject = () => {
     setIsDeleteModalOpen(false);
     dispatch(deleteProject({id: projectId}));
-    navigation.navigate('PROJECT_LIST');
+    navigation.navigate(RootNavigatorScreens.BOTTOM_TABS, {
+      screen: BottomTabNavigatorScreens.PROJECT_LIST,
+    });
   };
   const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
   const closeArchiveProject = () => {
@@ -75,7 +77,9 @@ export function ProjectSettingsScreen({
   const triggerArchiveProject = () => {
     setIsDeleteModalOpen(false);
     dispatch(archiveProject({id: projectId, archived: true}));
-    navigation.navigate('PROJECT_LIST');
+    navigation.navigate(RootNavigatorScreens.BOTTOM_TABS, {
+      screen: BottomTabNavigatorScreens.PROJECT_LIST,
+    });
   };
   return (
     <VStack px={2} py={4} space={2} m={3} height="100%">

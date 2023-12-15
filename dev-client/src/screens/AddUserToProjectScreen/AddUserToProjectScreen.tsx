@@ -18,8 +18,6 @@
 import {Box, Button, HStack, Text} from 'native-base';
 import {FreeformTextInput} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/FreeformTextInput';
 import {useTranslation} from 'react-i18next';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useCallback, useMemo, useState} from 'react';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {checkUserInProject} from 'terraso-client-shared/account/accountService';
@@ -27,15 +25,19 @@ import MembershipControlList, {
   UserWithRole,
 } from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MembershipControlList';
 import {addUserToProject} from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+
+import {useDispatch} from 'terraso-mobile-client/store';
 import {useKeyboardOpen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/hooks/useKeyboardOpen';
+import {
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
-type Props = {
-  projectId: string;
-};
+type Props = RootNavigatorScreenProps<RootNavigatorScreens.ADD_USER_PROJECT>;
 
-export const AddUserToProjectScreen = ({projectId}: Props) => {
+export const AddUserToProjectScreen = ({route, navigation}: Props) => {
+  const {projectId} = route.params;
+
   const {t} = useTranslation();
   const [userRecord, setUserRecord] = useState<Record<string, UserWithRole>>(
     {},
@@ -43,12 +45,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   const keyboardOpen = useKeyboardOpen();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const navigation = useNavigation();
   const dispatch = useDispatch();
-
-  const projectName = useSelector(
-    state => state.project.projects[projectId]?.name,
-  );
 
   const userList = useMemo(() => Object.values(userRecord), [userRecord]);
   const disableSubmit = useMemo(
@@ -117,7 +114,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   };
 
   return (
-    <ScreenScaffold AppBar={<AppBar title={projectName} />}>
+    <>
       <Box mx="5%" mb="15px" mt="22px">
         <Text variant="body1" fontWeight="bold">
           {t('projects.add_user.heading')}
@@ -153,6 +150,6 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
           {t('general.save_fab')}
         </Button>
       </HStack>
-    </ScreenScaffold>
+    </>
   );
 };

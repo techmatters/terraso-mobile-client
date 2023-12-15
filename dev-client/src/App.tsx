@@ -26,7 +26,7 @@
 import 'react-native-get-random-values';
 
 import {useEffect} from 'react';
-import {PermissionsAndroid, LogBox} from 'react-native';
+import {PermissionsAndroid, LogBox, StatusBar} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
@@ -56,21 +56,28 @@ LogBox.ignoreLogs([
 const store = createStore();
 
 function App(): JSX.Element {
-  useEffect(() =>
-    checkAndroidPermissions(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    ),
+  useEffect(
+    () =>
+      checkAndroidPermissions(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      ),
+    [],
   );
 
   return (
     <GestureHandlerRootView style={style}>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="#00000000"
+      />
       <Provider store={store}>
         <NativeBaseProvider theme={theme}>
-          <NavigationContainer>
-            <GeospatialProvider>
+          <GeospatialProvider>
+            <NavigationContainer>
               <RootNavigator />
-            </GeospatialProvider>
-          </NavigationContainer>
+            </NavigationContainer>
+          </GeospatialProvider>
         </NativeBaseProvider>
       </Provider>
     </GestureHandlerRootView>

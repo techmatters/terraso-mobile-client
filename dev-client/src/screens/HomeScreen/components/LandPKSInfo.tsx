@@ -16,7 +16,7 @@
  */
 
 import {Linking} from 'react-native';
-import {Column, FlatList, Heading, HStack, Image, Text} from 'native-base';
+import {Column, Heading, HStack, Image, Text} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
 import {
@@ -28,7 +28,7 @@ export const LandPKSInfo = () => {
   const {t} = useTranslation();
 
   return (
-    <BottomSheetScrollView>
+    <BottomSheetScrollView showsVerticalScrollIndicator={false}>
       <Column space={3} pb="65%" pt={5} px={5} mt="48px">
         <Heading w="full" textAlign="center">
           {t('home.info.title')}
@@ -47,21 +47,21 @@ export const LandPKSInfo = () => {
             <Text bold>third</Text>
           </Trans>
         </Text>
-        <FlatList
-          data={['home.info.list1', 'home.info.list2', 'home.info.list3']}
-          renderItem={({index, item}) => (
-            <HStack key={index}>
+        <Text variant="body1" mr={2}>
+          {t('home.info.list1')}
+        </Text>
+        {['home.info.list1', 'home.info.list2', 'home.info.list3'].map(
+          (item, idx) => (
+            <HStack key={idx}>
               <Text variant="body1" mr={2}>
-                {index + 1}
-                {'.'}
+                {`${idx + 1}.`}
               </Text>
               <Text variant="body1" mr={2}>
                 <Trans i18nKey={item} components={{icon: <LocationIcon />}} />
               </Text>
             </HStack>
-          )}
-          keyExtractor={item => item}
-        />
+          ),
+        )}
         <Text variant="body1">
           <Trans
             i18nKey="home.info.description2"

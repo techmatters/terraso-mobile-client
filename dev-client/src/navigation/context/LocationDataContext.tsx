@@ -15,6 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
+import {createContext} from 'react';
+import {LocationTabsData} from 'terraso-mobile-client/navigation/types';
 
-export const ScreenCloseButton = () => <ScreenBackButton icon="close" />;
+export const LocationDataContext = createContext<LocationTabsData>({
+  siteId: '', // TODO: Should be looked into and adjusted later on
+});

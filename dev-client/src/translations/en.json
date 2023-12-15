@@ -322,11 +322,20 @@
   "screens": {
     "HOME": "LandPKS",
     "PROJECT_LIST": "Projects",
-    "PROJECT_VIEW": "Project #{{id}}",
-    "LOGIN": "Login",
+    "SETTINGS": "Settings",
+    "PROJECT_TABS": "Project #{{id}}",
     "CREATE_PROJECT": "Create Project",
     "SITE_TRANSFER_PROJECT": "Project #{{id}}",
-    "CREATE_SITE": "Create Site"
+    "LOCATION_DASHBOARD_TABS": "Location Information",
+    "SITE_SETTINGS": "Site Settings",
+    "CREATE_SITE": "Create Site",
+    "ADD_SITE_NOTE": "Add Site Note",
+    "EDIT_SITE_NOTE": "Edit Site Note",
+    "READ_NOTE": "Read Note",
+    "EDIT_PROJECT_INSTRUCTIONS": "Edit Project Instructions",
+    "MANAGE_TEAM_MEMBER": "Manage Team Member",
+    "ADD_USER_PROJECT": "Add User to Project",
+    "BACK_BUTTON": "Back"
   },
   "login": {
     "title": "LandPKS",

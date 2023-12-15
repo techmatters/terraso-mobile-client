@@ -26,19 +26,12 @@ import {
   VStack,
 } from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {
-  TabRoutes,
-  TabStackParamList,
-} from 'terraso-mobile-client/navigation/constants';
-import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
-import type {CompositeScreenProps} from '@react-navigation/native';
 import {useCallback} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
 import {
   Icon,
   MaterialCommunityIcons,
 } from 'terraso-mobile-client/components/Icons';
-import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {
   Site,
   deleteSite,
@@ -63,6 +56,12 @@ import {
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {searchText} from 'terraso-mobile-client/util';
 import {normalizeText} from 'terraso-client-shared/utils';
+import {
+  ProjectTabNavigatorScreenProps,
+  ProjectTabNavigatorScreens,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
+import {useProjectDataContext} from 'terraso-mobile-client/navigation/hooks/useProjectDataContext';
 
 type SiteMenuProps = {
   iconName: string;
@@ -160,11 +159,6 @@ const SiteCardList = () => {
   );
 };
 
-type Props = CompositeScreenProps<
-  MaterialTopTabScreenProps<TabStackParamList, TabRoutes.SITES>,
-  RootStackScreenProps
->;
-
 const selectProjectSites = createSelector(
   (state: AppState) => state.project.projects,
   (state: AppState) => state.site.sites,
@@ -181,16 +175,15 @@ const selectProjectSites = createSelector(
   },
 );
 
-export function ProjectSitesScreen({
-  route: {
-    params: {projectId},
-  },
-  navigation,
-}: Props): JSX.Element {
+type Props = ProjectTabNavigatorScreenProps<ProjectTabNavigatorScreens.SITES>;
+
+export function ProjectSitesScreen({navigation}: Props): JSX.Element {
+  const {projectId} = useProjectDataContext();
+
   const {t} = useTranslation();
   const transferCallback = useCallback(
     () =>
-      navigation.navigate('SITE_TRANSFER_PROJECT', {
+      navigation.navigate(RootNavigatorScreens.SITE_TRANSFER_PROJECT, {
         projectId: String(projectId),
       }),
     [navigation, projectId],

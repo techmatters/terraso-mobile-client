@@ -27,18 +27,32 @@ import {EditIntervalModalContent} from 'terraso-mobile-client/screens/SoilScreen
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
-  SoilData,
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+import {
+  LocationDashboardTabNavigatorScreenProps,
+  LocationDashboardTabNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
+import {useLocationDataContext} from 'terraso-mobile-client/navigation/hooks/useLocationDataContext';
 
-export const SoilScreen = ({siteId}: {siteId: string}) => {
+type Props =
+  LocationDashboardTabNavigatorScreenProps<LocationDashboardTabNavigatorScreens.SOIL>;
+
+export const SoilScreen = ({navigation: _navigation}: Props) => {
+  const locationData = useLocationDataContext();
+
   const {t} = useTranslation();
-  const soilData = useSelector(state => state.soilId.soilData[siteId]) as
-    | SoilData
-    | undefined;
+  const soilData = useSelector(state =>
+    'siteId' in locationData
+      ? state.soilId.soilData[locationData.siteId]
+      : undefined,
+  );
+
   const project = useSelector(state => {
-    const projectId = state.site.sites[siteId].projectId;
-    return projectId ? state.soilId.projectSettings[projectId] : undefined;
+    if ('siteId' in locationData) {
+      const projectId = state.site.sites[locationData.siteId].projectId;
+      return projectId ? state.soilId.projectSettings[projectId] : undefined;
+    }
   });
 
   const projectDepthIntervals = useMemo(() => {
@@ -73,9 +87,16 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
 
   const onAddDepthInterval = useCallback(
     async (interval: LabelledDepthInterval) => {
-      await dispatch(updateSoilDataDepthInterval({siteId, ...interval}));
+      if ('siteId' in locationData) {
+        await dispatch(
+          updateSoilDataDepthInterval({
+            siteId: locationData.siteId,
+            ...interval,
+          }),
+        );
+      }
     },
-    [siteId, dispatch],
+    [locationData, dispatch],
   );
 
   return (
@@ -88,13 +109,15 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         <Row backgroundColor="background.default" px="16px" py="12px">
           <Heading variant="h6">{t('soil.pit')}</Heading>
         </Row>
-        {allIntervals.map(interval => (
-          <DepthIntervalEditor
-            key={`${interval.depthInterval.start}:${interval.depthInterval.end}`}
-            siteId={siteId}
-            interval={interval}
-          />
-        ))}
+        {allIntervals.map(interval => {
+          'siteId' in locationData ? (
+            <DepthIntervalEditor
+              key={`${interval.depthInterval.start}:${interval.depthInterval.end}`}
+              siteId={locationData.siteId}
+              interval={interval}
+            />
+          ) : null;
+        })}
         <Modal
           trigger={onOpen => (
             <Button

@@ -15,20 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useSelector} from 'terraso-mobile-client/store';
 import {Text} from 'native-base';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
-type Props = {
-  siteId: string;
-};
+type Props = RootNavigatorScreenProps<RootNavigatorScreens.SITE_TEAM_SETTINGS>;
 
-export const SiteTeamSettingsScreen = ({siteId}: Props) => {
-  const site = useSelector(state => state.site.sites[siteId]);
-  return (
-    <ScreenScaffold AppBar={<AppBar title={site.name} />}>
-      <Text>Unimplemented team settings page</Text>
-    </ScreenScaffold>
-  );
+export const SiteTeamSettingsScreen = ({
+  route: _route, // Using _ to let TS/ESLint know we intentionally leave the value unused, can be removed later
+  navigation: _navigation, // Same as above
+}: Props) => {
+  return <Text>Unimplemented team settings page</Text>;
 };

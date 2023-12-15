@@ -17,36 +17,30 @@
 
 import {Box, Button, Divider, Text, VStack} from 'native-base';
 import {useCallback, useState} from 'react';
+
 import {
   deleteUserFromProject,
   updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {formatName} from 'terraso-mobile-client/util';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {useTranslation} from 'react-i18next';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
-type Props = {
-  projectId: string;
-  userId: string;
-  membershipId: string;
-};
+type Props = RootNavigatorScreenProps<RootNavigatorScreens.MANAGE_TEAM_MEMBER>;
 
-export const ManageTeamMemberScreen = ({
-  projectId,
-  userId,
-  membershipId,
-}: Props) => {
+export const ManageTeamMemberScreen = ({route, navigation}: Props) => {
+  const {projectId, userId, membershipId} = route.params;
+
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const user = useSelector(state => state.account.users[userId]);
@@ -72,77 +66,72 @@ export const ManageTeamMemberScreen = ({
   }, [dispatch, projectId, userId, selectedRole, navigation]);
 
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar title={project?.name} LeftButton={<ScreenCloseButton />} />
-      }>
-      <VStack mx="14px">
-        <VStack mt="22px" mb="15px">
-          <Text variant="body1" fontWeight={700}>
-            {formatName(user.firstName, user.lastName)}
-          </Text>
-          <Text numberOfLines={1} variant="body1">
-            {user.email}
-          </Text>
-        </VStack>
-        <RadioBlock<UserRole>
-          labelProps={{variant: 'secondary'}}
-          label={t('projects.manage_member.project_role')}
-          options={{
-            manager: {
-              text: t('general.role.manager'),
-              helpText: t('projects.manage_member.manager_help'),
-            },
-            contributor: {
-              text: t('general.role.contributor'),
-              helpText: t('projects.manage_member.contributor_help'),
-            },
-            viewer: {
-              text: t('general.role.viewer'),
-              helpText: t('projects.manage_member.viewer_help'),
-            },
-          }}
-          groupProps={{
-            onChange: setSelectedRole,
-            value: selectedRole,
-            name: 'selected-role',
-          }}
-        />
-
-        <Divider my="20px" width="90%" alignSelf="center" />
-
-        <VStack>
-          <ConfirmModal
-            trigger={onOpen => (
-              <Button
-                size="sm"
-                variant="ghost"
-                alignSelf="start"
-                width="70%"
-                onPress={onOpen}
-                _text={{color: 'error.main'}}
-                _pressed={{backgroundColor: 'red.100'}}
-                textTransform={'uppercase'}
-                leftIcon={<Icon name="delete" color="error.main" />}>
-                {t('projects.manage_member.remove')}
-              </Button>
-            )}
-            title={t('projects.manage_member.confirm_removal_title')}
-            body={t('projects.manage_member.confirm_removal_body')}
-            actionName={t('projects.manage_member.confirm_removal_action')}
-            handleConfirm={removeMembership}
-          />
-          <Text ml="20px" variant="caption">
-            {t('projects.manage_member.remove_help')}
-          </Text>
-        </VStack>
-
-        <Box flex={0} height="15%" justifyContent="flex-end">
-          <Button onPress={updateUser} alignSelf="flex-end">
-            {t('general.save_fab')}
-          </Button>
-        </Box>
+    <VStack mx="14px">
+      <VStack mt="22px" mb="15px">
+        <Text variant="body1" fontWeight={700}>
+          {formatName(user.firstName, user.lastName)}
+        </Text>
+        <Text numberOfLines={1} variant="body1">
+          {user.email}
+        </Text>
       </VStack>
-    </ScreenScaffold>
+      <RadioBlock<UserRole>
+        labelProps={{variant: 'secondary'}}
+        label={t('projects.manage_member.project_role')}
+        options={{
+          manager: {
+            text: t('general.role.manager'),
+            helpText: t('projects.manage_member.manager_help'),
+          },
+          contributor: {
+            text: t('general.role.contributor'),
+            helpText: t('projects.manage_member.contributor_help'),
+          },
+          viewer: {
+            text: t('general.role.viewer'),
+            helpText: t('projects.manage_member.viewer_help'),
+          },
+        }}
+        groupProps={{
+          onChange: setSelectedRole,
+          value: selectedRole,
+          name: 'selected-role',
+        }}
+      />
+
+      <Divider my="20px" width="90%" alignSelf="center" />
+
+      <VStack>
+        <ConfirmModal
+          trigger={onOpen => (
+            <Button
+              size="sm"
+              variant="ghost"
+              alignSelf="start"
+              width="70%"
+              onPress={onOpen}
+              _text={{color: 'error.main'}}
+              _pressed={{backgroundColor: 'red.100'}}
+              textTransform={'uppercase'}
+              leftIcon={<Icon name="delete" color="error.main" />}>
+              {t('projects.manage_member.remove')}
+            </Button>
+          )}
+          title={t('projects.manage_member.confirm_removal_title')}
+          body={t('projects.manage_member.confirm_removal_body')}
+          actionName={t('projects.manage_member.confirm_removal_action')}
+          handleConfirm={removeMembership}
+        />
+        <Text ml="20px" variant="caption">
+          {t('projects.manage_member.remove_help')}
+        </Text>
+      </VStack>
+
+      <Box flex={0} height="15%" justifyContent="flex-end">
+        <Button onPress={updateUser} alignSelf="flex-end">
+          {t('general.save_fab')}
+        </Button>
+      </Box>
+    </VStack>
   );
 };

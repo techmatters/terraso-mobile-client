@@ -23,6 +23,7 @@ import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {formatDate} from 'terraso-mobile-client/util';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
 type Props = {
   project: Project;
@@ -33,7 +34,9 @@ export const ProjectPreviewCard = ({project}: Props) => {
   const navigation = useNavigation();
 
   const goToProject = useCallback(async () => {
-    return navigation.navigate('PROJECT_VIEW', {projectId: project.id});
+    return navigation.navigate(RootNavigatorScreens.PROJECT_TABS, {
+      projectId: project.id,
+    });
   }, [project, navigation]);
 
   return (

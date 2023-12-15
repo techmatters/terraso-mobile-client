@@ -16,7 +16,16 @@
  */
 
 import {Text} from 'native-base';
+import {
+  LocationDashboardTabNavigatorScreenProps,
+  LocationDashboardTabNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
-export const SlopeScreen = (_: {siteId: string}) => {
+type Props =
+  LocationDashboardTabNavigatorScreenProps<LocationDashboardTabNavigatorScreens.SLOPE>;
+
+export const SlopeScreen = ({
+  navigation: _navigation, // Using _ to let TS/ESLint know we intentionally leave the value unused, can be removed later
+}: Props) => {
   return <Text margin="auto">Unimplemented slope screen</Text>;
 };

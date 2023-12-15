@@ -15,15 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
+import {useContext} from 'react';
+import {ProjectDataContext} from 'terraso-mobile-client/navigation/context/ProjectDataContext';
 
-type Props = {icon?: string};
-
-export const ScreenBackButton = ({icon = 'arrow-back'}: Props) => {
-  const navigation = useNavigation();
-  const goBack = useCallback(() => navigation.pop(), [navigation]);
-
-  return <AppBarIconButton name={icon} onPress={goBack} />;
-};
+export const useProjectDataContext = () => useContext(ProjectDataContext);

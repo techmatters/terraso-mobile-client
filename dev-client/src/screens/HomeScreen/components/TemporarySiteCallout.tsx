@@ -20,9 +20,11 @@ import {Button, Column, Divider, Row, Box} from 'native-base';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useTranslation} from 'react-i18next';
+
 import {Card} from 'terraso-mobile-client/components/Card';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
@@ -39,12 +41,12 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
   const navigation = useNavigation();
 
   const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {coords});
+    navigation.navigate(RootNavigatorScreens.CREATE_SITE, {coords});
     closeCallout();
   }, [closeCallout, navigation, coords]);
 
   const onLearnMore = useCallback(() => {
-    navigation.navigate('LOCATION_DASHBOARD', {coords});
+    navigation.navigate(RootNavigatorScreens.LOCATION_DASHBOARD_TABS, {coords});
   }, [navigation, coords]);
 
   return (

@@ -27,6 +27,7 @@ import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
 import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
 type Props = {
   onInfoPress: () => void;
@@ -46,7 +47,9 @@ export const CreateProjectForm = ({onInfoPress}: Props) => {
       }),
     );
     if (payload !== undefined && 'project' in payload) {
-      navigation.replace('PROJECT_VIEW', {projectId: payload.project.id});
+      navigation.replace(RootNavigatorScreens.PROJECT_TABS, {
+        projectId: payload.project.id,
+      });
     }
   };
   const validationSchema = useMemo(() => projectValidationSchema(t), [t]);

@@ -25,19 +25,20 @@ import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/g
 import {
   updateSiteNote,
   deleteSiteNote,
-  SiteNote,
 } from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Keyboard} from 'react-native';
+import {
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
-type Props = {
-  note: SiteNote;
-};
+type Props = RootNavigatorScreenProps<RootNavigatorScreens.EDIT_SITE_NOTE>;
 
-export const EditSiteNoteScreen = ({note}: Props) => {
+export const EditSiteNoteScreen = ({route, navigation}: Props) => {
+  const {note} = route.params;
+
   const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

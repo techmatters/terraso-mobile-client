@@ -18,7 +18,6 @@
 import {
   Text,
   FormControl,
-  ScrollView,
   VStack,
   Spacer,
   Button,
@@ -84,69 +83,68 @@ export const CreateSiteForm = ({
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       keyboardVerticalOffset={40}>
-      <ScrollView>
-        <VStack p="16px" pt="30px" space="18px">
-          <FormField name="name">
-            <FormLabel>{t('site.create.name_label')}</FormLabel>
-            <FormInput placeholder={t('site.create.name_placeholder')} />
-          </FormField>
-          <FormField name="coords">
-            <FormLabel>{t('site.create.location_label')}</FormLabel>
-            <Text>
-              {t('site.create.location_accuracy', {
-                accuracyM: accuracyM?.toFixed(5),
-              })}
-            </Text>
-            <FormInput keyboardType="decimal-pad" />
-            <FormControl.Label variant="subtle">
-              {t('site.create.coords_label')}
-            </FormControl.Label>
-          </FormField>
-          <FormField name="projectId">
-            <FormLabel>
-              {t('site.create.add_to_project_label')}
-              <FormTooltip icon="help">
-                <Text color="primary.contrast" variant="body1">
-                  {t('site.create.add_to_project_tooltip')}
-                </Text>
-              </FormTooltip>
-            </FormLabel>
-            <ProjectSelect
-              projectId={values.projectId}
-              setProjectId={projectId =>
-                setValues(current => ({...current, projectId}))
-              }
+      <VStack p="16px" pt="30px" space="18px">
+        <FormField name="name">
+          <FormLabel>{t('site.create.name_label')}</FormLabel>
+          <FormInput placeholder={t('site.create.name_placeholder')} />
+        </FormField>
+        <FormField name="coords">
+          <FormLabel>{t('site.create.location_label')}</FormLabel>
+          <Text>
+            {t('site.create.location_accuracy', {
+              accuracyM: accuracyM?.toFixed(5),
+            })}
+          </Text>
+          <FormInput keyboardType="decimal-pad" />
+          <FormControl.Label variant="subtle">
+            {t('site.create.coords_label')}
+          </FormControl.Label>
+        </FormField>
+        <FormField name="projectId">
+          <FormLabel>
+            {t('site.create.add_to_project_label')}
+            <FormTooltip icon="help">
+              <Text color="primary.contrast" variant="body1">
+                {t('site.create.add_to_project_tooltip')}
+              </Text>
+            </FormTooltip>
+          </FormLabel>
+          <ProjectSelect
+            projectId={values.projectId}
+            setProjectId={projectId =>
+              setValues(current => ({...current, projectId}))
+            }
+          />
+        </FormField>
+        <FormField name="privacy">
+          <FormLabel>
+            {t('privacy.label')}
+            <IconButton
+              pt={0}
+              pb={0}
+              pl={2}
+              size="md"
+              name="info"
+              onPress={onInfoPress}
+              _icon={{color: 'action.active'}}
             />
-          </FormField>
-          <FormField name="privacy">
-            <FormLabel>
-              {t('privacy.label')}
-              <IconButton
-                pt={0}
-                pb={0}
-                pl={2}
-                size="md"
-                name="info"
-                onPress={onInfoPress}
-                _icon={{color: 'action.active'}}
-              />
-            </FormLabel>
-            <FormRadioGroup
-              values={['PUBLIC', 'PRIVATE']}
-              variant="oneLine"
-              value={projectPrivacy ?? values.privacy}
-              renderRadio={value => (
-                <FormRadio
-                  value={value}
-                  isDisabled={projectPrivacy !== undefined}>
-                  {t(`privacy.${value.toLowerCase()}.title`)}
-                </FormRadio>
-              )}
-            />
-          </FormField>
-          <Spacer />
-        </VStack>
-      </ScrollView>
+          </FormLabel>
+          <FormRadioGroup
+            values={['PUBLIC', 'PRIVATE']}
+            variant="oneLine"
+            value={projectPrivacy ?? values.privacy}
+            renderRadio={(value, idx) => (
+              <FormRadio
+                key={`${idx}-${value}`}
+                value={value}
+                isDisabled={projectPrivacy !== undefined}>
+                {t(`privacy.${value.toLowerCase()}.title`)}
+              </FormRadio>
+            )}
+          />
+        </FormField>
+        <Spacer />
+      </VStack>
       <Box position="absolute" bottom={10} right={3} p={3}>
         <Button
           onPress={() => handleSubmit()}

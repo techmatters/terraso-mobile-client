@@ -17,10 +17,7 @@
 
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation as useNavigationNative} from '@react-navigation/native';
-import {
-  RootStackParamList,
-  ScreenName,
-} from 'terraso-mobile-client/navigation/types';
+import {RootNavigatorParamList} from 'terraso-mobile-client/navigation/types';
 
-export const useNavigation = <Name extends ScreenName = ScreenName>() =>
-  useNavigationNative<NativeStackNavigationProp<RootStackParamList, Name>>();
+export const useNavigation = () =>
+  useNavigationNative<NativeStackNavigationProp<RootNavigatorParamList>>();

@@ -21,6 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
 type Props = {
   siteInstructions: string;
@@ -31,7 +32,7 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
   const navigation = useNavigation();
 
   const onShowNote = useCallback(() => {
-    navigation.navigate('READ_NOTE', {
+    navigation.navigate(RootNavigatorScreens.READ_NOTE, {
       content: siteInstructions,
       isSiteInstructions: true,
     });

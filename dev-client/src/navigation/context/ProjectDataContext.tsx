@@ -15,11 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  IconButton,
-  IconButtonProps,
-} from 'terraso-mobile-client/components/Icons';
+import {createContext} from 'react';
+import {ProjectTabsData} from 'terraso-mobile-client/navigation/types';
 
-export const BottomNavIconButton = (
-  props: IconButtonProps & {label: string},
-) => <IconButton pb={0} _icon={{color: 'primary.contrast'}} {...props} />;
+const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
+
+export const ProjectDataContext = createContext<ProjectTabsData>({
+  projectId: '', // TODO: Should be looked into and adjusted later on
+  downloadLink: TEMP_DOWNLOAD_LINK,
+});

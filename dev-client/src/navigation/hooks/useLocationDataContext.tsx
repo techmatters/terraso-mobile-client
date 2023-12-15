@@ -15,25 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-export const enum TabRoutes {
-  INPUTS = 'Inputs',
-  TEAM = 'Team',
-  SETTINGS = 'Settings',
-  SITES = 'Sites',
-}
+import {useContext} from 'react';
+import {LocationDataContext} from 'terraso-mobile-client/navigation/context/LocationDataContext';
 
-export type TabStackParamList = {
-  [TabRoutes.INPUTS]: {
-    projectId: string;
-  };
-  [TabRoutes.TEAM]: {
-    projectId: string;
-  };
-  [TabRoutes.SETTINGS]: {
-    projectId: string;
-    downloadLink: string;
-  };
-  [TabRoutes.SITES]: {
-    projectId: string;
-  };
-};
+export const useLocationDataContext = () => useContext(LocationDataContext);

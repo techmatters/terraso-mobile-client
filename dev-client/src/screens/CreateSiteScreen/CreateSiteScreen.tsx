@@ -19,29 +19,23 @@ import {useCallback, useRef} from 'react';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 import {useDispatch} from 'terraso-mobile-client/store';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
 import {
   addSite,
   fetchSitesForProject,
 } from 'terraso-client-shared/site/siteSlice';
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
+import {RootNavigatorScreenProps} from 'terraso-mobile-client/navigation/types';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
-type Props =
-  | {
-      coords: Coords;
-    }
-  | {
-      projectId: string;
-    }
-  | {}
-  | undefined;
+type Props = RootNavigatorScreenProps<RootNavigatorScreens.CREATE_SITE>;
 
-export const CreateSiteScreen = (props: Props = {}) => {
+export const CreateSiteScreen = ({route: {params}}: Props) => {
+  const coords = params && 'coords' in params ? params.coords : undefined;
+  const projectId =
+    params && 'projectId' in params ? params.projectId : undefined;
+
   const dispatch = useDispatch();
   const infoModalRef = useRef<BottomSheetModal>(null);
 
@@ -72,16 +66,12 @@ export const CreateSiteScreen = (props: Props = {}) => {
 
   return (
     <BottomSheetModalProvider>
-      <ScreenScaffold
-        BottomNavigation={null}
-        AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
-        <CreateSiteView
-          createSiteCallback={createSiteCallback}
-          defaultProjectId={'projectId' in props ? props.projectId : undefined}
-          sitePin={'coords' in props ? props.coords : undefined}
-          onInfoPress={onInfo}
-        />
-      </ScreenScaffold>
+      <CreateSiteView
+        createSiteCallback={createSiteCallback}
+        defaultProjectId={projectId}
+        sitePin={coords}
+        onInfoPress={onInfo}
+      />
       <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
     </BottomSheetModalProvider>
   );

@@ -19,74 +19,81 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {ProjectInputScreen} from 'terraso-mobile-client/screens/ProjectInputScreen';
 import {ProjectTeamScreen} from 'terraso-mobile-client/screens/ProjectTeamScreen/ProjectTeamScreen';
 import {
-  TabRoutes,
-  TabStackParamList,
-} from 'terraso-mobile-client/navigation/constants';
+  ProjectTabNavigatorScreens,
+  ProjectTabNavigatorParamList,
+} from 'terraso-mobile-client/navigation/types';
 import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettingsScreen';
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
+import {useCallback, useRef} from 'react';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
+import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
+import {
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
+import {ProjectDataContext} from 'terraso-mobile-client/navigation/context/ProjectDataContext';
 
-const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
+const tabIconNames = {
+  [ProjectTabNavigatorScreens.INPUTS]: 'tune',
+  [ProjectTabNavigatorScreens.TEAM]: 'people',
+  [ProjectTabNavigatorScreens.SETTINGS]: 'settings',
+  [ProjectTabNavigatorScreens.SITES]: 'location-on',
+};
 
-const Tab = createMaterialTopTabNavigator<TabStackParamList>();
+const Tab = createMaterialTopTabNavigator<ProjectTabNavigatorParamList>();
 
-type ScreenOptions = React.ComponentProps<
-  (typeof Tab)['Navigator']
->['screenOptions'];
+type Props = RootNavigatorScreenProps<RootNavigatorScreens.PROJECT_TABS>;
 
-type Props = {projectId: string};
+export const ProjectTabNavigator = ({route: {params}}: Props) => {
+  const infoModalRef = useRef<BottomSheetModal>(null);
 
-export const ProjectTabNavigator = ({projectId}: Props) => {
+  const onInfoPress = useCallback(
+    () => infoModalRef.current?.present(),
+    [infoModalRef],
+  );
+  const onInfoClose = useCallback(
+    () => infoModalRef.current?.dismiss(),
+    [infoModalRef],
+  );
+
   const defaultTabOptions = useDefaultTabOptions();
 
-  const tabIconNames: Record<keyof TabStackParamList, string> = {
-    Inputs: 'tune',
-    Team: 'people',
-    Settings: 'settings',
-    Sites: 'location-on',
-  };
-
-  const screenOptions: ScreenOptions = ({route}) => {
-    let iconName = tabIconNames[route.name];
-
-    return {
-      ...defaultTabOptions,
-      tabBarIcon: ({color}) => {
-        return <Icon name={iconName} color={color} />;
-      },
-    };
-  };
-
   return (
-    <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen
-        name={TabRoutes.INPUTS}
-        component={ProjectInputScreen}
-        initialParams={{
-          projectId,
-        }}
-      />
-      <Tab.Screen
-        name={TabRoutes.SITES}
-        component={ProjectSitesScreen}
-        initialParams={{
-          projectId,
-        }}
-      />
-      <Tab.Screen
-        name={TabRoutes.TEAM}
-        component={ProjectTeamScreen}
-        initialParams={{projectId}}
-      />
-      <Tab.Screen
-        name={TabRoutes.SETTINGS}
-        component={ProjectSettingsScreen}
-        initialParams={{
-          projectId,
-          downloadLink: TEMP_DOWNLOAD_LINK,
-        }}
-      />
-    </Tab.Navigator>
+    // Using Context for passing additional props that are shared between tab screens as per the docs:
+    // https://reactnavigation.org/docs/hello-react-navigation/#passing-additional-props
+    <ProjectDataContext.Provider value={params}>
+      <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
+        <BottomSheetModalProvider>
+          <Tab.Navigator
+            screenOptions={({route}) => ({
+              ...defaultTabOptions,
+              tabBarIcon: ({color}) => (
+                <Icon name={tabIconNames[route.name]} color={color} />
+              ),
+            })}>
+            <Tab.Screen
+              name={ProjectTabNavigatorScreens.INPUTS}
+              component={ProjectInputScreen}
+            />
+            <Tab.Screen
+              name={ProjectTabNavigatorScreens.SITES}
+              component={ProjectSitesScreen}
+            />
+            <Tab.Screen
+              name={ProjectTabNavigatorScreens.TEAM}
+              component={ProjectTeamScreen}
+            />
+            <Tab.Screen
+              name={ProjectTabNavigatorScreens.SETTINGS}
+              component={ProjectSettingsScreen}
+            />
+          </Tab.Navigator>
+          <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
+        </BottomSheetModalProvider>
+      </BottomSheetPrivacyModalContext.Provider>
+    </ProjectDataContext.Provider>
   );
 };
