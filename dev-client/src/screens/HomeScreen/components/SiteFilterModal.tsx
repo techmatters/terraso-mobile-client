@@ -15,14 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-
 import {USER_ROLES} from 'terraso-mobile-client/constants';
 import {
   TextInputFilter,
   ListFilterModal,
   SelectFilter,
 } from 'terraso-mobile-client/components/ListFilter';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   useDistance: boolean;
@@ -49,6 +50,17 @@ export const SiteFilterModal = ({useDistance}: Props) => {
     ].map(label => [label, t('site.search.sort.' + label)]),
   );
 
+  const projects = useSelector(state => state.project.projects);
+
+  const projectOptions = useMemo(
+    () => ({
+      ...Object.fromEntries(
+        Object.values(projects).map(({id, name}) => [id, name]),
+      ),
+    }),
+    [projects],
+  );
+
   return (
     <ListFilterModal
       searchInput={
@@ -63,6 +75,12 @@ export const SiteFilterModal = ({useDistance}: Props) => {
         options={sortOptions}
         name="sort"
         nullableOption={t('general.filter.no_sort')}
+      />
+      <SelectFilter
+        label={t('site.search.filter_projects')}
+        options={projectOptions}
+        name="project"
+        nullableOption={t('general.filter.no_project')}
       />
       <SelectFilter
         label={t('site.search.filter_role')}

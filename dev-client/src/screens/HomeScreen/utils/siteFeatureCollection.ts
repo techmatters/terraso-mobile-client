@@ -21,6 +21,7 @@ export const siteFeatureCollection = (
   sites: Pick<Site, 'id' | 'latitude' | 'longitude'>[],
 ): GeoJSON.FeatureCollection<GeoJSON.Point> => ({
   type: 'FeatureCollection',
+  // TODO: Filter sometimes returns undefined; figure out why and fix
   features: sites.map(site => ({
     type: 'Feature',
     id: site.id,
