@@ -70,7 +70,7 @@ export const ConfirmModal = forwardRef<ModalHandle, Props>(
         ref={ref}
         trigger={trigger}
         CloseButton={null}
-        _content={{padding: 0, borderRadius: '24px'}}>
+        _content={{padding: 0, bg: 'grey.200'}}>
         <NativeBaseModal.Body padding="24px">
           <Heading variant="h5" textAlign="center">
             {title}

@@ -74,7 +74,10 @@ export const Modal = forwardRef<ModalHandle, Props>(
             style={styles.nativeBaseModalChild}
             behavior="padding"
             keyboardVerticalOffset={100}>
-            <NativeBaseModal.Content bg="grey.200" padding="18px" {..._content}>
+            <NativeBaseModal.Content
+              borderRadius="24px"
+              padding="18px"
+              {..._content}>
               <ModalContext.Provider value={handle}>
                 {children}
               </ModalContext.Provider>

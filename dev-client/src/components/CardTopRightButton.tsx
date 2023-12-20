@@ -23,7 +23,7 @@ import {forwardRef} from 'react';
 export const CardTopRightButton = forwardRef(
   (props: React.ComponentProps<typeof IconButton>, ref) => {
     return (
-      <Box position="absolute" top="0px" right="0px" p="8px">
+      <Box position="absolute" top="8px" right="8px" p="8px">
         <Pressable onPress={props.onPress}>
           <IconButton ref={ref} {...props} />
         </Pressable>
