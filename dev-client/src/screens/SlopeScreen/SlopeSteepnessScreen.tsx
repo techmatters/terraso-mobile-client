@@ -16,12 +16,13 @@ import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {renderSlopeValue} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 import {ImageRadio} from 'terraso-mobile-client/components/ImageRadio';
-import {useCallback, useMemo} from 'react';
+import {useCallback, useMemo, useRef, useState} from 'react';
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {Modal} from 'terraso-mobile-client/components/Modal';
+import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
 import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
 import {StyleSheet} from 'react-native';
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 
 type Props = {
   siteId: string;
@@ -44,6 +45,9 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const soilData = useSelector(state => state.soilId.soilData[siteId]);
   const dispatch = useDispatch();
+  const [steepnessOption, setSteepnessOption] =
+    useState<SoilIdSoilDataSlopeSteepnessSelectChoices | null>(null);
+  const confirmationModalRef = useRef<ModalHandle>(null);
 
   const steepnessOptions = useMemo(
     () =>
@@ -69,6 +73,26 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
     },
     [dispatch, siteId],
   );
+
+  const onSteepnessOptionSelected = useCallback(
+    (value: SoilIdSoilDataSlopeSteepnessSelectChoices | null) => {
+      if (
+        typeof soilData.slopeSteepnessDegree === 'number' ||
+        typeof soilData.slopeSteepnessPercent === 'number'
+      ) {
+        setSteepnessOption(value);
+        confirmationModalRef.current?.onOpen();
+      } else {
+        onChange(value);
+      }
+    },
+    [setSteepnessOption, confirmationModalRef, onChange, soilData],
+  );
+
+  const onConfirmSteepness = useCallback(() => {
+    onChange(steepnessOption);
+    confirmationModalRef.current?.onClose();
+  }, [onChange, steepnessOption]);
 
   return (
     <ScreenScaffold AppBar={<AppBar title={name} />} BottomNavigation={null}>
@@ -107,10 +131,18 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
             {renderSlopeValue(t, soilData)}
           </Text>
         </Column>
+        <ConfirmModal
+          ref={confirmationModalRef}
+          title={t('slope.steepness.confirm_title')}
+          body={t('slope.steepness.confirm_body')}
+          actionName={t('general.change')}
+          handleConfirm={onConfirmSteepness}
+          isConfirmError={false}
+        />
         <ImageRadio
           value={soilData.slopeSteepnessSelect}
           options={steepnessOptions as any}
-          onChange={onChange}
+          onChange={onSteepnessOptionSelected}
         />
       </ScrollView>
       <Fab leftIcon={<Icon name="check" />} label={t('general.done_fab')} />
