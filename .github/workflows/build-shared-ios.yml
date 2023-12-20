@@ -61,7 +61,7 @@ jobs:
 
       - name: Set up config values
         if: ${{ inputs.upload == 'true' }}
-        working-directory: ./dev-client/ios
+        working-directory: ./dev-client
         run: |
           echo "GOOGLE_OAUTH_IOS_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}" >> .env
           echo "GOOGLE_OAUTH_IOS_URI_SCHEME=${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}" >> .env
@@ -70,8 +70,8 @@ jobs:
           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
           echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
           echo "ENV=staging" >> .env
-          cp ../sentry.properties.example sentry.properties
-          echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> sentry.properties
+          cp sentry.properties.example ./ios/sentry.properties
+          echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> ./ios/sentry.properties
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
