@@ -15,69 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TFunction} from 'i18next';
-import {Box, Column, Heading, Row, Text} from 'native-base';
+import {Column, Heading, Row} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Pressable} from 'react-native';
 import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
-import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-
-type DataSummaryCardProps = {
-  required: boolean;
-  complete: boolean;
-  label: string;
-  value?: string;
-  onPress: () => void;
-};
-const DataSummaryCard = ({
-  required,
-  complete,
-  label,
-  value,
-  onPress,
-}: DataSummaryCardProps) => (
-  <Pressable onPress={onPress}>
-    <Row
-      backgroundColor={complete ? 'primary.lightest' : 'primary.contrast'}
-      p="15px">
-      <Box width="37px">
-        {(complete || required) && (
-          <Icon
-            color={complete ? 'primary.dark' : undefined}
-            name={
-              complete && required
-                ? 'check-circle'
-                : complete
-                  ? 'check'
-                  : 'radio-button-unchecked'
-            }
-          />
-        )}
-      </Box>
-      <Text variant="body1" fontWeight={700}>
-        {label}
-      </Text>
-      <Box flex={1} />
-      <Text variant="body1">{value}</Text>
-    </Row>
-  </Pressable>
-);
-
-export const renderSlopeValue = (
-  t: TFunction,
-  {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
-) =>
-  slopeSteepnessSelect
-    ? t(`slope.steepness.select_labels.${slopeSteepnessSelect}`)
-    : typeof slopeSteepnessPercent === 'number'
-      ? `${slopeSteepnessPercent.toFixed(0)}%`
-      : typeof slopeSteepnessDegree === 'number'
-        ? `${slopeSteepnessDegree}°`
-        : undefined;
+import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
+import {
+  renderShape,
+  renderSteepness,
+} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -91,14 +39,8 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
   });
   const navigation = useNavigation();
 
-  const steepnessValue = renderSlopeValue(t, soilData);
-
-  const shapeValue =
-    soilData.downSlope && soilData.crossSlope
-      ? `${t(`slope.shape.select_labels.${soilData.downSlope}`)} ${t(
-          `slope.shape.select_labels.${soilData.crossSlope}`,
-        )}`
-      : undefined;
+  const steepnessValue = renderSteepness(t, soilData);
+  const shapeValue = renderShape(t, soilData);
 
   const onSteepness = useCallback(
     () => navigation.push('SLOPE_STEEPNESS', {siteId}),
@@ -117,14 +59,14 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
         {/* TODO */}
         <FormTooltip icon="info">Unimplemented tooltip</FormTooltip>
       </Row>
-      <DataSummaryCard
+      <DataInputSummary
         required={required}
         complete={steepnessValue !== undefined}
         label={t('slope.steepness.short_title').toLocaleUpperCase()}
         value={steepnessValue}
         onPress={onSteepness}
       />
-      <DataSummaryCard
+      <DataInputSummary
         required={required}
         complete={shapeValue !== undefined}
         label={t('slope.shape.title').toLocaleUpperCase()}

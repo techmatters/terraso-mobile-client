@@ -14,7 +14,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {renderSlopeValue} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
+import {renderSteepness} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {ImageRadio} from 'terraso-mobile-client/components/ImageRadio';
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
@@ -130,7 +130,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
           </Row>
           <Box height="15px" />
           <Text variant="body1" fontWeight={700} alignSelf="center">
-            {renderSlopeValue(t, soilData)}
+            {renderSteepness(t, soilData)}
           </Text>
         </Column>
         <ConfirmModal
