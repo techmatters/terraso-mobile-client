@@ -159,7 +159,6 @@ export const ProjectInputScreen = ({
         onPress={() => onSave()}
         textTransform={'uppercase'}
         label={t('general.save_fab')}
-        renderInPortal={false}
       />
     </VStack>
   );
