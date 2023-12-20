@@ -102,9 +102,9 @@ jobs:
         run: pod install
 
       - name: Build iOS App
-        working-directory: dev-client/ios
         uses: yukiarrr/ios-build-action@v1.11.1
         with:
+          working-directory: dev-client/ios
           project-path: dev-client/ios/Terraso LandPKS.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
