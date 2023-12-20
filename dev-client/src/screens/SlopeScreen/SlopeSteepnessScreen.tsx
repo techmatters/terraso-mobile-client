@@ -23,6 +23,7 @@ import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
 import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
 import {StyleSheet} from 'react-native';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
   siteId: string;
@@ -48,6 +49,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
   const [steepnessOption, setSteepnessOption] =
     useState<SoilIdSoilDataSlopeSteepnessSelectChoices | null>(null);
   const confirmationModalRef = useRef<ModalHandle>(null);
+  const navigation = useNavigation();
 
   const steepnessOptions = useMemo(
     () =>
@@ -145,7 +147,11 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
           onChange={onSteepnessOptionSelected}
         />
       </ScrollView>
-      <Fab leftIcon={<Icon name="check" />} label={t('general.done_fab')} />
+      <Fab
+        onPress={() => navigation.pop()}
+        leftIcon={<Icon name="check" />}
+        label={t('general.done_fab')}
+      />
     </ScreenScaffold>
   );
 };

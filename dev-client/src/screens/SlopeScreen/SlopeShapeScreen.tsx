@@ -13,6 +13,7 @@ import {useCallback, useMemo} from 'react';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {StyleSheet} from 'react-native';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
   siteId: string;
@@ -37,6 +38,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
     state => state.soilId.soilData[siteId],
   );
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const downSlopeOptions = useMemo(
     () =>
@@ -115,7 +117,11 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
           </Column>
         </Row>
       </ScrollView>
-      <Fab leftIcon={<Icon name="check" />} label={t('general.done_fab')} />
+      <Fab
+        onPress={() => navigation.pop()}
+        leftIcon={<Icon name="check" />}
+        label={t('general.done_fab')}
+      />
     </ScreenScaffold>
   );
 };
