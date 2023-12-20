@@ -73,9 +73,9 @@ export const renderSlopeValue = (
 ) =>
   slopeSteepnessSelect
     ? t(`slope.steepness.select_labels.${slopeSteepnessSelect}`)
-    : slopeSteepnessPercent
+    : typeof slopeSteepnessPercent === 'number'
       ? `${slopeSteepnessPercent.toFixed(0)}%`
-      : slopeSteepnessDegree
+      : typeof slopeSteepnessDegree === 'number'
         ? `${slopeSteepnessDegree}°`
         : undefined;
 
