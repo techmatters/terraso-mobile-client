@@ -29,10 +29,6 @@ import {
 import {useTranslation} from 'react-i18next';
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {
-  TabRoutes,
-  TabStackParamList,
-} from 'terraso-mobile-client/navigation/constants';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   LabelledDepthInterval,
@@ -47,27 +43,30 @@ import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
 import {useMemo, useCallback} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView, Switch} from 'react-native';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {DepthPresets} from 'terraso-mobile-client/constants';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  ProjectTabNavigatorScreenProps,
+  ProjectTabNavigatorScreens,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
+import {useProjectDataContext} from 'terraso-mobile-client/navigation/hooks/useProjectDataContext';
 
-type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
+type Props = ProjectTabNavigatorScreenProps<ProjectTabNavigatorScreens.INPUTS>;
 
-export const ProjectInputScreen = ({
-  route: {
-    params: {projectId},
-  },
-}: Props) => {
+export const ProjectInputScreen = ({navigation}: Props) => {
+  const {projectId} = useProjectDataContext();
+
   const {t} = useTranslation();
-  const navigation = useNavigation();
   const project = useSelector(state => state.project.projects[projectId]);
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();
 
   const onEditInstructions = useCallback(() => {
-    return navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});
+    return navigation.navigate(RootNavigatorScreens.EDIT_PROJECT_INSTRUCTIONS, {
+      project,
+    });
   }, [navigation, project]);
 
   const onProjectPrivacyChanged = useCallback(

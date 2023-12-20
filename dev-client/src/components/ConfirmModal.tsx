@@ -40,10 +40,12 @@ export const ConfirmModal = ({
 }: Props) => {
   const {isOpen, onOpen, onClose} = useDisclose();
   const {t} = useTranslation();
+
   const onConfirm = useCallback(() => {
     handleConfirm();
     onClose();
   }, [handleConfirm, onClose]);
+
   return (
     <>
       {trigger(onOpen)}

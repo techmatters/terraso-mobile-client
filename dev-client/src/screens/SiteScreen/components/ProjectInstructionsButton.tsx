@@ -21,6 +21,7 @@ import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useCallback} from 'react';
 import {Project} from 'terraso-client-shared/project/projectSlice';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
 type Props = {
   project: Project;
@@ -32,7 +33,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
 
   const onShowNote = useCallback(() => {
     return () =>
-      navigation.navigate('READ_NOTE', {
+      navigation.navigate(RootNavigatorScreens.READ_NOTE, {
         content: project.siteInstructions || '',
         isSiteInstructions: true,
       });

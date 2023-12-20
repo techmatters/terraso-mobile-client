@@ -23,6 +23,7 @@ import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {SiteNote} from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
 type Props = {
   note: SiteNote;
@@ -33,11 +34,13 @@ export const SiteNoteCard = ({note}: Props) => {
   const navigation = useNavigation();
 
   const onEditNote = useCallback(() => {
-    navigation.navigate('EDIT_SITE_NOTE', {note: note});
+    navigation.navigate(RootNavigatorScreens.EDIT_SITE_NOTE, {note: note});
   }, [navigation, note]);
 
   const onShowNote = useCallback(() => {
-    navigation.navigate('READ_NOTE', {content: note.content});
+    navigation.navigate(RootNavigatorScreens.READ_NOTE, {
+      content: note.content,
+    });
   }, [navigation, note.content]);
 
   return (

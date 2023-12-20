@@ -106,6 +106,7 @@ export const StaticMapView = ({
   displayCenterMarker,
 }: Props) => {
   const position = useMemo(() => coordsToPosition(coords), [coords]);
+
   return (
     <Mapbox.MapView
       style={style}

@@ -22,16 +22,11 @@ import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
 import {Box} from 'native-base';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
-import BottomSheet, {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from '@gorhom/bottom-sheet';
+import BottomSheet, {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
@@ -42,6 +37,10 @@ import {
 import {equals, searchText} from 'terraso-mobile-client/util';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {normalizeText} from 'terraso-client-shared/utils';
+import {
+  BottomTabNavigatorScreenProps,
+  BottomTabNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
 export type CalloutState =
   | {
@@ -62,11 +61,11 @@ export type CalloutState =
 
 const STARTING_ZOOM_LEVEL = 12;
 
-type Props = {
-  site?: Site;
-};
+type Props = BottomTabNavigatorScreenProps<BottomTabNavigatorScreens.HOME>;
 
-export const HomeScreen = ({site}: Props) => {
+export const HomeScreen = ({route, navigation}: Props) => {
+  const site = route.params?.site;
+
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
@@ -104,6 +103,24 @@ export const HomeScreen = ({site}: Props) => {
     [moveToPoint, setCalloutState],
   );
 
+  const onInfo = useCallback(
+    () => infoBottomSheetRef.current?.present(),
+    [infoBottomSheetRef],
+  );
+
+  const onInfoClose = useCallback(
+    () => infoBottomSheetRef.current?.dismiss(),
+    [infoBottomSheetRef],
+  );
+
+  useEffect(() => {
+    // Updating/hydrating the AppBarIconButton (originally rendered in the BottomTabNavigator)
+    // with the proper onPress handler value (`onInfo`) that is only available in the component
+    navigation.setOptions({
+      headerRight: () => <AppBarIconButton name="info" onPress={onInfo} />,
+    });
+  }, [navigation, onInfo]);
+
   useEffect(() => {
     if (currentUserID !== undefined) {
       dispatch(fetchSoilDataForUser(currentUserID));
@@ -113,7 +130,7 @@ export const HomeScreen = ({site}: Props) => {
   // When a site is created, we pass site to HomeScreen
   // and then center that site on the map.
   useEffect(() => {
-    if (site !== undefined) {
+    if (site) {
       showSiteOnMap(site);
     }
   }, [site, showSiteOnMap]);
@@ -169,15 +186,6 @@ export const HomeScreen = ({site}: Props) => {
     [mapStyleURL, setMapStyleURL],
   );
 
-  const onInfo = useCallback(
-    () => infoBottomSheetRef.current?.present(),
-    [infoBottomSheetRef],
-  );
-  const onInfoClose = useCallback(
-    () => infoBottomSheetRef.current?.dismiss(),
-    [infoBottomSheetRef],
-  );
-
   const {siteDistances} = useGeospatialContext();
 
   const distanceSorting: Record<string, SortingOption<Site>> | undefined =
@@ -199,89 +207,79 @@ export const HomeScreen = ({site}: Props) => {
     }, [siteDistances]);
 
   return (
-    <BottomSheetModalProvider>
-      <ListFilterProvider
-        items={siteList}
-        filters={{
-          search: {
-            kind: 'filter',
-            f: searchText,
-            preprocess: normalizeText,
-            lookup: {
-              key: ['name', 'notes.content'],
-            },
-            hide: true,
+    <ListFilterProvider
+      items={siteList}
+      filters={{
+        search: {
+          kind: 'filter',
+          f: searchText,
+          preprocess: normalizeText,
+          lookup: {
+            key: ['name', 'notes.content'],
           },
-          role: {
-            kind: 'filter',
-            f: equals,
-            lookup: {
-              record: siteProjectRoles,
-              key: 'id',
-            },
+          hide: true,
+        },
+        role: {
+          kind: 'filter',
+          f: equals,
+          lookup: {
+            record: siteProjectRoles,
+            key: 'id',
           },
-          project: {
-            kind: 'filter',
-            f: equals,
-            lookup: {
-              key: 'projectId',
-            },
+        },
+        project: {
+          kind: 'filter',
+          f: equals,
+          lookup: {
+            key: 'projectId',
           },
-          sort: {
-            kind: 'sorting',
-            options: {
-              nameDesc: {
-                key: 'name',
-                order: 'descending',
-              },
-              nameAsc: {
-                key: 'name',
-                order: 'ascending',
-              },
-              lastModDesc: {
-                key: 'updatedAt',
-                order: 'descending',
-              },
-              lastModAsc: {
-                key: 'updatedAt',
-                order: 'ascending',
-              },
-              ...distanceSorting,
+        },
+        sort: {
+          kind: 'sorting',
+          options: {
+            nameDesc: {
+              key: 'name',
+              order: 'descending',
             },
+            nameAsc: {
+              key: 'name',
+              order: 'ascending',
+            },
+            lastModDesc: {
+              key: 'updatedAt',
+              order: 'descending',
+            },
+            lastModAsc: {
+              key: 'updatedAt',
+              order: 'ascending',
+            },
+            ...distanceSorting,
           },
-        }}>
-        <ScreenScaffold
-          AppBar={
-            <AppBar
-              LeftButton={<AppBarIconButton name="menu" />}
-              RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
-            />
-          }>
-          <Box flex={1}>
-            <Box flex={1} zIndex={-1}>
-              <MapSearch
-                zoomTo={searchFunction}
-                zoomToUser={moveToUser}
-                toggleMapLayer={toggleMapLayer}
-              />
-              <SiteMap
-                ref={camera}
-                calloutState={calloutState}
-                setCalloutState={setCalloutState}
-                styleURL={mapStyleURL}
-                onMapFinishedLoading={onMapFinishedLoading}
-              />
-            </Box>
-            <SiteListBottomSheet
-              ref={siteListBottomSheetRef}
-              sites={siteList}
-              showSiteOnMap={showSiteOnMap}
-              snapIndex={1}
-            />
-          </Box>
-          <LandPKSInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
-        </ScreenScaffold>
-      </ListFilterProvider>
-    </BottomSheetModalProvider>
+        },
+      }}>
+      <Box flex={1}>
+        <Box flex={1} zIndex={-1}>
+          <MapSearch
+            zoomTo={searchFunction}
+            zoomToUser={moveToUser}
+            toggleMapLayer={toggleMapLayer}
+          />
+          <SiteMap
+            ref={camera}
+            calloutState={calloutState}
+            setCalloutState={setCalloutState}
+            styleURL={mapStyleURL}
+            onMapFinishedLoading={onMapFinishedLoading}
+          />
+        </Box>
+        <SiteListBottomSheet
+          ref={siteListBottomSheetRef}
+          sites={siteList}
+          showSiteOnMap={showSiteOnMap}
+          snapIndex={1}
+        />
+      </Box>
+      <LandPKSInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
+    </ListFilterProvider>
   );
 };

@@ -30,48 +30,50 @@ import {
   // Pressable,
 } from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
 import {IconLabel} from 'terraso-mobile-client/screens/SiteSettingsScreen/components/IconLabel';
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {
+  BottomTabNavigatorScreens,
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
-type Props = {
-  siteId: string;
-};
+type Props = RootNavigatorScreenProps<RootNavigatorScreens.SITE_SETTINGS>;
 
-export const SiteSettingsScreen = ({siteId}: Props) => {
+export const SiteSettingsScreen = ({route, navigation}: Props) => {
+  const {siteId} = route.params;
+
   const dispatch = useDispatch();
   const {t} = useTranslation();
   // const {colors} = useTheme();
-  const {navigate} = useNavigation();
   const site = useSelector(state => state.site.sites[siteId]);
   const [name, setName] = useState(site.name);
 
   // const onTeamPress = useCallback(
-  //   () => navigate('SITE_TEAM_SETTINGS', {siteId}),
+  //   () => navigate(RootNavigatorScreens.SITE_TEAM_SETTINGS, {siteId}),
   //   [siteId, navigate],
   // );
 
-  const onSave = useCallback(
-    () => dispatch(updateSite({id: site.id, name})),
-    [dispatch, site, name],
-  );
+  const onSave = useCallback(() => {
+    dispatch(updateSite({id: site.id, name}));
+    navigation.pop();
+  }, [navigation, dispatch, site, name]);
 
   const onDelete = useCallback(async () => {
     // TODO: confirm successful deletion before navigating home
-    navigate('HOME', {});
+    navigation.navigate(RootNavigatorScreens.BOTTOM_TABS, {
+      screen: BottomTabNavigatorScreens.HOME,
+      params: {},
+    });
     await dispatch(deleteSite(site));
-  }, [dispatch, navigate, site]);
+  }, [dispatch, navigation, site]);
 
   return (
-    <ScreenScaffold
-      BottomNavigation={null}
-      AppBar={<AppBar title={site.name} />}>
+    <>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
         <Input
           value={name}
@@ -151,6 +153,6 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
         />
       </Column>
       <Fab label={t('general.save_fab')} onPress={onSave} />
-    </ScreenScaffold>
+    </>
   );
 };

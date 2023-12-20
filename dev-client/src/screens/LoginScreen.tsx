@@ -16,9 +16,8 @@
  */
 
 import {Box, Button, Column, Heading, Text} from 'native-base';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {useEffect, useCallback} from 'react';
+import {useDispatch} from 'terraso-mobile-client/store';
+import {useCallback} from 'react';
 import {auth} from 'terraso-mobile-client/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
@@ -32,16 +31,8 @@ import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
-  const navigation = useNavigation();
-  const loggedIn = useSelector(
-    state => state.account.currentUser.data !== null,
-  );
-
-  // note: we intentionally run this on every render,
-  // so we can't accidentally get stuck on this view because
-  // it was navigated to while there is already user data
-
   const dispatch = useDispatch();
+
   const onPress = useCallback(
     (providerName: String) => {
       return () => {
@@ -52,12 +43,6 @@ export const LoginScreen = () => {
     },
     [dispatch],
   );
-
-  useEffect(() => {
-    if (loggedIn) {
-      navigation.replace('HOME', {});
-    }
-  }, [loggedIn, navigation]);
 
   return (
     <Column bgColor="primary.main" alignItems="center" h="100%">

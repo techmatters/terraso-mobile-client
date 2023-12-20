@@ -23,17 +23,19 @@ import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrap
 import {useTranslation} from 'react-i18next';
 import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {addSiteNote} from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Keyboard} from 'react-native';
+import {
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
-type Props = {
-  siteId: string;
-};
+type Props = RootNavigatorScreenProps<RootNavigatorScreens.ADD_SITE_NOTE>;
 
-export const AddSiteNoteScreen = ({siteId}: Props) => {
+export const AddSiteNoteScreen = ({route, navigation}: Props) => {
+  const {siteId} = route.params;
+
   const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

@@ -25,11 +25,15 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScreen/components/ProjectInstructionsButton';
 
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
+import {
+  LocationDashboardTabNavigatorScreenProps,
+  LocationDashboardTabNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
+import {useLocationDataContext} from 'terraso-mobile-client/navigation/hooks/useLocationDataContext';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';
@@ -42,11 +46,6 @@ const TEMP_LCC_PREDICTION = 'Class 1';
 const TEMP_SOIL_ID_CONFIDENCE = '80%';
 const TEMP_ECO_SITE_ID_CONFIDENCE = '80%';
 const TEMP_LCC_CONFIDENCE = '80%';
-
-type Props = {
-  siteId?: string;
-  coords?: Coords;
-};
 
 const LocationDetail = ({label, value}: {label: string; value: string}) => (
   <Text variant="body1">
@@ -86,17 +85,24 @@ const LocationPrediction = ({
   );
 };
 
-export const SiteScreen = ({siteId, coords}: Props) => {
+type Props =
+  LocationDashboardTabNavigatorScreenProps<LocationDashboardTabNavigatorScreens.SITE>;
+
+export const SiteScreen = ({navigation: _navigation}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();
 
+  const locationData = useLocationDataContext();
+
   const site = useSelector(state =>
-    siteId === undefined ? undefined : state.site.sites[siteId],
+    'siteId' in locationData
+      ? state.site.sites[locationData.siteId]
+      : undefined,
   );
-  if (coords === undefined) {
-    coords = site!;
-  }
+
+  const coords = 'coords' in locationData ? locationData.coords : site!; // Using ! as `site` is guaranteed to be defined here
+
   const project = useSelector(state =>
     site?.projectId === undefined
       ? undefined
@@ -109,7 +115,7 @@ export const SiteScreen = ({siteId, coords}: Props) => {
   );
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <StaticMapView
         coords={coords}
         style={styles.mapView}

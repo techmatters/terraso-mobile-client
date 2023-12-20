@@ -15,7 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Box, Heading, Text, Badge, Row} from 'native-base';
 import {useCallback} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
@@ -25,6 +24,8 @@ import {StyleSheet} from 'react-native';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
 const TEMP_MODIFIED_DATE = '8/15/23';
 const TEMP_MODIFIED_NAME = 'Sample Sam';
@@ -51,7 +52,10 @@ export const SiteCard = ({
   );
 
   const onCardPress = useCallback(
-    () => navigation.navigate('LOCATION_DASHBOARD', {siteId: site.id}),
+    () =>
+      navigation.navigate(RootNavigatorScreens.LOCATION_DASHBOARD_TABS, {
+        siteId: site.id,
+      }),
     [navigation, site.id],
   );
 

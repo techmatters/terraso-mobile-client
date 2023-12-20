@@ -15,14 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
 import {Box, Button, Column, Heading, Row, FlatList} from 'native-base';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import SiteNote from 'terraso-client-shared/site/siteSlice';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
 import {SiteInstructionsCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteInstructionsCard';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  LocationDashboardTabNavigatorScreenProps,
+  LocationDashboardTabNavigatorScreens,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
+import {useLocationDataContext} from 'terraso-mobile-client/navigation/hooks/useLocationDataContext';
 
 export type SiteNote = {
   id: string;
@@ -32,19 +36,30 @@ export type SiteNote = {
   authorLastName: string;
 };
 
-export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
+type Props =
+  LocationDashboardTabNavigatorScreenProps<LocationDashboardTabNavigatorScreens.NOTES>;
+
+export const SiteNotesScreen = ({navigation}: Props) => {
+  const locationData = useLocationDataContext();
+
   const {t} = useTranslation();
-  const navigation = useNavigation();
-  const site = useSelector(state => state.site.sites[siteId]);
-  const project = useSelector(state =>
-    site.projectId === undefined
-      ? undefined
-      : state.project.projects[site.projectId],
+  const site = useSelector(state =>
+    'siteId' in locationData
+      ? state.site.sites[locationData.siteId]
+      : undefined,
   );
 
-  const onAddNote = useCallback(() => {
-    navigation.navigate('ADD_SITE_NOTE', {siteId: siteId});
-  }, [navigation, siteId]);
+  const project = useSelector(state =>
+    site?.projectId ? state.project.projects[site.projectId] : undefined,
+  );
+
+  const onAddNote = () => {
+    if ('siteId' in locationData) {
+      navigation.navigate(RootNavigatorScreens.ADD_SITE_NOTE, {
+        siteId: locationData.siteId,
+      });
+    }
+  };
 
   return (
     <Column>
@@ -65,13 +80,15 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
           {t('site.notes.add_note_label')}
         </Button>
       </Box>
-      <FlatList
-        pb={540}
-        data={Object.values(site.notes)}
-        keyExtractor={note => note.id}
-        ListFooterComponent={<Box height="300px" />}
-        renderItem={({item: note}) => <SiteNoteCard note={note} />}
-      />
+      {site?.notes ? (
+        <FlatList
+          pb={540}
+          data={Object.values(site.notes)}
+          keyExtractor={note => note.id}
+          ListFooterComponent={<Box height="300px" />}
+          renderItem={({item: note}) => <SiteNoteCard note={note} />}
+        />
+      ) : null}
     </Column>
   );
 };

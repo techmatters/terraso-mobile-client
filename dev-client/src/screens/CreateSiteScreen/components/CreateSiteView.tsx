@@ -18,9 +18,9 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Formik} from 'formik';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
@@ -33,6 +33,10 @@ import {
   CreateSiteForm,
   FormState,
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
+import {
+  BottomTabNavigatorScreens,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
 type Props = {
   defaultProjectId?: string;
@@ -68,8 +72,11 @@ export const CreateSiteView = ({
         ...parseCoords(coords),
       });
       if (createdSite !== undefined) {
-        navigation.replace('HOME', {
-          site: createdSite,
+        navigation.replace(RootNavigatorScreens.BOTTOM_TABS, {
+          screen: BottomTabNavigatorScreens.HOME,
+          params: {
+            site: createdSite,
+          },
         });
       }
     },

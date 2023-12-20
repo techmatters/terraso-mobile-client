@@ -22,21 +22,21 @@ import {SiteNoteForm} from 'terraso-mobile-client/components/SiteNoteForm';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {useTranslation} from 'react-i18next';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  updateProject,
-  Project,
-} from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {updateProject} from 'terraso-client-shared/project/projectSlice';
 import {Keyboard} from 'react-native';
+import {
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
-type Props = {
-  project: Project;
-};
+type Props =
+  RootNavigatorScreenProps<RootNavigatorScreens.EDIT_PROJECT_INSTRUCTIONS>;
 
-export const EditProjectInstructionsScreen = ({project}: Props) => {
+export const EditProjectInstructionsScreen = ({route, navigation}: Props) => {
+  const {project} = route.params;
+
   const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

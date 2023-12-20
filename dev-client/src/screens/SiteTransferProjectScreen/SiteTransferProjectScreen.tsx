@@ -18,29 +18,32 @@
 import {Box, Fab, FlatList, Text} from 'native-base';
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
 import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {CheckboxGroup} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/CheckboxGroup';
 import {transferSites} from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {removeKeys} from 'terraso-mobile-client/util';
 import {ListHeader} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/ListHeader';
+import {
+  RootNavigatorScreenProps,
+  RootNavigatorScreens,
+} from 'terraso-mobile-client/navigation/types';
 
 const UNAFFILIATED = {
   projectId: Symbol('unaffiliated'),
   projectName: '',
 };
 
-type Props = {projectId: string};
+type Props =
+  RootNavigatorScreenProps<RootNavigatorScreens.SITE_TRANSFER_PROJECT>;
 
-export const SiteTransferProjectScreen = ({projectId}: Props) => {
+export const SiteTransferProjectScreen = ({route, navigation}: Props) => {
+  const {projectId} = route.params;
+
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   UNAFFILIATED.projectName = t('projects.transfer_sites.unaffiliated');
 
@@ -49,7 +52,6 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
       symb => symb === UNAFFILIATED.projectId,
     ) !== undefined;
 
-  const project = useSelector(state => state.project.projects[projectId]);
   const {projects, sites, unaffiliatedSites} = useSelector(state =>
     selectProjectsWithTransferrableSites(state, 'manager'),
   );
@@ -185,9 +187,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   }, [dispatch, navigation, projectId, checkedSites]);
 
   return (
-    <ScreenScaffold
-      BottomNavigation={null}
-      AppBar={<AppBar title={project.name} />}>
+    <>
       <ListHeader query={query} setQuery={setQuery} />
       <FlatList
         data={listData}
@@ -238,6 +238,6 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
         bgColor={disabled ? 'action.disabledBackground' : undefined}
         color={disabled ? 'action.disabled' : undefined}
       />
-    </ScreenScaffold>
+    </>
   );
 };

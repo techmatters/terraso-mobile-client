@@ -17,9 +17,6 @@
 
 import {useCallback, useMemo} from 'react';
 import {useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Box, Heading, Link, Text, VStack, Spinner} from 'native-base';
@@ -35,6 +32,7 @@ import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
 import {normalizeText} from 'terraso-client-shared/utils';
 import {equals, searchText} from 'terraso-mobile-client/util';
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
+import {RootNavigatorScreens} from 'terraso-mobile-client/navigation/types';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
@@ -49,7 +47,7 @@ export const ProjectListScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const onPress = useCallback(
-    () => navigation.navigate('CREATE_PROJECT'),
+    () => navigation.navigate(RootNavigatorScreens.CREATE_PROJECT),
     [navigation],
   );
   const isLoadingData = useSelector(state => state.soilId.status === 'loading');
@@ -58,105 +56,91 @@ export const ProjectListScreen = () => {
   );
 
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar
-          LeftButton={<AppBarIconButton name="menu" />}
-          RightButton={<AppBarIconButton name="help" />}
-        />
-      }>
-      <VStack
-        bg="grey.200"
-        p={5}
-        flexGrow={1}
-        flexShrink={0}
-        flexBasis="70%"
-        space="10px">
-        <Box alignItems="flex-start" pb={3}>
-          <AddButton
-            text={t('projects.create_button')}
-            buttonProps={{onPress}}
-          />
-        </Box>
+    <VStack
+      bg="grey.200"
+      p={5}
+      flexGrow={1}
+      flexShrink={0}
+      flexBasis="70%"
+      space="10px">
+      <Box alignItems="flex-start" pb={3}>
+        <AddButton text={t('projects.create_button')} buttonProps={{onPress}} />
+      </Box>
 
-        {isLoadingData ? (
-          <Spinner size="lg" />
-        ) : (
-          activeProjects.length === 0 && (
-            <>
-              <Heading size="sm">{t('projects.none.header')}</Heading>
-              <Text>{t('projects.none.info')}</Text>
-              <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
-                <IconButton
-                  name="open-in-new"
-                  _icon={{color: 'action.active'}}
-                />
-                {t('projects.learn_more')}
-              </Link>
-            </>
-          )
-        )}
+      {isLoadingData ? (
+        <Spinner size="lg" />
+      ) : (
+        activeProjects.length === 0 && (
+          <>
+            <Heading size="sm">{t('projects.none.header')}</Heading>
+            <Text>{t('projects.none.info')}</Text>
+            <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
+              <IconButton name="open-in-new" _icon={{color: 'action.active'}} />
+              {t('projects.learn_more')}
+            </Link>
+          </>
+        )
+      )}
 
-        {activeProjects.length > 0 && (
-          <ListFilterProvider
-            items={activeProjects}
-            filters={{
-              search: {
-                kind: 'filter',
-                f: searchText,
-                preprocess: normalizeText,
-                lookup: {key: 'name'},
-                hide: true,
-              },
-              role: {
-                kind: 'filter',
-                f: equals,
-                lookup: {key: 'id', record: projectRoleLookup},
-              },
-              sort: {
-                kind: 'sorting',
-                options: {
-                  nameAsc: {
-                    key: 'name',
-                    order: 'ascending',
-                  },
-                  nameDesc: {
-                    key: 'name',
-                    order: 'descending',
-                  },
+      {activeProjects.length > 0 && (
+        <ListFilterProvider
+          items={activeProjects}
+          filters={{
+            search: {
+              kind: 'filter',
+              f: searchText,
+              preprocess: normalizeText,
+              lookup: {key: 'name'},
+              hide: true,
+            },
+            role: {
+              kind: 'filter',
+              f: equals,
+              lookup: {key: 'id', record: projectRoleLookup},
+            },
+            sort: {
+              kind: 'sorting',
+              options: {
+                nameAsc: {
+                  key: 'name',
+                  order: 'ascending',
+                },
+                nameDesc: {
+                  key: 'name',
+                  order: 'descending',
                 },
               },
-            }}>
-            <ListFilterModal
-              searchInput={
-                <TextInputFilter
-                  name="search"
-                  label={t('projects.search_label')}
-                  placeholder={t('projects.search_placeholder')}
-                />
-              }>
-              <SelectFilter
-                name="sort"
-                label={t('projects.sort_label')}
-                options={SORT_OPTIONS}
-                nullableOption={t('general.filter.no_sort')}
+            },
+          }}>
+          <ListFilterModal
+            searchInput={
+              <TextInputFilter
+                name="search"
+                label={t('projects.search_label')}
+                placeholder={t('projects.search_placeholder')}
               />
-              <SelectFilter
-                name="role"
-                label={t('projects.role_filter_label')}
-                placeholder=""
-                options={{
-                  manager: t('general.role.manager'),
-                  contributor: t('general.role.contributor'),
-                  viewer: t('general.role.viewer'),
-                }}
-                nullableOption={t('general.filter.no_role')}
-              />
-            </ListFilterModal>
-            <ProjectList />
-          </ListFilterProvider>
-        )}
-      </VStack>
-    </ScreenScaffold>
+            }>
+            <SelectFilter
+              name="sort"
+              label={t('projects.sort_label')}
+              options={SORT_OPTIONS}
+              nullableOption={t('general.filter.no_sort')}
+            />
+            <SelectFilter
+              name="role"
+              label={t('projects.role_filter_label')}
+              placeholder=""
+              options={{
+                manager: t('general.role.manager'),
+                contributor: t('general.role.contributor'),
+                viewer: t('general.role.viewer'),
+              }}
+              nullableOption={t('general.filter.no_role')}
+            />
+          </ListFilterModal>
+          <ProjectList />
+        </ListFilterProvider>
+      )}
+    </VStack>
   );
 };
