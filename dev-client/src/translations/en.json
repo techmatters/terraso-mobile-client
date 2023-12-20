@@ -438,8 +438,8 @@
       "confirm_title": "Change slope?",
       "confirm_body": "Are you sure you want to override the slope data?",
       "percentage_placeholder": "Percentage",
-      "percentage_help": "0 minimum",
-      "degree_help": "0-90",
+      "percentage_help": "0% minimum",
+      "degree_help": "0°-89°",
       "degree_placeholder": "Degree",
       "slope_meter": "Slope Meter",
       "select_labels": {

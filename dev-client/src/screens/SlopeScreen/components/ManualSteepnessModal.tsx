@@ -15,15 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Column, Row, Text} from 'native-base';
+import {Box, Button, Column, Heading, Row} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useModal} from 'terraso-mobile-client/components/Modal';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import * as yup from 'yup';
-import {useMemo} from 'react';
+import {useMemo, useState} from 'react';
 import {Formik} from 'formik';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {
+  degreeToPercent,
+  percentToDegree,
+} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
+import {Icon} from 'terraso-mobile-client/components/Icons';
 
 type Props = {
   siteId: string;
@@ -39,6 +44,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
   const onClose = useModal()!.onClose;
   const soilData = useSelector(state => state.soilId.soilData[siteId]);
   const dispatch = useDispatch();
+  const [lastTouched, setLastTouched] = useState<keyof FormInput | null>(null);
 
   const schema = useMemo(
     () =>
@@ -55,7 +61,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
           .optional()
           .typeError(t('slope.steepness.percentage_help'))
           .min(0, t('slope.steepness.degree_help'))
-          .max(90, t('slope.steepness.degree_help')),
+          .max(89, t('slope.steepness.degree_help')),
       }),
     [t],
   );
@@ -64,7 +70,10 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
     slopeSteepnessPercent,
     slopeSteepnessDegree,
   }: FormInput) => {
-    if (slopeSteepnessPercent) {
+    if (
+      slopeSteepnessPercent &&
+      (lastTouched === 'slopeSteepnessPercent' || !slopeSteepnessDegree)
+    ) {
       await dispatch(
         updateSoilData({
           siteId,
@@ -73,7 +82,10 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
           slopeSteepnessDegree: null,
         }),
       );
-    } else if (slopeSteepnessDegree) {
+    } else if (
+      slopeSteepnessDegree &&
+      (lastTouched === 'slopeSteepnessDegree' || !slopeSteepnessPercent)
+    ) {
       await dispatch(
         updateSoilData({
           siteId,
@@ -101,12 +113,13 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
         slopeSteepnessPercent: soilData.slopeSteepnessPercent?.toString(),
         slopeSteepnessDegree: soilData.slopeSteepnessDegree?.toString(),
       }}
-      onSubmit={onSubmit}>
-      {({handleSubmit, isValid, isSubmitting}) => (
+      onSubmit={onSubmit}
+      validateOnChange>
+      {({handleSubmit, isValid, isSubmitting, handleChange}) => (
         <Column alignItems="center">
-          <Text variant="body1" alignSelf="flex-start">
+          <Heading variant="h6" alignSelf="flex-start">
             {t('slope.steepness.manual_help')}
-          </Text>
+          </Heading>
           <Box height="30px" />
           <Row justifyContent="space-between" space="40px">
             <Box flex={1}>
@@ -116,6 +129,24 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 variant="underlined"
                 helpText={t('slope.steepness.percentage_help')}
                 placeholder={t('slope.steepness.percentage_placeholder')}
+                onChangeText={text => {
+                  handleChange('slopeSteepnessPercent')(text);
+                  setLastTouched('slopeSteepnessPercent');
+                  if (
+                    (
+                      yup.reach(
+                        schema,
+                        'slopeSteepnessPercent',
+                      ) as yup.Schema<number>
+                    ).isValidSync(text)
+                  ) {
+                    handleChange('slopeSteepnessDegree')(
+                      Math.round(
+                        percentToDegree(parseInt(text, 10)),
+                      ).toString(),
+                    );
+                  }
+                }}
               />
             </Box>
             <Box flex={1}>
@@ -125,11 +156,30 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 variant="underlined"
                 helpText={t('slope.steepness.degree_help')}
                 placeholder={t('slope.steepness.degree_placeholder')}
+                onChangeText={text => {
+                  handleChange('slopeSteepnessDegree')(text);
+                  setLastTouched('slopeSteepnessDegree');
+                  if (
+                    (
+                      yup.reach(
+                        schema,
+                        'slopeSteepnessDegree',
+                      ) as yup.Schema<number>
+                    ).isValidSync(text)
+                  ) {
+                    handleChange('slopeSteepnessPercent')(
+                      Math.round(
+                        degreeToPercent(parseInt(text, 10)),
+                      ).toString(),
+                    );
+                  }
+                }}
               />
             </Box>
           </Row>
           <Box height="25px" />
           <Button
+            leftIcon={<Icon name="check" />}
             _text={{textTransform: 'uppercase'}}
             size="lg"
             isDisabled={!isValid || isSubmitting}
