@@ -113,6 +113,11 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
     confirmationModalRef.current?.onClose();
   }, [onChange, steepnessOption]);
 
+  const onMeter = useCallback(
+    () => navigation.push('SLOPE_METER', {siteId}),
+    [navigation, siteId],
+  );
+
   return (
     <ScreenScaffold AppBar={<AppBar title={name} />} BottomNavigation={null}>
       <ScrollView
@@ -141,7 +146,8 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
             </Modal>
             <Button
               _text={{textTransform: 'uppercase'}}
-              rightIcon={<Icon name="chevron-right" />}>
+              rightIcon={<Icon name="chevron-right" />}
+              onPress={onMeter}>
               {t('slope.steepness.slope_meter')}
             </Button>
           </Row>
