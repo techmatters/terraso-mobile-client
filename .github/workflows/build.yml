@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  ios-build:
+  ios-build-only:
     name: Build iOS app
     uses: ./.github/workflows/build-shared-ios.yml
     secrets:
@@ -19,9 +19,11 @@ jobs:
       IOS_MOBILE_PROVISION_BASE64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
       IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
-  android-build:
+  android-build-only:
     name: Build Android app
     uses: ./.github/workflows/build-shared-android.yml
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

@@ -42,6 +42,12 @@ import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroid
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: APP_CONFIG.sentryDsn,
+  environment: APP_CONFIG.environment,
+});
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 LogBox.ignoreLogs([
@@ -75,4 +81,4 @@ function App(): JSX.Element {
 
 const style = {flex: 1};
 
-export default App;
+export default Sentry.wrap(App);
