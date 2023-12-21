@@ -27,7 +27,6 @@ import {EditIntervalModalContent} from 'terraso-mobile-client/screens/SoilScreen
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
-  ProjectSoilSettings,
   SoilData,
   methodRequired,
   soilPitMethods,
