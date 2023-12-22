@@ -15,20 +15,27 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {createContext, useContext} from 'react';
+import {
+  SiteUserRole,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
+import {useSelector} from 'terraso-mobile-client/store';
 
-export const siteFeatureCollection = (
-  sites: Pick<Site, 'id' | 'latitude' | 'longitude'>[],
-): GeoJSON.FeatureCollection<GeoJSON.Point> => ({
-  type: 'FeatureCollection',
-  // TODO: Filter sometimes returns undefined; figure out why and fix
-  features: sites.map(site => ({
-    type: 'Feature',
-    id: site.id,
-    properties: {},
-    geometry: {
-      type: 'Point',
-      coordinates: [site.longitude, site.latitude],
-    },
-  })),
-});
+const SiteRoleContext = createContext<SiteUserRole | null>(null);
+
+type Props = {
+  siteId: string;
+} & React.PropsWithChildren;
+
+export const useSiteRoleContext = () => {
+  return useContext(SiteRoleContext);
+};
+
+export const SiteRoleContextProvider = ({siteId, children}: Props) => {
+  const role = useSelector(state => selectUserRoleSite(state, siteId));
+
+  return (
+    <SiteRoleContext.Provider value={role}>{children}</SiteRoleContext.Provider>
+  );
+};

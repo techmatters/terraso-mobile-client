@@ -331,8 +331,10 @@ export const SelectFilter = <FilterNames extends string>({
 
   return (
     <FormControl>
-      <FormControl.Label>{label}</FormControl.Label>
+      <FormControl.Label my="0px">{label}</FormControl.Label>
       <NullableSelect
+        my="0px"
+        py="0px"
         {...selectProps}
         selectedValue={value}
         onValueChange={onValueChange}>
