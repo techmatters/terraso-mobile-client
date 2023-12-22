@@ -22,7 +22,6 @@ import {
   updateSoilDataDepthIntervalAsync,
   soilPitMethods,
   methodEnabled,
-  methodRequired,
   SoilDataDepthInterval,
   SoilPitMethod,
 } from 'terraso-client-shared/soilId/soilIdSlice';
@@ -115,7 +114,7 @@ export const EditIntervalModalContent = ({
         }),
       );
     },
-    [dispatch],
+    [dispatch, depthInterval, siteId],
   );
 
   const onSubmit = useCallback(
@@ -226,7 +225,7 @@ const InputFormSwitch = ({
     () =>
       t(`soil.collection_method.${method}`) +
       (isRequired ? ` (${t('general.required')})` : ''),
-    [method, isRequired],
+    [t, method, isRequired],
   );
 
   return (

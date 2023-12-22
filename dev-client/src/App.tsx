@@ -43,7 +43,15 @@ import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: APP_CONFIG.sentryDsn,
+  environment: APP_CONFIG.environment,
+});
+
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
+
 LogBox.ignoreLogs([
   'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
 ]);
