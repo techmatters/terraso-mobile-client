@@ -321,7 +321,7 @@
     "required": "required"
   },
   "errors": {
-    "soilId": "Error saving soil ID info to backend."
+    "soilId": "Error saving soil ID information."
   },
   "screens": {
     "HOME": "LandPKS",
