@@ -16,63 +16,55 @@
  */
 
 import {Text, useToken} from 'native-base';
-import {
-  Image,
-  ImageSourcePropType,
-  Pressable,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 
-type Option = {
-  label: string;
-  image: ImageSourcePropType;
+export type ImageRadioOption = {
+  label: string | undefined;
+  image: React.ReactNode;
 };
 type Props<Value extends string> = {
   value: Value | null | undefined;
-  options: Record<Value, Option>;
+  options: Record<Value, ImageRadioOption>;
   onChange: (value: Value | null) => void;
+  minimumPerRow: number;
 };
 
 export const ImageRadio = <Value extends string>({
   value,
   options,
   onChange,
+  minimumPerRow,
 }: Props<Value>) => {
   const bg = useToken('colors', 'primary.lighter');
-  const {width} = useWindowDimensions();
+  const flexBasis = `${100 / (minimumPerRow + 1)}%` as const;
 
   return (
     <View style={styles.container}>
-      {Object.entries<Option>(options).map(([optionValue, {label, image}]) => (
-        <Pressable
-          key={optionValue}
-          style={[
-            styles.gridElem,
-            styles.radioOption,
-            {
-              backgroundColor: value === optionValue ? bg : undefined,
-              flexBasis: width / 3,
-            },
-          ]}
-          onPress={() => onChange(optionValue as Value)}>
-          <View style={styles.imageContainer}>
-            <Image resizeMode="contain" style={styles.image} source={image} />
-          </View>
-          <Text
-            variant="body1"
-            textAlign="center"
-            fontWeight={value === optionValue ? 700 : undefined}>
-            {label}
-          </Text>
-        </Pressable>
-      ))}
+      {Object.entries<ImageRadioOption>(options).map(
+        ([optionValue, {label, image}]) => (
+          <Pressable
+            key={optionValue}
+            style={[
+              styles.gridElem,
+              styles.radioOption,
+              {
+                backgroundColor: value === optionValue ? bg : undefined,
+                flexBasis,
+              },
+            ]}
+            onPress={() => onChange(optionValue as Value)}>
+            <View style={styles.imageContainer}>{image}</View>
+            <Text
+              variant="body1"
+              textAlign="center"
+              fontWeight={value === optionValue ? 700 : undefined}>
+              {label}
+            </Text>
+          </Pressable>
+        ),
+      )}
       {Object.keys(options).map((_, index) => (
-        <View
-          key={`spacer-${index}`}
-          style={[styles.gridElem, {flexBasis: width / 3}]}
-        />
+        <View key={`spacer-${index}`} style={[styles.gridElem, {flexBasis}]} />
       ))}
     </View>
   );
@@ -97,11 +89,13 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     aspectRatio: '1/1',
-    borderColor: 'black',
-    borderWidth: 2,
   },
   image: {
     width: '100%',
     height: '100%',
+    borderColor: 'black',
+    borderWidth: 2,
   },
 });
+
+export const radioImage = styles.image;

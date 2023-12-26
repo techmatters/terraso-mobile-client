@@ -30,7 +30,10 @@ export const renderSteepness = (
         ? `${slopeSteepnessDegree}°`
         : undefined;
 
-export const renderShape = (t: TFunction, {downSlope, crossSlope}: SoilData) =>
+export const renderShape = (
+  t: TFunction,
+  {downSlope, crossSlope}: Pick<SoilData, 'downSlope' | 'crossSlope'>,
+) =>
   downSlope && crossSlope
     ? `${t(`slope.shape.select_labels.${downSlope}`)} ${t(
         `slope.shape.select_labels.${crossSlope}`,

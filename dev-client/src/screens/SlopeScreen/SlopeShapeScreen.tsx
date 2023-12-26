@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Column, Fab, Heading, Row, ScrollView} from 'native-base';
+import {Column, Fab, Heading, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
@@ -25,28 +25,32 @@ import {
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
-import {ImageRadio} from 'terraso-mobile-client/components/ImageRadio';
+import {
+  ImageRadio,
+  ImageRadioOption,
+} from 'terraso-mobile-client/components/ImageRadio';
 import {useCallback, useMemo} from 'react';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {StyleSheet} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';
+import ConcaveConvex from 'terraso-mobile-client/assets/slope/shape/concave-convex.svg';
+import ConcaveLinear from 'terraso-mobile-client/assets/slope/shape/concave-linear.svg';
+import ConvexConcave from 'terraso-mobile-client/assets/slope/shape/convex-concave.svg';
+import ConvexConvex from 'terraso-mobile-client/assets/slope/shape/convex-convex.svg';
+import ConvexLinear from 'terraso-mobile-client/assets/slope/shape/convex-linear.svg';
+import LinearConcave from 'terraso-mobile-client/assets/slope/shape/linear-concave.svg';
+import LinearConvex from 'terraso-mobile-client/assets/slope/shape/linear-convex.svg';
+import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear.svg';
+import {renderShape} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 
 type Props = {
   siteId: string;
 };
 
-const DOWN_SLOPE_IMAGES = {
-  CONCAVE: require('terraso-mobile-client/assets/slope/shape/down-slope-concave.png'),
-  CONVEX: require('terraso-mobile-client/assets/slope/shape/down-slope-convex.png'),
-  LINEAR: require('terraso-mobile-client/assets/slope/shape/down-slope-linear.png'),
-} satisfies Record<SoilIdSoilDataDownSlopeChoices, any>;
-
-const CROSS_SLOPE_IMAGES = {
-  CONCAVE: require('terraso-mobile-client/assets/slope/shape/cross-slope-concave.png'),
-  CONVEX: require('terraso-mobile-client/assets/slope/shape/cross-slope-convex.png'),
-  LINEAR: require('terraso-mobile-client/assets/slope/shape/cross-slope-linear.png'),
-} satisfies Record<SoilIdSoilDataCrossSlopeChoices, any>;
+type CombinedSlope =
+  `${SoilIdSoilDataDownSlopeChoices}:${SoilIdSoilDataCrossSlopeChoices}`;
 
 export const SlopeShapeScreen = ({siteId}: Props) => {
   const name = useSelector(state => state.site.sites[siteId].name);
@@ -57,46 +61,62 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const downSlopeOptions = useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(DOWN_SLOPE_IMAGES).map(([value, image]) => [
-          value,
-          {label: t(`slope.shape.select_labels.${value}`), image},
-        ]),
-      ),
+  const options = useMemo<Record<CombinedSlope, ImageRadioOption>>(
+    () => ({
+      'CONCAVE:CONCAVE': {
+        label: renderShape(t, {downSlope: 'CONCAVE', crossSlope: 'CONCAVE'}),
+        image: <ConcaveConcave />,
+      },
+      'CONCAVE:CONVEX': {
+        label: renderShape(t, {downSlope: 'CONCAVE', crossSlope: 'CONVEX'}),
+        image: <ConcaveConvex />,
+      },
+      'CONCAVE:LINEAR': {
+        label: renderShape(t, {downSlope: 'CONCAVE', crossSlope: 'LINEAR'}),
+        image: <ConcaveLinear />,
+      },
+      'CONVEX:CONCAVE': {
+        label: renderShape(t, {downSlope: 'CONVEX', crossSlope: 'CONCAVE'}),
+        image: <ConvexConcave />,
+      },
+      'CONVEX:CONVEX': {
+        label: renderShape(t, {downSlope: 'CONVEX', crossSlope: 'CONVEX'}),
+        image: <ConvexConvex />,
+      },
+      'CONVEX:LINEAR': {
+        label: renderShape(t, {downSlope: 'CONVEX', crossSlope: 'LINEAR'}),
+        image: <ConvexLinear />,
+      },
+      'LINEAR:CONCAVE': {
+        label: renderShape(t, {downSlope: 'LINEAR', crossSlope: 'CONCAVE'}),
+        image: <LinearConcave />,
+      },
+      'LINEAR:CONVEX': {
+        label: renderShape(t, {downSlope: 'LINEAR', crossSlope: 'CONVEX'}),
+        image: <LinearConvex />,
+      },
+      'LINEAR:LINEAR': {
+        label: renderShape(t, {downSlope: 'LINEAR', crossSlope: 'LINEAR'}),
+        image: <LinearLinear />,
+      },
+    }),
     [t],
   );
 
-  const crossSlopeOptions = useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(CROSS_SLOPE_IMAGES).map(([value, image]) => [
-          value,
-          {label: t(`slope.shape.select_labels.${value}`), image},
-        ]),
-      ),
-    [t],
-  );
-
-  const onDownSlopeChange = useCallback(
-    (value: SoilIdSoilDataDownSlopeChoices | null) => {
+  const onChange = useCallback(
+    (value: CombinedSlope | null) => {
+      const [newDownSlope, newCrossSlope] =
+        value === null
+          ? [null, null]
+          : (value.split(':') as [
+              SoilIdSoilDataDownSlopeChoices,
+              SoilIdSoilDataCrossSlopeChoices,
+            ]);
       dispatch(
         updateSoilData({
           siteId,
-          downSlope: value,
-        }),
-      );
-    },
-    [dispatch, siteId],
-  );
-
-  const onCrossSlopeChange = useCallback(
-    (value: SoilIdSoilDataCrossSlopeChoices | null) => {
-      dispatch(
-        updateSoilData({
-          siteId,
-          crossSlope: value,
+          downSlope: newDownSlope,
+          crossSlope: newCrossSlope,
         }),
       );
     },
@@ -114,25 +134,14 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
             <LastModified />
           </Column>
         </Column>
-        <Row>
-          <Column width="50%" alignItems="center">
-            <Heading variant="h6">{t('slope.shape.down_slope')}</Heading>
-            <ImageRadio
-              value={downSlope}
-              options={downSlopeOptions as any}
-              onChange={onDownSlopeChange}
-            />
-          </Column>
-          <Box width={StyleSheet.hairlineWidth} bg="grey.800" my="50px" />
-          <Column width="50%" alignItems="center">
-            <Heading variant="h6">{t('slope.shape.cross_slope')}</Heading>
-            <ImageRadio
-              value={crossSlope}
-              options={crossSlopeOptions as any}
-              onChange={onCrossSlopeChange}
-            />
-          </Column>
-        </Row>
+        <ImageRadio
+          value={
+            downSlope && crossSlope ? `${downSlope}:${crossSlope}` : undefined
+          }
+          options={options}
+          onChange={onChange}
+          minimumPerRow={3}
+        />
       </ScrollView>
       <Fab
         onPress={() => navigation.pop()}
