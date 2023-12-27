@@ -57,7 +57,7 @@
     "@react-native-community/cli-doctor": "^12.3.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@testing-library/jest-native": "^5.4.3",
-    "@testing-library/react-native": "^12.4.1",
+    "@testing-library/react-native": "^12.4.2",
     "@tsconfig/react-native": "^3.0.2",
     "@types/base-64": "^1.0.2",
     "@types/haversine": "^1.1.8",
