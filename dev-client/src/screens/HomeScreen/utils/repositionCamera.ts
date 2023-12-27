@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
+import {CameraRef} from '@rnmapbox/maps/lib/typescript/src/components/Camera';
 
 export const repositionCamera = ({
   feature,
