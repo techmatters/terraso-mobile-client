@@ -284,6 +284,7 @@
     "users": "users",
     "save": "Save",
     "save_fab": "SAVE",
+    "use": "Use",
     "last_modified_by": "last modified {{user}}, {{date}}",
     "select_all": "Select All",
     "you": "you",

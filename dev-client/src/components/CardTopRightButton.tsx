@@ -20,10 +20,14 @@ import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {Pressable} from 'react-native';
 import {forwardRef} from 'react';
 
+type Props = React.ComponentProps<typeof IconButton> & {
+  _box?: React.ComponentProps<typeof Box>;
+};
+
 export const CardTopRightButton = forwardRef(
-  (props: React.ComponentProps<typeof IconButton>, ref) => {
+  ({_box = {}, ...props}: Props, ref) => {
     return (
-      <Box position="absolute" top="8px" right="8px" p="8px">
+      <Box position="absolute" top="8px" right="8px" p="8px" {..._box}>
         <Pressable onPress={props.onPress}>
           <IconButton ref={ref} {...props} />
         </Pressable>
