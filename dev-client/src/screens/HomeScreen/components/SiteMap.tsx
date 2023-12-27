@@ -30,7 +30,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useTheme} from 'native-base';
 import {Keyboard, PixelRatio, Platform, StyleSheet} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CameraRef} from '@rnmapbox/maps/lib/typescript/components/Camera';
+import {CameraRef} from '@rnmapbox/maps/lib/typescript/src/components/Camera';
 import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {
   mapIconSizeForPlatform,
