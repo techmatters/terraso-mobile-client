@@ -1093,7 +1093,9 @@ PODS:
   - RNCCheckbox (0.5.16):
     - BEMCheckBox (~> 1.4)
     - React-Core
-  - RNGestureHandler (2.12.0):
+  - RNGestureHandler (2.14.0):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - rnmapbox-maps (10.1.3):
     - MapboxMaps (~> 10.16.2)
@@ -1410,7 +1412,7 @@ SPEC CHECKSUMS:
   React-utils: fefa27e6d4a5b733f5e76cf8802ccf023ff8cc94
   ReactCommon: 73242ec9768e71688f35ad97ae3d0709a0f66435
   RNCCheckbox: 75255b03e604bbcc26411eb31c4cbe3e3865f538
-  RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
+  RNGestureHandler: a426f2b9134a10ac56ff78593fb068541e68f0e7
   rnmapbox-maps: 3790367749dfb2fe0f9ccdd52ef4e1510dce4695
   RNReanimated: 9fc2b08ed365d7dc451bc451605d89c01f2c935b
   RNScreens: 6f532ef31beb40c0403526e94b275c5865e0ede9
@@ -1423,6 +1425,6 @@ SPEC CHECKSUMS:
   Turf: 13d1a92d969ca0311bbc26e8356cca178ce95da2
   Yoga: 4f53dc50008d626fa679c7a1cb4bed898f8c0bde
 
-PODFILE CHECKSUM: 201963278f9a94d749b5160d6cf73baabb398009
+PODFILE CHECKSUM: d571a22ade7ff40d8caa00c89f59d49f48b43fe3
 
 COCOAPODS: 1.14.3
