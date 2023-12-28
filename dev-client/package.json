@@ -19,6 +19,7 @@
     "@react-native-community/checkbox": "^0.5.17",
     "@react-native/metro-config": "^0.74.0",
     "@react-navigation/bottom-tabs": "^6.5.11",
+    "@react-native/typescript-config": "^0.73.1",
     "@react-navigation/material-top-tabs": "^6.6.5",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
