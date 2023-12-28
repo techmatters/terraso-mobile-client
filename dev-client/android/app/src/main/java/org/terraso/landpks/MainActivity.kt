@@ -11,9 +11,8 @@ class MainActivity : ReactActivity() {
 
   // https://reactnavigation.org/docs/getting-started/#installing-dependencies-into-a-bare-react-native-project
     // This change is required to avoid crashes related to View state being not persisted consistently across Activity restarts.
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(null);
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(null)
   }
 
   /**
@@ -25,7 +24,6 @@ class MainActivity : ReactActivity() {
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
    * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
-   */
    */
   override fun createReactActivityDelegate(): ReactActivityDelegate =
     DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
