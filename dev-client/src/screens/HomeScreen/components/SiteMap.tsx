@@ -62,7 +62,7 @@ const SiteMap = (
     onMapFinishedLoading,
   }: Props,
   forwardedCameraRef: ForwardedRef<CameraRef>,
-): JSX.Element => {
+): React.JSX.Element => {
   const mapRef = useRef<Mapbox.MapView>(null);
   const shapeSourceRef = useRef<Mapbox.ShapeSource>(null);
   const cameraRef = useRef<Mapbox.Camera>(null);

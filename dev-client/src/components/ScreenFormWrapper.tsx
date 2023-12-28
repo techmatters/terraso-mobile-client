@@ -32,7 +32,7 @@ type Props = {
   };
   onSubmit: (values: {content: string}) => void | Promise<void>;
   onDelete: () => void;
-  children: (formikProps: FormikProps<{content: string}>) => JSX.Element;
+  children: (formikProps: FormikProps<{content: string}>) => React.JSX.Element;
   isSubmitting: boolean;
 };
 
