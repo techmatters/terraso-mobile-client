@@ -9,13 +9,19 @@ updates:
     directory: "dev-client" # Location of package manifests
     schedule:
       interval: "weekly"
+    allow:
+      - dependency-type: all
 
   - package-ecosystem: "bundler" # See documentation for possible values
     directory: "dev-client" # Location of package manifests
     schedule:
       interval: "weekly"
+    allow:
+      - dependency-type: all
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    allow:
+      - dependency-type: all
