@@ -164,10 +164,15 @@
       },
       "depth_intervals": {
         "title": "Soil Pit Depth Intervals",
-        "landPks": "LandPKS",
+        "landpks": "LandPKS",
         "nrcs": "NRCS",
         "custom": "Custom…",
-        "none": "None specified"
+        "none": "None specified",
+        "confirm_preset": {
+          "title": "Change depths?",
+          "body": "Soil pit data that has been entered will be deleted. This action cannot be undone.",
+          "confirm": "Change"
+        }
       }
     },
     "team": {

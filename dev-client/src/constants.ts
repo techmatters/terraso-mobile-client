@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {SoilIdProjectSoilSettingsDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+
 /** Minimum distance to travel before Mapbox will update user location */
 export const PACKAGE_NAME = 'org.terraso.landpks';
 export const USER_DISPLACEMENT_MIN_DISTANCE_M = 1;
@@ -37,4 +39,5 @@ export const GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE = 5;
 export const SITE_NOTE_MIN_LENGTH = 3;
 export const LOCALE = 'en-US';
 
-export const DepthPresets = ['landPks', 'nrcs', 'custom', 'none'];
+export const DepthPresets: SoilIdProjectSoilSettingsDepthIntervalPresetChoices[] =
+  ['LANDPKS', 'NRCS', 'CUSTOM', 'NONE'];
