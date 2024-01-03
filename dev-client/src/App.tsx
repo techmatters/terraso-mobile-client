@@ -41,6 +41,7 @@ import {createStore} from 'terraso-mobile-client/store';
 import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
+import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
@@ -68,6 +69,7 @@ function App(): JSX.Element {
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
             <GeospatialProvider>
+              <Toasts />
               <RootNavigator />
             </GeospatialProvider>
           </NavigationContainer>
