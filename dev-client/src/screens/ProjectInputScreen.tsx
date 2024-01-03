@@ -46,12 +46,14 @@ import {updateProject} from 'terraso-client-shared/project/projectSlice';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
-import {useMemo, useCallback} from 'react';
+import {useMemo, useCallback, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView, Switch} from 'react-native';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {DepthPresets} from 'terraso-mobile-client/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {SoilIdProjectSoilSettingsDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -170,6 +172,10 @@ const SoilPitSettings = ({projectId}: {projectId: string}) => {
   const settings = useSelector(
     state => state.soilId.projectSettings[projectId],
   );
+  const [selectedPreset, setSelectedPreset] =
+    useState<SoilIdProjectSoilSettingsDepthIntervalPresetChoices>(
+      settings.depthIntervalPreset,
+    );
   const dispatch = useDispatch();
   const existingIntervals = useMemo(
     () => settings.depthIntervals.map(interval => interval.depthInterval),
@@ -183,30 +189,49 @@ const SoilPitSettings = ({projectId}: {projectId: string}) => {
     [projectId, dispatch],
   );
 
-  const onChangeDepthPreset = (value: string) => {
-    // TODO: need to add/change project depth intervals based on selected value
-    console.log(value);
-  };
+  const onChangeDepthPreset = useCallback(() => {
+    dispatch(
+      updateProjectSoilSettings({
+        projectId,
+        depthIntervalPreset: selectedPreset,
+      }),
+    );
+  }, [dispatch, projectId, selectedPreset]);
 
   return (
     <Box p={4}>
       <Text color={'primary.main'}>
         {t('projects.inputs.depth_intervals.title')}
       </Text>
-      <Select
-        mb={5}
-        width={'60%'}
-        variant={'underlined'}
-        selectedValue={DepthPresets[0]}
-        onValueChange={value => onChangeDepthPreset(value)}>
-        {DepthPresets.map(preset => (
-          <Select.Item
-            label={t(`projects.inputs.depth_intervals.${preset}`)}
-            value={preset}
-            key={preset}
-          />
-        ))}
-      </Select>
+      <ConfirmModal
+        trigger={onOpen => (
+          <Select
+            mb={5}
+            width={'60%'}
+            variant={'underlined'}
+            selectedValue={settings.depthIntervalPreset}
+            onValueChange={value => {
+              setSelectedPreset(
+                value as SoilIdProjectSoilSettingsDepthIntervalPresetChoices,
+              );
+              onOpen();
+            }}>
+            {DepthPresets.map(preset => (
+              <Select.Item
+                label={t(
+                  `projects.inputs.depth_intervals.${preset.toLowerCase()}`,
+                )}
+                value={preset}
+                key={preset}
+              />
+            ))}
+          </Select>
+        )}
+        title={t('projects.inputs.depth_intervals.confirm_preset.title')}
+        body={t('projects.inputs.depth_intervals.confirm_preset.body')}
+        actionName={t('projects.inputs.depth_intervals.confirm_preset.confirm')}
+        handleConfirm={onChangeDepthPreset}
+      />
       {settings.depthIntervals.map(({label, depthInterval}) => (
         <Row key={`${depthInterval.start}:${depthInterval.end}`}>
           <Text flex={1}>{label}</Text>
