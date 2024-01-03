@@ -36,6 +36,7 @@ import {
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   LabelledDepthInterval,
+  ProjectSoilSettings,
   collectionMethods,
   deleteProjectDepthInterval,
   methodRequired,
@@ -54,6 +55,8 @@ import {DepthPresets} from 'terraso-mobile-client/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SoilIdProjectSoilSettingsDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {selectProjectSettings} from 'terraso-client-shared/selectors';
+import {MissingData} from 'terraso-mobile-client/components/MissingData';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -65,6 +68,9 @@ export const ProjectInputScreen = ({
   const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state => state.project.projects[projectId]);
+  const soilSettings = useSelector(state =>
+    selectProjectSettings(state, projectId),
+  );
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();
 
@@ -145,7 +151,11 @@ export const ProjectInputScreen = ({
               {t('soil.pit')}
             </Text>
           }>
-          <SoilPitSettings projectId={projectId} />
+          <MissingData
+            data={soilSettings}
+            Component={SoilPitSettings}
+            props={{projectId}}
+          />
         </Accordion>
         <Box height={4} />
         <Accordion
@@ -167,11 +177,14 @@ export const ProjectInputScreen = ({
   );
 };
 
-const SoilPitSettings = ({projectId}: {projectId: string}) => {
+const SoilPitSettings = ({
+  data: settings,
+  projectId,
+}: {
+  data: ProjectSoilSettings;
+  projectId: string;
+}) => {
   const {t} = useTranslation();
-  const settings = useSelector(
-    state => state.soilId.projectSettings[projectId],
-  );
   const [selectedPreset, setSelectedPreset] =
     useState<SoilIdProjectSoilSettingsDepthIntervalPresetChoices>(
       settings.depthIntervalPreset,
