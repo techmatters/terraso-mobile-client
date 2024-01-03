@@ -28,6 +28,8 @@ import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
   SoilData,
+  methodRequired,
+  soilPitMethods,
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
@@ -43,6 +45,10 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
 
   const projectDepthIntervals = useMemo(() => {
     return project?.depthIntervals ?? [];
+  }, [project]);
+
+  const projectRequiredInputs = useMemo(() => {
+    return soilPitMethods.filter(m => (project ?? {})[methodRequired(m)]);
   }, [project]);
 
   const soilDataDepthIntervals = useMemo(() => {
@@ -93,6 +99,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
             key={`${interval.depthInterval.start}:${interval.depthInterval.end}`}
             siteId={siteId}
             interval={interval}
+            requiredInputs={projectRequiredInputs}
           />
         ))}
         <Modal
@@ -128,9 +135,11 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
 const DepthIntervalEditor = ({
   siteId,
   interval: {label, depthInterval},
+  requiredInputs,
 }: {
   siteId: string;
   interval: LabelledDepthInterval;
+  requiredInputs: string[];
 }) => {
   return (
     <Row
@@ -153,6 +162,7 @@ const DepthIntervalEditor = ({
         <EditIntervalModalContent
           siteId={siteId}
           depthInterval={depthInterval}
+          requiredInputs={requiredInputs}
         />
       </BottomSheetModal>
     </Row>

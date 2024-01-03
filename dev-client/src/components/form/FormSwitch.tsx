@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Switch, Row, Text} from 'native-base';
+import {Row, Text} from 'native-base';
 import {memo} from 'react';
+import {Switch} from 'react-native';
 import {
   Props as FormFieldWrapperProps,
   FormFieldWrapper,
