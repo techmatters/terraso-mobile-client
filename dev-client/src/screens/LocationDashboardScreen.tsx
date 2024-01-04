@@ -22,7 +22,6 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
@@ -75,7 +74,6 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
         <ScreenScaffold
           AppBar={
             <AppBar
-              LeftButton={<ScreenCloseButton />}
               RightButton={appBarRightButton}
               title={site?.name ?? t('site.dashboard.default_title')}
             />

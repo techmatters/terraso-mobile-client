@@ -15,19 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box} from 'native-base';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {Pressable} from 'react-native';
-import {forwardRef} from 'react';
-
-export const CardTopRightButton = forwardRef(
-  (props: React.ComponentProps<typeof IconButton>, ref) => {
-    return (
-      <Box position="absolute" top="8px" right="8px" p="8px">
-        <Pressable onPress={props.onPress}>
-          <IconButton ref={ref} {...props} />
-        </Pressable>
-      </Box>
-    );
-  },
-);
+export const degreeToPercent = (degrees: number) =>
+  Math.tan((degrees * Math.PI) / 180) * 100;
+export const percentToDegree = (percent: number) =>
+  Math.atan(percent / 100) / (Math.PI / 180);

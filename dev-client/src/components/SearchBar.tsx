@@ -61,7 +61,7 @@ export const SearchBar = ({
               rounded="full"
               px="6.5px"
               zIndex={1}
-              bg="primary.lightest"
+              bg="primary.lighter"
               _text={{
                 fontSize: '12px',
               }}>
