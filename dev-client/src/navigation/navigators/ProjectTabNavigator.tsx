@@ -16,7 +16,7 @@
  */
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {ProjectInputScreen} from 'terraso-mobile-client/screens/ProjectInputScreen';
+import {ProjectInputScreen} from 'terraso-mobile-client/screens/ProjectInputScreen/ProjectInputScreen';
 import {ProjectTeamScreen} from 'terraso-mobile-client/screens/ProjectTeamScreen/ProjectTeamScreen';
 import {
   TabRoutes,
