@@ -48,7 +48,7 @@ import {updateProject} from 'terraso-client-shared/project/projectSlice';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
-import {useMemo, useCallback, useState, useEffect} from 'react';
+import {useMemo, useCallback, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView, Switch} from 'react-native';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
@@ -62,6 +62,7 @@ import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {selectProjectSettings} from 'terraso-client-shared/selectors';
 import {EnsureDataPresent} from 'terraso-mobile-client/components/EnsureDataPresent';
 import {DataGridTable} from 'terraso-mobile-client/components/DataGridTable';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -200,8 +201,15 @@ const SoilPitSettings = ({
     [settings.depthIntervals],
   );
 
+  const projectRole = useProjectRoleContext();
+
+  const userCanUpdateIntervals = useMemo(
+    () => projectRole === 'manager',
+    [projectRole],
+  );
+
   const customizable = useMemo(
-    () => settings.depthIntervalPreset === 'CUSTOM' && userCanDeleteInterval,
+    () => settings.depthIntervalPreset === 'CUSTOM',
     [settings],
   );
 
@@ -267,7 +275,7 @@ const SoilPitSettings = ({
       <DepthIntervalTable
         depthIntervals={settings.depthIntervals}
         projectId={projectId}
-        canDeleteInterval={customizable}
+        canDeleteInterval={customizable && userCanUpdateIntervals}
         includeLabel={customizable}
         pb="15px"
       />
