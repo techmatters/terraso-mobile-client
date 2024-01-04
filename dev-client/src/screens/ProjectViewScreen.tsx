@@ -20,7 +20,6 @@ import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {useSelector} from 'terraso-mobile-client/store';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
@@ -43,10 +42,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
   return (
     <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
       <BottomSheetModalProvider>
-        <ScreenScaffold
-          AppBar={
-            <AppBar LeftButton={<ScreenCloseButton />} title={project?.name} />
-          }>
+        <ScreenScaffold AppBar={<AppBar title={project?.name} />}>
           <ProjectTabNavigator projectId={projectId} />
         </ScreenScaffold>
         <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />

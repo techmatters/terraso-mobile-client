@@ -16,7 +16,12 @@
  */
 
 import {Text} from 'native-base';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
-export const SlopeScreen = (_: {siteId: string}) => {
-  return <Text margin="auto">Unimplemented slope screen</Text>;
+export const SlopeMeterScreen = ({}: {siteId: string}) => {
+  return (
+    <ScreenScaffold AppBar={null} BottomNavigation={null}>
+      <Text>Unimplemented slope meter screen</Text>
+    </ScreenScaffold>
+  );
 };

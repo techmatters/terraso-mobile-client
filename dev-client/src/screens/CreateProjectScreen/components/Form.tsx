@@ -150,7 +150,6 @@ export const EditForm = ({
             onPress={() => handleSubmit()}
             disabled={!isValid || isSubmitting}
             label={t('general.submit').toLocaleUpperCase()}
-            renderInPortal={false}
           />
         </>
       )}

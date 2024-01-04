@@ -228,15 +228,9 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
         )}
       />
       <Fab
-        label={
-          <Text textTransform="uppercase" color="primary.contrast">
-            Transfer sites
-          </Text>
-        }
+        label={t('projects.sites.transfer')}
         onPress={onSubmit}
-        disabled={disabled}
-        bgColor={disabled ? 'action.disabledBackground' : undefined}
-        color={disabled ? 'action.disabled' : undefined}
+        isDisabled={disabled}
       />
     </ScreenScaffold>
   );

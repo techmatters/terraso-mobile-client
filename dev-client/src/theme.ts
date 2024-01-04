@@ -20,14 +20,15 @@ import {extendTheme} from 'native-base';
 export const theme = extendTheme({
   colors: {
     primary: {
-      main: '#276749',
+      main: '#028843',
       contrast: '#FFFFFF',
-      lightest: '#9AE6B4',
-      dark: '#22543D',
+      lighter: '#93E39B',
+      lightest: '#E2FFE5',
+      dark: '#00582B',
       // TODO: This is used for the colorScheme value for Radio
       // We should figure out how the color scheme stuff works and see if we can
       // map our current variables to 100, 200 values etc.
-      600: '#276749',
+      600: '#028843',
     },
     background: {
       default: '#FFFFFF',
@@ -47,8 +48,8 @@ export const theme = extendTheme({
     action: {
       active: '#1A202C',
       active_subtle: '#1A202CB2',
-      disabled: '#1A202C61',
-      disabledBackground: '#EEEEEE',
+      disabled: '#8B9498',
+      disabledBackground: '#E0E0E0',
     },
     text: {
       primary: '#1A202C',
@@ -97,6 +98,11 @@ export const theme = extendTheme({
       },
     },
     Button: {
+      baseStyle: {
+        _disabled: {
+          opacity: '100',
+        },
+      },
       sizes: {
         sm: {
           px: '10px',
@@ -118,7 +124,7 @@ export const theme = extendTheme({
             letterSpacing: '0.4px',
           },
           _icon: {
-            size: 'md',
+            size: 'sm',
           },
         },
         lg: {
@@ -133,6 +139,17 @@ export const theme = extendTheme({
         },
       },
       variants: {
+        solid: {
+          _disabled: {
+            bg: 'action.disabledBackground',
+            _text: {
+              color: 'action.disabled',
+            },
+            _icon: {
+              color: 'action.disabled',
+            },
+          },
+        },
         speedDial: {
           size: 'md',
           borderRadius: '50px',
@@ -171,10 +188,14 @@ export const theme = extendTheme({
         _text: {
           fontSize: 15,
           lineHeight: 26,
+          textTransform: 'uppercase',
         },
         right: '24px',
         bottom: '24px',
         shadow: 6,
+      },
+      defaultProps: {
+        renderInPortal: false,
       },
     },
     Select: {

@@ -15,19 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box} from 'native-base';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {Pressable} from 'react-native';
-import {forwardRef} from 'react';
+import {Text} from 'native-base';
+import {useTranslation} from 'react-i18next';
 
-export const CardTopRightButton = forwardRef(
-  (props: React.ComponentProps<typeof IconButton>, ref) => {
-    return (
-      <Box position="absolute" top="8px" right="8px" p="8px">
-        <Pressable onPress={props.onPress}>
-          <IconButton ref={ref} {...props} />
-        </Pressable>
-      </Box>
-    );
-  },
-);
+// TODO: add real props instead of placeholder
+export const LastModified = () => {
+  const {t} = useTranslation();
+  return (
+    <Text variant="body2" fontStyle="italic">
+      {t('general.last_modified_by', {user: 'Sample Sam', date: '2023-08-16'})}
+    </Text>
+  );
+};

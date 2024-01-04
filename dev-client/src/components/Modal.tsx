@@ -41,13 +41,18 @@ export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
 
 export type Props = React.PropsWithChildren<{
   trigger?: ModalTrigger;
+  CloseButton?: React.ReactNode | null;
   closeHook?: () => void;
+  _content?: React.ComponentProps<typeof NativeBaseModal.Content>;
 }>;
 
 export const Modal = forwardRef<ModalHandle, Props>(
-  ({children, trigger, closeHook}, forwardedRef) => {
+  ({children, trigger, closeHook, CloseButton, _content}, forwardedRef) => {
     const {isOpen, onOpen, onClose} = useDisclose();
     const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
+    if (CloseButton === undefined) {
+      CloseButton = <CardCloseButton onPress={onClose} />;
+    }
 
     useEffect(() => {
       if (!isOpen && closeHook) {
@@ -69,11 +74,14 @@ export const Modal = forwardRef<ModalHandle, Props>(
             style={styles.nativeBaseModalChild}
             behavior="padding"
             keyboardVerticalOffset={100}>
-            <NativeBaseModal.Content padding="18px">
+            <NativeBaseModal.Content
+              borderRadius="24px"
+              padding="18px"
+              {..._content}>
               <ModalContext.Provider value={handle}>
                 {children}
               </ModalContext.Provider>
-              <CardCloseButton onPress={onClose} />
+              {CloseButton}
             </NativeBaseModal.Content>
           </KeyboardAvoidingView>
         </NativeBaseModal>

@@ -33,6 +33,9 @@ import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSett
 import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
 import {RootStack, ScreenName} from 'terraso-mobile-client/navigation/types';
+import {SlopeShapeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeShapeScreen';
+import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
+import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
 
 export type ScreenDefinitions = Record<string, React.FC<any>>;
 
@@ -49,6 +52,9 @@ export const screenDefinitions = {
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,
   MANAGE_TEAM_MEMBER: ManageTeamMemberScreen,
+  SLOPE_STEEPNESS: SlopeSteepnessScreen,
+  SLOPE_SHAPE: SlopeShapeScreen,
+  SLOPE_METER: SlopeMeterScreen,
 } satisfies ScreenDefinitions;
 
 export const modalScreenDefinitions = {
