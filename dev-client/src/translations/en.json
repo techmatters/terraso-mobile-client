@@ -284,6 +284,7 @@
     "users": "users",
     "save": "Save",
     "save_fab": "SAVE",
+    "last_modified_by": "last modified {{user}}, {{date}}",
     "select_all": "Select All",
     "you": "you",
     "details": "Details",
@@ -302,6 +303,7 @@
     "cancel": "Cancel",
     "add": "Add",
     "submit": "submit",
+    "change": "Change",
     "cancel_fab": "Cancel",
     "delete_fab": "Delete",
     "done_fab": "Done",
@@ -436,6 +438,45 @@
         "action": "Change"
       },
       "bounds": "{{depthInterval.start}}-{{depthInterval.end}}{{units}}"
+    }
+  },
+  "slope": {
+    "title": "Slope",
+    "steepness": {
+      "short_title": "Steepness",
+      "long_title": "Slope Steepness",
+      "description": "Enter steepness manually, using the slope meter, or selecting from the images below.",
+      "manual_label": "Manual",
+      "manual_help": "Enter steepness percentage or degree:",
+      "confirm_title": "Change slope?",
+      "confirm_body": "Are you sure you want to override the slope data?",
+      "percentage_placeholder": "Percentage",
+      "percentage_help": "0% minimum",
+      "degree_help": "0°-89°",
+      "degree_placeholder": "Degree",
+      "slope_meter": "Slope Meter",
+      "select_labels": {
+        "FLAT": "Flat 0-2%",
+        "GENTLE": "Gentle 1-15%",
+        "MODERATE": "Moderate 5-10%",
+        "ROLLING": "Rolling 10-15%",
+        "HILLY": "Hilly 15-30%",
+        "STEEP": "Steep 30-50%",
+        "MODERATELY_STEEP": "Moderately Steep 50-60%",
+        "VERY_STEEP": "Very Steep 60-100%",
+        "STEEPEST": "Steepest 100%+"
+      }
+    },
+    "shape": {
+      "title": "Shape",
+      "long_title": "Slope Shape",
+      "down_slope": "Down Slope",
+      "cross_slope": "Cross Slope",
+      "select_labels": {
+        "CONCAVE": "Concave",
+        "CONVEX": "Convex",
+        "LINEAR": "Linear"
+      }
     }
   }
 }

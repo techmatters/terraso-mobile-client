@@ -24,7 +24,7 @@ import {ParamList} from 'terraso-mobile-client/navigation/types';
 import {ScreenDefinitions} from 'terraso-mobile-client/navigation/screenDefinitions';
 import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
 import {SiteNotesScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/SiteNotesScreen';
-import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen';
+import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {SpeedDial} from 'terraso-mobile-client/navigation/components/SpeedDial';
