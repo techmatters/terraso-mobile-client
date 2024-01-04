@@ -1,4 +1,5 @@
 import {Box, Row, Text} from 'native-base';
+import {useMemo} from 'react';
 
 type Props = {
   headers: string[];
@@ -6,10 +7,15 @@ type Props = {
 } & React.ComponentProps<typeof Box>;
 
 export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
+  const textAlign: {textAlign: any} = useMemo(
+    () => ({textAlign: headers.length === 1 ? 'center' : undefined}),
+    [headers],
+  );
+
   const displayCol = (col: string | React.ReactElement, index: number) => {
     if (typeof col === 'string') {
       return (
-        <Text flex={1} key={index}>
+        <Text flex={1} key={index} {...textAlign}>
           {col}
         </Text>
       );
@@ -25,7 +31,7 @@ export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
     <Box {...containerProps}>
       <Row justifyContent="left" variant="tablerow">
         {headers.map((header: (typeof headers)[number], i: number) => (
-          <Text variant="table-header" key={i} flex={1}>
+          <Text variant="table-header" key={i} flex={1} {...textAlign}>
             {header}
           </Text>
         ))}
