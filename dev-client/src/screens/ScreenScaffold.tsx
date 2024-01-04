@@ -50,7 +50,7 @@ export const ScreenScaffold = ({
     <SafeAreaView
       style={[
         styles.safeAreaContainer,
-        {backgroundColor: colors.primary.main},
+        {backgroundColor: colors.primary.dark},
       ]}>
       <StatusBar
         barStyle="light-content"

@@ -131,7 +131,7 @@ function UserItem({
             <Box>
               <Badge
                 variant="chip"
-                bg="primary.lightest"
+                bg="primary.lighter"
                 py="5px"
                 px="10px"
                 _text={{color: 'text.primary'}}>

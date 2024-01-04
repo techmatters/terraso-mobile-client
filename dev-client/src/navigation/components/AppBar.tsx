@@ -35,7 +35,7 @@ export const AppBar = ({
   const route = useRoute();
 
   return (
-    <Row px="8px" py="4px" minHeight="56px" bg="primary.main">
+    <Row px="8px" py="4px" minHeight="56px" bg="primary.dark">
       <Row flex={1} space="24px" alignItems="center">
         {LeftButton}
         <Heading variant="h6" color="primary.contrast">
