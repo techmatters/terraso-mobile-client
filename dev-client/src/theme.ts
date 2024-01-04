@@ -29,6 +29,7 @@ export const theme = extendTheme({
       // map our current variables to 100, 200 values etc.
       600: '#276749',
     },
+    divider: '#0000001F',
     background: {
       default: '#FFFFFF',
     },
@@ -329,6 +330,12 @@ export const theme = extendTheme({
           lineHeight: '20px',
           letterSpacing: '0.4px',
         },
+        'table-header': {
+          fontSize: '14px',
+          lineHeight: '24px',
+          fontWeight: 500,
+          letterSpacing: '0.17px',
+        },
       },
     },
     Heading: {
@@ -385,6 +392,17 @@ export const theme = extendTheme({
           fontWeight: 400,
           color: 'text.primary',
           letterSpacing: '0.4px',
+        },
+      },
+    },
+    HStack: {
+      variants: {
+        tablerow: {
+          justifyContent: 'left',
+          borderBottomWidth: '1px',
+          borderColor: 'divider',
+          py: '5px',
+          px: '10px',
         },
       },
     },

@@ -36,6 +36,7 @@ import {
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   LabelledDepthInterval,
+  ProjectDepthInterval,
   ProjectSoilSettings,
   collectionMethods,
   deleteProjectDepthInterval,
@@ -47,16 +48,20 @@ import {updateProject} from 'terraso-client-shared/project/projectSlice';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
-import {useMemo, useCallback, useState} from 'react';
+import {useMemo, useCallback, useState, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView, Switch} from 'react-native';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {DepthPresets} from 'terraso-mobile-client/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SoilIdProjectSoilSettingsDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  DepthInterval,
+  SoilIdProjectSoilSettingsDepthIntervalPresetChoices,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {selectProjectSettings} from 'terraso-client-shared/selectors';
-import {MissingData} from 'terraso-mobile-client/components/MissingData';
+import {EnsureDataPresent} from 'terraso-mobile-client/components/EnsureDataPresent';
+import {DataGridTable} from 'terraso-mobile-client/components/DataGridTable';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -151,7 +156,7 @@ export const ProjectInputScreen = ({
               {t('soil.pit')}
             </Text>
           }>
-          <MissingData
+          <EnsureDataPresent
             data={soilSettings}
             Component={SoilPitSettings}
             props={{projectId}}
@@ -195,6 +200,11 @@ const SoilPitSettings = ({
     [settings.depthIntervals],
   );
 
+  const customizable = useMemo(
+    () => settings.depthIntervalPreset === 'CUSTOM' && userCanDeleteInterval,
+    [settings],
+  );
+
   const onAddDepthInterval = useCallback(
     async (interval: LabelledDepthInterval) => {
       await dispatch(updateProjectDepthInterval({projectId, ...interval}));
@@ -211,6 +221,20 @@ const SoilPitSettings = ({
     );
   }, [dispatch, projectId, selectedPreset]);
 
+  const onSelectUpdated = useCallback(
+    (onOpen: () => void) => (value: string) => {
+      if (value === selectedPreset) {
+        return;
+      }
+      setSelectedPreset(
+        value as SoilIdProjectSoilSettingsDepthIntervalPresetChoices,
+      );
+      onOpen();
+    },
+
+    [selectedPreset, setSelectedPreset],
+  );
+
   return (
     <Box p={4}>
       <Text color={'primary.main'}>
@@ -223,12 +247,7 @@ const SoilPitSettings = ({
             width={'60%'}
             variant={'underlined'}
             selectedValue={settings.depthIntervalPreset}
-            onValueChange={value => {
-              setSelectedPreset(
-                value as SoilIdProjectSoilSettingsDepthIntervalPresetChoices,
-              );
-              onOpen();
-            }}>
+            onValueChange={onSelectUpdated(onOpen)}>
             {DepthPresets.map(preset => (
               <Select.Item
                 label={t(
@@ -245,36 +264,31 @@ const SoilPitSettings = ({
         actionName={t('projects.inputs.depth_intervals.confirm_preset.confirm')}
         handleConfirm={onChangeDepthPreset}
       />
-      {settings.depthIntervals.map(({label, depthInterval}) => (
-        <Row key={`${depthInterval.start}:${depthInterval.end}`}>
-          <Text flex={1}>{label}</Text>
-          <Text flex={1}>{`${depthInterval.start}-${depthInterval.end}`}</Text>
-          <Row flex={1} justifyContent="flex-end">
-            <IconButton
-              name="close"
-              onPress={() =>
-                dispatch(deleteProjectDepthInterval({projectId, depthInterval}))
-              }
-            />
-          </Row>
-        </Row>
-      ))}
-      <Modal
-        trigger={onOpen => (
-          <Button
-            onPress={onOpen}
-            alignSelf="flex-start"
-            backgroundColor="primary.main"
-            shadow={5}
-            leftIcon={<Icon name="add" />}>
-            {t('soil.add_depth_label')}
-          </Button>
-        )}>
-        <AddIntervalModal
-          onSubmit={onAddDepthInterval}
-          existingIntervals={existingIntervals}
-        />
-      </Modal>
+      <DepthIntervalTable
+        depthIntervals={settings.depthIntervals}
+        projectId={projectId}
+        canDeleteInterval={customizable}
+        includeLabel={customizable}
+        pb="15px"
+      />
+      {customizable ? (
+        <Modal
+          trigger={onOpen => (
+            <Button
+              onPress={onOpen}
+              alignSelf="flex-start"
+              backgroundColor="primary.main"
+              shadow={5}
+              leftIcon={<Icon name="add" />}>
+              {t('soil.add_depth_label')}
+            </Button>
+          )}>
+          <AddIntervalModal
+            onSubmit={onAddDepthInterval}
+            existingIntervals={existingIntervals}
+          />
+        </Modal>
+      ) : undefined}
     </Box>
   );
 };
@@ -319,4 +333,66 @@ const RequiredDataSettings = ({projectId}: {projectId: string}) => {
       ))}
     </Box>
   );
+};
+
+type TableProps = {
+  depthIntervals: ProjectDepthInterval[];
+  projectId: string;
+  includeLabel: boolean;
+  canDeleteInterval: boolean;
+} & Omit<React.ComponentProps<typeof DataGridTable>, 'rows' | 'headers'>;
+
+const DepthIntervalTable = ({
+  depthIntervals,
+  projectId,
+  canDeleteInterval,
+  includeLabel,
+  ...extraProps
+}: TableProps) => {
+  const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const headers = [];
+  if (includeLabel) {
+    headers.push(t('projects.inputs.depth_intervals.label'));
+  }
+  headers.push(t('projects.inputs.depth_intervals.depth', {units: 'cm'}));
+  if (canDeleteInterval) {
+    headers.push('');
+  }
+
+  const deleteDepthInterval = useCallback(
+    (depthInterval: DepthInterval) => () => {
+      return dispatch(deleteProjectDepthInterval({projectId, depthInterval}));
+    },
+    [projectId, dispatch],
+  );
+
+  const rows = useMemo(() => {
+    return depthIntervals.map(({label, depthInterval}) => {
+      let result: (string | React.ReactElement)[] = [];
+      if (includeLabel) {
+        result.push(label);
+      }
+      result.push(
+        t('soil.depth_interval.bounds', {depthInterval, units: 'cm'}),
+      );
+      if (canDeleteInterval) {
+        result.push(
+          <Box flex={1} flexDirection="row" justifyContent="flex-end">
+            <IconButton
+              name="close"
+              onPress={deleteDepthInterval(depthInterval)}
+              _icon={{
+                size: 'sm',
+                color: 'action.active',
+              }}
+            />
+          </Box>,
+        );
+      }
+      return result;
+    });
+  }, [depthIntervals, canDeleteInterval, includeLabel]);
+
+  return <DataGridTable headers={headers} rows={rows} {...extraProps} />;
 };
