@@ -34,8 +34,8 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 
 import {selectProjectSettings} from 'terraso-client-shared/selectors';
 import {EnsureDataPresent} from 'terraso-mobile-client/components/EnsureDataPresent';
-import {SoilPitSettings} from './SoilPitSettings';
-import {RequiredDataSettings} from './RequiredDataSettings';
+import {SoilPitSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/SoilPitSettings';
+import {RequiredDataSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/RequiredDataSettings';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 

@@ -11,7 +11,7 @@ import {
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {useDispatch} from 'terraso-mobile-client/store';
-import {DepthIntervalTable} from './DepthIntervalTable';
+import {DepthIntervalTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthIntervalTable';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
 import {DepthPresets} from 'terraso-mobile-client/constants';
 import {Modal} from 'terraso-mobile-client/components/Modal';

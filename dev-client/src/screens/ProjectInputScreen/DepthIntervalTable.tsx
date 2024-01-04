@@ -66,7 +66,7 @@ export const DepthIntervalTable = ({
       }
       return result;
     });
-  }, [depthIntervals, canDeleteInterval, includeLabel]);
+  }, [depthIntervals, canDeleteInterval, includeLabel, deleteDepthInterval, t]);
 
   return <DataGridTable headers={headers} rows={rows} {...extraProps} />;
 };
