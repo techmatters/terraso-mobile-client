@@ -407,6 +407,7 @@
       "pit_required_label": "Soil pit required",
       "required_data_title": "Data Collection Requirements"
     },
+    "required_method": "{{method}} (required)",
     "collection_method": {
       "slope": "Slope and Landscape",
       "soilTexture": "Texture",

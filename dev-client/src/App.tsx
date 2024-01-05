@@ -50,6 +50,7 @@ Sentry.init({
 });
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
+
 LogBox.ignoreLogs([
   'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
 ]);

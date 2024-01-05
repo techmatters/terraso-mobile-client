@@ -221,12 +221,12 @@ const InputFormSwitch = ({
 }: SwitchProps) => {
   const {t} = useTranslation();
 
-  const label = useMemo(
-    () =>
-      t(`soil.collection_method.${method}`) +
-      (isRequired ? ` (${t('general.required')})` : ''),
-    [t, method, isRequired],
-  );
+  const label = useMemo(() => {
+    const methodDescriber = t(`soil.collection_method.${method}`);
+    return isRequired
+      ? t('soil.required_method', {method: methodDescriber})
+      : methodDescriber;
+  }, [t, method, isRequired]);
 
   return (
     <FormSwitch
