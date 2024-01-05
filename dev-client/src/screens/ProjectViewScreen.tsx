@@ -23,6 +23,7 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useSelector} from 'terraso-mobile-client/store';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
+import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
 
 type Props = {projectId: string};
 
@@ -40,13 +41,15 @@ export const ProjectViewScreen = ({projectId}: Props) => {
   );
 
   return (
-    <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
-      <BottomSheetModalProvider>
-        <ScreenScaffold AppBar={<AppBar title={project?.name} />}>
-          <ProjectTabNavigator projectId={projectId} />
-        </ScreenScaffold>
-        <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
-      </BottomSheetModalProvider>
-    </BottomSheetPrivacyModalContext.Provider>
+    <ProjectRoleContextProvider projectId={projectId}>
+      <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
+        <BottomSheetModalProvider>
+          <ScreenScaffold AppBar={<AppBar title={project?.name} />}>
+            <ProjectTabNavigator projectId={projectId} />
+          </ScreenScaffold>
+          <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
+        </BottomSheetModalProvider>
+      </BottomSheetPrivacyModalContext.Provider>
+    </ProjectRoleContextProvider>
   );
 };

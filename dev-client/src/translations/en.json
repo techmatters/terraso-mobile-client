@@ -172,7 +172,9 @@
           "title": "Change depths?",
           "body": "Soil pit data that has been entered will be deleted. This action cannot be undone.",
           "confirm": "Change"
-        }
+        },
+        "label": "Label",
+        "depth": "Depth ({{units}})"
       }
     },
     "team": {
@@ -434,7 +436,8 @@
         "title": "Change depth?",
         "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
         "action": "Change"
-      }
+      },
+      "bounds": "{{depthInterval.start}}-{{depthInterval.end}}{{units}}"
     }
   },
   "slope": {
