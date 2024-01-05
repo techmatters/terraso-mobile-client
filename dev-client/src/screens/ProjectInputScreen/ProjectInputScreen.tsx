@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -69,7 +69,7 @@ export const ProjectInputScreen = ({
   };
 
   return (
-    <VStack height={'full'}>
+    <VStack height="full">
       <ScrollView>
         <Box p={4} alignItems="flex-start">
           <HStack pb={4}>
@@ -139,7 +139,7 @@ export const ProjectInputScreen = ({
         <Box height={4} />
         <Accordion
           Head={
-            <Text pt={3} pb={3} fontSize={'md'} color={'primary.contrast'}>
+            <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
               {t('soil.project_settings.required_data_title')}
             </Text>
           }>
