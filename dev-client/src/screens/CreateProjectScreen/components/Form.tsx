@@ -119,6 +119,7 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
 
 type FormProps = Omit<ProjectUpdateMutationInput, 'id'> & {
   onSubmit: (values: Omit<ProjectUpdateMutationInput, 'id'>) => void;
+  submitProps?: Omit<React.ComponentProps<typeof Fab>, 'onPress'>;
 };
 
 export const EditForm = ({
@@ -126,6 +127,7 @@ export const EditForm = ({
   name,
   description,
   measurementUnits,
+  submitProps,
 }: Omit<FormProps, 'privacy'>) => {
   const {t} = useTranslation();
   return (
@@ -149,7 +151,11 @@ export const EditForm = ({
           <Fab
             onPress={() => handleSubmit()}
             disabled={!isValid || isSubmitting}
-            label={t('general.submit').toLocaleUpperCase()}
+            label={t('general.submit')}
+            _text={{
+              textTransform: 'uppercase',
+            }}
+            {...submitProps}
           />
         </>
       )}

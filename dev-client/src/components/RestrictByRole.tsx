@@ -15,30 +15,67 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useMemo} from 'react';
+import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SiteUserRole} from 'terraso-client-shared/selectors';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
 
-type RestrictSiteRoleProps = {
-  role: SiteUserRole | SiteUserRole[];
+type RestrictProps<RoleType> = {
+  role: RoleType | RoleType[];
 } & React.PropsWithChildren;
 
-/** Only display child components with specified site role */
-export const RestrictBySiteRole = ({role, children}: RestrictSiteRoleProps) => {
-  const siteRole = useSiteRoleContext();
+type GenericProps<RoleType> = {
+  userRole: RoleType | null;
+  cmp: (a: RoleType, b: RoleType) => boolean;
+  allowedRole: RoleType | RoleType[];
+} & React.PropsWithChildren;
+
+const RestrictByRole = <RoleType,>({
+  userRole,
+  cmp,
+  allowedRole,
+  children,
+}: GenericProps<RoleType>) => {
   const display = useMemo(() => {
-    if (siteRole === null) {
+    if (userRole === null) {
       return false;
     }
-    if (role instanceof Array) {
-      return (
-        role.filter(
-          ({kind, role: userRole}) =>
-            siteRole.kind === kind && siteRole.role === userRole,
-        ).length > 0
-      );
+    if (allowedRole instanceof Array) {
+      return allowedRole.filter(a => cmp(userRole, a)).length > 0;
     }
-    return role === siteRole;
-  }, [siteRole, role]);
+    return cmp(userRole, allowedRole);
+  }, [userRole, allowedRole, cmp]);
 
-  return display ? {children} : <></>;
+  return display ? <>{children}</> : <></>;
+};
+
+export const RestrictByProjectRole = ({
+  role,
+  children,
+}: RestrictProps<UserRole>) => {
+  const userRole = useProjectRoleContext();
+  return (
+    <RestrictByRole
+      userRole={userRole}
+      cmp={(a, b) => a === b}
+      allowedRole={role}>
+      {children}
+    </RestrictByRole>
+  );
+};
+
+export const RestrictBySiteRole = ({
+  role,
+  children,
+}: RestrictProps<SiteUserRole>) => {
+  const siteRole = useSiteRoleContext();
+
+  return (
+    <RestrictByRole
+      userRole={siteRole}
+      cmp={(a, b) => a.kind === b.kind && a.role === b.role}
+      allowedRole={role}>
+      {children}
+    </RestrictByRole>
+  );
 };
