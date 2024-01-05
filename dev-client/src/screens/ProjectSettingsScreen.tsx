@@ -16,23 +16,24 @@
  */
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AlertDialog, Button, Text, VStack} from 'native-base';
+import {ScrollView, Text, VStack} from 'native-base';
 import {
   TabRoutes,
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
 import {useTranslation} from 'react-i18next';
 import IconLink from 'terraso-mobile-client/components/IconLink';
-import {useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   deleteProject,
   updateProject,
-  archiveProject,
 } from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {EditForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/Form';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
@@ -52,116 +53,60 @@ export function ProjectSettingsScreen({
   };
 
   const navigation = useNavigation();
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const cancelRef = useRef(null);
-  const closeDeleteProject = () => {
-    setIsDeleteModalOpen(false);
-  };
-  const openDeleteProject = () => {
-    setIsDeleteModalOpen(true);
-  };
+
   const triggerDeleteProject = () => {
-    setIsDeleteModalOpen(false);
     dispatch(deleteProject({id: projectId}));
     navigation.navigate('PROJECT_LIST');
   };
-  const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
-  const closeArchiveProject = () => {
-    setIsArchiveModalOpen(false);
-  };
-  // const openArchiveProject = () => {
-  //   setIsArchiveModalOpen(true);
-  // };
-  const triggerArchiveProject = () => {
-    setIsDeleteModalOpen(false);
-    dispatch(archiveProject({id: projectId, archived: true}));
-    navigation.navigate('PROJECT_LIST');
-  };
+
+  const userRole = useProjectRoleContext();
+
   return (
-    <VStack px={2} py={4} space={2} m={3} height="100%">
-      <EditForm
-        onSubmit={onSubmit}
-        name={name}
-        description={description}
-        measurementUnits={measurementUnits}
-      />
-      <VStack space={1}>
-        <IconLink
-          iconName="content-copy"
-          isUnderlined={false}
-          href={downloadLink}>
-          {t('projects.settings.copy_download_link').toUpperCase()}
-        </IconLink>
-        <Text ml={10}>{t('projects.settings.download_link_description')}</Text>
-        {/*
-        <IconLink
-          iconName="archive"
-          isUnderlined={false}
-          onPress={openArchiveProject}>
-          {t('projects.settings.archive').toUpperCase()}
-        </IconLink>
-          */}
-        <IconLink
-          iconName="delete-forever"
-          underlined={false}
-          onPress={openDeleteProject}>
-          {t('projects.settings.delete').toUpperCase()}
-        </IconLink>
+    <ScrollView>
+      <VStack px={2} py={4} space={2} m={3} pb="50px">
+        <EditForm
+          onSubmit={onSubmit}
+          name={name}
+          description={description}
+          measurementUnits={measurementUnits}
+          submitProps={{
+            right: 0,
+            bottom: 0,
+            label: t('general.save'),
+            display: userRole === 'manager' ? 'flex' : 'none',
+          }}
+        />
+        <VStack space={1}>
+          <IconLink
+            iconName="content-copy"
+            isUnderlined={false}
+            href={downloadLink}>
+            {t('projects.settings.copy_download_link').toUpperCase()}
+          </IconLink>
+          <Text ml={10}>
+            {t('projects.settings.download_link_description')}
+          </Text>
+
+          <RestrictByProjectRole role="manager">
+            <ConfirmModal
+              title={t('projects.settings.delete_button_prompt')}
+              actionName={t('projects.settings.delete_button')}
+              body={t('projects.settings.delete_description')}
+              handleConfirm={triggerDeleteProject}
+              trigger={onOpen => (
+                <IconLink
+                  iconName="delete-forever"
+                  underlined={false}
+                  onPress={onOpen}
+                  color="error.main"
+                  textTransform="uppercase">
+                  {t('projects.settings.delete')}
+                </IconLink>
+              )}
+            />
+          </RestrictByProjectRole>
+        </VStack>
       </VStack>
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isArchiveModalOpen}
-        onClose={closeArchiveProject}>
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Header>
-            {t('projects.settings.archive_button_prompt')}
-          </AlertDialog.Header>
-          <AlertDialog.Body>
-            {t('projects.settings.archive_description')}
-          </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="unstyled"
-                colorScheme="coolGray"
-                onPress={closeArchiveProject}>
-                {t('projects.settings.cancel')}
-              </Button>
-              <Button colorScheme="danger" onPress={triggerArchiveProject}>
-                {t('projects.settings.archive_button')}
-              </Button>
-            </Button.Group>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isDeleteModalOpen}
-        onClose={closeDeleteProject}>
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Header>
-            {t('projects.settings.delete_button_prompt')}
-          </AlertDialog.Header>
-          <AlertDialog.Body>
-            {t('projects.settings.delete_description')}
-          </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="unstyled"
-                colorScheme="coolGray"
-                onPress={closeDeleteProject}>
-                {t('projects.settings.cancel')}
-              </Button>
-              <Button colorScheme="danger" onPress={triggerDeleteProject}>
-                {t('projects.settings.delete_button')}
-              </Button>
-            </Button.Group>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
-    </VStack>
+    </ScrollView>
   );
 }

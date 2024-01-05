@@ -22,6 +22,7 @@ type Props = {
   children?: React.ReactNode;
   iconName: string;
   underlined?: boolean;
+  color?: string;
 } & React.ComponentProps<typeof Link>;
 
 // TODO: There is going to be (at least) two different types of IconLinks
@@ -30,16 +31,17 @@ export default function IconLink({
   children,
   iconName,
   underlined,
+  color = 'primary.main',
   ...props
 }: Props) {
   return (
     <Link
-      _text={{color: 'primary.main', fontSize: 'xs'}}
+      _text={{color, fontSize: 'xs', textTransform: 'uppercase'}}
       alignItems="center"
       alignContent="flex-start"
       isUnderlined={underlined}
       {...props}>
-      <Icon name={iconName} color="primary.main" size="md" mr={3} />
+      <Icon name={iconName} color={color} size="md" mr={3} />
       {children}
     </Link>
   );
