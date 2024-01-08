@@ -32,6 +32,7 @@ import {
 import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 
@@ -79,15 +80,17 @@ export const ProjectTeamScreen = ({route}: Props) => {
 
   return (
     <VStack alignItems="flex-start" p={4} space={3}>
-      <AddButton
-        text={t('projects.team.add')}
-        buttonProps={{
-          onPress: () =>
-            navigation.navigate('ADD_USER_PROJECT', {
-              projectId: route.params.projectId,
-            }),
-        }}
-      />
+      <RestrictByProjectRole role="manager">
+        <AddButton
+          text={t('projects.team.add')}
+          buttonProps={{
+            onPress: () =>
+              navigation.navigate('ADD_USER_PROJECT', {
+                projectId: route.params.projectId,
+              }),
+          }}
+        />
+      </RestrictByProjectRole>
       <UserList
         memberships={members}
         currentUserId={currentUser.data?.id}

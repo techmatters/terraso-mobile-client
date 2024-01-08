@@ -63,6 +63,7 @@ import {
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {searchText} from 'terraso-mobile-client/util';
 import {normalizeText} from 'terraso-client-shared/utils';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 
 type SiteMenuProps = {
   iconName: string;
@@ -268,12 +269,14 @@ export function ProjectSitesScreen({
   return (
     <VStack m={3} pb={5} space={3} h="100%">
       {isEmpty && <Text>{t('projects.sites.empty')}</Text>}
-      <Button
-        onPress={transferCallback}
-        alignSelf="flex-start"
-        _text={{textTransform: 'uppercase'}}>
-        {t('projects.sites.transfer') ?? ''}
-      </Button>
+      <RestrictByProjectRole role="manager">
+        <Button
+          onPress={transferCallback}
+          alignSelf="flex-start"
+          _text={{textTransform: 'uppercase'}}>
+          {t('projects.sites.transfer') ?? ''}
+        </Button>
+      </RestrictByProjectRole>
       {!isEmpty && full}
     </VStack>
   );
