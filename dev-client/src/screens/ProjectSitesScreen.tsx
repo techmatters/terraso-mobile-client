@@ -284,7 +284,7 @@ export function ProjectSitesScreen({
           </RestrictByProjectRole>
         </>
       )}
-      <RestrictByProjectRole role="manager">
+      <RestrictByProjectRole role={['manager', 'contributor']}>
         <Button
           onPress={transferCallback}
           alignSelf="flex-start"
