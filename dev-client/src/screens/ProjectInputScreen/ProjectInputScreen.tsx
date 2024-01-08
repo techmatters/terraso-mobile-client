@@ -70,6 +70,10 @@ export const ProjectInputScreen = ({
     navigation.pop();
   };
 
+  const userRole = useProjectRoleContext();
+
+  const allowEditing = useMemo(() => userRole === 'manager', []);
+
   return (
     <VStack height="full">
       <ScrollView>
@@ -102,29 +106,37 @@ export const ProjectInputScreen = ({
                 value: project.privacy,
                 ml: '',
               }}
+              allDisabled={!allowEditing}
             />
           </HStack>
-          <Text bold fontSize={'md'}>
-            {t('projects.inputs.instructions.title')}
-          </Text>
-          <Text fontSize={'md'}>
-            {t('projects.inputs.instructions.description')}
-          </Text>
-          <Button
-            mt={2}
-            pl={4}
-            pr={4}
-            size="lg"
-            backgroundColor="primary.main"
-            shadow={5}
-            onPress={onEditInstructions}>
-            <HStack>
-              <Icon color="primary.contrast" size={'sm'} mr={2} name={'edit'} />
-              <Text color="primary.contrast" textTransform={'uppercase'}>
-                {t('projects.inputs.instructions.add_label')}
-              </Text>
-            </HStack>
-          </Button>
+          <RestrictByProjectRole role="manager">
+            <Text bold fontSize={'md'}>
+              {t('projects.inputs.instructions.title')}
+            </Text>
+            <Text fontSize={'md'}>
+              {t('projects.inputs.instructions.description')}
+            </Text>
+            <Button
+              mt={2}
+              pl={4}
+              pr={4}
+              size="lg"
+              backgroundColor="primary.main"
+              shadow={5}
+              onPress={onEditInstructions}>
+              <HStack>
+                <Icon
+                  color="primary.contrast"
+                  size={'sm'}
+                  mr={2}
+                  name={'edit'}
+                />
+                <Text color="primary.contrast" textTransform={'uppercase'}>
+                  {t('projects.inputs.instructions.add_label')}
+                </Text>
+              </HStack>
+            </Button>
+          </RestrictByProjectRole>
         </Box>
         <Accordion
           Head={
@@ -145,7 +157,7 @@ export const ProjectInputScreen = ({
               {t('soil.project_settings.required_data_title')}
             </Text>
           }>
-          <RequiredDataSettings projectId={projectId} />
+          <RequiredDataSettings projectId={projectId} enabled={allowEditing} />
         </Accordion>
       </ScrollView>
       <RestrictByProjectRole role="manager">
