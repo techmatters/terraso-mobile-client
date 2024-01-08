@@ -204,7 +204,8 @@
       "measurement_units": "Units of Measurement"
     },
     "sites": {
-      "empty": "This project has no sites yet.\n\nYou can transfer existing LandPKS sites to this project, or use the map on the Home screen to create new sites to add to this project.",
+      "empty": "This project has no sites yet.",
+      "empty_not_viewer": "You can transfer existing LandPKS sites to this project, or use the map on the Home screen to create new sites to add to this project.",
       "add": "Add sites",
       "transfer": "Transfer Sites",
       "create": "Create Sites",

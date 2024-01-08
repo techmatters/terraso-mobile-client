@@ -32,7 +32,7 @@ import {
 } from 'terraso-mobile-client/navigation/constants';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
 import {
   Icon,
@@ -64,6 +64,7 @@ import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialCont
 import {searchText} from 'terraso-mobile-client/util';
 import {normalizeText} from 'terraso-client-shared/utils';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 
 type SiteMenuProps = {
   iconName: string;
@@ -144,7 +145,7 @@ const SiteMenu = ({site}: SiteProps) => {
   );
 };
 
-const SiteCardList = () => {
+const SiteCardList = ({showButtons}: {showButtons: boolean}) => {
   const {t} = useTranslation();
   const {filteredItems: sites} = useListFilter<Site>();
 
@@ -152,7 +153,10 @@ const SiteCardList = () => {
     <FlatList
       data={sites}
       renderItem={({item: site}) => (
-        <SiteCard site={site} buttons={<SiteMenu site={site} />} />
+        <SiteCard
+          site={site}
+          buttons={showButtons ? <SiteMenu site={site} /> : undefined}
+        />
       )}
       keyExtractor={site => site.id}
       ItemSeparatorComponent={() => <Box h="8px" />}
@@ -220,6 +224,10 @@ export function ProjectSitesScreen({
 
   const isEmpty = sites.length === 0;
 
+  const userRole = useProjectRoleContext();
+
+  const showButtons = useMemo(() => userRole === 'manager', [userRole]);
+
   const full = (
     <ListFilterProvider
       items={sites}
@@ -262,13 +270,20 @@ export function ProjectSitesScreen({
           options={sortingOptions}
         />
       </ListFilterModal>
-      <SiteCardList />
+      <SiteCardList showButtons={showButtons} />
     </ListFilterProvider>
   );
 
   return (
     <VStack m={3} pb={5} space={3} h="100%">
-      {isEmpty && <Text>{t('projects.sites.empty')}</Text>}
+      {isEmpty && (
+        <>
+          <Text>{t('projects.sites.empty')}</Text>
+          <RestrictByProjectRole role={['manager', 'contributor']}>
+            <Text>{t('projects.sites.empty_not_viewer')}</Text>
+          </RestrictByProjectRole>
+        </>
+      )}
       <RestrictByProjectRole role="manager">
         <Button
           onPress={transferCallback}

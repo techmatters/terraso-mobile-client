@@ -33,6 +33,7 @@ import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 
@@ -65,14 +66,18 @@ export const ProjectTeamScreen = ({route}: Props) => {
     [dispatch, route.params.projectId],
   );
 
+  const userRole = useProjectRoleContext();
+
   const manageMember = useCallback(
     (userId: string, membershipId: string) => {
       return async () => {
-        navigation.navigate('MANAGE_TEAM_MEMBER', {
-          userId,
-          membershipId,
-          projectId: route.params.projectId,
-        });
+        if (userRole === 'manager') {
+          navigation.navigate('MANAGE_TEAM_MEMBER', {
+            userId,
+            membershipId,
+            projectId: route.params.projectId,
+          });
+        }
       };
     },
     [navigation, route.params.projectId],
