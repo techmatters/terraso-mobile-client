@@ -26,7 +26,7 @@ import {
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {updateProject} from 'terraso-client-shared/project/projectSlice';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'react-native';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
@@ -36,6 +36,8 @@ import {selectProjectSettings} from 'terraso-client-shared/selectors';
 import {EnsureDataPresent} from 'terraso-mobile-client/components/EnsureDataPresent';
 import {SoilPitSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/SoilPitSettings';
 import {RequiredDataSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/RequiredDataSettings';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -146,12 +148,14 @@ export const ProjectInputScreen = ({
           <RequiredDataSettings projectId={projectId} />
         </Accordion>
       </ScrollView>
-      <Fab
-        onPress={() => onSave()}
-        textTransform={'uppercase'}
-        label={t('general.save_fab')}
-        renderInPortal={false}
-      />
+      <RestrictByProjectRole role="manager">
+        <Fab
+          onPress={() => onSave()}
+          textTransform={'uppercase'}
+          label={t('general.save_fab')}
+          renderInPortal={false}
+        />
+      </RestrictByProjectRole>
     </VStack>
   );
 };
