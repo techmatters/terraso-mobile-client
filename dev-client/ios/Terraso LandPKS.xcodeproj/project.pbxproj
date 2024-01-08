@@ -611,7 +611,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 69;
+				CURRENT_PROJECT_VERSION = 70;
 				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8W5MT5NL;
 				ENABLE_BITCODE = NO;
@@ -654,7 +654,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 69;
+				CURRENT_PROJECT_VERSION = 70;
 				DEVELOPMENT_TEAM = 2A8W5MT5NL;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8W5MT5NL;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
