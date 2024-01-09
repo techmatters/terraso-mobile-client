@@ -100,11 +100,6 @@ export const EditIntervalModalContent = ({
     [t, existingIntervals],
   );
 
-  const showUpdateWarning = useMemo(
-    () => soilData.depthDependentData.length > 0,
-    [soilData],
-  );
-
   const updateSwitch = useCallback(
     (method: SoilPitMethod) => (newValue: boolean) => {
       dispatch(

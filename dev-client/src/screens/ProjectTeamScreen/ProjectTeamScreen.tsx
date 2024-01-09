@@ -80,7 +80,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
         }
       };
     },
-    [navigation, route.params.projectId],
+    [navigation, route.params.projectId, userRole],
   );
 
   return (

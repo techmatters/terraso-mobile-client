@@ -72,7 +72,7 @@ export const ProjectInputScreen = ({
 
   const userRole = useProjectRoleContext();
 
-  const allowEditing = useMemo(() => userRole === 'manager', []);
+  const allowEditing = useMemo(() => userRole === 'manager', [userRole]);
 
   return (
     <VStack height="full">

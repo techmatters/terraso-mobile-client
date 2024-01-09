@@ -29,10 +29,7 @@ import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
-import {
-  SiteRoleContextProvider,
-  useSiteRoleContext,
-} from 'terraso-mobile-client/context/SiteRoleContext';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {selectUserRoleSite} from 'terraso-client-shared/selectors';
 
 type Props = {siteId?: string; coords?: Coords};
@@ -79,7 +76,7 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
         onPress={() => navigation.navigate('SITE_SETTINGS', {siteId})}
       />
     );
-  }, [siteId, coords, navigation]);
+  }, [siteId, coords, navigation, userRole]);
 
   const onInfoPress = useCallback(
     () => infoModalRef.current?.present(),
