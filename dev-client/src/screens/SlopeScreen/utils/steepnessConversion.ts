@@ -16,6 +16,6 @@
  */
 
 export const degreeToPercent = (degrees: number) =>
-  Math.tan((degrees * Math.PI) / 180) * 100;
+  Math.round(Math.tan((degrees * Math.PI) / 180) * 100);
 export const percentToDegree = (percent: number) =>
-  Math.atan(percent / 100) / (Math.PI / 180);
+  Math.round(Math.atan(percent / 100) / (Math.PI / 180));

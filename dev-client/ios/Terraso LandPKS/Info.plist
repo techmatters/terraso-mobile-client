@@ -35,7 +35,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>68</string>
+	<string>71</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -55,6 +55,8 @@
 	<string>Terraso LandPKS uses your location to create sites.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Show current location on map.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Terraso LandPKS uses your location to take photos of sites.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialIcons.ttf</string>
