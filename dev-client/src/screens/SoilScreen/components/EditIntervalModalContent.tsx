@@ -41,6 +41,7 @@ import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useModal} from 'terraso-mobile-client/components/Modal';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -132,6 +133,24 @@ export const EditIntervalModalContent = ({
     [schema, dispatch, onClose, siteId],
   );
 
+  const userRole = useSiteRoleContext();
+
+  const editingAllowed = useMemo(() => {
+    if (!userRole) {
+      return false;
+    }
+    if (userRole.kind === 'site' && userRole.role === 'owner') {
+      return true;
+    }
+    if (
+      userRole.kind === 'project' &&
+      (userRole.role === 'manager' || userRole.role === 'contributor')
+    ) {
+      return true;
+    }
+    return false;
+  }, [userRole]);
+
   return (
     <Formik
       validationSchema={schema}
@@ -154,6 +173,7 @@ export const EditIntervalModalContent = ({
           {inputsWithRequired.map(([method, isRequired]) => (
             <InputFormSwitch
               method={method}
+              disabled={!editingAllowed}
               isRequired={isRequired}
               value={interval[methodEnabled(method)]}
               updateEnabled={updateSwitch(method)}
@@ -164,8 +184,8 @@ export const EditIntervalModalContent = ({
             name="applyToAll"
             label={t('soil.depth_interval.apply_to_all_label')}
           />
-          <Row>
-            {showUpdateWarning ? (
+          {editingAllowed ? (
+            <Row>
               <ConfirmModal
                 trigger={onOpen => (
                   <AddButton
@@ -178,13 +198,9 @@ export const EditIntervalModalContent = ({
                 actionName={t('soil.depth_interval.update_modal.action')}
                 handleConfirm={() => handleSubmit()}
               />
-            ) : (
-              <AddButton
-                action={() => handleSubmit()}
-                isDisabled={!isValid || isSubmitting}
-              />
-            )}
-          </Row>
+              )
+            </Row>
+          ) : undefined}
         </>
       )}
     </Formik>
@@ -211,13 +227,15 @@ type SwitchProps = {
   isRequired: boolean;
   value: boolean;
   updateEnabled: (newValue: boolean) => void;
-};
+} & React.ComponentProps<typeof FormSwitch>;
 
 const InputFormSwitch = ({
   method,
   isRequired,
   value,
   updateEnabled,
+  disabled,
+  ...props
 }: SwitchProps) => {
   const {t} = useTranslation();
 
@@ -230,9 +248,10 @@ const InputFormSwitch = ({
 
   return (
     <FormSwitch
+      {...props}
       name={methodEnabled(method)}
       value={isRequired || value}
-      disabled={isRequired}
+      disabled={isRequired || disabled}
       onChange={updateEnabled}
       label={label}
     />

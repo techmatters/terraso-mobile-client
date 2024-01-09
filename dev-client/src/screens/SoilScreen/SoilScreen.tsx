@@ -32,6 +32,7 @@ import {
   soilPitMethods,
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -102,31 +103,38 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
             requiredInputs={projectRequiredInputs}
           />
         ))}
-        <Modal
-          trigger={onOpen => (
-            <Button
-              size="lg"
-              variant="fullWidth"
-              backgroundColor="primary.dark"
-              justifyContent="start"
-              _text={{
-                color: 'primary.contrast',
-              }}
-              _icon={{
-                color: 'primary.contrast',
-              }}
-              width="full"
-              borderRadius="0px"
-              leftIcon={<Icon name="add" />}
-              onPress={onOpen}>
-              {t('soil.add_depth_label')}
-            </Button>
-          )}>
-          <AddIntervalModal
-            onSubmit={onAddDepthInterval}
-            existingIntervals={existingIntervals}
-          />
-        </Modal>
+        <RestrictBySiteRole
+          role={[
+            {kind: 'project', role: 'manager'},
+            {kind: 'project', role: 'manager'},
+            {kind: 'site', role: 'owner'},
+          ]}>
+          <Modal
+            trigger={onOpen => (
+              <Button
+                size="lg"
+                variant="fullWidth"
+                backgroundColor="primary.dark"
+                justifyContent="start"
+                _text={{
+                  color: 'primary.contrast',
+                }}
+                _icon={{
+                  color: 'primary.contrast',
+                }}
+                width="full"
+                borderRadius="0px"
+                leftIcon={<Icon name="add" />}
+                onPress={onOpen}>
+                {t('soil.add_depth_label')}
+              </Button>
+            )}>
+            <AddIntervalModal
+              onSubmit={onAddDepthInterval}
+              existingIntervals={existingIntervals}
+            />
+          </Modal>
+        </RestrictBySiteRole>
       </Column>
     </BottomSheetModalProvider>
   );
