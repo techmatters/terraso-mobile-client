@@ -141,9 +141,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                     ).isValidSync(text)
                   ) {
                     handleChange('slopeSteepnessDegree')(
-                      Math.round(
-                        percentToDegree(parseInt(text, 10)),
-                      ).toString(),
+                      percentToDegree(parseInt(text, 10)).toString(),
                     );
                   }
                 }}
@@ -168,9 +166,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                     ).isValidSync(text)
                   ) {
                     handleChange('slopeSteepnessPercent')(
-                      Math.round(
-                        degreeToPercent(parseInt(text, 10)),
-                      ).toString(),
+                      degreeToPercent(parseInt(text, 10)).toString(),
                     );
                   }
                 }}
