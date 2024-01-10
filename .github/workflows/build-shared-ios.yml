@@ -120,7 +120,7 @@ jobs:
         with:
           name: dist-log-intermediates
           path: |
-            "/Users/runner/Library/Logs/gym/TerrasoLandPKS-Terraso LandPKS.log"
+            "/Users/runner/Library/Logs/gym/TerrasoLandPKS-TerrasoLandPKS.log"
             "/Users/runner/Library/Developer/Xcode/DerivedData/Terraso_LandPKS-dxlwgwzedupijshfwgivlmtijyiy/Build/Intermediates.noindex/ArchiveIntermediates/"
 
       # - name: Commit iOS version bump
