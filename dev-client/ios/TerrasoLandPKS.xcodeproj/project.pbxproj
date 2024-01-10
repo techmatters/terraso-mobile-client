@@ -11,11 +11,11 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		2F73A6CE5A504507B65467B9 /* Pods_TerrasoLandPKS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 058B6CE22FFF7B6989530C6A /* Pods_TerrasoLandPKS.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		9593A4BCA49ADB6F36DBD38E /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E367045AEA3B522AF0BB61DD /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */; };
-		C61185A1D49303BBF1FC31E9 /* Pods_Terraso_LandPKS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B11C48E3D5248AFAB632513C /* Pods_Terraso_LandPKS.framework */; };
 		C62711C04ED8DCEF08D26039 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5312327087B8D10F79CAAD17 /* ExpoModulesProvider.swift */; };
 		F0E4CC79E95751DF430A1678 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43E7D5A081B8D93EB3B358 /* ExpoModulesProvider.swift */; };
+		F907B8A7593455554FC0A05D /* Pods_TerrasoLandPKS_TerrasoLandPKSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2311DA89CE9460ACB7F6429 /* Pods_TerrasoLandPKS_TerrasoLandPKSTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +32,7 @@
 		00E356EE1AD99517003FC87E /* TerrasoLandPKSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TerrasoLandPKSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* TerrasoLandPKSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TerrasoLandPKSTests.m; sourceTree = "<group>"; };
+		058B6CE22FFF7B6989530C6A /* Pods_TerrasoLandPKS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TerrasoLandPKS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* TerrasoLandPKS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TerrasoLandPKS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "Terraso LandPKS/AppDelegate.h"; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = "Terraso LandPKS/AppDelegate.mm"; sourceTree = "<group>"; };
@@ -46,14 +47,12 @@
 		7195E38FD792E964194F519B /* Pods-Terraso LandPKS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS.release.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "Terraso LandPKS/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		9B636DA2BF577EB074AE1958 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B11C48E3D5248AFAB632513C /* Pods_Terraso_LandPKS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Terraso_LandPKS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBEAA8284428C9D9E947A9B2 /* Pods-TerrasoLandPKS-TerrasoLandPKSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TerrasoLandPKS-TerrasoLandPKSTests.release.xcconfig"; path = "Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests.release.xcconfig"; sourceTree = "<group>"; };
 		DA26A1822A38F932003248A1 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		DA26A1832A38F932003248A1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		E367045AEA3B522AF0BB61DD /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FA43E7D5A081B8D93EB3B358 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		FE1CE62AEB19A25D32A26A47 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig"; path = "Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig"; sourceTree = "<group>"; };
+		F2311DA89CE9460ACB7F6429 /* Pods_TerrasoLandPKS_TerrasoLandPKSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TerrasoLandPKS_TerrasoLandPKSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9593A4BCA49ADB6F36DBD38E /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework in Frameworks */,
+				F907B8A7593455554FC0A05D /* Pods_TerrasoLandPKS_TerrasoLandPKSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,7 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C61185A1D49303BBF1FC31E9 /* Pods_Terraso_LandPKS.framework in Frameworks */,
+				2F73A6CE5A504507B65467B9 /* Pods_TerrasoLandPKS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,8 +127,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				B11C48E3D5248AFAB632513C /* Pods_Terraso_LandPKS.framework */,
-				E367045AEA3B522AF0BB61DD /* Pods_Terraso_LandPKS_Terraso_LandPKSTests.framework */,
+				058B6CE22FFF7B6989530C6A /* Pods_TerrasoLandPKS.framework */,
+				F2311DA89CE9460ACB7F6429 /* Pods_TerrasoLandPKS_TerrasoLandPKSTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -341,15 +340,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7A689D05EB14BDBE0BEDA739 /* [CP] Copy Pods Resources */ = {
@@ -358,15 +357,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS/Pods-Terraso LandPKS-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AAC608A308DA68AE0A6FDB81 /* [CP] Copy Pods Resources */ = {
@@ -375,15 +374,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		ADDA2E0D8C43F83369F8DBAD /* [Expo] Configure project */ = {
@@ -420,7 +419,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Terraso LandPKS-Terraso LandPKSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-TerrasoLandPKS-TerrasoLandPKSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -442,7 +441,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Terraso LandPKS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-TerrasoLandPKS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -493,15 +492,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Terraso LandPKS-Terraso LandPKSTests/Pods-Terraso LandPKS-Terraso LandPKSTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TerrasoLandPKS-TerrasoLandPKSTests/Pods-TerrasoLandPKS-TerrasoLandPKSTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -539,7 +538,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9B636DA2BF577EB074AE1958 /* Pods-Terraso LandPKS-Terraso LandPKSTests.debug.xcconfig */;
+			baseConfigurationReference = 17B32CC9F925D6BD9D5FC583 /* Pods-TerrasoLandPKS-TerrasoLandPKSTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -573,7 +572,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE1CE62AEB19A25D32A26A47 /* Pods-Terraso LandPKS-Terraso LandPKSTests.release.xcconfig */;
+			baseConfigurationReference = BBEAA8284428C9D9E947A9B2 /* Pods-TerrasoLandPKS-TerrasoLandPKSTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -604,7 +603,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 367165F6B7CF4F76C08E98C9 /* Pods-Terraso LandPKS.debug.xcconfig */;
+			baseConfigurationReference = 25A17028AA4139F05829E0C3 /* Pods-TerrasoLandPKS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -647,7 +646,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7195E38FD792E964194F519B /* Pods-Terraso LandPKS.release.xcconfig */;
+			baseConfigurationReference = 6BF1862BD9C1F38B34354406 /* Pods-TerrasoLandPKS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
