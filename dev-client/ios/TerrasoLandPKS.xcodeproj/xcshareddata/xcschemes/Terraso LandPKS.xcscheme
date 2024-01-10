@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "TerrasoLandPKS.app"
-               BlueprintName = "Terraso LandPKS"
-               ReferencedContainer = "container:Terraso LandPKS.xcodeproj">
+               BlueprintName = "TerrasoLandPKS"
+               ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "Terraso LandPKSTests.xctest"
-               BlueprintName = "Terraso LandPKSTests"
-               ReferencedContainer = "container:Terraso LandPKS.xcodeproj">
+               BuildableName = "TerrasoLandPKSTests.xctest"
+               BlueprintName = "TerrasoLandPKSTests"
+               ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -56,8 +56,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "TerrasoLandPKS.app"
-            BlueprintName = "Terraso LandPKS"
-            ReferencedContainer = "container:Terraso LandPKS.xcodeproj">
+            BlueprintName = "TerrasoLandPKS"
+            ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -73,8 +73,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "TerrasoLandPKS.app"
-            BlueprintName = "Terraso LandPKS"
-            ReferencedContainer = "container:Terraso LandPKS.xcodeproj">
+            BlueprintName = "TerrasoLandPKS"
+            ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -95,8 +95,8 @@
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                      BuildableName = "TerrasoLandPKS.app"
-                     BlueprintName = "Terraso LandPKS"
-                     ReferencedContainer = "container:Terraso LandPKS.xcodeproj">
+                     BlueprintName = "TerrasoLandPKS"
+                     ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
             </ActionContent>
