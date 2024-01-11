@@ -52,7 +52,9 @@ export const ImageRadio = <Value extends string>({
                 flexBasis,
               },
             ]}
-            onPress={() => onChange(optionValue as Value)}>
+            onPress={() =>
+              onChange(value === optionValue ? null : (optionValue as Value))
+            }>
             <View style={styles.imageContainer}>{image}</View>
             <Text
               variant="body1"
