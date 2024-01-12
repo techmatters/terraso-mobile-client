@@ -33,6 +33,7 @@ import {
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SoilSurfaceStatus} from './components/SoilSurfaceStatus';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -88,9 +89,11 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   return (
     <BottomSheetModalProvider>
       <Column backgroundColor="grey.300">
-        <Row backgroundColor="background.default" px="16px" py="12px">
-          <Heading variant="h6">{t('soil.surface')}</Heading>
-        </Row>
+        <SoilSurfaceStatus
+          required={project ? project.verticalCrackingRequired : true}
+          complete={Boolean(soilData?.surfaceCracksSelect)}
+          siteId={siteId}
+        />
         <Box height="16px" />
         <Row backgroundColor="background.default" px="16px" py="12px">
           <Heading variant="h6">{t('soil.pit')}</Heading>
@@ -106,7 +109,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         <RestrictBySiteRole
           role={[
             {kind: 'project', role: 'manager'},
-            {kind: 'project', role: 'manager'},
+            {kind: 'project', role: 'contributor'},
             {kind: 'site', role: 'owner'},
           ]}>
           <Modal
