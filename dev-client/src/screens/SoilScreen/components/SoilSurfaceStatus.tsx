@@ -33,7 +33,7 @@ export const SoilSurfaceStatus = ({required, complete, siteId}: Props) => {
 
   const onPress = useCallback(() => {
     navigation.push('SOIL_SURFACE', {siteId});
-  }, [navigation]);
+  }, [navigation, siteId]);
 
   return (
     <>

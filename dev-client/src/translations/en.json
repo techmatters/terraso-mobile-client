@@ -439,7 +439,12 @@
         "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
         "action": "Change"
       },
-      "bounds": "{{depthInterval.start}}-{{depthInterval.end}}{{units}}"
+      "error": {
+        "overlaps": "Overlaps existing",
+        "ordering": "Interval bounds error"
+      },
+      "bounds": "{{depthInterval.start}}-{{depthInterval.end}}{{units}}",
+      "delete_depth": "Delete depth"
     }
   },
   "slope": {

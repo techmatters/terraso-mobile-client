@@ -24,9 +24,10 @@ import {
   methodEnabled,
   SoilDataDepthInterval,
   SoilPitMethod,
+  updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
-import {useMemo, useCallback} from 'react';
+import {useMemo, useCallback, FormEvent, useEffect, useState} from 'react';
 import {
   IntervalForm,
   IntervalFormInput,
@@ -42,6 +43,9 @@ import {useModal} from 'terraso-mobile-client/components/Modal';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
+import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {Icon} from 'terraso-mobile-client/components/Icons';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -64,13 +68,22 @@ export const EditIntervalModalContent = ({
   const dispatch = useDispatch();
   const onClose = useModal()!.onClose;
 
+  const interval = useMemo(() => {
+    return soilData.depthIntervals.find(sameDepth({depthInterval}))!;
+  }, [soilData.depthIntervals, depthInterval]);
+
+  const [currentInterval] = useState<SoilDataDepthInterval>(interval);
+
   const existingIntervals = useMemo(
-    () => soilData.depthIntervals.map(interval => interval.depthInterval),
+    () =>
+      soilData.depthIntervals
+        .map(interval => interval.depthInterval)
+        .filter(
+          ({start, end}) =>
+            start !== currentInterval.depthInterval.start ||
+            end !== currentInterval.depthInterval.end,
+        ),
     [soilData.depthIntervals],
-  );
-  const interval = useMemo(
-    () => soilData.depthIntervals.find(sameDepth({depthInterval}))!,
-    [soilData.depthIntervals, depthInterval],
   );
 
   const requiredInputsSet = useMemo(
@@ -115,17 +128,26 @@ export const EditIntervalModalContent = ({
 
   const onSubmit = useCallback(
     async (values: EditIntervalFormInput) => {
-      const {start, end, ...newInterval} = schema.cast(values);
-      await dispatch(
-        updateSoilDataDepthIntervalAsync({
-          siteId,
-          ...newInterval,
-          depthInterval: {start, end},
-        }),
-      );
+      const {
+        depthInterval: {start, end},
+      } = currentInterval;
+      const {
+        start: newStart,
+        end: newEnd,
+        ...enabledInputs
+      } = schema.cast(values);
+      const input: SoilDataUpdateDepthIntervalMutationInput = {
+        siteId,
+        ...enabledInputs,
+        depthInterval: {start, end},
+      };
+      if (newStart !== start || newEnd !== end) {
+        input.newDepthInterval = {start: newStart, end: newEnd};
+      }
+      await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
-    [schema, dispatch, onClose, siteId],
+    [schema, dispatch, onClose, siteId, currentInterval],
   );
 
   const userRole = useSiteRoleContext();
@@ -150,9 +172,9 @@ export const EditIntervalModalContent = ({
     <Formik
       validationSchema={schema}
       initialValues={{
-        ...interval,
-        start: '',
-        end: '',
+        ...currentInterval,
+        start: String(currentInterval.depthInterval.start),
+        end: String(currentInterval.depthInterval.end),
         applyToAll: false,
       }}
       onSubmit={onSubmit}>
@@ -161,39 +183,41 @@ export const EditIntervalModalContent = ({
           <Heading variant="h6">{t('soil.depth_interval.edit_title')}</Heading>
           <Box height="20px" />
           <IntervalForm />
+
           <Box height="50px" />
           <Heading variant="h6">
             {t('soil.depth_interval.data_inputs_title')}
           </Heading>
+
           {inputsWithRequired.map(([method, isRequired]) => (
             <InputFormSwitch
               method={method}
               disabled={!editingAllowed}
               isRequired={isRequired}
-              value={interval[methodEnabled(method)]}
+              value={currentInterval[methodEnabled(method)]}
               updateEnabled={updateSwitch(method)}
               key={method}
             />
           ))}
+
           <FormCheckbox
             name="applyToAll"
             label={t('soil.depth_interval.apply_to_all_label')}
           />
+
           {editingAllowed ? (
-            <Row>
-              <ConfirmModal
-                trigger={onOpen => (
-                  <AddButton
-                    action={onOpen}
-                    isDisabled={!isValid || isSubmitting}
-                  />
-                )}
-                title={t('soil.depth_interval.update_modal.title')}
-                body={t('soil.depth_interval.update_modal.body')}
-                actionName={t('soil.depth_interval.update_modal.action')}
-                handleConfirm={() => handleSubmit()}
+            <Row justifyContent="space-between" px="15px" pb="15px">
+              <Button
+                leftIcon={<Icon name="delete" color="error.main" />}
+                _text={{textTransform: 'uppercase', color: 'error.main'}}
+                variant="link">
+                {t('soil.depth_interval.delete_depth')}
+              </Button>
+              <ConfirmEditingModal
+                formNotReady={!isValid || isSubmitting}
+                handleSubmit={handleSubmit}
+                interval={currentInterval?.depthInterval}
               />
-              )
             </Row>
           ) : undefined}
         </>
@@ -202,17 +226,68 @@ export const EditIntervalModalContent = ({
   );
 };
 
+type ModalProps = {
+  formNotReady: boolean;
+  handleSubmit: (e?: FormEvent<HTMLFormElement> | undefined) => void;
+  interval: DepthInterval;
+};
+
+/**
+ * Shows a modal warning if there have been changes to the interval start
+ * and end.
+ */
+const ConfirmEditingModal = ({
+  formNotReady,
+  handleSubmit,
+  interval: {start, end},
+}: ModalProps) => {
+  const {t} = useTranslation();
+
+  const newStart = useFieldContext('start');
+  const newEnd = useFieldContext('end');
+
+  const showWarningModal = useMemo(() => {
+    return Number(newStart.value) !== start || Number(newEnd.value) !== end;
+  }, [start, end, newStart, newEnd]);
+
+  const buttonAction = useMemo(
+    () =>
+      (onOpen: () => void) =>
+      (...args: Parameters<typeof handleSubmit>) =>
+        showWarningModal ? onOpen() : handleSubmit(...args),
+    [newStart, newEnd, handleSubmit],
+  );
+
+  return (
+    <ConfirmModal
+      trigger={onOpen => (
+        <SaveButton action={buttonAction(onOpen)} isDisabled={formNotReady} />
+      )}
+      title={t('soil.depth_interval.update_modal.title')}
+      body={t('soil.depth_interval.update_modal.body')}
+      actionName={t('soil.depth_interval.update_modal.action')}
+      handleConfirm={() => handleSubmit()}
+    />
+  );
+};
+
 type AddButtonProps = {
   action: () => void;
   isDisabled: boolean;
 };
 
-const AddButton = ({action, isDisabled}: AddButtonProps) => {
+const SaveButton = ({action, isDisabled}: AddButtonProps) => {
   const {t} = useTranslation();
 
   return (
-    <Button size="lg" mx="auto" onPress={action} isDisabled={isDisabled}>
-      {t('general.add')}
+    <Button
+      flex={1}
+      size="lg"
+      mx="auto"
+      onPress={action}
+      isDisabled={isDisabled}
+      _text={{textTransform: 'uppercase'}}>
+      {t('general.save')}
     </Button>
   );
 };

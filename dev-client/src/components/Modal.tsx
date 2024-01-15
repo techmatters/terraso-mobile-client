@@ -47,7 +47,17 @@ export type Props = React.PropsWithChildren<{
 }>;
 
 export const Modal = forwardRef<ModalHandle, Props>(
-  ({children, trigger, closeHook, CloseButton, _content}, forwardedRef) => {
+  (
+    {
+      children,
+      trigger,
+      closeHook,
+      CloseButton,
+      _content,
+      displayContents = true,
+    },
+    forwardedRef,
+  ) => {
     const {isOpen, onOpen, onClose} = useDisclose();
     const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
     if (CloseButton === undefined) {
@@ -69,7 +79,7 @@ export const Modal = forwardRef<ModalHandle, Props>(
             {trigger(handle.onOpen)}
           </Pressable>
         )}
-        <NativeBaseModal isOpen={isOpen} onClose={onClose}>
+        <NativeBaseModal isOpen={isOpen && displayContents} onClose={onClose}>
           <KeyboardAvoidingView
             style={styles.nativeBaseModalChild}
             behavior="padding"

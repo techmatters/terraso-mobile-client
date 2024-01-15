@@ -43,7 +43,9 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
             interval => start >= interval.start && start < interval.end,
           )
         ) {
-          return createError({message: 'overlap'});
+          return createError({
+            message: t('soil.depth_interval.error.overlaps'),
+          });
         }
         return true;
       }),
@@ -57,9 +59,13 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
             interval => end > interval.start && end <= interval.end,
           )
         ) {
-          return createError({message: 'overlap'});
+          return createError({
+            message: t('soil.depth_interval.error.overlaps'),
+          });
         } else if (parent.start >= end) {
-          return createError({message: 'ordering'});
+          return createError({
+            message: t('soil.depth_interval.error.ordering'),
+          });
         }
         return true;
       }),
