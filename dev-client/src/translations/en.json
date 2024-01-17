@@ -425,6 +425,11 @@
       "photos": "Photos",
       "notes": "Notes"
     },
+    "data": {
+      "rockFragmentVolume": "Rock fragment",
+      "texture": "Texture",
+      "colorValue": "Color"
+    },
     "depth_interval": {
       "add_title": "Add depth interval",
       "edit_title": "Depth Interval",

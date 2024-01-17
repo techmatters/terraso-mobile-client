@@ -15,15 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Column, Heading, Row} from 'native-base';
+import {Box, Button, Column, Heading, Row, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/Icons';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Modal} from 'terraso-mobile-client/components/Modal';
-import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
-import {EditIntervalModalContent} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModalContent';
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
@@ -34,6 +32,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SoilSurfaceStatus} from './components/SoilSurfaceStatus';
+import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -66,11 +65,8 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   }, [projectDepthIntervals, soilDataDepthIntervals]);
 
   const allIntervals = useMemo(
-    () =>
-      projectDepthIntervals
-        .concat(validSoilDataDepthIntervals)
-        .sort((a, b) => a.depthInterval.start - b.depthInterval.start),
-    [projectDepthIntervals, validSoilDataDepthIntervals],
+    () => soilData?.depthIntervals ?? [],
+    [soilData],
   );
 
   const existingIntervals = useMemo(
@@ -88,94 +84,60 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
 
   return (
     <BottomSheetModalProvider>
-      <Column backgroundColor="grey.300">
-        <SoilSurfaceStatus
-          required={project ? project.verticalCrackingRequired : true}
-          complete={Boolean(soilData?.surfaceCracksSelect)}
-          siteId={siteId}
-        />
-        <Box height="16px" />
-        <Row backgroundColor="background.default" px="16px" py="12px">
-          <Heading variant="h6">{t('soil.pit')}</Heading>
-        </Row>
-        {allIntervals.map(interval => (
-          <DepthIntervalEditor
-            key={`${interval.depthInterval.start}:${interval.depthInterval.end}`}
+      <ScrollView>
+        <Column backgroundColor="grey.300">
+          <SoilSurfaceStatus
+            required={project ? project.verticalCrackingRequired : true}
+            complete={Boolean(soilData?.surfaceCracksSelect)}
             siteId={siteId}
-            interval={interval}
-            requiredInputs={projectRequiredInputs}
           />
-        ))}
-        <RestrictBySiteRole
-          role={[
-            {kind: 'project', role: 'manager'},
-            {kind: 'project', role: 'contributor'},
-            {kind: 'site', role: 'owner'},
-          ]}>
-          <Modal
-            trigger={onOpen => (
-              <Button
-                size="lg"
-                variant="fullWidth"
-                backgroundColor="primary.dark"
-                justifyContent="start"
-                _text={{
-                  color: 'primary.contrast',
-                }}
-                _icon={{
-                  color: 'primary.contrast',
-                }}
-                width="full"
-                borderRadius="0px"
-                leftIcon={<Icon name="add" />}
-                onPress={onOpen}>
-                {t('soil.add_depth_label')}
-              </Button>
-            )}>
-            <AddIntervalModal
-              onSubmit={onAddDepthInterval}
-              existingIntervals={existingIntervals}
+          <Box height="16px" />
+          <Row backgroundColor="background.default" px="16px" py="12px">
+            <Heading variant="h6">{t('soil.pit')}</Heading>
+          </Row>
+          {allIntervals.map(interval => (
+            <SoilDepthIntervalSummary
+              key={`${interval.depthInterval.start}:${interval.depthInterval.end}`}
+              siteId={siteId}
+              interval={interval}
+              requiredInputs={projectRequiredInputs}
+              data={undefined}
             />
-          </Modal>
-        </RestrictBySiteRole>
-      </Column>
+          ))}
+          <RestrictBySiteRole
+            role={[
+              {kind: 'project', role: 'manager'},
+              {kind: 'project', role: 'contributor'},
+              {kind: 'site', role: 'owner'},
+            ]}>
+            <Modal
+              trigger={onOpen => (
+                <Button
+                  size="lg"
+                  variant="fullWidth"
+                  backgroundColor="primary.dark"
+                  justifyContent="start"
+                  _text={{
+                    color: 'primary.contrast',
+                  }}
+                  _icon={{
+                    color: 'primary.contrast',
+                  }}
+                  width="full"
+                  borderRadius="0px"
+                  leftIcon={<Icon name="add" />}
+                  onPress={onOpen}>
+                  {t('soil.add_depth_label')}
+                </Button>
+              )}>
+              <AddIntervalModal
+                onSubmit={onAddDepthInterval}
+                existingIntervals={existingIntervals}
+              />
+            </Modal>
+          </RestrictBySiteRole>
+        </Column>
+      </ScrollView>
     </BottomSheetModalProvider>
-  );
-};
-
-const DepthIntervalEditor = ({
-  siteId,
-  interval: {label, depthInterval},
-  requiredInputs,
-}: {
-  siteId: string;
-  interval: LabelledDepthInterval;
-  requiredInputs: string[];
-}) => {
-  return (
-    <Row
-      backgroundColor="primary.dark"
-      justifyContent="space-between"
-      px="12px"
-      py="8px">
-      <Heading variant="h6" color="primary.contrast">
-        {label && `${label}: `}
-        {`${depthInterval.start}-${depthInterval.end} cm`}
-      </Heading>
-      <BottomSheetModal
-        trigger={onOpen => (
-          <IconButton
-            name="more-vert"
-            _icon={{color: 'primary.contrast'}}
-            onPress={onOpen}
-          />
-        )}>
-        <EditIntervalModalContent
-          siteId={siteId}
-          depthInterval={depthInterval}
-          requiredInputs={requiredInputs}
-        />
-      </BottomSheetModal>
-    </Row>
   );
 };
