@@ -25,6 +25,7 @@ import {
   SoilDataDepthInterval,
   SoilPitMethod,
   updateSoilDataDepthInterval,
+  deleteSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 import {useMemo, useCallback, FormEvent, useEffect, useState} from 'react';
@@ -150,6 +151,16 @@ export const EditIntervalModalContent = ({
     [schema, dispatch, onClose, siteId, currentInterval],
   );
 
+  const deleteInterval = useCallback(() => {
+    dispatch(
+      deleteSoilDataDepthInterval({
+        siteId,
+        depthInterval: currentInterval.depthInterval,
+      }),
+    );
+    onClose();
+  }, [dispatch, currentInterval, siteId]);
+
   const userRole = useSiteRoleContext();
 
   const editingAllowed = useMemo(() => {
@@ -210,7 +221,8 @@ export const EditIntervalModalContent = ({
               <Button
                 leftIcon={<Icon name="delete" color="error.main" />}
                 _text={{textTransform: 'uppercase', color: 'error.main'}}
-                variant="link">
+                variant="link"
+                onPress={deleteInterval}>
                 {t('soil.depth_interval.delete_depth')}
               </Button>
               <ConfirmEditingModal

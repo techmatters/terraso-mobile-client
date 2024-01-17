@@ -22,10 +22,11 @@ import {Icon} from 'terraso-mobile-client/components/Icons';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Modal} from 'terraso-mobile-client/components/Modal';
-import {useMemo, useCallback} from 'react';
+import {useMemo, useCallback, useEffect} from 'react';
 import {
   LabelledDepthInterval,
   SoilData,
+  fetchSoilDataForUser,
   methodRequired,
   soilPitMethods,
   updateSoilDataDepthInterval,
@@ -44,25 +45,9 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     return projectId ? state.soilId.projectSettings[projectId] : undefined;
   });
 
-  const projectDepthIntervals = useMemo(() => {
-    return project?.depthIntervals ?? [];
-  }, [project]);
-
   const projectRequiredInputs = useMemo(() => {
     return soilPitMethods.filter(m => (project ?? {})[methodRequired(m)]);
   }, [project]);
-
-  const soilDataDepthIntervals = useMemo(() => {
-    return soilData?.depthIntervals ?? [];
-  }, [soilData]);
-
-  const validSoilDataDepthIntervals = useMemo(() => {
-    return soilDataDepthIntervals.filter(({depthInterval: a}) =>
-      projectDepthIntervals.every(
-        ({depthInterval: b}) => a.end <= b.start || a.start >= b.end,
-      ),
-    );
-  }, [projectDepthIntervals, soilDataDepthIntervals]);
 
   const allIntervals = useMemo(
     () => soilData?.depthIntervals ?? [],
@@ -73,7 +58,18 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     () => allIntervals.map(interval => interval.depthInterval),
     [allIntervals],
   );
+
   const dispatch = useDispatch();
+
+  const currentUserID = useSelector(
+    state => state.account.currentUser?.data?.id,
+  );
+
+  useEffect(() => {
+    if (currentUserID !== undefined) {
+      dispatch(fetchSoilDataForUser(currentUserID));
+    }
+  }, [currentUserID, dispatch]);
 
   const onAddDepthInterval = useCallback(
     async (interval: LabelledDepthInterval) => {
