@@ -329,7 +329,9 @@
       "privacy_policy_link_text": "LandPKS Privacy Policy"
     },
     "required": "required",
-    "open_settings": "Open Settings"
+    "open_settings": "Open Settings",
+    "yes": "Yes",
+    "no": "No"
   },
   "errors": {
     "soilId": "Error saving soil ID information."
@@ -413,6 +415,7 @@
     "collection_method": {
       "slope": "Slope and Landscape",
       "soilTexture": "Texture",
+      "rockFragmentVolume": "Rock Fragment",
       "soilColor": "Color",
       "verticalCracking": "Vertical Cracks",
       "carbonates": "Carbonates",
@@ -441,6 +444,56 @@
         "action": "Change"
       },
       "bounds": "{{depthInterval.start}}-{{depthInterval.end}}{{units}}"
+    },
+    "texture": {
+      "title": "Soil Texture",
+      "label": "Texture",
+      "guide": {
+        "title": "Texture Guide",
+        "ball_help": "Does the soil form a ball?",
+        "ribbon_help": "Does the soil form a ribbon?",
+        "ribbon_length_help": "How long is the ribbon?",
+        "grittyness_help": "How gritty is the soil?",
+        "result": "Soil Texture: {{result}}",
+        "use_label": "Use This Texture",
+        "ribbon_length": {
+          "SM": "<2.5cm",
+          "MD": "2.5-5cm",
+          "LG": ">5cm"
+        },
+        "grittyness": {
+          "GRITTY": "Gritty",
+          "NEITHER": "Not gritty or smooth",
+          "SMOOTH": "Smooth"
+        }
+      },
+      "guide_intro": "Don’t know your soil texture? Use the step-by-step guide.",
+      "use_guide_label": "Use Guide",
+      "clay_title": "Percent Clay",
+      "clay_label": "Percent clay",
+      "clay_help": "0-100%",
+      "fragment_title": "Rock Fragment Volume",
+      "class": {
+        "CLAY": "Clay",
+        "CLAY_LOAM": "Clay Loam",
+        "LOAM": "Loam",
+        "LOAMY_SAND": "Loamy Sand",
+        "SAND": "Sand",
+        "SANDY_CLAY": "Sandy Clay",
+        "SANDY_CLAY_LOAM": "Sandy Clay Loam",
+        "SANDY_LOAM": "Sandy Loam",
+        "SILT": "Silt",
+        "SILTY_CLAY": "Silty Clay",
+        "SILTY_CLAY_LOAM": "Silty Clay Loam",
+        "SILT_LOAM": "Silt Loam"
+      },
+      "rockFragment": {
+        "VOLUME_0_1": "0-1%",
+        "VOLUME_1_15": "1-15%",
+        "VOLUME_15_35": "15-35%",
+        "VOLUME_35_60": "35-60%",
+        "VOLUME_60": ">60%"
+      }
     }
   },
   "slope": {

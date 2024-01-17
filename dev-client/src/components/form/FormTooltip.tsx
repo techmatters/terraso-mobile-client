@@ -29,8 +29,8 @@ export const FormTooltip = memo(({icon, children}: TooltipProps) => {
       trigger={props => (
         <IconButton
           {...props}
-          ml="8px"
-          _icon={{color: 'action.active_subtle'}}
+          ml="6px"
+          _icon={{color: 'action.active_subtle', size: 'sm'}}
           size="xs"
           name={icon}
         />
