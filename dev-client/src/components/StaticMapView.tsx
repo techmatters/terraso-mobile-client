@@ -16,7 +16,7 @@
  */
 
 import Mapbox from '@rnmapbox/maps';
-import {PixelRatio, Platform, StyleProp, ViewStyle} from 'react-native';
+import {StyleProp, ViewStyle} from 'react-native';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {Position} from '@rnmapbox/maps/lib/typescript/src/types/Position';
@@ -86,9 +86,6 @@ export const positionToCoords = ([longitude, latitude]: Position): Coords => ({
   latitude,
   longitude,
 });
-
-export const mapIconSizeForPlatform = (size: number) =>
-  Math.round(size * Platform.select({android: PixelRatio.get(), default: 1}));
 
 const defaultAnchor = {x: 0.5, y: 0};
 

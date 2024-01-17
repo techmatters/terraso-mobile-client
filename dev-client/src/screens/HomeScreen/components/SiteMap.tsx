@@ -28,14 +28,11 @@ import {
 } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useTheme} from 'native-base';
-import {Keyboard, PixelRatio, Platform, StyleSheet} from 'react-native';
+import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {CameraRef} from '@rnmapbox/maps/lib/typescript/src/components/Camera';
 import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
-import {
-  mapIconSizeForPlatform,
-  positionToCoords,
-} from 'terraso-mobile-client/components/StaticMapView';
+import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {siteFeatureCollection} from 'terraso-mobile-client/screens/HomeScreen/utils/siteFeatureCollection';
 import {repositionCamera} from 'terraso-mobile-client/screens/HomeScreen/utils/repositionCamera';
 import {SiteMapCallout} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMapCallout';
@@ -222,17 +219,17 @@ const SiteMap = (
     () => ({
       sitePin: Icon.getImageSourceSync(
         'location-on',
-        mapIconSizeForPlatform(35),
+        35,
         colors.secondary.main,
       ),
       selectedSitePin: Icon.getImageSourceSync(
         'location-on',
-        mapIconSizeForPlatform(64),
+        64,
         colors.secondary.main,
       ),
       temporarySitePin: Icon.getImageSourceSync(
         'location-on',
-        mapIconSizeForPlatform(35),
+        35,
         colors.action.active,
       ),
     }),
@@ -252,8 +249,7 @@ const SiteMap = (
         iconImage: 'selectedSitePin',
       } satisfies Mapbox.SymbolLayerStyle,
       siteClusterCircleLayer: {
-        circleRadius:
-          35 / Platform.select({android: PixelRatio.get(), default: 1}),
+        circleRadius: 35 / PixelRatio.get(),
         circleColor: colors.secondary.main,
       } satisfies Mapbox.CircleLayerStyle,
       siteClusterTextLayer: {
