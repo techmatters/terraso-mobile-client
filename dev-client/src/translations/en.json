@@ -298,8 +298,8 @@
       "manager": "Manager"
     },
     "measurement_units": {
-      "metric": "Metric",
-      "english": "English"
+      "METRIC": "Metric",
+      "ENGLISH": "English"
     },
     "cancel": "Cancel",
     "add": "Add",
