@@ -147,7 +147,7 @@
       "units": {
         "heading": "Units of Measurement",
         "a11yLabel": "measurement units",
-        "imperial": "Imperial (in, ft, lb)",
+        "english": "English (in, ft, lb)",
         "metric": "Metric (cm, m , kg)"
       },
       "soil_source": {
@@ -298,8 +298,8 @@
       "manager": "Manager"
     },
     "measurement_units": {
-      "METRIC": "Metric",
-      "IMPERIAL": "Imperial"
+      "metric": "Metric",
+      "english": "English"
     },
     "cancel": "Cancel",
     "add": "Add",
