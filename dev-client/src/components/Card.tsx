@@ -53,12 +53,10 @@ export const Card = ({
   ...boxProps
 }: Props) => {
   return (
+    // TODO(performance): Should be investigated in terms of performance as it's what's being
+    // renedered in the very non-performant FlatList in the HomeScreen's BottomSheet
     <Pressable onPress={onPress}>
-      <Box
-        variant="card"
-        marginTop={isPopover ? '15px' : '0px'}
-        shadow={isPopover ? 9 : undefined}
-        {...boxProps}>
+      <Box variant="card" marginTop={'0px'} shadow={undefined} {...boxProps}>
         {isPopover && <CardTriangle />}
         {children}
         {buttons}

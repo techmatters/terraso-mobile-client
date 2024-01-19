@@ -68,9 +68,15 @@ export const CreateSiteView = ({
         ...parseCoords(coords),
       });
       if (createdSite !== undefined) {
-        navigation.replace('HOME', {
-          site: createdSite,
-        });
+        navigation.pop();
+
+        // TODO(performance): This is a big no-no as it creates a new HomeScreen
+        // and adds it to the Stack every time the user creates a new site,
+        // progressively taking up more and more RAM and choking up the app.
+        // (Relates to https://github.com/techmatters/terraso-mobile-client/pull/698)
+        // navigation.replace('HOME', {
+        //   site: createdSite,
+        // });
       }
     },
     [createSiteCallback, navigation, validationSchema],

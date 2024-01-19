@@ -16,20 +16,49 @@
  */
 
 import {Box, FlatList, Text} from 'native-base';
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {ProjectPreviewCard} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectPreviewCard';
 
+// TODO(performance):
+// Some relevant reading: https://reactnative.dev/docs/optimizing-flatlist-configuration#windowsize
+const WINDOW_SIZE = 6; // Default is 21, bringing it down as the items in this FlatList are very costly to render
+const MAX_TO_RENDER_PER_BATCH = 5; // Similar as above, default is 10
+// const ITEM_HEIGHT = ??
+const SEPARATOR_HEIGHT = 8;
+
+type RenderItemProps = {
+  item: Project;
+};
+
 export const ProjectList = () => {
   const {t} = useTranslation();
   const {filteredItems} = useListFilter<Project>();
+
+  const renderItem = useCallback(
+    ({item}: RenderItemProps) => <ProjectPreviewCard project={item} />,
+    [],
+  );
+
+  // TODO(performance): Consider adjusting ProjectPreviewCard with the design team
+  // to always have a fixed height so you can leverage getItemLayout (example below):
+  // const getItemLayout = useCallback((_: any, index: number) => {
+  //   const length = ITEM_HEIGHT + SEPARATOR_HEIGHT;
+  //   const offset = length * index;
+  //   return {length, offset, index};
+  // }, []);
+
   return (
     <FlatList
       data={filteredItems}
-      renderItem={({item}) => <ProjectPreviewCard project={item} />}
-      ItemSeparatorComponent={() => <Box h="8px" />}
+      renderItem={renderItem}
+      windowSize={WINDOW_SIZE}
+      maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
+      // getItemLayout={getItemLayout}
+      ItemSeparatorComponent={() => <Box h={`${SEPARATOR_HEIGHT}px`} />}
       keyExtractor={project => project.id}
       ListEmptyComponent={<Text>{t('projects.search.no_matches')}</Text>}
     />

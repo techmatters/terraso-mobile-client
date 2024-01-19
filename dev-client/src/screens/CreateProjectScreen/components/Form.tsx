@@ -24,7 +24,7 @@ import {
   TextArea,
   VStack,
 } from 'native-base';
-import {Formik, useFormikContext} from 'formik';
+import {Formik} from 'formik';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
@@ -130,6 +130,7 @@ export const EditForm = ({
   submitProps,
 }: Omit<FormProps, 'privacy'>) => {
   const {t} = useTranslation();
+
   return (
     <Formik<Omit<ProjectUpdateMutationInput, 'id'>>
       validationSchema={editProjectValidationSchema(t)}
@@ -163,12 +164,17 @@ export const EditForm = ({
   );
 };
 
-export default function Form({editForm = false, onInfoPress}: Props) {
+// TODO(performance): Adjust types
+export default function Form({
+  editForm = false,
+  onInfoPress,
+  handleChange,
+  handleBlur,
+  privacy,
+}: Props) {
   const {t} = useTranslation();
-  const {handleChange, handleBlur, values} =
-    useFormikContext<ProjectFormValues>();
+
   const inputParams = (field: keyof ProjectFormValues) => ({
-    value: values[field],
     onChangeText: handleChange(field),
     onBlur: handleBlur(field),
   });
@@ -183,7 +189,13 @@ export default function Form({editForm = false, onInfoPress}: Props) {
     <VStack space={3}>
       {EditHeader}
       <FormLabel>{t('projects.create.name_label')}</FormLabel>
-      <Input placeholder={t('projects.add.name')} {...inputParams('name')} />
+      <Input
+        placeholder={t('projects.add.name')}
+        defaultValue=""
+        autoCorrect={false}
+        scrollEnabled={false}
+        {...inputParams('name')}
+      />
       <ErrorMessage fieldName="name" />
 
       <FormLabel>{t('projects.create.description_label')}</FormLabel>
@@ -192,6 +204,7 @@ export default function Form({editForm = false, onInfoPress}: Props) {
         numberOfLines={3}
         fontSize={16}
         autoCompleteType="off"
+        autoCorrect={false}
         {...inputParams('description')}
       />
       <ErrorMessage fieldName="description" />
@@ -211,7 +224,7 @@ export default function Form({editForm = false, onInfoPress}: Props) {
           PRIVATE: {text: t('projects.create.private')},
         }}
         groupProps={{
-          value: values.privacy,
+          value: privacy, // TODO(performance): Investigate whether this input _really_ has to be controlled
           variant: 'oneLine',
           onChange: handleChange('privacy'),
           name: 'data-privacy',

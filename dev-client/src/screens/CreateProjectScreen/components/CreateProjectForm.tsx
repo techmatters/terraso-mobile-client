@@ -25,7 +25,7 @@ import {useDispatch} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
-import {useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
 
 type Props = {
@@ -60,25 +60,56 @@ export const CreateProjectForm = ({onInfoPress}: Props) => {
         description: '',
         privacy: 'PRIVATE',
       }}>
-      {({isSubmitting, handleSubmit}) => (
-        <KeyboardAvoidingView flex={1}>
-          <ScrollView bg="background.default">
-            <Box pt="20%" mx={5}>
-              <Form onInfoPress={onInfoPress} />
-            </Box>
-          </ScrollView>
-          <Box position="absolute" bottom={8} right={3} p={3}>
-            <Button
-              onPress={() => handleSubmit()}
-              disabled={isSubmitting}
-              shadow={5}
-              size={'lg'}
-              _text={{textTransform: 'uppercase'}}>
-              {t('general.save_fab')}
-            </Button>
-          </Box>
-        </KeyboardAvoidingView>
+      {({isSubmitting, handleSubmit, handleChange, handleBlur, values}) => (
+        <FormContainer
+          isSubmitting={isSubmitting}
+          handleSubmit={handleSubmit}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+          onInfoPress={onInfoPress}
+          privacy={values.privacy}
+        />
       )}
     </Formik>
   );
 };
+
+// TODO(performance): Adjust types, think about simplifying the structure here a little bit
+// and/or extracting this component to a separate file
+const FormContainer = React.memo(
+  ({
+    isSubmitting,
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    onInfoPress,
+    privacy,
+  }) => {
+    const {t} = useTranslation();
+
+    return (
+      <KeyboardAvoidingView flex={1}>
+        <ScrollView bg="background.default">
+          <Box pt="20%" mx={5}>
+            <Form
+              onInfoPress={onInfoPress}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              privacy={privacy}
+            />
+          </Box>
+        </ScrollView>
+        <Box position="absolute" bottom={8} right={3} p={3}>
+          <Button
+            onPress={handleSubmit}
+            disabled={isSubmitting}
+            shadow={5}
+            size={'lg'}
+            _text={{textTransform: 'uppercase'}}>
+            {t('general.save_fab')}
+          </Button>
+        </Box>
+      </KeyboardAvoidingView>
+    );
+  },
+);
