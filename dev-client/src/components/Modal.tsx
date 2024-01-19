@@ -24,7 +24,7 @@ import {
   useMemo,
 } from 'react';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
-import {Pressable, StyleSheet} from 'react-native';
+import {View, Pressable, StyleSheet, Modal as RNModal} from 'react-native';
 import {useDisclose, Modal as NativeBaseModal} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 
@@ -69,22 +69,37 @@ export const Modal = forwardRef<ModalHandle, Props>(
             {trigger(handle.onOpen)}
           </Pressable>
         )}
-        <NativeBaseModal isOpen={isOpen} onClose={onClose}>
+        {/* // TODO(performance): Fixme
+        This component adds a significant number of elements to the render tree
+        even when it's not visible - replacing it with a regular RN Modal for now because of that,
+        although that partly breaks the functionality and looks different than the original
+
+         */}
+        {/* <NativeBaseModal isOpen={isOpen} onClose={onClose}> */}
+        <RNModal
+          visible={isOpen}
+          presentationStyle="pageSheet"
+          animationType="slide"
+          onDismiss={onClose}
+          onRequestClose={onClose}>
           <KeyboardAvoidingView
             style={styles.nativeBaseModalChild}
             behavior="padding"
             keyboardVerticalOffset={100}>
-            <NativeBaseModal.Content
+            {/* <NativeBaseModal.Content
               borderRadius="24px"
               padding="18px"
-              {..._content}>
+              {..._content}> */}
+            <View style={styles.modalContainer}>
               <ModalContext.Provider value={handle}>
                 {children}
               </ModalContext.Provider>
               {CloseButton}
-            </NativeBaseModal.Content>
+            </View>
+            {/* </NativeBaseModal.Content> */}
           </KeyboardAvoidingView>
-        </NativeBaseModal>
+        </RNModal>
+        {/* </NativeBaseModal> */}
       </>
     );
   },
@@ -94,5 +109,11 @@ const styles = StyleSheet.create({
   nativeBaseModalChild: {
     width: '100%',
     alignItems: 'center',
+  },
+  modalContainer: {
+    // TODO(performance): Adjust styles
+    backgroundColor: 'white',
+    padding: 18,
+    borderRadius: 24,
   },
 });

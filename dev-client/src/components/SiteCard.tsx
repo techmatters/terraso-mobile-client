@@ -17,7 +17,7 @@
 
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Box, Heading, Text, Badge, Row} from 'native-base';
-import {useCallback} from 'react';
+import React, {useCallback} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
@@ -36,12 +36,7 @@ type Props = {
   isPopover?: boolean;
 };
 
-export const SiteCard = ({
-  site,
-  onShowSiteOnMap,
-  buttons,
-  isPopover,
-}: Props) => {
+const SiteCard = ({site, onShowSiteOnMap, buttons, isPopover}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state =>
@@ -97,5 +92,11 @@ export const SiteCard = ({
     </Card>
   );
 };
+
+// TODO(performance): Check whether it would be beneficial to memoize this component
+// const SiteCardMemoized = React.memo(SiteCard);
+// export {SiteCardMemoized};
+
+export {SiteCard};
 
 const styles = StyleSheet.create({mapView: {height: 60, width: 60}});

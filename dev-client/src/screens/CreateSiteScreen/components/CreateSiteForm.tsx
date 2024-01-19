@@ -88,6 +88,14 @@ export const CreateSiteForm = ({
         <VStack p="16px" pt="30px" space="18px">
           <FormField name="name">
             <FormLabel>{t('site.create.name_label')}</FormLabel>
+
+            {/* TODO(performance):
+            1. All text inputs should be adjusted into uncontrolled components
+               - https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components
+               - https://github.com/facebook/react-native/issues/20119
+            2. The code should be rewritten/reorganized/memoized so that a change to a text input's value doesn't
+            trigger a re-render of the whole Form/Component (chokes the JS thread and results in terrible frame drops)
+            */}
             <FormInput placeholder={t('site.create.name_placeholder')} />
           </FormField>
           <FormField name="coords">

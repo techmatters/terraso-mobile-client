@@ -31,6 +31,12 @@ import {SiteFilterModal} from 'terraso-mobile-client/screens/HomeScreen/componen
 import {getStartingSnapValue} from 'terraso-mobile-client/screens/HomeScreen/utils/getStartingSnapValue';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 
+// TODO(performance): Same as in ProjectList.tsx
+const WINDOW_SIZE = 3;
+const MAX_TO_RENDER_PER_BATCH = 3;
+// const ITEM_HEIGHT = ??
+const SEPARATOR_HEIGHT = 8;
+
 type Props = {
   sites: Site[];
   showSiteOnMap: (site: Site) => void;
@@ -77,6 +83,13 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
 
     const useDistance = useMemo(() => siteDistances !== null, [siteDistances]);
 
+    // TODO(performance): Same as in ProjectList.tsx
+    // const getItemLayout = useCallback((_: any, index: number) => {
+    //   const itemHeight = ITEM_HEIGHT + SEPARATOR_HEIGHT;
+    //   const offset = itemHeight * index;
+    //   return {length: itemHeight, offset, index};
+    // }, []);
+
     return (
       <BottomSheet
         ref={ref}
@@ -98,9 +111,12 @@ export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
           <BottomSheetFlatList
             style={listStyle}
             data={filteredSites}
+            maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
+            windowSize={WINDOW_SIZE}
+            // getItemLayout={getItemLayout}
             keyExtractor={site => site.id}
             renderItem={renderSite}
-            ItemSeparatorComponent={() => <Box h="8px" />}
+            ItemSeparatorComponent={() => <Box h={`${SEPARATOR_HEIGHT}px`} />}
             ListFooterComponent={<Box h="10px" />}
             ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
           />
