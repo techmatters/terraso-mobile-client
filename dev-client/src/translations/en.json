@@ -89,7 +89,7 @@
       "edit_title": "Site Note",
       "note_attribution": "{{createdAt}} by {{name}}",
       "confirm_removal_title": "Delete note?",
-      "confirm_removal_body": "Are you sure you want to remove this note?",
+      "confirm_removal_body": "This action cannot be undone.",
       "min_length_error": "Must be at least {{min}} characters",
       "placeholder_text": "Start typing your note…",
       "projectInstructions": "Site Instructions"
