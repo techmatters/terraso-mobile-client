@@ -51,7 +51,7 @@
     "expo": "^49.0.0",
     "expo-screen-orientation": "^6.0.6",
     "expo-sensors": "^12.3.0",
-    "expo-camera": "^13.4.4"
+    "expo-camera": "^14.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.23.6",
