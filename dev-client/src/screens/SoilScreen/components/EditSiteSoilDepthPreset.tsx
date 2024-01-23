@@ -2,6 +2,7 @@ import {Button, Column, Heading, Text} from 'native-base';
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+import {useModal} from 'terraso-mobile-client/components/Modal';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 
 type Props = {
@@ -11,6 +12,8 @@ type Props = {
 
 export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
   const {t} = useTranslation();
+  const modalHandle = useModal();
+  const onClose = modalHandle ? modalHandle.onClose : () => {};
   const [selectedPreset, updateSelectedPreset] = useState(selected);
   return (
     <Column space="3px" px="18px" pt="18px" pb="23px">
@@ -34,7 +37,10 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
         }}
       />
       <Button
-        onPress={() => updateChoice(selectedPreset)}
+        onPress={() => {
+          updateChoice(selectedPreset);
+          onClose();
+        }}
         _text={{textTransform: 'uppercase'}}
         alignSelf="flex-end">
         {t('general.save')}

@@ -57,8 +57,6 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     selectSoilDataIntervals(state, siteId),
   );
 
-  useEffect(() => console.debug(allIntervals), [allIntervals]);
-
   const existingIntervals = useMemo(
     () => allIntervals.map(({interval: {depthInterval}}) => depthInterval),
     [allIntervals],
