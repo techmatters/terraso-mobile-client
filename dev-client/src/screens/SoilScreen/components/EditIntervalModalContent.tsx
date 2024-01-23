@@ -239,7 +239,7 @@ export const EditIntervalModalContent = ({
             label={t('soil.depth_interval.apply_to_all_label')}
           />
 
-          {editingAllowed && mutable ? (
+          {editingAllowed ? (
             <Row justifyContent="space-between" px="15px" pb="15px">
               <Button
                 leftIcon={<Icon name="delete" color="error.main" />}
