@@ -430,6 +430,14 @@
       "texture": "Texture",
       "colorValue": "Color"
     },
+    "soil_preset": {
+      "header": "Change soil pit depths",
+      "info": "Data already entered for a depth will be deleted when the depth interval is changed.",
+      "label": "Depth Intervals",
+      "LANDPKS": "Landpks (default)",
+      "NRCS": "NRCS",
+      "CUSTOM": "Custom"
+    },
     "depth_interval": {
       "add_title": "Add depth interval",
       "edit_title": "Depth Interval",

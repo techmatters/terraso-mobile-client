@@ -47,6 +47,7 @@ import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext'
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/Icons';
+import {selectSoilDataIntervals} from 'terraso-client-shared/selectors';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -57,34 +58,45 @@ type Props = {
   siteId: string;
   depthInterval: DepthInterval;
   requiredInputs: string[];
+  mutable: boolean;
 };
 
 export const EditIntervalModalContent = ({
   siteId,
   depthInterval,
   requiredInputs,
+  mutable,
 }: Props) => {
   const {t} = useTranslation();
   const soilData = useSelector(state => state.soilId.soilData[siteId]);
   const dispatch = useDispatch();
   const onClose = useModal()!.onClose;
 
+  const aggregatedIntervals = useSelector(state =>
+    selectSoilDataIntervals(state, siteId),
+  );
+
+  const soilIntervals = useMemo(
+    () => aggregatedIntervals.map(({interval}) => interval),
+    [aggregatedIntervals],
+  );
+
   const interval = useMemo(() => {
-    return soilData.depthIntervals.find(sameDepth({depthInterval}))!;
+    return soilIntervals.find(sameDepth({depthInterval}))!;
   }, [soilData.depthIntervals, depthInterval]);
 
-  const [currentInterval] = useState<SoilDataDepthInterval>(interval);
+  const [currentInterval] = useState(interval);
 
   const existingIntervals = useMemo(
     () =>
-      soilData.depthIntervals
+      soilIntervals
         .map(interval => interval.depthInterval)
         .filter(
           ({start, end}) =>
             start !== currentInterval.depthInterval.start ||
             end !== currentInterval.depthInterval.end,
         ),
-    [soilData.depthIntervals],
+    [soilIntervals],
   );
 
   const requiredInputsSet = useMemo(
@@ -142,9 +154,10 @@ export const EditIntervalModalContent = ({
         ...enabledInputs,
         depthInterval: {start, end},
       };
-      if (newStart !== start || newEnd !== end) {
-        input.newDepthInterval = {start: newStart, end: newEnd};
-      }
+      // TODO: Instead delete interval and create new one!
+      // if (newStart !== start || newEnd !== end) {
+      //  input.newDepthInterval = {start: newStart, end: newEnd};
+      // }
       await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
@@ -183,7 +196,7 @@ export const EditIntervalModalContent = ({
     <Formik
       validationSchema={schema}
       initialValues={{
-        ...currentInterval,
+        ...{...currentInterval, ...{label: currentInterval.label || ''}},
         start: String(currentInterval.depthInterval.start),
         end: String(currentInterval.depthInterval.end),
         applyToAll: false,
@@ -193,7 +206,10 @@ export const EditIntervalModalContent = ({
         <>
           <Heading variant="h6">{t('soil.depth_interval.edit_title')}</Heading>
           <Box height="20px" />
-          <IntervalForm />
+          <IntervalForm
+            displayLabel={'label' in currentInterval}
+            editable={mutable}
+          />
 
           <Box height="50px" />
           <Heading variant="h6">
@@ -216,7 +232,7 @@ export const EditIntervalModalContent = ({
             label={t('soil.depth_interval.apply_to_all_label')}
           />
 
-          {editingAllowed ? (
+          {editingAllowed && mutable ? (
             <Row justifyContent="space-between" px="15px" pb="15px">
               <Button
                 leftIcon={<Icon name="delete" color="error.main" />}

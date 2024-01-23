@@ -1,8 +1,6 @@
 import {Column, Heading, Row} from 'native-base';
 import {
   DepthDependentSoilData,
-  LabelledDepthInterval,
-  SoilDataDepthInterval,
   soilPitMethods,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
@@ -10,14 +8,15 @@ import {EditIntervalModalContent} from './EditIntervalModalContent';
 import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {useTranslation} from 'react-i18next';
+import {AggregatedInterval} from 'terraso-client-shared/selectors';
 
 const DepthIntervalEditor = ({
   siteId,
-  interval: {label, depthInterval},
+  aggregatedInterval: {mutable, interval},
   requiredInputs,
 }: {
   siteId: string;
-  interval: LabelledDepthInterval;
+  aggregatedInterval: AggregatedInterval;
   requiredInputs: (typeof soilPitMethods)[number][];
 }) => {
   return (
@@ -27,8 +26,8 @@ const DepthIntervalEditor = ({
       px="12px"
       py="8px">
       <Heading variant="h6" color="primary.contrast">
-        {label && `${label}: `}
-        {`${depthInterval.start}-${depthInterval.end} cm`}
+        {interval.label && `${interval.label}: `}
+        {`${interval.depthInterval.start}-${interval.depthInterval.end} cm`}
       </Heading>
       <BottomSheetModal
         trigger={onOpen => (
@@ -40,8 +39,9 @@ const DepthIntervalEditor = ({
         )}>
         <EditIntervalModalContent
           siteId={siteId}
-          depthInterval={depthInterval}
+          depthInterval={interval.depthInterval}
           requiredInputs={requiredInputs}
+          mutable={mutable}
         />
       </BottomSheetModal>
     </Row>
@@ -51,7 +51,7 @@ const DepthIntervalEditor = ({
 type Props = {
   siteId: string;
   requiredInputs: (typeof soilPitMethods)[number][];
-  interval: SoilDataDepthInterval;
+  interval: AggregatedInterval;
   data: DepthDependentSoilData | undefined;
 };
 
@@ -73,7 +73,7 @@ export const SoilDepthIntervalSummary = ({
     <Column>
       <DepthIntervalEditor
         siteId={siteId}
-        interval={interval}
+        aggregatedInterval={interval}
         requiredInputs={requiredInputs}
       />
       {inputs.map(key => (

@@ -18,7 +18,7 @@
 import {Box, Button, Column, Heading, Row, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Modal} from 'terraso-mobile-client/components/Modal';
@@ -26,14 +26,18 @@ import {useMemo, useCallback, useEffect} from 'react';
 import {
   LabelledDepthInterval,
   SoilData,
-  fetchSoilDataForUser,
   methodRequired,
   soilPitMethods,
+  updateSoilData,
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SoilSurfaceStatus} from './components/SoilSurfaceStatus';
 import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
+import {selectSoilDataIntervals} from 'terraso-client-shared/selectors';
+import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {EditSiteSoilDepthPreset} from './components/EditSiteSoilDepthPreset';
+import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -49,33 +53,31 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     return soilPitMethods.filter(m => (project ?? {})[methodRequired(m)]);
   }, [project]);
 
-  const allIntervals = useMemo(
-    () => soilData?.depthIntervals ?? [],
-    [soilData],
+  const allIntervals = useSelector(state =>
+    selectSoilDataIntervals(state, siteId),
   );
 
+  useEffect(() => console.debug(allIntervals), [allIntervals]);
+
   const existingIntervals = useMemo(
-    () => allIntervals.map(interval => interval.depthInterval),
+    () => allIntervals.map(({interval: {depthInterval}}) => depthInterval),
     [allIntervals],
   );
 
   const dispatch = useDispatch();
-
-  const currentUserID = useSelector(
-    state => state.account.currentUser?.data?.id,
-  );
-
-  useEffect(() => {
-    if (currentUserID !== undefined) {
-      dispatch(fetchSoilDataForUser(currentUserID));
-    }
-  }, [currentUserID, dispatch]);
 
   const onAddDepthInterval = useCallback(
     async (interval: LabelledDepthInterval) => {
       await dispatch(updateSoilDataDepthInterval({siteId, ...interval}));
     },
     [siteId, dispatch],
+  );
+
+  const updateSoilDataDepthPreset = useCallback(
+    (newDepthPreset: SoilIdSoilDataDepthIntervalPresetChoices) => {
+      dispatch(updateSoilData({siteId, depthIntervalPreset: newDepthPreset}));
+    },
+    [dispatch, soilData, siteId],
   );
 
   return (
@@ -88,14 +90,34 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
             siteId={siteId}
           />
           <Box height="16px" />
-          <Row backgroundColor="background.default" px="16px" py="12px">
+          <Row
+            backgroundColor="background.default"
+            px="16px"
+            py="12px"
+            justifyContent="space-between">
             <Heading variant="h6">{t('soil.pit')}</Heading>
+            {soilData && !project && (
+              <BottomSheetModal
+                trigger={onOpen => (
+                  <IconButton
+                    name="tune"
+                    _icon={{color: 'action.active'}}
+                    onPress={onOpen}
+                  />
+                )}>
+                <EditSiteSoilDepthPreset
+                  /* LANDPKS is the default here */
+                  selected={soilData.depthIntervalPreset || 'LANDPKS'}
+                  updateChoice={updateSoilDataDepthPreset}
+                />
+              </BottomSheetModal>
+            )}
           </Row>
-          {allIntervals.map(interval => (
+          {allIntervals.map(aggregated => (
             <SoilDepthIntervalSummary
-              key={`${interval.depthInterval.start}:${interval.depthInterval.end}`}
+              key={`${aggregated.interval.depthInterval.start}:${aggregated.interval.depthInterval.end}`}
               siteId={siteId}
-              interval={interval}
+              interval={aggregated}
               requiredInputs={projectRequiredInputs}
               data={undefined}
             />
