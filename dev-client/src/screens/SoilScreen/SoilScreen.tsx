@@ -22,7 +22,7 @@ import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Modal} from 'terraso-mobile-client/components/Modal';
-import {useMemo, useCallback, useEffect} from 'react';
+import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
   SoilData,

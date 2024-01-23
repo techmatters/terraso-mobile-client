@@ -147,10 +147,17 @@ export const EditIntervalModalContent = ({
       const {
         start: newStart,
         end: newEnd,
+        applyToAll,
         ...enabledInputs
       } = schema.cast(values);
+      let applyToIntervals = {};
+      if (applyToAll) {
+        applyToIntervals = {applyToIntervals: existingIntervals};
+      }
+
       const input: SoilDataUpdateDepthIntervalMutationInput = {
         siteId,
+        ...applyToIntervals,
         ...enabledInputs,
         depthInterval: {start, end},
       };
@@ -161,7 +168,7 @@ export const EditIntervalModalContent = ({
       await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
-    [schema, dispatch, onClose, siteId, currentInterval],
+    [schema, dispatch, onClose, siteId, currentInterval, existingIntervals],
   );
 
   const deleteInterval = useCallback(() => {
@@ -221,7 +228,7 @@ export const EditIntervalModalContent = ({
               method={method}
               disabled={!editingAllowed}
               isRequired={isRequired}
-              value={currentInterval[methodEnabled(method)]}
+              value={interval ? interval[methodEnabled(method)] : false}
               updateEnabled={updateSwitch(method)}
               key={method}
             />
@@ -330,9 +337,9 @@ type SwitchProps = {
 const InputFormSwitch = ({
   method,
   isRequired,
-  value,
   updateEnabled,
   disabled,
+  value,
   ...props
 }: SwitchProps) => {
   const {t} = useTranslation();
@@ -348,7 +355,7 @@ const InputFormSwitch = ({
     <FormSwitch
       {...props}
       name={methodEnabled(method)}
-      value={isRequired || value}
+      value={value}
       disabled={isRequired || disabled}
       onChange={updateEnabled}
       label={label}
