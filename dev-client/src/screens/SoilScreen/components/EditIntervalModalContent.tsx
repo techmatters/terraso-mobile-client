@@ -28,7 +28,7 @@ import {
   deleteSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
-import {useMemo, useCallback, FormEvent, useEffect, useState} from 'react';
+import {useMemo, useCallback, FormEvent, useState} from 'react';
 import {
   IntervalForm,
   IntervalFormInput,
@@ -159,12 +159,16 @@ export const EditIntervalModalContent = ({
         siteId,
         ...applyToIntervals,
         ...enabledInputs,
-        depthInterval: {start, end},
+        depthInterval: {start: newStart, end: newEnd},
       };
-      // TODO: Instead delete interval and create new one!
-      // if (newStart !== start || newEnd !== end) {
-      //  input.newDepthInterval = {start: newStart, end: newEnd};
-      // }
+      if (newStart !== start || newEnd !== end) {
+        await dispatch(
+          deleteSoilDataDepthInterval({
+            siteId,
+            depthInterval: {start, end},
+          }),
+        );
+      }
       await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
