@@ -16,7 +16,7 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
   const onClose = modalHandle ? modalHandle.onClose : () => {};
   const [selectedPreset, updateSelectedPreset] = useState(selected);
   return (
-    <Column space="3px" px="18px" pt="18px" pb="23px">
+    <Column space="1px" px="18px" pt="18px" pb="23px">
       <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
       <Text variant="body1">{t('soil.soil_preset.info')}</Text>
       <RadioBlock
@@ -37,6 +37,7 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
         }}
       />
       <Button
+        size="lg"
         onPress={() => {
           updateChoice(selectedPreset);
           onClose();

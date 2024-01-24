@@ -65,7 +65,11 @@ export const FormFieldWrapper = memo(
       </>
     );
     return name !== undefined ? (
-      <FormField name={name}>{wrappedChildren}</FormField>
+      <FormField
+        name={name}
+        useFormContext={Boolean(label || errorMessage || helpText)}>
+        {wrappedChildren}
+      </FormField>
     ) : (
       wrappedChildren
     );

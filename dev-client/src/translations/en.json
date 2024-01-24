@@ -328,7 +328,8 @@
       "privacy_policy_link_url": "https://landpotential.org/",
       "privacy_policy_link_text": "LandPKS Privacy Policy"
     },
-    "required": "required"
+    "required": "Required",
+    "character_limit": "{{current}} / {{limit}} characters"
   },
   "errors": {
     "soilId": "Error saving soil ID information."
@@ -434,17 +435,17 @@
       "header": "Change soil pit depths",
       "info": "Data already entered for a depth will be deleted when the depth interval is changed.",
       "label": "Depth Intervals",
-      "LANDPKS": "Landpks (default)",
+      "LANDPKS": "LandPKS (default)",
       "NRCS": "NRCS",
       "CUSTOM": "Custom"
     },
     "depth_interval": {
       "add_title": "Add depth interval",
       "edit_title": "Depth Interval",
-      "data_inputs_title": "Data Inputs",
+      "data_inputs_title": "Soil Data Inputs",
       "label_help": "{{max}} characters max",
       "label_placeholder": "Label",
-      "apply_to_all_label": "Apply to all to intervals",
+      "apply_to_all_label": "Apply to all intervals",
       "start_label": "From ({{unit}})",
       "end_label": "To ({{unit}})",
       "update_modal": {

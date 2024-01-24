@@ -36,7 +36,7 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
     start: yup
       .number()
       .min(0)
-      .required()
+      .required(t('general.required'))
       .test((start, {createError}) => {
         if (
           existingIntervals.some(
@@ -52,7 +52,7 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
     end: yup
       .number()
       .max(200)
-      .required()
+      .required(t('general.required'))
       .test((end, {createError, parent}) => {
         if (
           existingIntervals.some(

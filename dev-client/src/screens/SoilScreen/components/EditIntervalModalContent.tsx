@@ -36,7 +36,7 @@ import {
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
-import {Heading, Row, Box, Button} from 'native-base';
+import {Heading, Row, Box, Button, Column, FormControl} from 'native-base';
 import {Formik} from 'formik';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
@@ -48,6 +48,7 @@ import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFi
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {selectSoilDataIntervals} from 'terraso-client-shared/selectors';
+import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -214,41 +215,47 @@ export const EditIntervalModalContent = ({
       }}
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
-        <>
+        <Column mt="34px" mb="23px" mx="15px">
           <Heading variant="h6">{t('soil.depth_interval.edit_title')}</Heading>
-          <Box height="20px" />
-          <IntervalForm
-            displayLabel={'label' in currentInterval}
-            editable={mutable}
-          />
+          <Box pl="2px" mb="11px">
+            <IntervalForm
+              displayLabel={'label' in currentInterval}
+              editable={mutable}
+            />
+          </Box>
 
-          <Box height="50px" />
           <Heading variant="h6">
             {t('soil.depth_interval.data_inputs_title')}
           </Heading>
 
-          {inputsWithRequired.map(([method, isRequired]) => (
-            <InputFormSwitch
-              method={method}
-              disabled={!editingAllowed}
-              isRequired={isRequired}
-              value={interval ? interval[methodEnabled(method)] : false}
-              updateEnabled={updateSwitch(method)}
-              key={method}
-            />
-          ))}
+          <Column space="20px" mt="17px" mb="12px">
+            {inputsWithRequired.map(([method, isRequired]) => (
+              <InputFormSwitch
+                method={method}
+                disabled={!editingAllowed}
+                isRequired={isRequired}
+                value={interval ? interval[methodEnabled(method)] : false}
+                updateEnabled={updateSwitch(method)}
+                key={method}
+              />
+            ))}
+          </Column>
 
-          <FormCheckbox
-            name="applyToAll"
-            label={t('soil.depth_interval.apply_to_all_label')}
-          />
+          <Row mb="12px">
+            <FormCheckbox name="applyToAll" />
+            <FormLabel variant="body1">
+              {t('soil.depth_interval.apply_to_all_label')}
+            </FormLabel>
+          </Row>
 
           {editingAllowed ? (
-            <Row justifyContent="space-between" px="15px" pb="15px">
+            <Row justifyContent="space-between">
               <Button
+                px="11px"
                 leftIcon={<Icon name="delete" color="error.main" />}
                 _text={{textTransform: 'uppercase', color: 'error.main'}}
                 variant="link"
+                size="lg"
                 onPress={deleteInterval}>
                 {t('soil.depth_interval.delete_depth')}
               </Button>
@@ -259,7 +266,7 @@ export const EditIntervalModalContent = ({
               />
             </Row>
           ) : undefined}
-        </>
+        </Column>
       )}
     </Formik>
   );

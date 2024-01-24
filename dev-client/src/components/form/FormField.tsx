@@ -24,12 +24,17 @@ import {
 
 type Props<Name extends string> = React.PropsWithChildren<{
   name: Name;
+  useFormContext?: boolean;
 }>;
 
 export const FormField = memo(
-  <Name extends string>({name, children}: Props<Name>) => (
+  <Name extends string>({
+    name,
+    useFormContext = true,
+    children,
+  }: Props<Name>) => (
     <FieldContext.Provider value={useFieldContext(name)}>
-      <FormControl>{children}</FormControl>
+      {useFormContext ? <FormControl>{children}</FormControl> : children}
     </FieldContext.Provider>
   ),
 );
