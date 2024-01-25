@@ -457,6 +457,7 @@
       "degree_help": "0°-89°",
       "degree_placeholder": "Degree",
       "slope_meter": "Slope Meter",
+      "camera_grant": "Grant Camera Permission",
       "select_labels": {
         "FLAT": "Flat 0-2%",
         "GENTLE": "Gentle 1-15%",

@@ -85,7 +85,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
             </Camera>
           ) : (
             <Button size="lg" onPress={requestPermission}>
-              Grant Camera Permission
+              {t('slope.steepness.camera_grant')}
             </Button>
           )}
         </Box>
