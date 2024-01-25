@@ -25,7 +25,7 @@ import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton'
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
-import {StyleSheet} from 'react-native';
+import {Linking, StyleSheet} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
@@ -53,6 +53,14 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
       ).remove,
     [setDeviceTiltDeg],
   );
+
+  const requestPermissionIfPossible = () => {
+    if (permission?.canAskAgain) {
+      return requestPermission();
+    } else {
+      Linking.openSettings();
+    }
+  };
 
   const onClose = useCallback(() => navigation.pop(), [navigation]);
   const onUse = useCallback(async () => {
@@ -84,52 +92,69 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
               </Column>
             </Camera>
           ) : (
-            <Button size="lg" onPress={requestPermission}>
-              {t('slope.steepness.camera_grant')}
-            </Button>
+            <>
+              <CardCloseButton
+                size="lg"
+                _box={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  padding: 0,
+                  alignSelf: 'flex-end',
+                }}
+                onPress={onClose}
+              />
+              <Button size="lg" onPress={requestPermissionIfPossible}>
+                {t('slope.steepness.camera_grant')}
+              </Button>
+            </>
           )}
         </Box>
-        <Column alignItems="center">
-          <CardCloseButton
-            size="lg"
-            _box={{
-              position: 'relative',
-              top: 0,
-              right: 0,
-              padding: 0,
-              alignSelf: 'flex-end',
-            }}
-            onPress={onClose}
-          />
-          <Column
-            px="56px"
-            flex={1}
-            justifyContent="center"
-            alignItems="center">
-            <Row alignItems="center">
-              <Heading variant="h6">{t('slope.steepness.slope_meter')}</Heading>
-              <IconButton name="info" _icon={{color: 'action.active'}} />
-            </Row>
-            <Box height="12px" />
-            <Heading variant="h5" fontWeight={700}>
-              {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
-            </Heading>
-            <Box height="5px" />
-            <Heading variant="h6">
-              {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
-            </Heading>
-            <Box height="18px" />
-            <Button
-              onPress={onUse}
+        {permission?.granted && (
+          <Column alignItems="center">
+            <CardCloseButton
               size="lg"
-              px="46px"
-              py="18px"
-              _text={{textTransform: 'uppercase'}}
-              leftIcon={<Icon name="check" />}>
-              {t('general.use')}
-            </Button>
+              _box={{
+                position: 'relative',
+                top: 0,
+                right: 0,
+                padding: 0,
+                alignSelf: 'flex-end',
+              }}
+              onPress={onClose}
+            />
+            <Column
+              px="56px"
+              flex={1}
+              justifyContent="center"
+              alignItems="center">
+              <Row alignItems="center">
+                <Heading variant="h6">
+                  {t('slope.steepness.slope_meter')}
+                </Heading>
+                <IconButton name="info" _icon={{color: 'action.active'}} />
+              </Row>
+              <Box height="12px" />
+              <Heading variant="h5" fontWeight={700}>
+                {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
+              </Heading>
+              <Box height="5px" />
+              <Heading variant="h6">
+                {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
+              </Heading>
+              <Box height="18px" />
+              <Button
+                onPress={onUse}
+                size="lg"
+                px="46px"
+                py="18px"
+                _text={{textTransform: 'uppercase'}}
+                leftIcon={<Icon name="check" />}>
+                {t('general.use')}
+              </Button>
+            </Column>
           </Column>
-        </Column>
+        )}
       </Row>
     </ScreenScaffold>
   );
