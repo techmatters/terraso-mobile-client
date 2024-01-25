@@ -46,13 +46,17 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
     };
   }, []);
 
-  useEffect(
-    () =>
-      DeviceMotion.addListener(motion =>
-        setDeviceTiltDeg(toDegrees(motion.rotation.beta)),
-      ).remove,
-    [setDeviceTiltDeg],
-  );
+  useEffect(() => {
+    DeviceMotion.setUpdateInterval(300);
+    return DeviceMotion.addListener(motion => {
+      if (
+        motion?.rotation?.beta !== undefined &&
+        !isNaN(motion?.rotation?.beta)
+      ) {
+        setDeviceTiltDeg(toDegrees(motion.rotation.beta));
+      }
+    }).remove;
+  }, []);
 
   const requestPermissionIfPossible = () => {
     if (permission?.canAskAgain) {
