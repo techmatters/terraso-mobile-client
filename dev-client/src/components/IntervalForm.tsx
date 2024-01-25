@@ -19,7 +19,7 @@ import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
 import {useTranslation} from 'react-i18next';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {Box, FormControl, Row} from 'native-base';
-import {useFieldContext} from './form/hooks/useFieldContext';
+import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {useMemo} from 'react';
 
 export type IntervalFormInput = {

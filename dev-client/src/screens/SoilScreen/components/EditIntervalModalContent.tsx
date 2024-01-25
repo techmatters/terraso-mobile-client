@@ -36,7 +36,7 @@ import {
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
-import {Heading, Row, Box, Button, Column, FormControl} from 'native-base';
+import {Heading, Row, Box, Button, Column} from 'native-base';
 import {Formik} from 'formik';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
@@ -69,7 +69,6 @@ export const EditIntervalModalContent = ({
   mutable,
 }: Props) => {
   const {t} = useTranslation();
-  const soilData = useSelector(state => state.soilId.soilData[siteId]);
   const dispatch = useDispatch();
   const onClose = useModal()!.onClose;
 
@@ -84,20 +83,20 @@ export const EditIntervalModalContent = ({
 
   const interval = useMemo(() => {
     return soilIntervals.find(sameDepth({depthInterval}))!;
-  }, [soilData.depthIntervals, depthInterval]);
+  }, [soilIntervals, depthInterval]);
 
   const [currentInterval] = useState(interval);
 
   const existingIntervals = useMemo(
     () =>
       soilIntervals
-        .map(interval => interval.depthInterval)
+        .map(i => i.depthInterval)
         .filter(
           ({start, end}) =>
             start !== currentInterval.depthInterval.start ||
             end !== currentInterval.depthInterval.end,
         ),
-    [soilIntervals],
+    [soilIntervals, currentInterval],
   );
 
   const requiredInputsSet = useMemo(
@@ -151,6 +150,7 @@ export const EditIntervalModalContent = ({
         applyToAll,
         ...enabledInputs
       } = schema.cast(values);
+
       let applyToIntervals = {};
       if (applyToAll) {
         applyToIntervals = {applyToIntervals: existingIntervals};
@@ -184,7 +184,7 @@ export const EditIntervalModalContent = ({
       }),
     );
     onClose();
-  }, [dispatch, currentInterval, siteId]);
+  }, [dispatch, currentInterval, siteId, onClose]);
 
   const userRole = useSiteRoleContext();
 
@@ -234,7 +234,6 @@ export const EditIntervalModalContent = ({
                 method={method}
                 disabled={!editingAllowed}
                 isRequired={isRequired}
-                value={interval ? interval[methodEnabled(method)] : false}
                 updateEnabled={updateSwitch(method)}
                 key={method}
               />
@@ -301,7 +300,7 @@ const ConfirmEditingModal = ({
       (onOpen: () => void) =>
       (...args: Parameters<typeof handleSubmit>) =>
         showWarningModal ? onOpen() : handleSubmit(...args),
-    [newStart, newEnd, handleSubmit],
+    [handleSubmit, showWarningModal],
   );
 
   return (
@@ -341,7 +340,6 @@ const SaveButton = ({action, isDisabled}: AddButtonProps) => {
 type SwitchProps = {
   method: SoilPitMethod;
   isRequired: boolean;
-  value: boolean;
   updateEnabled: (newValue: boolean) => void;
 } & React.ComponentProps<typeof FormSwitch>;
 
@@ -350,7 +348,6 @@ const InputFormSwitch = ({
   isRequired,
   updateEnabled,
   disabled,
-  value,
   ...props
 }: SwitchProps) => {
   const {t} = useTranslation();
@@ -362,13 +359,24 @@ const InputFormSwitch = ({
       : methodDescriber;
   }, [t, method, isRequired]);
 
+  const {onChange} = useFieldContext<boolean>(methodEnabled(method));
+
+  const formSwitchChange = useCallback(
+    (newValue: boolean) => {
+      updateEnabled(newValue);
+      if (onChange) {
+        onChange(newValue);
+      }
+    },
+    [onChange, updateEnabled],
+  );
+
   return (
     <FormSwitch
       {...props}
       name={methodEnabled(method)}
-      value={value}
       disabled={isRequired || disabled}
-      onChange={updateEnabled}
+      onChange={formSwitchChange}
       label={label}
     />
   );

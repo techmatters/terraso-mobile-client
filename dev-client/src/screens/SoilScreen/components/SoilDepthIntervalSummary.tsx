@@ -4,7 +4,7 @@ import {
   soilPitMethods,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {EditIntervalModalContent} from './EditIntervalModalContent';
+import {EditIntervalModalContent} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModalContent';
 import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {useTranslation} from 'react-i18next';

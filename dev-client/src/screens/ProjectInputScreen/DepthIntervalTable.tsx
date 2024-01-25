@@ -19,6 +19,7 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   DepthInterval,
+  LabelOptional,
   ProjectDepthInterval,
   deleteProjectDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
@@ -27,7 +28,7 @@ import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 type TableProps = {
-  depthIntervals: ProjectDepthInterval[];
+  depthIntervals: LabelOptional<ProjectDepthInterval>[];
   projectId: string;
   includeLabel: boolean;
   canDeleteInterval: boolean;
@@ -62,7 +63,7 @@ export const DepthIntervalTable = ({
     return depthIntervals.map(({label, depthInterval}) => {
       let result: (string | React.ReactElement)[] = [];
       if (includeLabel) {
-        result.push(label);
+        result.push(label || '');
       }
       result.push(
         t('soil.depth_interval.bounds', {depthInterval, units: 'cm'}),

@@ -20,7 +20,6 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {useMemo, useCallback} from 'react';
 import {
@@ -32,11 +31,11 @@ import {
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {SoilSurfaceStatus} from './components/SoilSurfaceStatus';
+import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
 import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
 import {selectSoilDataIntervals} from 'terraso-client-shared/selectors';
 import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
-import {EditSiteSoilDepthPreset} from './components/EditSiteSoilDepthPreset';
+import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
@@ -75,7 +74,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     (newDepthPreset: SoilIdSoilDataDepthIntervalPresetChoices) => {
       dispatch(updateSoilData({siteId, depthIntervalPreset: newDepthPreset}));
     },
-    [dispatch, soilData, siteId],
+    [dispatch, siteId],
   );
 
   return (
