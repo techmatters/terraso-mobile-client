@@ -31,6 +31,7 @@ import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/Priv
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {selectUserRoleSite} from 'terraso-client-shared/selectors';
+import {isSiteManager} from 'terraso-mobile-client/util';
 
 type Props = {siteId?: string; coords?: Coords};
 
@@ -61,11 +62,7 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
     }
 
     // display nothing if user does not owner the site / is not manager
-    if (
-      userRole === null ||
-      (userRole.kind === 'project' && userRole.role !== 'manager') ||
-      (userRole.kind === 'site' && userRole.role !== 'owner')
-    ) {
+    if (userRole === null || !isSiteManager(userRole)) {
       return undefined;
     }
 
