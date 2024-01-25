@@ -289,7 +289,7 @@ export function ProjectSitesScreen({
           onPress={transferCallback}
           alignSelf="flex-start"
           _text={{textTransform: 'uppercase'}}>
-          {t('projects.sites.transfer') ?? ''}
+          {t('projects.sites.transfer')}
         </Button>
       </RestrictByProjectRole>
       {!isEmpty && full}
