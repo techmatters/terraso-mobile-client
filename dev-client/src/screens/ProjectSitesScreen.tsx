@@ -278,9 +278,9 @@ export function ProjectSitesScreen({
     <VStack m={3} pb={5} space={3} h="100%">
       {isEmpty && (
         <>
-          <Text>{t('projects.sites.empty')}</Text>
+          <Text>{t('projects.sites.empty_viewer')}</Text>
           <RestrictByProjectRole role={['manager', 'contributor']}>
-            <Text>{t('projects.sites.empty_not_viewer')}</Text>
+            <Text>{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
         </>
       )}

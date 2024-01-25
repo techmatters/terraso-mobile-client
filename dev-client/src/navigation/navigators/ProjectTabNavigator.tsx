@@ -28,6 +28,7 @@ import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 
+// TODO: replace with real link
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
