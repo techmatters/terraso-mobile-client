@@ -77,7 +77,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   return (
     <ScreenScaffold AppBar={null} BottomNavigation={null}>
       <Row flex={1} alignItems="stretch" px="24px" py="20px">
-        <Box flex={1} justifyContent="center" alignItems="center">
+        <Box flex={1} justifyContent="center">
           {permission?.granted ? (
             <Camera style={styles.camera}>
               <Column flex={1} alignItems="stretch">
