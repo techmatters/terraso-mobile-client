@@ -20,12 +20,12 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {Camera} from 'expo-camera';
 import {DeviceMotion} from 'expo-sensors';
-import {Box, Button, Column, Heading, Row} from 'native-base';
+import {Box, Button, Column, Heading, Link, Row, Text} from 'native-base';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
-import {StyleSheet} from 'react-native';
+import {Linking, StyleSheet} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
@@ -46,13 +46,17 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
     };
   }, []);
 
-  useEffect(
-    () =>
-      DeviceMotion.addListener(motion =>
-        setDeviceTiltDeg(toDegrees(motion.rotation.beta)),
-      ).remove,
-    [setDeviceTiltDeg],
-  );
+  useEffect(() => {
+    DeviceMotion.setUpdateInterval(300);
+    return DeviceMotion.addListener(motion => {
+      if (
+        motion?.rotation?.beta !== undefined &&
+        !isNaN(motion?.rotation?.beta)
+      ) {
+        setDeviceTiltDeg(toDegrees(motion.rotation.beta));
+      }
+    }).remove;
+  }, []);
 
   const onClose = useCallback(() => navigation.pop(), [navigation]);
   const onUse = useCallback(async () => {
@@ -73,8 +77,8 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   return (
     <ScreenScaffold AppBar={null} BottomNavigation={null}>
       <Row flex={1} alignItems="stretch" px="24px" py="20px">
-        <Box flex={1} justifyContent="center">
-          {!permission?.granted ? (
+        <Box flex={1} justifyContent="center" alignItems="center">
+          {permission?.granted ? (
             <Camera style={styles.camera}>
               <Column flex={1} alignItems="stretch">
                 <Box flex={1} />
@@ -83,10 +87,20 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                 <Box flex={1} bg="#00000080" />
               </Column>
             </Camera>
-          ) : (
+          ) : permission?.canAskAgain ? (
             <Button size="lg" onPress={requestPermission}>
-              Grant Camera Permission
+              {t('slope.steepness.camera_grant')}
             </Button>
+          ) : (
+            <>
+              <Heading variant="h6">{t('slope.steepness.no_camera')}</Heading>
+              <Text variant="body1" textAlign="center">
+                {t('slope.steepness.no_camera_explanation')}
+              </Text>
+              <Link onPress={Linking.openSettings}>
+                {t('general.open_settings')}
+              </Link>
+            </>
           )}
         </Box>
         <Column alignItems="center">
