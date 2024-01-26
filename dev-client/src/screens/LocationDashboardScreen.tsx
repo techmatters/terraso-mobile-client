@@ -61,7 +61,7 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
       );
     }
 
-    // display nothing if user does not owner the site / is not manager
+    // display nothing if user does not own the site / is not manager
     if (userRole === null || !isSiteManager(userRole)) {
       return undefined;
     }
