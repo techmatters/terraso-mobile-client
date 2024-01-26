@@ -51,7 +51,7 @@ export const DataInputSummary = ({
           />
         )}
       </Box>
-      <Text variant="body1" fontWeight={700} textTransform={'uppercase'}>
+      <Text variant="body1" fontWeight={700} textTransform="uppercase">
         {label}
       </Text>
       <Box flex={1} />

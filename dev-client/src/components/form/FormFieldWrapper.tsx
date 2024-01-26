@@ -18,33 +18,27 @@
 import {memo} from 'react';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
-import {ErrorMessage as FormikErrorMessage} from 'formik';
+import {ErrorMessage as FormikErrorMessage, useFormikContext} from 'formik';
 import {FormControl} from 'native-base';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 
 const FormHelperText = memo(
-  (props: React.ComponentProps<typeof FormControl.HelperText>) => {
-    return useFieldContext().error ? undefined : (
+  (props: React.ComponentProps<typeof FormControl.HelperText>) =>
+    useFieldContext().name! in useFormikContext().errors ? undefined : (
       <FormControl.HelperText {...props} />
-    );
-  },
+    ),
 );
 
 const FormErrorMessage = memo(
-  (props: React.ComponentProps<typeof FormControl.ErrorMessage>) => {
-    const name = useFieldContext().name;
-    return name ? (
-      <FormikErrorMessage name={name}>
-        {msg => (
-          <FormControl.ErrorMessage isInvalid {...props}>
-            {msg}
-          </FormControl.ErrorMessage>
-        )}
-      </FormikErrorMessage>
-    ) : (
-      <FormControl.ErrorMessage isInvalid {...props} />
-    );
-  },
+  (props: React.ComponentProps<typeof FormControl.ErrorMessage>) => (
+    <FormikErrorMessage name={useFieldContext().name!}>
+      {msg => (
+        <FormControl.ErrorMessage isInvalid {...props}>
+          {msg}
+        </FormControl.ErrorMessage>
+      )}
+    </FormikErrorMessage>
+  ),
 );
 
 export type Props = {
@@ -73,7 +67,7 @@ export const FormFieldWrapper = memo(
     return name !== undefined ? (
       <FormField name={name}>{wrappedChildren}</FormField>
     ) : (
-      <FormControl>{wrappedChildren}</FormControl>
+      wrappedChildren
     );
   },
 );

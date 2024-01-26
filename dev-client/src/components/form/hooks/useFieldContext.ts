@@ -21,7 +21,6 @@ import {createContext, useContext, useCallback} from 'react';
 type FieldContextType<Name extends string = string, T = string> = {
   name?: Name;
   value?: T;
-  error?: string | string[];
   onChange?: (_: T) => void;
   onBlur?: () => void;
 };
@@ -53,13 +52,12 @@ export const useFieldContext = <
   );
 
   return name === undefined
-    ? fieldContext ?? {}
+    ? fieldContext!
     : formikContext === undefined
       ? {}
       : {
           name,
           value: formikContext.values[name] as Value,
-          error: formikContext.errors[name] as string | string[],
           onChange,
           onBlur: formikContext.handleBlur(name) as unknown as () => void,
         };

@@ -27,8 +27,8 @@ import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFi
 type Props = FormFieldWrapperProps & React.ComponentProps<typeof Input>;
 
 export const FormInput = memo(
-  forwardRef(({value, onChangeText, onBlur, ...props}: Props, ref) => {
-    const field = useFieldContext(props.name);
+  forwardRef((props: Props, ref) => {
+    const {value, onChange, onBlur} = useFieldContext(props.name);
     const inputRef = useRef<TextInput>(null);
 
     useImperativeHandle(ref, () => ({
@@ -43,9 +43,9 @@ export const FormInput = memo(
       <FormFieldWrapper {...props}>
         <Input
           ref={inputRef}
-          value={value ?? field.value}
-          onChangeText={onChangeText ?? field.onChange}
-          onBlur={onBlur ?? field.onBlur}
+          value={value}
+          onChangeText={onChange}
+          onBlur={onBlur}
           {...props}
         />
       </FormFieldWrapper>
