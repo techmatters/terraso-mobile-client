@@ -87,7 +87,9 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
   }, [props, dispatch, result, navigation]);
 
   return (
-    <ScreenScaffold AppBar={<AppBar title={t('soil.texture.guide.title')} />}>
+    <ScreenScaffold
+      AppBar={<AppBar title={t('soil.texture.guide.title')} />}
+      BottomNavigation={null}>
       <ScrollView bg="grey.300">
         <Column space="16px">
           <Column p="15px" bg="primary.contrast">
