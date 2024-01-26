@@ -167,7 +167,7 @@ export const theme = extendTheme({
         fullWidth: {
           borderRadius: '0px',
           width: 'full',
-          justifyContent: 'start',
+          justifyContent: 'flex-start',
         },
         confirmModal: {
           py: '10px',
