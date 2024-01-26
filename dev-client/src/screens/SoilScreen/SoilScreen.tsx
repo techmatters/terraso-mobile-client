@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Column, Heading, Row} from 'native-base';
+import {Box, Button, Column, Heading, Row, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -27,11 +27,24 @@ import {EditIntervalModalContent} from 'terraso-mobile-client/screens/SoilScreen
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
+  ProjectDepthInterval,
   SoilData,
+  SoilDataDepthInterval,
+  methodEnabled,
   methodRequired,
   soilPitMethods,
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  pitMethodSummary,
+  renderDepthInterval,
+} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
+import {
+  selectDepthDependentData,
+  selectSiteSoilProjectSettings,
+} from 'terraso-client-shared/selectors';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -47,27 +60,21 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     return project?.depthIntervals ?? [];
   }, [project]);
 
-  const projectRequiredInputs = useMemo(() => {
-    return soilPitMethods.filter(m => (project ?? {})[methodRequired(m)]);
-  }, [project]);
-
-  const soilDataDepthIntervals = useMemo(() => {
-    return soilData?.depthIntervals ?? [];
-  }, [soilData]);
-
   const validSoilDataDepthIntervals = useMemo(() => {
-    return soilDataDepthIntervals.filter(({depthInterval: a}) =>
+    return (soilData?.depthIntervals ?? []).filter(({depthInterval: a}) =>
       projectDepthIntervals.every(
         ({depthInterval: b}) => a.end <= b.start || a.start >= b.end,
       ),
     );
-  }, [projectDepthIntervals, soilDataDepthIntervals]);
+  }, [projectDepthIntervals, soilData?.depthIntervals]);
 
-  const allIntervals = useMemo(
+  const allIntervals = useMemo<
+    (ProjectDepthInterval | SoilDataDepthInterval)[]
+  >(
     () =>
-      projectDepthIntervals
-        .concat(validSoilDataDepthIntervals)
-        .sort((a, b) => a.depthInterval.start - b.depthInterval.start),
+      [...projectDepthIntervals, ...validSoilDataDepthIntervals].sort(
+        (a, b) => a.depthInterval.start - b.depthInterval.start,
+      ),
     [projectDepthIntervals, validSoilDataDepthIntervals],
   );
 
@@ -75,6 +82,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     () => allIntervals.map(interval => interval.depthInterval),
     [allIntervals],
   );
+
   const dispatch = useDispatch();
 
   const onAddDepthInterval = useCallback(
@@ -86,7 +94,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
 
   return (
     <BottomSheetModalProvider>
-      <Column backgroundColor="grey.300">
+      <ScrollView backgroundColor="grey.300">
         <Row backgroundColor="background.default" px="16px" py="12px">
           <Heading variant="h6">{t('soil.surface')}</Heading>
         </Row>
@@ -95,11 +103,10 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           <Heading variant="h6">{t('soil.pit')}</Heading>
         </Row>
         {allIntervals.map(interval => (
-          <DepthIntervalEditor
+          <DepthIntervalView
             key={`${interval.depthInterval.start}:${interval.depthInterval.end}`}
             siteId={siteId}
-            interval={interval}
-            requiredInputs={projectRequiredInputs}
+            depthInterval={interval}
           />
         ))}
         <Modal
@@ -127,20 +134,105 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
             existingIntervals={existingIntervals}
           />
         </Modal>
-      </Column>
+      </ScrollView>
     </BottomSheetModalProvider>
   );
 };
 
+type DepthIntervalViewProps = {
+  siteId: string;
+  depthInterval: ProjectDepthInterval | SoilDataDepthInterval;
+};
+
+const DepthIntervalView = ({siteId, depthInterval}: DepthIntervalViewProps) => (
+  <Column space="1px">
+    <DepthIntervalEditor siteId={siteId} depthInterval={depthInterval} />
+    <DepthDependentDataInputs siteId={siteId} depthInterval={depthInterval} />
+  </Column>
+);
+
+type DepthDependentDataInputsProps = {
+  siteId: string;
+  depthInterval: ProjectDepthInterval | SoilDataDepthInterval;
+};
+
+const DepthDependentDataInputs = ({
+  siteId,
+  depthInterval,
+}: DepthDependentDataInputsProps) => {
+  const {t} = useTranslation();
+  const navigation = useNavigation();
+
+  const project = useSelector(selectSiteSoilProjectSettings(siteId));
+  const soilData = useSelector(
+    selectDepthDependentData({siteId, depthInterval}),
+  );
+
+  const methods = useMemo(() => {
+    return soilPitMethods
+      .filter(
+        method =>
+          project?.[methodRequired(method)] ||
+          (depthInterval as SoilDataDepthInterval)?.[methodEnabled(method)],
+      )
+      .map(method => ({
+        method,
+        required: project?.[methodRequired(method)] ?? false,
+        onPress: () =>
+          navigation.navigate(`SOIL_INPUT_${method}`, {
+            siteId,
+            depthInterval,
+          }),
+      }))
+      .flatMap(method =>
+        method.method === 'soilTexture'
+          ? [
+              method,
+              {
+                ...method,
+                method: 'rockFragmentVolume',
+              } as const,
+            ]
+          : [method],
+      )
+      .map(method => ({
+        ...method,
+        ...pitMethodSummary(t, soilData, method.method),
+      }));
+  }, [t, navigation, siteId, soilData, depthInterval, project]);
+
+  return (
+    <Column space="1px">
+      {methods.map(({method, required, complete, onPress, summary}) => (
+        <DataInputSummary
+          key={method}
+          required={required}
+          complete={complete}
+          label={t(`soil.collection_method.${method}`)}
+          value={summary}
+          onPress={onPress}
+        />
+      ))}
+    </Column>
+  );
+};
+
+type DepthIntervalEditorProps = {
+  siteId: string;
+  depthInterval: ProjectDepthInterval | SoilDataDepthInterval;
+};
+
 const DepthIntervalEditor = ({
   siteId,
-  interval: {label, depthInterval},
-  requiredInputs,
-}: {
-  siteId: string;
-  interval: LabelledDepthInterval;
-  requiredInputs: string[];
-}) => {
+  depthInterval,
+}: DepthIntervalEditorProps) => {
+  const project = useSelector(selectSiteSoilProjectSettings(siteId));
+
+  const requiredMethods = useMemo(
+    () => soilPitMethods.filter(method => project?.[methodRequired(method)]),
+    [project],
+  );
+
   return (
     <Row
       backgroundColor="primary.dark"
@@ -148,8 +240,7 @@ const DepthIntervalEditor = ({
       px="12px"
       py="8px">
       <Heading variant="h6" color="primary.contrast">
-        {label && `${label}: `}
-        {`${depthInterval.start}-${depthInterval.end} cm`}
+        {renderDepthInterval(depthInterval)}
       </Heading>
       <BottomSheetModal
         trigger={onOpen => (
@@ -161,8 +252,8 @@ const DepthIntervalEditor = ({
         )}>
         <EditIntervalModalContent
           siteId={siteId}
-          depthInterval={depthInterval}
-          requiredInputs={requiredInputs}
+          depthInterval={depthInterval.depthInterval}
+          requiredInputs={requiredMethods}
         />
       </BottomSheetModal>
     </Row>

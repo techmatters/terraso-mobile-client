@@ -50,7 +50,7 @@ type EditIntervalFormInput = IntervalFormInput &
 type Props = {
   siteId: string;
   depthInterval: DepthInterval;
-  requiredInputs: string[];
+  requiredInputs: SoilPitMethod[];
 };
 
 export const EditIntervalModalContent = ({
@@ -80,8 +80,7 @@ export const EditIntervalModalContent = ({
   const inputsWithRequired = useMemo(
     () =>
       soilPitMethods.map(
-        method =>
-          [method, requiredInputsSet.has(method)] as [SoilPitMethod, boolean],
+        method => [method, requiredInputsSet.has(method)] as const,
       ),
     [requiredInputsSet],
   );
