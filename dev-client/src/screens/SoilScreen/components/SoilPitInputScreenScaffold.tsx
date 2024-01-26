@@ -44,7 +44,8 @@ export const SoilPitInputScreenScaffold = ({
             </Heading>
           }
         />
-      }>
+      }
+      BottomNavigation={null}>
       {children}
     </ScreenScaffold>
   );
