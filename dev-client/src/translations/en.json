@@ -328,7 +328,8 @@
       "privacy_policy_link_url": "https://landpotential.org/",
       "privacy_policy_link_text": "LandPKS Privacy Policy"
     },
-    "required": "required"
+    "required": "required",
+    "open_settings": "Open Settings"
   },
   "errors": {
     "soilId": "Error saving soil ID information."
@@ -457,6 +458,9 @@
       "degree_help": "0°-89°",
       "degree_placeholder": "Degree",
       "slope_meter": "Slope Meter",
+      "camera_grant": "Grant Camera Permission",
+      "no_camera": "No Camera Access",
+      "no_camera_explanation": "For best results, allow LandPKS to use your camera in Settings",
       "select_labels": {
         "FLAT": "Flat 0-2%",
         "GENTLE": "Gentle 1-15%",
