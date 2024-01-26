@@ -100,8 +100,8 @@ android {
         applicationId "org.terraso.landpks"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 74
-        versionName '1.0.74'
+        versionCode 75
+        versionName '1.0.75'
     }
     splits {
         abi {
