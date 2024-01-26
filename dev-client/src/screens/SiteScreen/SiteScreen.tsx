@@ -159,7 +159,7 @@ export const SiteScreen = ({siteId, coords}: Props) => {
                   name: 'site-privacy',
                   onChange: onSitePrivacyChanged,
                   value: site.privacy,
-                  ml: '',
+                  ml: '0',
                 }}
               />
             </HStack>
