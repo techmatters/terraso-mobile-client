@@ -51,12 +51,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Terraso LandPKS uses your location to take photos of sites.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Terraso LandPKS uses your location to create sites.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Show current location on map.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Terraso LandPKS uses your location to take photos of sites.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialIcons.ttf</string>
@@ -70,15 +70,16 @@
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
