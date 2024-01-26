@@ -166,11 +166,11 @@ export const SiteScreen = ({siteId, coords}: Props) => {
           )}
           <LocationDetail
             label={t('geo.latitude.title')}
-            value={coords.latitude.toFixed(6)}
+            value={coords?.latitude.toFixed(6)}
           />
           <LocationDetail
             label={t('geo.longitude.title')}
-            value={coords.longitude.toFixed(6)}
+            value={coords?.longitude.toFixed(6)}
           />
           <LocationDetail
             label={t('geo.elevation.title')}
