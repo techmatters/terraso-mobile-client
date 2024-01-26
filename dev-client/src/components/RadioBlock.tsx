@@ -28,7 +28,7 @@ type Props<Keys extends string> = {
   options: Record<Keys, RadioOption>;
   allDisabled?: boolean;
   groupProps: Omit<IRadioGroupProps, 'onChange'> & {
-    value?: Keys;
+    value: Keys | undefined;
     defaultValue?: Keys;
     onChange?: (value: Keys) => void;
   };
@@ -41,7 +41,7 @@ export const RadioBlock = <T extends string>({
   label,
   options,
   allDisabled = false,
-  groupProps: {onChange, ...radioGroupProps},
+  groupProps: {onChange, value: groupValue, ...radioGroupProps},
   labelProps,
 }: Props<T>) => {
   return (
@@ -49,6 +49,7 @@ export const RadioBlock = <T extends string>({
       <FormControl.Label {...labelProps}>{label}</FormControl.Label>
       <Radio.Group
         onChange={onChange as (_: string) => void}
+        value={groupValue ?? ''}
         {...radioGroupProps}>
         {Object.entries<RadioOption>(options).flatMap(
           ([value, {text, isDisabled, helpText}]) =>

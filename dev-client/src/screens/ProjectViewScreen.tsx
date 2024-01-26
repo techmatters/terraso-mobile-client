@@ -44,7 +44,9 @@ export const ProjectViewScreen = ({projectId}: Props) => {
     <ProjectRoleContextProvider projectId={projectId}>
       <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
         <BottomSheetModalProvider>
-          <ScreenScaffold AppBar={<AppBar title={project?.name} />}>
+          <ScreenScaffold
+            AppBar={<AppBar title={project?.name} />}
+            BottomNavigation={null}>
             <ProjectTabNavigator projectId={projectId} />
           </ScreenScaffold>
           <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />

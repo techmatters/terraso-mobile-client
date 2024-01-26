@@ -77,7 +77,8 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
               RightButton={appBarRightButton}
               title={site?.name ?? t('site.dashboard.default_title')}
             />
-          }>
+          }
+          BottomNavigation={null}>
           {siteId ? (
             <LocationDashboardTabNavigator siteId={siteId} />
           ) : (

@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Row, Heading} from 'native-base';
+import {Row, Heading, Column} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
 import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
@@ -23,26 +23,31 @@ import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/Scre
 type Props = {
   LeftButton?: React.ReactNode;
   RightButton?: React.ReactNode;
+  Content?: React.ReactNode;
   title?: string;
 };
 
 export const AppBar = ({
   LeftButton = <ScreenBackButton />,
   RightButton,
+  Content,
   title,
 }: Props) => {
   const {t} = useTranslation();
   const route = useRoute();
 
   return (
-    <Row px="8px" py="4px" minHeight="56px" bg="primary.dark">
-      <Row flex={1} space="24px" alignItems="center">
-        {LeftButton}
-        <Heading variant="h6" color="primary.contrast">
-          {title ?? t(`screens.${route.name}`)}
-        </Heading>
+    <Column px="8px" bg="primary.dark">
+      <Row py="4px" minHeight="56px">
+        <Row flex={1} space="24px" alignItems="center">
+          {LeftButton}
+          <Heading variant="h6" color="primary.contrast">
+            {title ?? t(`screens.${route.name}`)}
+          </Heading>
+        </Row>
+        {RightButton}
       </Row>
-      {RightButton}
-    </Row>
+      {Content}
+    </Column>
   );
 };
