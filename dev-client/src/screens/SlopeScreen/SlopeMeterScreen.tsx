@@ -25,7 +25,7 @@ import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton'
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
-import {Linking, StyleSheet} from 'react-native';
+import {Linking} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
@@ -106,13 +106,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
         <Column alignItems="center">
           <CardCloseButton
             size="lg"
-            _box={{
-              position: 'relative',
-              top: 0,
-              right: 0,
-              padding: 0,
-              alignSelf: 'flex-end',
-            }}
+            _box={styles.closeButtonBox}
             onPress={onClose}
           />
           <Column
@@ -138,8 +132,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
               size="lg"
               px="46px"
               py="18px"
-              _text={{textTransform: 'uppercase'}}
-              leftIcon={<Icon name="check" />}>
+              {...styles.useButton}>
               {t('general.use')}
             </Button>
           </Column>
@@ -149,6 +142,17 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = {
   camera: {flex: 1},
-});
+  closeButtonBox: {
+    position: 'relative',
+    top: 0,
+    right: 0,
+    padding: 0,
+    alignSelf: 'flex-end',
+  },
+  useButton: {
+    _text: {textTransform: 'uppercase'},
+    leftIcon: <Icon name="check" />,
+  },
+} as const;
