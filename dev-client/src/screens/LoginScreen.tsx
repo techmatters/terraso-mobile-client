@@ -55,7 +55,7 @@ export const LoginScreen = () => {
 
   useEffect(() => {
     if (loggedIn) {
-      navigation.replace('HOME', {});
+      navigation.replace('BOTTOM_TABS');
     }
   }, [loggedIn, navigation]);
 

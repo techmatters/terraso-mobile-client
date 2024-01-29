@@ -48,7 +48,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const dispatch = useDispatch();
   const {t} = useTranslation();
   // const {colors} = useTheme();
-  const {navigate} = useNavigation();
+  const navigation = useNavigation();
   const site = useSelector(state => state.site.sites[siteId]);
   const [name, setName] = useState(site.name);
 
@@ -63,10 +63,9 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   );
 
   const onDelete = useCallback(async () => {
-    // TODO: confirm successful deletion before navigating home
-    navigate('HOME', {});
     await dispatch(deleteSite(site));
-  }, [dispatch, navigate, site]);
+    navigation.pop();
+  }, [dispatch, navigation, site]);
 
   return (
     <ScreenScaffold

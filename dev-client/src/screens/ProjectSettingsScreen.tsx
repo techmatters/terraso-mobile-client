@@ -56,7 +56,7 @@ export function ProjectSettingsScreen({
 
   const triggerDeleteProject = () => {
     dispatch(deleteProject({id: projectId}));
-    navigation.navigate('PROJECT_LIST');
+    navigation.pop();
   };
 
   const userRole = useProjectRoleContext();
