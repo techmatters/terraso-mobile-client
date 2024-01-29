@@ -27,6 +27,7 @@ import {
   updateSoilDataDepthInterval,
   deleteSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+import {DEFAULT_ENABLED_METHODS} from 'terraso-client-shared/constants';
 import {fromEntries} from 'terraso-client-shared/utils';
 import {useMemo, useCallback, FormEvent, useState} from 'react';
 import {
@@ -75,6 +76,12 @@ export const EditIntervalModalContent = ({
   const aggregatedIntervals = useSelector(state =>
     selectSoilDataIntervals(state, siteId),
   );
+
+  const aggregatedInterval = useMemo(() => {
+    return aggregatedIntervals.find(({interval: A}) =>
+      sameDepth({depthInterval})(A),
+    );
+  }, [aggregatedIntervals, depthInterval]);
 
   const soilIntervals = useMemo(
     () => aggregatedIntervals.map(({interval}) => interval),
@@ -125,12 +132,23 @@ export const EditIntervalModalContent = ({
     [t, existingIntervals],
   );
 
+  const defaultInputs = useMemo(() => {
+    if (!aggregatedInterval?.backendIntervalExists) {
+      return DEFAULT_ENABLED_METHODS.reduce(
+        (x, key) => ({...x, [methodEnabled(key)]: true}),
+        {},
+      );
+    }
+    return {};
+  }, [aggregatedInterval]);
+
   const updateSwitch = useCallback(
     (method: SoilPitMethod) => (newValue: boolean) => {
       dispatch(
         updateSoilDataDepthIntervalAsync({
           siteId,
           depthInterval,
+          ...defaultInputs,
           [methodEnabled(method)]: newValue,
         }),
       );
