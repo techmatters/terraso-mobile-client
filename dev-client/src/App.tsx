@@ -43,6 +43,9 @@ import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import * as Sentry from '@sentry/react-native';
+import {enableFreeze} from 'react-native-screens';
+
+enableFreeze(true);
 
 Sentry.init({
   dsn: APP_CONFIG.sentryDsn,
