@@ -159,18 +159,18 @@ export const SiteScreen = ({siteId, coords}: Props) => {
                   name: 'site-privacy',
                   onChange: onSitePrivacyChanged,
                   value: site.privacy,
-                  ml: '',
+                  ml: '0',
                 }}
               />
             </HStack>
           )}
           <LocationDetail
             label={t('geo.latitude.title')}
-            value={coords.latitude.toFixed(6)}
+            value={coords?.latitude.toFixed(6)}
           />
           <LocationDetail
             label={t('geo.longitude.title')}
-            value={coords.longitude.toFixed(6)}
+            value={coords?.longitude.toFixed(6)}
           />
           <LocationDetail
             label={t('geo.elevation.title')}

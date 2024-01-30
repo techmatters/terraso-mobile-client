@@ -19,7 +19,6 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   DepthInterval,
-  LabelOptional,
   ProjectDepthInterval,
   deleteProjectDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
@@ -28,7 +27,7 @@ import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 type TableProps = {
-  depthIntervals: LabelOptional<ProjectDepthInterval>[];
+  depthIntervals: ProjectDepthInterval[];
   projectId: string;
   includeLabel: boolean;
   canDeleteInterval: boolean;

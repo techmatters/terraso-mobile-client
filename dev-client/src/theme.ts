@@ -167,7 +167,7 @@ export const theme = extendTheme({
         fullWidth: {
           borderRadius: '0px',
           width: 'full',
-          justifyContent: 'start',
+          justifyContent: 'flex-start',
         },
         confirmModal: {
           py: '10px',
@@ -239,7 +239,7 @@ export const theme = extendTheme({
           _text: {
             color: 'text.primary',
             fontWeight: 400,
-            fontSize: '14px',
+            fontSize: '16px',
             lineHeight: '24px',
           },
         },
@@ -331,6 +331,12 @@ export const theme = extendTheme({
           fontWeight: 400,
           lineHeight: '24px',
           letterSpacing: '0.15px',
+        },
+        'body1-strong': {
+          color: 'text.primary',
+          fontWeight: 700,
+          fontSize: '16px',
+          lineHeight: '24px',
         },
         body2: {
           fontSize: '14px',

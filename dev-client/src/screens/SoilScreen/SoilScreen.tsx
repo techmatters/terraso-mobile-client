@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Column, Heading, Row, ScrollView} from 'native-base';
+import {Box, Button, Heading, Row, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -78,79 +78,76 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   );
 
   return (
-    <ScrollView>
-      <Column backgroundColor="grey.300">
-        <SoilSurfaceStatus
-          required={project ? project.verticalCrackingRequired : true}
-          complete={Boolean(soilData?.surfaceCracksSelect)}
-          siteId={siteId}
-        />
-        <Box height="16px" />
-        <Row
-          backgroundColor="background.default"
-          px="16px"
-          py="12px"
-          justifyContent="space-between">
-          <Heading variant="h6">{t('soil.pit')}</Heading>
-          {soilData && !project && (
-            <BottomSheetModal
-              trigger={onOpen => (
-                <IconButton
-                  name="tune"
-                  _icon={{color: 'action.active'}}
-                  onPress={onOpen}
-                />
-              )}>
-              <EditSiteSoilDepthPreset
-                /* LANDPKS is the default here */
-                selected={soilData.depthIntervalPreset || 'LANDPKS'}
-                updateChoice={updateSoilDataDepthPreset}
-              />
-            </BottomSheetModal>
-          )}
-        </Row>
-        {allIntervals.map(aggregated => (
-          <SoilDepthIntervalSummary
-            key={`${aggregated.interval.depthInterval.start}:${aggregated.interval.depthInterval.end}`}
-            siteId={siteId}
-            interval={aggregated}
-            requiredInputs={projectRequiredInputs}
-            data={undefined}
-          />
-        ))}
-        <RestrictBySiteRole
-          role={[
-            {kind: 'project', role: 'manager'},
-            {kind: 'project', role: 'contributor'},
-            {kind: 'site', role: 'owner'},
-          ]}>
-          <Modal
+    <ScrollView backgroundColor="grey.300">
+      <SoilSurfaceStatus
+        required={project ? project.verticalCrackingRequired : true}
+        complete={Boolean(soilData?.surfaceCracksSelect)}
+        siteId={siteId}
+      />
+      <Box height="16px" />
+      <Row
+        backgroundColor="background.default"
+        px="16px"
+        py="12px"
+        justifyContent="space-between">
+        <Heading variant="h6">{t('soil.pit')}</Heading>
+        {soilData && !project && (
+          <BottomSheetModal
             trigger={onOpen => (
-              <Button
-                size="lg"
-                variant="fullWidth"
-                backgroundColor="primary.dark"
-                justifyContent="start"
-                _text={{
-                  color: 'primary.contrast',
-                }}
-                _icon={{
-                  color: 'primary.contrast',
-                }}
-                width="full"
-                borderRadius="0px"
-                leftIcon={<Icon name="add" />}
-                onPress={onOpen}>
-                {t('soil.add_depth_label')}
-              </Button>
+              <IconButton
+                name="tune"
+                _icon={{color: 'action.active'}}
+                onPress={onOpen}
+              />
             )}>
-            <AddIntervalModal
-              onSubmit={onAddDepthInterval}
-              existingIntervals={existingIntervals}
+            <EditSiteSoilDepthPreset
+              /* LANDPKS is the default here */
+              selected={soilData.depthIntervalPreset || 'LANDPKS'}
+              updateChoice={updateSoilDataDepthPreset}
             />
-          </Modal>
-        </RestrictBySiteRole>
-      </Column>
+          </BottomSheetModal>
+        )}
+      </Row>
+      {allIntervals.map(aggregated => (
+        <SoilDepthIntervalSummary
+          key={`${aggregated.interval.depthInterval.start}:${aggregated.interval.depthInterval.end}`}
+          siteId={siteId}
+          interval={aggregated}
+          requiredInputs={projectRequiredInputs}
+        />
+      ))}
+      <RestrictBySiteRole
+        role={[
+          {kind: 'project', role: 'manager'},
+          {kind: 'project', role: 'contributor'},
+          {kind: 'site', role: 'owner'},
+        ]}>
+        <Modal
+          trigger={onOpen => (
+            <Button
+              size="lg"
+              variant="fullWidth"
+              backgroundColor="primary.dark"
+              justifyContent="start"
+              _text={{
+                color: 'primary.contrast',
+              }}
+              _icon={{
+                color: 'primary.contrast',
+              }}
+              width="full"
+              borderRadius="0px"
+              leftIcon={<Icon name="add" />}
+              onPress={onOpen}>
+              {t('soil.add_depth_label')}
+            </Button>
+          )}>
+          <AddIntervalModal
+            onSubmit={onAddDepthInterval}
+            existingIntervals={existingIntervals}
+          />
+        </Modal>
+      </RestrictBySiteRole>
     </ScrollView>
   );
 };

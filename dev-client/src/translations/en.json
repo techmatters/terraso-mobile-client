@@ -89,7 +89,7 @@
       "edit_title": "Site Note",
       "note_attribution": "{{createdAt}} by {{name}}",
       "confirm_removal_title": "Delete note?",
-      "confirm_removal_body": "Are you sure you want to remove this note?",
+      "confirm_removal_body": "This action cannot be undone.",
       "min_length_error": "Must be at least {{min}} characters",
       "placeholder_text": "Start typing your note…",
       "projectInstructions": "Site Instructions"
@@ -127,8 +127,8 @@
     "title": "Projects",
     "header": "Projects",
     "none": {
-      "header": "You don't currently have any projects",
-      "info": "A project is a group of sites you can manage on your own or with a team. Projects allow you to configure data inputs, add team members and sites, and view audit logs."
+      "header": "You don’t have any projects",
+      "info": "Projects let you group sites, set data needs, manage team members, and see audit logs."
     },
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
@@ -147,7 +147,7 @@
       "units": {
         "heading": "Units of Measurement",
         "a11yLabel": "measurement units",
-        "imperial": "Imperial (in, ft, lb)",
+        "english": "English (in, ft, lb)",
         "metric": "Metric (cm, m , kg)"
       },
       "soil_source": {
@@ -285,6 +285,7 @@
     "users": "users",
     "save": "Save",
     "save_fab": "SAVE",
+    "use": "Use",
     "last_modified_by": "last modified {{user}}, {{date}}",
     "select_all": "Select All",
     "you": "you",
@@ -299,7 +300,7 @@
     },
     "measurement_units": {
       "METRIC": "Metric",
-      "IMPERIAL": "Imperial"
+      "ENGLISH": "English"
     },
     "cancel": "Cancel",
     "add": "Add",
@@ -329,7 +330,10 @@
       "privacy_policy_link_text": "LandPKS Privacy Policy"
     },
     "required": "Required",
-    "character_limit": "{{current}} / {{limit}} characters"
+    "character_limit": "{{current}} / {{limit}} characters",
+    "open_settings": "Open Settings",
+    "yes": "Yes",
+    "no": "No"
   },
   "errors": {
     "soilId": "Error saving soil ID information."
@@ -413,6 +417,7 @@
     "collection_method": {
       "slope": "Slope and Landscape",
       "soilTexture": "Texture",
+      "rockFragmentVolume": "Rock Fragment",
       "soilColor": "Color",
       "verticalCracking": "Vertical Cracks",
       "carbonates": "Carbonates",
@@ -459,6 +464,56 @@
       },
       "bounds": "{{depthInterval.start}}-{{depthInterval.end}}{{units}}",
       "delete_depth": "Delete depth"
+    },
+    "texture": {
+      "title": "Soil Texture",
+      "label": "Texture",
+      "guide": {
+        "title": "Texture Guide",
+        "ball_help": "Does the soil form a ball?",
+        "ribbon_help": "Does the soil form a ribbon?",
+        "ribbon_length_help": "How long is the ribbon?",
+        "grittyness_help": "How gritty is the soil?",
+        "result": "Soil Texture: {{result}}",
+        "use_label": "Use This Texture",
+        "ribbon_length": {
+          "SM": "<2.5cm",
+          "MD": "2.5-5cm",
+          "LG": ">5cm"
+        },
+        "grittyness": {
+          "GRITTY": "Gritty",
+          "NEITHER": "Not gritty or smooth",
+          "SMOOTH": "Smooth"
+        }
+      },
+      "guide_intro": "Don’t know your soil texture? Use the step-by-step guide.",
+      "use_guide_label": "Use Guide",
+      "clay_title": "Percent Clay",
+      "clay_label": "Percent clay",
+      "clay_help": "0-100%",
+      "fragment_title": "Rock Fragment Volume",
+      "class": {
+        "CLAY": "Clay",
+        "CLAY_LOAM": "Clay Loam",
+        "LOAM": "Loam",
+        "LOAMY_SAND": "Loamy Sand",
+        "SAND": "Sand",
+        "SANDY_CLAY": "Sandy Clay",
+        "SANDY_CLAY_LOAM": "Sandy Clay Loam",
+        "SANDY_LOAM": "Sandy Loam",
+        "SILT": "Silt",
+        "SILTY_CLAY": "Silty Clay",
+        "SILTY_CLAY_LOAM": "Silty Clay Loam",
+        "SILT_LOAM": "Silt Loam"
+      },
+      "rockFragment": {
+        "VOLUME_0_1": "0-1%",
+        "VOLUME_1_15": "1-15%",
+        "VOLUME_15_35": "15-35%",
+        "VOLUME_35_60": "35-60%",
+        "VOLUME_60": ">60%"
+      }
     }
   },
   "slope": {
@@ -476,6 +531,9 @@
       "degree_help": "0°-89°",
       "degree_placeholder": "Degree",
       "slope_meter": "Slope Meter",
+      "camera_grant": "Grant Camera Permission",
+      "no_camera": "No Camera Access",
+      "no_camera_explanation": "For best results, allow LandPKS to use your camera in Settings",
       "select_labels": {
         "FLAT": "Flat 0-2%",
         "GENTLE": "Gentle 1-15%",

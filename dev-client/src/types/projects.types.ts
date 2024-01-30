@@ -47,6 +47,6 @@ export type Project = {
 export type ProjectPrivacy = 'PRIVATE' | 'PUBLIC';
 
 export type ProjectInputs = {
-  units: 'imperial' | 'metric';
+  units: 'english' | 'metric';
   source: 'survey' | 'soilgrids';
 };

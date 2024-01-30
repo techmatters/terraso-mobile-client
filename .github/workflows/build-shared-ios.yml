@@ -91,7 +91,7 @@ jobs:
           working-directory: dev-client
 
       - name: Restore Pods cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: dev-client/ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
@@ -102,7 +102,7 @@ jobs:
         run: pod install
 
       - name: Build iOS App
-        uses: yukiarrr/ios-build-action@v1.11.1
+        uses: yukiarrr/ios-build-action@v1.11.2
         with:
           project-path: dev-client/ios/Terraso LandPKS.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
