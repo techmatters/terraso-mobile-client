@@ -34,10 +34,7 @@ import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import {useCallback, useMemo} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {
-  Icon,
-  MaterialCommunityIcons,
-} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/Icons';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {
   Site,
@@ -108,9 +105,8 @@ const SiteMenu = ({site}: SiteProps) => {
       closeOnSelect={true}
       trigger={triggerProps => (
         <CardTopRightButton
-          as={MaterialCommunityIcons}
           // _icon={{size: 'md', color: 'action.active'}}
-          name="dots-vertical"
+          name="more-vert"
           {...triggerProps}
         />
       )}>

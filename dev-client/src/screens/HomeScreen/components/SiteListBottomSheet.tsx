@@ -15,13 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, useCallback, useMemo} from 'react';
+import {forwardRef, memo, useCallback, useMemo} from 'react';
 import {Box, Row, Heading, Text, useTheme, Column, Spinner} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
-
 import {useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
@@ -43,85 +42,90 @@ type Props = {
   snapIndex?: number;
 };
 
-export const SiteListBottomSheet = forwardRef<BottomSheetMethods, Props>(
-  ({sites, showSiteOnMap, snapIndex}, ref) => {
-    const {t} = useTranslation();
-    const isLoadingData = useSelector(
-      state => state.soilId.status === 'loading',
-    );
-    const deviceBottomInsets = useSafeAreaInsets().bottom;
+export const SiteListBottomSheet = memo(
+  forwardRef<BottomSheetMethods, Props>(
+    ({sites, showSiteOnMap, snapIndex}, ref) => {
+      const {t} = useTranslation();
+      const isLoadingData = useSelector(
+        state => state.soilId.status === 'loading',
+      );
+      const deviceBottomInsets = useSafeAreaInsets().bottom;
 
-    const {filteredItems: filteredSites} = useListFilter<Site>();
+      const {filteredItems: filteredSites} = useListFilter<Site>();
 
-    const renderSite = useCallback(
-      ({item}: {item: Site}) => (
-        <SiteCard
-          site={item}
-          onShowSiteOnMap={showSiteOnMap}
-          isPopover={false}
-        />
-      ),
-      [showSiteOnMap],
-    );
-
-    const snapPoints = useMemo(
-      () => [
-        `${getStartingSnapValue(deviceBottomInsets)}%`,
-        sites.length === 0 ? '50%' : '75%',
-        '100%',
-      ],
-      [sites.length, deviceBottomInsets],
-    );
-
-    const {colors} = useTheme();
-    const listStyle = useMemo(() => ({paddingHorizontal: 16}), []);
-    const backgroundStyle = useMemo(
-      () => ({backgroundColor: colors.grey[300]}),
-      [colors],
-    );
-    const {siteDistances} = useGeospatialContext();
-
-    const useDistance = useMemo(() => siteDistances !== null, [siteDistances]);
-
-    // TODO(performance): Same as in ProjectList.tsx
-    // const getItemLayout = useCallback((_: any, index: number) => {
-    //   const itemHeight = ITEM_HEIGHT + SEPARATOR_HEIGHT;
-    //   const offset = itemHeight * index;
-    //   return {length: itemHeight, offset, index};
-    // }, []);
-
-    return (
-      <BottomSheet
-        ref={ref}
-        snapPoints={snapPoints}
-        index={snapIndex}
-        backgroundStyle={backgroundStyle}
-        handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
-        <Column px="16px">
-          <Row justifyContent="space-between" alignItems="center" pb="4">
-            <Heading variant="h6">{t('site.list_title')}</Heading>
-          </Row>
-          {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
-        </Column>
-        {isLoadingData ? (
-          <Spinner size="lg" />
-        ) : sites.length === 0 ? (
-          <EmptySiteMessage />
-        ) : (
-          <BottomSheetFlatList
-            style={listStyle}
-            data={filteredSites}
-            maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
-            windowSize={WINDOW_SIZE}
-            // getItemLayout={getItemLayout}
-            keyExtractor={site => site.id}
-            renderItem={renderSite}
-            ItemSeparatorComponent={() => <Box h={`${SEPARATOR_HEIGHT}px`} />}
-            ListFooterComponent={<Box h="10px" />}
-            ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
+      const renderSite = useCallback(
+        ({item}: {item: Site}) => (
+          <SiteCard
+            site={item}
+            onShowSiteOnMap={showSiteOnMap}
+            isPopover={false}
           />
-        )}
-      </BottomSheet>
-    );
-  },
+        ),
+        [showSiteOnMap],
+      );
+
+      const snapPoints = useMemo(
+        () => [
+          `${getStartingSnapValue(deviceBottomInsets)}%`,
+          sites.length === 0 ? '50%' : '75%',
+          '100%',
+        ],
+        [sites.length, deviceBottomInsets],
+      );
+
+      const {colors} = useTheme();
+      const listStyle = useMemo(() => ({paddingHorizontal: 16}), []);
+      const backgroundStyle = useMemo(
+        () => ({backgroundColor: colors.grey[300]}),
+        [colors],
+      );
+      const {siteDistances} = useGeospatialContext();
+
+      const useDistance = useMemo(
+        () => siteDistances !== null,
+        [siteDistances],
+      );
+
+      // TODO(performance): Same as in ProjectList.tsx
+      // const getItemLayout = useCallback((_: any, index: number) => {
+      //   const itemHeight = ITEM_HEIGHT + SEPARATOR_HEIGHT;
+      //   const offset = itemHeight * index;
+      //   return {length: itemHeight, offset, index};
+      // }, []);
+
+      return (
+        <BottomSheet
+          ref={ref}
+          snapPoints={snapPoints}
+          index={snapIndex}
+          backgroundStyle={backgroundStyle}
+          handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
+          <Column px="16px">
+            <Row justifyContent="space-between" alignItems="center" pb="4">
+              <Heading variant="h6">{t('site.list_title')}</Heading>
+            </Row>
+            {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
+          </Column>
+          {isLoadingData ? (
+            <Spinner size="lg" />
+          ) : sites.length === 0 ? (
+            <EmptySiteMessage />
+          ) : (
+            <BottomSheetFlatList
+              style={listStyle}
+              data={filteredSites}
+              maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
+              windowSize={WINDOW_SIZE}
+              // getItemLayout={getItemLayout}
+              keyExtractor={site => site.id}
+              renderItem={renderSite}
+              ItemSeparatorComponent={() => <Box h={`${SEPARATOR_HEIGHT}px`} />}
+              ListFooterComponent={<Box h="10px" />}
+              ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
+            />
+          )}
+        </BottomSheet>
+      );
+    },
+  ),
 );

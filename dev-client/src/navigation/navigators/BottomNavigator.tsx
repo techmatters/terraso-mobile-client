@@ -16,7 +16,6 @@
  */
 
 import {Row} from 'native-base';
-import {MaterialCommunityIcons} from 'terraso-mobile-client/components/Icons';
 import {memo, useCallback, useEffect} from 'react';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
@@ -67,8 +66,7 @@ export const BottomNavigator = memo(
           onPress={onHome}
         />
         <BottomNavIconButton
-          as={MaterialCommunityIcons}
-          name="briefcase"
+          name="work"
           label={t('bottom_navigation.projects')}
           onPress={onProject}
         />

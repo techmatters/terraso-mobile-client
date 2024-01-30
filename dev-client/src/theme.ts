@@ -257,12 +257,9 @@ export const theme = extendTheme({
     },
     Icon: {
       sizes: {
-        sm: '20px',
-        md: '24px',
-        lg: '35px',
-      },
-      defaultProps: {
-        size: 'md',
+        sm: 20,
+        md: 24,
+        lg: 35,
       },
     },
     IconButton: {
