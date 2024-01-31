@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Box} from 'native-base';
 import {forwardRef} from 'react';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {PrivacyInfoContent} from 'terraso-mobile-client/components/infoModals/PrivacyInfoContent';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {onClose: () => void};
 

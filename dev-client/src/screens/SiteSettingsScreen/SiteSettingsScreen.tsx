@@ -23,7 +23,6 @@ import {
   // useTheme,
   FormControl,
   Select,
-  Column,
   // Row,
   // Text,
   // Spacer,
@@ -39,6 +38,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   siteId: string;

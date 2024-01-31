@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Text} from 'native-base';
+import {Text} from 'native-base';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const CalloutDetail = ({
   label,

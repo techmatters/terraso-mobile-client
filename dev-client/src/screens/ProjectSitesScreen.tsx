@@ -15,16 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Box,
-  Button,
-  FlatList,
-  HStack,
-  Menu,
-  Pressable,
-  Text,
-  VStack,
-} from 'native-base';
+import {Button, FlatList, Menu, Pressable, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {
   TabRoutes,
@@ -62,6 +53,11 @@ import {searchText} from 'terraso-mobile-client/util';
 import {normalizeText} from 'terraso-client-shared/utils';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {
+  Box,
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type SiteMenuProps = {
   iconName: string;

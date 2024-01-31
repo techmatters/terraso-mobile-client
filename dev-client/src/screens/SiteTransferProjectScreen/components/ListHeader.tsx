@@ -15,11 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {HStack, Heading, Text, VStack} from 'native-base';
+import {Heading, Text} from 'native-base';
 import {SearchBar} from 'terraso-mobile-client/components/SearchBar';
 import {useTranslation} from 'react-i18next';
 import {memo} from 'react';
 import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
+import {
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {query: string; setQuery: (query: string) => void};
 

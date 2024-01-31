@@ -15,11 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Badge, Row, Box, Input, Modal, Button, useDisclose} from 'native-base';
+import {Badge, Input, Modal, Button, useDisclose} from 'native-base';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
+import {Row, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   query: string;
@@ -71,7 +72,7 @@ export const SearchBar = ({
           <IconButton
             name={filterIcon}
             bg="primary.contrast"
-            borderRadius="full"
+            rounded="full"
             _icon={{color: 'action.active', size: 'sm'}}
             onPress={onOpen}
           />

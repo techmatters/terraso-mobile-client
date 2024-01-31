@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Fab, FlatList, Text} from 'native-base';
+import {Fab, FlatList, Text} from 'native-base';
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -29,6 +29,7 @@ import {transferSites} from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {removeKeys} from 'terraso-mobile-client/util';
 import {ListHeader} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/ListHeader';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const UNAFFILIATED = {
   projectId: Symbol('unaffiliated'),

@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Divider, Text, VStack} from 'native-base';
+import {Button, Divider, Text} from 'native-base';
 import {useCallback, useState} from 'react';
 import {
   deleteUserFromProject,
@@ -32,6 +32,7 @@ import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {Box, VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   projectId: string;

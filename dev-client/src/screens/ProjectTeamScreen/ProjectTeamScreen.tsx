@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {VStack} from 'native-base';
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {UserList} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserList';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -34,6 +32,7 @@ import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 

@@ -16,7 +16,7 @@
  */
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScrollView, Text, VStack} from 'native-base';
+import {ScrollView, Text} from 'native-base';
 import {
   TabRoutes,
   TabStackParamList,
@@ -34,6 +34,7 @@ import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/gr
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 

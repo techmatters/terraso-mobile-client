@@ -17,16 +17,13 @@
 
 import {
   Badge,
-  Box,
   Button,
   Center,
   Divider,
   FlatList,
-  HStack,
   Image,
   Pressable,
   Text,
-  VStack,
 } from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
@@ -35,6 +32,11 @@ import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {formatName} from 'terraso-mobile-client/util';
+import {
+  Box,
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type ListProps = {
   memberships: [ProjectMembership, User][];

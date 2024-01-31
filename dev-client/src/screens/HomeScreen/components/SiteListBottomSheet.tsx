@@ -16,7 +16,7 @@
  */
 
 import {forwardRef, memo, useCallback, useMemo} from 'react';
-import {Box, Row, Heading, Text, useTheme, Column, Spinner} from 'native-base';
+import {Heading, Text, useTheme, Spinner} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
@@ -29,6 +29,11 @@ import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialCont
 import {SiteFilterModal} from 'terraso-mobile-client/screens/HomeScreen/components/SiteFilterModal';
 import {getStartingSnapValue} from 'terraso-mobile-client/screens/HomeScreen/utils/getStartingSnapValue';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
+import {
+  Box,
+  Row,
+  Column,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 // TODO(performance): Same as in ProjectList.tsx
 const WINDOW_SIZE = 3;

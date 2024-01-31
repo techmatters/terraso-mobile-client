@@ -14,15 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {
-  Button,
-  FormControl,
-  HStack,
-  Input,
-  Radio,
-  Select,
-  VStack,
-} from 'native-base';
+import {Button, FormControl, Input, Radio, Select} from 'native-base';
 import {
   createContext,
   useCallback,
@@ -38,6 +30,10 @@ import {useTranslation} from 'react-i18next';
 import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
 import {sortCompare} from 'terraso-mobile-client/util';
 import {NullableSelect} from 'terraso-mobile-client/components/NullableSelect';
+import {
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;

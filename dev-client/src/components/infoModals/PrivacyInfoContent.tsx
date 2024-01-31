@@ -15,11 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Column, Heading, Text, Box} from 'native-base';
+import {Heading, Text} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
 import {HorizontalIconButton} from 'terraso-mobile-client/components/Icons';
+import {Column, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const PrivacyInfoContent = () => {
   const {t} = useTranslation();

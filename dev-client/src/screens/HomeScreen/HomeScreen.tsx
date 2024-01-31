@@ -26,7 +26,6 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
-import {Box} from 'native-base';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
 import BottomSheet, {
   BottomSheetModal,
@@ -42,6 +41,7 @@ import {
 import {equals, searchText} from 'terraso-mobile-client/util';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {normalizeText} from 'terraso-client-shared/utils';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type CalloutState =
   | {

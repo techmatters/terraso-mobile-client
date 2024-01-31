@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, KeyboardAvoidingView, ScrollView} from 'native-base';
+import {Button, KeyboardAvoidingView, ScrollView} from 'native-base';
 import Form, {
   ProjectFormValues,
   projectValidationSchema,
@@ -27,6 +27,7 @@ import {Formik} from 'formik';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo} from 'react';
 import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   onInfoPress: () => void;

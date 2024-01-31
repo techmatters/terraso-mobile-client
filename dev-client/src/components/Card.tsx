@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Box} from 'native-base';
 import {Pressable} from 'react-native';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const TRIANGLE_BORDER_WIDTH = 15;
 

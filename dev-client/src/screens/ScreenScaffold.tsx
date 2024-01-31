@@ -17,11 +17,12 @@
 
 import {useCallback, useState} from 'react';
 import {StatusBar, View, LayoutChangeEvent, StyleSheet} from 'react-native';
-import {Box, Column, useTheme} from 'native-base';
+import {useTheme} from 'native-base';
 
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   children: React.ReactNode;

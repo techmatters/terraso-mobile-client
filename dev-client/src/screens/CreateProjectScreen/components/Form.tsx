@@ -15,15 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Fab,
-  HStack,
-  Heading,
-  Input,
-  Radio,
-  TextArea,
-  VStack,
-} from 'native-base';
+import {Fab, Heading, Input, Radio, TextArea} from 'native-base';
 import {Formik} from 'formik';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
@@ -42,6 +34,10 @@ import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGro
 import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const projectValidationFields = (t: TFunction) => ({
   name: yup

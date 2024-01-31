@@ -16,7 +16,7 @@
  */
 
 import {useCallback, useState, useRef} from 'react';
-import {Heading, Box, VStack} from 'native-base';
+import {Heading} from 'native-base';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {SiteNoteForm} from 'terraso-mobile-client/components/SiteNoteForm';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
@@ -29,6 +29,7 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Keyboard} from 'react-native';
+import {Box, VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   note: SiteNote;

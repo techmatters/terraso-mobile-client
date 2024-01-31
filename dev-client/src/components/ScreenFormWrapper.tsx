@@ -17,7 +17,7 @@
 
 import {forwardRef, useRef, useImperativeHandle} from 'react';
 import {Formik, FormikProps} from 'formik';
-import {HStack, Spacer, Box, Button} from 'native-base';
+import {Spacer, Button} from 'native-base';
 import * as yup from 'yup';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
@@ -25,6 +25,7 @@ import {KeyboardAvoidingView, Platform} from 'react-native';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {HorizontalIconButton} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
+import {HStack, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   initialValues: {

@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Text, ScrollView, Column, Button, Box} from 'native-base';
+import {Text, ScrollView, Button} from 'native-base';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -31,6 +31,7 @@ import {useDispatch} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ResizeMode, Video} from 'expo-av';
 import {Image, StyleSheet, View} from 'react-native';
+import {Column, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const LENGTH_IMAGE = require('terraso-mobile-client/assets/texture/guide/length.png');
 

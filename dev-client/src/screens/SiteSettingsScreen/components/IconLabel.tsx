@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Row, Spacer, Text, useTheme} from 'native-base';
+import {Spacer, Text, useTheme} from 'native-base';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   label: string;

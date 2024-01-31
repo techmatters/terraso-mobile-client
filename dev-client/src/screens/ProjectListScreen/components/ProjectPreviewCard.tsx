@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Badge, HStack, Heading, Text} from 'native-base';
+import {Badge, Heading, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -23,6 +23,7 @@ import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {formatDate} from 'terraso-mobile-client/util';
+import {HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   project: Project;

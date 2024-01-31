@@ -20,7 +20,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {Camera} from 'expo-camera';
 import {DeviceMotion} from 'expo-sensors';
-import {Box, Button, Column, Heading, Link, Row, Text} from 'native-base';
+import {Button, Heading, Link, Text} from 'native-base';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -29,6 +29,11 @@ import {Linking} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {
+  Box,
+  Column,
+  Row,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 

@@ -15,16 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Box,
-  Button,
-  Column,
-  Fab,
-  Heading,
-  Row,
-  ScrollView,
-  Text,
-} from 'native-base';
+import {Button, Fab, Heading, ScrollView, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -44,6 +35,11 @@ import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/co
 import {Image, ImageSourcePropType, StyleSheet} from 'react-native';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  Box,
+  Column,
+  Row,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   siteId: string;

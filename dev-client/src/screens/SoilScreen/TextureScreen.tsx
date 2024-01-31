@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Column, Heading, Row, ScrollView} from 'native-base';
+import {Button, Heading, ScrollView} from 'native-base';
 import {Text} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -42,6 +42,11 @@ import {
   SoilPitInputScreenScaffold,
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  Box,
+  Column,
+  Row,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),

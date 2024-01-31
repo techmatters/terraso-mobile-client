@@ -16,7 +16,7 @@
  */
 
 import {useMemo} from 'react';
-import {StyleProp, ViewStyle} from 'react-native';
+import {ColorValue, DimensionValue, StyleProp, ViewStyle} from 'react-native';
 import {theme} from 'terraso-mobile-client/theme';
 
 type PathOf<O extends Record<string, any>> = string &
@@ -50,6 +50,7 @@ const nativeBaseDimensions = {
   mr: 'marginRight',
   mb: 'marginBottom',
   mt: 'marginTop',
+  marginTop: 'marginTop',
   ml: 'marginLeft',
   mx: 'marginHorizontal',
   my: 'marginVertical',
@@ -61,48 +62,133 @@ const nativeBaseDimensions = {
   px: 'paddingHorizontal',
   py: 'paddingVertical',
   p: 'padding',
+  padding: 'padding',
   height: 'height',
+  minHeight: 'minHeight',
   h: 'height',
   width: 'width',
   w: 'width',
+  borderBottomWidth: 'borderBottomWidth',
+  borderLeftWidth: 'borderLeftWidth',
+  borderRightWidth: 'borderRightWidth',
+  borderRadius: 'borderRadius',
+  space: 'columnGap',
+  left: 'left',
+  top: 'top',
+  right: 'right',
+  bottom: 'bottom',
 } as const;
 
-const nativeBaseDimensionsKeys = Object.keys(
-  nativeBaseDimensions,
-) as (keyof typeof nativeBaseDimensions)[];
+const nativeBaseStyleProps = {
+  alignItems: 'alignItems',
+  alignSelf: 'alignSelf',
+  justifyContent: 'justifyContent',
+  position: 'position',
+  flex: 'flex',
+  flexGrow: 'flexGrow',
+  flexDirection: 'flexDirection',
+  flexShrink: 'flexShrink',
+  flexBasis: 'flexBasis',
+  zIndex: 'zIndex',
+  display: 'display',
+};
 
-export type NativeBaseProps = Partial<{
-  [K in keyof typeof nativeBaseDimensions]: `${number}px` | number;
-}>;
+const nativeBaseColorProps = {
+  bg: 'backgroundColor',
+  bgColor: 'backgroundColor',
+  backgroundColor: 'backgroundColor',
+  borderBottomColor: 'borderBottomColor',
+  borderLeftColor: 'borderLeftColor',
+  borderRightColor: 'borderRightColor',
+};
 
-const rnDim = (dim: `${number}px` | number) =>
-  typeof dim === 'number'
-    ? dim
-    : parseInt(dim.substring(0, dim.length - 2), 10);
+type NBDimensionValue =
+  | `${number}px`
+  | number
+  | DimensionValue
+  | keyof typeof theme.space;
+export type NativeBaseProps = Partial<
+  {
+    [K in keyof typeof nativeBaseDimensions]: NBDimensionValue;
+  } & {[K in keyof typeof nativeBaseStyleProps]: ViewStyle[K]} & {
+    [K in keyof typeof nativeBaseColorProps]: ThemeColor | ColorValue;
+  } & {
+    shadow: keyof typeof theme.shadows | number;
+  }
+>;
+
+export const convertDimensionProp = (dim: NBDimensionValue) => {
+  if (typeof dim !== 'string') {
+    if (typeof dim === 'number') {
+      if (dim.toFixed(0) in theme.space) {
+        return theme.space[dim.toFixed(0) as keyof typeof theme.space];
+      }
+    }
+    return dim;
+  }
+  if (dim in theme.space) {
+    return theme.space[dim as keyof typeof theme.space];
+  }
+  if (dim.endsWith('px')) {
+    return parseInt(dim.substring(0, dim.length - 2), 10);
+  }
+  if (dim.endsWith('%')) {
+    return dim;
+  }
+};
+
+export const convertColorProp = (color: ColorValue | ThemeColor | undefined) =>
+  typeof color === 'string' ? getByKey(theme.colors, color) ?? color : color;
 
 const keys = <K extends string>(obj: Record<K, any>) => Object.keys(obj) as K[];
 
 export const useMemoizedNBStyles = <Props extends NativeBaseProps>(
   props: Props,
-): Omit<Props, keyof NativeBaseProps> =>
-  useMemo(
-    () => {
-      const styleProp: ViewStyle = {};
-      const remainingProps = {} as Omit<Props, keyof NativeBaseProps> & {
-        style: StyleProp<ViewStyle>;
-      };
-      keys(props).forEach(k => {
-        if (k in nativeBaseDimensions) {
-          styleProp[nativeBaseDimensions[k]] = rnDim(props[k]);
-        } else {
-          remainingProps[k] = props[k];
+  component?: string,
+): Omit<Props, keyof NativeBaseProps> => {
+  const styleProp: ViewStyle = {};
+  const remainingProps = {} as Omit<Props, keyof NativeBaseProps> & {
+    style: StyleProp<ViewStyle>;
+  };
+  if (
+    component &&
+    component in theme.components &&
+    theme.components[component].variants &&
+    'variant' in props &&
+    theme.components[component].variants[props.variant]
+  ) {
+    props = {
+      ...theme.components[component].variants[props.variant],
+      ...props,
+    };
+  }
+  keys(props).forEach(k => {
+    if (k in nativeBaseDimensions) {
+      let dim = nativeBaseDimensions[k as keyof typeof nativeBaseDimensions];
+      if (k === 'space') {
+        if (component === 'Column' || component === 'VStack') {
+          dim = 'rowGap';
         }
-      });
-      remainingProps.style = remainingProps.style
-        ? [styleProp].concat(remainingProps.style)
-        : styleProp;
-      return remainingProps;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    nativeBaseDimensionsKeys.map(k => props[k]),
-  );
+      }
+      styleProp[dim] = convertDimensionProp(props[k]);
+    } else if (k in nativeBaseStyleProps) {
+      styleProp[nativeBaseStyleProps[k]] = props[k];
+    } else if (k in nativeBaseColorProps) {
+      styleProp[nativeBaseColorProps[k]] = convertColorProp(props[k]);
+    } else if (k === 'shadow') {
+      let shadow: string | number | undefined = props[k];
+      if (typeof shadow === 'number') {
+        shadow = shadow.toFixed(0);
+      }
+      if (shadow !== undefined) {
+        Object.assign(styleProp, theme.shadows[shadow]);
+      }
+    } else {
+      remainingProps[k] = props[k];
+    }
+  });
+  remainingProps.style = remainingProps.style
+    ? [styleProp].concat(remainingProps.style)
+    : styleProp;
+  return remainingProps;
+};

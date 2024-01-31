@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Row} from 'native-base';
 import {memo, useCallback, useEffect} from 'react';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
@@ -26,6 +24,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {NavigationHelpers} from '@react-navigation/native';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const BottomTabs = createBottomTabNavigator<BottomTabsParamList>();
 
