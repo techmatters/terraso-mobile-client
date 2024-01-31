@@ -157,7 +157,7 @@
         "a11yLabel": "default soil information source"
       },
       "instructions": {
-        "title": "Pinned Site Note",
+        "title": "Pinned Note",
         "screen_title": "Site Instructions",
         "description": "This content will display at the top of the Notes section of each site in this project.",
         "add_label": "Note"
