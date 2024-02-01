@@ -47,6 +47,7 @@ const DepthIntervalEditor = ({
   aggregatedInterval: {mutable, interval},
   requiredInputs,
 }: DepthIntervalEditorProps) => {
+  const {t} = useTranslation();
   return (
     <Row
       backgroundColor="primary.dark"
@@ -55,7 +56,7 @@ const DepthIntervalEditor = ({
       py="8px">
       <Heading variant="h6" color="primary.contrast">
         {interval.label && `${interval.label}: `}
-        {`${interval.depthInterval.start}-${interval.depthInterval.end} cm`}
+        {t('soil.depth_interval.bounds', {interval, units: 'cm'})}
       </Heading>
       <BottomSheetModal
         trigger={onOpen => (
