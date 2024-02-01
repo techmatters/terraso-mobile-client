@@ -98,6 +98,11 @@ export const SiteListBottomSheet = memo(
       //   return {length: itemHeight, offset, index};
       // }, []);
 
+      const ListEmptyComponent = useMemo(
+        () => <Text>{t('site.search.no_matches')}</Text>,
+        [t],
+      );
+
       return (
         <BottomSheet
           ref={ref}
@@ -122,11 +127,11 @@ export const SiteListBottomSheet = memo(
               maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
               windowSize={WINDOW_SIZE}
               // getItemLayout={getItemLayout}
-              keyExtractor={site => site.id}
+              keyExtractor={keyExtractor}
               renderItem={renderSite}
-              ItemSeparatorComponent={() => <Box h={`${SEPARATOR_HEIGHT}px`} />}
-              ListFooterComponent={<Box h="10px" />}
-              ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
+              ItemSeparatorComponent={ItemSeparatorComponent}
+              ListFooterComponent={ListFooterComponent}
+              ListEmptyComponent={ListEmptyComponent}
             />
           )}
         </BottomSheet>
@@ -134,3 +139,7 @@ export const SiteListBottomSheet = memo(
     },
   ),
 );
+
+const keyExtractor = (site: Site) => site.id;
+const ItemSeparatorComponent = () => <Box h={`${SEPARATOR_HEIGHT}px`} />;
+const ListFooterComponent = <Box h="10px" />;

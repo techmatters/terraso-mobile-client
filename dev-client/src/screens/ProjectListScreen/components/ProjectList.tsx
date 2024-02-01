@@ -16,7 +16,7 @@
  */
 
 import {FlatList, Text} from 'native-base';
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Project} from 'terraso-client-shared/project/projectSlice';
@@ -52,6 +52,11 @@ export const ProjectList = () => {
   //   return {length, offset, index};
   // }, []);
 
+  const ListEmptyComponent = useMemo(
+    () => <Text>{t('projects.search.no_matches')}</Text>,
+    [t],
+  );
+
   return (
     <FlatList
       data={filteredItems}
@@ -59,9 +64,12 @@ export const ProjectList = () => {
       windowSize={WINDOW_SIZE}
       maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
       // getItemLayout={getItemLayout}
-      ItemSeparatorComponent={() => <Box h={`${SEPARATOR_HEIGHT}px`} />}
-      keyExtractor={project => project.id}
-      ListEmptyComponent={<Text>{t('projects.search.no_matches')}</Text>}
+      ItemSeparatorComponent={ItemSeparatorComponent}
+      keyExtractor={keyExtractor}
+      ListEmptyComponent={ListEmptyComponent}
     />
   );
 };
+
+const keyExtractor = (project: Project) => project.id;
+const ItemSeparatorComponent = () => <Box h={`${SEPARATOR_HEIGHT}px`} />;
