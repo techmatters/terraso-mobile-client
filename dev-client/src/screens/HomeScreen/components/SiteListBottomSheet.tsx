@@ -16,7 +16,7 @@
  */
 
 import {forwardRef, memo, useCallback, useMemo} from 'react';
-import {Heading, Text, useTheme, Spinner} from 'native-base';
+import {useTheme, Spinner} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
@@ -33,6 +33,8 @@ import {
   Box,
   Row,
   Column,
+  Heading,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 // TODO(performance): Same as in ProjectList.tsx

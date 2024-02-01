@@ -37,7 +37,7 @@ import {
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
-import {Heading, Button} from 'native-base';
+import {Button} from 'native-base';
 import {Formik} from 'formik';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
@@ -53,6 +53,7 @@ import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {
   Row,
   Box,
+  Heading,
   Column,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 

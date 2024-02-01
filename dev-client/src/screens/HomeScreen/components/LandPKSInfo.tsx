@@ -16,7 +16,7 @@
  */
 
 import {Linking} from 'react-native';
-import {FlatList, Heading, Image, Text} from 'native-base';
+import {FlatList, Image} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
 import {
@@ -26,6 +26,8 @@ import {
 import {
   Column,
   HStack,
+  Heading,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const LandPKSInfo = () => {

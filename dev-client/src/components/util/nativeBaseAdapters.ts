@@ -15,8 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo} from 'react';
-import {ColorValue, DimensionValue, StyleProp, ViewStyle} from 'react-native';
+import {
+  ColorValue,
+  DimensionValue,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 import {theme} from 'terraso-mobile-client/theme';
 
 type PathOf<O extends Record<string, any>> = string &
@@ -91,15 +96,55 @@ const nativeBaseStyleProps = {
   flexBasis: 'flexBasis',
   zIndex: 'zIndex',
   display: 'display',
+  textAlign: 'textAlign',
+  textTransform: 'textTransform',
+  fontStyle: 'fontStyle',
 };
 
 const nativeBaseColorProps = {
+  color: 'color',
   bg: 'backgroundColor',
   bgColor: 'backgroundColor',
   backgroundColor: 'backgroundColor',
   borderBottomColor: 'borderBottomColor',
   borderLeftColor: 'borderLeftColor',
   borderRightColor: 'borderRightColor',
+};
+
+const nativeBaseSpecialProps = {
+  rounded: (rounded: keyof typeof theme.radii) => ({
+    borderRadius: theme.radii[rounded],
+  }),
+  shadow: (shadow: keyof typeof theme.shadows | number) => {
+    if (typeof shadow === 'number')
+      shadow = shadow.toFixed(0) as keyof typeof theme.shadows;
+    return theme.shadows[shadow];
+  },
+  bold: (bold: boolean) => (bold ? {fontWeight: 'bold'} : {}),
+  italic: (italic: boolean) => (italic ? {fontStyle: 'italic'} : {}),
+  underline: (underline: boolean) =>
+    underline ? {textDecorationLine: 'underline'} : {},
+  fontWeight: (weight: number | 'bold') => ({
+    fontWeight:
+      typeof weight === 'string' ? weight : (weight.toFixed(0) as any),
+  }),
+  fontSize: (fontSize: keyof typeof theme.fontSizes | `${number}px`) => ({
+    fontSize:
+      fontSize in theme.fontSizes
+        ? theme.fontSizes[fontSize as keyof typeof theme.fontSizes]
+        : parseInt(fontSize.slice(0, -2), 10),
+  }),
+} as const satisfies PropMappers;
+
+const nativeBaseTextProps = {
+  size: (size: keyof typeof theme.fontSizes | `${number}px`) =>
+    nativeBaseSpecialProps.fontSize(size),
+} as const satisfies PropMappers;
+
+type PropMappers = Record<string, (_: any) => ViewStyle | TextStyle>;
+
+type PropsOf<PM extends PropMappers> = {
+  [K in keyof PM]?: Parameters<PM[K]>[0];
 };
 
 type NBDimensionValue =
@@ -110,12 +155,13 @@ type NBDimensionValue =
 export type NativeBaseProps = Partial<
   {
     [K in keyof typeof nativeBaseDimensions]: NBDimensionValue;
-  } & {[K in keyof typeof nativeBaseStyleProps]: ViewStyle[K]} & {
+  } & {[K in keyof typeof nativeBaseStyleProps]: (ViewStyle & TextStyle)[K]} & {
     [K in keyof typeof nativeBaseColorProps]: ThemeColor | ColorValue;
-  } & {
-    shadow: keyof typeof theme.shadows | number;
-  }
+  } & PropsOf<typeof nativeBaseSpecialProps>
 >;
+
+export type NativeBaseTextProps = NativeBaseProps &
+  PropsOf<typeof nativeBaseTextProps>;
 
 export const convertDimensionProp = (dim: NBDimensionValue) => {
   if (typeof dim !== 'string') {
@@ -142,7 +188,7 @@ export const convertColorProp = (color: ColorValue | ThemeColor | undefined) =>
 
 const keys = <K extends string>(obj: Record<K, any>) => Object.keys(obj) as K[];
 
-export const useMemoizedNBStyles = <Props extends NativeBaseProps>(
+export const convertNBStyles = <Props extends NativeBaseProps>(
   props: Props,
   component?: string,
 ): Omit<Props, keyof NativeBaseProps> => {
@@ -162,7 +208,14 @@ export const useMemoizedNBStyles = <Props extends NativeBaseProps>(
       ...props,
     };
   }
+  if (component && component in theme.components) {
+    props = {
+      ...theme.components[component].baseStyle,
+      ...props,
+    };
+  }
   keys(props).forEach(k => {
+    if (props[k] === undefined) return;
     if (k in nativeBaseDimensions) {
       let dim = nativeBaseDimensions[k as keyof typeof nativeBaseDimensions];
       if (k === 'space') {
@@ -175,20 +228,16 @@ export const useMemoizedNBStyles = <Props extends NativeBaseProps>(
       styleProp[nativeBaseStyleProps[k]] = props[k];
     } else if (k in nativeBaseColorProps) {
       styleProp[nativeBaseColorProps[k]] = convertColorProp(props[k]);
-    } else if (k === 'shadow') {
-      let shadow: string | number | undefined = props[k];
-      if (typeof shadow === 'number') {
-        shadow = shadow.toFixed(0);
-      }
-      if (shadow !== undefined) {
-        Object.assign(styleProp, theme.shadows[shadow]);
-      }
+    } else if (k in nativeBaseSpecialProps) {
+      Object.assign(styleProp, nativeBaseSpecialProps[k](props[k]));
+    } else if (k in nativeBaseTextProps) {
+      Object.assign(styleProp, nativeBaseTextProps[k](props[k]));
     } else {
       remainingProps[k] = props[k];
     }
   });
   remainingProps.style = remainingProps.style
-    ? [styleProp].concat(remainingProps.style)
+    ? [remainingProps.style, styleProp]
     : styleProp;
   return remainingProps;
 };

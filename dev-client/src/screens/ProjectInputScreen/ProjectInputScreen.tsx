@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Text, Fab} from 'native-base';
+import {Button, Fab} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -42,6 +42,7 @@ import {
   Box,
   HStack,
   VStack,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;

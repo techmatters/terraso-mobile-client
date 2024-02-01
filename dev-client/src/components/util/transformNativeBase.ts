@@ -15,6 +15,9 @@ const componentsToReplace = {
   HStack: 'Row',
   VStack: 'Column',
   View: 'View',
+  Badge: 'Badge',
+  Text: 'Text',
+  Heading: 'Heading',
 };
 
 project.getSourceFiles().forEach(f => {

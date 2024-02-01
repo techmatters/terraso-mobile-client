@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Heading} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
@@ -26,7 +24,11 @@ import {
   renderShape,
   renderSteepness,
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
-import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Column,
+  Row,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();

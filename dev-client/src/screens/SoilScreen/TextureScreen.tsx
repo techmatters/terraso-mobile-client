@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Heading, ScrollView} from 'native-base';
+import {Button, ScrollView} from 'native-base';
 import {Text} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -46,6 +46,7 @@ import {
   Box,
   Column,
   Row,
+  Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const FRAGMENT_IMAGES = {

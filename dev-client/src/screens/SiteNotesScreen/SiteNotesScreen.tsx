@@ -16,7 +16,7 @@
  */
 
 import {useCallback} from 'react';
-import {Button, Heading, FlatList} from 'native-base';
+import {Button, FlatList} from 'native-base';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import SiteNote from 'terraso-client-shared/site/siteSlice';
@@ -27,6 +27,7 @@ import {
   Box,
   Column,
   Row,
+  Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type SiteNote = {

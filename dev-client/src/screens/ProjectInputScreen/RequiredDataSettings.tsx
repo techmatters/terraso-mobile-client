@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Text, useTheme} from 'native-base';
+import {useTheme} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
@@ -24,7 +24,11 @@ import {
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Switch} from 'react-native';
-import {Row, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Row,
+  Box,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const RequiredDataSettings = ({
   projectId,

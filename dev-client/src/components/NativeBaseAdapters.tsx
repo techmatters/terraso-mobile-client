@@ -1,53 +1,124 @@
-import {StyleSheet, View as RNView, ViewProps} from 'react-native';
+import {createContext, useContext} from 'react';
+import * as RN from 'react-native';
 import {
   NativeBaseProps,
-  useMemoizedNBStyles,
+  NativeBaseTextProps,
+  convertNBStyles,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
 
-type Props = NativeBaseProps & ViewProps;
-export const View = (props: React.PropsWithChildren<Props>) => (
-  <RNView {...useMemoizedNBStyles(props, 'View')} />
+type ViewProps = NativeBaseProps & RN.ViewProps;
+export const View = (props: React.PropsWithChildren<ViewProps>) => (
+  <RN.View {...convertNBStyles(props, 'View')} />
 );
 
 type BoxProps = NativeBaseProps &
-  ViewProps & {
+  RN.ViewProps & {
     variant?: keyof (typeof theme.components)['Box']['variants'];
   };
 export const Box = (props: React.PropsWithChildren<BoxProps>) => (
-  <RNView {...useMemoizedNBStyles(props, 'Box')} />
+  <RN.View {...convertNBStyles(props, 'Box')} />
 );
 type RowProps = NativeBaseProps &
-  ViewProps & {
+  RN.ViewProps & {
     variant?: keyof (typeof theme.components)['HStack']['variants'];
   };
 export const Row = (props: React.PropsWithChildren<RowProps>) => {
-  const memoizedProps = useMemoizedNBStyles(props, 'HStack');
+  const memoizedProps = convertNBStyles(props, 'HStack');
   return (
-    <RNView {...memoizedProps} style={[styles.row, memoizedProps?.style]} />
+    <RN.View {...memoizedProps} style={[styles.row, memoizedProps?.style]} />
   );
 };
 export const HStack = (props: React.PropsWithChildren<RowProps>) => {
-  const memoizedProps = useMemoizedNBStyles(props, 'HStack');
+  const memoizedProps = convertNBStyles(props, 'HStack');
   return (
-    <RNView {...memoizedProps} style={[styles.row, memoizedProps?.style]} />
+    <RN.View {...memoizedProps} style={[styles.row, memoizedProps?.style]} />
   );
 };
-type ColumnProps = NativeBaseProps & ViewProps;
+type ColumnProps = NativeBaseProps & RN.ViewProps;
 export const Column = (props: React.PropsWithChildren<ColumnProps>) => {
-  const memoizedProps = useMemoizedNBStyles(props, 'Column');
+  const memoizedProps = convertNBStyles(props, 'Column');
   return (
-    <RNView {...memoizedProps} style={[styles.column, memoizedProps?.style]} />
+    <RN.View {...memoizedProps} style={[styles.column, memoizedProps?.style]} />
   );
 };
 export const VStack = (props: React.PropsWithChildren<ColumnProps>) => {
-  const memoizedProps = useMemoizedNBStyles(props, 'VStack');
+  const memoizedProps = convertNBStyles(props, 'VStack');
   return (
-    <RNView {...memoizedProps} style={[styles.column, memoizedProps?.style]} />
+    <RN.View {...memoizedProps} style={[styles.column, memoizedProps?.style]} />
   );
 };
 
-const styles = StyleSheet.create({
+const TextAncestorContext = createContext(false);
+type TextProps = NativeBaseTextProps &
+  RN.TextProps & {
+    variant?: keyof (typeof theme.components)['Text']['variants'];
+  };
+
+export const Text = ({...props}: React.PropsWithChildren<TextProps>) => {
+  const hasTextAncestor = useContext(TextAncestorContext);
+  return (
+    <TextAncestorContext.Provider value={true}>
+      <RN.Text
+        {...convertNBStyles(
+          {
+            ...(hasTextAncestor
+              ? {}
+              : {variant: 'body1', color: 'text.primary'}),
+            ...props,
+          },
+          'Text',
+        )}
+      />
+    </TextAncestorContext.Provider>
+  );
+};
+
+type HeadingProps = NativeBaseTextProps &
+  RN.TextProps & {
+    variant?: keyof (typeof theme.components)['Heading']['variants'];
+  };
+
+export const Heading = (props: React.PropsWithChildren<HeadingProps>) => (
+  <RN.Text
+    {...convertNBStyles(
+      {
+        variant: 'h6',
+        color: 'text.primary',
+        ...props,
+      },
+      'Heading',
+    )}
+  />
+);
+
+type BadgeProps = NativeBaseProps &
+  RN.ViewProps & {
+    variant?: keyof (typeof theme.components)['Badge']['variants'];
+    startIcon?: React.ReactNode;
+    _text?: TextProps;
+  };
+export const Badge = ({
+  _text,
+  startIcon,
+  children,
+  ...props
+}: React.PropsWithChildren<BadgeProps>) => (
+  <RN.View {...convertNBStyles({style: styles.badge, ...props}, 'Badge')}>
+    {startIcon}
+    <Text {..._text}>{children}</Text>
+  </RN.View>
+);
+
+const styles = RN.StyleSheet.create({
   row: {flexDirection: 'row'},
   column: {flexDirection: 'column'},
+  badge: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    columnGap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    alignItems: 'center',
+  },
 });

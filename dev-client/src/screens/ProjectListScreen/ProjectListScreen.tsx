@@ -22,7 +22,7 @@ import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppB
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Heading, Link, Text, Spinner} from 'native-base';
+import {Link, Spinner} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {
@@ -35,7 +35,12 @@ import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
 import {normalizeText} from 'terraso-client-shared/utils';
 import {equals, searchText} from 'terraso-mobile-client/util';
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
-import {Box, VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  VStack,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);

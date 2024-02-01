@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, FlatList, Menu, Pressable, Text} from 'native-base';
+import {Button, FlatList, Menu, Pressable} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {
   TabRoutes,
@@ -57,6 +57,7 @@ import {
   Box,
   HStack,
   VStack,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type SiteMenuProps = {

@@ -16,7 +16,6 @@
  */
 
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Heading, Text, Badge} from 'native-base';
 import React, {useCallback} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -25,7 +24,13 @@ import {StyleSheet} from 'react-native';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
-import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  Row,
+  Heading,
+  Text,
+  Badge,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const TEMP_MODIFIED_DATE = '8/15/23';
 const TEMP_MODIFIED_NAME = 'Sample Sam';
@@ -73,7 +78,7 @@ const SiteCard = ({site, onShowSiteOnMap, buttons, isPopover}: Props) => {
         <Badge
           variant="chip"
           backgroundColor="primary.lighter"
-          startIcon={<Icon name="people" />}>
+          startIcon={<Icon color="text.primary" name="people" />}>
           1
         </Badge>
         <Box flexGrow={1} />

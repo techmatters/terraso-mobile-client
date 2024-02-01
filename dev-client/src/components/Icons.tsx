@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {IconButton as NativeIconButton, Text, Center} from 'native-base';
+import {IconButton as NativeIconButton, Center} from 'native-base';
 import React from 'react';
 import {View, Pressable} from 'react-native';
 import {IconProps as VectorIconProps} from 'react-native-vector-icons/Icon';
@@ -25,9 +25,13 @@ import {
   NativeBaseProps,
   ThemeColor,
   getByKey,
-  useMemoizedNBStyles,
+  convertNBStyles,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
-import {Box, HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  HStack,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type IconProps = Omit<VectorIconProps, 'size' | 'color'> &
   NativeBaseProps & {
@@ -44,7 +48,7 @@ export const Icon = ({size = 'md', color, ...props}: IconProps) => {
           ? getByKey(theme.colors, color) ?? color
           : color
       }
-      {...useMemoizedNBStyles(props)}
+      {...convertNBStyles(props)}
     />
   );
 };

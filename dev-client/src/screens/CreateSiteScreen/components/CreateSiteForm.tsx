@@ -16,7 +16,6 @@
  */
 
 import {
-  Text,
   FormControl,
   ScrollView,
   Spacer,
@@ -41,7 +40,11 @@ import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {VStack, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  VStack,
+  Box,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,

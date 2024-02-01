@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Text} from 'native-base';
 import {memo} from 'react';
 import {Switch} from 'react-native';
 import {
@@ -23,7 +21,7 @@ import {
   FormFieldWrapper,
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = FormFieldWrapperProps &
   Omit<React.ComponentProps<typeof Switch>, 'onChange' | 'onValueChange'> & {

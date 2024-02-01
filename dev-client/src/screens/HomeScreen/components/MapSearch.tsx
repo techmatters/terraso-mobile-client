@@ -18,7 +18,7 @@
 import Autocomplete from 'react-native-autocomplete-input';
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Input, Pressable, Text} from 'native-base';
+import {Input, Pressable} from 'native-base';
 import {
   Suggestion,
   initMapSearch,
@@ -32,6 +32,7 @@ import {
   HStack,
   View,
   VStack,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();

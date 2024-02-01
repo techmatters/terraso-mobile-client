@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Heading} from 'native-base';
+import {Button} from 'native-base';
 import {Formik} from 'formik';
 import {useMemo} from 'react';
 import {
@@ -29,7 +29,10 @@ import {
 } from 'terraso-mobile-client/components/IntervalForm';
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import {useModal} from 'terraso-mobile-client/components/Modal';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;

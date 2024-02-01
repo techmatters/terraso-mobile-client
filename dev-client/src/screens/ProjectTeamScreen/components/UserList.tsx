@@ -15,16 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Badge,
-  Button,
-  Center,
-  Divider,
-  FlatList,
-  Image,
-  Pressable,
-  Text,
-} from 'native-base';
+import {Button, Center, Divider, FlatList, Image, Pressable} from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
@@ -36,6 +27,8 @@ import {
   Box,
   HStack,
   VStack,
+  Badge,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type ListProps = {

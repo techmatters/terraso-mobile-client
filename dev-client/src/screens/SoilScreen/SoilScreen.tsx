@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Heading, ScrollView} from 'native-base';
+import {Button, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -37,7 +37,11 @@ import {selectSoilDataIntervals} from 'terraso-client-shared/selectors';
 import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  Row,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();

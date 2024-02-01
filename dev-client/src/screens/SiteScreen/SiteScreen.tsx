@@ -18,7 +18,7 @@
 import {useCallback} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {Divider, Text} from 'native-base';
+import {Divider} from 'native-base';
 
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -34,6 +34,7 @@ import {
   Box,
   Column,
   HStack,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const TEMP_ELEVATION = '1900 ft';

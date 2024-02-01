@@ -14,12 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Heading} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
 import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
-import {Row, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Row,
+  Column,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   LeftButton?: React.ReactNode;

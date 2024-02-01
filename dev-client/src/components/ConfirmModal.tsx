@@ -15,11 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Heading, Modal as NativeBaseModal, Text} from 'native-base';
+import {Button, Modal as NativeBaseModal} from 'native-base';
 import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
 import {useTranslation} from 'react-i18next';
 import {forwardRef, useCallback, useImperativeHandle, useRef} from 'react';
-import {Box, HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  HStack,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = React.ComponentProps<typeof Modal> & {
   title: string;

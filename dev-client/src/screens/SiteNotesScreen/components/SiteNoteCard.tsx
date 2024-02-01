@@ -16,14 +16,17 @@
  */
 
 import {useCallback} from 'react';
-import {Text, Spacer} from 'native-base';
+import {Spacer} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {SiteNote} from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  HStack,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   note: SiteNote;

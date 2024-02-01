@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Fab, Heading, ScrollView, Text} from 'native-base';
+import {Button, Fab, ScrollView} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -39,6 +39,8 @@ import {
   Box,
   Column,
   Row,
+  Heading,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {

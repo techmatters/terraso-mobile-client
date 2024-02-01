@@ -25,7 +25,6 @@ import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 
-
 export const BottomTabsScreen = memo(() => {
   return (
     <BottomTabs.Navigator
