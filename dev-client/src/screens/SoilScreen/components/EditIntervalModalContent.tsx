@@ -278,7 +278,7 @@ type ModalProps = {
 
 /**
  * Shows a modal warning if there have been changes to the interval start
- * and end.
+ * or end.
  */
 const ConfirmEditingModal = ({
   formNotReady,
