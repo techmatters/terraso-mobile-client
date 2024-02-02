@@ -18,7 +18,9 @@
 import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
 import {useTranslation} from 'react-i18next';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {Box, Row} from 'native-base';
+import {Box, FormControl, Row} from 'native-base';
+import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import {useMemo} from 'react';
 
 export type IntervalFormInput = {
   label: string;
@@ -26,19 +28,40 @@ export type IntervalFormInput = {
   end: string;
 };
 
-export const IntervalForm = () => {
+export const IntervalForm = ({
+  editable,
+  displayLabel,
+  labelMaxChars = FORM_LABEL_MAX,
+}: {
+  editable: boolean;
+  displayLabel: boolean;
+  labelMaxChars?: number;
+}) => {
   const {t} = useTranslation();
+  const {value: labelContent} = useFieldContext('label');
+  const labelLength = useMemo(
+    () => (labelContent ? labelContent.length : 0),
+    [labelContent],
+  );
   return (
     <>
-      <FormInput
-        name="label"
-        helpText={t('soil.depth_interval.label_help', {
-          max: FORM_LABEL_MAX,
-        })}
-        placeholder={t('soil.depth_interval.label_placeholder')}
-        variant="underlined"
-      />
-      <Box height="20px" />
+      {displayLabel && (
+        <FormControl>
+          <FormInput
+            name="label"
+            placeholder={t('soil.depth_interval.label_placeholder')}
+            variant="underlined"
+            maxLength={labelMaxChars}
+            isDisabled={!editable}
+          />
+          <FormControl.HelperText>
+            {t('general.character_limit', {
+              current: labelLength,
+              limit: labelMaxChars,
+            })}
+          </FormControl.HelperText>
+        </FormControl>
+      )}
       <Row justifyContent="space-between" space="40px">
         <Box flex={1}>
           <FormInput
@@ -47,6 +70,7 @@ export const IntervalForm = () => {
             placeholder={t('soil.depth_interval.start_label', {
               unit: 'cm',
             })}
+            isDisabled={!editable}
           />
         </Box>
         <Box flex={1}>
@@ -56,6 +80,7 @@ export const IntervalForm = () => {
             placeholder={t('soil.depth_interval.end_label', {
               unit: 'cm',
             })}
+            isDisabled={!editable}
           />
         </Box>
       </Row>

@@ -204,7 +204,8 @@
       "measurement_units": "Units of Measurement"
     },
     "sites": {
-      "empty": "This project has no sites yet.\n\nYou can transfer existing LandPKS sites to this project, or use the map on the Home screen to create new sites to add to this project.",
+      "empty_viewer": "This project has no sites yet.",
+      "empty_contributor": "You can transfer existing LandPKS sites to this project, or use the map on the Home screen to create new sites to add to this project.",
       "add": "Add sites",
       "transfer": "Transfer Sites",
       "create": "Create Sites",
@@ -328,7 +329,8 @@
       "privacy_policy_link_url": "https://landpotential.org/",
       "privacy_policy_link_text": "LandPKS Privacy Policy"
     },
-    "required": "required",
+    "required": "Required",
+    "character_limit": "{{current}} / {{limit}} characters",
     "open_settings": "Open Settings",
     "yes": "Yes",
     "no": "No"
@@ -429,13 +431,26 @@
       "photos": "Photos",
       "notes": "Notes"
     },
+    "data": {
+      "rockFragmentVolume": "Rock fragment",
+      "texture": "Texture",
+      "colorValue": "Color"
+    },
+    "soil_preset": {
+      "header": "Change soil pit depths",
+      "info": "Data already entered for a depth will be deleted when the depth interval is changed.",
+      "label": "Depth Intervals",
+      "LANDPKS": "LandPKS (default)",
+      "NRCS": "NRCS",
+      "CUSTOM": "Custom"
+    },
     "depth_interval": {
       "add_title": "Add depth interval",
       "edit_title": "Depth Interval",
-      "data_inputs_title": "Data Inputs",
+      "data_inputs_title": "Soil Data Inputs",
       "label_help": "{{max}} characters max",
       "label_placeholder": "Label",
-      "apply_to_all_label": "Apply to all to intervals",
+      "apply_to_all_label": "Apply to all intervals",
       "start_label": "From ({{unit}})",
       "end_label": "To ({{unit}})",
       "update_modal": {
@@ -443,7 +458,12 @@
         "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
         "action": "Change"
       },
-      "bounds": "{{depthInterval.start}}-{{depthInterval.end}}{{units}}"
+      "error": {
+        "overlaps": "Overlaps existing",
+        "ordering": "Interval bounds error"
+      },
+      "bounds": "{{depthInterval.start}}-{{depthInterval.end}}{{units}}",
+      "delete_depth": "Delete depth"
     },
     "texture": {
       "title": "Soil Texture",

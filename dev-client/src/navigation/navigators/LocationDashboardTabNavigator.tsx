@@ -29,6 +29,7 @@ import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {SpeedDial} from 'terraso-mobile-client/navigation/components/SpeedDial';
 import {Icon} from 'terraso-mobile-client/components/Icons';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const tabDefinitions = {
   SITE: SiteScreen,
@@ -60,7 +61,7 @@ export const LocationDashboardTabNavigator = (params: {siteId: string}) => {
   );
 
   return (
-    <>
+    <BottomSheetModalProvider>
       <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
       <SpeedDial>
         <Button variant="speedDial" leftIcon={<Icon name="description" />}>
@@ -73,6 +74,6 @@ export const LocationDashboardTabNavigator = (params: {siteId: string}) => {
           {t('site.dashboard.speed_dial.bedrock_label')}
         </Button>
       </SpeedDial>
-    </>
+    </BottomSheetModalProvider>
   );
 };

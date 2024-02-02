@@ -106,7 +106,8 @@ export const SoilPitSettings = ({
             width={'60%'}
             variant={'underlined'}
             selectedValue={settings.depthIntervalPreset}
-            onValueChange={onSelectUpdated(onOpen)}>
+            onValueChange={onSelectUpdated(onOpen)}
+            isDisabled={!userCanUpdateIntervals}>
             {DepthPresets.map(preset => (
               <Select.Item
                 label={t(

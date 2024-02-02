@@ -36,6 +36,7 @@ import {RootStack, ScreenName} from 'terraso-mobile-client/navigation/types';
 import {SlopeShapeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeShapeScreen';
 import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
 import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
+import {SoilSurfaceScreen} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceScreen';
 import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
 import {ColorScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen';
 import {SARScreen} from 'terraso-mobile-client/screens/SoilScreen/SARScreen';
@@ -64,6 +65,7 @@ export const screenDefinitions = {
   SLOPE_STEEPNESS: SlopeSteepnessScreen,
   SLOPE_SHAPE: SlopeShapeScreen,
   SLOPE_METER: SlopeMeterScreen,
+  SOIL_SURFACE: SoilSurfaceScreen,
   SOIL_INPUT_soilTexture: TextureScreen,
   SOIL_INPUT_soilColor: ColorScreen,
   SOIL_INPUT_sodiumAdsorptionRatio: SARScreen,

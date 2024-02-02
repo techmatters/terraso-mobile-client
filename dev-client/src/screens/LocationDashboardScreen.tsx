@@ -29,6 +29,9 @@ import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {selectUserRoleSite} from 'terraso-client-shared/selectors';
+import {isSiteManager} from 'terraso-mobile-client/util';
 
 type Props = {siteId?: string; coords?: Coords};
 
@@ -43,21 +46,34 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
     coords = site!;
   }
 
-  const appBarRightButton = useMemo(
-    () =>
-      siteId ? (
-        <AppBarIconButton
-          name="settings"
-          onPress={() => navigation.navigate('SITE_SETTINGS', {siteId})}
-        />
-      ) : (
+  const userRole = useSelector(state =>
+    siteId === undefined ? null : selectUserRoleSite(state, siteId),
+  );
+
+  const appBarRightButton = useMemo(() => {
+    // display add button if no site associated with location
+    if (!siteId) {
+      return (
         <AppBarIconButton
           name="add"
           onPress={() => navigation.navigate('CREATE_SITE', {coords})}
         />
-      ),
-    [siteId, coords, navigation],
-  );
+      );
+    }
+
+    // display nothing if user does not own the site / is not manager
+    if (userRole === null || !isSiteManager(userRole)) {
+      return undefined;
+    }
+
+    // otherwise, show the settings
+    return (
+      <AppBarIconButton
+        name="settings"
+        onPress={() => navigation.navigate('SITE_SETTINGS', {siteId})}
+      />
+    );
+  }, [siteId, coords, navigation, userRole]);
 
   const onInfoPress = useCallback(
     () => infoModalRef.current?.present(),
@@ -80,7 +96,9 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
           }
           BottomNavigation={null}>
           {siteId ? (
-            <LocationDashboardTabNavigator siteId={siteId} />
+            <SiteRoleContextProvider siteId={siteId}>
+              <LocationDashboardTabNavigator siteId={siteId} />
+            </SiteRoleContextProvider>
           ) : (
             <SiteScreen siteId={siteId} coords={coords} />
           )}
