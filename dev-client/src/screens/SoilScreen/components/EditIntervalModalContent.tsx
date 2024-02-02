@@ -24,9 +24,11 @@ import {
   methodEnabled,
   SoilDataDepthInterval,
   SoilPitMethod,
+  updateSoilDataDepthInterval,
+  deleteSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
-import {useMemo, useCallback} from 'react';
+import {useMemo, useCallback, FormEvent, useState} from 'react';
 import {
   IntervalForm,
   IntervalFormInput,
@@ -34,13 +36,19 @@ import {
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
-import {Heading, Row, Box, Button} from 'native-base';
+import {Heading, Row, Box, Button, Column} from 'native-base';
 import {Formik} from 'formik';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useModal} from 'terraso-mobile-client/components/Modal';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
+import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {Icon} from 'terraso-mobile-client/components/Icons';
+import {selectSoilDataIntervals} from 'terraso-client-shared/selectors';
+import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -50,6 +58,7 @@ type EditIntervalFormInput = IntervalFormInput &
 type Props = {
   siteId: string;
   depthInterval: DepthInterval;
+  mutable: boolean;
   requiredInputs: SoilPitMethod[];
 };
 
@@ -57,19 +66,37 @@ export const EditIntervalModalContent = ({
   siteId,
   depthInterval,
   requiredInputs,
+  mutable,
 }: Props) => {
   const {t} = useTranslation();
-  const soilData = useSelector(state => state.soilId.soilData[siteId]);
   const dispatch = useDispatch();
   const onClose = useModal()!.onClose;
 
-  const existingIntervals = useMemo(
-    () => soilData.depthIntervals.map(interval => interval.depthInterval),
-    [soilData.depthIntervals],
+  const aggregatedIntervals = useSelector(state =>
+    selectSoilDataIntervals(state, siteId),
   );
-  const interval = useMemo(
-    () => soilData.depthIntervals.find(sameDepth({depthInterval}))!,
-    [soilData.depthIntervals, depthInterval],
+
+  const soilIntervals = useMemo(
+    () => aggregatedIntervals.map(({interval}) => interval),
+    [aggregatedIntervals],
+  );
+
+  const interval = useMemo(() => {
+    return soilIntervals.find(sameDepth({depthInterval}))!;
+  }, [soilIntervals, depthInterval]);
+
+  const [currentInterval] = useState(interval);
+
+  const existingIntervals = useMemo(
+    () =>
+      soilIntervals
+        .map(i => i.depthInterval)
+        .filter(
+          ({start, end}) =>
+            start !== currentInterval.depthInterval.start ||
+            end !== currentInterval.depthInterval.end,
+        ),
+    [soilIntervals, currentInterval],
   );
 
   const requiredInputsSet = useMemo(
@@ -98,11 +125,6 @@ export const EditIntervalModalContent = ({
     [t, existingIntervals],
   );
 
-  const showUpdateWarning = useMemo(
-    () => soilData.depthDependentData.length > 0,
-    [soilData],
-  );
-
   const updateSwitch = useCallback(
     (method: SoilPitMethod) => (newValue: boolean) => {
       dispatch(
@@ -118,75 +140,178 @@ export const EditIntervalModalContent = ({
 
   const onSubmit = useCallback(
     async (values: EditIntervalFormInput) => {
-      const {start, end, ...newInterval} = schema.cast(values);
-      await dispatch(
-        updateSoilDataDepthIntervalAsync({
-          siteId,
-          ...newInterval,
-          depthInterval: {start, end},
-        }),
-      );
+      const {
+        depthInterval: {start, end},
+      } = currentInterval;
+      const {
+        start: newStart,
+        end: newEnd,
+        applyToAll,
+        ...enabledInputs
+      } = schema.cast(values);
+
+      let applyToIntervals = {};
+      if (applyToAll) {
+        applyToIntervals = {applyToIntervals: existingIntervals};
+      }
+
+      const input: SoilDataUpdateDepthIntervalMutationInput = {
+        siteId,
+        ...applyToIntervals,
+        ...enabledInputs,
+        depthInterval: {start: newStart, end: newEnd},
+      };
+      if (newStart !== start || newEnd !== end) {
+        await dispatch(
+          deleteSoilDataDepthInterval({
+            siteId,
+            depthInterval: {start, end},
+          }),
+        );
+      }
+      await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
-    [schema, dispatch, onClose, siteId],
+    [schema, dispatch, onClose, siteId, currentInterval, existingIntervals],
   );
+
+  const deleteInterval = useCallback(() => {
+    dispatch(
+      deleteSoilDataDepthInterval({
+        siteId,
+        depthInterval: currentInterval.depthInterval,
+      }),
+    );
+    onClose();
+  }, [dispatch, currentInterval, siteId, onClose]);
+
+  const userRole = useSiteRoleContext();
+
+  const editingAllowed = useMemo(() => {
+    if (!userRole) {
+      return false;
+    }
+    if (userRole.kind === 'site' && userRole.role === 'owner') {
+      return true;
+    }
+    if (
+      userRole.kind === 'project' &&
+      (userRole.role === 'manager' || userRole.role === 'contributor')
+    ) {
+      return true;
+    }
+    return false;
+  }, [userRole]);
 
   return (
     <Formik
       validationSchema={schema}
       initialValues={{
-        ...interval,
-        start: '',
-        end: '',
+        ...{...currentInterval, ...{label: currentInterval.label || ''}},
+        start: String(currentInterval.depthInterval.start),
+        end: String(currentInterval.depthInterval.end),
         applyToAll: false,
       }}
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
-        <>
+        <Column mt="34px" mb="23px" mx="15px">
           <Heading variant="h6">{t('soil.depth_interval.edit_title')}</Heading>
-          <Box height="20px" />
-          <IntervalForm />
-          <Box height="50px" />
+          <Box pl="2px" mb="11px">
+            <IntervalForm
+              displayLabel={'label' in currentInterval}
+              editable={mutable}
+            />
+          </Box>
+
           <Heading variant="h6">
             {t('soil.depth_interval.data_inputs_title')}
           </Heading>
-          {inputsWithRequired.map(([method, isRequired]) => (
-            <InputFormSwitch
-              method={method}
-              isRequired={isRequired}
-              value={interval[methodEnabled(method)]}
-              updateEnabled={updateSwitch(method)}
-              key={method}
-            />
-          ))}
-          <FormCheckbox
-            name="applyToAll"
-            label={t('soil.depth_interval.apply_to_all_label')}
-          />
-          <Row>
-            {showUpdateWarning ? (
-              <ConfirmModal
-                trigger={onOpen => (
-                  <AddButton
-                    action={onOpen}
-                    isDisabled={!isValid || isSubmitting}
-                  />
-                )}
-                title={t('soil.depth_interval.update_modal.title')}
-                body={t('soil.depth_interval.update_modal.body')}
-                actionName={t('soil.depth_interval.update_modal.action')}
-                handleConfirm={() => handleSubmit()}
+
+          <Column space="20px" mt="17px" mb="12px">
+            {inputsWithRequired.map(([method, isRequired]) => (
+              <InputFormSwitch
+                method={method}
+                disabled={!editingAllowed}
+                isRequired={isRequired}
+                updateEnabled={updateSwitch(method)}
+                key={method}
               />
-            ) : (
-              <AddButton
-                action={() => handleSubmit()}
-                isDisabled={!isValid || isSubmitting}
-              />
-            )}
+            ))}
+          </Column>
+
+          <Row mb="12px">
+            <FormCheckbox name="applyToAll" />
+            <FormLabel variant="body1">
+              {t('soil.depth_interval.apply_to_all_label')}
+            </FormLabel>
           </Row>
-        </>
+
+          {editingAllowed ? (
+            <Row justifyContent="space-between">
+              <Button
+                px="11px"
+                leftIcon={<Icon name="delete" color="error.main" />}
+                _text={{textTransform: 'uppercase', color: 'error.main'}}
+                variant="link"
+                size="lg"
+                onPress={deleteInterval}>
+                {t('soil.depth_interval.delete_depth')}
+              </Button>
+              <ConfirmEditingModal
+                formNotReady={!isValid || isSubmitting}
+                handleSubmit={handleSubmit}
+                interval={currentInterval?.depthInterval}
+              />
+            </Row>
+          ) : undefined}
+        </Column>
       )}
     </Formik>
+  );
+};
+
+type ModalProps = {
+  formNotReady: boolean;
+  handleSubmit: (e?: FormEvent<HTMLFormElement> | undefined) => void;
+  interval: DepthInterval;
+};
+
+/**
+ * Shows a modal warning if there have been changes to the interval start
+ * or end.
+ */
+const ConfirmEditingModal = ({
+  formNotReady,
+  handleSubmit,
+  interval: {start, end},
+}: ModalProps) => {
+  const {t} = useTranslation();
+
+  const newStart = useFieldContext('start');
+  const newEnd = useFieldContext('end');
+
+  const showWarningModal = useMemo(() => {
+    return Number(newStart.value) !== start || Number(newEnd.value) !== end;
+  }, [start, end, newStart, newEnd]);
+
+  const buttonAction = useMemo(
+    () =>
+      (onOpen: () => void) =>
+      (...args: Parameters<typeof handleSubmit>) =>
+        showWarningModal ? onOpen() : handleSubmit(...args),
+    [handleSubmit, showWarningModal],
+  );
+
+  return (
+    <ConfirmModal
+      trigger={onOpen => (
+        <SaveButton action={buttonAction(onOpen)} isDisabled={formNotReady} />
+      )}
+      title={t('soil.depth_interval.update_modal.title')}
+      body={t('soil.depth_interval.update_modal.body')}
+      actionName={t('soil.depth_interval.update_modal.action')}
+      handleConfirm={() => handleSubmit()}
+    />
   );
 };
 
@@ -195,12 +320,18 @@ type AddButtonProps = {
   isDisabled: boolean;
 };
 
-const AddButton = ({action, isDisabled}: AddButtonProps) => {
+const SaveButton = ({action, isDisabled}: AddButtonProps) => {
   const {t} = useTranslation();
 
   return (
-    <Button size="lg" mx="auto" onPress={action} isDisabled={isDisabled}>
-      {t('general.add')}
+    <Button
+      flex={1}
+      size="lg"
+      mx="auto"
+      onPress={action}
+      isDisabled={isDisabled}
+      _text={{textTransform: 'uppercase'}}>
+      {t('general.save')}
     </Button>
   );
 };
@@ -208,15 +339,15 @@ const AddButton = ({action, isDisabled}: AddButtonProps) => {
 type SwitchProps = {
   method: SoilPitMethod;
   isRequired: boolean;
-  value: boolean;
   updateEnabled: (newValue: boolean) => void;
-};
+} & React.ComponentProps<typeof FormSwitch>;
 
 const InputFormSwitch = ({
   method,
   isRequired,
-  value,
   updateEnabled,
+  disabled,
+  ...props
 }: SwitchProps) => {
   const {t} = useTranslation();
 
@@ -227,12 +358,24 @@ const InputFormSwitch = ({
       : methodDescriber;
   }, [t, method, isRequired]);
 
+  const {onChange} = useFieldContext<boolean>(methodEnabled(method));
+
+  const formSwitchChange = useCallback(
+    (newValue: boolean) => {
+      updateEnabled(newValue);
+      if (onChange) {
+        onChange(newValue);
+      }
+    },
+    [onChange, updateEnabled],
+  );
+
   return (
     <FormSwitch
+      {...props}
       name={methodEnabled(method)}
-      value={isRequired || value}
-      disabled={isRequired}
-      onChange={updateEnabled}
+      disabled={isRequired || disabled}
+      onChange={formSwitchChange}
       label={label}
     />
   );

@@ -26,7 +26,9 @@ import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettin
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 
+// TODO: replace with real link
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
 
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
@@ -58,6 +60,17 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
     };
   };
 
+  const userRole = useProjectRoleContext();
+
+  // Can't user RestrictByUserRole component because of Navigator constraints
+  // Children of Navigator must all be Screens
+  const restrictScreen = (element: React.ReactNode) => {
+    if (userRole === 'manager') {
+      return element;
+    }
+    return undefined;
+  };
+
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
@@ -79,14 +92,16 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
         component={ProjectTeamScreen}
         initialParams={{projectId}}
       />
-      <Tab.Screen
-        name={TabRoutes.SETTINGS}
-        component={ProjectSettingsScreen}
-        initialParams={{
-          projectId,
-          downloadLink: TEMP_DOWNLOAD_LINK,
-        }}
-      />
+      {restrictScreen(
+        <Tab.Screen
+          name={TabRoutes.SETTINGS}
+          component={ProjectSettingsScreen}
+          initialParams={{
+            projectId,
+            downloadLink: TEMP_DOWNLOAD_LINK,
+          }}
+        />,
+      )}
     </Tab.Navigator>
   );
 };

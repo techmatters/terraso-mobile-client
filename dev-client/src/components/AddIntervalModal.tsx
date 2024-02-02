@@ -66,7 +66,7 @@ export const AddIntervalModal = ({
         <>
           <Heading variant="h6">{t('soil.depth_interval.add_title')}</Heading>
           <Box height="20px" />
-          <IntervalForm />
+          <IntervalForm editable={true} displayLabel={true} />
           <Box height="50px" />
           <Button
             size="lg"

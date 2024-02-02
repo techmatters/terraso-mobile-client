@@ -33,7 +33,7 @@ type Props<Keys extends string> = {
     onChange?: (value: Keys) => void;
   };
   labelProps?: {
-    variant: 'secondary';
+    variant: 'secondary' | 'body1';
   };
 };
 

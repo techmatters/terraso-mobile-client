@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {NativeModules, Platform} from 'react-native';
+import {SiteUserRole} from 'terraso-client-shared/selectors';
 import {
   isValidLongitude,
   isValidLatitude,
@@ -120,3 +121,18 @@ export const isValidCoordinates = (input: string) => {
 
   return isValidLatitude(latitude) && isValidLongitude(longitude);
 };
+
+export const matchesOne =
+  <T>(cmp: (a: T, b: T) => boolean) =>
+  (examples: T[]) =>
+  (sample: T) =>
+    examples.filter(x => cmp(x, sample)).length > 0;
+
+export const matchesRole = matchesOne(
+  (a: SiteUserRole, b: SiteUserRole) => a.kind === b.kind && a.role === b.role,
+);
+
+export const isSiteManager = matchesRole([
+  {kind: 'site', role: 'owner'},
+  {kind: 'project', role: 'manager'},
+]);

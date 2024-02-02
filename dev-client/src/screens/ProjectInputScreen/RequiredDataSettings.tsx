@@ -25,7 +25,13 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Switch} from 'react-native';
 
-export const RequiredDataSettings = ({projectId}: {projectId: string}) => {
+export const RequiredDataSettings = ({
+  projectId,
+  enabled,
+}: {
+  projectId: string;
+  enabled: boolean;
+}) => {
   const {t} = useTranslation();
   const settings = useSelector(
     state => state.soilId.projectSettings[projectId],
@@ -43,6 +49,7 @@ export const RequiredDataSettings = ({projectId}: {projectId: string}) => {
           justifyContent="flex-start"
           alignItems="center">
           <Switch
+            disabled={!enabled}
             value={settings[methodRequired(method)]}
             thumbColor={
               settings[methodRequired(method)]

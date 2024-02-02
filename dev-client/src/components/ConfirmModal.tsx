@@ -23,16 +23,11 @@ import {
   Modal as NativeBaseModal,
   Text,
 } from 'native-base';
-import {
-  Modal,
-  ModalHandle,
-  ModalTrigger,
-} from 'terraso-mobile-client/components/Modal';
+import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
 import {useTranslation} from 'react-i18next';
 import {forwardRef, useCallback, useImperativeHandle, useRef} from 'react';
 
-type Props = {
-  trigger?: ModalTrigger;
+type Props = React.ComponentProps<typeof Modal> & {
   title: string;
   body: string;
   actionName: string;
@@ -50,8 +45,8 @@ export const ConfirmModal = forwardRef<ModalHandle, Props>(
       body,
       actionName,
       handleConfirm,
-      trigger,
       isConfirmError = true,
+      ...modalProps
     }: Props,
     forwardedRef,
   ) => {
@@ -68,9 +63,9 @@ export const ConfirmModal = forwardRef<ModalHandle, Props>(
     return (
       <Modal
         ref={ref}
-        trigger={trigger}
         CloseButton={null}
-        _content={{padding: 0, bg: 'grey.200'}}>
+        _content={{padding: 0, bg: 'grey.200'}}
+        {...modalProps}>
         <NativeBaseModal.Body padding="24px">
           <Heading variant="h5" textAlign="center">
             {title}

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,26 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FormControl} from 'native-base';
-import {memo} from 'react';
-import {
-  FieldContext,
-  useFieldContext,
-} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import {Text} from 'native-base';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
-type Props<Name extends string> = React.PropsWithChildren<{
-  name: Name;
-  useFormContext?: boolean;
-}>;
+type Props = {siteId: string};
 
-export const FormField = memo(
-  <Name extends string>({
-    name,
-    useFormContext = true,
-    children,
-  }: Props<Name>) => (
-    <FieldContext.Provider value={useFieldContext(name)}>
-      {useFormContext ? <FormControl>{children}</FormControl> : children}
-    </FieldContext.Provider>
-  ),
-);
+export const SoilSurfaceScreen = ({}: Props) => {
+  return (
+    <ScreenScaffold>
+      <Text>Unimplemented soil surface screen</Text>
+    </ScreenScaffold>
+  );
+};

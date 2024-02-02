@@ -26,7 +26,7 @@ import {
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {updateProject} from 'terraso-client-shared/project/projectSlice';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'react-native';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
@@ -36,6 +36,8 @@ import {selectProjectSettings} from 'terraso-client-shared/selectors';
 import {EnsureDataPresent} from 'terraso-mobile-client/components/EnsureDataPresent';
 import {SoilPitSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/SoilPitSettings';
 import {RequiredDataSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/RequiredDataSettings';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -67,6 +69,10 @@ export const ProjectInputScreen = ({
     // Manual save button is for reassurance, all items auto-save.
     navigation.pop();
   };
+
+  const userRole = useProjectRoleContext();
+
+  const allowEditing = useMemo(() => userRole === 'manager', [userRole]);
 
   return (
     <VStack height="full">
@@ -100,29 +106,37 @@ export const ProjectInputScreen = ({
                 value: project.privacy,
                 ml: '',
               }}
+              allDisabled={!allowEditing}
             />
           </HStack>
-          <Text bold fontSize={'md'}>
-            {t('projects.inputs.instructions.title')}
-          </Text>
-          <Text fontSize={'md'}>
-            {t('projects.inputs.instructions.description')}
-          </Text>
-          <Button
-            mt={2}
-            pl={4}
-            pr={4}
-            size="lg"
-            backgroundColor="primary.main"
-            shadow={5}
-            onPress={onEditInstructions}>
-            <HStack>
-              <Icon color="primary.contrast" size={'sm'} mr={2} name={'edit'} />
-              <Text color="primary.contrast" textTransform={'uppercase'}>
-                {t('projects.inputs.instructions.add_label')}
-              </Text>
-            </HStack>
-          </Button>
+          <RestrictByProjectRole role="manager">
+            <Text bold fontSize={'md'}>
+              {t('projects.inputs.instructions.title')}
+            </Text>
+            <Text fontSize={'md'}>
+              {t('projects.inputs.instructions.description')}
+            </Text>
+            <Button
+              mt={2}
+              pl={4}
+              pr={4}
+              size="lg"
+              backgroundColor="primary.main"
+              shadow={5}
+              onPress={onEditInstructions}>
+              <HStack>
+                <Icon
+                  color="primary.contrast"
+                  size={'sm'}
+                  mr={2}
+                  name={'edit'}
+                />
+                <Text color="primary.contrast" textTransform={'uppercase'}>
+                  {t('projects.inputs.instructions.add_label')}
+                </Text>
+              </HStack>
+            </Button>
+          </RestrictByProjectRole>
         </Box>
         <Accordion
           Head={
@@ -143,15 +157,17 @@ export const ProjectInputScreen = ({
               {t('soil.project_settings.required_data_title')}
             </Text>
           }>
-          <RequiredDataSettings projectId={projectId} />
+          <RequiredDataSettings projectId={projectId} enabled={allowEditing} />
         </Accordion>
       </ScrollView>
-      <Fab
-        onPress={() => onSave()}
-        textTransform={'uppercase'}
-        label={t('general.save_fab')}
-        renderInPortal={false}
-      />
+      <RestrictByProjectRole role="manager">
+        <Fab
+          onPress={() => onSave()}
+          textTransform={'uppercase'}
+          label={t('general.save_fab')}
+          renderInPortal={false}
+        />
+      </RestrictByProjectRole>
     </VStack>
   );
 };
