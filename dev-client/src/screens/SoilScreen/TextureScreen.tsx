@@ -16,7 +16,6 @@
  */
 
 import {Button, ScrollView} from 'native-base';
-import {Text} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, ImageSourcePropType} from 'react-native';
@@ -47,6 +46,7 @@ import {
   Column,
   Row,
   Heading,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const FRAGMENT_IMAGES = {
