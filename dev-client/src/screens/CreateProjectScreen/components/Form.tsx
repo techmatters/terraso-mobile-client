@@ -161,7 +161,6 @@ export const EditForm = ({
   );
 };
 
-// TODO(performance): Adjust types
 export default function Form({
   editForm = false,
   onInfoPress,
@@ -223,7 +222,7 @@ export default function Form({
           PRIVATE: {text: t('projects.create.private')},
         }}
         groupProps={{
-          value: privacy, // TODO(performance): Investigate whether this input _really_ has to be controlled
+          value: privacy,
           variant: 'oneLine',
           onChange: handleChange('privacy'),
           name: 'data-privacy',

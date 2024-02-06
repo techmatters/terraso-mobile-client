@@ -42,7 +42,12 @@ type Props = {
   isPopover?: boolean;
 };
 
-const SiteCard = ({site, onShowSiteOnMap, buttons, isPopover}: Props) => {
+export const SiteCard = ({
+  site,
+  onShowSiteOnMap,
+  buttons,
+  isPopover,
+}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state =>
@@ -95,11 +100,5 @@ const SiteCard = ({site, onShowSiteOnMap, buttons, isPopover}: Props) => {
     </Card>
   );
 };
-
-// TODO(performance): Check whether it would be beneficial to memoize this component
-// const SiteCardMemoized = React.memo(SiteCard);
-// export {SiteCardMemoized};
-
-export {SiteCard};
 
 const styles = StyleSheet.create({mapView: {height: 60, width: 60}});

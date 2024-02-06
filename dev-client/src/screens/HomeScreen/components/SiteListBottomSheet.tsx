@@ -37,10 +37,8 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-// TODO(performance): Same as in ProjectList.tsx
 const WINDOW_SIZE = 3;
 const MAX_TO_RENDER_PER_BATCH = 3;
-// const ITEM_HEIGHT = ??
 const SEPARATOR_HEIGHT = 8;
 
 type Props = {
@@ -93,13 +91,6 @@ export const SiteListBottomSheet = memo(
         [siteDistances],
       );
 
-      // TODO(performance): Same as in ProjectList.tsx
-      // const getItemLayout = useCallback((_: any, index: number) => {
-      //   const itemHeight = ITEM_HEIGHT + SEPARATOR_HEIGHT;
-      //   const offset = itemHeight * index;
-      //   return {length: itemHeight, offset, index};
-      // }, []);
-
       const ListEmptyComponent = useMemo(
         () => <Text>{t('site.search.no_matches')}</Text>,
         [t],
@@ -128,7 +119,6 @@ export const SiteListBottomSheet = memo(
               data={filteredSites}
               maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
               windowSize={WINDOW_SIZE}
-              // getItemLayout={getItemLayout}
               keyExtractor={keyExtractor}
               renderItem={renderSite}
               ItemSeparatorComponent={ItemSeparatorComponent}

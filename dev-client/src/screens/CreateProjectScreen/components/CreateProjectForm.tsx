@@ -75,8 +75,6 @@ export const CreateProjectForm = ({onInfoPress}: Props) => {
   );
 };
 
-// TODO(performance): Adjust types, think about simplifying the structure here a little bit
-// and/or extracting this component to a separate file
 const FormContainer = React.memo(
   ({
     isSubmitting,
