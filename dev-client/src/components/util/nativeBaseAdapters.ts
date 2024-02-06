@@ -16,6 +16,7 @@
  */
 
 import {ColorValue, DimensionValue, TextStyle, ViewStyle} from 'react-native';
+import {entries, fromEntries} from 'terraso-client-shared/utils';
 import {theme} from 'terraso-mobile-client/theme';
 
 type PathOf<O extends Record<string, any>> = string &
@@ -204,15 +205,28 @@ const keys = <O extends object>(obj: O) => Object.keys(obj) as (keyof O)[];
 export const convertNBStyles = <
   Props extends NativeBaseProps,
   Component extends NBComponent,
+  SubProps extends string = never,
 >(
   {variant, ...props}: Props & {variant?: keyof Variants[Component]},
   component?: Component,
-): Omit<Props, keyof NativeBaseProps> => {
+  subProps?: Record<SubProps, any>,
+): Omit<Props, keyof NativeBaseProps> & Record<SubProps, any> => {
   if (component && component in theme.components) {
     const componentTheme = theme.components[component];
+    let baseSubProps: any;
+    let variantSubProps: any;
     if ('baseStyle' in componentTheme) {
+      let baseTheme = componentTheme.baseStyle;
+      if (subProps !== undefined) {
+        baseSubProps = fromEntries(
+          entries(baseTheme as any).filter(([k]) => k in subProps!),
+        );
+        baseTheme = fromEntries(
+          entries(baseTheme as any).filter(([k]) => !(k in subProps!)),
+        );
+      }
       props = {
-        ...componentTheme.baseStyle,
+        ...baseTheme,
         ...props,
       };
     }
@@ -222,15 +236,32 @@ export const convertNBStyles = <
       variant in componentTheme.variants
     ) {
       const variants = componentTheme.variants;
+      let variantTheme = (variants as any)[variant];
+      if (subProps !== undefined) {
+        variantSubProps = fromEntries(
+          entries(variantTheme).filter(([k]) => k in subProps!),
+        );
+        variantTheme = fromEntries(
+          entries(variantTheme).filter(([k]) => !(k in subProps!)),
+        );
+      }
       props = {
-        ...(variants as any)[variant],
+        ...variantTheme,
         ...props,
       };
+    }
+    if (subProps !== undefined) {
+      subProps = fromEntries(
+        entries(subProps!).map(([k, v]) => [
+          k,
+          {...baseSubProps[k], ...variantSubProps[k], ...v},
+        ]),
+      );
     }
   }
 
   const styleProp: ViewStyle = {};
-  const remainingProps: any = {};
+  const remainingProps: any = subProps ?? {};
 
   keys(props).forEach(k => {
     const propValue = props[k];

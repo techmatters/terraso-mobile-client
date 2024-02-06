@@ -24,8 +24,8 @@ import {theme} from 'terraso-mobile-client/theme';
 import {
   NativeBaseProps,
   ThemeColor,
-  getByKey,
   convertNBStyles,
+  convertColorProp,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {
   Box,
@@ -42,13 +42,9 @@ export type IconProps = Omit<VectorIconProps, 'size' | 'color'> &
 export const Icon = ({size = 'md', color, ...props}: IconProps) => {
   return (
     <MaterialIcon
-      size={typeof size === 'string' ? theme.components.Icon.sizes[size] : size}
-      color={
-        typeof color === 'string'
-          ? getByKey(theme.colors, color) ?? color
-          : color
-      }
       {...convertNBStyles(props)}
+      size={typeof size === 'string' ? theme.components.Icon.sizes[size] : size}
+      color={convertColorProp(color)}
     />
   );
 };

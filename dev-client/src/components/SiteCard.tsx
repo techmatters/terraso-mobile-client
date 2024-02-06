@@ -75,10 +75,7 @@ const SiteCard = ({site, onShowSiteOnMap, buttons, isPopover}: Props) => {
       <Row alignItems="center">
         <StaticMapView coords={site} style={styles.mapView} />
         <Box w="4" />
-        <Badge
-          variant="chip"
-          backgroundColor="primary.lighter"
-          startIcon={<Icon color="text.primary" name="people" />}>
+        <Badge variant="chip" startIcon={<Icon name="people" />}>
           1
         </Badge>
         <Box flexGrow={1} />

@@ -111,20 +111,27 @@ type BadgeProps = NativeBaseProps &
     variant?: keyof (typeof theme.components)['Badge']['variants'];
     startIcon?: React.ReactNode;
     _text?: TextProps;
-    _icon?: IconProps;
+    _icon?: Omit<IconProps, 'name'>;
   };
 export const Badge = ({
-  _text,
-  _icon,
+  _text: propsText,
+  _icon: propsIcon,
   startIcon,
   children,
   ...props
-}: React.PropsWithChildren<BadgeProps>) => (
-  <RN.View {...convertNBStyles({style: styles.badge, ...props}, 'Badge')}>
-    {withProps(startIcon, _icon)}
-    <Text {..._text}>{children}</Text>
-  </RN.View>
-);
+}: React.PropsWithChildren<BadgeProps>) => {
+  const {_icon, _text, ...convertedStyles} = convertNBStyles(
+    {style: styles.badge, ...props},
+    'Badge',
+    {_text: propsText, _icon: propsIcon},
+  );
+  return (
+    <RN.View {...convertedStyles}>
+      {withProps(startIcon, _icon)}
+      <Text {..._text}>{children}</Text>
+    </RN.View>
+  );
+};
 
 const styles = RN.StyleSheet.create({
   row: {flexDirection: 'row'},

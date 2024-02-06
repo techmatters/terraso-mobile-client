@@ -60,16 +60,10 @@ export const ProjectPreviewCard = ({project}: Props) => {
       <HStack space={2} alignItems="center">
         {/* TODO: Progress still not stored on backend */}
         <Text>30%</Text>
-        <Badge
-          variant="chip"
-          backgroundColor="primary.lighter"
-          startIcon={<Icon color="text.primary" name="location-on" />}>
+        <Badge variant="chip" startIcon={<Icon name="location-on" />}>
           {Object.keys(project.sites).length}
         </Badge>
-        <Badge
-          variant="chip"
-          backgroundColor="primary.lighter"
-          startIcon={<Icon color="text.primary" name="people-alt" />}>
+        <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
           {Object.keys(project.memberships).length}
         </Badge>
       </HStack>

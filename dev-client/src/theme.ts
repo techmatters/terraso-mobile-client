@@ -83,6 +83,10 @@ export const theme = extendTheme({
         chip: {
           borderRadius: '100px',
           padding: '4px',
+          bg: 'primary.lighter',
+          _icon: {
+            color: 'action.active',
+          },
         },
         notification: {
           bg: 'primary.lightest',
