@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Text} from 'native-base';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {siteId: string};
 

@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Column, Heading, Row} from 'native-base';
 import {
   methodEnabled,
   methodRequired,
@@ -35,6 +33,11 @@ import {useMemo} from 'react';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
+import {
+  Column,
+  Heading,
+  Row,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type DepthIntervalEditorProps = {
   siteId: string;
