@@ -27,7 +27,7 @@ import {
   updateSoilDataDepthInterval,
   deleteSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {DEFAULT_ENABLED_METHODS} from 'terraso-client-shared/constants';
+import {DEFAULT_ENABLED_SOIL_PIT_METHODS} from 'terraso-client-shared/constants';
 import {fromEntries} from 'terraso-client-shared/utils';
 import {useMemo, useCallback, FormEvent, useState} from 'react';
 import {
@@ -134,7 +134,7 @@ export const EditIntervalModalContent = ({
 
   const defaultInputs = useMemo(() => {
     if (!aggregatedInterval?.backendIntervalExists) {
-      return DEFAULT_ENABLED_METHODS.reduce(
+      return DEFAULT_ENABLED_SOIL_PIT_METHODS.reduce(
         (x, key) => ({...x, [methodEnabled(key)]: true}),
         {},
       );
