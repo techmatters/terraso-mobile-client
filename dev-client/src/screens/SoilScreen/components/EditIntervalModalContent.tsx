@@ -153,7 +153,7 @@ export const EditIntervalModalContent = ({
         }),
       );
     },
-    [dispatch, depthInterval, siteId],
+    [dispatch, depthInterval, siteId, defaultInputs],
   );
 
   const onSubmit = useCallback(
