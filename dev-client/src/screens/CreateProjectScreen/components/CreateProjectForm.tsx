@@ -23,7 +23,7 @@ import Form, {
 import {addProject} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Formik} from 'formik';
+import {Formik, FormikProps} from 'formik';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo} from 'react';
 import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
@@ -85,7 +85,12 @@ const FormContainer = React.memo(
     handleBlur,
     onInfoPress,
     privacy,
-  }) => {
+  }: Pick<
+    FormikProps<ProjectFormValues>,
+    'isSubmitting' | 'handleSubmit' | 'handleChange' | 'handleBlur'
+  > &
+    Props &
+    Pick<ProjectFormValues, 'privacy'>) => {
     const {t} = useTranslation();
 
     return (

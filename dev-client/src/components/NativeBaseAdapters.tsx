@@ -1,4 +1,10 @@
-import {createContext, useContext} from 'react';
+import {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  useContext,
+} from 'react';
 import * as RN from 'react-native';
 import {
   NativeBaseProps,
@@ -6,6 +12,14 @@ import {
   convertNBStyles,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
+import {IconProps} from 'terraso-mobile-client/components/Icons';
+
+const withProps = (node: React.ReactNode, props: object | undefined) =>
+  !isValidElement(node) || props === undefined
+    ? node
+    : Children.map(node, child =>
+        cloneElement(child, {...props, ...child.props}),
+      );
 
 type ViewProps = NativeBaseProps & RN.ViewProps;
 export const View = (props: React.PropsWithChildren<ViewProps>) => (
@@ -37,7 +51,7 @@ export const HStack = (props: React.PropsWithChildren<RowProps>) => {
 };
 type ColumnProps = NativeBaseProps & RN.ViewProps;
 export const Column = (props: React.PropsWithChildren<ColumnProps>) => {
-  const memoizedProps = convertNBStyles(props, 'Column');
+  const memoizedProps = convertNBStyles(props, 'VStack');
   return (
     <RN.View {...memoizedProps} style={[styles.column, memoizedProps?.style]} />
   );
@@ -97,15 +111,17 @@ type BadgeProps = NativeBaseProps &
     variant?: keyof (typeof theme.components)['Badge']['variants'];
     startIcon?: React.ReactNode;
     _text?: TextProps;
+    _icon?: IconProps;
   };
 export const Badge = ({
   _text,
+  _icon,
   startIcon,
   children,
   ...props
 }: React.PropsWithChildren<BadgeProps>) => (
   <RN.View {...convertNBStyles({style: styles.badge, ...props}, 'Badge')}>
-    {startIcon}
+    {withProps(startIcon, _icon)}
     <Text {..._text}>{children}</Text>
   </RN.View>
 );

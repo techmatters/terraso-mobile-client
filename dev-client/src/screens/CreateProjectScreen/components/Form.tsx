@@ -16,7 +16,7 @@
  */
 
 import {Fab, Input, Radio, TextArea} from 'native-base';
-import {Formik} from 'formik';
+import {Formik, FormikProps} from 'formik';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
@@ -168,7 +168,9 @@ export default function Form({
   handleChange,
   handleBlur,
   privacy,
-}: Props) {
+}: Props &
+  Pick<FormikProps<ProjectFormValues>, 'handleChange' | 'handleBlur'> &
+  Pick<ProjectFormValues, 'privacy'>) {
   const {t} = useTranslation();
 
   const inputParams = (field: keyof ProjectFormValues) => ({

@@ -33,7 +33,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type IconProps = Omit<VectorIconProps, 'size' | 'color'> &
+export type IconProps = Omit<VectorIconProps, 'size' | 'color'> &
   NativeBaseProps & {
     size?: keyof typeof theme.components.Icon.sizes | number;
     color?: ThemeColor | string;
