@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Select, Text} from 'native-base';
+import {Button, Select} from 'native-base';
 import {useCallback, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {SoilIdProjectSoilSettingsDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
@@ -33,6 +33,7 @@ import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModa
 import {DepthPresets} from 'terraso-mobile-client/constants';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SoilPitSettings = ({
   data: settings,

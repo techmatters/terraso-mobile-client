@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Text} from 'native-base';
 import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
 import {LinkNewWindowIcon} from 'terraso-mobile-client/components/Icons';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const EmptySiteMessage = () => {
   const {t} = useTranslation();

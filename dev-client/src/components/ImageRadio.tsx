@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Text, useToken} from 'native-base';
+import {useToken} from 'native-base';
 import {Pressable, StyleSheet, View} from 'react-native';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type ImageRadioOption = {
   label: string | undefined;

@@ -15,6 +15,7 @@
 		"react-redux",
 		"terraso-mobile-client",
 		"uuid",
-                "@testing/*"
+		"@testing/*",
+		"ts-node"
 	]
 }

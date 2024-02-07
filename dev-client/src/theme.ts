@@ -83,6 +83,10 @@ export const theme = extendTheme({
         chip: {
           borderRadius: '100px',
           padding: '4px',
+          bg: 'primary.lighter',
+          _icon: {
+            color: 'action.active',
+          },
         },
         notification: {
           bg: 'primary.lightest',
@@ -257,12 +261,9 @@ export const theme = extendTheme({
     },
     Icon: {
       sizes: {
-        sm: '20px',
-        md: '24px',
-        lg: '35px',
-      },
-      defaultProps: {
-        size: 'md',
+        sm: 20,
+        md: 24,
+        lg: 35,
       },
     },
     IconButton: {

@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Text} from 'native-base';
 import {
   SoilPitInputScreenProps,
   SoilPitInputScreenScaffold,
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SOCSOMScreen = (props: SoilPitInputScreenProps) => {
   return (

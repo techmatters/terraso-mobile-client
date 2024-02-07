@@ -14,75 +14,76 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Row} from 'native-base';
-import {MaterialCommunityIcons} from 'terraso-mobile-client/components/Icons';
-import {useCallback, useEffect} from 'react';
+import {memo, useCallback, useEffect} from 'react';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {signOut} from 'terraso-client-shared/account/accountSlice';
 import {BottomNavIconButton} from 'terraso-mobile-client/navigation/components/BottomNavIconButton';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {NavigationHelpers} from '@react-navigation/native';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const BottomNavigator = () => {
-  const {t} = useTranslation();
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const loggedIn = useSelector(
-    state => state.account.currentUser.data !== null,
-  );
+export const BottomTabs = createBottomTabNavigator<BottomTabsParamList>();
 
-  const onHome = useCallback(
-    () => navigation.navigate('HOME', {}),
-    [navigation],
-  );
+export const BottomNavigator = memo(
+  ({navigation}: {navigation: NavigationHelpers<BottomTabsParamList>}) => {
+    const {t} = useTranslation();
+    const stackNavigation = useNavigation();
+    const dispatch = useDispatch();
+    const loggedIn = useSelector(
+      state => state.account.currentUser.data !== null,
+    );
 
-  const onProject = useCallback(
-    () => navigation.navigate('PROJECT_LIST'),
-    [navigation],
-  );
+    const onHome = useCallback(() => navigation.navigate('HOME'), [navigation]);
 
-  const onLogout = useCallback(() => {
-    dispatch(signOut());
-  }, [dispatch]);
+    const onProject = useCallback(
+      () => navigation.navigate('PROJECT_LIST'),
+      [navigation],
+    );
 
-  useEffect(() => {
-    if (!loggedIn) {
-      navigation.navigate('LOGIN');
-    }
-  }, [loggedIn, navigation]);
+    const onLogout = useCallback(() => {
+      dispatch(signOut());
+    }, [dispatch]);
 
-  return (
-    <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
-      <BottomNavIconButton
-        name="location-pin"
-        label={t('bottom_navigation.home')}
-        onPress={onHome}
-      />
-      <BottomNavIconButton
-        as={MaterialCommunityIcons}
-        name="briefcase"
-        label={t('bottom_navigation.projects')}
-        onPress={onProject}
-      />
-      <BottomNavIconButton
-        name="settings"
-        label={t('bottom_navigation.settings')}
-      />
-      <ConfirmModal
-        trigger={onOpen => (
-          <BottomNavIconButton
-            name="logout"
-            label={t('bottom_navigation.sign_out')}
-            onPress={onOpen}
-          />
-        )}
-        title={t('logout.confirm_title')}
-        body={t('logout.confirm_body')}
-        actionName={t('logout.confirm_action')}
-        handleConfirm={onLogout}
-      />
-    </Row>
-  );
-};
+    useEffect(() => {
+      if (!loggedIn) {
+        stackNavigation.navigate('LOGIN');
+      }
+    }, [loggedIn, stackNavigation]);
+
+    return (
+      <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
+        <BottomNavIconButton
+          name="location-pin"
+          label={t('bottom_navigation.home')}
+          onPress={onHome}
+        />
+        <BottomNavIconButton
+          name="work"
+          label={t('bottom_navigation.projects')}
+          onPress={onProject}
+        />
+        <BottomNavIconButton
+          name="settings"
+          label={t('bottom_navigation.settings')}
+        />
+        <ConfirmModal
+          trigger={onOpen => (
+            <BottomNavIconButton
+              name="logout"
+              label={t('bottom_navigation.sign_out')}
+              onPress={onOpen}
+            />
+          )}
+          title={t('logout.confirm_title')}
+          body={t('logout.confirm_body')}
+          actionName={t('logout.confirm_action')}
+          handleConfirm={onLogout}
+        />
+      </Row>
+    );
+  },
+);

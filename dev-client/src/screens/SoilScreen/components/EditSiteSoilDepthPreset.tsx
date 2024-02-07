@@ -15,12 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Column, Heading, Text} from 'native-base';
+import {Button} from 'native-base';
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useModal} from 'terraso-mobile-client/components/Modal';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {
+  Column,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   selected: SoilIdSoilDataDepthIntervalPresetChoices;

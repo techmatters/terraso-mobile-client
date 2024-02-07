@@ -46,14 +46,19 @@ import {ConductivityScreen} from 'terraso-mobile-client/screens/SoilScreen/Condu
 import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/CarbonatesScreen';
 import {PhScreen} from 'terraso-mobile-client/screens/SoilScreen/PhScreen';
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
+import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
 
 export type ScreenDefinitions = Record<string, React.FC<any>>;
 
-export const screenDefinitions = {
-  LOGIN: LoginScreen,
+export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,
-  PROJECT_VIEW: ProjectViewScreen,
   HOME: HomeScreen,
+} satisfies ScreenDefinitions;
+
+export const screenDefinitions = {
+  BOTTOM_TABS: BottomTabsScreen,
+  LOGIN: LoginScreen,
+  PROJECT_VIEW: ProjectViewScreen,
   CREATE_PROJECT: CreateProjectScreen,
   SITE_TRANSFER_PROJECT: SiteTransferProjectScreen,
   CREATE_SITE: CreateSiteScreen,

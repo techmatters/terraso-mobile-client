@@ -21,6 +21,7 @@ import {
 
 import React from 'react';
 import {
+  bottomTabScreensDefinitions,
   combinedScreenDefinitions,
   ScreenDefinitions,
 } from 'terraso-mobile-client/navigation/screenDefinitions';
@@ -31,6 +32,7 @@ export type ParamList<T extends ScreenDefinitions> = {
   [K in keyof T]: UnknownToUndefined<React.ComponentProps<T[K]>>;
 };
 
+export type BottomTabsParamList = ParamList<typeof bottomTabScreensDefinitions>;
 export type RootStackParamList = ParamList<typeof combinedScreenDefinitions>;
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();

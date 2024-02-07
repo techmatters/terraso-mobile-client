@@ -17,23 +17,22 @@
 
 import {useCallback, useState} from 'react';
 import {StatusBar, View, LayoutChangeEvent, StyleSheet} from 'react-native';
-import {Box, Column, useTheme} from 'native-base';
+import {useTheme} from 'native-base';
 
-import {BottomNavigator} from 'terraso-mobile-client/navigation/navigators/BottomNavigator';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   children: React.ReactNode;
   AppBar?: React.ReactNode;
-  BottomNavigation?: React.ReactNode;
+  BottomNavigation?: null;
 };
 
 export const ScreenScaffold = ({
   children,
   AppBar: PropsAppBar = <AppBar />,
-  BottomNavigation: PropsBottomNavigation = <BottomNavigator />,
 }: Props) => {
   const {colors} = useTheme();
 
@@ -62,7 +61,6 @@ export const ScreenScaffold = ({
         <HeaderHeightContext.Provider value={headerHeight ?? 0}>
           <Box flex={1}>{children}</Box>
         </HeaderHeightContext.Provider>
-        {PropsBottomNavigation}
       </Column>
     </SafeAreaView>
   );

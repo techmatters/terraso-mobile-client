@@ -14,12 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {HStack, Heading, Text, VStack} from 'native-base';
 import {SearchBar} from 'terraso-mobile-client/components/SearchBar';
 import {useTranslation} from 'react-i18next';
 import {memo} from 'react';
 import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
+import {
+  HStack,
+  VStack,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {query: string; setQuery: (query: string) => void};
 

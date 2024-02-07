@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Column, Fab, Heading, ScrollView} from 'native-base';
+import {Fab, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
@@ -44,6 +44,10 @@ import LinearConcave from 'terraso-mobile-client/assets/slope/shape/linear-conca
 import LinearConvex from 'terraso-mobile-client/assets/slope/shape/linear-convex.svg';
 import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear.svg';
 import {renderShape} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
+import {
+  Column,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   siteId: string;

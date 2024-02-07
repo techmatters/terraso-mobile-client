@@ -15,18 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Heading,
-  HStack,
-  Spacer,
-  VStack,
-  Button,
-  Text,
-  ScrollView,
-} from 'native-base';
+import {Spacer, Button, ScrollView} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  HStack,
+  VStack,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   content: string;

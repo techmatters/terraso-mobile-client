@@ -16,11 +16,14 @@
  */
 
 import {useCallback} from 'react';
-import {Text, HStack} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  HStack,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   siteInstructions: string;
@@ -46,7 +49,7 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
       mr={4}
       onPress={onShowNote}>
       <HStack>
-        <Icon name="place" color="primary.dark" size="sm" mr="1" />
+        <Icon name="place" color="primary.dark" size="sm" mr={1} />
         <Text bold fontSize="md">
           {t('site.notes.projectInstructions')}
         </Text>

@@ -37,11 +37,13 @@ export const getSystemLocale = () => {
   return locale.replace('_', '-');
 };
 
+const shortDateFormatters: Record<string, Intl.DateTimeFormat> = {};
 export const formatDate = (dateString: string) => {
   const locale = getSystemLocale();
-  return new Intl.DateTimeFormat(locale, {
+  shortDateFormatters[locale] ??= new Intl.DateTimeFormat(locale, {
     dateStyle: 'short',
-  }).format(new Date(dateString));
+  });
+  return shortDateFormatters[locale].format(new Date(dateString));
 };
 
 export const formatName = (firstName: string, lastName?: string) => {

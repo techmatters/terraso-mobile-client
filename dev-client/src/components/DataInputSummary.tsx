@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Box, Row, Text} from 'native-base';
 import {Pressable} from 'react-native';
 import {Icon} from 'terraso-mobile-client/components/Icons';
+import {
+  Box,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   required: boolean;

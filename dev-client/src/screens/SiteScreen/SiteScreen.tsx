@@ -18,7 +18,7 @@
 import {useCallback} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {Box, Divider, Text, Column, HStack} from 'native-base';
+import {Divider} from 'native-base';
 
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -30,6 +30,12 @@ import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScree
 
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
+import {
+  Box,
+  Column,
+  HStack,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';

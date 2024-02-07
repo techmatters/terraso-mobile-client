@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Badge, HStack, Heading, Text} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -23,6 +21,12 @@ import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {formatDate} from 'terraso-mobile-client/util';
+import {
+  HStack,
+  Badge,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   project: Project;
@@ -56,16 +60,10 @@ export const ProjectPreviewCard = ({project}: Props) => {
       <HStack space={2} alignItems="center">
         {/* TODO: Progress still not stored on backend */}
         <Text>30%</Text>
-        <Badge
-          variant="chip"
-          backgroundColor="primary.lighter"
-          startIcon={<Icon name="location-on" />}>
+        <Badge variant="chip" startIcon={<Icon name="location-on" />}>
           {Object.keys(project.sites).length}
         </Badge>
-        <Badge
-          variant="chip"
-          backgroundColor="primary.lighter"
-          startIcon={<Icon name="people-alt" />}>
+        <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
           {Object.keys(project.memberships).length}
         </Badge>
       </HStack>

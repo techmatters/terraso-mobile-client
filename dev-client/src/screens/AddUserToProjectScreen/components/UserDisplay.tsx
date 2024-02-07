@@ -15,12 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {HStack, Image, Select, Text, VStack} from 'native-base';
+import {Image, Select} from 'native-base';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {formatName} from 'terraso-mobile-client/util';
 import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';
+import {
+  HStack,
+  VStack,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type UserFields = Omit<User, 'preferences'>;
 

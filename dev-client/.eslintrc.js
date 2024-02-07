@@ -14,6 +14,22 @@ module.exports = {
     '@typescript-eslint/no-restricted-imports': [
       'error',
       {
+        paths: [
+          {
+            name: 'native-base',
+            importNames: [
+              'Box',
+              'Column',
+              'Row',
+              'Row',
+              'Column',
+              'View',
+              'Badge',
+              'Text',
+              'Heading',
+            ],
+          },
+        ],
         patterns: ['./*', '../*'],
       },
     ],

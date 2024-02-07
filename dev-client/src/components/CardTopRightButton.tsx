@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Box} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {Pressable} from 'react-native';
 import {forwardRef} from 'react';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = React.ComponentProps<typeof IconButton> & {
   _box?: React.ComponentProps<typeof Box>;
