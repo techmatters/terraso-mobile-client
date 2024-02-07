@@ -56,7 +56,10 @@ const DepthIntervalEditor = ({
       py="8px">
       <Heading variant="h6" color="primary.contrast">
         {interval.label && `${interval.label}: `}
-        {t('soil.depth_interval.bounds', {interval, units: 'cm'})}
+        {t('soil.depth_interval.bounds', {
+          depthInterval: interval.depthInterval,
+          units: 'cm',
+        })}
       </Heading>
       <BottomSheetModal
         trigger={onOpen => (
