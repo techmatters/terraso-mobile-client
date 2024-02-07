@@ -44,6 +44,7 @@ import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContex
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import * as Sentry from '@sentry/react-native';
 import {enableFreeze} from 'react-native-screens';
+import {HomeScreenContextProvider} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 
 enableFreeze(true);
 
@@ -74,7 +75,9 @@ function App(): JSX.Element {
           <NavigationContainer>
             <GeospatialProvider>
               <Toasts />
-              <RootNavigator />
+              <HomeScreenContextProvider>
+                <RootNavigator />
+              </HomeScreenContextProvider>
             </GeospatialProvider>
           </NavigationContainer>
         </NativeBaseProvider>

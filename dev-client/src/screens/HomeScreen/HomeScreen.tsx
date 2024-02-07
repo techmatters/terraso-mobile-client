@@ -15,9 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import SiteMap from 'terraso-mobile-client/screens/HomeScreen/components/SiteMap';
-import {useCallback, useEffect, useRef, useState, useMemo} from 'react';
-import Mapbox, {Camera} from '@rnmapbox/maps';
+import {
+  MapRef,
+  SiteMap,
+} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMap';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  RefObject,
+  createContext,
+  memo,
+  useContext,
+  useImperativeHandle,
+} from 'react';
+import Mapbox from '@rnmapbox/maps';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
@@ -26,7 +40,6 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
-import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
 import BottomSheet, {
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -60,13 +73,24 @@ export type CalloutState =
     }
   | {kind: 'none'};
 
-const STARTING_ZOOM_LEVEL = 12;
-
-type Props = {
-  site?: Site;
+type HomeScreenRef = {
+  showSiteOnMap: (site: Site) => void;
 };
 
-export const HomeScreen = ({site}: Props) => {
+const HomeScreenContext = createContext<RefObject<HomeScreenRef> | null>(null);
+
+export const HomeScreenContextProvider = memo(
+  ({children}: React.PropsWithChildren<{}>) => (
+    <HomeScreenContext.Provider value={useRef<HomeScreenRef>(null)}>
+      {children}
+    </HomeScreenContext.Provider>
+  ),
+);
+
+export const useHomeScreenContext = () =>
+  useContext(HomeScreenContext)?.current ?? undefined;
+
+export const HomeScreen = memo(() => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
@@ -79,29 +103,25 @@ export const HomeScreen = ({site}: Props) => {
   const sites = useSelector(state => state.site.sites);
   const siteList = useMemo(() => Object.values(sites), [sites]);
   const dispatch = useDispatch();
-  const camera = useRef<Camera>(null);
+  const mapRef = useRef<MapRef>(null);
   const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
-
-  const moveToPoint = useCallback(
-    (coords: Coords) => {
-      // TODO: flyTo, zoomTo don't seem to work, find out why
-      //camera.current?.flyTo([longitude, latitude]);
-      //camera.current?.zoomTo(STARTING_ZOOM_LEVEL);
-      camera.current?.setCamera({
-        centerCoordinate: coordsToPosition(coords),
-        zoomLevel: STARTING_ZOOM_LEVEL,
-      });
-    },
-    [camera],
-  );
+  const homeScreenContext = useContext(HomeScreenContext);
 
   const showSiteOnMap = useCallback(
     (targetSite: Site) => {
-      moveToPoint(targetSite);
+      mapRef.current?.moveToPoint(targetSite);
       setCalloutState({kind: 'site', siteId: targetSite.id});
       siteListBottomSheetRef.current?.collapse();
     },
-    [moveToPoint, setCalloutState],
+    [setCalloutState],
+  );
+
+  useImperativeHandle(
+    homeScreenContext,
+    () => ({
+      showSiteOnMap,
+    }),
+    [showSiteOnMap],
   );
 
   useEffect(() => {
@@ -110,54 +130,31 @@ export const HomeScreen = ({site}: Props) => {
     }
   }, [dispatch, currentUserID]);
 
-  // When a site is created, we pass site to HomeScreen
-  // and then center that site on the map.
-  useEffect(() => {
-    if (site !== undefined) {
-      showSiteOnMap(site);
-    }
-  }, [site, showSiteOnMap]);
-
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
-  const [initialLocation, setInitialLocation] = useState<Coords | null>(
-    currentUserCoords,
-  );
-
-  useEffect(() => {
-    if (initialLocation === null && currentUserCoords !== null) {
-      setInitialLocation(currentUserCoords);
-    }
-  }, [initialLocation, currentUserCoords, setInitialLocation]);
 
   const [finishedInitialCameraMove, setFinishedInitialCameraMove] =
     useState(false);
 
   const onMapFinishedLoading = useCallback(() => {
-    if (finishedInitialCameraMove !== true && initialLocation !== null) {
-      moveToPoint(initialLocation);
+    if (!finishedInitialCameraMove && currentUserCoords !== null) {
+      mapRef.current?.moveToPoint(currentUserCoords);
       setFinishedInitialCameraMove(true);
     }
-  }, [initialLocation, moveToPoint, finishedInitialCameraMove]);
-
-  useEffect(() => {
-    if (initialLocation !== null && camera.current !== undefined) {
-      moveToPoint(initialLocation);
-    }
-  }, [initialLocation, camera, moveToPoint]);
+  }, [currentUserCoords, finishedInitialCameraMove]);
 
   const searchFunction = useCallback(
     (coords: Coords) => {
       setCalloutState({kind: 'location', showCallout: false, coords});
-      moveToPoint(coords);
+      mapRef.current?.moveToPoint(coords);
     },
-    [setCalloutState, moveToPoint],
+    [setCalloutState, mapRef],
   );
 
   const moveToUser = useCallback(() => {
     if (currentUserCoords !== null) {
-      moveToPoint(currentUserCoords);
+      mapRef.current?.moveToPoint(currentUserCoords);
     }
-  }, [currentUserCoords, moveToPoint]);
+  }, [currentUserCoords, mapRef]);
 
   const toggleMapLayer = useCallback(
     () =>
@@ -265,7 +262,7 @@ export const HomeScreen = ({site}: Props) => {
                 toggleMapLayer={toggleMapLayer}
               />
               <SiteMap
-                ref={camera}
+                ref={mapRef}
                 calloutState={calloutState}
                 setCalloutState={setCalloutState}
                 styleURL={mapStyleURL}
@@ -284,4 +281,4 @@ export const HomeScreen = ({site}: Props) => {
       </ListFilterProvider>
     </BottomSheetModalProvider>
   );
-};
+});

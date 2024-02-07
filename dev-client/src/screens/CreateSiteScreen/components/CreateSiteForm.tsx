@@ -139,6 +139,7 @@ export const CreateSiteForm = ({
               value={projectPrivacy ?? values.privacy}
               renderRadio={value => (
                 <FormRadio
+                  key={value}
                   value={value}
                   isDisabled={projectPrivacy !== undefined}>
                   {t(`privacy.${value.toLowerCase()}.title`)}

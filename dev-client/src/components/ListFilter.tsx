@@ -19,7 +19,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -106,8 +105,6 @@ export const ListFilterProvider = <
   const [appliedValues, setAppliedValues] = useState<
     Record<string, string | undefined>
   >({});
-  const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
-  const [filteredItems, setFilteredItems] = useState<Item[]>(items);
 
   const setValue = (name: string) => (newValue: string | undefined) =>
     setValues(state => ({...state, [name]: newValue}));
@@ -122,8 +119,8 @@ export const ListFilterProvider = <
   );
 
   const applyFilters = useCallback(
-    () => setNeedsUpdate(true),
-    [setNeedsUpdate],
+    () => setAppliedValues(values),
+    [setAppliedValues, values],
   );
 
   const getNestedObjectValues = (item: any, keyPath: string): string[] => {
@@ -242,22 +239,9 @@ export const ListFilterProvider = <
     setValues(appliedValues);
   }, [setValues, appliedValues]);
 
-  useEffect(() => {
-    if (needsUpdate) {
-      setFilteredItems(itemsWithFiltersApplied);
-      setAppliedValues(values);
-      setNeedsUpdate(false);
-    }
-  }, [itemsWithFiltersApplied, needsUpdate, setNeedsUpdate, values]);
-
-  // reload filtered items if items changes
-  useEffect(() => {
-    setNeedsUpdate(true);
-  }, [items]);
-
   const value: ListFilterState<Item, Filters> = {
     values,
-    filteredItems,
+    filteredItems: itemsWithFiltersApplied,
     setValue,
     applyFilters,
     clearUnapplied,

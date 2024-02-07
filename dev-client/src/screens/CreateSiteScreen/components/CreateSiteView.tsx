@@ -33,6 +33,7 @@ import {
   CreateSiteForm,
   FormState,
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
+import {useHomeScreenContext} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 
 type Props = {
   defaultProjectId?: string;
@@ -55,6 +56,7 @@ export const CreateSiteView = ({
   const defaultProject = useSelector(state =>
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
+  const homeScreen = useHomeScreenContext();
 
   const defaultCoords = userLocation.coords;
 
@@ -68,10 +70,11 @@ export const CreateSiteView = ({
         ...parseCoords(coords),
       });
       if (createdSite !== undefined) {
+        homeScreen?.showSiteOnMap(createdSite);
         navigation.pop();
       }
     },
-    [createSiteCallback, navigation, validationSchema],
+    [createSiteCallback, navigation, validationSchema, homeScreen],
   );
 
   return (
