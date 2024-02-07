@@ -25,7 +25,7 @@
     "@rnmapbox/maps": "^10.1.10",
     "@sentry/react-native": "^5.18.0",
     "base-64": "^1.0.0",
-    "expo": "^49.0.0",
+    "expo": "^50.0.6",
     "expo-av": "^13.4.1",
     "expo-camera": "^13.4.4",
     "expo-screen-orientation": "^6.0.6",
