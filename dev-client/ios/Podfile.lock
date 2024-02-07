@@ -8,17 +8,20 @@ PODS:
   - BEMCheckBox (1.4.1)
   - boost (1.83.0)
   - DoubleConversion (1.1.6)
-  - EXConstants (14.4.2):
+  - EXAV (13.10.5):
     - ExpoModulesCore
-  - EXFileSystem (15.4.5):
+    - ReactCommon/turbomodule/core
+  - EXConstants (15.4.5):
     - ExpoModulesCore
-  - Expo (49.0.22):
+  - Expo (50.0.6):
     - ExpoModulesCore
-  - ExpoCamera (13.9.0):
+  - ExpoCamera (14.0.4):
     - ExpoModulesCore
     - ZXingObjC/OneD
     - ZXingObjC/PDF417
-  - ExpoModulesCore (1.5.13):
+  - ExpoFileSystem (16.0.6):
+    - ExpoModulesCore
+  - ExpoModulesCore (1.11.8):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1167,10 +1170,11 @@ PODS:
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
+  - EXAV (from `../node_modules/expo-av/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
-  - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoCamera (from `../node_modules/expo-camera/ios`)
+  - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoScreenOrientation (from `../node_modules/expo-screen-orientation/ios`)
   - ExpoSensors (from `../node_modules/expo-sensors/ios`)
@@ -1262,14 +1266,16 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
+  EXAV:
+    :path: "../node_modules/expo-av/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
-  EXFileSystem:
-    :path: "../node_modules/expo-file-system/ios"
   Expo:
     :path: "../node_modules/expo"
   ExpoCamera:
     :path: "../node_modules/expo-camera/ios"
+  ExpoFileSystem:
+    :path: "../node_modules/expo-file-system/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   ExpoScreenOrientation:
@@ -1403,11 +1409,12 @@ SPEC CHECKSUMS:
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
-  EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
-  EXFileSystem: f8b838a880254de42a5a7da20ed5ce12e2697c1b
-  Expo: 9060b49fecf07bebf1dd967730d079aa5e750ebe
-  ExpoCamera: c13580cc0964c9e462f76579a0de9f468a9c6e73
-  ExpoModulesCore: db1160a43aaf73fb7a8654d31591082886e9b2a2
+  EXAV: 07e50f934907fa8274dd06fbcd20ee4b9478c619
+  EXConstants: 988aa430ca0f76b43cd46b66e7fae3287f9cc2fc
+  Expo: fb745b3074989670b6641f9f20463e8ee56a69ca
+  ExpoCamera: 64e9bb61e639dfaec9d12872c5b6bad0c4167b67
+  ExpoFileSystem: a9273932e69a9a1e1a8d01b6ba895bb8294bbea2
+  ExpoModulesCore: 2346e83abf90c2b2c16a54c3fc4a1169ae12816c
   ExpoScreenOrientation: f6fec87148a0adc7ed95fdf5e041ca5abed13ed9
   ExpoSensors: a88c7bed8178a38e5cd3c2759baf348781027f28
   FBLazyVector: 84f6edbe225f38aebd9deaf1540a4160b1f087d7
@@ -1484,6 +1491,6 @@ SPEC CHECKSUMS:
   Yoga: 1b901a6d6eeba4e8a2e8f308f708691cdb5db312
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: b118c78eab4fa8246e70f8cb2765dbc8a1b4b808
+PODFILE CHECKSUM: adc4fa78641d41363a081a3534c0b84fcb627cd7
 
 COCOAPODS: 1.15.2
