@@ -35,7 +35,7 @@ target 'Terraso LandPKS' do
       Pod::UI.warn e
     end
   end
-  pod 'MapboxMaps', '10.16.3'
+  pod 'MapboxMaps', '10.16.4'
 
   config = use_native_modules!
 
