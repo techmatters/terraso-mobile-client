@@ -15,23 +15,49 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, FlatList, Text} from 'native-base';
+import {FlatList} from 'native-base';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {ProjectPreviewCard} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectPreviewCard';
+import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
+const WINDOW_SIZE = 6; // Default is 21, bringing it down as the items in this FlatList are very costly to render
+const MAX_TO_RENDER_PER_BATCH = 5; // Similar as above, default is 10
+const SEPARATOR_HEIGHT = 8;
+
+type RenderItemProps = {
+  item: Project;
+};
 
 export const ProjectList = () => {
   const {t} = useTranslation();
   const {filteredItems} = useListFilter<Project>();
+
+  const renderItem = useCallback(
+    ({item}: RenderItemProps) => <ProjectPreviewCard project={item} />,
+    [],
+  );
+
+  const ListEmptyComponent = useMemo(
+    () => <Text>{t('projects.search.no_matches')}</Text>,
+    [t],
+  );
+
   return (
     <FlatList
       data={filteredItems}
-      renderItem={({item}) => <ProjectPreviewCard project={item} />}
-      ItemSeparatorComponent={() => <Box h="8px" />}
-      keyExtractor={project => project.id}
-      ListEmptyComponent={<Text>{t('projects.search.no_matches')}</Text>}
+      renderItem={renderItem}
+      windowSize={WINDOW_SIZE}
+      maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
+      ItemSeparatorComponent={ItemSeparatorComponent}
+      keyExtractor={keyExtractor}
+      ListEmptyComponent={ListEmptyComponent}
     />
   );
 };
+
+const keyExtractor = (project: Project) => project.id;
+const ItemSeparatorComponent = () => <Box h={`${SEPARATOR_HEIGHT}px`} />;

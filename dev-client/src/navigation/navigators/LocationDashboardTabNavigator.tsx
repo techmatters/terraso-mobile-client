@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo} from 'react';
+import {memo, useMemo} from 'react';
 import {Button} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -43,37 +43,41 @@ type ScreenName = keyof TabsParamList;
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
-export const LocationDashboardTabNavigator = (params: {siteId: string}) => {
-  const {t} = useTranslation();
-  const defaultOptions = useDefaultTabOptions();
-  const tabs = useMemo(
-    () =>
-      Object.entries(tabDefinitions).map(([name, View]) => (
-        <Tab.Screen
-          name={name as ScreenName}
-          key={name}
-          initialParams={params}
-          options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
-          children={props => <View {...((props.route.params ?? {}) as any)} />}
-        />
-      )),
-    [params, t, defaultOptions],
-  );
+export const LocationDashboardTabNavigator = memo(
+  (params: {siteId: string}) => {
+    const {t} = useTranslation();
+    const defaultOptions = useDefaultTabOptions();
+    const tabs = useMemo(
+      () =>
+        Object.entries(tabDefinitions).map(([name, View]) => (
+          <Tab.Screen
+            name={name as ScreenName}
+            key={name}
+            initialParams={params}
+            options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
+            children={props => (
+              <View {...((props.route.params ?? {}) as any)} />
+            )}
+          />
+        )),
+      [params, t, defaultOptions],
+    );
 
-  return (
-    <BottomSheetModalProvider>
-      <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
-      <SpeedDial>
-        <Button variant="speedDial" leftIcon={<Icon name="description" />}>
-          {t('site.dashboard.speed_dial.note_label')}
-        </Button>
-        <Button variant="speedDial" leftIcon={<Icon name="image" />}>
-          {t('site.dashboard.speed_dial.photo_label')}
-        </Button>
-        <Button variant="speedDial" leftIcon={<Icon name="image" />}>
-          {t('site.dashboard.speed_dial.bedrock_label')}
-        </Button>
-      </SpeedDial>
-    </BottomSheetModalProvider>
-  );
-};
+    return (
+      <BottomSheetModalProvider>
+        <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
+        <SpeedDial>
+          <Button variant="speedDial" leftIcon={<Icon name="description" />}>
+            {t('site.dashboard.speed_dial.note_label')}
+          </Button>
+          <Button variant="speedDial" leftIcon={<Icon name="image" />}>
+            {t('site.dashboard.speed_dial.photo_label')}
+          </Button>
+          <Button variant="speedDial" leftIcon={<Icon name="image" />}>
+            {t('site.dashboard.speed_dial.bedrock_label')}
+          </Button>
+        </SpeedDial>
+      </BottomSheetModalProvider>
+    );
+  },
+);

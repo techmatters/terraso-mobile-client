@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, KeyboardAvoidingView, ScrollView} from 'native-base';
+import {Button, KeyboardAvoidingView, ScrollView} from 'native-base';
 import Form, {
   ProjectFormValues,
   projectValidationSchema,
@@ -23,10 +23,11 @@ import Form, {
 import {addProject} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Formik} from 'formik';
+import {Formik, FormikProps} from 'formik';
 import {useTranslation} from 'react-i18next';
-import {useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   onInfoPress: () => void;
@@ -60,25 +61,59 @@ export const CreateProjectForm = ({onInfoPress}: Props) => {
         description: '',
         privacy: 'PRIVATE',
       }}>
-      {({isSubmitting, handleSubmit}) => (
-        <KeyboardAvoidingView flex={1}>
-          <ScrollView bg="background.default">
-            <Box pt="20%" mx={5}>
-              <Form onInfoPress={onInfoPress} />
-            </Box>
-          </ScrollView>
-          <Box position="absolute" bottom={8} right={3} p={3}>
-            <Button
-              onPress={() => handleSubmit()}
-              disabled={isSubmitting}
-              shadow={5}
-              size={'lg'}
-              _text={{textTransform: 'uppercase'}}>
-              {t('general.save_fab')}
-            </Button>
-          </Box>
-        </KeyboardAvoidingView>
+      {({isSubmitting, handleSubmit, handleChange, handleBlur, values}) => (
+        <FormContainer
+          isSubmitting={isSubmitting}
+          handleSubmit={handleSubmit}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+          onInfoPress={onInfoPress}
+          privacy={values.privacy}
+        />
       )}
     </Formik>
   );
 };
+
+const FormContainer = React.memo(
+  ({
+    isSubmitting,
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    onInfoPress,
+    privacy,
+  }: Pick<
+    FormikProps<ProjectFormValues>,
+    'isSubmitting' | 'handleSubmit' | 'handleChange' | 'handleBlur'
+  > &
+    Props &
+    Pick<ProjectFormValues, 'privacy'>) => {
+    const {t} = useTranslation();
+
+    return (
+      <KeyboardAvoidingView flex={1}>
+        <ScrollView bg="background.default">
+          <Box pt="20%" mx={5}>
+            <Form
+              onInfoPress={onInfoPress}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              privacy={privacy}
+            />
+          </Box>
+        </ScrollView>
+        <Box position="absolute" bottom={8} right={3} p={3}>
+          <Button
+            onPress={handleSubmit}
+            disabled={isSubmitting}
+            shadow={5}
+            size={'lg'}
+            _text={{textTransform: 'uppercase'}}>
+            {t('general.save_fab')}
+          </Button>
+        </Box>
+      </KeyboardAvoidingView>
+    );
+  },
+);

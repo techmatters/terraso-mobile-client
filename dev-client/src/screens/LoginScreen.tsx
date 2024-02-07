@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, Button, Column, Heading, Text} from 'native-base';
+import {Button} from 'native-base';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useEffect, useCallback} from 'react';
@@ -29,6 +29,12 @@ import {useTranslation} from 'react-i18next';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
+import {
+  Box,
+  Column,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -55,7 +61,7 @@ export const LoginScreen = () => {
 
   useEffect(() => {
     if (loggedIn) {
-      navigation.replace('HOME', {});
+      navigation.replace('BOTTOM_TABS');
     }
   }, [loggedIn, navigation]);
 

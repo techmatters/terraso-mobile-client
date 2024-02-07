@@ -17,7 +17,7 @@
 
 import {screen, fireEvent} from '@testing-library/react-native';
 import {customRender as render} from '@testing/utils';
-import {FlatList, Text} from 'native-base';
+import {FlatList} from 'native-base';
 import {normalizeText} from 'terraso-client-shared/utils';
 import {
   SelectFilter,
@@ -27,6 +27,7 @@ import {
   ListFilterModal,
 } from 'terraso-mobile-client/components/ListFilter';
 import {searchText} from 'terraso-mobile-client/util';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const activateTextInputFilter = (filterText: string) => {
   const input = screen.getByPlaceholderText('Search');

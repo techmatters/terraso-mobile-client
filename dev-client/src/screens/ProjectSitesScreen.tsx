@@ -15,16 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Box,
-  Button,
-  FlatList,
-  HStack,
-  Menu,
-  Pressable,
-  Text,
-  VStack,
-} from 'native-base';
+import {Button, FlatList, Menu, Pressable} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {
   TabRoutes,
@@ -34,10 +25,7 @@ import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import {useCallback, useMemo} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {
-  Icon,
-  MaterialCommunityIcons,
-} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/Icons';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {
   Site,
@@ -65,6 +53,12 @@ import {searchText} from 'terraso-mobile-client/util';
 import {normalizeText} from 'terraso-client-shared/utils';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {
+  Box,
+  HStack,
+  VStack,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type SiteMenuProps = {
   iconName: string;
@@ -108,9 +102,8 @@ const SiteMenu = ({site}: SiteProps) => {
       closeOnSelect={true}
       trigger={triggerProps => (
         <CardTopRightButton
-          as={MaterialCommunityIcons}
           // _icon={{size: 'md', color: 'action.active'}}
-          name="dots-vertical"
+          name="more-vert"
           {...triggerProps}
         />
       )}>

@@ -16,13 +16,19 @@
  */
 
 import {Linking} from 'react-native';
-import {Column, FlatList, Heading, HStack, Image, Text} from 'native-base';
+import {FlatList, Image} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
 import {
   LocationIcon,
   LinkNewWindowIcon,
 } from 'terraso-mobile-client/components/Icons';
+import {
+  Column,
+  HStack,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const LandPKSInfo = () => {
   const {t} = useTranslation();

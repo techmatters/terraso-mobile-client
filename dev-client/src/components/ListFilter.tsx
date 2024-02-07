@@ -14,20 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {
-  Button,
-  FormControl,
-  HStack,
-  Input,
-  Radio,
-  Select,
-  VStack,
-} from 'native-base';
+import {Button, FormControl, Input, Radio, Select} from 'native-base';
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -38,6 +29,10 @@ import {useTranslation} from 'react-i18next';
 import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
 import {sortCompare} from 'terraso-mobile-client/util';
 import {NullableSelect} from 'terraso-mobile-client/components/NullableSelect';
+import {
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;
@@ -110,8 +105,6 @@ export const ListFilterProvider = <
   const [appliedValues, setAppliedValues] = useState<
     Record<string, string | undefined>
   >({});
-  const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
-  const [filteredItems, setFilteredItems] = useState<Item[]>(items);
 
   const setValue = (name: string) => (newValue: string | undefined) =>
     setValues(state => ({...state, [name]: newValue}));
@@ -126,8 +119,8 @@ export const ListFilterProvider = <
   );
 
   const applyFilters = useCallback(
-    () => setNeedsUpdate(true),
-    [setNeedsUpdate],
+    () => setAppliedValues(values),
+    [setAppliedValues, values],
   );
 
   const getNestedObjectValues = (item: any, keyPath: string): string[] => {
@@ -246,22 +239,9 @@ export const ListFilterProvider = <
     setValues(appliedValues);
   }, [setValues, appliedValues]);
 
-  useEffect(() => {
-    if (needsUpdate) {
-      setFilteredItems(itemsWithFiltersApplied);
-      setAppliedValues(values);
-      setNeedsUpdate(false);
-    }
-  }, [itemsWithFiltersApplied, needsUpdate, setNeedsUpdate, values]);
-
-  // reload filtered items if items changes
-  useEffect(() => {
-    setNeedsUpdate(true);
-  }, [items]);
-
   const value: ListFilterState<Item, Filters> = {
     values,
-    filteredItems,
+    filteredItems: itemsWithFiltersApplied,
     setValue,
     applyFilters,
     clearUnapplied,

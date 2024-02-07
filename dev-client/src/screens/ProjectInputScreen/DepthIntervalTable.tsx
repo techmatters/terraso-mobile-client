@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Box} from 'native-base';
+
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
@@ -25,6 +25,7 @@ import {
 import {DataGridTable} from 'terraso-mobile-client/components/DataGridTable';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type TableProps = {
   depthIntervals: ProjectDepthInterval[];

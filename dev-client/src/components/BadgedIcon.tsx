@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Badge, Pressable} from 'native-base';
+import {Pressable} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   _badge?: {} & Omit<React.ComponentProps<typeof Badge>, 'variant'>;

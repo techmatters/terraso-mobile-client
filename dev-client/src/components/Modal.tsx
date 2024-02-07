@@ -71,7 +71,7 @@ export const Modal = forwardRef<ModalHandle, Props>(
         )}
         <NativeBaseModal isOpen={isOpen} onClose={onClose}>
           <KeyboardAvoidingView
-            style={styles.nativeBaseModalChild}
+            style={styles.keyboardAvoidingView}
             behavior="padding"
             keyboardVerticalOffset={100}>
             <NativeBaseModal.Content
@@ -91,7 +91,7 @@ export const Modal = forwardRef<ModalHandle, Props>(
 );
 
 const styles = StyleSheet.create({
-  nativeBaseModalChild: {
+  keyboardAvoidingView: {
     width: '100%',
     alignItems: 'center',
   },

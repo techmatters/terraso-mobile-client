@@ -15,39 +15,49 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Icon as NativeIcon,
-  IconButton as NativeIconButton,
-  Text,
-  Box,
-  HStack,
-  Center,
-} from 'native-base';
+import {IconButton as NativeIconButton, Center} from 'native-base';
 import React from 'react';
 import {View, Pressable} from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-export {default as MaterialCommunityIcons} from 'react-native-vector-icons/MaterialCommunityIcons';
+import {IconProps as VectorIconProps} from 'react-native-vector-icons/Icon';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import {theme} from 'terraso-mobile-client/theme';
+import {
+  NativeBaseProps,
+  ThemeColor,
+  convertNBStyles,
+  convertColorProp,
+} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {
+  Box,
+  HStack,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export type IconProps = React.ComponentProps<typeof NativeIcon>;
+export type IconProps = Omit<VectorIconProps, 'size' | 'color'> &
+  NativeBaseProps & {
+    size?: keyof typeof theme.components.Icon.sizes | number;
+    color?: ThemeColor | string;
+  };
 
-export const Icon = ({as, ...props}: IconProps) => (
-  <NativeIcon as={as ?? MaterialIcons} {...props} />
-);
+export const Icon = ({size = 'md', color, ...props}: IconProps) => {
+  return (
+    <MaterialIcon
+      {...convertNBStyles(props)}
+      size={typeof size === 'string' ? theme.components.Icon.sizes[size] : size}
+      color={convertColorProp(color)}
+    />
+  );
+};
 
 export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
-  as?: any;
   name: string;
   label?: string;
 };
 
 export const IconButton = React.forwardRef(
-  ({as, name, label, ...props}: IconButtonProps, ref: React.Ref<unknown>) => {
+  ({name, label, ...props}: IconButtonProps, ref: React.Ref<unknown>) => {
     const icon = (
-      <NativeIconButton
-        ref={ref}
-        icon={<Icon as={as} name={name} />}
-        {...props}
-      />
+      <NativeIconButton ref={ref} icon={<Icon name={name} />} {...props} />
     );
     if (label === undefined) {
       return icon;
@@ -70,7 +80,6 @@ export const IconButton = React.forwardRef(
 export type HorizontalIconButtonProps = React.ComponentProps<
   typeof NativeIconButton
 > & {
-  as?: any;
   name: string;
   label?: string;
   colorScheme?: string;
@@ -80,7 +89,6 @@ export type HorizontalIconButtonProps = React.ComponentProps<
 export const HorizontalIconButton = React.forwardRef(
   (
     {
-      as,
       name,
       label,
       colorScheme,
@@ -93,7 +101,7 @@ export const HorizontalIconButton = React.forwardRef(
       <NativeIconButton
         p={0}
         ref={ref}
-        icon={<Icon as={as} name={name} />}
+        icon={<Icon name={name} />}
         {...props}
       />
     );
@@ -121,7 +129,7 @@ export const LocationIcon = () => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Icon name="my-location" color="black" size="14" />
+      <Icon name="my-location" color="black" size={14} />
     </View>
   );
 };
@@ -130,7 +138,7 @@ export const LinkNewWindowIcon = () => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flexDirection: 'row'}}>
-      <Icon name="open-in-new" color="primary.main" size="14" />
+      <Icon name="open-in-new" color="primary.main" size={14} />
     </View>
   );
 };

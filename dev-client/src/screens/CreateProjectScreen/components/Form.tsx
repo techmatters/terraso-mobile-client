@@ -15,16 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Fab,
-  HStack,
-  Heading,
-  Input,
-  Radio,
-  TextArea,
-  VStack,
-} from 'native-base';
-import {Formik, useFormikContext} from 'formik';
+import {Fab, Input, Radio, TextArea} from 'native-base';
+import {Formik, FormikProps} from 'formik';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
@@ -42,6 +34,11 @@ import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGro
 import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  HStack,
+  VStack,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const projectValidationFields = (t: TFunction) => ({
   name: yup
@@ -130,6 +127,7 @@ export const EditForm = ({
   submitProps,
 }: Omit<FormProps, 'privacy'>) => {
   const {t} = useTranslation();
+
   return (
     <Formik<Omit<ProjectUpdateMutationInput, 'id'>>
       validationSchema={editProjectValidationSchema(t)}
@@ -163,12 +161,18 @@ export const EditForm = ({
   );
 };
 
-export default function Form({editForm = false, onInfoPress}: Props) {
+export default function Form({
+  editForm = false,
+  onInfoPress,
+  handleChange,
+  handleBlur,
+  privacy,
+}: Props &
+  Pick<FormikProps<ProjectFormValues>, 'handleChange' | 'handleBlur'> &
+  Pick<ProjectFormValues, 'privacy'>) {
   const {t} = useTranslation();
-  const {handleChange, handleBlur, values} =
-    useFormikContext<ProjectFormValues>();
+
   const inputParams = (field: keyof ProjectFormValues) => ({
-    value: values[field],
     onChangeText: handleChange(field),
     onBlur: handleBlur(field),
   });
@@ -183,7 +187,13 @@ export default function Form({editForm = false, onInfoPress}: Props) {
     <VStack space={3}>
       {EditHeader}
       <FormLabel>{t('projects.create.name_label')}</FormLabel>
-      <Input placeholder={t('projects.add.name')} {...inputParams('name')} />
+      <Input
+        placeholder={t('projects.add.name')}
+        defaultValue=""
+        autoCorrect={false}
+        scrollEnabled={false}
+        {...inputParams('name')}
+      />
       <ErrorMessage fieldName="name" />
 
       <FormLabel>{t('projects.create.description_label')}</FormLabel>
@@ -192,6 +202,7 @@ export default function Form({editForm = false, onInfoPress}: Props) {
         numberOfLines={3}
         fontSize={16}
         autoCompleteType="off"
+        autoCorrect={false}
         {...inputParams('description')}
       />
       <ErrorMessage fieldName="description" />
@@ -211,7 +222,7 @@ export default function Form({editForm = false, onInfoPress}: Props) {
           PRIVATE: {text: t('projects.create.private')},
         }}
         groupProps={{
-          value: values.privacy,
+          value: privacy,
           variant: 'oneLine',
           onChange: handleChange('privacy'),
           name: 'data-privacy',

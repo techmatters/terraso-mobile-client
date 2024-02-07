@@ -15,10 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Box, FormControl, HStack, VStack} from 'native-base';
+import {FormControl} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import CheckBox from '@react-native-community/checkbox';
+import {
+  Box,
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type CheckboxProps = {
   label: string;

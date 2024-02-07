@@ -16,12 +16,12 @@
  */
 
 import {forwardRef} from 'react';
-import {Box} from 'native-base';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {LandPKSInfo} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfo';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   onClose: () => void;

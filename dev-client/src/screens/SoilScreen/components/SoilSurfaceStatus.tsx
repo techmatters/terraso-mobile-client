@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Heading, Row} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
@@ -26,6 +24,10 @@ type Props = {siteId: string} & Pick<
 >;
 
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  Heading,
+  Row,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SoilSurfaceStatus = ({required, complete, siteId}: Props) => {
   const {t} = useTranslation();

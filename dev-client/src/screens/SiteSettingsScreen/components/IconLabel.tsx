@@ -15,23 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Row, Spacer, Text, useTheme} from 'native-base';
+import {Spacer} from 'native-base';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {theme} from 'terraso-mobile-client/theme';
 
 type Props = {
   label: string;
   icon: React.ReactNode;
 };
 
-export const IconLabel = ({label, icon}: Props) => {
-  const {
-    components: {FormControlLabel},
-  } = useTheme();
-
-  return (
-    <Row alignItems="center">
-      <Text {...FormControlLabel.baseStyle()._text}>{label}</Text>
-      <Spacer size="4px" />
-      {icon}
-    </Row>
-  );
-};
+export const IconLabel = ({label, icon}: Props) => (
+  <Row alignItems="center">
+    <Text {...(theme.components.FormControlLabel.baseStyle._text as any)}>
+      {label}
+    </Text>
+    <Spacer size="4px" />
+    {icon}
+  </Row>
+);

@@ -16,7 +16,7 @@
  */
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScrollView, Text, VStack} from 'native-base';
+import {ScrollView} from 'native-base';
 import {
   TabRoutes,
   TabStackParamList,
@@ -34,6 +34,10 @@ import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/gr
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {
+  VStack,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
@@ -56,7 +60,7 @@ export function ProjectSettingsScreen({
 
   const triggerDeleteProject = () => {
     dispatch(deleteProject({id: projectId}));
-    navigation.navigate('PROJECT_LIST');
+    navigation.pop();
   };
 
   const userRole = useProjectRoleContext();

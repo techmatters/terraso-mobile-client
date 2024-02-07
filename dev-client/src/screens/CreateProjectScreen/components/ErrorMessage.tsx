@@ -16,7 +16,7 @@
  */
 
 import {ErrorMessage as FormikErrorMessage} from 'formik';
-import {Text} from 'native-base';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   fieldName: string;

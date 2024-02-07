@@ -16,8 +16,8 @@
  */
 
 import {useState, useCallback} from 'react';
-import {Column} from 'native-base';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SpeedDial = ({children}: React.PropsWithChildren<{}>) => {
   const [isOpen, setIsOpen] = useState(false);

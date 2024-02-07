@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
-import {Box, HStack} from 'native-base';
 import {ReactNode, useCallback, useState} from 'react';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {Box, HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   Head: ReactNode;

@@ -16,14 +16,11 @@
  */
 
 import {
-  Text,
   FormControl,
   ScrollView,
-  VStack,
   Spacer,
   Button,
   KeyboardAvoidingView,
-  Box,
 } from 'native-base';
 import {useMemo, useEffect} from 'react';
 import {Platform} from 'react-native';
@@ -43,6 +40,11 @@ import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {
+  VStack,
+  Box,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,
@@ -137,6 +139,7 @@ export const CreateSiteForm = ({
               value={projectPrivacy ?? values.privacy}
               renderRadio={value => (
                 <FormRadio
+                  key={value}
                   value={value}
                   isDisabled={projectPrivacy !== undefined}>
                   {t(`privacy.${value.toLowerCase()}.title`)}

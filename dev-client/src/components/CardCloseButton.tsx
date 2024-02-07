@@ -25,9 +25,11 @@ export const CardCloseButton = (
       name="close"
       size="sm"
       background="grey.200"
-      _icon={{color: 'action.active'}}
+      _icon={iconProps}
       borderRadius="full"
       {...props}
     />
   );
 };
+
+const iconProps = {color: 'action.active'};
