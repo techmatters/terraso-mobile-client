@@ -75,7 +75,7 @@ GEM
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json (2.7.1)
-    minitest (5.22.0)
+    minitest (5.22.1)
     molinillo (0.8.0)
     mutex_m (0.2.0)
     nanaimo (0.3.0)
@@ -101,10 +101,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport (>= 6.1.7.6)
   cocoapods (>= 1.15.2)
 
 RUBY VERSION
    ruby 3.2.2p53
 
 BUNDLED WITH
-   2.4.16
+   2.4.20
