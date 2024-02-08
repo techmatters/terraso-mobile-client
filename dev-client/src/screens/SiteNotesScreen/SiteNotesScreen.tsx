@@ -29,6 +29,7 @@ import {
   Row,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 
 export type SiteNote = {
   id: string;
@@ -61,16 +62,23 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
       {project?.siteInstructions && (
         <SiteInstructionsCard siteInstructions={project?.siteInstructions} />
       )}
-      <Box pl={4} pb={4} alignItems="flex-start">
-        <Button
-          size="lg"
-          backgroundColor="primary.dark"
-          shadow={5}
-          onPress={onAddNote}
-          _text={{textTransform: 'uppercase'}}>
-          {t('site.notes.add_note_label')}
-        </Button>
-      </Box>
+      <RestrictBySiteRole
+        role={[
+          {kind: 'site', role: 'owner'},
+          {kind: 'project', role: 'manager'},
+          {kind: 'project', role: 'contributor'},
+        ]}>
+        <Box pl={4} pb={4} alignItems="flex-start">
+          <Button
+            size="lg"
+            backgroundColor="primary.dark"
+            shadow={5}
+            onPress={onAddNote}
+            _text={{textTransform: 'uppercase'}}>
+            {t('site.notes.add_note_label')}
+          </Button>
+        </Box>
+      </RestrictBySiteRole>
       <FlatList
         pb={540}
         data={Object.values(site.notes)}
