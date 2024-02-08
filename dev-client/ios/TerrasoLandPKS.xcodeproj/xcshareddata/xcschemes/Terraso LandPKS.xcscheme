@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "TerrasoLandPKS.app"
+               BuildableName = "Terraso LandPKS.app"
                BlueprintName = "TerrasoLandPKS"
                ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "TerrasoLandPKS.app"
+            BuildableName = "Terraso LandPKS.app"
             BlueprintName = "TerrasoLandPKS"
             ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "TerrasoLandPKS.app"
+            BuildableName = "Terraso LandPKS.app"
             BlueprintName = "TerrasoLandPKS"
             ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
          </BuildableReference>
@@ -85,7 +85,7 @@
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-                     BuildableName = "TerrasoLandPKS.app"
+                     BuildableName = "Terraso LandPKS.app"
                      BlueprintName = "TerrasoLandPKS"
                      ReferencedContainer = "container:TerrasoLandPKS.xcodeproj">
                   </BuildableReference>
