@@ -25,12 +25,13 @@ import {
   TypedUseSelectorHook,
 } from 'react-redux';
 import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
+import {reducer as preferencesReducer} from 'terraso-mobile-client/model/preferences/preferencesSlice';
 import {StateFromReducersMapObject} from '@reduxjs/toolkit';
 
-const reducers = {map: mapReducer};
+const reducers = {map: mapReducer, preferences: preferencesReducer};
 
-type LandPksState = StateFromReducersMapObject<typeof reducers>;
-export type AppState = StateFromStoreFactory<typeof createStore> & LandPksState;
+export type AppState = StateFromStoreFactory<typeof createStore> &
+  StateFromReducersMapObject<typeof reducers>;
 export type AppDispatch = DispatchFromStoreFactory<typeof createStore>;
 
 export const useSelector: TypedUseSelectorHook<AppState> = reduxUseSelector;

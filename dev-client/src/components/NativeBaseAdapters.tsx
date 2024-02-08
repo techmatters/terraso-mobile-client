@@ -105,6 +105,16 @@ export const Text = ({...props}: React.PropsWithChildren<TextProps>) => {
   );
 };
 
+export const Paragraph = ({
+  children,
+  ...props
+}: React.PropsWithChildren<TextProps>) => (
+  <Text {...props}>
+    {children}
+    {'\n'}
+  </Text>
+);
+
 type HeadingProps = NativeBaseTextProps &
   RN.TextProps & {
     variant?: keyof (typeof theme.components)['Heading']['variants'];

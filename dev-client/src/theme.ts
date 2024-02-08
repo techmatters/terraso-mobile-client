@@ -44,6 +44,7 @@ export const theme = extendTheme({
     grey: {
       200: '#EEEEEE',
       300: '#E0E0E0',
+      700: '#616161',
       800: '#424242',
     },
     action: {
@@ -66,6 +67,12 @@ export const theme = extendTheme({
   },
   radii: {
     md: 4,
+  },
+  space: {
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 36,
   },
   components: {
     Box: {
@@ -182,6 +189,9 @@ export const theme = extendTheme({
             fontWeight: 400,
             lineHeight: '20px',
           },
+        },
+        link: {
+          _text: {textDecorationLine: 'underline'},
         },
       },
     },

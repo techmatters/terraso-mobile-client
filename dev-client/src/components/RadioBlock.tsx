@@ -16,6 +16,7 @@
  */
 
 import {FormControl, IRadioGroupProps, Radio} from 'native-base';
+import {entries} from 'terraso-client-shared/utils';
 
 type RadioOption = {
   text: string;
@@ -51,24 +52,23 @@ export const RadioBlock = <T extends string>({
         onChange={onChange as (_: string) => void}
         value={groupValue ?? ''}
         {...radioGroupProps}>
-        {Object.entries<RadioOption>(options).flatMap(
-          ([value, {text, isDisabled, helpText}]) =>
-            [
-              <Radio
-                key={value}
-                value={value}
-                isDisabled={isDisabled || allDisabled}>
-                {text}
-              </Radio>,
-              helpText ? (
-                <FormControl.HelperText
-                  key={helpText + value}
-                  ml="15px"
-                  mt="-5px">
-                  {helpText}
-                </FormControl.HelperText>
-              ) : undefined,
-            ].filter(Boolean),
+        {entries(options).flatMap(([value, {text, isDisabled, helpText}]) =>
+          [
+            <Radio
+              key={value}
+              value={value}
+              isDisabled={isDisabled || allDisabled}>
+              {text}
+            </Radio>,
+            helpText ? (
+              <FormControl.HelperText
+                key={helpText + value}
+                ml="15px"
+                mt="-5px">
+                {helpText}
+              </FormControl.HelperText>
+            ) : undefined,
+          ].filter(Boolean),
         )}
       </Radio.Group>
     </FormControl>

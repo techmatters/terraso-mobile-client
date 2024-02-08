@@ -59,7 +59,10 @@ const DepthIntervalEditor = ({
       py="8px">
       <Heading variant="h6" color="primary.contrast">
         {interval.label && `${interval.label}: `}
-        {t('soil.depth_interval.bounds', {...interval, units: 'cm'})}
+        {t('soil.depth_interval.bounds', {
+          ...interval.depthInterval,
+          units: 'cm',
+        })}
       </Heading>
       <BottomSheetModal
         trigger={onOpen => (
@@ -140,14 +143,12 @@ export const SoilDepthIntervalSummary = ({
         aggregatedInterval={interval}
         requiredInputs={requiredInputs}
       />
-      {methods.map(({method, required, complete, onPress, summary}) => (
+      {methods.map(({method, summary, ...props}) => (
         <DataInputSummary
           key={method}
-          required={required}
-          complete={complete}
           label={t(`soil.collection_method.${method}`)}
           value={summary}
-          onPress={onPress}
+          {...props}
         />
       ))}
     </Column>
