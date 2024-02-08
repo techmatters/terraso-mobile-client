@@ -73,6 +73,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "Terraso LandPKS"
       revealArchiveInOrganizer = "YES">
       <PostActions>
          <ExecutionAction
