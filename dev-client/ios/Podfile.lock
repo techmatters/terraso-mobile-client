@@ -372,7 +372,7 @@ PODS:
   - react-native-pager-view (6.2.3):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - react-native-safe-area-context (4.8.2):
+  - react-native-safe-area-context (4.9.0):
     - React-Core
   - React-NativeModulesApple (0.72.10):
     - hermes-engine
@@ -484,31 +484,31 @@ PODS:
     - React-jsi (= 0.72.10)
     - React-logger (= 0.72.10)
     - React-perflogger (= 0.72.10)
-  - RNCCheckbox (0.5.16):
+  - RNCCheckbox (0.5.17):
     - BEMCheckBox (~> 1.4)
     - React-Core
-  - RNGestureHandler (2.14.0):
+  - RNGestureHandler (2.15.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - rnmapbox-maps (10.1.3):
-    - MapboxMaps (~> 10.16.2)
+  - rnmapbox-maps (10.1.10):
+    - MapboxMaps (~> 10.16.4)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.1.3)
+    - rnmapbox-maps/DynamicLibrary (= 10.1.10)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.1.3):
-    - MapboxMaps (~> 10.16.2)
+  - rnmapbox-maps/DynamicLibrary (10.1.10):
+    - MapboxMaps (~> 10.16.4)
     - React
     - React-Core
     - Turf
-  - RNReanimated (3.6.1):
+  - RNReanimated (3.6.2):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - ReactCommon/turbomodule/core
   - RNScreens (3.29.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNSentry (5.15.2):
+  - RNSentry (5.18.0):
     - hermes-engine
     - React-Core
     - React-hermes
@@ -522,7 +522,7 @@ PODS:
     - SentryPrivate (= 8.17.1)
   - SentryPrivate (8.17.1)
   - SocketRocket (0.6.1)
-  - Turf (2.7.0)
+  - Turf (2.8.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -777,7 +777,7 @@ SPEC CHECKSUMS:
   react-native-get-random-values: 384787fd76976f5aec9465aff6fa9e9129af1e74
   react-native-mmkv-storage: cfb6854594cfdc5f7383a9e464bb025417d1721c
   react-native-pager-view: cf96a223846458cc7e932017636b5c6d8cc2c549
-  react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
+  react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
   React-NativeModulesApple: 10093349d4cfd7cc1aabeadba47549920d19bc2d
   React-perflogger: 43287389ea08993c300897a46f95cfac04bb6c1a
   React-RCTActionSheet: 923afe77f9bb89da7c1f98e2730bfc9dde0eed6d
@@ -795,20 +795,20 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 68353a05c25b32d442610ef19af377f2b198f3fe
   React-utils: a715392dfaaa383668566e400f40493093c08d7e
   ReactCommon: a655a8b61cc80c7cabd8db83f69e6f498d4d0894
-  RNCCheckbox: 75255b03e604bbcc26411eb31c4cbe3e3865f538
-  RNGestureHandler: a5039da2ac028b073ae801289476060b34d559b1
-  rnmapbox-maps: 3790367749dfb2fe0f9ccdd52ef4e1510dce4695
-  RNReanimated: 8a6a83984cb4d61ebf1065b6137150b6b31ce609
+  RNCCheckbox: a3ca9978cb0846b981d28da4e9914bd437403d77
+  RNGestureHandler: 6a0bca5c5b2fb62211e9a75d5f4ed877817c4412
+  rnmapbox-maps: 412f17c470562fdc8d4dcd7dad5ddadb41a6a5fd
+  RNReanimated: 6cbeb21f7def739dd4eabc2bae634a2ff2539802
   RNScreens: 1c2444658fbb696a094272d946708167b1f63409
-  RNSentry: b7f4f53bb7076f119558f8898fca901b48213f12
+  RNSentry: eefa12fa65b37dd71f54371720f9fcddcd17be2f
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
   RNVectorIcons: 6731bd488db95f4197433b30d81d03dc228b367e
   Sentry: d9f99f9cc13777c5d938650c1e1c85047bb4f0d1
   SentryPrivate: 839b1e58addf58624087a80b2628e543193fa8ef
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  Turf: 13d1a92d969ca0311bbc26e8356cca178ce95da2
+  Turf: aa2ede4298009639d10db36aba1a7ebaad072a5e
   Yoga: d0003f849d2b5224c072cef6568b540d8bb15cd3
 
-PODFILE CHECKSUM: a0de7d3b997517b5febc54de54a137c78d9d8882
+PODFILE CHECKSUM: b8813b16a11bc97188109c06852e131b8ee64e7f
 
 COCOAPODS: 1.15.2
