@@ -99,7 +99,7 @@ jobs:
 
       - name: CocoaPod Install
         working-directory: dev-client/ios
-        run: pod install
+        run: bundle exec pod install
 
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.2
