@@ -99,18 +99,18 @@ jobs:
 
       - name: CocoaPod Install
         working-directory: dev-client/ios
-        run: pod install
+        run: bundle exec pod install
 
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.2
         with:
-          project-path: dev-client/ios/Terraso LandPKS.xcodeproj
+          project-path: dev-client/ios/TerrasoLandPKS.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
           code-signing-identity: 'iPhone Distribution'
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          workspace-path: dev-client/ios/Terraso LandPKS.xcworkspace
+          workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
           scheme: Terraso LandPKS
           increment-build-number: ${{ inputs.upload == 'true' && 'true' || '' }}
 
