@@ -17,7 +17,7 @@
 
 /* Begin PBXFileReference section */
 		1081C086F907B43791A10100 /* Pods-TerrasoLandPKS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TerrasoLandPKS.release.xcconfig"; path = "Target Support Files/Pods-TerrasoLandPKS/Pods-TerrasoLandPKS.release.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* TerrasoLandPKS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TerrasoLandPKS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Terraso LandPKS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = TerrasoLandPKS/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = TerrasoLandPKS/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TerrasoLandPKS/Images.xcassets; sourceTree = "<group>"; };
@@ -110,7 +110,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* TerrasoLandPKS.app */,
+				13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -159,7 +159,7 @@
 			);
 			name = TerrasoLandPKS;
 			productName = DevClient;
-			productReference = 13B07F961A680F5B00A75B9A /* TerrasoLandPKS.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Terraso LandPKS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -376,7 +376,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.terraso.test.Terraso-LandPKS";
-				PRODUCT_NAME = TerrasoLandPKS;
+				PRODUCT_NAME = "Terraso LandPKS";
 				PROVISIONING_PROFILE = "021da57f-2b02-4efd-9bc5-a3fb2a5057ab";
 				PROVISIONING_PROFILE_SPECIFIER = "Terraso LandPKS Beta Profile";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Terraso LandPKS Beta Profile";
@@ -418,7 +418,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.terraso.test.Terraso-LandPKS";
-				PRODUCT_NAME = TerrasoLandPKS;
+				PRODUCT_NAME = "Terraso LandPKS";
 				PROVISIONING_PROFILE = "021da57f-2b02-4efd-9bc5-a3fb2a5057ab";
 				PROVISIONING_PROFILE_SPECIFIER = "Terraso LandPKS Beta Profile";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Terraso LandPKS Beta Profile";
