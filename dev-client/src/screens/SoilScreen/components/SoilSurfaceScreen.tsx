@@ -15,14 +15,76 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  Column,
+  Heading,
+  Paragraph,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useTranslation} from 'react-i18next';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectSite} from 'terraso-client-shared/selectors';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {Image} from 'react-native';
+import {LastModified} from 'terraso-mobile-client/components/LastModified';
+import {Fab, Select} from 'native-base';
+import {
+  SurfaceCracks,
+  surfaceCracks,
+} from 'terraso-client-shared/soilId/soilIdTypes';
+import {Icon} from 'terraso-mobile-client/components/Icons';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useCallback} from 'react';
+import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 type Props = {siteId: string};
 
-export const SoilSurfaceScreen = ({}: Props) => {
+export const SoilSurfaceScreen = ({siteId}: Props) => {
+  const {t} = useTranslation();
+  const site = useSelector(selectSite(siteId));
+  const cracking = useSelector(
+    state => state.soilId.soilData[siteId].surfaceCracksSelect,
+  );
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const onUpdate = useCallback(
+    (surfaceCracksSelect: SurfaceCracks) =>
+      dispatch(updateSoilData({siteId, surfaceCracksSelect})),
+    [dispatch, siteId],
+  );
+
   return (
-    <ScreenScaffold>
-      <Text>Unimplemented soil surface screen</Text>
+    <ScreenScaffold AppBar={<AppBar title={site.name} />}>
+      <Column padding="md">
+        <Heading variant="h6">
+          {t('soil.collection_method.verticalCracking')}
+        </Heading>
+        <LastModified />
+        <Select
+          selectedValue={cracking ?? undefined}
+          onValueChange={onUpdate as (_: string) => void}>
+          {surfaceCracks.map(crack => (
+            <Select.Item
+              key={crack}
+              value={crack}
+              label={t(`soil.verticalCracking.${crack}`)}
+            />
+          ))}
+        </Select>
+        <Box height="lg" />
+        <Paragraph>{t('soil.verticalCracking_description')}</Paragraph>
+        <Box width="100%" alignItems="center">
+          <Image
+            source={require('terraso-mobile-client/assets/surface/verticalCracking.png')}
+          />
+        </Box>
+      </Column>
+      <Fab
+        leftIcon={<Icon name="check" />}
+        label={t('general.done_fab')}
+        isDisabled={!cracking}
+        onPress={() => navigation.pop()}
+      />
     </ScreenScaffold>
   );
 };
