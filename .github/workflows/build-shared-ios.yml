@@ -114,6 +114,15 @@ jobs:
           scheme: Terraso LandPKS
           increment-build-number: ${{ inputs.upload == 'true' && 'true' || '' }}
 
+      - name: Archive build log and intermediates
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-log-intermediates
+          path: |
+            "/Users/runner/Library/Logs/gym/TerrasoLandPKS-TerrasoLandPKS.log"
+            "/Users/runner/Library/Developer/Xcode/DerivedData/TerrasoLandPKS-*/Build/Intermediates.noindex/ArchiveIntermediates/"
+
       # - name: Commit iOS version bump
       #   if: ${{ inputs.upload == 'true' }}
       #   uses: stefanzweifel/git-auto-commit-action@v4
