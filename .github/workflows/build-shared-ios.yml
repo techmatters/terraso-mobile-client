@@ -40,7 +40,7 @@ on:
 jobs:
   ios-build:
     name: iOS Build
-    runs-on: macos-latest
+    runs-on: macos-14
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
