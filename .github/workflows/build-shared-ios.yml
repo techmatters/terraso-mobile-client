@@ -120,7 +120,7 @@ jobs:
           increment-build-number: ${{ inputs.upload == 'true' && 'true' || '' }}
 
       - name: Archive build log and intermediates
-        if: !success()
+        if: "!success()"
         uses: actions/upload-artifact@v3
         with:
           name: dist-log-intermediates
