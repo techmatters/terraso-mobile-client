@@ -111,7 +111,7 @@ jobs:
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
-          scheme: Terraso LandPKS
+          scheme: TerrasoLandPKS
           increment-build-number: ${{ inputs.upload == 'true' && 'true' || '' }}
 
       - name: Archive build log and intermediates
