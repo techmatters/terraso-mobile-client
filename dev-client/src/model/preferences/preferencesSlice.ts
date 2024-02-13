@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,15 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useTranslation} from 'react-i18next';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-// TODO: add real props instead of placeholder
-export const LastModified = () => {
-  const {t} = useTranslation();
-  return (
-    <Text variant="body2" fontStyle="italic">
-      {t('general.last_modified_by', {user: 'Sample Sam', date: '08/16/2023'})}
-    </Text>
-  );
-};
+import {ColorWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreen';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+
+type Preferences = typeof initialState;
+
+const initialState = {
+  colorWorkflow: 'MANUAL' satisfies ColorWorkflow as ColorWorkflow,
+} as const;
+
+const {
+  reducer,
+  actions: {updatePreferences},
+} = createSlice({
+  name: 'preferences',
+  initialState,
+  reducers: {
+    updatePreferences: (
+      state,
+      {payload}: PayloadAction<Partial<Preferences>>,
+    ) => Object.assign(state, payload),
+  },
+});
+
+export {reducer, updatePreferences};

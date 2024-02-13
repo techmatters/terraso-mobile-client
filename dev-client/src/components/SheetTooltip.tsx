@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {
-  SoilPitInputScreenProps,
-  SoilPitInputScreenScaffold,
-} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const ColorScreen = (props: SoilPitInputScreenProps) => {
-  return (
-    <SoilPitInputScreenScaffold {...props}>
-      <Text>Unimplemented Color Screen</Text>
-    </SoilPitInputScreenScaffold>
-  );
-};
+import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
+export const SheetTooltip = ({children}: React.PropsWithChildren<{}>) => (
+  <BottomSheetModal trigger={onOpen => <TooltipIconButton onPress={onOpen} />}>
+    <Box paddingVertical="30px" paddingHorizontal="16px">
+      {children}
+    </Box>
+  </BottomSheetModal>
+);

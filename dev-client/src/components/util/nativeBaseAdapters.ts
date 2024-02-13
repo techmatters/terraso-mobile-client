@@ -61,14 +61,18 @@ const nativeBaseDimensions = {
   marginTop: 'marginTop',
   ml: 'marginLeft',
   mx: 'marginHorizontal',
+  marginHorizontal: 'marginHorizontal',
   my: 'marginVertical',
   m: 'margin',
+  margin: 'margin',
   pr: 'paddingRight',
   pb: 'paddingBottom',
   pt: 'paddingTop',
   pl: 'paddingLeft',
   px: 'paddingHorizontal',
+  paddingHorizontal: 'paddingHorizontal',
   py: 'paddingVertical',
+  paddingVertical: 'paddingVertical',
   p: 'padding',
   padding: 'padding',
   height: 'height',
@@ -87,6 +91,7 @@ const nativeBaseNumerics = {
   borderLeftWidth: 'borderLeftWidth',
   borderRightWidth: 'borderRightWidth',
   borderRadius: 'borderRadius',
+  borderWidth: 'borderWidth',
   space: 'columnGap',
 } as const;
 
@@ -105,6 +110,7 @@ const nativeBaseStyleProps = {
   textAlign: 'textAlign',
   textTransform: 'textTransform',
   fontStyle: 'fontStyle',
+  borderStyle: 'borderStyle',
 };
 
 const nativeBaseColorProps = {
@@ -115,6 +121,7 @@ const nativeBaseColorProps = {
   borderBottomColor: 'borderBottomColor',
   borderLeftColor: 'borderLeftColor',
   borderRightColor: 'borderRightColor',
+  borderColor: 'borderColor',
 };
 
 const nativeBaseSpecialProps = {

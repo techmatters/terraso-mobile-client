@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,15 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useTranslation} from 'react-i18next';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-// TODO: add real props instead of placeholder
-export const LastModified = () => {
-  const {t} = useTranslation();
+import {
+  Column,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
+type Props<T> = {data: T[]; renderItem: (t: T) => React.ReactNode};
+export const BulletList = <T,>({data, renderItem}: Props<T>) => {
   return (
-    <Text variant="body2" fontStyle="italic">
-      {t('general.last_modified_by', {user: 'Sample Sam', date: '08/16/2023'})}
-    </Text>
+    <Column>
+      {data.map((item, index) => (
+        <Row key={index} alignItems="flex-start">
+          <Text variant="body1" marginHorizontal="10px">
+            {'•'}
+          </Text>
+          {renderItem(item)}
+        </Row>
+      ))}
+      <Text variant="body1" />
+    </Column>
   );
 };

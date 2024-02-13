@@ -38,7 +38,7 @@ import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/Sl
 import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
 import {SoilSurfaceScreen} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceScreen';
 import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
-import {ColorScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen';
+import {ColorScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreen';
 import {SARScreen} from 'terraso-mobile-client/screens/SoilScreen/SARScreen';
 import {SOCSOMScreen} from 'terraso-mobile-client/screens/SoilScreen/SOCSOMScreen';
 import {StructureScreen} from 'terraso-mobile-client/screens/SoilScreen/StructureScreen';
@@ -47,6 +47,10 @@ import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/Carbona
 import {PhScreen} from 'terraso-mobile-client/screens/SoilScreen/PhScreen';
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
 import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
+import {ColorGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorGuideScreen';
+import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorAnalysisScreen';
+import {ColorCropReferenceScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorCropReferenceScreen';
+import {ColorCropSoilScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorCropSoilScreen';
 
 export type ScreenDefinitions = Record<string, React.FC<any>>;
 
@@ -80,6 +84,10 @@ export const screenDefinitions = {
   SOIL_INPUT_carbonates: CarbonatesScreen,
   SOIL_INPUT_ph: PhScreen,
   TEXTURE_GUIDE: TextureGuideScreen,
+  COLOR_GUIDE: ColorGuideScreen,
+  COLOR_ANALYSIS: ColorAnalysisScreen,
+  COLOR_CROP_REFERENCE: ColorCropReferenceScreen,
+  COLOR_CROP_SOIL: ColorCropSoilScreen,
 } satisfies ScreenDefinitions;
 
 export const modalScreenDefinitions = {

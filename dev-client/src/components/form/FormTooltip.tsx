@@ -17,7 +17,7 @@
 
 import {Popover} from 'native-base';
 import {memo} from 'react';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
 
 type TooltipProps = React.PropsWithChildren<{
   icon: string;
@@ -25,16 +25,7 @@ type TooltipProps = React.PropsWithChildren<{
 
 export const FormTooltip = memo(({icon, children}: TooltipProps) => {
   return (
-    <Popover
-      trigger={props => (
-        <IconButton
-          {...props}
-          ml="6px"
-          _icon={{color: 'action.active_subtle', size: 'sm'}}
-          size="xs"
-          name={icon}
-        />
-      )}>
+    <Popover trigger={props => <TooltipIconButton {...props} icon={icon} />}>
       <Popover.Content bg="grey.800" p="0px" shadow="0">
         <Popover.Arrow bg="grey.800" shadow="0" />
         <Popover.Body
