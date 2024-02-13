@@ -56,12 +56,8 @@ react {
 
     // Added by install-expo-modules
     entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", rootDir.getAbsoluteFile().getParentFile().getAbsolutePath(), "android", "absolute"].execute(null, rootDir).text.trim())
-
-    // 202402313: PS: commented out these two lines. Otherwise bundleRelease (createBundleReleaseJsAndAssets) fails
-    // AssertionError [ERR_ASSERTION]: Assets must have hashed files. Ensure the expo-asset plugin is installed.
-
-    //cliFile = new File(["node", "--print", "require.resolve('@expo/cli')"].execute(null, rootDir).text.trim())
-    //bundleCommand = "export:embed"
+    cliFile = new File(["node", "--print", "require.resolve('@expo/cli')"].execute(null, rootDir).text.trim())
+    bundleCommand = "export:embed"
 }
 
 /**
