@@ -40,7 +40,7 @@ on:
 jobs:
   ios-build:
     name: iOS Build
-    runs-on: macos-latest
+    runs-on: macos-14
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
@@ -101,6 +101,11 @@ jobs:
         working-directory: dev-client/ios
         run: bundle exec pod install
 
+      - name: Set Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "^15.2"
+
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.2
         with:
@@ -111,8 +116,17 @@ jobs:
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
-          scheme: Terraso LandPKS
+          scheme: TerrasoLandPKS
           increment-build-number: ${{ inputs.upload == 'true' && 'true' || '' }}
+
+      - name: Archive build log and intermediates
+        if: "!success()"
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-log-intermediates
+          path: |
+            "/Users/runner/Library/Logs/gym/Terraso LandPKS-Terraso LandPKS.log"
+            "/Users/runner/Library/Developer/Xcode/DerivedData/TerrasoLandPKS-*/Build/Intermediates.noindex/ArchiveIntermediates/"
 
       # - name: Commit iOS version bump
       #   if: ${{ inputs.upload == 'true' }}

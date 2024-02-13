@@ -61,7 +61,7 @@ LogBox.ignoreLogs([
 
 const store = createStore();
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   useEffect(() =>
     checkAndroidPermissions(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,

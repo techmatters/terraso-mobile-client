@@ -68,7 +68,7 @@ export const SiteMap = memo(
         onMapFinishedLoading,
       },
       forwardedRef,
-    ): JSX.Element => {
+    ): React.JSX.Element => {
       const mapRef = useRef<Mapbox.MapView>(null);
       const shapeSourceRef = useRef<Mapbox.ShapeSource>(null);
       const cameraRef = useRef<Mapbox.Camera>(null);
