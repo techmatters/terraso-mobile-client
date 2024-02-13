@@ -5,6 +5,18 @@ on:
         required: false
         type: string
         default: 'false'
+      ENV:
+        required: false
+        type: string
+        default: 'staging'
+      TERRASO_BACKEND:
+        required: false
+        type: string
+        default: 'https://api.staging.terraso.net'
+      APP_VERSION:
+        required: false
+        type: string
+        default: 'v1'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
@@ -37,32 +49,10 @@ jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
-    env:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
 
     steps:
       - name: Check out git repository
         uses: actions/checkout@v4
-
-      - name: Provide Mapbox secret key
-        run: |
-          mkdir -p $HOME/.gradle
-          echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.gradle/gradle.properties
-
-      - name: Set up config values
-        if: ${{ inputs.upload == 'true' }}
-        working-directory: ./dev-client/android
-        run: |
-          echo "GOOGLE_OAUTH_ANDROID_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}" >> .env
-          echo "MICROSOFT_OAUTH_CLIENT_ID=${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}" >> .env
-          echo "MICROSOFT_SIGNATURE_HASH=${{ secrets.MICROSOFT_SIGNATURE_HASH }}" >> .env
-          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
-          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
-          echo "SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}" >> .env
-          echo "ENV=staging" >>.env
-          cp ../sentry.properties.example sentry.properties
-          echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> sentry.properties
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -74,6 +64,25 @@ jobs:
       - name: Install Node dependencies
         working-directory: dev-client
         run: npm ci
+
+      - name: Generate android directory
+        working-directory: dev-client
+        run: npm run prebuild -- -p android
+        env:
+          ENV: ${{ inputs.ENV }}
+          TERRASO_BACKEND: ${{ inputs.TERRASO_BACKEND }}
+          APP_VERSION: ${{ inputs.APP_VERSION }}
+          GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
+          MICROSOFT_OAUTH_CLIENT_ID: ${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+          MICROSOFT_SIGNATURE_HASH: ${{ secrets.MICROSOFT_SIGNATURE_HASH }}
+          PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
+          SENTRY_ORG: techmatters
+          SENTRY_PROJECT: terraso-lpks
 
       - name: Set up our JDK environment
         uses: actions/setup-java@v4
@@ -94,20 +103,6 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-caches-
-
-      - name: Bump Android version
-        if: ${{ inputs.upload == 'true' }}
-        working-directory: ./dev-client/android
-        run: ./gradlew bumpPatchVersion
-
-      # - name: Commit Android version bump
-      #   if: ${{ inputs.upload == 'true' }}
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     file_pattern: 'dev-client/android/app/build.gradle'
-      #     commit_message: 'build: bump Android version number'
-      #     commit_user_name: 'GitHub Actions'
-      #     commit_user_email: actions@users.noreply.github.com
 
       - name: Build Android app bundle
         working-directory: ./dev-client/android

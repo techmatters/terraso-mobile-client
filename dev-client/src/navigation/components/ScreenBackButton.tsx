@@ -18,8 +18,9 @@
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
+import {IconName} from 'terraso-mobile-client/components/Icons';
 
-type Props = {icon?: string};
+type Props = {icon?: IconName};
 
 export const ScreenBackButton = ({icon = 'arrow-back'}: Props) => {
   const navigation = useNavigation();

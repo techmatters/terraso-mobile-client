@@ -24,7 +24,7 @@ import {
 } from 'terraso-mobile-client/navigation/constants';
 import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettingsScreen';
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconName} from 'terraso-mobile-client/components/Icons';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 
@@ -42,7 +42,7 @@ type Props = {projectId: string};
 export const ProjectTabNavigator = ({projectId}: Props) => {
   const defaultTabOptions = useDefaultTabOptions();
 
-  const tabIconNames: Record<keyof TabStackParamList, string> = {
+  const tabIconNames: Record<keyof TabStackParamList, IconName> = {
     Inputs: 'tune',
     Team: 'people',
     Settings: 'settings',
