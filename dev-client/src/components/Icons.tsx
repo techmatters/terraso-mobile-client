@@ -16,7 +16,7 @@
  */
 
 import {IconButton as NativeIconButton, Center} from 'native-base';
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {View, Pressable} from 'react-native';
 import {IconProps as VectorIconProps} from 'react-native-vector-icons/Icon';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -142,3 +142,21 @@ export const LinkNewWindowIcon = () => {
     </View>
   );
 };
+
+type TooltipIconButtonProps = {
+  icon?: IconProps['name'];
+  onPress: () => void;
+};
+const tooltipIconProps = {color: 'action.active_subtle', size: 'sm'};
+export const TooltipIconButton = forwardRef(
+  ({icon: name = 'info', onPress}: TooltipIconButtonProps, ref) => (
+    <IconButton
+      ref={ref}
+      _icon={tooltipIconProps}
+      ml="6px"
+      size="xs"
+      name={name}
+      onPress={onPress}
+    />
+  ),
+);

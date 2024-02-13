@@ -59,7 +59,7 @@ export const BottomSheetModal = forwardRef<ModalHandle, Props>(
           <ModalContext.Provider value={methods}>
             <BottomSheetScrollView>
               {children}
-              <CardCloseButton onPress={methods.onClose} />
+              <CardCloseButton size="lg" onPress={methods.onClose} />
             </BottomSheetScrollView>
           </ModalContext.Provider>
         </GorhomBottomSheetModal>

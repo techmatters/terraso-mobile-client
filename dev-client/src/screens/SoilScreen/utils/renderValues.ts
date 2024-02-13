@@ -21,6 +21,7 @@ import {
   LabelledDepthInterval,
   SoilPitMethod,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+import {fromEntries} from 'terraso-client-shared/utils';
 
 export const renderDepthInterval = ({
   label,
@@ -29,26 +30,39 @@ export const renderDepthInterval = ({
   return `${label ? `${label}: ` : ''}${start}-${end} cm`;
 };
 
+const colorMethods = [
+  'colorChroma',
+  'colorHue',
+  'colorHueSubstep',
+  'colorValue',
+] as const;
+
 // TODO: finish this method for other inputs
 export const pitMethodSummary = (
   t: TFunction,
   soilData: DepthDependentSoilData | undefined,
   method: SoilPitMethod | 'rockFragmentVolume',
 ): {complete: boolean; summary?: string} => {
-  if (method === 'soilTexture') {
-    return {
-      complete: typeof soilData?.texture === 'string',
-      summary: soilData?.texture
-        ? t(`soil.texture.class.${soilData?.texture}`)
-        : undefined,
-    };
-  } else if (method === 'rockFragmentVolume') {
-    return {
-      complete: typeof soilData?.rockFragmentVolume === 'string',
-      summary: soilData?.rockFragmentVolume
-        ? t(`soil.texture.rockFragment.${soilData.rockFragmentVolume}`)
-        : undefined,
-    };
+  if (soilData === undefined) {
+    return {complete: false};
   }
-  return {complete: false};
+  let summary: string | undefined;
+  if (method === 'soilTexture' && soilData.texture) {
+    summary = t(`soil.texture.class.${soilData?.texture}`);
+  } else if (method === 'rockFragmentVolume' && soilData.rockFragmentVolume) {
+    summary = t(`soil.texture.rockFragment.${soilData.rockFragmentVolume}`);
+  } else if (
+    method === 'soilColor' &&
+    colorMethods.every(m => typeof soilData[m] === 'string')
+  ) {
+    summary = t(
+      'soil.color.rendered',
+      fromEntries(
+        colorMethods.map(m => [m, t(`soil.color.${m}.${soilData[m]}`)]),
+      ),
+    );
+  }
+  return {complete: summary !== undefined, summary};
 };
+
+export const munsell2RGB = (_: DepthDependentSoilData) => '#b48677';

@@ -16,7 +16,7 @@
  */
 
 import {useMemo, useCallback, useRef} from 'react';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useTranslation} from 'react-i18next';
 
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -86,25 +86,23 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
 
   return (
     <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
-      <BottomSheetModalProvider>
-        <ScreenScaffold
-          AppBar={
-            <AppBar
-              RightButton={appBarRightButton}
-              title={site?.name ?? t('site.dashboard.default_title')}
-            />
-          }
-          BottomNavigation={null}>
-          {siteId ? (
-            <SiteRoleContextProvider siteId={siteId}>
-              <LocationDashboardTabNavigator siteId={siteId} />
-            </SiteRoleContextProvider>
-          ) : (
-            <SiteScreen siteId={siteId} coords={coords} />
-          )}
-        </ScreenScaffold>
+      <ScreenScaffold
+        AppBar={
+          <AppBar
+            RightButton={appBarRightButton}
+            title={site?.name ?? t('site.dashboard.default_title')}
+          />
+        }
+        BottomNavigation={null}>
+        {siteId ? (
+          <SiteRoleContextProvider siteId={siteId}>
+            <LocationDashboardTabNavigator siteId={siteId} />
+          </SiteRoleContextProvider>
+        ) : (
+          <SiteScreen siteId={siteId} coords={coords} />
+        )}
         <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
-      </BottomSheetModalProvider>
+      </ScreenScaffold>
     </BottomSheetPrivacyModalContext.Provider>
   );
 };
