@@ -77,7 +77,7 @@ export const ColorGuideScreen = (
     undefined,
     <Box width="100%">
       <Image
-        source={require('terraso-mobile-client/assets/color/reference.png')}
+        source={require('terraso-mobile-client/assets/color/reference.jpg')}
       />
     </Box>,
     <Row justifyContent="space-between">
