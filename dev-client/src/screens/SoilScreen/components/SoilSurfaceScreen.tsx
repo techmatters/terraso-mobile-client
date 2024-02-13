@@ -75,7 +75,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
         <Paragraph>{t('soil.verticalCracking_description')}</Paragraph>
         <Box width="100%" alignItems="center">
           <Image
-            source={require('terraso-mobile-client/assets/surface/verticalCracking.png')}
+            source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
           />
         </Box>
       </Column>
