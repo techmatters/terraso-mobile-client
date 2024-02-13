@@ -434,11 +434,17 @@
       "photos": "Photos",
       "notes": "Notes"
     },
-    "verticalCracking_description": "Vertical cracks may appear on the soil surface when some soils experience changes in moisture or temperature. The cracks may be permanent, or they may disappear after some time.\n\nVertical cracks are at least 5 mm (3/16”) wide and 25 cm (10”) deep. You should be able to place a pencil inside the cracks.",
-    "verticalCracking": {
-      "NO_CRACKING": "No Cracking",
-      "SURFACE_CRACKING_ONLY": "Surface Cracking Only",
-      "DEEP_VERTICAL_CRACKS": "Deep Vertical Cracks"
+    "vertical_cracking": {
+      "description": "Vertical cracks may appear on the soil surface when some soils experience changes in moisture or temperature. The cracks may be permanent, or they may disappear after some time.\n\nVertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks.",
+      "description_width_metric": "5 mm",
+      "description_width_imperial": "3/16”",
+      "description_depth_metric": "25 cm",
+      "description_depth_imperial": "10”",
+      "value": {
+        "NO_CRACKING": "No Cracking",
+        "SURFACE_CRACKING_ONLY": "Surface Cracking Only",
+        "DEEP_VERTICAL_CRACKS": "Deep Vertical Cracks"
+      }
     },
     "data": {
       "rockFragmentVolume": "Rock fragment",

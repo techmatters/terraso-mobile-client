@@ -67,12 +67,14 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
             <Select.Item
               key={crack}
               value={crack}
-              label={t(`soil.verticalCracking.${crack}`)}
+              label={t(`soil.vertical_cracking.value.${crack}`)}
             />
           ))}
         </Select>
         <Box height="lg" />
-        <Paragraph>{t('soil.verticalCracking_description')}</Paragraph>
+        <Paragraph>
+          {t('soil.vertical_cracking.description', {units: 'metric'})}
+        </Paragraph>
         <Box width="100%" alignItems="center">
           <Image
             source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
