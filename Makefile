@@ -1,5 +1,5 @@
 lint:
-	cd dev-client && npm run lint-js && npm run check-ts
+	cd dev-client && npm run lint-js && npm run check-ts && npm run check-modules
 
 setup-git-hooks:
 	@cp scripts/pre-commit.sample .git/hooks/pre-commit

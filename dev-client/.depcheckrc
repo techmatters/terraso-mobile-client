@@ -2,6 +2,7 @@
 	"ignores": [
 		"@babel/core",
 		"@babel/preset-env",
+		"@babel/preset-typescript",
 		"@babel/runtime",
 		"@react-native-community/cli-doctor",
 		"@reduxjs/toolkit",

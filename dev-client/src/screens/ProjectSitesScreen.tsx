@@ -184,7 +184,7 @@ export function ProjectSitesScreen({
     params: {projectId},
   },
   navigation,
-}: Props): JSX.Element {
+}: Props): React.JSX.Element {
   const {t} = useTranslation();
   const transferCallback = useCallback(
     () =>
