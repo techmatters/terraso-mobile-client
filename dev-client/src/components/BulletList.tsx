@@ -28,12 +28,12 @@ export const BulletList = <T,>({data, renderItem}: Props<T>) => {
       {data.map((item, index) => (
         <Row key={index} alignItems="flex-start">
           <Text variant="body1" marginHorizontal="10px">
-            {'\u2022'}
+            {'•'}
           </Text>
           {renderItem(item)}
         </Row>
       ))}
-      <Text variant="body1">{''}</Text>
+      <Text variant="body1" />
     </Column>
   );
 };
