@@ -85,7 +85,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   return (
     <ScrollView backgroundColor="grey.300">
       <SoilSurfaceStatus
-        required={project ? project.verticalCrackingRequired : true}
+        required={project?.verticalCrackingRequired ?? false}
         complete={Boolean(soilData?.surfaceCracksSelect)}
         siteId={siteId}
       />
