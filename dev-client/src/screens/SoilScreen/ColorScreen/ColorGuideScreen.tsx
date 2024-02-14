@@ -31,6 +31,7 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {usePickImage} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/hooks';
 
 export const ColorGuideScreen = (
   props: SoilPitInputScreenProps | undefined,
@@ -39,13 +40,16 @@ export const ColorGuideScreen = (
   const navigation = useNavigation();
 
   const onGoBack = useCallback(() => navigation.pop(), [navigation]);
-  const onTakePhoto = useCallback(
-    () =>
-      navigation.replace('COLOR_ANALYSIS', {
-        photo: 0,
-        pitProps: props,
-      }),
-    [navigation, props],
+  const onTakePhoto = usePickImage(
+    useCallback(
+      photo => {
+        navigation.replace('COLOR_ANALYSIS', {
+          photo: photo,
+          pitProps: props,
+        });
+      },
+      [navigation, props],
+    ),
   );
 
   const stepContent = [

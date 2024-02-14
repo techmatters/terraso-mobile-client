@@ -16,10 +16,7 @@
  */
 
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {
-  munsell2RGB,
-  pitMethodSummary,
-} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
+import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {
@@ -28,8 +25,14 @@ import {
   Box,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
+import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {munsellToRGB} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+import {MunsellHue} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellTable';
 
-export const ColorDisplay = (props: SoilPitInputScreenProps) => {
+export const ColorDisplay = ({
+  onDelete,
+  ...props
+}: SoilPitInputScreenProps & {onDelete?: () => void}) => {
   const {t} = useTranslation();
   const data = useSelector(selectDepthDependentData(props));
   const {complete, summary} = pitMethodSummary(t, data, 'soilColor');
@@ -37,6 +40,12 @@ export const ColorDisplay = (props: SoilPitInputScreenProps) => {
   if (!complete) {
     return undefined;
   }
+  const rgb = munsellToRGB(
+    `${t(`soil.color.colorHueSubstep.${data?.colorHueSubstep}`)}${t(`soil.color.colorHue.${data?.colorHue}`)}` as MunsellHue,
+    t(`soil.color.colorValue.${data?.colorValue}`),
+    t(`soil.color.colorChroma.${data?.colorChroma}`),
+  );
+  const bgColor = rgb ? `rgb(${rgb.join(', ')})` : undefined;
   return (
     <Column alignItems="center">
       <Text variant="body1-strong">{summary}</Text>
@@ -44,9 +53,22 @@ export const ColorDisplay = (props: SoilPitInputScreenProps) => {
       <Box
         width="180px"
         height="180px"
-        backgroundColor={munsell2RGB(data!)}
+        backgroundColor={bgColor}
         borderWidth="2px"
       />
+      {onDelete && (
+        <IconButton
+          position="absolute"
+          name="delete"
+          top="-18px"
+          right="-18px"
+          size="md"
+          borderRadius="full"
+          backgroundColor="grey.300"
+          _icon={{color: 'action.active'}}
+          onPress={onDelete}
+        />
+      )}
     </Column>
   );
 };
