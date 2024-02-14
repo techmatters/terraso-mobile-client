@@ -434,6 +434,18 @@
       "photos": "Photos",
       "notes": "Notes"
     },
+    "vertical_cracking": {
+      "description": "Vertical cracks may appear on the soil surface when some soils experience changes in moisture or temperature. The cracks may be permanent, or they may disappear after some time.\n\nVertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks.",
+      "description_width_metric": "5 mm",
+      "description_width_imperial": "3/16”",
+      "description_depth_metric": "25 cm",
+      "description_depth_imperial": "10”",
+      "value": {
+        "NO_CRACKING": "No Cracking",
+        "SURFACE_CRACKING_ONLY": "Surface Cracking Only",
+        "DEEP_VERTICAL_CRACKS": "Deep Vertical Cracks"
+      }
+    },
     "data": {
       "rockFragmentVolume": "Rock fragment",
       "texture": "Texture",
@@ -526,7 +538,7 @@
         "bullet2": "How much organic matter is present",
         "bullet3": "And much more",
         "p2": "Soil color can be measured using a Munsell book or spectrometer.",
-        "p3": "In this app, you can also take a photo with a reference card like a Post-It Note to determine your soil color."
+        "p3": "In this app, you can also take a photo with a reference card like a Post-it Note to determine your soil color."
       },
       "hue": "Hue",
       "value": "Value",
@@ -537,19 +549,19 @@
       },
       "guide": {
         "step1": {
-          "title": "1. Gather Post-It® Notes.",
-          "content": "To ensure accurate color analysis you must use 3M Canary Yellow Post-It® Notes for your reference card, with these guidelines:",
+          "title": "1. Gather Post-it Notes.",
+          "content": "To ensure accurate color analysis you must use 3M Canary Yellow Post-it Notes for your reference card, with these guidelines:",
           "bullets": {
-            "1": "Only use new Post-It Notes.",
+            "1": "Only use new Post-it Notes.",
             "2": "Stack at least 3 Post-it Notes on top of each other.",
-            "3": "Make sure each Post-It note lays flat, isn’t written on, and isn’t dirty.",
-            "4": "Make sure each Post-It note isn’t degraded by sunlight, as considerable variation can exist depending on sun exposure.",
-            "5": "Store Post-It notes in dark envelopes to avoid sun exposure."
+            "3": "Make sure each Post-it note lays flat, isn’t written on, and isn’t dirty.",
+            "4": "Make sure each Post-it note isn’t degraded by sunlight, as considerable variation can exist depending on sun exposure.",
+            "5": "Store Post-it notes in dark envelopes to avoid sun exposure."
           }
         },
         "step2": {
           "title": "2. Prepare Soil Sample.",
-          "content": "Use dry soil whenever possible. The app does have a way to indicate if your soil is wet, but dry soil color estimates are more accurate.\n\nIf your soil layer has multiple colors (i.e. mottles, redoximorphic features, or carbonates), isolate the dominant matrix color from the pile.\n\nRun soil through a 2mm sieve to create a pile of homogenous soil, or use your hands to pick out anything larger than 2mm or 1/16”.\n\nFlatten the pile of soil to minimize shadows within the soil sample."
+          "content": "Use dry soil whenever possible. The app does have a way to indicate if your soil is wet, but dry soil color estimates are more accurate.\n\nIf your soil layer has multiple colors (i.e. mottles, redoximorphic features, or carbonates), isolate the dominant matrix color from the pile.\n\nRun soil through a 2mm sieve to create a pile of homogenous soil, or use your hands to pick out anything larger than 2mm (1/16)”.\n\nFlatten the pile of soil to minimize shadows within the soil sample."
         },
         "step3": {
           "title": "3. Prepare lighting.",
@@ -557,7 +569,7 @@
         },
         "step4": {
           "title": "4. Place reference card next to soil.",
-          "content": "Place the Post-It note next to the prepared soil sample, in the proper lighting conditions."
+          "content": "Place the Post-it note next to the prepared soil sample, in the proper lighting conditions."
         },
         "step5": {
           "title": "5. Ready to take the photo?",
@@ -567,14 +579,14 @@
         "take_photo": "Take Photo"
       },
       "reference": "Reference",
-      "crop_reference": "Crop image to show only the 3M Canary Yellow Post-It® Note. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
+      "crop_reference": "Crop image to show only the 3M Canary Yellow Post-it Note. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
       "soil": "Soil",
       "crop_soil": "Crop image to show only the soil sample. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
       "soil_condition": "Soil condition:",
       "lighting_condition": "Photo has even lighting and no shadows:",
       "analyze": "Analyze",
       "use_photo_instead": "Don’t know the soil color values? Use a photo instead (guide included.)",
-      "photo_need_help": "To use a photo to determine soil color, you’ll need a 3M Canary Yellow Post-it® Note for color reference and a properly prepared soil sample. Need help? Use the step-by-step guide.",
+      "photo_need_help": "To use a photo to determine soil color, you’ll need a 3M Canary Yellow Post-it Note for color reference and a properly prepared soil sample. Need help? Use the step-by-step guide.",
       "use_guide_label": "Use Guide",
       "colorHue": {
         "B": "B",

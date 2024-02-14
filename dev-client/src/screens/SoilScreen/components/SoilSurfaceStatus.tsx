@@ -25,6 +25,7 @@ type Props = {siteId: string} & Pick<
 
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
+  Column,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -38,7 +39,7 @@ export const SoilSurfaceStatus = ({required, complete, siteId}: Props) => {
   }, [navigation, siteId]);
 
   return (
-    <>
+    <Column space="1px">
       <Row backgroundColor="background.default" px="16px" py="12px">
         <Heading variant="h6">{t('soil.surface')}</Heading>
       </Row>
@@ -48,6 +49,6 @@ export const SoilSurfaceStatus = ({required, complete, siteId}: Props) => {
         label={t('soil.collection_method.verticalCracking')}
         onPress={onPress}
       />
-    </>
+    </Column>
   );
 };
