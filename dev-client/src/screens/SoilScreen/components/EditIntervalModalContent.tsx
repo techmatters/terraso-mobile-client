@@ -19,12 +19,11 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   DepthInterval,
   sameDepth,
-  updateSoilDataDepthIntervalAsync,
+  updateSoilDataDepthInterval,
   soilPitMethods,
   methodEnabled,
   SoilDataDepthInterval,
   SoilPitMethod,
-  updateSoilDataDepthInterval,
   deleteSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {DEFAULT_ENABLED_SOIL_PIT_METHODS} from 'terraso-client-shared/constants';
@@ -151,7 +150,7 @@ export const EditIntervalModalContent = ({
   const updateSwitch = useCallback(
     (method: SoilPitMethod) => (newValue: boolean) => {
       dispatch(
-        updateSoilDataDepthIntervalAsync({
+        updateSoilDataDepthInterval({
           siteId,
           depthInterval,
           ...defaultInputs,

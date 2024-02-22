@@ -48,6 +48,7 @@ import {
   Column,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {selectSoilData} from 'terraso-client-shared/selectors';
 
 type Props = {
   siteId: string;
@@ -59,9 +60,7 @@ type CombinedSlope =
 export const SlopeShapeScreen = ({siteId}: Props) => {
   const name = useSelector(state => state.site.sites[siteId].name);
   const {t} = useTranslation();
-  const {downSlope, crossSlope} = useSelector(
-    state => state.soilId.soilData[siteId],
-  );
+  const {downSlope, crossSlope} = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
