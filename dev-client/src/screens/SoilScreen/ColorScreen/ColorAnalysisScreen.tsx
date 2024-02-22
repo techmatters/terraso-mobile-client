@@ -174,7 +174,13 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
                   {style ? (
                     <Image source={photo} style={[style]} />
                   ) : (
-                    <Icon name="touch-app" color="action.active" />
+                    <Box
+                      width="100%"
+                      height="100%"
+                      justifyContent="center"
+                      alignItems="center">
+                      <Icon name="touch-app" color="action.active" />
+                    </Box>
                   )}
                 </Box>
               </Pressable>
