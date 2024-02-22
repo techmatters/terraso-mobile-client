@@ -1,8 +1,25 @@
-//# Using proprietary data from:
-//# A modified Munsell to xyY Lookup Table derived from the r package
-//# Algorithms for Quantitative Pedology (AQP) and adapted color value
-//# ranges using non-linear model transformation to get intermediate
-//# color ranges common for soil color:
+/*
+ * Copyright © 2024 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+// Using proprietary data from:
+// A modified Munsell to xyY Lookup Table derived from the r package
+// Algorithms for Quantitative Pedology (AQP) and adapted color value
+// ranges using non-linear model transformation to get intermediate
+// color ranges common for soil color:
 
 export type MunsellHueSubstep = 10 | 7.5 | 5.0 | 2.5;
 export type MunsellHueStep =
