@@ -18,7 +18,7 @@
 import {Button} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Image, ScrollView} from 'react-native';
+import {Image, ScrollView, StyleSheet} from 'react-native';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {
@@ -60,22 +60,31 @@ export const ColorGuideScreen = (
           <Text>{t(`soil.color.guide.step1.bullets.${i}`)}</Text>
         )}
       />
-      <Box
-        width="100%"
-        height="200px"
-        alignItems="center"
-        justifyContent="center"
-        backgroundColor="grey.300">
-        <Text>photo of post-its</Text>
+      <Box width="100%" alignItems="center">
+        <Image
+          source={require('terraso-mobile-client/assets/color/post-it.jpg')}
+        />
       </Box>
     </>,
-    <Row height="180px">
-      <Box flex={1} backgroundColor="grey.300">
-        <Text>graphic of sieve</Text>
+    <Row>
+      <Box flex={1}>
+        <Box width="100%" aspectRatio={1}>
+          <Image
+            resizeMode="contain"
+            style={styles.image}
+            source={require('terraso-mobile-client/assets/color/sieve.png')}
+          />
+        </Box>
       </Box>
       <Box width="md" />
-      <Box flex={1} backgroundColor="grey.300">
-        <Text>graphic of flat pile</Text>
+      <Box flex={1}>
+        <Box width="100%" aspectRatio={1}>
+          <Image
+            resizeMode="contain"
+            style={styles.image}
+            source={require('terraso-mobile-client/assets/color/flat-pile.png')}
+          />
+        </Box>
       </Box>
     </Row>,
     undefined,
@@ -117,3 +126,7 @@ export const ColorGuideScreen = (
     </ScreenScaffold>
   );
 };
+
+const styles = StyleSheet.create({
+  image: {width: '100%', height: '100%'},
+});
