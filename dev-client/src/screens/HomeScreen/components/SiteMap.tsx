@@ -25,7 +25,6 @@ import {
   useImperativeHandle,
   forwardRef,
 } from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useTheme} from 'native-base';
 import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
@@ -239,27 +238,6 @@ export const SiteMap = memo(
         [onPress],
       );
 
-      const mapImages = useMemo(
-        () => ({
-          sitePin: Icon.getImageSourceSync(
-            'location-on',
-            35,
-            colors.secondary.main,
-          ),
-          selectedSitePin: Icon.getImageSourceSync(
-            'location-on',
-            64,
-            colors.secondary.main,
-          ),
-          temporarySitePin: Icon.getImageSourceSync(
-            'location-on',
-            35,
-            colors.action.active,
-          ),
-        }),
-        [colors],
-      );
-
       const mapStyles = useMemo(
         () => ({
           siteLayer: {
@@ -362,6 +340,12 @@ export const SiteMap = memo(
     },
   ),
 );
+
+const mapImages = {
+  sitePin: require('terraso-mobile-client/assets/map/location.png'),
+  selectedSitePin: require('terraso-mobile-client/assets/map/selected-location.png'),
+  temporarySitePin: require('terraso-mobile-client/assets/map/temporary-location.png'),
+};
 
 const styles = StyleSheet.create({
   mapView: {
