@@ -29,10 +29,11 @@ import {
   Row,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {selectSoilData} from 'terraso-client-shared/selectors';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
-  const soilData = useSelector(state => state.soilId.soilData[siteId]);
+  const soilData = useSelector(selectSoilData(siteId));
   const required = useSelector(state => {
     const projectId = state.site.sites[siteId].projectId;
     if (projectId === undefined) {

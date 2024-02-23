@@ -35,6 +35,7 @@ import {
   Row,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {selectSoilData} from 'terraso-client-shared/selectors';
 
 type Props = {
   siteId: string;
@@ -48,7 +49,7 @@ type FormInput = {
 export const ManualSteepnessModal = ({siteId}: Props) => {
   const {t} = useTranslation();
   const onClose = useModal()!.onClose;
-  const soilData = useSelector(state => state.soilId.soilData[siteId]);
+  const soilData = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
   const [lastTouched, setLastTouched] = useState<keyof FormInput | null>(null);
 

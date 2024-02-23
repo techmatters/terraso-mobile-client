@@ -23,7 +23,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectSite} from 'terraso-client-shared/selectors';
+import {selectSite, selectSoilData} from 'terraso-client-shared/selectors';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {Image} from 'react-native';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
@@ -42,9 +42,7 @@ type Props = {siteId: string};
 export const SoilSurfaceScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const site = useSelector(selectSite(siteId));
-  const cracking = useSelector(
-    state => state.soilId.soilData[siteId].surfaceCracksSelect,
-  );
+  const {surfaceCracksSelect: cracking} = useSelector(selectSoilData(siteId));
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const onUpdate = useCallback(
