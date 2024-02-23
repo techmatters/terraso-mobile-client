@@ -102,7 +102,17 @@ export const StaticMapView = ({
   style,
   displayCenterMarker,
 }: Props) => {
-  const position = useMemo(() => coordsToPosition(coords), [coords]);
+  const cameraSettings = useMemo(
+    () =>
+      ({
+        centerCoordinate: coordsToPosition(coords),
+        zoomLevel: zoomLevel,
+        animationMode: 'none',
+        animationDuration: 0,
+      }) as const,
+    [coords, zoomLevel],
+  );
+
   return (
     <Mapbox.MapView
       style={style}
@@ -114,14 +124,11 @@ export const StaticMapView = ({
       pitchEnabled={false}
       rotateEnabled={false}
       attributionEnabled={false}>
-      <Mapbox.Camera
-        centerCoordinate={position}
-        zoomLevel={zoomLevel}
-        animationMode="none"
-        animationDuration={0}
-      />
+      <Mapbox.Camera defaultSettings={cameraSettings} />
       {displayCenterMarker && (
-        <Mapbox.MarkerView coordinate={position} anchor={defaultAnchor}>
+        <Mapbox.MarkerView
+          coordinate={cameraSettings.centerCoordinate}
+          anchor={defaultAnchor}>
           <Icon name="location-on" color="secondary.main" />
         </Mapbox.MarkerView>
       )}

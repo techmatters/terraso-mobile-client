@@ -33,6 +33,7 @@ import {
   HStack,
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {TextInput} from 'react-native';
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;
@@ -76,7 +77,7 @@ const ListFilterContext = createContext<ListFilterState<any, any>>({
 
 type ContextHook<Item, Name> = Name extends string
   ? {
-      setValue: (newValue: string | undefined) => void;
+      setValue: (newValue: string | undefined, apply?: boolean) => void;
       value: string | undefined;
       applyFilters: () => void;
       numFilters: number;
@@ -106,8 +107,16 @@ export const ListFilterProvider = <
     Record<string, string | undefined>
   >({});
 
-  const setValue = (name: string) => (newValue: string | undefined) =>
-    setValues(state => ({...state, [name]: newValue}));
+  const setValue = useCallback(
+    (name: string) =>
+      (newValue: string | undefined, apply: boolean = false) => {
+        setValues(state => ({...state, [name]: newValue}));
+        if (apply) {
+          setAppliedValues(state => ({...state, [name]: newValue}));
+        }
+      },
+    [],
+  );
 
   const numFilters = useMemo(
     () =>
@@ -334,21 +343,22 @@ type TextInputProps = {
 
 export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
   const {t} = useTranslation();
-  const {value, setValue, applyFilters} = useListFilter<any>(name);
+  const ref = useRef<TextInput>(null);
+  const {value, setValue} = useListFilter<any>(name);
 
   const onChangeText = useCallback(
-    (newText: string) => {
-      setValue(newText);
-      applyFilters();
-    },
-    [setValue, applyFilters],
+    (newText: string) => setValue(newText, true),
+    [setValue],
   );
 
-  const clearText = useCallback(() => onChangeText(''), [onChangeText]);
+  const onClear = useCallback(() => {
+    setValue('', true);
+    ref?.current?.clear();
+  }, [setValue]);
 
   return (
     <Input
-      value={value}
+      ref={ref}
       onChangeText={onChangeText}
       placeholder={placeholder}
       accessibilityLabel={label}
@@ -361,7 +371,7 @@ export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
         value !== undefined && value.length ? (
           <IconButton
             name="close"
-            onPress={clearText}
+            onPress={onClear}
             accessibilityLabel={t('listfilter.clear_search_label')}
             _icon={{
               color: 'action.active',
