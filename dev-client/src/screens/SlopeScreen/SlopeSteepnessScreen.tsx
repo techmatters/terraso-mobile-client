@@ -42,6 +42,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {selectSoilData} from 'terraso-client-shared/selectors';
 
 type Props = {
   siteId: string;
@@ -65,7 +66,7 @@ const STEEPNESS_IMAGES = {
 export const SlopeSteepnessScreen = ({siteId}: Props) => {
   const name = useSelector(state => state.site.sites[siteId].name);
   const {t} = useTranslation();
-  const soilData = useSelector(state => state.soilId.soilData[siteId]);
+  const soilData = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
   const [steepnessOption, setSteepnessOption] =
     useState<SoilIdSoilDataSlopeSteepnessSelectChoices | null>(null);
