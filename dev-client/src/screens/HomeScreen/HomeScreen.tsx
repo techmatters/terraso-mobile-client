@@ -40,10 +40,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
-import BottomSheet, {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from '@gorhom/bottom-sheet';
+import BottomSheet, {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
@@ -132,15 +129,24 @@ export const HomeScreen = memo(() => {
 
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
 
+  const [finishedLoading, setFinishedLoading] = useState(false);
   const [finishedInitialCameraMove, setFinishedInitialCameraMove] =
     useState(false);
 
   const onMapFinishedLoading = useCallback(() => {
-    if (!finishedInitialCameraMove && currentUserCoords !== null) {
+    setFinishedLoading(true);
+  }, [setFinishedLoading]);
+
+  useEffect(() => {
+    if (
+      !finishedInitialCameraMove &&
+      finishedLoading &&
+      currentUserCoords !== null
+    ) {
       mapRef.current?.moveToPoint(currentUserCoords);
       setFinishedInitialCameraMove(true);
     }
-  }, [currentUserCoords, finishedInitialCameraMove]);
+  }, [finishedLoading, finishedInitialCameraMove, currentUserCoords]);
 
   const searchFunction = useCallback(
     (coords: Coords) => {
@@ -196,89 +202,87 @@ export const HomeScreen = memo(() => {
     }, [siteDistances]);
 
   return (
-    <BottomSheetModalProvider>
-      <ListFilterProvider
-        items={siteList}
-        filters={{
-          search: {
-            kind: 'filter',
-            f: searchText,
-            preprocess: normalizeText,
-            lookup: {
-              key: ['name', 'notes.content'],
-            },
-            hide: true,
+    <ListFilterProvider
+      items={siteList}
+      filters={{
+        search: {
+          kind: 'filter',
+          f: searchText,
+          preprocess: normalizeText,
+          lookup: {
+            key: ['name', 'notes.content'],
           },
-          role: {
-            kind: 'filter',
-            f: equals,
-            lookup: {
-              record: siteProjectRoles,
-              key: 'id',
-            },
+          hide: true,
+        },
+        role: {
+          kind: 'filter',
+          f: equals,
+          lookup: {
+            record: siteProjectRoles,
+            key: 'id',
           },
-          project: {
-            kind: 'filter',
-            f: equals,
-            lookup: {
-              key: 'projectId',
-            },
+        },
+        project: {
+          kind: 'filter',
+          f: equals,
+          lookup: {
+            key: 'projectId',
           },
-          sort: {
-            kind: 'sorting',
-            options: {
-              nameDesc: {
-                key: 'name',
-                order: 'descending',
-              },
-              nameAsc: {
-                key: 'name',
-                order: 'ascending',
-              },
-              lastModDesc: {
-                key: 'updatedAt',
-                order: 'descending',
-              },
-              lastModAsc: {
-                key: 'updatedAt',
-                order: 'ascending',
-              },
-              ...distanceSorting,
+        },
+        sort: {
+          kind: 'sorting',
+          options: {
+            nameDesc: {
+              key: 'name',
+              order: 'descending',
             },
+            nameAsc: {
+              key: 'name',
+              order: 'ascending',
+            },
+            lastModDesc: {
+              key: 'updatedAt',
+              order: 'descending',
+            },
+            lastModAsc: {
+              key: 'updatedAt',
+              order: 'ascending',
+            },
+            ...distanceSorting,
           },
-        }}>
-        <ScreenScaffold
-          AppBar={
-            <AppBar
-              LeftButton={<AppBarIconButton name="menu" />}
-              RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
+        },
+      }}>
+      <ScreenScaffold
+        AppBar={
+          <AppBar
+            LeftButton={<AppBarIconButton name="menu" />}
+            RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
+          />
+        }>
+        <Box flex={1}>
+          <Box flex={1} zIndex={-1}>
+            <MapSearch
+              zoomTo={searchFunction}
+              zoomToUser={moveToUser}
+              toggleMapLayer={toggleMapLayer}
             />
-          }>
-          <Box flex={1}>
-            <Box flex={1} zIndex={-1}>
-              <MapSearch
-                zoomTo={searchFunction}
-                zoomToUser={moveToUser}
-                toggleMapLayer={toggleMapLayer}
-              />
-              <SiteMap
-                ref={mapRef}
-                calloutState={calloutState}
-                setCalloutState={setCalloutState}
-                styleURL={mapStyleURL}
-                onMapFinishedLoading={onMapFinishedLoading}
-              />
-            </Box>
-            <SiteListBottomSheet
-              ref={siteListBottomSheetRef}
-              sites={siteList}
-              showSiteOnMap={showSiteOnMap}
-              snapIndex={1}
+            <SiteMap
+              ref={mapRef}
+              calloutState={calloutState}
+              setCalloutState={setCalloutState}
+              styleURL={mapStyleURL}
+              onMapFinishedLoading={onMapFinishedLoading}
             />
           </Box>
-          <LandPKSInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
-        </ScreenScaffold>
-      </ListFilterProvider>
-    </BottomSheetModalProvider>
+          <SiteListBottomSheet
+            ref={siteListBottomSheetRef}
+            sites={siteList}
+            showSiteOnMap={showSiteOnMap}
+            snapIndex={1}
+          />
+        </Box>
+        <LandPKSInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
+      </ScreenScaffold>
+    </ListFilterProvider>
   );
 });
