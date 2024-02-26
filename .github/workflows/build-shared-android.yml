@@ -34,7 +34,7 @@ on:
 jobs:
   android-build:
     name: Android Build
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
