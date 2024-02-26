@@ -26,7 +26,7 @@
     "base-64": "^1.0.0",
     "expo": "^50.0.6",
     "expo-av": "^13.10.5",
-    "expo-camera": "^14.0.4",
+    "expo-camera": "^14.0.5",
     "expo-screen-orientation": "^6.4.1",
     "expo-sensors": "^12.9.1",
     "formik": "^2.4.5",
