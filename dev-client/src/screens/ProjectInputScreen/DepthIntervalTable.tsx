@@ -66,7 +66,7 @@ export const DepthIntervalTable = ({
         result.push(label || '');
       }
       result.push(
-        t('soil.depth_interval.bounds', {depthInterval, units: 'cm'}),
+        t('soil.depth_interval.bounds', {...depthInterval, units: 'cm'}),
       );
       if (canDeleteInterval) {
         result.push(
