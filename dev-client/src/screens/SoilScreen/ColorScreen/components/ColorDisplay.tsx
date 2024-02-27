@@ -27,7 +27,7 @@ import {
 import {useTranslation} from 'react-i18next';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {munsellToRGB} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {MunsellHue} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellTable';
+import {SoilColorHue} from 'terraso-client-shared/soilId/soilIdTypes';
 
 export const ColorDisplay = ({
   onDelete,
@@ -41,7 +41,7 @@ export const ColorDisplay = ({
     return undefined;
   }
   const rgb = munsellToRGB(
-    `${t(`soil.color.colorHueSubstep.${data?.colorHueSubstep}`)}${t(`soil.color.colorHue.${data?.colorHue}`)}` as MunsellHue,
+    `${t(`soil.color.colorHueSubstep.${data?.colorHueSubstep}`)}${t(`soil.color.colorHue.${data?.colorHue}`)}` as `${number}${SoilColorHue}`,
     t(`soil.color.colorValue.${data?.colorValue}`),
     t(`soil.color.colorChroma.${data?.colorChroma}`),
   );

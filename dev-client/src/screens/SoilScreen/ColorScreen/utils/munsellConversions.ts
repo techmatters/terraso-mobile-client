@@ -38,8 +38,8 @@ const COLOR_COUNT = 16;
 
 export const munsellToRGB = (
   h: `${number}${SoilColorHue}`,
-  v: number,
-  c: number,
+  v: string,
+  c: string,
 ): RGB => munsellToRgb255(`${h} ${v}/${c}`);
 
 export const getColor = (
@@ -48,7 +48,7 @@ export const getColor = (
   referenceRGB: RGB,
 ) => {
   const getPalette = (pixels: RGBA[]) => {
-    //Transform pixel info from canvas so quantize can use it
+    // Transform pixel info from canvas so quantize can use it
     const pixelArray = pixels.flatMap(([r, g, b, a]) => {
       // If pixel is mostly opaque and not white
       if (a >= 125) {
@@ -58,12 +58,12 @@ export const getColor = (
       }
       return [];
     });
-    //Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
+    // Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
     var cmap = quantize(pixelArray, COLOR_COUNT);
     return cmap ? cmap.palette() : null;
   };
 
-  //Get the color palettes of both soil and card
+  // Get the color palettes of both soil and card
   const paletteCard = getPalette(pixelCard);
   const paletteSample = getPalette(pixelSoil);
 
@@ -71,7 +71,7 @@ export const getColor = (
     return undefined;
   }
 
-  //Correction values obtain from spectrophotometer Observer. = 2°, Illuminant = D65
+  // Correction values obtain from spectrophotometer Observer. = 2°, Illuminant = D65
   const correctSampleRGB = (cardPixel: RGB, samplePixel: RGB) => {
     const corrected = cardPixel.map(
       (cardV, index) => (referenceRGB[index] / cardV) * samplePixel[index],
