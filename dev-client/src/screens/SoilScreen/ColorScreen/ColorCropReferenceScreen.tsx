@@ -15,47 +15,38 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Fab} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/Icons';
-import {
-  Box,
-  Column,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {ColorAnalysisProps} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorAnalysisScreen';
+import {
+  ColorCropScreen,
+  Crop,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorCropScreen';
 
 export const ColorCropReferenceScreen = (props: ColorAnalysisProps) => {
+  const {photo} = props;
   const {t} = useTranslation();
   const navigation = useNavigation();
 
-  const onComplete = useCallback(() => {
-    const newProps = {...props, reference: 1};
-    if (props.soil) {
-      navigation.navigate('COLOR_ANALYSIS', newProps);
-    } else {
-      navigation.replace('COLOR_CROP_SOIL', newProps);
-    }
-  }, [navigation, props]);
+  const onCrop = useCallback(
+    (crop: Crop) => {
+      const newProps = {...props, reference: crop};
+      if (props.soil) {
+        navigation.navigate('COLOR_ANALYSIS', newProps);
+      } else {
+        navigation.replace('COLOR_CROP_SOIL', newProps);
+      }
+    },
+    [navigation, props],
+  );
 
   return (
-    <ScreenScaffold AppBar={<AppBar title={t('soil.color.reference')} />}>
-      <Column padding="md">
-        <Box backgroundColor="grey.300" height="328px" />
-        <Box height="md" />
-        <Text variant="body1-strong">{t('soil.color.reference')}</Text>
-        <Box height="md" />
-        <Text variant="body1">{t('soil.color.crop_reference')}</Text>
-      </Column>
-      <Fab
-        onPress={onComplete}
-        label={t('general.next')}
-        leftIcon={<Icon name="check" />}
-      />
-    </ScreenScaffold>
+    <ColorCropScreen
+      photo={photo}
+      onCrop={onCrop}
+      title={t('soil.color.reference')}
+      description={t('soil.color.crop_reference')}
+    />
   );
 };

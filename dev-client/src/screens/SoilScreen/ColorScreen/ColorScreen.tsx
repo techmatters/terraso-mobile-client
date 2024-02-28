@@ -48,6 +48,7 @@ import {Pressable} from 'react-native';
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
+import {usePickImage} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/hooks';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 
@@ -58,13 +59,16 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
   const workflow = useSelector(state => state.preferences.colorWorkflow);
   const navigation = useNavigation();
 
-  const onTakePhoto = useCallback(
-    () =>
-      navigation.navigate('COLOR_ANALYSIS', {
-        photo: 0,
-        pitProps: props,
-      }),
-    [navigation, props],
+  const onTakePhoto = usePickImage(
+    useCallback(
+      photo => {
+        navigation.navigate('COLOR_ANALYSIS', {
+          photo: photo,
+          pitProps: props,
+        });
+      },
+      [navigation, props],
+    ),
   );
 
   const onUseGuide = useCallback(

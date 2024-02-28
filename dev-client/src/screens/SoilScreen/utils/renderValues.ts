@@ -64,5 +64,3 @@ export const pitMethodSummary = (
   }
   return {complete: summary !== undefined, summary};
 };
-
-export const munsell2RGB = (_: DepthDependentSoilData) => '#b48677';

@@ -57,7 +57,6 @@ export const PhotoConditions = (props: SoilPitInputScreenProps) => {
   const data = useSelector(selectDepthDependentData(props));
   const dispatch = useDispatch();
 
-  console.log(props, data);
   const soilGroupProps = useMemo(
     () =>
       ({

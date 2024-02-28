@@ -17,7 +17,7 @@
 
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ImageSourcePropType, Pressable} from 'react-native';
+import {Image, ImageStyle, Pressable, StyleSheet} from 'react-native';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {
   Box,
@@ -32,27 +32,54 @@ import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {Fab} from 'native-base';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {
+  Photo,
+  decodeBase64Jpg,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/image';
+import {Crop} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorCropScreen';
+import {
+  REFERENCES,
+  RGBA,
+  getColor,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 
 export type ColorAnalysisProps = {
-  photo: ImageSourcePropType;
+  photo: Photo;
   pitProps?: SoilPitInputScreenProps;
-  reference?: CropParameters;
-  soil?: CropParameters;
+  reference?: Crop;
+  soil?: Crop;
 };
 
-export type CropParameters = number;
+const analyzeImage = ({
+  photo,
+  reference,
+  soil,
+}: {
+  photo: Photo;
+  reference: Crop;
+  soil: Crop;
+}) => {
+  const {width, data} = decodeBase64Jpg(photo.base64);
+  const getPixel = (x: number, y: number): RGBA => {
+    const offset = (y * width + x) * 4;
+    return [...data.slice(offset, offset + 4)] as RGBA;
+  };
+  const referencePixels: RGBA[] = [];
+  for (var x = 0; x < reference.size; x++) {
+    for (var y = 0; y < reference.size; y++) {
+      referencePixels.push(getPixel(x + reference.left, y + reference.top));
+    }
+  }
+  const soilPixels: RGBA[] = [];
+  for (var x = 0; x < soil.size; x++) {
+    for (var y = 0; y < soil.size; y++) {
+      soilPixels.push(getPixel(x + soil.left, y + soil.top));
+    }
+  }
 
-const analyzeImage = ({}: {
-  photo: ImageSourcePropType;
-  reference: CropParameters;
-  soil: CropParameters;
-}) =>
-  ({
-    colorHue: 'YR',
-    colorHueSubstep: 'SUBSTEP_2_5',
-    colorValue: 'VALUE_6',
-    colorChroma: 'CHROMA_4',
-  }) as const;
+  return getColor(referencePixels, soilPixels, REFERENCES.CANARY_POST_IT)
+    ?.munsell;
+};
 
 export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
   const {pitProps, reference, soil, photo} = props;
@@ -64,17 +91,19 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
     () =>
       pitProps && reference && soil
         ? () => {
-            dispatch(
-              updateDepthDependentSoilData({
-                siteId: pitProps.siteId,
-                depthInterval: pitProps.depthInterval.depthInterval,
-                ...analyzeImage({photo, reference, soil}),
-              }),
-            );
-            navigation.pop();
+            const analysisResult = analyzeImage({photo, reference, soil});
+            if (analysisResult !== undefined) {
+              dispatch(
+                updateDepthDependentSoilData({
+                  siteId: pitProps.siteId,
+                  depthInterval: pitProps.depthInterval.depthInterval,
+                  ...analysisResult,
+                }),
+              );
+              navigation.pop();
+            }
           }
         : null,
-
     [photo, reference, soil, pitProps, dispatch, navigation],
   );
 
@@ -86,6 +115,24 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
     navigation.navigate('COLOR_CROP_SOIL', props);
   }, [navigation, props]);
 
+  const [soilStyle, referenceStyle] = useMemo(
+    () =>
+      [soil, reference].map(crop =>
+        crop
+          ? ({
+              transform: [
+                {translateX: -(photo.width / 2)},
+                {translateY: -(photo.height / 2)},
+                {scale: 100 / crop.size},
+                {translateX: -crop.left + photo.width / 2},
+                {translateY: -crop.top + photo.height / 2},
+              ],
+            } satisfies ImageStyle)
+          : undefined,
+      ),
+    [soil, reference, photo.height, photo.width],
+  );
+
   return (
     <ScreenScaffold>
       <Column padding="xl">
@@ -94,6 +141,7 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
           borderWidth="2px"
           width="100%"
           height="180px">
+          <Image source={photo} resizeMode="contain" style={styles.image} />
           <IconButton
             position="absolute"
             name="delete"
@@ -110,10 +158,10 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
         <Row justifyContent="space-between">
           {(
             [
-              ['reference', onReference],
-              ['soil', onSoil],
+              ['reference', onReference, referenceStyle],
+              ['soil', onSoil, soilStyle],
             ] as const
-          ).map(([key, onPress]) => (
+          ).map(([key, onPress, style]) => (
             <Column key={key} alignItems="flex-start">
               <Text variant="body1-strong">{t(`soil.color.${key}`)}</Text>
               <Box height="sm" />
@@ -122,9 +170,18 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
                   width="100px"
                   height="100px"
                   backgroundColor="grey.300"
-                  alignItems="center"
-                  justifyContent="center">
-                  <Icon name="touch-app" color="action.active" />
+                  overflow="hidden">
+                  {style ? (
+                    <Image source={photo} style={[style]} />
+                  ) : (
+                    <Box
+                      width="100%"
+                      height="100%"
+                      justifyContent="center"
+                      alignItems="center">
+                      <Icon name="touch-app" color="action.active" />
+                    </Box>
+                  )}
                 </Box>
               </Pressable>
             </Column>
@@ -141,3 +198,7 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
     </ScreenScaffold>
   );
 };
+
+const styles = StyleSheet.create({
+  image: {width: '100%', height: '100%'},
+});
