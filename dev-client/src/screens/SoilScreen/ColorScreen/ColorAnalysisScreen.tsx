@@ -93,7 +93,6 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
         ? () => {
             const analysisResult = analyzeImage({photo, reference, soil});
             if (analysisResult !== undefined) {
-              console.log(analysisResult);
               dispatch(
                 updateDepthDependentSoilData({
                   siteId: pitProps.siteId,
