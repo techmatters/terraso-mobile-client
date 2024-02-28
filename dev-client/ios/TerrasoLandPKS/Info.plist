@@ -58,7 +58,9 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Terraso LandPKS uses your location to take photos of sites.</string>
+	<string>Terraso LandPKS uses your camera to take photos of sites.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Terraso LandPKS uses your photo library to share photos of sites.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This application does not use your microphone.</string>
 	<key>NSMotionUsageDescription</key>
