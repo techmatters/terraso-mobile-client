@@ -111,6 +111,8 @@ const nativeBaseStyleProps = {
   textTransform: 'textTransform',
   fontStyle: 'fontStyle',
   borderStyle: 'borderStyle',
+  aspectRatio: 'aspectRatio',
+  overflow: 'overflow',
 };
 
 const nativeBaseColorProps = {
