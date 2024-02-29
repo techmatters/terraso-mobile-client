@@ -17,7 +17,7 @@
 
 import {useTheme} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {useDispatch} from 'terraso-mobile-client/store';
 import {
   collectionMethods,
   methodRequired,
@@ -29,6 +29,7 @@ import {
   Box,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
 
 export const RequiredDataSettings = ({
   projectId,
@@ -38,9 +39,7 @@ export const RequiredDataSettings = ({
   enabled: boolean;
 }) => {
   const {t} = useTranslation();
-  const settings = useSelector(
-    state => state.soilId.projectSettings[projectId],
-  );
+  const settings = useProjectSoilSettings(projectId);
   const dispatch = useDispatch();
   const {colors} = useTheme();
 

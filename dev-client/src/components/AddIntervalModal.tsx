@@ -36,7 +36,7 @@ import {
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;
-  existingIntervals: DepthInterval[];
+  existingIntervals: {depthInterval: DepthInterval}[];
 };
 
 export const AddIntervalModal = ({
@@ -70,7 +70,7 @@ export const AddIntervalModal = ({
         <>
           <Heading variant="h6">{t('soil.depth_interval.add_title')}</Heading>
           <Box height="20px" />
-          <IntervalForm editable={true} displayLabel={true} />
+          <IntervalForm />
           <Box height="50px" />
           <Button
             size="lg"

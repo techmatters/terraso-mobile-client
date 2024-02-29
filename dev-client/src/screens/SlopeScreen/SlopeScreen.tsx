@@ -29,18 +29,15 @@ import {
   Row,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {selectSoilData} from 'terraso-client-shared/selectors';
+import {
+  selectSoilData,
+  useSiteProjectSoilSettings,
+} from 'terraso-client-shared/selectors';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
   const soilData = useSelector(selectSoilData(siteId));
-  const required = useSelector(state => {
-    const projectId = state.site.sites[siteId].projectId;
-    if (projectId === undefined) {
-      return false;
-    }
-    return state.soilId.projectSettings[projectId].slopeRequired;
-  });
+  const required = useSiteProjectSoilSettings(siteId)?.slopeRequired ?? false;
   const navigation = useNavigation();
 
   const steepnessValue = renderSteepness(t, soilData);

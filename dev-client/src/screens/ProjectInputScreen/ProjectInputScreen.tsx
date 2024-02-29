@@ -31,9 +31,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'react-native';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-
-import {selectProjectSettings} from 'terraso-client-shared/selectors';
-import {EnsureDataPresent} from 'terraso-mobile-client/components/EnsureDataPresent';
 import {SoilPitSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/SoilPitSettings';
 import {RequiredDataSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/RequiredDataSettings';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
@@ -55,9 +52,6 @@ export const ProjectInputScreen = ({
   const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state => state.project.projects[projectId]);
-  const soilSettings = useSelector(state =>
-    selectProjectSettings(state, projectId),
-  );
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();
 
@@ -150,11 +144,7 @@ export const ProjectInputScreen = ({
               {t('soil.pit')}
             </Text>
           }>
-          <EnsureDataPresent
-            data={soilSettings}
-            Component={SoilPitSettings}
-            props={{projectId}}
-          />
+          <SoilPitSettings projectId={projectId} />
         </Accordion>
         <Box height={4} />
         <Accordion
