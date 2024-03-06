@@ -24,7 +24,6 @@ import {Modal} from 'terraso-mobile-client/components/Modal';
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
-  SoilData,
   methodRequired,
   soilPitMethods,
   updateSoilData,
@@ -33,7 +32,10 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
 import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
-import {selectSoilDataIntervals} from 'terraso-client-shared/selectors';
+import {
+  selectSoilData,
+  useSiteSoilIntervals,
+} from 'terraso-client-shared/selectors';
 import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
@@ -45,9 +47,7 @@ import {
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
-  const soilData = useSelector(state => state.soilId.soilData[siteId]) as
-    | SoilData
-    | undefined;
+  const soilData = useSelector(selectSoilData(siteId));
   const project = useSelector(state => {
     const projectId = state.site.sites[siteId].projectId;
     return projectId ? state.soilId.projectSettings[projectId] : undefined;
@@ -57,12 +57,9 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     return soilPitMethods.filter(m => (project ?? {})[methodRequired(m)]);
   }, [project]);
 
-  const allIntervals = useSelector(state =>
-    selectSoilDataIntervals(state, siteId),
-  );
-
+  const allIntervals = useSiteSoilIntervals(siteId);
   const existingIntervals = useMemo(
-    () => allIntervals.map(({interval: {depthInterval}}) => depthInterval),
+    () => allIntervals.map(({interval}) => interval),
     [allIntervals],
   );
 
@@ -96,7 +93,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         py="12px"
         justifyContent="space-between">
         <Heading variant="h6">{t('soil.pit')}</Heading>
-        {soilData && !project && (
+        {!project && (
           <BottomSheetModal
             trigger={onOpen => (
               <IconButton
@@ -106,18 +103,17 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               />
             )}>
             <EditSiteSoilDepthPreset
-              /* LANDPKS is the default here */
-              selected={soilData.depthIntervalPreset || 'LANDPKS'}
+              selected={soilData.depthIntervalPreset}
               updateChoice={updateSoilDataDepthPreset}
             />
           </BottomSheetModal>
         )}
       </Row>
-      {allIntervals.map(aggregated => (
+      {allIntervals.map(interval => (
         <SoilDepthIntervalSummary
-          key={`${aggregated.interval.depthInterval.start}:${aggregated.interval.depthInterval.end}`}
+          key={`${interval.interval.depthInterval.start}:${interval.interval.depthInterval.end}`}
           siteId={siteId}
-          interval={aggregated}
+          interval={interval}
           requiredInputs={projectRequiredInputs}
         />
       ))}

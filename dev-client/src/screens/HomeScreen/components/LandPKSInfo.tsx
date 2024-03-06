@@ -16,7 +16,7 @@
  */
 
 import {Linking} from 'react-native';
-import {FlatList, Image} from 'native-base';
+import {Image} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
 import {
@@ -53,21 +53,22 @@ export const LandPKSInfo = () => {
             <Text bold>third</Text>
           </Trans>
         </Text>
-        <FlatList
-          data={['home.info.list1', 'home.info.list2', 'home.info.list3']}
-          renderItem={({index, item}) => (
+        <Column>
+          {[1, 2, 3].map(index => (
             <HStack key={index}>
               <Text variant="body1" mr={2}>
                 {index + 1}
                 {'.'}
               </Text>
               <Text variant="body1" mr={2}>
-                <Trans i18nKey={item} components={{icon: <LocationIcon />}} />
+                <Trans
+                  i18nKey={`home.info.list${index}`}
+                  components={{icon: <LocationIcon />}}
+                />
               </Text>
             </HStack>
-          )}
-          keyExtractor={item => item}
-        />
+          ))}
+        </Column>
         <Text variant="body1">
           <Trans
             i18nKey="home.info.description2"

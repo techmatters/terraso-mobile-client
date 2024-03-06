@@ -21,7 +21,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {
   selectDepthDependentData,
-  selectSiteSoilProjectSettings,
+  useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {EditIntervalModalContent} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModalContent';
@@ -32,7 +32,10 @@ import {AggregatedInterval} from 'terraso-client-shared/selectors';
 import {useMemo} from 'react';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
+import {
+  pitMethodSummary,
+  renderDepthInterval,
+} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {
   Column,
   Heading,
@@ -47,41 +50,34 @@ type DepthIntervalEditorProps = {
 
 const DepthIntervalEditor = ({
   siteId,
-  aggregatedInterval: {mutable, interval},
+  aggregatedInterval: {isFromPreset, interval},
   requiredInputs,
-}: DepthIntervalEditorProps) => {
-  const {t} = useTranslation();
-  return (
-    <Row
-      backgroundColor="primary.dark"
-      justifyContent="space-between"
-      px="12px"
-      py="8px">
-      <Heading variant="h6" color="primary.contrast">
-        {interval.label && `${interval.label}: `}
-        {t('soil.depth_interval.bounds', {
-          ...interval.depthInterval,
-          units: 'cm',
-        })}
-      </Heading>
-      <BottomSheetModal
-        trigger={onOpen => (
-          <IconButton
-            name="more-vert"
-            _icon={{color: 'primary.contrast'}}
-            onPress={onOpen}
-          />
-        )}>
-        <EditIntervalModalContent
-          siteId={siteId}
-          depthInterval={interval.depthInterval}
-          requiredInputs={requiredInputs}
-          mutable={mutable}
+}: DepthIntervalEditorProps) => (
+  <Row
+    backgroundColor="primary.dark"
+    justifyContent="space-between"
+    px="12px"
+    py="8px">
+    <Heading variant="h6" color="primary.contrast">
+      {renderDepthInterval(interval)}
+    </Heading>
+    <BottomSheetModal
+      trigger={onOpen => (
+        <IconButton
+          name="more-vert"
+          _icon={{color: 'primary.contrast'}}
+          onPress={onOpen}
         />
-      </BottomSheetModal>
-    </Row>
-  );
-};
+      )}>
+      <EditIntervalModalContent
+        siteId={siteId}
+        depthInterval={interval.depthInterval}
+        requiredInputs={requiredInputs}
+        mutable={!isFromPreset}
+      />
+    </BottomSheetModal>
+  </Row>
+);
 
 type Props = {
   siteId: string;
@@ -94,13 +90,14 @@ export const SoilDepthIntervalSummary = ({
   interval,
   requiredInputs,
 }: Props) => {
+  const {interval: depthInterval} = interval;
   const {t} = useTranslation();
 
   const navigation = useNavigation();
 
-  const project = useSelector(selectSiteSoilProjectSettings(siteId));
+  const project = useSiteProjectSoilSettings(siteId);
   const soilData = useSelector(
-    selectDepthDependentData({siteId, depthInterval: interval.interval}),
+    selectDepthDependentData({siteId, depthInterval}),
   );
 
   const methods = useMemo(() => {
@@ -108,7 +105,7 @@ export const SoilDepthIntervalSummary = ({
       .filter(
         method =>
           project?.[methodRequired(method)] ||
-          interval.interval[methodEnabled(method)],
+          depthInterval[methodEnabled(method)],
       )
       .map(method => ({
         method,
@@ -116,7 +113,7 @@ export const SoilDepthIntervalSummary = ({
         onPress: () =>
           navigation.navigate(`SOIL_INPUT_${method}`, {
             siteId,
-            depthInterval: interval.interval,
+            depthInterval,
           }),
       }))
       .flatMap(method =>
@@ -134,7 +131,7 @@ export const SoilDepthIntervalSummary = ({
         ...method,
         ...pitMethodSummary(t, soilData, method.method),
       }));
-  }, [t, navigation, siteId, soilData, interval, project]);
+  }, [t, navigation, siteId, soilData, depthInterval, project]);
 
   return (
     <Column space="1px">

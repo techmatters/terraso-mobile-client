@@ -65,9 +65,7 @@ export const DepthIntervalTable = ({
       if (includeLabel) {
         result.push(label || '');
       }
-      result.push(
-        t('soil.depth_interval.bounds', {...depthInterval, units: 'cm'}),
-      );
+      result.push(t('soil.depth_interval.bounds_unitless', depthInterval));
       if (canDeleteInterval) {
         result.push(
           <Box flex={1} flexDirection="row" justifyContent="flex-end">
