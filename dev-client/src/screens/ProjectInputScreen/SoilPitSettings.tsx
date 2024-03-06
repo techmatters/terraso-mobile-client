@@ -21,7 +21,6 @@ import {useTranslation} from 'react-i18next';
 import {SoilIdProjectSoilSettingsDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   LabelledDepthInterval,
-  ProjectSoilSettings,
   updateProjectDepthInterval,
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
@@ -34,24 +33,16 @@ import {DepthPresets} from 'terraso-mobile-client/constants';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
 
-export const SoilPitSettings = ({
-  data: settings,
-  projectId,
-}: {
-  data: ProjectSoilSettings;
-  projectId: string;
-}) => {
+export const SoilPitSettings = ({projectId}: {projectId: string}) => {
   const {t} = useTranslation();
+  const settings = useProjectSoilSettings(projectId);
   const [selectedPreset, setSelectedPreset] =
     useState<SoilIdProjectSoilSettingsDepthIntervalPresetChoices>(
       settings.depthIntervalPreset,
     );
   const dispatch = useDispatch();
-  const existingIntervals = useMemo(
-    () => settings.depthIntervals.map(interval => interval.depthInterval),
-    [settings.depthIntervals],
-  );
 
   const projectRole = useProjectRoleContext();
 
@@ -60,10 +51,7 @@ export const SoilPitSettings = ({
     [projectRole],
   );
 
-  const customizable = useMemo(
-    () => settings.depthIntervalPreset === 'CUSTOM',
-    [settings],
-  );
+  const isCustom = settings.depthIntervalPreset === 'CUSTOM';
 
   const onAddDepthInterval = useCallback(
     async (interval: LabelledDepthInterval) => {
@@ -125,14 +113,16 @@ export const SoilPitSettings = ({
         actionName={t('projects.inputs.depth_intervals.confirm_preset.confirm')}
         handleConfirm={onChangeDepthPreset}
       />
-      <DepthIntervalTable
-        depthIntervals={settings.depthIntervals}
-        projectId={projectId}
-        canDeleteInterval={customizable && userCanUpdateIntervals}
-        includeLabel={customizable}
-        pb="15px"
-      />
-      {customizable ? (
+      {settings.depthIntervalPreset !== 'NONE' && (
+        <DepthIntervalTable
+          depthIntervals={settings.depthIntervals}
+          projectId={projectId}
+          canDeleteInterval={isCustom && userCanUpdateIntervals}
+          includeLabel={isCustom}
+          pb="15px"
+        />
+      )}
+      {isCustom && (
         <Modal
           trigger={onOpen => (
             <Button
@@ -146,10 +136,10 @@ export const SoilPitSettings = ({
           )}>
           <AddIntervalModal
             onSubmit={onAddDepthInterval}
-            existingIntervals={existingIntervals}
+            existingIntervals={settings.depthIntervals}
           />
         </Modal>
-      ) : undefined}
+      )}
     </Box>
   );
 };

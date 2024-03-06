@@ -55,7 +55,8 @@ export const theme = extendTheme({
     },
     text: {
       primary: '#1A202C',
-      secondary: '#1A202CCC',
+      secondary: '#33474F',
+      disabled: '#9EA8AB',
     },
     m3: {
       sys: {

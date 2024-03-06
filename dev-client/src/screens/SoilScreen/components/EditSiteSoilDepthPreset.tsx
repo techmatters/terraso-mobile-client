@@ -16,7 +16,7 @@
  */
 
 import {Button} from 'native-base';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useModal} from 'terraso-mobile-client/components/Modal';
@@ -26,6 +26,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 
 type Props = {
   selected: SoilIdSoilDataDepthIntervalPresetChoices;
@@ -35,8 +36,11 @@ type Props = {
 export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
   const {t} = useTranslation();
   const modalHandle = useModal();
-  const onClose = modalHandle ? modalHandle.onClose : () => {};
   const [selectedPreset, updateSelectedPreset] = useState(selected);
+  const onConfirm = useCallback(() => {
+    updateChoice(selectedPreset);
+    modalHandle?.onClose();
+  }, [modalHandle, updateChoice, selectedPreset]);
   return (
     <Column space="1px" px="18px" pt="18px" pb="23px">
       <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
@@ -58,16 +62,27 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
             ),
         }}
       />
-      <Button
-        size="lg"
-        onPress={() => {
-          updateChoice(selectedPreset);
-          onClose();
-        }}
-        _text={{textTransform: 'uppercase'}}
-        alignSelf="flex-end">
-        {t('general.save')}
-      </Button>
+      <ConfirmModal
+        trigger={onOpen => (
+          <Button
+            size="lg"
+            onPress={() => {
+              if (selectedPreset === selected) {
+                modalHandle?.onClose();
+              } else {
+                onOpen();
+              }
+            }}
+            _text={{textTransform: 'uppercase'}}
+            alignSelf="flex-end">
+            {t('general.save')}
+          </Button>
+        )}
+        handleConfirm={onConfirm}
+        title={t('projects.inputs.depth_intervals.confirm_preset.title')}
+        body={t('projects.inputs.depth_intervals.confirm_preset.body')}
+        actionName={t('projects.inputs.depth_intervals.confirm_preset.confirm')}
+      />
     </Column>
   );
 };

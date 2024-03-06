@@ -22,7 +22,7 @@ import {TFunction} from 'i18next';
 
 type Args = {
   t: TFunction;
-  existingIntervals: DepthInterval[];
+  existingIntervals: {depthInterval: DepthInterval}[];
 };
 
 export const intervalSchema = ({t, existingIntervals}: Args) =>
@@ -40,7 +40,8 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       .test((start, {createError}) => {
         if (
           existingIntervals.some(
-            interval => start >= interval.start && start < interval.end,
+            ({depthInterval}) =>
+              start >= depthInterval.start && start < depthInterval.end,
           )
         ) {
           return createError({
@@ -56,7 +57,8 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       .test((end, {createError, parent}) => {
         if (
           existingIntervals.some(
-            interval => end > interval.start && end <= interval.end,
+            ({depthInterval}) =>
+              end > depthInterval.start && end <= depthInterval.end,
           )
         ) {
           return createError({

@@ -22,6 +22,7 @@ import {
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {theme} from 'terraso-mobile-client/theme';
 
 type Props = FormFieldWrapperProps &
   Omit<React.ComponentProps<typeof Switch>, 'onChange' | 'onValueChange'> & {
@@ -29,17 +30,24 @@ type Props = FormFieldWrapperProps &
   };
 
 export const FormSwitch = memo(
-  ({onChange: onValueChange, label, ...props}: Props) => {
-    const {value, onChange} = useFieldContext<boolean>(props.name);
+  ({onChange: onValueChange, label, value: propsValue, ...props}: Props) => {
+    const {value: fieldValue, onChange} = useFieldContext<boolean>(props.name);
     return (
       <FormFieldWrapper errorMessage={null} {...props}>
         <Row justifyContent="flex-start">
           <Switch
-            value={value}
+            value={propsValue ?? fieldValue}
             onValueChange={onValueChange ?? onChange}
             {...props}
           />
-          <Text>{label}</Text>
+          <Text
+            color={
+              props.disabled
+                ? theme.colors.text.disabled
+                : theme.colors.text.primary
+            }>
+            {label}
+          </Text>
         </Row>
       </FormFieldWrapper>
     );

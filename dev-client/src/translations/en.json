@@ -473,11 +473,17 @@
         "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
         "action": "Change"
       },
+      "delete_modal": {
+        "title": "Delete depth?",
+        "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
+        "action": "Delete"
+      },
       "error": {
         "overlaps": "Overlaps existing",
         "ordering": "Interval bounds error"
       },
-      "bounds": "{{start}}-{{end}}{{units}}",
+      "bounds_unitless": "{{start}}–{{end}}",
+      "bounds": "{{start}}–{{end}}{{units}}",
       "delete_depth": "Delete depth"
     },
     "texture": {
