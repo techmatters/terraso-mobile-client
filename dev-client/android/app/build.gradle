@@ -90,8 +90,8 @@ android {
         applicationId "org.terraso.landpks"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 87
-        versionName '1.0.87'
+        versionCode 91
+        versionName '1.0.91'
     }
     signingConfigs {
         release {
