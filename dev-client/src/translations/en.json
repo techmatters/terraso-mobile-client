@@ -483,7 +483,7 @@
         "ordering": "Interval bounds error"
       },
       "bounds_unitless": "{{start}}-{{end}}",
-      "bounds": "{{start}}-{{end}}{{units}}",
+      "bounds": "{{start}}–{{end}}{{units}}",
       "delete_depth": "Delete depth"
     },
     "texture": {
