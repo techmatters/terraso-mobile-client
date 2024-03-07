@@ -46,7 +46,7 @@ import * as Sentry from '@sentry/react-native';
 import {enableFreeze} from 'react-native-screens';
 import {HomeScreenContextProvider} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 
-const sentryEnabled = Boolean(APP_CONFIG.sentryDsn);
+const sentryEnabled = Boolean(APP_CONFIG.sentryEnabled);
 
 enableFreeze(true);
 

@@ -64,6 +64,7 @@ type AppConfig = {
   microsoftRedirectURI: string;
   mapboxAccessToken: string;
   sentryDsn: string;
+  sentryEnabled: boolean;
   environment: string;
 };
 
@@ -99,6 +100,10 @@ if (Config.SENTRY_DSN === undefined) {
   throw new Error('Config setting SENTRY_DSN not set');
 }
 
+if (Config.SENTRY_ENABLED === undefined) {
+  throw new Error('Config setting SENTRY_ENABLED not set');
+}
+
 if (Config.ENV === undefined) {
   throw new Error('Config setting ENV not set');
 }
@@ -113,5 +118,6 @@ export const APP_CONFIG: AppConfig = {
   microsoftRedirectURI: microsoftRedirectURI,
   mapboxAccessToken: Config.PUBLIC_MAPBOX_TOKEN,
   sentryDsn: Config.SENTRY_DSN,
+  sentryEnabled: Config.SENTRY_ENABLED === 'true',
   environment: Config.ENV,
 };
