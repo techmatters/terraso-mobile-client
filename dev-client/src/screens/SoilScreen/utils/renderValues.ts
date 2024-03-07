@@ -21,7 +21,7 @@ import {
   LabelledDepthInterval,
   SoilPitMethod,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {fromEntries} from 'terraso-client-shared/utils';
+import {munsellToString} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 
 export const renderDepthInterval = ({
   label,
@@ -29,13 +29,6 @@ export const renderDepthInterval = ({
 }: LabelledDepthInterval) => {
   return `${label ? `${label}: ` : ''}${start}-${end} cm`;
 };
-
-const colorMethods = [
-  'colorChroma',
-  'colorHue',
-  'colorHueSubstep',
-  'colorValue',
-] as const;
 
 // TODO: finish this method for other inputs
 export const pitMethodSummary = (
@@ -53,14 +46,15 @@ export const pitMethodSummary = (
     summary = t(`soil.texture.rockFragment.${soilData.rockFragmentVolume}`);
   } else if (
     method === 'soilColor' &&
-    colorMethods.every(m => typeof soilData[m] === 'string')
+    soilData.colorHue &&
+    soilData.colorValue &&
+    soilData.colorChroma
   ) {
-    summary = t(
-      'soil.color.rendered',
-      fromEntries(
-        colorMethods.map(m => [m, t(`soil.color.${m}.${soilData[m]}`)]),
-      ),
-    );
+    summary = munsellToString({
+      colorHue: soilData.colorHue,
+      colorValue: soilData.colorValue,
+      colorChroma: soilData.colorChroma,
+    });
   }
   return {complete: summary !== undefined, summary};
 };
