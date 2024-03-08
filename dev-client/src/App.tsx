@@ -48,10 +48,12 @@ import {HomeScreenContextProvider} from 'terraso-mobile-client/screens/HomeScree
 
 enableFreeze(true);
 
-Sentry.init({
-  dsn: APP_CONFIG.sentryDsn,
-  environment: APP_CONFIG.environment,
-});
+if (APP_CONFIG.sentryEnabled) {
+  Sentry.init({
+    dsn: APP_CONFIG.sentryDsn,
+    environment: APP_CONFIG.environment,
+  });
+}
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
@@ -88,4 +90,4 @@ function App(): React.JSX.Element {
 
 const style = {flex: 1};
 
-export default Sentry.wrap(App);
+export default APP_CONFIG.sentryEnabled ? Sentry.wrap(App) : App;
