@@ -100,8 +100,10 @@ if (Config.SENTRY_DSN === undefined) {
   throw new Error('Config setting SENTRY_DSN not set');
 }
 
-if (Config.SENTRY_ENABLED !== 'true' && Config.SENTRY_ENABLED !== 'false' ) {
-  throw new Error(`Config setting SENTRY_ENABLED set to invalid value: ${Config.SENTRY_ENABLED}`);
+if (Config.SENTRY_ENABLED !== 'true' && Config.SENTRY_ENABLED !== 'false') {
+  throw new Error(
+    `Config setting SENTRY_ENABLED set to invalid value: ${Config.SENTRY_ENABLED}`,
+  );
 }
 
 if (Config.ENV === undefined) {
