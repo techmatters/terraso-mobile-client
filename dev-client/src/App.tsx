@@ -46,11 +46,9 @@ import * as Sentry from '@sentry/react-native';
 import {enableFreeze} from 'react-native-screens';
 import {HomeScreenContextProvider} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 
-const sentryEnabled = Boolean(APP_CONFIG.sentryEnabled);
-
 enableFreeze(true);
 
-if (sentryEnabled) {
+if (APP_CONFIG.sentryEnabled) {
   Sentry.init({
     dsn: APP_CONFIG.sentryDsn,
     environment: APP_CONFIG.environment,
@@ -92,4 +90,4 @@ function App(): React.JSX.Element {
 
 const style = {flex: 1};
 
-export default sentryEnabled ? Sentry.wrap(App) : App;
+export default APP_CONFIG.sentryEnabled ? Sentry.wrap(App) : App;
