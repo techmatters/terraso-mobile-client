@@ -71,6 +71,7 @@ jobs:
           echo "MICROSOFT_SIGNATURE_HASH=${{ secrets.MICROSOFT_SIGNATURE_HASH }}" >> .env
           echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
           echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
+          echo "SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}" >> .env
           echo "ENV=staging" >> .env
           cp sentry.properties.example ./ios/sentry.properties
           echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> ./ios/sentry.properties
