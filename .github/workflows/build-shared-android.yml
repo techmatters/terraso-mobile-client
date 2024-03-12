@@ -30,6 +30,8 @@ on:
         required: false
       SENTRY_AUTH_TOKEN:
         required: false
+      SENTRY_ENABLED:
+        required: false
 
 jobs:
   android-build:
