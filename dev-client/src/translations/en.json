@@ -662,7 +662,7 @@
       "no_camera_explanation": "For best results, allow LandPKS to use your camera in Settings",
       "select_labels": {
         "FLAT": "Flat 0-2%",
-        "GENTLE": "Gentle 1-15%",
+        "GENTLE": "Gentle 2-5%",
         "MODERATE": "Moderate 5-10%",
         "ROLLING": "Rolling 10-15%",
         "HILLY": "Hilly 15-30%",
