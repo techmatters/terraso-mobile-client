@@ -21,32 +21,17 @@ style and commit message structure before each commit.
 ### macOS
 
 ```sh
-$ brew install node watchman rbenv openjdk@17
+$ brew install node watchman ruby openjdk@17
 $ sudo ln -sfn /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
-```
-
-Configure rbenv:
-
-zsh users:
-
-```sh
-$ echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
-```
-
-bash users:
-
-```sh
-$ echo 'eval "$(rbenv init - bash)"' >> ~/.bashrc
+$ echo 'export PATH="/opt/homebrew/opt/ruby/bin:$PATH"' >> ~/.zshrc
+$ source ~/.zshrc
+$ gem install bundler
 ```
 
 All users:
 
 ```sh
 $ cd dev-client
-$ rbenv init
-$ rbenv install 3.2.2
-$ rbenv shell 3.2.2
-$ gem install bundler
 ```
 
 Install NPM and Ruby packages:
@@ -56,6 +41,16 @@ $ npm install
 $ bundle install
 $ cd ios
 $ bundle exec pod install
+```
+
+If you get this error:
+```
+xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
+```
+
+Then run this:
+```sh
+$ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 ```
 
 ## Development Tools
@@ -71,6 +66,10 @@ cat << EOF > $HOME/.zprofile
 export JAVA_HOME=`/usr/libexec/java_home`
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
+export PATH=$PATH:$ANDROID_SDK_ROOT/tools/bin
+export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools/
+export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/
+export PATH=$PATH:$ANDROID_SDK_ROOT/emulator/
 EOF
 ```
 
