@@ -71,6 +71,8 @@ dev-client/vendor/bundle/
 
 # expo
 .expo
+android/
+ios/
 
 # Build
 .buildcache/
@@ -78,3 +80,4 @@ buildcache/
 
 # Sentry
 sentry.properties
+
