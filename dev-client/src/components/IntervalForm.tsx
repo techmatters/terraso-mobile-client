@@ -53,7 +53,7 @@ export const IntervalForm = () => {
             name="start"
             variant="underlined"
             placeholder={t('soil.depth_interval.start_label', {
-              unit: 'cm',
+              units: 'cm',
             })}
           />
         </Box>
@@ -62,7 +62,7 @@ export const IntervalForm = () => {
             name="end"
             variant="underlined"
             placeholder={t('soil.depth_interval.end_label', {
-              unit: 'cm',
+              units: 'cm',
             })}
           />
         </Box>
