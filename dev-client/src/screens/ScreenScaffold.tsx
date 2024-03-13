@@ -23,7 +23,6 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 type Props = {
   children: React.ReactNode;
@@ -48,26 +47,23 @@ export const ScreenScaffold = ({
   );
 
   return (
-    <BottomSheetModalProvider>
-      <SafeAreaView
-        style={[
-          styles.safeAreaContainer,
-          {backgroundColor: colors.primary.dark},
-        ]}>
-        <StatusBar
-          barStyle="light-content"
-          translucent
-          backgroundColor={'#00000000'}
-        />
-        <Column backgroundColor={colors.white} flex={1}>
-          <View onLayout={onLayout}>{PropsAppBar}</View>
-          <HeaderHeightContext.Provider
-            value={safeAreaTop + (headerHeight ?? 0)}>
-            <Box flex={1}>{children}</Box>
-          </HeaderHeightContext.Provider>
-        </Column>
-      </SafeAreaView>
-    </BottomSheetModalProvider>
+    <SafeAreaView
+      style={[
+        styles.safeAreaContainer,
+        {backgroundColor: colors.primary.dark},
+      ]}>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor={'#00000000'}
+      />
+      <Column backgroundColor={colors.white} flex={1}>
+        <View onLayout={onLayout}>{PropsAppBar}</View>
+        <HeaderHeightContext.Provider value={safeAreaTop + (headerHeight ?? 0)}>
+          <Box flex={1}>{children}</Box>
+        </HeaderHeightContext.Provider>
+      </Column>
+    </SafeAreaView>
   );
 };
 

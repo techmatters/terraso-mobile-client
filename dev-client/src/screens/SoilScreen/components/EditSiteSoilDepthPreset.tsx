@@ -23,7 +23,6 @@ import {useModal} from 'terraso-mobile-client/components/Modal';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   Column,
-  Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
@@ -42,8 +41,7 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
     modalHandle?.onClose();
   }, [modalHandle, updateChoice, selectedPreset]);
   return (
-    <Column space="1px" px="18px" pt="18px" pb="23px">
-      <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
+    <Column space="1px" pb="23px">
       <Text variant="body1">{t('soil.soil_preset.info')}</Text>
       <RadioBlock
         label={t('soil.soil_preset.label')}

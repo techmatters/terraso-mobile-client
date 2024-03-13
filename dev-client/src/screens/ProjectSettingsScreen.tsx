@@ -38,6 +38,10 @@ import {
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  selectProject,
+  useProjectSoilSettings,
+} from 'terraso-client-shared/selectors';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
@@ -48,9 +52,8 @@ export function ProjectSettingsScreen({
 }: Props) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const {name, description, privacy, measurementUnits} = useSelector(
-    state => state.project.projects[projectId],
-  );
+  const {name, description, privacy} = useSelector(selectProject(projectId));
+  const {measurementUnits} = useProjectSoilSettings(projectId);
 
   const onSubmit = async (values: Omit<ProjectUpdateMutationInput, 'id'>) => {
     await dispatch(updateProject({...values, id: projectId, privacy}));
@@ -77,7 +80,7 @@ export function ProjectSettingsScreen({
             right: 0,
             bottom: 0,
             label: t('general.save'),
-            display: userRole === 'manager' ? 'flex' : 'none',
+            display: userRole === 'MANAGER' ? 'flex' : 'none',
           }}
         />
         <VStack space={1}>
@@ -91,7 +94,7 @@ export function ProjectSettingsScreen({
             {t('projects.settings.download_link_description')}
           </Text>
 
-          <RestrictByProjectRole role="manager">
+          <RestrictByProjectRole role="MANAGER">
             <ConfirmModal
               title={t('projects.settings.delete_button_prompt')}
               actionName={t('projects.settings.delete_button')}

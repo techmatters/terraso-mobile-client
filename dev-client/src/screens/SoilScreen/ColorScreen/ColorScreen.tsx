@@ -27,7 +27,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
-import {SheetTooltip} from 'terraso-mobile-client/components/SheetTooltip';
+import {BottomSheetTooltip} from 'terraso-mobile-client/components/BottomSheetTooltip';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -41,6 +41,7 @@ import {
   colorValues,
   colorChromas,
   updateDepthDependentSoilData,
+  colorHueSubsteps,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
@@ -48,8 +49,7 @@ import {Pressable} from 'react-native';
 import {useCallback, useMemo, useState} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
-import {FormSelect} from 'terraso-mobile-client/components/form/FormSelect';
-import {fromEntries} from 'terraso-client-shared/utils';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   parseMunsellHue,
   renderMunsellHue,
@@ -57,13 +57,6 @@ import {
 import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
-
-const hueOptions = {
-  '2.5': '2.5',
-  '5': '5',
-  '7.5': '7.5',
-  '10': '10',
-} as const;
 
 export const ColorScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
@@ -101,8 +94,8 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
   const {hueSubstep, hue} = useMemo(
     () =>
       data?.colorHue
-        ? renderMunsellHue(data?.colorHue)
-        : {hueSubstep: undefined, hue: undefined},
+        ? renderMunsellHue(data.colorHue)
+        : {hueSubstep: null, hue: null},
     [data?.colorHue],
   );
 
@@ -112,7 +105,10 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
   const dispatch = useDispatch();
 
   const updateHue = useCallback(
-    (newSubstep: string, newHue: (typeof colorHues)[number]) => {
+    (
+      newSubstep: (typeof colorHueSubsteps)[number],
+      newHue: (typeof colorHues)[number],
+    ) => {
       dispatch(
         updateDepthDependentSoilData({
           siteId: props.siteId,
@@ -129,7 +125,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
   );
 
   const onUpdateSubstep = useCallback(
-    (substep: string) => {
+    (substep: (typeof colorHueSubsteps)[number] | null) => {
       setSelectedSubstep(substep);
       if (selectedHue && substep) {
         updateHue(substep, selectedHue);
@@ -139,7 +135,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
   );
 
   const onUpdateHue = useCallback(
-    (newHue: (typeof colorHues)[number]) => {
+    (newHue: (typeof colorHues)[number] | null) => {
       setSelectedHue(newHue);
       if (newHue && selectedSubstep) {
         updateHue(selectedSubstep, newHue);
@@ -166,9 +162,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
         <Row alignItems="flex-end">
           <Row alignItems="center">
             <Heading variant="h6">{t('soil.color.title')}</Heading>
-            <SheetTooltip>
-              <Heading variant="h6">{t('soil.color.title')}</Heading>
-              <Box height="16px" />
+            <BottomSheetTooltip Header={t('soil.color.title')}>
               <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
               <BulletList
                 data={[1, 2, 3]}
@@ -178,7 +172,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
               />
               <Paragraph variant="body1">{t('soil.color.info.p2')}</Paragraph>
               <Paragraph variant="body1">{t('soil.color.info.p3')}</Paragraph>
-            </SheetTooltip>
+            </BottomSheetTooltip>
           </Row>
           <Box flex={1} />
           {(workflow === 'CAMERA' || complete) && (
@@ -191,29 +185,33 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
         <>
           <Column padding="md" space="24px">
             <Row>
-              <FormSelect
-                options={hueOptions}
-                selectedValue={selectedSubstep}
-                placeholder={t('soil.color.hue')}
-                flex={2}
+              <Select
+                nullable
+                options={colorHueSubsteps}
+                value={selectedSubstep}
+                label={t('soil.color.hue')}
                 onValueChange={onUpdateSubstep}
+                renderValue={value => value.toString()}
+                width={150}
               />
               <Box flex={1} />
-              <FormSelect
-                options={fromEntries(colorHues.map(h => [h, h]))}
-                selectedValue={selectedHue}
-                placeholder={t('soil.color.hue')}
-                flex={2}
+              <Select
+                nullable
+                options={colorHues}
+                value={selectedHue}
+                label={t('soil.color.hue')}
                 onValueChange={onUpdateHue}
+                renderValue={value => value}
+                width={150}
               />
             </Row>
             <Row alignItems="center">
               <DepthDependentSelect
                 input="colorValue"
-                values={colorValues}
-                renderValue={color => color.toString()}
+                options={colorValues}
+                renderValue={(value: number) => value.toString()}
                 label={t('soil.color.value')}
-                flex={2}
+                width={150}
                 {...props}
               />
               <Heading variant="h6" textAlign="center" flex={1}>
@@ -221,10 +219,10 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
               </Heading>
               <DepthDependentSelect
                 input="colorChroma"
-                values={colorChromas}
-                renderValue={chroma => chroma.toString()}
+                options={colorChromas}
+                renderValue={(chroma: number) => chroma.toString()}
                 label={t('soil.color.chroma')}
-                flex={2}
+                width={150}
                 {...props}
               />
             </Row>
@@ -298,7 +296,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
         </>
       )}
       <Fab
-        label={t('general.done_fab')}
+        label={t('general.done')}
         leftIcon={<Icon name="check" />}
         isDisabled={!complete}
         onPress={() => navigation.pop()}

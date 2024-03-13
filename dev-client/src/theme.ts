@@ -65,6 +65,14 @@ export const theme = extendTheme({
         },
       },
     },
+    input: {
+      standard: {
+        enabledBorder: '#0000006B',
+      },
+      filled: {
+        enabledFill: '#0000000F',
+      },
+    },
   },
   radii: {
     md: 4,
@@ -375,6 +383,12 @@ export const theme = extendTheme({
           fontWeight: 500,
           letterSpacing: '0.17px',
         },
+        'input-text': {
+          fontSize: '16px',
+          fontWeight: 400,
+          lineHeight: '24px',
+          letterSpacing: '0.15px',
+        },
       },
     },
     Heading: {
@@ -386,7 +400,11 @@ export const theme = extendTheme({
           fontWeight: 400,
           lineHeight: '56px',
         },
-        h4: {},
+        h4: {
+          fontSize: '24px',
+          fontWeight: 700,
+          lineHeight: '32px',
+        },
         h5: {
           fontSize: '24px',
           fontWeight: 400,

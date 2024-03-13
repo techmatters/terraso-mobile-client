@@ -201,10 +201,9 @@ export const HomeScreen = memo(() => {
           };
     }, [siteDistances]);
 
-  return (
-    <ListFilterProvider
-      items={siteList}
-      filters={{
+  const filters = useMemo(
+    () =>
+      ({
         search: {
           kind: 'filter',
           f: searchText,
@@ -251,14 +250,19 @@ export const HomeScreen = memo(() => {
             ...distanceSorting,
           },
         },
-      }}>
-      <ScreenScaffold
-        AppBar={
-          <AppBar
-            LeftButton={<AppBarIconButton name="menu" />}
-            RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
-          />
-        }>
+      }) as const,
+    [distanceSorting, siteProjectRoles],
+  );
+
+  return (
+    <ScreenScaffold
+      AppBar={
+        <AppBar
+          LeftButton={<AppBarIconButton name="menu" />}
+          RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
+        />
+      }>
+      <ListFilterProvider items={siteList} filters={filters}>
         <Box flex={1}>
           <Box flex={1} zIndex={-1}>
             <MapSearch
@@ -282,7 +286,7 @@ export const HomeScreen = memo(() => {
           />
         </Box>
         <LandPKSInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
-      </ScreenScaffold>
-    </ListFilterProvider>
+      </ListFilterProvider>
+    </ScreenScaffold>
   );
 });

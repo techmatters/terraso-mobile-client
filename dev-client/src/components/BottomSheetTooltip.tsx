@@ -17,14 +17,18 @@
 
 import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
 import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const SheetTooltip = ({children}: React.PropsWithChildren<{}>) => (
+type Props = {Header: React.ReactNode};
+
+export const BottomSheetTooltip = ({
+  Header,
+  children,
+}: React.PropsWithChildren<Props>) => (
   <BottomSheetModal
     fullHeight
-    trigger={onOpen => <TooltipIconButton onPress={onOpen} />}>
-    <Box paddingVertical="30px" paddingHorizontal="16px">
-      {children}
-    </Box>
+    trigger={onOpen => <TooltipIconButton onPress={onOpen} />}
+    Header={<Heading variant="h4">{Header}</Heading>}>
+    {children}
   </BottomSheetModal>
 );

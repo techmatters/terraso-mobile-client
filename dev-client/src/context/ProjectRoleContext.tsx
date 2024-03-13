@@ -15,11 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {createContext, useContext} from 'react';
-import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
+import {ProjectRole} from 'terraso-client-shared/project/projectSlice';
 import {selectUserRoleProject} from 'terraso-client-shared/selectors';
 import {useSelector} from 'terraso-mobile-client/store';
 
-const ProjectRoleContext = createContext<UserRole | null>(null);
+const ProjectRoleContext = createContext<ProjectRole | null>(null);
 
 type Props = {
   projectId: string;

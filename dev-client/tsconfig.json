@@ -4,10 +4,25 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "paths": {
-      "terraso-mobile-client/*": ["./src/*"],
-      "@testing/*": ["./jest/*"]
+      "terraso-mobile-client/*": [
+        "./src/*"
+      ],
+      "@testing/*": [
+        "./jest/*"
+      ]
     }
   },
-  "include": ["src", "__tests__", "jest"],
-  "exclude": ["dist"]
+  "include": [
+    "src",
+    "__tests__",
+    "jest"
+  ],
+  "exclude": [
+    "dist"
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+    }
+  }
 }

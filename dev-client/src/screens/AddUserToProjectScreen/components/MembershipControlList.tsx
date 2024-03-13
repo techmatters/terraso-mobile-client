@@ -16,18 +16,18 @@
  */
 
 import {Divider, FlatList} from 'native-base';
+import {ProjectRole} from 'terraso-client-shared/project/projectSlice';
 
-import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   UserDisplay,
   UserFields,
 } from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/UserDisplay';
 
-export type UserWithRole = {user: UserFields; role: UserRole};
+export type UserWithRole = {user: UserFields; role: ProjectRole};
 
 type Props = {
   users: UserWithRole[];
-  updateUserRole: (role: UserRole, userId: string) => void;
+  updateUserRole: (role: ProjectRole, userId: string) => void;
   removeUser: (userId: string) => void;
 };
 
@@ -36,7 +36,7 @@ export const MembershipControlList = ({
   updateUserRole,
   removeUser,
 }: Props) => {
-  const itemUpdateUserRole = (userId: string) => (role: UserRole) =>
+  const itemUpdateUserRole = (userId: string) => (role: ProjectRole) =>
     updateUserRole(role, userId);
   const itemRemoveUser = (userId: string) => () => removeUser(userId);
   return (
@@ -45,11 +45,6 @@ export const MembershipControlList = ({
         <UserDisplay
           user={user}
           role={role}
-          roles={[
-            ['viewer', 'Viewer'],
-            ['contributor', 'Contributor'],
-            ['manager', 'Manager'],
-          ]}
           updateUserRole={itemUpdateUserRole(user.id)}
           removeUser={itemRemoveUser(user.id)}
         />

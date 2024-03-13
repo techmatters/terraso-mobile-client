@@ -23,9 +23,7 @@ import {
   selectDepthDependentData,
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {EditIntervalModalContent} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModalContent';
-import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {EditIntervalModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModal';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {useTranslation} from 'react-i18next';
 import {AggregatedInterval} from 'terraso-client-shared/selectors';
@@ -64,21 +62,12 @@ const DepthIntervalEditor = ({
       <Heading variant="h6" color="primary.contrast">
         {renderDepthInterval(t, interval)}
       </Heading>
-      <BottomSheetModal
-        trigger={onOpen => (
-          <IconButton
-            name="more-vert"
-            _icon={{color: 'primary.contrast'}}
-            onPress={onOpen}
-          />
-        )}>
-        <EditIntervalModalContent
-          siteId={siteId}
-          depthInterval={interval.depthInterval}
-          requiredInputs={requiredInputs}
-          mutable={!isFromPreset}
-        />
-      </BottomSheetModal>
+      <EditIntervalModal
+        siteId={siteId}
+        depthInterval={interval.depthInterval}
+        requiredInputs={requiredInputs}
+        mutable={!isFromPreset}
+      />
     </Row>
   );
 };

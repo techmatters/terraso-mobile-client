@@ -43,14 +43,9 @@ const openModal = () => {
 const changeSelectFilter = (selectPlaceholder: string, optionText: string) => {
   openModal();
 
-  const select = screen.getByPlaceholderText(
-    selectPlaceholder,
-    // little NativeBase thing :)
-    // it appears the select is implemented using a text input that is hidden
-    {
-      includeHiddenElements: true,
-    },
-  );
+  const select = screen.getByPlaceholderText(selectPlaceholder, {
+    includeHiddenElements: true,
+  });
   fireEvent.press(select);
   const option = screen.getByText(optionText);
   fireEvent.press(option);
@@ -101,89 +96,77 @@ const SampleList = () => {
   );
 };
 
-const Test = ({items}: {items?: TestObject[]}) => {
-  return (
-    <>
-      <ListFilterProvider
-        items={items !== undefined ? items : sampleObjects}
-        filters={{
-          search: {
-            kind: 'filter',
-            f: searchText,
-            preprocess: normalizeText,
-            lookup: {key: 'name'},
-            hide: true,
+const Test = ({items}: {items?: TestObject[]}) => (
+  <ListFilterProvider
+    items={items !== undefined ? items : sampleObjects}
+    filters={{
+      search: {
+        kind: 'filter',
+        f: searchText,
+        preprocess: normalizeText,
+        lookup: {key: 'name'},
+        hide: true,
+      },
+      role: {
+        kind: 'filter',
+        f: (val: string) => (comp: string | undefined) => val === comp,
+        lookup: {
+          record: {
+            '1': 'manager',
+            '2': 'viewer',
+            '3': 'viewer',
+            '4': 'contributor',
           },
-          role: {
-            kind: 'filter',
-            f: (val: string) => (comp: string | undefined) => val === comp,
-            lookup: {
-              record: {
-                '1': 'manager',
-                '2': 'viewer',
-                '3': 'viewer',
-                '4': 'contributor',
-              },
-              key: 'id',
-            },
+          key: 'id',
+        },
+      },
+      privacy: {
+        kind: 'filter',
+        f: (val: string) => (comp: string | undefined) => val === comp,
+        lookup: {key: 'privacy'},
+      },
+      sort: {
+        kind: 'sorting',
+        options: {
+          nameRev: {
+            key: 'name',
+            order: 'descending',
           },
-          privacy: {
-            kind: 'filter',
-            f: (val: string) => (comp: string | undefined) => val === comp,
-            lookup: {key: 'privacy'},
-          },
-          sort: {
-            kind: 'sorting',
-            options: {
-              nameRev: {
-                key: 'name',
-                order: 'descending',
-              },
-            },
-          },
-        }}>
-        <ListFilterModal
-          searchInput={
-            <TextInputFilter
-              placeholder="Search"
-              label="Search"
-              name="search"
-            />
-          }>
-          <SelectFilter
-            key="role"
-            name="role"
-            options={{
-              manager: 'Manager',
-              contributor: 'Contributor',
-              viewer: 'Viewer',
-            }}
-            placeholder="Project role"
-            label="Role"
-            nullableOption="No project"
-          />
-          <SelectFilter
-            key="privacy"
-            name="privacy"
-            label="Privacy"
-            placeholder="Privacy"
-            options={{private: 'Private', public: 'Public'}}
-            nullableOption="No filter"
-          />
-          <SelectFilter
-            key="sort"
-            name="sort"
-            label="Sort"
-            placeholder="Sort"
-            options={{nameRev: 'Name (reverse alphabetical)'}}
-            nullableOption="No sorting"
-          />
-        </ListFilterModal>
-        <SampleList />
-      </ListFilterProvider>
-    </>
-  );
-};
+        },
+      },
+    }}>
+    <ListFilterModal
+      searchInput={
+        <TextInputFilter placeholder="Search" label="Search" name="search" />
+      }>
+      <SelectFilter
+        key="role"
+        name="role"
+        options={['manager', 'contributor', 'viewer']}
+        renderValue={value => value}
+        label="Project role"
+        unselectedLabel="No project"
+      />
+      <SelectFilter
+        key="privacy"
+        name="privacy"
+        label="Privacy"
+        options={['private', 'public']}
+        renderValue={value => value}
+        unselectedLabel="No filter"
+      />
+      <SelectFilter
+        key="sort"
+        name="sort"
+        label="Sort"
+        options={['nameRev']}
+        renderValue={value => value}
+        unselectedLabel="No sorting"
+      />
+    </ListFilterModal>
+    <SampleList />
+  </ListFilterProvider>
+);
 
 test("Filter removes items that don't match query", () => {
   render(<Test />);
@@ -209,7 +192,7 @@ test('Updating select filter removes items that do not match', async () => {
   expect(first).not.toBeNull();
   expect(second).not.toBeNull();
 
-  activateSelectFilter('Project role', 'Manager');
+  activateSelectFilter('Project role', 'manager');
 
   assertNull(1, 2, 3);
   assertNotNull(0);
@@ -218,7 +201,7 @@ test('Updating select filter removes items that do not match', async () => {
 test('Updating text input and select filters works', () => {
   render(<Test />);
 
-  activateSelectFilter('Project role', 'Viewer');
+  activateSelectFilter('Project role', 'viewer');
   activateTextInputFilter('Carl');
 
   assertNull(0, 1, 3);
@@ -229,7 +212,7 @@ test('Updating select filters and then text input works', () => {
   render(<Test />);
 
   activateTextInputFilter('Carl');
-  activateSelectFilter('Project role', 'Viewer');
+  activateSelectFilter('Project role', 'viewer');
 
   assertNull(0, 1, 3);
   assertNotNull(2);
@@ -240,31 +223,28 @@ test('Selecting input is persisted after apply', () => {
 
   expect(
     screen.getByPlaceholderText('Project role', {
-      // NativeBase
       includeHiddenElements: true,
     }),
   ).toHaveProp('value', undefined);
 
-  activateSelectFilter('Project role', 'Contributor');
-  // NOTE: seems accessibility state not set properly by NativeBase
-  //  expect(screen.getByText('Contributor')).toHaveAccessibilityState({
-  //    selected: true,
-  //  });
+  activateSelectFilter('Project role', 'contributor');
+  expect(screen.getByText('contributor')).toHaveAccessibilityState({
+    selected: true,
+  });
   expect(
     screen.getByPlaceholderText('Project role', {
-      // NativeBase
       includeHiddenElements: true,
     }),
-  ).toHaveProp('value', 'Contributor');
+  ).toHaveProp('value', 'contributor');
 });
 
 test('Badge number updated when filter applied', () => {
   render(<Test />);
   expect(screen.queryByLabelText('Number of filters applied')).toBeNull();
-  activateSelectFilter('Project role', 'Manager');
+  activateSelectFilter('Project role', 'manager');
   const badge = screen.getByLabelText('Number of filters applied');
   expect(badge).toHaveTextContent('1');
-  activateSelectFilter('Privacy', 'Public');
+  activateSelectFilter('Privacy', 'public');
   expect(badge).toHaveTextContent('2');
   activateTextInputFilter('A');
   expect(badge).toHaveTextContent('2');
@@ -287,7 +267,7 @@ test('Filtered items update when props updated', () => {
 
 test('Sort items by reverse', () => {
   render(<Test />);
-  activateSelectFilter('Sort', 'Name (reverse alphabetical)');
+  activateSelectFilter('Sort', 'nameRev');
   const list = screen.queryByTestId('LIST');
   expect(list).not.toBeNull();
   expect(list).toHaveTextContent('CarlosCarlaBobAlice');
@@ -295,7 +275,7 @@ test('Sort items by reverse', () => {
 
 test('Reset filter to None shows all items', () => {
   render(<Test />);
-  activateSelectFilter('Project role', 'Manager');
+  activateSelectFilter('Project role', 'manager');
   assertNotNull(0);
   assertNull(1, 2, 3);
   activateSelectFilter('Project role', 'No project');

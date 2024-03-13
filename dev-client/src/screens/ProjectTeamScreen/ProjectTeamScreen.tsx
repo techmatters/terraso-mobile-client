@@ -45,7 +45,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
     const memberships = Object.values(
       state.project.projects[route.params.projectId]?.memberships ?? {},
     ).filter(({userId}) => userId === currentUser?.data?.id);
-    return memberships.length > 0 ? memberships[0].userRole : 'viewer';
+    return memberships.length > 0 ? memberships[0].userRole : 'VIEWER';
   });
   const members = useSelector(state =>
     selectProjectMembershipsWithUsers(state, route.params.projectId),
@@ -70,7 +70,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
   const manageMember = useCallback(
     (userId: string, membershipId: string) => {
       return async () => {
-        if (userRole === 'manager') {
+        if (userRole === 'MANAGER') {
           navigation.navigate('MANAGE_TEAM_MEMBER', {
             userId,
             membershipId,
@@ -84,7 +84,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
 
   return (
     <VStack alignItems="flex-start" p={4} space={3}>
-      <RestrictByProjectRole role="manager">
+      <RestrictByProjectRole role="MANAGER">
         <AddButton
           text={t('projects.team.add')}
           buttonProps={{

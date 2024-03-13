@@ -23,7 +23,6 @@ import {useTranslation} from 'react-i18next';
 import ErrorMessage from 'terraso-mobile-client/screens/CreateProjectScreen/components/ErrorMessage';
 import * as yup from 'yup';
 import {
-  MEASUREMENT_UNITS,
   PROJECT_DESCRIPTION_MAX_LENGTH,
   PROJECT_NAME_MAX_LENGTH,
   PROJECT_NAME_MIN_LENGTH,
@@ -33,12 +32,16 @@ import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  ProjectSoilSettingsUpdateMutationInput,
+  ProjectUpdateMutationInput,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   HStack,
   VStack,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {MEASUREMENT_UNITS} from 'terraso-client-shared/soilId/soilIdSlice';
 
 export const projectValidationFields = (t: TFunction) => ({
   name: yup
@@ -114,8 +117,11 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
   ];
 };
 
-type FormProps = Omit<ProjectUpdateMutationInput, 'id'> & {
-  onSubmit: (values: Omit<ProjectUpdateMutationInput, 'id'>) => void;
+type FormValues = Omit<ProjectUpdateMutationInput, 'id'> &
+  Pick<ProjectSoilSettingsUpdateMutationInput, 'measurementUnits'>;
+
+type FormProps = FormValues & {
+  onSubmit: (values: FormValues) => void;
   submitProps?: Omit<React.ComponentProps<typeof Fab>, 'onPress'>;
 };
 
@@ -129,7 +135,7 @@ export const EditForm = ({
   const {t} = useTranslation();
 
   return (
-    <Formik<Omit<ProjectUpdateMutationInput, 'id'>>
+    <Formik<FormValues>
       validationSchema={editProjectValidationSchema(t)}
       initialValues={{name, description, measurementUnits}}
       onSubmit={onSubmit}>

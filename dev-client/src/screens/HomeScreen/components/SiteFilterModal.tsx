@@ -15,9 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {USER_ROLES} from 'terraso-mobile-client/constants';
+import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
 import {
   TextInputFilter,
   ListFilterModal,
@@ -29,35 +29,40 @@ type Props = {
   useDistance: boolean;
 };
 
+const generalSortingOptions = [
+  'nameAsc',
+  'nameDesc',
+  'lastModAsc',
+  'lastModDesc',
+];
+
+const distanceSortingOptions = [
+  ...generalSortingOptions,
+  'distanceAsc',
+  'distanceDesc',
+];
+
 export const SiteFilterModal = ({useDistance}: Props) => {
   const {t} = useTranslation();
 
-  const roleOptions = Object.fromEntries(
-    USER_ROLES.map(role => [role, t(`site.role.${role}`)]),
+  const sortOptions = useMemo(
+    () => (useDistance ? distanceSortingOptions : generalSortingOptions),
+    [useDistance],
+  );
+  const renderSortOption = useCallback(
+    (option: string) => t(`site.search.sort.${option}`),
+    [t],
   );
 
-  const distanceSortingOptions = useDistance
-    ? ['distanceAsc', 'distanceDesc']
-    : [];
-
-  const sortOptions = Object.fromEntries(
-    [
-      'nameAsc',
-      'nameDesc',
-      'lastModAsc',
-      'lastModDesc',
-      ...distanceSortingOptions,
-    ].map(label => [label, t('site.search.sort.' + label)]),
+  const renderRole = useCallback(
+    (role: string) => t(`general.role.${role}`),
+    [t],
   );
 
   const projects = useSelector(state => state.project.projects);
-
-  const projectOptions = useMemo(
-    () => ({
-      ...Object.fromEntries(
-        Object.values(projects).map(({id, name}) => [id, name]),
-      ),
-    }),
+  const projectIds = useMemo(() => Object.keys(projects), [projects]);
+  const renderProject = useCallback(
+    (id: string) => projects[id].name,
     [projects],
   );
 
@@ -74,19 +79,22 @@ export const SiteFilterModal = ({useDistance}: Props) => {
         label={t('site.search.sort.label')}
         options={sortOptions}
         name="sort"
-        nullableOption={t('general.filter.no_sort')}
+        renderValue={renderSortOption}
+        unselectedLabel={t('general.filter.no_sort')}
       />
       <SelectFilter
         label={t('site.search.filter_projects')}
-        options={projectOptions}
+        options={projectIds}
+        renderValue={renderProject}
         name="project"
-        nullableOption={t('general.filter.no_project')}
+        unselectedLabel={t('general.filter.no_project')}
       />
       <SelectFilter
         label={t('site.search.filter_role')}
-        options={roleOptions}
+        options={PROJECT_ROLES}
+        renderValue={renderRole}
         name="role"
-        nullableOption={t('general.filter.no_role')}
+        unselectedLabel={t('general.filter.no_role')}
       />
     </ListFilterModal>
   );

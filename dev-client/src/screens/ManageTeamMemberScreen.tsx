@@ -18,6 +18,7 @@
 import {Button, Divider} from 'native-base';
 import {useCallback, useState} from 'react';
 import {
+  ProjectRole,
   deleteUserFromProject,
   updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
@@ -28,7 +29,6 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {formatName} from 'terraso-mobile-client/util';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {useTranslation} from 'react-i18next';
-import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -57,8 +57,8 @@ export const ManageTeamMemberScreen = ({
   const user = useSelector(state => state.account.users[userId]);
   const membership = project?.memberships[membershipId];
 
-  const [selectedRole, setSelectedRole] = useState<UserRole>(
-    membership ? membership.userRole : 'manager',
+  const [selectedRole, setSelectedRole] = useState<ProjectRole>(
+    membership ? membership.userRole : 'MANAGER',
   );
 
   const removeMembership = useCallback(async () => {
@@ -90,20 +90,20 @@ export const ManageTeamMemberScreen = ({
             {user.email}
           </Text>
         </VStack>
-        <RadioBlock<UserRole>
+        <RadioBlock<ProjectRole>
           labelProps={{variant: 'secondary'}}
           label={t('projects.manage_member.project_role')}
           options={{
-            manager: {
-              text: t('general.role.manager'),
+            MANAGER: {
+              text: t('general.role.MANAGER'),
               helpText: t('projects.manage_member.manager_help'),
             },
-            contributor: {
-              text: t('general.role.contributor'),
+            CONTRIBUTOR: {
+              text: t('general.role.CONTRIBUTOR'),
               helpText: t('projects.manage_member.contributor_help'),
             },
-            viewer: {
-              text: t('general.role.viewer'),
+            VIEWER: {
+              text: t('general.role.VIEWER'),
               helpText: t('projects.manage_member.viewer_help'),
             },
           }}
