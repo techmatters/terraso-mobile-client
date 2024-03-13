@@ -79,7 +79,6 @@ jobs:
           PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
           SENTRY_ORG: techmatters
           SENTRY_PROJECT: terraso-lpks
@@ -106,6 +105,8 @@ jobs:
 
       - name: Build Android app bundle
         working-directory: ./dev-client/android
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: ./gradlew bundleRelease
 
       - name: Sign Android app bundle
