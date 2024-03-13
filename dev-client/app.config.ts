@@ -20,7 +20,7 @@ import {withEntitlementsPlist, withAppBuildGradle} from 'expo/config-plugins';
 
 const VERSION_REGEX = /^v[0-9]+$/g;
 
-let appVersion = 0;
+let appVersion = 1;
 
 if (typeof process.env.APP_VERSION === 'string') {
   if (!VERSION_REGEX.test(process.env.APP_VERSION)) {
@@ -79,7 +79,10 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
-    ['@sentry/react-native/expo', {url: 'https://sentry.io/'}],
+    [
+      '@sentry/react-native/expo',
+      {org: process.env.SENTRY_ORG, project: process.env.SENTRY_PROJECT},
+    ],
     [
       '@rnmapbox/maps',
       {
