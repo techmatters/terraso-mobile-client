@@ -81,7 +81,10 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
     [
       '@sentry/react-native/expo',
-      {org: process.env.SENTRY_ORG, project: process.env.SENTRY_PROJECT},
+      {
+        organization: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+      },
     ],
     [
       '@rnmapbox/maps',
