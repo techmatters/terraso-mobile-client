@@ -482,6 +482,7 @@
         "overlaps": "Overlaps existing",
         "ordering": "Interval bounds error"
       },
+      "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
       "bounds_unitless": "{{start}}–{{end}}",
       "bounds": "{{start}}–{{end}}{{units}}",
       "delete_depth": "Delete depth"
