@@ -15,15 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {munsellToRgb255, rgb255ToMhvc} from 'munsell';
+import {mhvcToRgb255, rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
-import {
-  SoilColorHue,
-  SoilColorValue,
-  colorChromas,
-  colorHueSubsteps,
-  colorHues,
-} from 'terraso-client-shared/soilId/soilIdTypes';
+import {colorHues, colorValues} from 'terraso-client-shared/soilId/soilIdTypes';
 
 export const REFERENCES = {
   CAMERA_TRAX: [210.15, 213.95, 218.42],
@@ -33,14 +27,16 @@ export const REFERENCES = {
 
 export type RGBA = [number, number, number, number];
 export type RGB = [number, number, number];
+export type MunsellColor = {
+  colorHue: number;
+  colorChroma: number;
+  colorValue: number;
+};
 
 const COLOR_COUNT = 16;
 
-export const munsellToRGB = (
-  h: `${number}${SoilColorHue}`,
-  v: string,
-  c: string,
-): RGB => munsellToRgb255(`${h} ${v}/${c}`);
+export const munsellToRGB: (h: number, v: number, c: number) => RGB =
+  mhvcToRgb255;
 
 export const getColor = (
   pixelCard: RGBA[],
@@ -60,16 +56,16 @@ export const getColor = (
     });
     // Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
     var cmap = quantize(pixelArray, COLOR_COUNT);
-    return cmap ? cmap.palette() : null;
+    if (cmap === false) {
+      throw new Error('Unexpected color algorithm failure!');
+    }
+
+    return cmap.palette();
   };
 
   // Get the color palettes of both soil and card
   const paletteCard = getPalette(pixelCard);
   const paletteSample = getPalette(pixelSoil);
-
-  if (!paletteCard || !paletteSample) {
-    return undefined;
-  }
 
   // Correction values obtain from spectrophotometer Observer. = 2°, Illuminant = D65
   const correctSampleRGB = (cardPixel: RGB, samplePixel: RGB) => {
@@ -84,46 +80,51 @@ export const getColor = (
   };
 
   const sample = correctSampleRGB(paletteCard[0], paletteSample[0]);
-  const [h, v, c] = rgb255ToMhvc(...sample.rgb);
-  console.log(h, v, c);
-
-  let hueIndex = Math.floor(h / 10);
-  let hueSubstep = Math.round((h % 10) / 4) - 1;
-  if (hueSubstep === -1) {
-    hueIndex = (hueIndex + 9) % 10;
-    hueSubstep = 3;
-  }
-  if (hueIndex > 6) {
-    return undefined;
-  }
-  const colorHue = colorHues[6 - hueIndex];
-  const colorHueSubstep = colorHueSubsteps[hueSubstep];
-
-  let colorValue: SoilColorValue;
-  if (v <= 2 || v >= 10) {
-    return undefined;
-  }
-  /* eslint-disable curly */
-  if (v <= 2.75) colorValue = 'VALUE_2_5';
-  else if (v <= 3.5) colorValue = 'VALUE_3';
-  else if (v <= 4.5) colorValue = 'VALUE_4';
-  else if (v <= 5.5) colorValue = 'VALUE_5';
-  else if (v <= 6.5) colorValue = 'VALUE_6';
-  else if (v <= 7.5) colorValue = 'VALUE_7';
-  else if (v <= 8.25) colorValue = 'VALUE_8';
-  else if (v <= 8.75) colorValue = 'VALUE_8_5';
-  else if (v <= 9.25) colorValue = 'VALUE_9';
-  else colorValue = 'VALUE_9_5';
-  /* eslint-enable curly */
-
-  const chroma = Math.round(c);
-  if (chroma < 1 || chroma > 8) {
-    return undefined;
-  }
-  const colorChroma = colorChromas[chroma - 1];
+  const [colorHue, colorValue, colorChroma] = rgb255ToMhvc(...sample.rgb);
 
   return {
     ...sample,
-    munsell: {colorValue, colorChroma, colorHue, colorHueSubstep},
+    munsell: {colorHue, colorValue, colorChroma},
   };
+};
+
+export const isValidSoilColor = ({colorChroma}: MunsellColor) =>
+  colorChroma < 8.5;
+
+export const renderMunsellHue = (h: number) => {
+  if (h === 100) {
+    h = 0;
+  }
+  let hueIndex = Math.floor(h / 10);
+  let hueSubstep = Math.round((h % 10) / 2.5);
+
+  if (hueSubstep === 0) {
+    hueIndex = (hueIndex + 9) % 10;
+    hueSubstep = 4;
+  }
+  const hue = colorHues[hueIndex];
+  hueSubstep = (hueSubstep * 5) / 2;
+
+  return {hueSubstep: hueSubstep.toString(), hue};
+};
+
+export const parseMunsellHue = ({
+  hue,
+  hueSubstep,
+}: ReturnType<typeof renderMunsellHue>) =>
+  colorHues.indexOf(hue) * 10 + Number.parseFloat(hueSubstep);
+
+export const munsellToString = ({
+  colorHue: h,
+  colorValue: v,
+  colorChroma: c,
+}: MunsellColor) => {
+  const {hueSubstep, hue} = renderMunsellHue(h);
+  const value = [...colorValues].sort(
+    (v1, v2) => Math.abs(v1 - v) - Math.abs(v2 - v),
+  )[0];
+
+  const chroma = Math.round(c);
+
+  return `${hueSubstep}${hue} ${value}/${chroma}`;
 };

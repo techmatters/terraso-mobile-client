@@ -27,7 +27,7 @@ import {
 import {useTranslation} from 'react-i18next';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {munsellToRGB} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {SoilColorHue} from 'terraso-client-shared/soilId/soilIdTypes';
+import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 
 export const ColorDisplay = ({
   onDelete,
@@ -41,9 +41,9 @@ export const ColorDisplay = ({
     return undefined;
   }
   const rgb = munsellToRGB(
-    `${t(`soil.color.colorHueSubstep.${data?.colorHueSubstep}`)}${t(`soil.color.colorHue.${data?.colorHue}`)}` as `${number}${SoilColorHue}`,
-    t(`soil.color.colorValue.${data?.colorValue}`),
-    t(`soil.color.colorChroma.${data?.colorChroma}`),
+    data?.colorHue!,
+    data?.colorValue!,
+    data?.colorChroma!,
   );
   const bgColor = rgb ? `rgb(${rgb.join(', ')})` : undefined;
   return (
@@ -54,21 +54,29 @@ export const ColorDisplay = ({
         width="180px"
         height="180px"
         backgroundColor={bgColor}
-        borderWidth="2px"
-      />
-      {onDelete && (
-        <IconButton
-          position="absolute"
-          name="delete"
-          top="-18px"
-          right="-18px"
-          size="md"
-          borderRadius="full"
-          backgroundColor="grey.300"
-          _icon={{color: 'action.active'}}
-          onPress={onDelete}
-        />
-      )}
+        borderWidth="2px">
+        {onDelete && (
+          <ConfirmModal
+            title={t('soil.color.confirm_delete.title')}
+            body={t('soil.color.confirm_delete.body')}
+            actionName={t('soil.color.confirm_delete.action_name')}
+            handleConfirm={onDelete}
+            trigger={onPress => (
+              <IconButton
+                position="absolute"
+                name="delete"
+                top="-18px"
+                right="-18px"
+                size="md"
+                borderRadius="full"
+                backgroundColor="grey.300"
+                _icon={{color: 'action.active'}}
+                onPress={onPress}
+              />
+            )}
+          />
+        )}
+      </Box>
     </Column>
   );
 };

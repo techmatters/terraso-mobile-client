@@ -17,12 +17,10 @@
 
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {PhotoWithBase64} from 'terraso-mobile-client/components/ImagePicker';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ColorAnalysisProps} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorAnalysisScreen';
-import {
-  ColorCropScreen,
-  Crop,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorCropScreen';
+import {ColorCropScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorCropScreen';
 
 export const ColorCropReferenceScreen = (props: ColorAnalysisProps) => {
   const {photo} = props;
@@ -30,7 +28,7 @@ export const ColorCropReferenceScreen = (props: ColorAnalysisProps) => {
   const navigation = useNavigation();
 
   const onCrop = useCallback(
-    (crop: Crop) => {
+    (crop: PhotoWithBase64) => {
       const newProps = {...props, reference: crop};
       if (props.soil) {
         navigation.navigate('COLOR_ANALYSIS', newProps);

@@ -21,6 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {Image, ScrollView, StyleSheet} from 'react-native';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {Icon} from 'terraso-mobile-client/components/Icons';
+import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
 import {
   Box,
   Column,
@@ -31,7 +32,6 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {usePickImage} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/hooks';
 
 export const ColorGuideScreen = (
   props: SoilPitInputScreenProps | undefined,
@@ -40,16 +40,14 @@ export const ColorGuideScreen = (
   const navigation = useNavigation();
 
   const onGoBack = useCallback(() => navigation.pop(), [navigation]);
-  const onTakePhoto = usePickImage(
-    useCallback(
-      photo => {
-        navigation.replace('COLOR_ANALYSIS', {
-          photo: photo,
-          pitProps: props,
-        });
-      },
-      [navigation, props],
-    ),
+  const onTakePhoto = useCallback(
+    (photo: Photo) => {
+      navigation.replace('COLOR_ANALYSIS', {
+        photo: photo,
+        pitProps: props,
+      });
+    },
+    [navigation, props],
   );
 
   const stepContent = [
@@ -97,12 +95,16 @@ export const ColorGuideScreen = (
       <Button variant="link" onPress={onGoBack}>
         {t('soil.color.guide.go_back')}
       </Button>
-      <Button
-        _text={{textTransform: 'uppercase'}}
-        leftIcon={<Icon name="camera" />}
-        onPress={onTakePhoto}>
-        {t('soil.color.guide.take_photo')}
-      </Button>
+      <ImagePicker onPick={onTakePhoto}>
+        {onOpen => (
+          <Button
+            _text={{textTransform: 'uppercase'}}
+            leftIcon={<Icon name="camera" />}
+            onPress={onOpen}>
+            {t('soil.color.guide.take_photo')}
+          </Button>
+        )}
+      </ImagePicker>
     </Row>,
   ] satisfies React.ReactNode[];
 

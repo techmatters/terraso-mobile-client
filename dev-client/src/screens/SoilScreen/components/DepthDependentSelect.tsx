@@ -17,7 +17,6 @@
 
 import {DepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {useTranslation} from 'react-i18next';
 import {Select} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
@@ -27,21 +26,20 @@ import {useCallback} from 'react';
 type Props<K extends keyof DepthDependentSoilData> = SoilPitInputScreenProps &
   React.ComponentProps<typeof Select> & {
     input: K;
-    values: readonly DepthDependentSoilData[K][];
-    valueTKey: string;
+    values: readonly NonNullable<DepthDependentSoilData[K]>[];
+    renderValue: (value: NonNullable<DepthDependentSoilData[K]>) => string;
     label: string;
   };
 
 export const DepthDependentSelect = <K extends keyof DepthDependentSoilData>({
   input,
   values,
-  valueTKey,
+  renderValue,
   label,
   siteId,
   depthInterval,
   ...props
 }: Props<K>) => {
-  const {t} = useTranslation();
   const currentValue = useSelector(
     selectDepthDependentData({siteId, depthInterval}),
   )?.[input];
@@ -65,11 +63,7 @@ export const DepthDependentSelect = <K extends keyof DepthDependentSoilData>({
       onValueChange={onUpdate}
       {...props}>
       {values.map(value => (
-        <Select.Item
-          key={value}
-          value={value}
-          label={t(`${valueTKey}.${value}`)}
-        />
+        <Select.Item key={value} value={value} label={renderValue(value)} />
       ))}
     </Select>
   );

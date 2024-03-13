@@ -39,56 +39,55 @@ export const useModal = () => useContext(ModalContext);
 
 export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
 
-export type Props = React.PropsWithChildren<{
+export type ModalProps = {
   trigger?: ModalTrigger;
   CloseButton?: React.ReactNode | null;
   closeHook?: () => void;
   _content?: React.ComponentProps<typeof NativeBaseModal.Content>;
-}>;
+};
 
-export const Modal = forwardRef<ModalHandle, Props>(
-  ({children, trigger, closeHook, CloseButton, _content}, forwardedRef) => {
-    const {isOpen, onOpen, onClose} = useDisclose();
-    const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
-    if (CloseButton === undefined) {
-      CloseButton = <CardCloseButton onPress={onClose} />;
+export const Modal = forwardRef<
+  ModalHandle,
+  React.PropsWithChildren<ModalProps>
+>(({children, trigger, closeHook, CloseButton, _content}, forwardedRef) => {
+  const {isOpen, onOpen, onClose} = useDisclose();
+  const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
+  if (CloseButton === undefined) {
+    CloseButton = <CardCloseButton onPress={onClose} />;
+  }
+
+  useEffect(() => {
+    if (!isOpen && closeHook) {
+      closeHook();
     }
+  }, [isOpen, closeHook]);
 
-    useEffect(() => {
-      if (!isOpen && closeHook) {
-        closeHook();
-      }
-    }, [isOpen, closeHook]);
+  useImperativeHandle(forwardedRef, () => handle, [handle]);
 
-    useImperativeHandle(forwardedRef, () => handle, [handle]);
-
-    return (
-      <>
-        {trigger && (
-          <Pressable onPress={handle.onOpen}>
-            {trigger(handle.onOpen)}
-          </Pressable>
-        )}
-        <NativeBaseModal isOpen={isOpen} onClose={onClose}>
-          <KeyboardAvoidingView
-            style={styles.keyboardAvoidingView}
-            behavior="padding"
-            keyboardVerticalOffset={100}>
-            <NativeBaseModal.Content
-              borderRadius="24px"
-              padding="18px"
-              {..._content}>
-              <ModalContext.Provider value={handle}>
-                {children}
-              </ModalContext.Provider>
-              {CloseButton}
-            </NativeBaseModal.Content>
-          </KeyboardAvoidingView>
-        </NativeBaseModal>
-      </>
-    );
-  },
-);
+  return (
+    <>
+      {trigger && (
+        <Pressable onPress={handle.onOpen}>{trigger(handle.onOpen)}</Pressable>
+      )}
+      <NativeBaseModal isOpen={isOpen} onClose={onClose}>
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior="padding"
+          keyboardVerticalOffset={100}>
+          <NativeBaseModal.Content
+            borderRadius="24px"
+            padding="18px"
+            {..._content}>
+            <ModalContext.Provider value={handle}>
+              {children}
+            </ModalContext.Provider>
+            {CloseButton}
+          </NativeBaseModal.Content>
+        </KeyboardAvoidingView>
+      </NativeBaseModal>
+    </>
+  );
+});
 
 const styles = StyleSheet.create({
   keyboardAvoidingView: {
