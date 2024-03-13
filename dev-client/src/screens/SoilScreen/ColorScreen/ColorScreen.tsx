@@ -30,51 +30,135 @@ import {useTranslation} from 'react-i18next';
 import {SheetTooltip} from 'terraso-mobile-client/components/SheetTooltip';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
-import {useSelector} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {Button, Fab} from 'native-base';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
 import {DepthDependentSelect} from 'terraso-mobile-client/screens/SoilScreen/components/DepthDependentSelect';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {
-  colorHueSubsteps,
   colorHues,
   colorValues,
   colorChromas,
+  updateDepthDependentSoilData,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {Pressable} from 'react-native';
-import {useCallback} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
-import {usePickImage} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/hooks';
+import {FormSelect} from 'terraso-mobile-client/components/form/FormSelect';
+import {fromEntries} from 'terraso-client-shared/utils';
+import {
+  parseMunsellHue,
+  renderMunsellHue,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
+
+const hueOptions = {
+  '2.5': '2.5',
+  '5': '5',
+  '7.5': '7.5',
+  '10': '10',
+} as const;
 
 export const ColorScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const data = useSelector(selectDepthDependentData(props));
   const {complete} = pitMethodSummary(t, data, 'soilColor');
-  const workflow = useSelector(state => state.preferences.colorWorkflow);
+  const previousWorkflow = useSelector(
+    state => state.preferences.colorWorkflow,
+  );
+  const siteWorkflow =
+    typeof data?.colorPhotoUsed !== 'boolean'
+      ? undefined
+      : data.colorPhotoUsed
+        ? 'CAMERA'
+        : 'MANUAL';
+
+  const workflow = siteWorkflow ?? previousWorkflow;
+
   const navigation = useNavigation();
 
-  const onTakePhoto = usePickImage(
-    useCallback(
-      photo => {
-        navigation.navigate('COLOR_ANALYSIS', {
-          photo: photo,
-          pitProps: props,
-        });
-      },
-      [navigation, props],
-    ),
+  const onPickImage = useCallback(
+    (photo: Photo) => {
+      navigation.navigate('COLOR_ANALYSIS', {
+        photo: photo,
+        pitProps: props,
+      });
+    },
+    [navigation, props],
   );
 
   const onUseGuide = useCallback(
     () => navigation.navigate('COLOR_GUIDE', props),
     [props, navigation],
   );
+
+  const {hueSubstep, hue} = useMemo(
+    () =>
+      data?.colorHue
+        ? renderMunsellHue(data?.colorHue)
+        : {hueSubstep: undefined, hue: undefined},
+    [data?.colorHue],
+  );
+
+  const [selectedSubstep, setSelectedSubstep] = useState(hueSubstep);
+  const [selectedHue, setSelectedHue] = useState(hue);
+
+  const dispatch = useDispatch();
+
+  const updateHue = useCallback(
+    (newSubstep: string, newHue: (typeof colorHues)[number]) => {
+      dispatch(
+        updateDepthDependentSoilData({
+          siteId: props.siteId,
+          depthInterval: props.depthInterval.depthInterval,
+          colorHue: parseMunsellHue({
+            hue: newHue,
+            hueSubstep: newSubstep,
+          }),
+          colorPhotoUsed: false,
+        }),
+      );
+    },
+    [dispatch, props.siteId, props.depthInterval.depthInterval],
+  );
+
+  const onUpdateSubstep = useCallback(
+    (substep: string) => {
+      setSelectedSubstep(substep);
+      if (selectedHue && substep) {
+        updateHue(substep, selectedHue);
+      }
+    },
+    [selectedHue, updateHue],
+  );
+
+  const onUpdateHue = useCallback(
+    (newHue: (typeof colorHues)[number]) => {
+      setSelectedHue(newHue);
+      if (newHue && selectedSubstep) {
+        updateHue(selectedSubstep, newHue);
+      }
+    },
+    [selectedSubstep, updateHue],
+  );
+
+  const onClearValues = useCallback(() => {
+    dispatch(
+      updateDepthDependentSoilData({
+        siteId: props.siteId,
+        depthInterval: props.depthInterval.depthInterval,
+        colorHue: null,
+        colorValue: null,
+        colorChroma: null,
+      }),
+    );
+  }, [props.siteId, props.depthInterval, dispatch]);
 
   return (
     <SoilPitInputScreenScaffold {...props}>
@@ -97,7 +181,9 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
             </SheetTooltip>
           </Row>
           <Box flex={1} />
-          {(workflow === 'CAMERA' || complete) && <SwitchWorkflowButton />}
+          {(workflow === 'CAMERA' || complete) && (
+            <SwitchWorkflowButton {...props} />
+          )}
         </Row>
         <LastModified />
       </Column>
@@ -105,29 +191,27 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
         <>
           <Column padding="md" space="24px">
             <Row>
-              <DepthDependentSelect
-                input="colorHueSubstep"
-                values={colorHueSubsteps}
-                valueTKey="soil.color.colorHueSubstep"
-                label={t('soil.color.hue')}
+              <FormSelect
+                options={hueOptions}
+                selectedValue={selectedSubstep}
+                placeholder={t('soil.color.hue')}
                 flex={2}
-                {...props}
+                onValueChange={onUpdateSubstep}
               />
               <Box flex={1} />
-              <DepthDependentSelect
-                input="colorHue"
-                values={colorHues}
-                valueTKey="soil.color.colorHue"
-                label={t('soil.color.hue')}
+              <FormSelect
+                options={fromEntries(colorHues.map(h => [h, h]))}
+                selectedValue={selectedHue}
+                placeholder={t('soil.color.hue')}
                 flex={2}
-                {...props}
+                onValueChange={onUpdateHue}
               />
             </Row>
             <Row alignItems="center">
               <DepthDependentSelect
                 input="colorValue"
                 values={colorValues}
-                valueTKey="soil.color.colorValue"
+                renderValue={color => color.toString()}
                 label={t('soil.color.value')}
                 flex={2}
                 {...props}
@@ -138,7 +222,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
               <DepthDependentSelect
                 input="colorChroma"
                 values={colorChromas}
-                valueTKey="soil.color.colorChroma"
+                renderValue={chroma => chroma.toString()}
                 label={t('soil.color.chroma')}
                 flex={2}
                 {...props}
@@ -154,7 +238,10 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
               <Paragraph variant="body1">
                 {t('soil.color.use_photo_instead')}
               </Paragraph>
-              <SwitchWorkflowButton rightIcon={<Icon name="chevron-right" />} />
+              <SwitchWorkflowButton
+                {...props}
+                rightIcon={<Icon name="chevron-right" />}
+              />
             </Column>
           )}
         </>
@@ -162,23 +249,27 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
       {workflow === 'CAMERA' && !complete && (
         <>
           <Box alignItems="center" paddingVertical="lg">
-            <Pressable onPress={onTakePhoto}>
-              <Box
-                borderRadius="24px"
-                width="180px"
-                height="180px"
-                justifyContent="center"
-                alignItems="center"
-                borderStyle="dashed"
-                borderWidth="2px"
-                borderColor="grey.700">
-                <Icon
-                  name="add-photo-alternate"
-                  color="action.active"
-                  size="lg"
-                />
-              </Box>
-            </Pressable>
+            <ImagePicker onPick={onPickImage}>
+              {onOpen => (
+                <Pressable onPress={onOpen}>
+                  <Box
+                    borderRadius="24px"
+                    width="180px"
+                    height="180px"
+                    justifyContent="center"
+                    alignItems="center"
+                    borderStyle="dashed"
+                    borderWidth="2px"
+                    borderColor="grey.700">
+                    <Icon
+                      name="add-photo-alternate"
+                      color="action.active"
+                      size="lg"
+                    />
+                  </Box>
+                </Pressable>
+              )}
+            </ImagePicker>
           </Box>
           <Column
             backgroundColor="grey.300"
@@ -197,7 +288,12 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
       )}
       {complete && (
         <>
-          <ColorDisplay {...props} />
+          <ColorDisplay
+            onDelete={
+              complete && workflow === 'CAMERA' ? onClearValues : undefined
+            }
+            {...props}
+          />
           {workflow === 'CAMERA' && <PhotoConditions {...props} />}
         </>
       )}

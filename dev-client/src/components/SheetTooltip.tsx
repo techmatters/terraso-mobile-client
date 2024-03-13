@@ -20,7 +20,9 @@ import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SheetTooltip = ({children}: React.PropsWithChildren<{}>) => (
-  <BottomSheetModal trigger={onOpen => <TooltipIconButton onPress={onOpen} />}>
+  <BottomSheetModal
+    fullHeight
+    trigger={onOpen => <TooltipIconButton onPress={onOpen} />}>
     <Box paddingVertical="30px" paddingHorizontal="16px">
       {children}
     </Box>

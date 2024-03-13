@@ -15,6 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {
+  ActionCrop,
+  ActionResize,
+  SaveFormat,
+  manipulateAsync,
+} from 'expo-image-manipulator';
 import {Fab} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -27,13 +33,16 @@ import Animated, {
 } from 'react-native-reanimated';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {
+  Photo,
+  PhotoWithBase64,
+} from 'terraso-mobile-client/components/ImagePicker';
+import {
   Box,
   Text,
   Column,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {Photo} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/image';
 
 export type Crop = {top: number; left: number; size: number};
 type Dimensions = {width: number; height: number};
@@ -55,7 +64,7 @@ const clampCrop = (crop: Crop, dimensions: Dimensions): Crop => {
 
 type Props = {
   photo: Photo;
-  onCrop: (_: Crop) => void;
+  onCrop: (_: PhotoWithBase64) => void;
   title: string;
   description: string;
 };
@@ -117,13 +126,39 @@ export const ColorCropScreen = ({photo, onCrop, title, description}: Props) => {
     [frameDimension],
   );
 
-  const onComplete = useCallback(() => {
-    onCrop({
-      size: Math.round(crop.value.size),
-      top: Math.round(crop.value.top),
-      left: Math.round(crop.value.left),
-    });
-  }, [onCrop, crop]);
+  const onComplete = useCallback(async () => {
+    const cropAction: ActionCrop = {
+      crop: {
+        originX: crop.value.left,
+        originY: crop.value.top,
+        height: crop.value.size,
+        width: crop.value.size,
+      },
+    };
+
+    const resizeAction: ActionResize = {
+      resize: {
+        width: Math.min(crop.value.size, 200),
+        height: Math.min(crop.value.size, 200),
+      },
+    };
+
+    const croppedPhoto = await manipulateAsync(
+      photo.uri,
+      [cropAction, resizeAction],
+      {
+        base64: true,
+        compress: 0.0,
+        format: SaveFormat.JPEG,
+      },
+    );
+
+    if (!croppedPhoto.base64) {
+      throw Error('unexpected error: missing base64 encoding of cropped photo');
+    }
+
+    onCrop({...croppedPhoto, base64: croppedPhoto.base64});
+  }, [photo.uri, onCrop, crop]);
 
   return (
     <ScreenScaffold AppBar={<AppBar title={title} />}>

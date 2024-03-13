@@ -25,45 +25,55 @@ import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton'
 import {Pressable} from 'react-native';
 import {
   ModalHandle,
-  Props,
+  ModalProps,
   ModalContext,
 } from 'terraso-mobile-client/components/Modal';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
 
-export const BottomSheetModal = forwardRef<ModalHandle, Props>(
-  ({children, trigger}, forwardedRef) => {
-    const headerHeight = useHeaderHeight();
-    const ref = useRef<GorhomBottomSheetModal>(null);
-    const methods = useMemo(
-      () => ({
-        onClose: () => ref.current?.dismiss(),
-        onOpen: () => ref.current?.present(),
-      }),
-      [ref],
-    );
-    useImperativeHandle(forwardedRef, () => methods, [methods]);
+type Props = ModalProps & {
+  fullHeight?: boolean;
+};
 
-    return (
-      <>
-        {trigger && (
-          <Pressable onPress={methods.onOpen}>
-            {trigger(methods.onOpen)}
-          </Pressable>
-        )}
-        <GorhomBottomSheetModal
-          ref={ref}
-          handleComponent={null}
-          topInset={headerHeight}
-          backdropComponent={BackdropComponent}
-          enableDynamicSizing>
-          <ModalContext.Provider value={methods}>
-            <BottomSheetScrollView>
-              {children}
+export const BottomSheetModal = forwardRef<
+  ModalHandle,
+  React.PropsWithChildren<Props>
+>(({children, trigger, CloseButton, fullHeight = false}, forwardedRef) => {
+  const headerHeight = useHeaderHeight();
+  const ref = useRef<GorhomBottomSheetModal>(null);
+  const methods = useMemo(
+    () => ({
+      onClose: () => ref.current?.dismiss(),
+      onOpen: () => ref.current?.present(),
+    }),
+    [ref],
+  );
+  useImperativeHandle(forwardedRef, () => methods, [methods]);
+
+  return (
+    <>
+      {trigger && (
+        <Pressable onPress={methods.onOpen}>
+          {trigger(methods.onOpen)}
+        </Pressable>
+      )}
+      <GorhomBottomSheetModal
+        ref={ref}
+        handleComponent={null}
+        topInset={headerHeight}
+        backdropComponent={BackdropComponent}
+        snapPoints={fullHeight ? ['100%'] : undefined}
+        enableDynamicSizing={!fullHeight}>
+        <ModalContext.Provider value={methods}>
+          <BottomSheetScrollView>
+            {children}
+            {CloseButton === undefined ? (
               <CardCloseButton size="lg" onPress={methods.onClose} />
-            </BottomSheetScrollView>
-          </ModalContext.Provider>
-        </GorhomBottomSheetModal>
-      </>
-    );
-  },
-);
+            ) : (
+              CloseButton
+            )}
+          </BottomSheetScrollView>
+        </ModalContext.Provider>
+      </GorhomBottomSheetModal>
+    </>
+  );
+});
