@@ -84,7 +84,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       {
         organization: process.env.SENTRY_ORG,
         project: process.env.SENTRY_PROJECT,
-        au,
       },
     ],
     [
