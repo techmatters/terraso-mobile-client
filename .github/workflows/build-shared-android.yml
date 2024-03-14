@@ -60,6 +60,7 @@ jobs:
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
       SENTRY_ORG: techmatters
       SENTRY_PROJECT: terraso-lpks
@@ -83,10 +84,6 @@ jobs:
         working-directory: dev-client
         run: npm run prebuild -- -p android
 
-      - name: Debug config file
-        working-directory: dev-client
-        run: npx expo config -t public
-
       - name: Set up our JDK environment
         uses: actions/setup-java@v4
         with:
@@ -109,8 +106,6 @@ jobs:
 
       - name: Build Android app bundle
         working-directory: ./dev-client/android
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: ./gradlew bundleRelease
 
       - name: Sign Android app bundle
