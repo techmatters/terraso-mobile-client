@@ -93,21 +93,21 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       },
     ],
     [
-      (config: ExpoConfig) => {
+      (modConfig: ExpoConfig) => {
         // workaround to remove push notification entitlements: https://github.com/expo/expo/pull/25808#pullrequestreview-1772795646
-        withEntitlementsPlist(config, entitlements => {
+        withEntitlementsPlist(modConfig, entitlements => {
           delete entitlements.modResults['aps-environment'];
           return entitlements;
         });
         // workaround to avoid double signing with debug keychain
-        withAppBuildGradle(config, gradle => {
+        withAppBuildGradle(modConfig, gradle => {
           gradle.modResults.contents = gradle.modResults.contents.replace(
             /signingConfig signingConfigs.debug/g,
             '',
           );
           return gradle;
         });
-        return config;
+        return modConfig;
       },
     ],
   ],
