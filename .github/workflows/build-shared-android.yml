@@ -49,6 +49,20 @@ jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
+    env:
+      ENV: ${{ inputs.ENV }}
+      TERRASO_BACKEND: ${{ inputs.TERRASO_BACKEND }}
+      APP_VERSION: ${{ inputs.APP_VERSION }}
+      GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
+      MICROSOFT_OAUTH_CLIENT_ID: ${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      MICROSOFT_SIGNATURE_HASH: ${{ secrets.MICROSOFT_SIGNATURE_HASH }}
+      PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
+      SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
+      SENTRY_ORG: techmatters
+      SENTRY_PROJECT: terraso-lpks
 
     steps:
       - name: Check out git repository
@@ -68,20 +82,6 @@ jobs:
       - name: Generate android directory
         working-directory: dev-client
         run: npm run prebuild -- -p android
-        env:
-          ENV: ${{ inputs.ENV }}
-          TERRASO_BACKEND: ${{ inputs.TERRASO_BACKEND }}
-          APP_VERSION: ${{ inputs.APP_VERSION }}
-          GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
-          MICROSOFT_OAUTH_CLIENT_ID: ${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-          MICROSOFT_SIGNATURE_HASH: ${{ secrets.MICROSOFT_SIGNATURE_HASH }}
-          PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
-          SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
-          SENTRY_ORG: techmatters
-          SENTRY_PROJECT: terraso-lpks
 
       - name: Debug config file
         working-directory: dev-client
