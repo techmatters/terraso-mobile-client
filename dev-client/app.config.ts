@@ -84,6 +84,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       {
         organization: process.env.SENTRY_ORG,
         project: process.env.SENTRY_PROJECT,
+        au,
       },
     ],
     [
@@ -117,6 +118,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         'ENV',
         'PUBLIC_MAPBOX_TOKEN',
         'SENTRY_DSN',
+        'SENTRY_ENABLED',
         'TERRASO_BACKEND',
         'TERRASO_BACKEND_ANDROID',
         'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
