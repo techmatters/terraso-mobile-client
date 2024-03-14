@@ -83,6 +83,10 @@ jobs:
           SENTRY_ORG: techmatters
           SENTRY_PROJECT: terraso-lpks
 
+      - name: Debug config file
+        working-directory: dev-client
+        run: npx expo config -t public
+
       - name: Set up our JDK environment
         uses: actions/setup-java@v4
         with:
