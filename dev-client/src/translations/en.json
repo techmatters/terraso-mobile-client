@@ -101,7 +101,7 @@
       "filter_role": "Filter sites by role:",
       "no_matches": "No sites match the current search and filter options.",
       "sort": {
-        "label": "Sort projects by:",
+        "label": "Sort sites by:",
         "nameAsc": "Name (A to Z)",
         "nameDesc": "Name (Z to A)",
         "lastModAsc": "Last Modified (most recent)",
