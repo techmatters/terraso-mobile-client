@@ -18,8 +18,7 @@
 import {IconButton as NativeIconButton, Center} from 'native-base';
 import React, {forwardRef} from 'react';
 import {View, Pressable} from 'react-native';
-import {IconProps as VectorIconProps} from 'react-native-vector-icons/Icon';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from '@expo/vector-icons/MaterialIcons';
 import {theme} from 'terraso-mobile-client/theme';
 import {
   NativeBaseProps,
@@ -33,11 +32,16 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export type IconProps = Omit<VectorIconProps, 'size' | 'color'> &
+export type IconProps = Omit<
+  React.ComponentProps<typeof MaterialIcon>,
+  'size' | 'color'
+> &
   NativeBaseProps & {
     size?: keyof typeof theme.components.Icon.sizes | number;
     color?: ThemeColor | string;
   };
+
+export type IconName = IconProps['name'];
 
 export const Icon = ({size = 'md', color, ...props}: IconProps) => {
   return (
@@ -50,7 +54,7 @@ export const Icon = ({size = 'md', color, ...props}: IconProps) => {
 };
 
 export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
-  name: string;
+  name: IconName;
   label?: string;
 };
 
@@ -80,7 +84,7 @@ export const IconButton = React.forwardRef(
 export type HorizontalIconButtonProps = React.ComponentProps<
   typeof NativeIconButton
 > & {
-  name: string;
+  name: IconName;
   label?: string;
   colorScheme?: string;
   isUppercase?: boolean;
@@ -144,7 +148,7 @@ export const LinkNewWindowIcon = () => {
 };
 
 type TooltipIconButtonProps = {
-  icon?: IconProps['name'];
+  icon?: IconName;
   onPress: () => void;
 };
 const tooltipIconProps = {color: 'action.active_subtle', size: 'sm'};

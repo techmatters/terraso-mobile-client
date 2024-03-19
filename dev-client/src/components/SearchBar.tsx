@@ -16,7 +16,11 @@
  */
 
 import {Input, Modal, Button, useDisclose} from 'native-base';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {
+  Icon,
+  IconButton,
+  IconName,
+} from 'terraso-mobile-client/components/Icons';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
@@ -33,7 +37,7 @@ type Props = {
   numFilters?: number;
   onApplyFilter?: () => void;
   placeholder: string;
-  filterIcon?: string;
+  filterIcon?: IconName;
 } & React.ComponentProps<typeof Row>;
 
 export const SearchBar = ({

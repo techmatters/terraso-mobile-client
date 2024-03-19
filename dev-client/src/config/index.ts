@@ -15,11 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import Config from 'react-native-config';
+import Constants from 'expo-constants';
 import {MMKVLoader} from 'react-native-mmkv-storage';
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
 import {PACKAGE_NAME} from 'terraso-mobile-client/constants';
+
+const Config = Constants.expoConfig!.extra!;
 
 let terrasoAPIURL;
 
@@ -36,7 +38,7 @@ const MMKV = new MMKVLoader().withEncryption().initialize();
 
 setAPIConfig({
   terrasoAPIURL: terrasoAPIURL,
-  graphQLEndpoint: terrasoAPIURL + '/graphql',
+  graphQLEndpoint: terrasoAPIURL + '/graphql/',
   tokenStorage: {
     getToken: name => {
       const value = MMKV.getString(name);
@@ -83,12 +85,13 @@ if (Platform.OS === 'ios') {
   googleClientId = Config.GOOGLE_OAUTH_IOS_CLIENT_ID ?? '';
   googleRedirectURI =
     `${Config.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect` ?? '';
-  microsoftRedirectURI = `msauth.${PACKAGE_NAME}://auth/` ?? '';
+  microsoftRedirectURI =
+    `msauth.${Constants.expoConfig!.ios!.bundleIdentifier}://auth/` ?? '';
 } else if (Platform.OS === 'android') {
   googleClientId = Config.GOOGLE_OAUTH_ANDROID_CLIENT_ID ?? '';
-  googleRedirectURI = `${PACKAGE_NAME}:/oauth2redirect`;
+  googleRedirectURI = `${Constants.expoConfig!.android!.package}:/oauth2redirect`;
   microsoftRedirectURI =
-    `${PACKAGE_NAME}://msauth/${encodeURIComponent(microsoftSignatureHash)}/` ??
+    `${Constants.expoConfig!.android!.package}://msauth/${encodeURIComponent(microsoftSignatureHash)}/` ??
     '';
 }
 

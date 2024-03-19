@@ -1,11 +1,9 @@
 name: iOS Release
 
 on:
-  workflow_dispatch:
-#  schedule:
-#    - cron: '12 4 * * *'
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v[0-9]+'
 
 jobs:
   ios-build-sign:
@@ -13,6 +11,7 @@ jobs:
     uses: ./.github/workflows/build-shared-ios.yml
     with:
       upload: 'true'
+      APP_VERSION: ${{ github.ref_name }}
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
@@ -30,4 +29,3 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
-

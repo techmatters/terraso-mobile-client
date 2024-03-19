@@ -15,30 +15,36 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {authorize} from 'react-native-app-auth';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
-import {OAuthProvider} from 'terraso-mobile-client/types';
 import {request} from 'terraso-client-shared/terrasoApi/api';
 import {getAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
+import {
+  AccessTokenRequest,
+  AuthRequest,
+  AuthRequestConfig,
+  IssuerOrDiscovery,
+  resolveDiscoveryAsync,
+} from 'expo-auth-session';
 
-// https://github.com/FormidableLabs/react-native-app-auth/blob/main/docs/config-examples/google.md
-const googleConfig = {
-  issuer: 'https://accounts.google.com',
-  clientId: APP_CONFIG.googleClientId,
-  redirectUrl: APP_CONFIG.googleRedirectURI,
-  scopes: ['openid', 'profile', 'email'],
-};
+type AuthConfig = AuthRequestConfig & {issuer: IssuerOrDiscovery};
 
-const appleConfig = {
-  issuer: 'https://appleid.apple.com',
-  clientId: APP_CONFIG.appleClientId,
-  redirectUrl: APP_CONFIG.appleRedirectURI,
-  scopes: ['name', 'email'],
-};
-
-/*
-  Using issuer fails, because MS returns issuer: "https://login.microsoftonline.com/{tenantid}/v2.0"
+const configs = {
+  // https://github.com/FormidableLabs/react-native-app-auth/blob/main/docs/config-examples/google.md
+  google: {
+    issuer: 'https://accounts.google.com',
+    clientId: APP_CONFIG.googleClientId,
+    redirectUri: APP_CONFIG.googleRedirectURI,
+    scopes: ['openid', 'profile', 'email'],
+  },
+  apple: {
+    issuer: 'https://appleid.apple.com',
+    clientId: APP_CONFIG.appleClientId,
+    redirectUri: APP_CONFIG.appleRedirectURI,
+    scopes: ['name', 'email'],
+  },
+  /*
+  Using string issuer fails, because MS returns issuer: "https://login.microsoftonline.com/{tenantid}/v2.0"
  from https://login.microsoftonline.com/common//v2.0/.well-known/openid-configuration.
 
   React Native App Auth trys to load "issuer", resulting in a 404 error and the JSON parsing fails with this error:
@@ -46,23 +52,30 @@ const appleConfig = {
 
   Workaround is to pass serviceConfiguration directly. Note that Microsoft does ot have a revocationEndpoint.
  */
-const microsoftConfig = {
-  serviceConfiguration: {
-    authorizationEndpoint:
-      'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-    tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+  microsoft: {
+    issuer: {
+      authorizationEndpoint:
+        'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+      tokenEndpoint:
+        'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+    },
+    clientId: APP_CONFIG.microsoftClientId,
+    redirectUri: APP_CONFIG.microsoftRedirectURI,
+    scopes: ['openid', 'profile', 'email', 'offline_access'],
   },
-  clientId: APP_CONFIG.microsoftClientId,
-  redirectUrl: APP_CONFIG.microsoftRedirectURI,
-  scopes: ['openid', 'profile', 'email', 'offline_access'],
-};
+} as const satisfies Record<string, AuthConfig>;
+
+export type AuthProvider = keyof typeof configs;
 
 interface AuthTokens {
   atoken: string;
   rtoken: string;
 }
 
-async function exchangeToken(identityJwt: string, provider: OAuthProvider) {
+async function exchangeToken(
+  identityJwt: string,
+  provider: Omit<AuthProvider, 'google'> | `google-${'ios' | 'android'}`,
+) {
   const payload = await request<AuthTokens>({
     path: '/auth/token-exchange',
     body: {provider, jwt: identityJwt},
@@ -77,27 +90,32 @@ async function exchangeToken(identityJwt: string, provider: OAuthProvider) {
 
 const apiConfig = getAPIConfig();
 
-export async function auth(providerName: String) {
-  let result;
-  let platformOs = providerName;
-  if (providerName === 'google') {
-    result = await authorize(googleConfig);
-    if (Platform.OS === 'android') {
-      platformOs = 'google-android';
-    } else if (Platform.OS === 'ios') {
-      platformOs = 'google-ios';
-    }
-  } else if (providerName === 'apple') {
-    result = await authorize(appleConfig);
-  } else if (providerName === 'microsoft') {
-    result = await authorize(microsoftConfig);
-  } else {
-    throw new Error(`${providerName} is not a recognized OAuth provider.`);
+export async function auth(provider: AuthProvider) {
+  const {issuer, ...config} = configs[provider];
+  const authRequest = new AuthRequest(config);
+  const discovery = await resolveDiscoveryAsync(issuer);
+  const result = await authRequest.promptAsync(discovery);
+  if (result.type !== 'success') {
+    return;
   }
+  const tokenResult = await new AccessTokenRequest({
+    ...config,
+    code: result.params.code,
+    extraParams: {code_verifier: authRequest.codeVerifier ?? ''},
+  }).performAsync(discovery);
+
+  const platformProvider =
+    provider !== 'google'
+      ? provider
+      : Platform.OS === 'android'
+        ? 'google-android'
+        : 'google-ios';
+
   let {atoken, rtoken} = await exchangeToken(
-    result.idToken,
-    platformOs as OAuthProvider,
+    tokenResult.idToken!,
+    platformProvider,
   );
+
   return Promise.all([
     apiConfig.tokenStorage.setToken('atoken', atoken),
     apiConfig.tokenStorage.setToken('rtoken', rtoken),

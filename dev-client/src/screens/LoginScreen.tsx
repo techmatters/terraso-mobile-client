@@ -19,7 +19,7 @@ import {Button} from 'native-base';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useEffect, useCallback} from 'react';
-import {auth} from 'terraso-mobile-client/auth';
+import {AuthProvider, auth} from 'terraso-mobile-client/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 // import {
@@ -49,10 +49,12 @@ export const LoginScreen = () => {
 
   const dispatch = useDispatch();
   const onPress = useCallback(
-    (providerName: String) => {
+    (providerName: AuthProvider) => {
       return () => {
         auth(providerName)
-          .then(() => dispatch(setHasAccessTokenAsync()))
+          .then(() => {
+            dispatch(setHasAccessTokenAsync());
+          })
           .catch(e => console.error(e));
       };
     },

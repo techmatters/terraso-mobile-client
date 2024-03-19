@@ -5,6 +5,18 @@ on:
         required: false
         type: string
         default: 'false'
+      ENV:
+        required: false
+        type: string
+        default: 'staging'
+      TERRASO_BACKEND:
+        required: false
+        type: string
+        default: 'https://api.staging.terraso.net'
+      APP_VERSION:
+        required: false
+        type: string
+        default: 'v1'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
@@ -44,8 +56,20 @@ jobs:
     name: iOS Build
     runs-on: macos-14
     env:
+      ENV: ${{ inputs.ENV }}
+      TERRASO_BACKEND: ${{ inputs.TERRASO_BACKEND }}
+      APP_VERSION: ${{ inputs.APP_VERSION }}
+      GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
+      MICROSOFT_OAUTH_CLIENT_ID: ${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      MICROSOFT_SIGNATURE_HASH: ${{ secrets.MICROSOFT_SIGNATURE_HASH }}
+      PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
+      SENTRY_ORG: techmatters
+      SENTRY_PROJECT: terraso-lpks
 
     steps:
       - name: Check out git repository
@@ -53,28 +77,6 @@ jobs:
 
       - name: Enable build cache
         uses: mikehardy/buildcache-action@v2
-
-      - name: Provide Mapbox secret key
-        run: |
-          echo "machine api.mapbox.com" >> $HOME/.netrc
-          echo "login mapbox" >> $HOME/.netrc
-          echo "password ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}" >> $HOME/.netrc
-          chmod 600 $HOME/.netrc
-
-      - name: Set up config values
-        if: ${{ inputs.upload == 'true' }}
-        working-directory: ./dev-client
-        run: |
-          echo "GOOGLE_OAUTH_IOS_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}" >> .env
-          echo "GOOGLE_OAUTH_IOS_URI_SCHEME=${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}" >> .env
-          echo "MICROSOFT_OAUTH_CLIENT_ID=${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}" >> .env
-          echo "MICROSOFT_SIGNATURE_HASH=${{ secrets.MICROSOFT_SIGNATURE_HASH }}" >> .env
-          echo "PUBLIC_MAPBOX_TOKEN=${{ secrets.PUBLIC_MAPBOX_TOKEN }}" >> .env
-          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
-          echo "SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}" >> .env
-          echo "ENV=staging" >> .env
-          cp sentry.properties.example ./ios/sentry.properties
-          echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> ./ios/sentry.properties
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -86,6 +88,10 @@ jobs:
       - name: Install Node dependencies
         working-directory: dev-client
         run: npm ci
+
+      - name: Generate ios directory
+        working-directory: dev-client
+        run: npm run prebuild -- -p ios
 
       - name: Setup Ruby (bundle)
         uses: ruby/setup-ruby@v1
@@ -107,7 +113,7 @@ jobs:
       - name: Set Xcode version
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: "^15.2"
+          xcode-version: '^15.2'
 
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.11.2
@@ -120,25 +126,15 @@ jobs:
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
           scheme: TerrasoLandPKS
-          increment-build-number: ${{ inputs.upload == 'true' && 'true' || '' }}
 
       - name: Archive build log and intermediates
-        if: "!success()"
+        if: '!success()'
         uses: actions/upload-artifact@v4
         with:
           name: dist-log-intermediates
           path: |
             "/Users/runner/Library/Logs/gym/Terraso LandPKS-Terraso LandPKS.log"
             "/Users/runner/Library/Developer/Xcode/DerivedData/TerrasoLandPKS-*/Build/Intermediates.noindex/ArchiveIntermediates/"
-
-      # - name: Commit iOS version bump
-      #   if: ${{ inputs.upload == 'true' }}
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     file_pattern: "dev-client/ios"
-      #     commit_message: "build: bump iOS version number"
-      #     commit_user_name: "GitHub Actions"
-      #     commit_user_email: actions@users.noreply.github.com
 
       - name: Upload app to TestFlight
         uses: apple-actions/upload-testflight-build@v1

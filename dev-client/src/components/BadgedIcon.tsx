@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Pressable} from 'native-base';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {IconButton, IconName} from 'terraso-mobile-client/components/Icons';
 import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
@@ -25,7 +25,7 @@ type Props = {
     'onPress' | 'name' | 'accessibilityLabel'
   >;
   badgeNum: number;
-  iconName: string;
+  iconName: IconName;
   accessibilityLabel?: string;
 } & React.ComponentProps<typeof Pressable>;
 

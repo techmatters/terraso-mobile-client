@@ -25,7 +25,7 @@ import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import {useCallback, useMemo} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconName} from 'terraso-mobile-client/components/Icons';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {
   Site,
@@ -61,7 +61,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type SiteMenuProps = {
-  iconName: string;
+  iconName: IconName;
   text: string;
   onPress?: () => void;
 };

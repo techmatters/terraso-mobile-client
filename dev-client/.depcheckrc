@@ -11,6 +11,7 @@
 		"@types/uuid",
 		"babel-jest",
 		"eslint-plugin-prettier",
+		"expo-crypto",
 		"metro-react-native-babel-preset",
 		"react-native-gradle-plugin",
 		"react-redux",
