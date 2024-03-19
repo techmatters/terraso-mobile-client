@@ -16,12 +16,12 @@
  */
 
 import {Link} from 'native-base';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconName} from 'terraso-mobile-client/components/Icons';
 import {ThemeColor} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 type Props = {
   children?: React.ReactNode;
-  iconName: string;
+  iconName: IconName;
   underlined?: boolean;
   color?: ThemeColor;
 } & React.ComponentProps<typeof Link>;

@@ -35,12 +35,6 @@ jest.mock('react-native-reanimated', () => {
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
 jest.mock('@gorhom/bottom-sheet', () => 'BottomSheet');
-jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
-jest.mock(
-  'react-native-vector-icons/MaterialCommunityIcons',
-  () => 'MaterialCommunityIcons',
-);
-jest.mock('react-native-app-auth', () => 'AppAuth');
 jest.mock('@rnmapbox/maps', () => 'Mapbox');
 
 let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
