@@ -219,7 +219,7 @@ export function ProjectSitesScreen({
 
   const userRole = useProjectRoleContext();
 
-  const showButtons = useMemo(() => userRole === 'manager', [userRole]);
+  const showButtons = useMemo(() => userRole === 'MANAGER', [userRole]);
 
   const full = (
     <ListFilterProvider
@@ -272,12 +272,12 @@ export function ProjectSitesScreen({
       {isEmpty && (
         <>
           <Text>{t('projects.sites.empty_viewer')}</Text>
-          <RestrictByProjectRole role={['manager', 'contributor']}>
+          <RestrictByProjectRole role={['MANAGER', 'CONTRIBUTOR']}>
             <Text>{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
         </>
       )}
-      <RestrictByProjectRole role={['manager', 'contributor']}>
+      <RestrictByProjectRole role={['MANAGER', 'CONTRIBUTOR']}>
         <Button
           onPress={transferCallback}
           alignSelf="flex-start"

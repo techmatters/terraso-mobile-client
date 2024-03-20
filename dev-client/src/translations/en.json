@@ -110,11 +110,6 @@
         "distanceDesc": "Distance (furthest)"
       }
     },
-    "role": {
-      "manager": "Manager",
-      "contributor": "Contributor",
-      "viewer": "Viewer"
-    },
     "tabs": {
       "SITE": "Site",
       "SLOPE": "Slope",
@@ -294,9 +289,9 @@
     "example_email": "name@domain.com",
     "profile_image_alt": "Profile image",
     "role": {
-      "viewer": "Viewer",
-      "contributor": "Contributor",
-      "manager": "Manager"
+      "MANAGER": "Manager",
+      "CONTRIBUTOR": "Contributor",
+      "VIEWER": "Viewer"
     },
     "measurement_units": {
       "METRIC": "Metric",

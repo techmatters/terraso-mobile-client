@@ -19,9 +19,11 @@ import {Button, Center, Divider, FlatList, Image, Pressable} from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
-import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
+import {
+  ProjectMembership,
+  ProjectRole,
+} from 'terraso-client-shared/project/projectSlice';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
-import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {formatName} from 'terraso-mobile-client/util';
 import {
   Box,
@@ -36,7 +38,7 @@ type ListProps = {
   currentUserId?: string;
   userAction: (membership: ProjectMembership) => () => void;
   memberAction: (userId: string, memberId: string) => () => void;
-  currentUserRole: UserRole;
+  currentUserRole: ProjectRole;
 };
 
 type ItemProps = {
@@ -45,7 +47,7 @@ type ItemProps = {
   currentUserId?: string;
   removeUser: () => void;
   memberAction: () => void;
-  currentUserRole: UserRole;
+  currentUserRole: ProjectRole;
 };
 
 type TriggerProps = {
@@ -77,9 +79,9 @@ const UserWrapper = ({
 }: React.PropsWithChildren &
   Pick<ItemProps, 'memberAction'> & {
     isCurrentUser: boolean;
-    currentUserRole: UserRole;
+    currentUserRole: ProjectRole;
   }) =>
-  !isCurrentUser && currentUserRole === 'manager' ? (
+  !isCurrentUser && currentUserRole === 'MANAGER' ? (
     <Pressable onPress={memberAction}>{children}</Pressable>
   ) : (
     <>{children}</>

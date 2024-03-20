@@ -119,9 +119,9 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
       ))}
       <RestrictBySiteRole
         role={[
-          {kind: 'project', role: 'manager'},
-          {kind: 'project', role: 'contributor'},
-          {kind: 'site', role: 'owner'},
+          {kind: 'project', role: 'MANAGER'},
+          {kind: 'project', role: 'CONTRIBUTOR'},
+          {kind: 'site', role: 'OWNER'},
         ]}>
         <Modal
           trigger={onOpen => (

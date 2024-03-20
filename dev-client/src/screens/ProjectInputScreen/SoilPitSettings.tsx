@@ -47,7 +47,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
   const projectRole = useProjectRoleContext();
 
   const userCanUpdateIntervals = useMemo(
-    () => projectRole === 'manager',
+    () => projectRole === 'MANAGER',
     [projectRole],
   );
 
