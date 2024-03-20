@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Pressable} from 'react-native';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const TRIANGLE_BORDER_WIDTH = 15;
 
@@ -38,6 +38,7 @@ const CardTriangle = () => {
 };
 
 type Props = {
+  Header?: React.ReactNode;
   buttons?: React.ReactNode;
   children?: React.ReactNode;
   onPress?: () => void;
@@ -45,6 +46,7 @@ type Props = {
 } & React.ComponentProps<typeof Box>;
 
 export const Card = ({
+  Header,
   buttons,
   onPress,
   children,
@@ -54,8 +56,14 @@ export const Card = ({
   <Pressable onPress={onPress}>
     <Box variant="card" marginTop={'0px'} shadow={undefined} {...boxProps}>
       {isPopover && <CardTriangle />}
+      {(Header || buttons) && (
+        <Row alignItems="center">
+          {Header}
+          <Box flex={1} />
+          {buttons}
+        </Row>
+      )}
       {children}
-      {buttons}
     </Box>
   </Pressable>
 );

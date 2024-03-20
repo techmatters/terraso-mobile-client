@@ -19,7 +19,7 @@ import {Button, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
-import {AddIntervalModal} from 'terraso-mobile-client/components/AddIntervalModal';
+import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
 import {Modal} from 'terraso-mobile-client/components/Modal';
 import {useMemo, useCallback} from 'react';
 import {
@@ -95,6 +95,9 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         <Heading variant="h6">{t('soil.pit')}</Heading>
         {!project && (
           <BottomSheetModal
+            Header={
+              <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
+            }
             trigger={onOpen => (
               <IconButton
                 name="tune"
@@ -143,7 +146,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               {t('soil.add_depth_label')}
             </Button>
           )}>
-          <AddIntervalModal
+          <AddIntervalModalBody
             onSubmit={onAddDepthInterval}
             existingIntervals={existingIntervals}
           />

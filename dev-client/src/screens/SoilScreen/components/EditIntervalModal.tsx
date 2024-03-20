@@ -27,7 +27,7 @@ import {
   deleteSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
-import {useMemo, useCallback, FormEvent} from 'react';
+import {useMemo, useCallback, FormEvent, useRef} from 'react';
 import {
   IntervalForm,
   IntervalFormInput,
@@ -39,12 +39,12 @@ import {Button} from 'native-base';
 import {Formik} from 'formik';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
-import {useModal} from 'terraso-mobile-client/components/Modal';
+import {ModalHandle} from 'terraso-mobile-client/components/Modal';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {useSiteSoilIntervals} from 'terraso-client-shared/selectors';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {
@@ -54,6 +54,7 @@ import {
   Column,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
+import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -67,7 +68,7 @@ type Props = {
   requiredInputs: SoilPitMethod[];
 };
 
-export const EditIntervalModalContent = ({
+export const EditIntervalModal = ({
   siteId,
   depthInterval,
   requiredInputs,
@@ -75,7 +76,8 @@ export const EditIntervalModalContent = ({
 }: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const onClose = useModal()!.onClose;
+  const modalRef = useRef<ModalHandle>(null);
+  const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
 
   const allIntervals = useSiteSoilIntervals(siteId);
   const thisInterval = allIntervals
@@ -159,81 +161,92 @@ export const EditIntervalModalContent = ({
   }, [dispatch, depthInterval, siteId, onClose]);
 
   return (
-    <Formik
-      validationSchema={schema}
-      initialValues={{
-        ...thisInterval,
-        start: String(depthInterval.start),
-        end: String(depthInterval.end),
-        applyToAll: false,
-      }}
-      onSubmit={onSubmit}>
-      {({handleSubmit, isValid, isSubmitting}) => (
-        <Column mt="34px" mb="23px" mx="15px">
-          <Heading variant="h6">
-            {mutable
-              ? t('soil.depth_interval.edit_title')
-              : renderDepthInterval(t, thisInterval)}
-          </Heading>
-          {mutable && (
-            <>
-              <Box pl="2px" mb="11px">
-                <IntervalForm />
-              </Box>
-              <Heading variant="h6">
-                {t('soil.depth_interval.data_inputs_title')}
-              </Heading>
-            </>
-          )}
-
-          <Column space="20px" mt="17px" mb="12px">
-            {soilPitMethods.map(method => (
-              <InputFormSwitch
-                method={method}
-                isRequired={requiredInputs.includes(method)}
-                updateEnabled={updateSwitch(method)}
-                key={method}
-              />
-            ))}
-          </Column>
-
-          <Row mb="12px">
-            <FormCheckbox name="applyToAll" />
-            <FormLabel variant="body1">
-              {t('soil.depth_interval.apply_to_all_label')}
-            </FormLabel>
-          </Row>
-
-          <Row justifyContent="flex-end">
-            {mutable && (
-              <ConfirmModal
-                trigger={onOpen => (
-                  <Button
-                    px="11px"
-                    leftIcon={<Icon name="delete" color="error.main" />}
-                    _text={{textTransform: 'uppercase', color: 'error.main'}}
-                    variant="link"
-                    size="lg"
-                    onPress={onOpen}>
-                    {t('soil.depth_interval.delete_depth')}
-                  </Button>
-                )}
-                title={t('soil.depth_interval.delete_modal.title')}
-                body={t('soil.depth_interval.delete_modal.body')}
-                actionName={t('soil.depth_interval.delete_modal.action')}
-                handleConfirm={deleteInterval}
-              />
-            )}
-            <Box flex={1} />
-            <ConfirmEditingModal
-              formNotReady={!isValid || isSubmitting}
-              handleSubmit={handleSubmit}
-              interval={depthInterval}
-            />
-          </Row>
-        </Column>
+    <BottomSheetModal
+      ref={modalRef}
+      trigger={onOpen => (
+        <IconButton
+          name="more-vert"
+          _icon={{color: 'primary.contrast'}}
+          onPress={onOpen}
+        />
       )}
-    </Formik>
+      Header={
+        <Heading variant="h6">
+          {mutable
+            ? t('soil.depth_interval.edit_title')
+            : renderDepthInterval(t, thisInterval)}
+        </Heading>
+      }>
+      <Formik
+        validationSchema={schema}
+        initialValues={{
+          ...thisInterval,
+          start: String(depthInterval.start),
+          end: String(depthInterval.end),
+          applyToAll: false,
+        }}
+        onSubmit={onSubmit}>
+        {({handleSubmit, isValid, isSubmitting}) => (
+          <Column mb="23px" mx="15px">
+            {mutable && (
+              <>
+                <Box pl="2px" mb="11px">
+                  <IntervalForm />
+                </Box>
+                <Heading variant="h6">
+                  {t('soil.depth_interval.data_inputs_title')}
+                </Heading>
+              </>
+            )}
+            <Column space="20px" mb="12px">
+              {soilPitMethods.map(method => (
+                <InputFormSwitch
+                  method={method}
+                  isRequired={requiredInputs.includes(method)}
+                  updateEnabled={updateSwitch(method)}
+                  key={method}
+                />
+              ))}
+            </Column>
+
+            <Row mb="12px">
+              <FormCheckbox name="applyToAll" />
+              <FormLabel variant="body1">
+                {t('soil.depth_interval.apply_to_all_label')}
+              </FormLabel>
+            </Row>
+
+            <Row justifyContent="flex-end">
+              {mutable && (
+                <ConfirmModal
+                  trigger={onOpen => (
+                    <Button
+                      px="11px"
+                      leftIcon={<Icon name="delete" color="error.main" />}
+                      _text={{textTransform: 'uppercase', color: 'error.main'}}
+                      variant="link"
+                      size="lg"
+                      onPress={onOpen}>
+                      {t('soil.depth_interval.delete_depth')}
+                    </Button>
+                  )}
+                  title={t('soil.depth_interval.delete_modal.title')}
+                  body={t('soil.depth_interval.delete_modal.body')}
+                  actionName={t('soil.depth_interval.delete_modal.action')}
+                  handleConfirm={deleteInterval}
+                />
+              )}
+              <Box flex={1} />
+              <ConfirmEditingModal
+                formNotReady={!isValid || isSubmitting}
+                handleSubmit={handleSubmit}
+                interval={depthInterval}
+              />
+            </Row>
+          </Column>
+        )}
+      </Formik>
+    </BottomSheetModal>
   );
 };
 

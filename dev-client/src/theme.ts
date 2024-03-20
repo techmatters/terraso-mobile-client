@@ -386,7 +386,11 @@ export const theme = extendTheme({
           fontWeight: 400,
           lineHeight: '56px',
         },
-        h4: {},
+        h4: {
+          fontSize: '24px',
+          fontWeight: 700,
+          lineHeight: '32px',
+        },
         h5: {
           fontSize: '24px',
           fontWeight: 400,

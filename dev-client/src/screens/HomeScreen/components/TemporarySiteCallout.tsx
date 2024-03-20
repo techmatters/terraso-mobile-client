@@ -53,12 +53,16 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
   }, [navigation, coords]);
 
   return (
-    <Card buttons={<CardCloseButton onPress={closeCallout} />} isPopover={true}>
-      <Column space="12px">
+    <Card
+      Header={
         <CalloutDetail
           label={t('site.soil_id_prediction').toUpperCase()}
           value={TEMP_SOIL_ID_VALUE.toUpperCase()}
         />
+      }
+      buttons={<CardCloseButton onPress={closeCallout} />}
+      isPopover={true}>
+      <Column mt="12px" space="12px">
         <Divider />
         <CalloutDetail
           label={t('site.ecological_site_prediction').toUpperCase()}

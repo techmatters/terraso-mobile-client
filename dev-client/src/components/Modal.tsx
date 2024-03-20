@@ -18,15 +18,22 @@
 import {
   createContext,
   forwardRef,
+  useCallback,
   useContext,
   useEffect,
   useImperativeHandle,
   useMemo,
+  useState,
 } from 'react';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {Pressable, StyleSheet} from 'react-native';
-import {useDisclose, Modal as NativeBaseModal} from 'native-base';
+import {Modal as PaperModal, Portal} from 'react-native-paper';
 import {KeyboardAvoidingView} from 'react-native';
+import {
+  Box,
+  BoxProps,
+  Row,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type ModalHandle = {
   onClose: () => void;
@@ -40,54 +47,71 @@ export const useModal = () => useContext(ModalContext);
 export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
 
 export type ModalProps = {
+  Header?: React.ReactNode;
   trigger?: ModalTrigger;
   CloseButton?: React.ReactNode | null;
   closeHook?: () => void;
-  _content?: React.ComponentProps<typeof NativeBaseModal.Content>;
 };
 
 export const Modal = forwardRef<
   ModalHandle,
-  React.PropsWithChildren<ModalProps>
->(({children, trigger, closeHook, CloseButton, _content}, forwardedRef) => {
-  const {isOpen, onOpen, onClose} = useDisclose();
-  const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
-  if (CloseButton === undefined) {
-    CloseButton = <CardCloseButton onPress={onClose} />;
-  }
-
-  useEffect(() => {
-    if (!isOpen && closeHook) {
-      closeHook();
+  React.PropsWithChildren<ModalProps> & BoxProps
+>(
+  (
+    {children, trigger, closeHook, CloseButton, Header, ..._content},
+    forwardedRef,
+  ) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const onOpen = useCallback(() => setIsOpen(true), [setIsOpen]);
+    const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
+    const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
+    if (CloseButton === undefined) {
+      CloseButton = <CardCloseButton onPress={onClose} />;
     }
-  }, [isOpen, closeHook]);
 
-  useImperativeHandle(forwardedRef, () => handle, [handle]);
+    useEffect(() => {
+      if (!isOpen && closeHook) {
+        closeHook();
+      }
+    }, [isOpen, closeHook]);
 
-  return (
-    <>
-      {trigger && (
-        <Pressable onPress={handle.onOpen}>{trigger(handle.onOpen)}</Pressable>
-      )}
-      <NativeBaseModal isOpen={isOpen} onClose={onClose}>
-        <KeyboardAvoidingView
-          style={styles.keyboardAvoidingView}
-          behavior="padding"
-          keyboardVerticalOffset={100}>
-          <NativeBaseModal.Content
-            borderRadius="24px"
-            padding="18px"
-            {..._content}>
-            <ModalContext.Provider value={handle}>
-              {children}
-            </ModalContext.Provider>
-            {CloseButton}
-          </NativeBaseModal.Content>
-        </KeyboardAvoidingView>
-      </NativeBaseModal>
-    </>
-  );
-});
+    useImperativeHandle(forwardedRef, () => handle, [handle]);
+
+    return (
+      <>
+        {trigger && (
+          <Pressable onPress={handle.onOpen}>
+            {trigger(handle.onOpen)}
+          </Pressable>
+        )}
+        <Portal>
+          <PaperModal visible={isOpen} onDismiss={onClose}>
+            <Box
+              backgroundColor="primary.contrast"
+              borderRadius="24px"
+              padding="md"
+              margin="10%"
+              {..._content}>
+              <KeyboardAvoidingView
+                style={styles.keyboardAvoidingView}
+                behavior="padding"
+                keyboardVerticalOffset={100}>
+                <Row mb="md" alignItems="flex-start">
+                  {Header}
+                  <Box flex={1} />
+                  {CloseButton}
+                </Row>
+                <ModalContext.Provider value={handle}>
+                  {children}
+                </ModalContext.Provider>
+              </KeyboardAvoidingView>
+            </Box>
+          </PaperModal>
+        </Portal>
+      </>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   keyboardAvoidingView: {

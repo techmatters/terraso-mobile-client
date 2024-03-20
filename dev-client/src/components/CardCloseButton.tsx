@@ -15,13 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {CardTopRightButton} from 'terraso-mobile-client/components/CardTopRightButton';
+import {IconButton} from 'terraso-mobile-client/components/Icons';
 
 export const CardCloseButton = (
-  props: Omit<React.ComponentProps<typeof CardTopRightButton>, 'name'>,
+  props: Omit<React.ComponentProps<typeof IconButton>, 'name'>,
 ) => {
   return (
-    <CardTopRightButton
+    <IconButton
       name="close"
       size="sm"
       background="grey.200"
