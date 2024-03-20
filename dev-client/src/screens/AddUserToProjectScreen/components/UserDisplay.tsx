@@ -15,10 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Image, Select} from 'native-base';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Image} from 'native-base';
+import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {formatName} from 'terraso-mobile-client/util';
-import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {
@@ -26,25 +25,33 @@ import {
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {
+  PROJECT_ROLES,
+  ProjectRole,
+} from 'terraso-client-shared/project/projectSlice';
+import {useCallback} from 'react';
 
 export type UserFields = Omit<User, 'preferences'>;
 
 type DisplayProps = {
   user: UserFields;
-  role: UserRole;
-  roles: [UserRole, string][];
-  updateUserRole: (role: UserRole) => void;
+  role: ProjectRole;
+  updateUserRole: (role: ProjectRole) => void;
   removeUser: () => void;
 };
 
 export const UserDisplay = ({
   user: {profileImage, firstName, lastName, email},
-  roles,
   role,
   updateUserRole,
   removeUser,
 }: DisplayProps) => {
   const {t} = useTranslation();
+  const renderRole = useCallback(
+    (value: ProjectRole) => t(`general.role.${value}`),
+    [t],
+  );
   return (
     <VStack space="5px">
       <HStack mt="15px">
@@ -64,19 +71,12 @@ export const UserDisplay = ({
         <IconButton name="delete" onPress={removeUser} />
       </HStack>
       <Select
-        width="60%"
-        ml="50px"
-        variant="unstyled"
-        dropdownCloseIcon={<Icon name="arrow-drop-down" />}
-        dropdownOpenIcon={<Icon name="arrow-drop-down" />}
-        selectedValue={role}
-        onValueChange={value => {
-          updateUserRole(value as UserRole);
-        }}>
-        {roles.map(([roleName, label]) => (
-          <Select.Item value={roleName} label={label} key={roleName} />
-        ))}
-      </Select>
+        nullable={false}
+        value={role}
+        onValueChange={updateUserRole}
+        options={PROJECT_ROLES}
+        renderValue={renderRole}
+      />
     </VStack>
   );
 };
