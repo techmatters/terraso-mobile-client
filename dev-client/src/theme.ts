@@ -403,7 +403,7 @@ export const theme = extendTheme({
       baseStyle: {
         _text: {
           fontSize: '16px',
-          fontWeight: 400,
+          fontWeight: 800,
           lineHeight: '24px',
           letterSpacing: '0.15px',
           color: 'primary.main',

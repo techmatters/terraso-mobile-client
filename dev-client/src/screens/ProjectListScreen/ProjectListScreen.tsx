@@ -23,7 +23,6 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Link, Spinner} from 'native-base';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {
   ListFilterModal,
@@ -38,7 +37,6 @@ import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/compo
 import {
   Box,
   VStack,
-  Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -90,13 +88,9 @@ export const ProjectListScreen = () => {
         ) : (
           activeProjects.length === 0 && (
             <>
-              <Heading size="sm">{t('projects.none.header')}</Heading>
+              <Text variant="body1-strong">{t('projects.none.header')}</Text>
               <Text>{t('projects.none.info')}</Text>
               <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
-                <IconButton
-                  name="open-in-new"
-                  _icon={{color: 'action.active'}}
-                />
                 {t('projects.learn_more')}
               </Link>
             </>
