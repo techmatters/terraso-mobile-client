@@ -107,7 +107,7 @@ export const ScreenFormWrapper = forwardRef(
               shadow={1}
               size={'lg'}
               _text={{textTransform: 'uppercase'}}>
-              {t('general.done_fab')}
+              {t('general.done')}
             </Button>
           </HStack>
         </KeyboardAvoidingView>

@@ -187,7 +187,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
             size="lg"
             isDisabled={!isValid || isSubmitting}
             onPress={() => handleSubmit()}>
-            {t('general.done_fab')}
+            {t('general.done')}
           </Button>
         </Column>
       )}

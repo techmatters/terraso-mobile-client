@@ -81,7 +81,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
       </Column>
       <Fab
         leftIcon={<Icon name="check" />}
-        label={t('general.done_fab')}
+        label={t('general.done')}
         isDisabled={!cracking}
         onPress={() => navigation.pop()}
       />

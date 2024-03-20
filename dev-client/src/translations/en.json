@@ -303,7 +303,7 @@
     "change": "Change",
     "cancel_fab": "Cancel",
     "delete_fab": "Delete",
-    "done_fab": "Done",
+    "done": "Done",
     "close_fab": "Close",
     "filter": {
       "no_sort": "None",

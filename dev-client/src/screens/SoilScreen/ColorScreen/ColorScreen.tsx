@@ -298,7 +298,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
         </>
       )}
       <Fab
-        label={t('general.done_fab')}
+        label={t('general.done')}
         leftIcon={<Icon name="check" />}
         isDisabled={!complete}
         onPress={() => navigation.pop()}
