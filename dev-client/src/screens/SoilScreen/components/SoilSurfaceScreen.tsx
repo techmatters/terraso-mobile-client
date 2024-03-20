@@ -21,13 +21,14 @@ import {
   Heading,
   Paragraph,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectSite, selectSoilData} from 'terraso-client-shared/selectors';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {Image} from 'react-native';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
-import {Fab, Select} from 'native-base';
+import {Fab} from 'native-base';
 import {
   SurfaceCracks,
   surfaceCracks,
@@ -46,9 +47,14 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const onUpdate = useCallback(
-    (surfaceCracksSelect: SurfaceCracks) =>
+    (surfaceCracksSelect: SurfaceCracks | null) =>
       dispatch(updateSoilData({siteId, surfaceCracksSelect})),
     [dispatch, siteId],
+  );
+
+  const renderSurfaceCrack = useCallback(
+    (value: SurfaceCracks) => t(`soil.vertical_cracking.value.${value}`),
+    [t],
   );
 
   return (
@@ -59,16 +65,12 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
         </Heading>
         <LastModified />
         <Select
-          selectedValue={cracking ?? undefined}
-          onValueChange={onUpdate as (_: string) => void}>
-          {surfaceCracks.map(crack => (
-            <Select.Item
-              key={crack}
-              value={crack}
-              label={t(`soil.vertical_cracking.value.${crack}`)}
-            />
-          ))}
-        </Select>
+          nullable
+          value={cracking ?? null}
+          onValueChange={onUpdate}
+          options={surfaceCracks}
+          renderValue={renderSurfaceCrack}
+        />
         <Box height="lg" />
         <Paragraph>
           {t('soil.vertical_cracking.description', {units: 'metric'})}

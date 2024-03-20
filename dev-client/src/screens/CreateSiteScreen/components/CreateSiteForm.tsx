@@ -114,9 +114,12 @@ export const CreateSiteForm = ({
               </FormTooltip>
             </FormLabel>
             <ProjectSelect
-              projectId={values.projectId}
+              projectId={values.projectId ?? null}
               setProjectId={projectId =>
-                setValues(current => ({...current, projectId}))
+                setValues(current => ({
+                  ...current,
+                  projectId: projectId ?? undefined,
+                }))
               }
             />
           </FormField>

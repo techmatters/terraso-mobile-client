@@ -17,32 +17,32 @@
 
 import {DepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {Select} from 'native-base';
+import {
+  Select,
+  SelectProps,
+} from 'terraso-mobile-client/components/inputs/Select';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {useCallback} from 'react';
 
 type Props<K extends keyof DepthDependentSoilData> = SoilPitInputScreenProps &
-  React.ComponentProps<typeof Select> & {
+  Omit<
+    SelectProps<NonNullable<DepthDependentSoilData[K]>, true>,
+    'value' | 'onValueChange' | 'nullable'
+  > & {
     input: K;
-    values: readonly NonNullable<DepthDependentSoilData[K]>[];
-    renderValue: (value: NonNullable<DepthDependentSoilData[K]>) => string;
-    label: string;
   };
 
 export const DepthDependentSelect = <K extends keyof DepthDependentSoilData>({
   input,
-  values,
-  renderValue,
-  label,
   siteId,
   depthInterval,
   ...props
 }: Props<K>) => {
-  const currentValue = useSelector(
-    selectDepthDependentData({siteId, depthInterval}),
-  )?.[input];
+  const currentValue =
+    useSelector(selectDepthDependentData({siteId, depthInterval}))?.[input] ??
+    null;
   const dispatch = useDispatch();
   const onUpdate = useCallback(
     (value: DepthDependentSoilData[K]) =>
@@ -57,14 +57,6 @@ export const DepthDependentSelect = <K extends keyof DepthDependentSoilData>({
   );
 
   return (
-    <Select
-      placeholder={label}
-      selectedValue={currentValue}
-      onValueChange={onUpdate}
-      {...props}>
-      {values.map(value => (
-        <Select.Item key={value} value={value} label={renderValue(value)} />
-      ))}
-    </Select>
+    <Select nullable value={currentValue} onValueChange={onUpdate} {...props} />
   );
 };
