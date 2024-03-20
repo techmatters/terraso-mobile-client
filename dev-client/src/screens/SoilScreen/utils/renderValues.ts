@@ -23,11 +23,19 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {munsellToString} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 
-export const renderDepthInterval = ({
-  label,
-  depthInterval: {start, end},
-}: LabelledDepthInterval) => {
-  return `${label ? `${label}: ` : ''}${start}-${end} cm`;
+export const renderDepthInterval = (
+  t: TFunction,
+  {label, depthInterval: {start, end}}: LabelledDepthInterval,
+) => {
+  const params = {
+    start,
+    end,
+    units: 'cm',
+  };
+
+  return label
+    ? t('soil.depth_interval.bounds_labelled', {label, ...params})
+    : t('soil.depth_interval.bounds', params);
 };
 
 // TODO: finish this method for other inputs

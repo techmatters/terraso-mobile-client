@@ -173,7 +173,7 @@ export const EditIntervalModalContent = ({
           <Heading variant="h6">
             {mutable
               ? t('soil.depth_interval.edit_title')
-              : renderDepthInterval(thisInterval)}
+              : renderDepthInterval(t, thisInterval)}
           </Heading>
           {mutable && (
             <>

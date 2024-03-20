@@ -21,6 +21,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useTranslation} from 'react-i18next';
 
 export type SoilPitInputScreenProps = {
   siteId: string;
@@ -33,6 +34,8 @@ export const SoilPitInputScreenScaffold = ({
   children,
 }: React.PropsWithChildren<SoilPitInputScreenProps>) => {
   const name = useSelector(state => state.site.sites[siteId].name);
+  const {t} = useTranslation();
+
   return (
     <ScreenScaffold
       AppBar={
@@ -40,7 +43,7 @@ export const SoilPitInputScreenScaffold = ({
           title={name}
           Content={
             <Heading px="10px" pb="8px" variant="h6" color="primary.contrast">
-              {renderDepthInterval(depthInterval)}
+              {renderDepthInterval(t, depthInterval)}
             </Heading>
           }
         />

@@ -52,32 +52,36 @@ const DepthIntervalEditor = ({
   siteId,
   aggregatedInterval: {isFromPreset, interval},
   requiredInputs,
-}: DepthIntervalEditorProps) => (
-  <Row
-    backgroundColor="primary.dark"
-    justifyContent="space-between"
-    px="12px"
-    py="8px">
-    <Heading variant="h6" color="primary.contrast">
-      {renderDepthInterval(interval)}
-    </Heading>
-    <BottomSheetModal
-      trigger={onOpen => (
-        <IconButton
-          name="more-vert"
-          _icon={{color: 'primary.contrast'}}
-          onPress={onOpen}
+}: DepthIntervalEditorProps) => {
+  const {t} = useTranslation();
+
+  return (
+    <Row
+      backgroundColor="primary.dark"
+      justifyContent="space-between"
+      px="12px"
+      py="8px">
+      <Heading variant="h6" color="primary.contrast">
+        {renderDepthInterval(t, interval)}
+      </Heading>
+      <BottomSheetModal
+        trigger={onOpen => (
+          <IconButton
+            name="more-vert"
+            _icon={{color: 'primary.contrast'}}
+            onPress={onOpen}
+          />
+        )}>
+        <EditIntervalModalContent
+          siteId={siteId}
+          depthInterval={interval.depthInterval}
+          requiredInputs={requiredInputs}
+          mutable={!isFromPreset}
         />
-      )}>
-      <EditIntervalModalContent
-        siteId={siteId}
-        depthInterval={interval.depthInterval}
-        requiredInputs={requiredInputs}
-        mutable={!isFromPreset}
-      />
-    </BottomSheetModal>
-  </Row>
-);
+      </BottomSheetModal>
+    </Row>
+  );
+};
 
 type Props = {
   siteId: string;

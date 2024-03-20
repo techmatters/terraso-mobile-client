@@ -466,8 +466,8 @@
       "label_help": "{{max}} characters max",
       "label_placeholder": "Label",
       "apply_to_all_label": "Apply to all intervals",
-      "start_label": "From ({{unit}})",
-      "end_label": "To ({{unit}})",
+      "start_label": "From ({{units}})",
+      "end_label": "To ({{units}})",
       "update_modal": {
         "title": "Change depth?",
         "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
@@ -482,6 +482,7 @@
         "overlaps": "Overlaps existing",
         "ordering": "Interval bounds error"
       },
+      "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
       "bounds_unitless": "{{start}}–{{end}}",
       "bounds": "{{start}}–{{end}}{{units}}",
       "delete_depth": "Delete depth"
@@ -499,7 +500,7 @@
         "use_label": "Use This Texture",
         "ribbon_length": {
           "SM": "<2.5cm",
-          "MD": "2.5-5cm",
+          "MD": "2.5–5cm",
           "LG": ">5cm"
         },
         "grittyness": {
@@ -512,7 +513,7 @@
       "use_guide_label": "Use Guide",
       "clay_title": "Percent Clay",
       "clay_label": "Percent clay",
-      "clay_help": "0-100%",
+      "clay_help": "0–100%",
       "fragment_title": "Rock Fragment Volume",
       "class": {
         "CLAY": "Clay",
@@ -529,10 +530,10 @@
         "SILT_LOAM": "Silt Loam"
       },
       "rockFragment": {
-        "VOLUME_0_1": "0-1%",
-        "VOLUME_1_15": "1-15%",
-        "VOLUME_15_35": "15-35%",
-        "VOLUME_35_60": "35-60%",
+        "VOLUME_0_1": "0–1%",
+        "VOLUME_1_15": "1–15%",
+        "VOLUME_15_35": "15–35%",
+        "VOLUME_35_60": "35–60%",
         "VOLUME_60": ">60%"
       }
     },
@@ -621,21 +622,21 @@
       "confirm_body": "Are you sure you want to override the slope data?",
       "percentage_placeholder": "Percentage",
       "percentage_help": "0% minimum",
-      "degree_help": "0°-89°",
+      "degree_help": "0°–89°",
       "degree_placeholder": "Degree",
       "slope_meter": "Slope Meter",
       "camera_grant": "Grant Camera Permission",
       "no_camera": "No Camera Access",
       "no_camera_explanation": "For best results, allow LandPKS to use your camera in Settings",
       "select_labels": {
-        "FLAT": "Flat 0-2%",
-        "GENTLE": "Gentle 2-5%",
-        "MODERATE": "Moderate 5-10%",
-        "ROLLING": "Rolling 10-15%",
-        "HILLY": "Hilly 15-30%",
-        "STEEP": "Steep 30-50%",
-        "MODERATELY_STEEP": "Moderately Steep 50-60%",
-        "VERY_STEEP": "Very Steep 60-100%",
+        "FLAT": "Flat 0–2%",
+        "GENTLE": "Gentle 2–5%",
+        "MODERATE": "Moderate 5–10%",
+        "ROLLING": "Rolling 10–15%",
+        "HILLY": "Hilly 15–30%",
+        "STEEP": "Steep 30–50%",
+        "MODERATELY_STEEP": "Moderately Steep 50–60%",
+        "VERY_STEEP": "Very Steep 60–100%",
         "STEEPEST": "Steepest 100%+"
       }
     },
@@ -652,7 +653,7 @@
     }
   },
   "image": {
-    "use_camera": "Use Camera",
-    "choose_from_gallery": "Choose From Gallery"
+    "use_camera": "Take Photo",
+    "choose_from_gallery": "Photo Library"
   }
 }
