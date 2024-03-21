@@ -18,6 +18,10 @@ style and commit message structure before each commit.
 
 ## Dependencies
 
+### Mapbox token
+
+Set `MAPBOX_DOWNLOADS_TOKEN` in your `.env` to a valid Mapbox secret key.
+
 ### macOS
 
 ```sh
@@ -81,42 +85,13 @@ $ sudo apt install node watchman openjdk-17-jdk
 
 ## Android
 
-1. Configure your Mapbox credentials:
-
-```sh
-$ mkdir -p ~/.gradle
-$ touch ~/.gradle/gradle.properties
-$ echo "MAPBOX_DOWNLOADS_TOKEN=YOUR_SECRET_MAPBOX_ACCESS_TOKEN" >> ~/.gradle/gradle.properties
-$ chmod 600  ~/.gradle/gradle.properties
-```
-
-See also the [Mapbox Android SDK install guide](https://docs.mapbox.com/android/maps/guides/install/#configure-credentials).
-
-2. Run `npm run start` to start the dev server.
-
-3. Run `npm run android` to load the app on an emulator or connnected physical device.
+1. Run `npm run start` to start the dev server.
+2. Run `npm run android` to load the app on an emulator or connnected physical device.
 
 ## iOS
 
-1. Configure your Mapbox credentials:
-
-```sh
-cat << EOF > ~/.netrc
-machine api.mapbox.com
-login mapbox
-password YOUR_SECRET_MAPBOX_ACCESS_TOKEN
-EOF
-```
-
-```sh
-chmod 600 $HOME/.netrc
-```
-
-See also the [Mapbox IOS SDK install guide](https://docs.mapbox.com/ios/maps/guides/install/#configure-credentials).
-
-2. Run `npm run start` to start the dev server.
-
-3. Run `npm run ios` to load the app in the simulator.
+1. Run `npm run start` to start the dev server.
+2. Run `npm run ios` to load the app in the simulator.
 
 # Releases
 
