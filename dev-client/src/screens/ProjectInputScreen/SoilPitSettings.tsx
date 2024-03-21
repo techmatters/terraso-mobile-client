@@ -101,7 +101,6 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
             renderValue={renderPreset}
             label={t('projects.inputs.depth_intervals.title')}
             disabled={!userCanUpdateIntervals}
-            maxWidth={250}
           />
         )}
         title={t('projects.inputs.depth_intervals.confirm_preset.title')}

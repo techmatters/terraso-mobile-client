@@ -73,6 +73,7 @@ export const theme = extendTheme({
         enabledFill: '#0000000F',
       },
     },
+    transparent: '#00000000',
   },
   radii: {
     md: 4,
