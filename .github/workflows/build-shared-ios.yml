@@ -78,6 +78,10 @@ jobs:
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
       SENTRY_ORG: ${{ inputs.SENTRY_ORG }}
       SENTRY_PROJECT: ${{ inputs.SENTRY_PROJECT }}
+      CLANG: clang
+      CLANGPLUSPLUS: clang++
+      LD: clang
+      LDPLUSPLUS: clang++
 
     steps:
       - name: Check out git repository
@@ -89,6 +93,16 @@ jobs:
           node-version-file: '.tool-versions'
           cache: 'npm'
           cache-dependency-path: dev-client/package-lock.json
+
+      - name: Install and configure ccache
+        run: |
+          brew install ccache
+          ln -s $(which ccache) /usr/local/bin/gcc
+          ln -s $(which ccache) /usr/local/bin/g++
+          ln -s $(which ccache) /usr/local/bin/cc
+          ln -s $(which ccache) /usr/local/bin/c++
+          ln -s $(which ccache) /usr/local/bin/clang
+          ln -s $(which ccache) /usr/local/bin/clang++
 
       - name: Install Node dependencies
         working-directory: dev-client
