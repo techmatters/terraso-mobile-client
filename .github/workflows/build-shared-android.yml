@@ -17,6 +17,14 @@ on:
         required: false
         type: string
         default: 'v1'
+      SENTRY_ORG:
+        required: false
+        type: string
+        default: 'techmatters'
+      SENTRY_PROJECT:
+        required: false
+        type: string
+        default: 'terraso-lpks'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
@@ -62,8 +70,8 @@ jobs:
       SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
-      SENTRY_ORG: techmatters
-      SENTRY_PROJECT: terraso-lpks
+      SENTRY_ORG: ${{ inputs.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ inputs.SENTRY_PROJECT }}
 
     steps:
       - name: Check out git repository
