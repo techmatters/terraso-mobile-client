@@ -25,7 +25,11 @@ import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import {useCallback, useMemo} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {Icon, IconName} from 'terraso-mobile-client/components/Icons';
+import {
+  Icon,
+  IconButton,
+  IconName,
+} from 'terraso-mobile-client/components/Icons';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {
   Site,
@@ -38,7 +42,6 @@ import {
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
-import {CardTopRightButton} from 'terraso-mobile-client/components/CardTopRightButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {
   ListFilterModal,
@@ -101,11 +104,7 @@ const SiteMenu = ({site}: SiteProps) => {
     <Menu
       closeOnSelect={true}
       trigger={triggerProps => (
-        <CardTopRightButton
-          // _icon={{size: 'md', color: 'action.active'}}
-          name="more-vert"
-          {...triggerProps}
-        />
+        <IconButton name="more-vert" {...triggerProps} />
       )}>
       <ConfirmModal
         trigger={onOpen => (
@@ -219,7 +218,7 @@ export function ProjectSitesScreen({
 
   const userRole = useProjectRoleContext();
 
-  const showButtons = useMemo(() => userRole === 'manager', [userRole]);
+  const showButtons = useMemo(() => userRole === 'MANAGER', [userRole]);
 
   const full = (
     <ListFilterProvider
@@ -272,12 +271,12 @@ export function ProjectSitesScreen({
       {isEmpty && (
         <>
           <Text>{t('projects.sites.empty_viewer')}</Text>
-          <RestrictByProjectRole role={['manager', 'contributor']}>
+          <RestrictByProjectRole role={['MANAGER', 'CONTRIBUTOR']}>
             <Text>{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
         </>
       )}
-      <RestrictByProjectRole role={['manager', 'contributor']}>
+      <RestrictByProjectRole role={['MANAGER', 'CONTRIBUTOR']}>
         <Button
           onPress={transferCallback}
           alignSelf="flex-start"

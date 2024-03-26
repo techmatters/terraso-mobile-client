@@ -22,7 +22,6 @@ import {
   Button,
   // useTheme,
   FormControl,
-  Select,
   // Row,
   // Text,
   // Spacer,
@@ -39,6 +38,7 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 
 type Props = {
   siteId: string;
@@ -106,7 +106,10 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
               icon={<Icon name="info" />}
             />
           </FormControl.Label>
-          <Select dropdownIcon={<Icon name="arrow-drop-down" />} />
+          <ProjectSelect
+            projectId={site.projectId ?? null}
+            setProjectId={_ => {}}
+          />
         </FormControl>
         <Button
           pl={0}

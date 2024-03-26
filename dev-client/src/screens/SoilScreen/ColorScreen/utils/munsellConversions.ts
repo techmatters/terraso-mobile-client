@@ -17,7 +17,11 @@
 
 import {mhvcToRgb255, rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
-import {colorHues, colorValues} from 'terraso-client-shared/soilId/soilIdTypes';
+import {
+  colorHueSubsteps,
+  colorHues,
+  colorValues,
+} from 'terraso-client-shared/soilId/soilIdTypes';
 
 export const REFERENCES = {
   CAMERA_TRAX: [210.15, 213.95, 218.42],
@@ -105,14 +109,14 @@ export const renderMunsellHue = (h: number) => {
   const hue = colorHues[hueIndex];
   hueSubstep = (hueSubstep * 5) / 2;
 
-  return {hueSubstep: hueSubstep.toString(), hue};
+  return {hueSubstep: hueSubstep as (typeof colorHueSubsteps)[number], hue};
 };
 
 export const parseMunsellHue = ({
   hue,
   hueSubstep,
 }: ReturnType<typeof renderMunsellHue>) =>
-  colorHues.indexOf(hue) * 10 + Number.parseFloat(hueSubstep);
+  colorHues.indexOf(hue) * 10 + hueSubstep;
 
 export const munsellToString = ({
   colorHue: h,

@@ -52,7 +52,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
 
   const project = useSelector(state => state.project.projects[projectId]);
   const {projects, sites, unaffiliatedSites} = useSelector(state =>
-    selectProjectsWithTransferrableSites(state, 'manager'),
+    selectProjectsWithTransferrableSites(state, 'MANAGER'),
   );
   const sitesExcludingCurrent = useMemo(() => {
     const prospectiveSites = sites.filter(site => site.projectId !== projectId);

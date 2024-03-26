@@ -9,5 +9,10 @@
     }
   },
   "include": ["src", "__tests__", "jest"],
-  "exclude": ["dist"]
+  "exclude": ["dist"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+    }
+  }
 }

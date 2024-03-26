@@ -135,6 +135,6 @@ export const matchesRole = matchesOne(
 );
 
 export const isSiteManager = matchesRole([
-  {kind: 'site', role: 'owner'},
-  {kind: 'project', role: 'manager'},
+  {kind: 'site', role: 'OWNER'},
+  {kind: 'project', role: 'MANAGER'},
 ]);

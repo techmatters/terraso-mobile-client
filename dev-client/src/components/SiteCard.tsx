@@ -62,13 +62,15 @@ export const SiteCard = ({
   );
 
   return (
-    <Card onPress={onCardPress} buttons={buttons} isPopover={isPopover}>
-      <Heading
-        variant="h6"
-        color="primary.main"
-        pr={isPopover ? '30px' : undefined}>
-        {site.name}
-      </Heading>
+    <Card
+      Header={
+        <Heading variant="h6" color="primary.main">
+          {site.name}
+        </Heading>
+      }
+      onPress={onCardPress}
+      buttons={buttons}
+      isPopover={isPopover}>
       {project && <Heading size="md">{project.name}</Heading>}
       <Text variant="subtitle2" color="text.secondary">
         {t('site.last_updated', {

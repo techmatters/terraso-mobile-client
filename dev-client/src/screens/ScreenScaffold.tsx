@@ -17,13 +17,12 @@
 
 import {useCallback, useState} from 'react';
 import {StatusBar, View, LayoutChangeEvent, StyleSheet} from 'react-native';
-import {useTheme} from 'native-base';
 
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {theme} from 'terraso-mobile-client/theme';
 
 type Props = {
   children: React.ReactNode;
@@ -35,8 +34,6 @@ export const ScreenScaffold = ({
   children,
   AppBar: PropsAppBar = <AppBar />,
 }: Props) => {
-  const {colors} = useTheme();
-
   const [headerHeight, setHeaderHeight] = useState<number | undefined>(
     undefined,
   );
@@ -48,26 +45,23 @@ export const ScreenScaffold = ({
   );
 
   return (
-    <BottomSheetModalProvider>
-      <SafeAreaView
-        style={[
-          styles.safeAreaContainer,
-          {backgroundColor: colors.primary.dark},
-        ]}>
-        <StatusBar
-          barStyle="light-content"
-          translucent
-          backgroundColor={'#00000000'}
-        />
-        <Column backgroundColor={colors.white} flex={1}>
-          <View onLayout={onLayout}>{PropsAppBar}</View>
-          <HeaderHeightContext.Provider
-            value={safeAreaTop + (headerHeight ?? 0)}>
-            <Box flex={1}>{children}</Box>
-          </HeaderHeightContext.Provider>
-        </Column>
-      </SafeAreaView>
-    </BottomSheetModalProvider>
+    <SafeAreaView
+      style={[
+        styles.safeAreaContainer,
+        {backgroundColor: theme.colors.primary.dark},
+      ]}>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor={theme.colors.transparent}
+      />
+      <Column backgroundColor="primary.contrast" flex={1}>
+        <View onLayout={onLayout}>{PropsAppBar}</View>
+        <HeaderHeightContext.Provider value={safeAreaTop + (headerHeight ?? 0)}>
+          <Box flex={1}>{children}</Box>
+        </HeaderHeightContext.Provider>
+      </Column>
+    </SafeAreaView>
   );
 };
 

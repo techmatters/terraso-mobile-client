@@ -65,7 +65,7 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
   // Can't user RestrictByUserRole component because of Navigator constraints
   // Children of Navigator must all be Screens
   const restrictScreen = (element: React.ReactNode) => {
-    if (userRole === 'manager') {
+    if (userRole === 'MANAGER') {
       return element;
     }
     return undefined;

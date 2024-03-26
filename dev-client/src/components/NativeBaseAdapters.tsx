@@ -43,7 +43,7 @@ export const View = (props: React.PropsWithChildren<ViewProps>) => (
   <RN.View {...convertNBStyles(props, 'View')} />
 );
 
-type BoxProps = NativeBaseProps &
+export type BoxProps = NativeBaseProps &
   RN.ViewProps & {
     variant?: keyof (typeof theme.components)['Box']['variants'];
   };

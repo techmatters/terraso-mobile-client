@@ -182,7 +182,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
       <Fab
         onPress={() => navigation.pop()}
         leftIcon={<Icon name="check" />}
-        label={t('general.done_fab')}
+        label={t('general.done')}
       />
     </ScreenScaffold>
   );

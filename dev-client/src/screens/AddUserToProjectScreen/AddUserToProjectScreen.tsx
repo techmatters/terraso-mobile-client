@@ -21,12 +21,14 @@ import {useTranslation} from 'react-i18next';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useCallback, useMemo, useState} from 'react';
-import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
 import {checkUserInProject} from 'terraso-client-shared/account/accountService';
 import MembershipControlList, {
   UserWithRole,
 } from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MembershipControlList';
-import {addUserToProject} from 'terraso-client-shared/project/projectSlice';
+import {
+  ProjectRole,
+  addUserToProject,
+} from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useKeyboardOpen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/hooks/useKeyboardOpen';
@@ -83,13 +85,13 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
     setUserRecord(users => {
       return {
         ...users,
-        [userExists.id]: {user: userExists, role: 'viewer'},
+        [userExists.id]: {user: userExists, role: 'VIEWER'},
       };
     });
     return null;
   };
 
-  const updateUserRole = useCallback((role: UserRole, userId: string) => {
+  const updateUserRole = useCallback((role: ProjectRole, userId: string) => {
     setUserRecord(users => {
       const newUsers = {...users};
       newUsers[userId].role = role;

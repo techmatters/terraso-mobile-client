@@ -16,6 +16,7 @@
  */
 import {render} from '@testing-library/react-native';
 import {NativeBaseProvider} from 'native-base';
+import {Portal} from 'react-native-paper';
 import {theme} from 'terraso-mobile-client/theme';
 
 // NativeBase: https://docs.nativebase.io/testing
@@ -27,7 +28,7 @@ const nativeBaseInset = {
 const TestWrapper = ({children}: React.PropsWithChildren) => {
   return (
     <NativeBaseProvider theme={theme} initialWindowMetrics={nativeBaseInset}>
-      {children}
+      <Portal.Host>{children}</Portal.Host>
     </NativeBaseProvider>
   );
 };

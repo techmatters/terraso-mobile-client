@@ -72,7 +72,7 @@ export const ProjectInputScreen = ({
 
   const userRole = useProjectRoleContext();
 
-  const allowEditing = useMemo(() => userRole === 'manager', [userRole]);
+  const allowEditing = useMemo(() => userRole === 'MANAGER', [userRole]);
 
   return (
     <VStack height="full">
@@ -109,7 +109,7 @@ export const ProjectInputScreen = ({
               allDisabled={!allowEditing}
             />
           </HStack>
-          <RestrictByProjectRole role="manager">
+          <RestrictByProjectRole role="MANAGER">
             <Text bold fontSize={'md'}>
               {t('projects.inputs.instructions.title')}
             </Text>
@@ -156,7 +156,7 @@ export const ProjectInputScreen = ({
           <RequiredDataSettings projectId={projectId} enabled={allowEditing} />
         </Accordion>
       </ScrollView>
-      <RestrictByProjectRole role="manager">
+      <RestrictByProjectRole role="MANAGER">
         <Fab
           onPress={() => onSave()}
           textTransform={'uppercase'}

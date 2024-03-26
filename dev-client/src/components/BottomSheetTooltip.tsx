@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,23 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {Pressable} from 'react-native';
-import {forwardRef} from 'react';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type Props = React.ComponentProps<typeof IconButton> & {
-  _box?: React.ComponentProps<typeof Box>;
-};
+import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const CardTopRightButton = forwardRef(
-  ({_box = {}, ...props}: Props, ref) => {
-    return (
-      <Box position="absolute" top="8px" right="8px" p="8px" {..._box}>
-        <Pressable onPress={props.onPress}>
-          <IconButton ref={ref} {...props} />
-        </Pressable>
-      </Box>
-    );
-  },
+type Props = {Header: React.ReactNode};
+
+export const BottomSheetTooltip = ({
+  Header,
+  children,
+}: React.PropsWithChildren<Props>) => (
+  <BottomSheetModal
+    fullHeight
+    trigger={onOpen => <TooltipIconButton onPress={onOpen} />}
+    Header={<Heading variant="h4">{Header}</Heading>}>
+    {children}
+  </BottomSheetModal>
 );

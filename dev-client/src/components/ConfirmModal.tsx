@@ -63,7 +63,8 @@ export const ConfirmModal = forwardRef<ModalHandle, Props>(
       <Modal
         ref={ref}
         CloseButton={null}
-        _content={{padding: 0, bg: 'grey.200'}}
+        padding={0}
+        backgroundColor="grey.200"
         {...modalProps}>
         <NativeBaseModal.Body padding="24px">
           <Heading variant="h5" textAlign="center">

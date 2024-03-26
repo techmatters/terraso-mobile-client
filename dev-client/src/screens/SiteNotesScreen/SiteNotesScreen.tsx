@@ -64,9 +64,9 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
       )}
       <RestrictBySiteRole
         role={[
-          {kind: 'site', role: 'owner'},
-          {kind: 'project', role: 'manager'},
-          {kind: 'project', role: 'contributor'},
+          {kind: 'site', role: 'OWNER'},
+          {kind: 'project', role: 'MANAGER'},
+          {kind: 'project', role: 'CONTRIBUTOR'},
         ]}>
         <Box pl={4} pb={4} alignItems="flex-start">
           <Button

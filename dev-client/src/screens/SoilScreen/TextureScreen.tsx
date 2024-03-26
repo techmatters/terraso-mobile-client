@@ -33,7 +33,6 @@ import {
   radioImage,
 } from 'terraso-mobile-client/components/ImageRadio';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
-import {FormSelect} from 'terraso-mobile-client/components/form/FormSelect';
 import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
@@ -48,6 +47,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),
@@ -68,7 +68,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const navigation = useNavigation();
 
   const onTextureChange = useCallback(
-    (texture: SoilTexture) => {
+    (texture: SoilTexture | null) => {
       dispatch(
         updateDepthDependentSoilData({
           siteId,
@@ -80,11 +80,8 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
     [dispatch, siteId, depthInterval],
   );
 
-  const textureOptions = useMemo(
-    () =>
-      fromEntries(
-        textures.map(value => [value, t(`soil.texture.class.${value}`)]),
-      ),
+  const renderTexture = useCallback(
+    (value: SoilTexture) => t(`soil.texture.class.${value}`),
     [t],
   );
 
@@ -146,11 +143,14 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             <FormTooltip icon="info">Unimplemented tooltip</FormTooltip>
           </Row>
           <LastModified />
-          <FormSelect<SoilTexture>
-            placeholder={t('soil.texture.label')}
-            options={textureOptions}
-            selectedValue={intervalData?.texture ?? undefined}
+          <Box height="sm" />
+          <Select
+            nullable
+            label={t('soil.texture.label')}
+            options={textures}
+            value={intervalData?.texture ?? null}
             onValueChange={onTextureChange}
+            renderValue={renderTexture}
           />
         </Column>
         <Column p="15px" alignItems="flex-start">

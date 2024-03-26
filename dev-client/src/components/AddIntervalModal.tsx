@@ -29,17 +29,14 @@ import {
 } from 'terraso-mobile-client/components/IntervalForm';
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import {useModal} from 'terraso-mobile-client/components/Modal';
-import {
-  Box,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;
   existingIntervals: {depthInterval: DepthInterval}[];
 };
 
-export const AddIntervalModal = ({
+export const AddIntervalModalBody = ({
   onSubmit: parentOnSubmit,
   existingIntervals,
 }: Props) => {
@@ -68,7 +65,6 @@ export const AddIntervalModal = ({
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
         <>
-          <Heading variant="h6">{t('soil.depth_interval.add_title')}</Heading>
           <Box height="20px" />
           <IntervalForm />
           <Box height="50px" />

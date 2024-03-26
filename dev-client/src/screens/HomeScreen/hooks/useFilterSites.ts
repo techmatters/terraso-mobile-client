@@ -16,17 +16,17 @@
  */
 
 import {useMemo} from 'react';
-import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
+import {ProjectRole} from 'terraso-client-shared/project/projectSlice';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 
 export type SiteFilter = {
   projectId?: string;
-  role?: UserRole;
+  role?: ProjectRole;
 };
 
 export const useFilterSites = (
   sites: Site[],
-  roleMap: Record<string, UserRole | undefined>,
+  roleMap: Record<string, ProjectRole | undefined>,
   filter: SiteFilter,
 ) =>
   useMemo(
