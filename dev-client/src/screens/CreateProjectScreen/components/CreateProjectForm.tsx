@@ -26,7 +26,6 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {Formik, FormikProps} from 'formik';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo} from 'react';
-import {PROJECT_DEFAULT_MEASUREMENT_UNITS} from 'terraso-mobile-client/constants';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
@@ -38,14 +37,7 @@ export const CreateProjectForm = ({onInfoPress}: Props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const onSubmit = async (values: ProjectFormValues) => {
-    const {payload} = await dispatch(
-      addProject({
-        ...values,
-        // select default measurement units for now
-        // TODO: Make this customizable depending on region
-        measurementUnits: PROJECT_DEFAULT_MEASUREMENT_UNITS,
-      }),
-    );
+    const {payload} = await dispatch(addProject(values));
     if (payload !== undefined && 'project' in payload) {
       navigation.replace('PROJECT_VIEW', {projectId: payload.project.id});
     }

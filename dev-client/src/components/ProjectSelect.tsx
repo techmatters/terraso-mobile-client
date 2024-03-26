@@ -15,30 +15,33 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Select} from 'native-base';
 import {useSelector} from 'terraso-mobile-client/store';
-import {useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {NullableSelect} from 'terraso-mobile-client/components/NullableSelect';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 
 type Props = {
-  projectId: string | undefined;
-  setProjectId: (projectId: string | undefined) => void;
+  projectId: string | null;
+  setProjectId: (projectId: string | null) => void;
 };
 
 export const ProjectSelect = ({projectId, setProjectId}: Props) => {
   const {t} = useTranslation();
   const projects = useSelector(state => state.project.projects);
-  const projectList = useMemo(() => Object.values(projects), [projects]);
+  const projectList = useMemo(() => Object.keys(projects), [projects]);
+  const renderProject = useCallback(
+    (id: string) => projects[id].name,
+    [projects],
+  );
 
   return (
-    <NullableSelect
-      selectedValue={projectId}
+    <Select
+      nullable
+      options={projectList}
+      value={projectId}
       onValueChange={setProjectId}
-      nullableOption={t('general.nullable_option')}>
-      {projectList.map(project => (
-        <Select.Item label={project.name} value={project.id} key={project.id} />
-      ))}
-    </NullableSelect>
+      unselectedLabel={t('general.nullable_option')}
+      renderValue={renderProject}
+    />
   );
 };

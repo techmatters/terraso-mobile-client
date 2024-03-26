@@ -15,10 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilIdProjectSoilSettingsDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+import {MeasurementUnit} from 'terraso-client-shared/soilId/soilIdTypes';
 
-/** Minimum distance to travel before Mapbox will update user location */
 export const PACKAGE_NAME = 'org.terraso.landpks';
+/** Minimum distance to travel before Mapbox will update user location */
 export const USER_DISPLACEMENT_MIN_DISTANCE_M = 1;
 export const COORDINATE_PRECISION = 5;
 export const LATITUDE_MIN = -90;
@@ -32,12 +32,7 @@ export const PROJECT_NAME_MIN_LENGTH = 3;
 export const PROJECT_DESCRIPTION_MAX_LENGTH = 240;
 export const BOTTOM_BAR_SIZE = '10%';
 export const FORM_LABEL_MAX = 10;
-export const USER_ROLES = ['viewer', 'contributor', 'manager'];
-export const PROJECT_DEFAULT_MEASUREMENT_UNITS = 'METRIC';
-export const MEASUREMENT_UNITS = ['METRIC', 'ENGLISH'];
+export const PROJECT_DEFAULT_MEASUREMENT_UNITS: MeasurementUnit = 'METRIC';
 export const GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE = 5;
 export const SITE_NOTE_MIN_LENGTH = 3;
 export const LOCALE = 'en-US';
-
-export const DepthPresets: SoilIdProjectSoilSettingsDepthIntervalPresetChoices[] =
-  ['LANDPKS', 'NRCS', 'CUSTOM', 'NONE'];

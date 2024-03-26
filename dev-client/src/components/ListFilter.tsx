@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Button, FormControl, Input, Radio, Select} from 'native-base';
+import {Button, FormControl, Input, Radio} from 'native-base';
 import {
   createContext,
   useCallback,
@@ -28,16 +28,21 @@ import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
 import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
 import {sortCompare} from 'terraso-mobile-client/util';
-import {NullableSelect} from 'terraso-mobile-client/components/NullableSelect';
 import {
+  Select,
+  SelectProps,
+} from 'terraso-mobile-client/components/inputs/Select';
+import {
+  Column,
   HStack,
   VStack,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {TextInput} from 'react-native';
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;
-  key: keyof Item | string[];
+  key: keyof Item | string[] | readonly string[];
 };
 
 export type SortingOption<Item> = {
@@ -264,19 +269,6 @@ export const ListFilterProvider = <
   );
 };
 
-export const FilterForwarder = <Item, Filters extends string>({
-  value,
-  children,
-}: {
-  value: ListFilterState<Item, Filters>;
-} & React.PropsWithChildren) => {
-  return (
-    <ListFilterContext.Provider value={value}>
-      {children}
-    </ListFilterContext.Provider>
-  );
-};
-
 export function useListFilter<Item>(): ContextHook<Item, undefined>;
 export function useListFilter<Item>(name: string): ContextHook<Item, string>;
 export function useListFilter<Item>(
@@ -293,44 +285,40 @@ export function useListFilter<Item>(
   };
 }
 
-type OptionFilterProps<FilterNames extends string> = {
-  label: string;
-  options: Record<string, string>;
-  name: FilterNames;
+type Props = Omit<
+  SelectProps<string, true>,
+  'value' | 'onValueChange' | 'nullable'
+> & {
+  name: string;
 };
 
-export const SelectFilter = <FilterNames extends string>({
+export const SelectFilter = ({
   name,
   options,
   label,
+  renderValue,
   ...selectProps
-}: OptionFilterProps<FilterNames> &
-  Omit<
-    React.ComponentProps<typeof NullableSelect>,
-    'selectedValue' | 'onValueChange'
-  >) => {
+}: Props) => {
   const {setValue, value} = useListFilter<any>(name);
 
   const onValueChange = useCallback(
-    (newValue: string | undefined) => {
-      return setValue(newValue);
+    (newValue: string | null) => {
+      return setValue(newValue ?? undefined);
     },
     [setValue],
   );
 
   return (
     <FormControl>
-      <FormControl.Label my="0px">{label}</FormControl.Label>
-      <NullableSelect
-        my="0px"
-        py="0px"
+      <Select
+        nullable
+        value={value ?? null}
+        options={options}
+        renderValue={renderValue}
+        onValueChange={onValueChange}
+        label={label}
         {...selectProps}
-        selectedValue={value}
-        onValueChange={onValueChange}>
-        {Object.entries(options).map(([optionKey, itemLabel]) => (
-          <Select.Item value={optionKey} key={optionKey} label={itemLabel} />
-        ))}
-      </NullableSelect>
+      />
     </FormControl>
   );
 };
@@ -382,17 +370,22 @@ export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
     />
   );
 };
+type OptionFilterProps<FilterNames extends string> = {
+  label: string;
+  options: Record<string, string>;
+  name: FilterNames;
+};
 
 export const RadioFilter = <FilterNames extends string>({
   label,
   options,
   name,
-}: Omit<OptionFilterProps<FilterNames>, 'placeholder'>) => {
+}: OptionFilterProps<FilterNames>) => {
   const {setValue, value} = useListFilter<any>(name);
 
   return (
-    <FormControl>
-      <FormControl.Label>{label}</FormControl.Label>
+    <Column>
+      <Text variant="body1">{label}</Text>
       <Radio.Group name={name} value={value} onChange={setValue}>
         {Object.entries(options).map(([optionName, optionLabel]) => (
           <Radio value={optionName} key={optionName} size="sm">
@@ -400,7 +393,7 @@ export const RadioFilter = <FilterNames extends string>({
           </Radio>
         ))}
       </Radio.Group>
-    </FormControl>
+    </Column>
   );
 };
 
@@ -418,9 +411,15 @@ export const FilterModalBody = ({onClose, children}: FilterModalBodyProps) => {
   }, [applyFilters, onClose]);
 
   return (
-    <VStack space="25px" my="25px" testID="MODAL">
+    <VStack space="25px" width="100%" testID="MODAL">
       {children}
-      <Button onPress={onPress}>{t('general.apply')}</Button>
+      <Button
+        size="lg"
+        alignSelf="center"
+        _text={{textTransform: 'uppercase'}}
+        onPress={onPress}>
+        {t('general.apply')}
+      </Button>
     </VStack>
   );
 };
@@ -462,7 +461,7 @@ export const ListFilterModal = ({searchInput, children}: ModalProps) => {
   // this is because NativeBase Modals are rerendered in the element tree
   // and do not receive context from providers not defined above NativeBaseProvider
   // see https://nativebase.hashnode.dev/how-the-overlay-component-works-in-nativebase#heading-portalprovider
-  const value = useContext(ListFilterContext);
+  const values = useContext(ListFilterContext);
   const modalRef = useRef<ModalHandle>(null);
   const onClose = useCallback(() => {
     if (modalRef.current !== null) {
@@ -473,13 +472,13 @@ export const ListFilterModal = ({searchInput, children}: ModalProps) => {
   return (
     <Modal
       ref={modalRef}
-      closeHook={value.clearUnapplied}
+      closeHook={values.clearUnapplied}
       trigger={onOpen => (
         <FilterModalTrigger onOpen={onOpen}>{searchInput}</FilterModalTrigger>
       )}>
-      <FilterForwarder value={value}>
+      <ListFilterContext.Provider value={values}>
         <FilterModalBody onClose={onClose}>{children}</FilterModalBody>
-      </FilterForwarder>
+      </ListFilterContext.Provider>
     </Modal>
   );
 };

@@ -18,6 +18,7 @@
 		"terraso-mobile-client",
 		"uuid",
 		"@testing/*",
-		"ts-node"
+		"ts-node",
+		"react-devtools"
 	]
 }

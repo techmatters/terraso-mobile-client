@@ -111,11 +111,9 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
           )}
         </Box>
         <Column alignItems="center">
-          <CardCloseButton
-            size="lg"
-            _box={styles.closeButtonBox}
-            onPress={onClose}
-          />
+          <Box {...styles.closeButtonBox}>
+            <CardCloseButton size="lg" onPress={onClose} />
+          </Box>
           <Column
             px="56px"
             flex={1}

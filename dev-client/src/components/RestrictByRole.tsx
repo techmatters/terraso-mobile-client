@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useMemo} from 'react';
-import {UserRole} from 'terraso-client-shared/graphqlSchema/graphql';
+import {ProjectRole} from 'terraso-client-shared/project/projectSlice';
 import {SiteUserRole} from 'terraso-client-shared/selectors';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
@@ -52,7 +52,7 @@ const RestrictByRole = <RoleType,>({
 export const RestrictByProjectRole = ({
   role,
   children,
-}: RestrictProps<UserRole>) => {
+}: RestrictProps<ProjectRole>) => {
   const userRole = useProjectRoleContext();
   return (
     <RestrictByRole

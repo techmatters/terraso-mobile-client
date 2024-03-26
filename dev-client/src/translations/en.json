@@ -97,11 +97,11 @@
     "search": {
       "placeholder": "Search sites",
       "accessibility_label": "Filter sites by site name",
-      "filter_projects": "Filter sites by project:",
-      "filter_role": "Filter sites by role:",
+      "filter_projects": "Filter sites by project",
+      "filter_role": "Filter sites by role",
       "no_matches": "No sites match the current search and filter options.",
       "sort": {
-        "label": "Sort sites by:",
+        "label": "Sort sites by",
         "nameAsc": "Name (A to Z)",
         "nameDesc": "Name (Z to A)",
         "lastModAsc": "Last Modified (most recent)",
@@ -109,11 +109,6 @@
         "distanceAsc": "Distance (closest)",
         "distanceDesc": "Distance (furthest)"
       }
-    },
-    "role": {
-      "manager": "Manager",
-      "contributor": "Contributor",
-      "viewer": "Viewer"
     },
     "tabs": {
       "SITE": "Site",
@@ -164,10 +159,12 @@
       },
       "depth_intervals": {
         "title": "Soil Pit Depth Intervals",
-        "landpks": "LandPKS",
-        "nrcs": "NRCS",
-        "custom": "Custom…",
-        "none": "None specified",
+        "preset": {
+          "LANDPKS": "LandPKS",
+          "NRCS": "NRCS",
+          "CUSTOM": "Custom…",
+          "NONE": "None specified"
+        },
         "confirm_preset": {
           "title": "Change depths?",
           "body": "Soil pit data that has been entered will be deleted. This action cannot be undone.",
@@ -228,7 +225,7 @@
         "accessility_label": "Search for sites"
       },
       "sort": {
-        "label": "Sort sites by",
+        "label": "Sort sites by:",
         "nameAsc": "Site name (A to Z)",
         "updatedAtAsc": "Date modified (most recent)",
         "distanceAsc": "Distance (nearest to me)"
@@ -294,9 +291,9 @@
     "example_email": "name@domain.com",
     "profile_image_alt": "Profile image",
     "role": {
-      "viewer": "Viewer",
-      "contributor": "Contributor",
-      "manager": "Manager"
+      "MANAGER": "Manager",
+      "CONTRIBUTOR": "Contributor",
+      "VIEWER": "Viewer"
     },
     "measurement_units": {
       "METRIC": "Metric",
@@ -308,7 +305,7 @@
     "change": "Change",
     "cancel_fab": "Cancel",
     "delete_fab": "Delete",
-    "done_fab": "Done",
+    "done": "Done",
     "close_fab": "Close",
     "filter": {
       "no_sort": "None",

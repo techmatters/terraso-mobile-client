@@ -24,7 +24,7 @@ import {
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 
 type Props<T> = {
-  values: T[];
+  values: T[] | readonly T[];
   renderRadio: (value: T) => React.ReactNode;
 } & FormFieldWrapperProps &
   Omit<React.ComponentProps<typeof Radio.Group>, 'name'>;

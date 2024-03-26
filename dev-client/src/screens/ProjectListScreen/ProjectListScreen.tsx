@@ -39,6 +39,9 @@ import {
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
+
+const SORT_OPTIONS = ['nameAsc', 'nameDesc'];
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
@@ -57,8 +60,14 @@ export const ProjectListScreen = () => {
     [navigation],
   );
   const isLoadingData = useSelector(state => state.soilId.status === 'loading');
-  const SORT_OPTIONS = Object.fromEntries(
-    ['nameAsc', 'nameDesc'].map(name => [name, t(`projects.search.${name}`)]),
+  const renderSortOption = useCallback(
+    (option: string) => t(`projects.search.${option}`),
+    [t],
+  );
+
+  const renderRole = useCallback(
+    (role: string) => t(`general.role.${role}`),
+    [t],
   );
 
   return (
@@ -139,18 +148,15 @@ export const ProjectListScreen = () => {
                 name="sort"
                 label={t('projects.sort_label')}
                 options={SORT_OPTIONS}
-                nullableOption={t('general.filter.no_sort')}
+                renderValue={renderSortOption}
+                unselectedLabel={t('general.filter.no_sort')}
               />
               <SelectFilter
                 name="role"
                 label={t('projects.role_filter_label')}
-                placeholder=""
-                options={{
-                  manager: t('general.role.manager'),
-                  contributor: t('general.role.contributor'),
-                  viewer: t('general.role.viewer'),
-                }}
-                nullableOption={t('general.filter.no_role')}
+                renderValue={renderRole}
+                options={PROJECT_ROLES}
+                unselectedLabel={t('general.filter.no_role')}
               />
             </ListFilterModal>
             <ProjectList />
