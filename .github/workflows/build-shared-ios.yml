@@ -97,6 +97,13 @@ jobs:
         working-directory: dev-client
         run: npm ci
 
+      - name: Restore iOS Expo cache
+        uses: actions/cache@v4
+        with:
+          path: dev-client/ios
+          key: ${{ runner.os }}-ios-${{ hashFiles('**/package-lock.json', '**/app.config.ts') }}
+          restore-keys: ${{ runner.os }}-ios-
+
       - name: Generate ios directory
         working-directory: dev-client
         run: npm run prebuild -- -p ios
@@ -106,17 +113,6 @@ jobs:
         with:
           bundler-cache: true
           working-directory: dev-client
-
-      - name: Restore Pods cache
-        uses: actions/cache@v4
-        with:
-          path: dev-client/ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: ${{ runner.os }}-pods-
-
-      - name: CocoaPod Install
-        working-directory: dev-client/ios
-        run: bundle exec pod install
 
       - name: Set Xcode version
         uses: maxim-lobanov/setup-xcode@v1
