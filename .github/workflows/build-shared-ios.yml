@@ -83,9 +83,6 @@ jobs:
       - name: Check out git repository
         uses: actions/checkout@v4
 
-      - name: Enable build cache
-        uses: mikehardy/buildcache-action@v2
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
