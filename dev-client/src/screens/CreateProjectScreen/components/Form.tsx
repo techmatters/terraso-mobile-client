@@ -32,16 +32,13 @@ import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {
-  ProjectSoilSettingsUpdateMutationInput,
-  ProjectUpdateMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   HStack,
   VStack,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {MEASUREMENT_UNITS} from 'terraso-client-shared/soilId/soilIdSlice';
+import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
 
 export const projectValidationFields = (t: TFunction) => ({
   name: yup
@@ -117,8 +114,7 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
   ];
 };
 
-type FormValues = Omit<ProjectUpdateMutationInput, 'id'> &
-  Pick<ProjectSoilSettingsUpdateMutationInput, 'measurementUnits'>;
+type FormValues = Omit<ProjectUpdateMutationInput, 'id'>;
 
 type FormProps = FormValues & {
   onSubmit: (values: FormValues) => void;
@@ -148,7 +144,7 @@ export const EditForm = ({
             values={MEASUREMENT_UNITS}
             renderRadio={value => (
               <Radio value={value} key={value}>
-                {t('general.measurement_units.' + value)}
+                {t(`general.measurement_units.${value}`)}
               </Radio>
             )}
           />
