@@ -13,7 +13,7 @@
     "test": "jest",
     "check-ts": "tsc --noEmit",
     "check-modules": "depcheck",
-    "prebuild": "expo prebuild --clean"
+    "prebuild": "expo prebuild"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.0.5",
