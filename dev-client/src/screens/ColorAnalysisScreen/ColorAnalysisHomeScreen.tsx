@@ -28,7 +28,6 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch} from 'terraso-mobile-client/store';
-import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {Fab} from 'native-base';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
@@ -39,17 +38,11 @@ import {
   isValidSoilColor,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {
-  Photo,
   PhotoWithBase64,
   decodeBase64Jpg,
 } from 'terraso-mobile-client/components/ImagePicker';
-
-export type ColorAnalysisProps = {
-  photo: Photo;
-  pitProps?: SoilPitInputScreenProps;
-  reference?: PhotoWithBase64;
-  soil?: PhotoWithBase64;
-};
+import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
+import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
 
 const analyzeImage = async ({
   reference,
@@ -71,21 +64,26 @@ const analyzeImage = async ({
     .munsell;
 };
 
-export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
-  const {pitProps, reference, soil, photo} = props;
+export const ColorAnalysisHomeScreen = () => {
+  const {
+    pitProps,
+    photo,
+    state: {reference, soil},
+  } = useColorAnalysisContext();
   const navigation = useNavigation();
+  const colorAnalysisNavigation = useColorAnalysisNavigation();
   const {t} = useTranslation();
   const dispatch = useDispatch();
 
   const onAnalyze = useMemo(() => {
-    if (!pitProps || !reference || !soil) {
+    if (!reference || !soil) {
       return null;
     }
 
     return async () => {
       const color = await analyzeImage({
-        reference,
-        soil,
+        reference: reference.photo,
+        soil: soil.photo,
       });
 
       if (isValidSoilColor(color)) {
@@ -105,12 +103,12 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
   }, [reference, soil, pitProps, dispatch, navigation]);
 
   const onReference = useCallback(() => {
-    navigation.navigate('COLOR_CROP_REFERENCE', props);
-  }, [navigation, props]);
+    colorAnalysisNavigation.navigate('COLOR_CROP_REFERENCE');
+  }, [colorAnalysisNavigation]);
 
   const onSoil = useCallback(() => {
-    navigation.navigate('COLOR_CROP_SOIL', props);
-  }, [navigation, props]);
+    colorAnalysisNavigation.navigate('COLOR_CROP_SOIL');
+  }, [colorAnalysisNavigation]);
 
   return (
     <ScreenScaffold>
@@ -137,8 +135,8 @@ export const ColorAnalysisScreen = (props: ColorAnalysisProps) => {
         <Row justifyContent="space-between">
           {(
             [
-              ['reference', onReference, reference],
-              ['soil', onSoil, soil],
+              ['reference', onReference, reference?.photo],
+              ['soil', onSoil, soil?.photo],
             ] as const
           ).map(([key, onPress, croppedPhoto]) => (
             <Column key={key} alignItems="flex-start">
