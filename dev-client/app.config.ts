@@ -15,20 +15,61 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import 'ts-node/register';
 import {ExpoConfig, ConfigContext} from 'expo/config';
 import {withEntitlementsPlist, withAppBuildGradle} from 'expo/config-plugins';
+import {fromEntries} from 'terraso-client-shared/utils';
 
 const VERSION_REGEX = /^v[0-9]+$/g;
 
 let appVersion = 1;
 
-if (typeof process.env.APP_VERSION === 'string') {
-  if (!VERSION_REGEX.test(process.env.APP_VERSION)) {
+const STRICT = process.env.STRICT === 'true';
+
+const validateEnvConfig = <K extends string>(
+  env: Record<string, string | undefined>,
+  variables: readonly K[],
+) =>
+  fromEntries(
+    variables.map(k => {
+      const value = env[k];
+      if (STRICT && value === undefined) {
+        throw new Error(`Config setting ${k} not set`);
+      }
+      return [k, value];
+    }),
+  );
+
+const BUILD_CONFIG = validateEnvConfig(process.env, [
+  'SENTRY_ORG',
+  'SENTRY_PROJECT',
+  'MAPBOX_DOWNLOADS_TOKEN',
+] as const);
+
+const ENV_CONFIG = validateEnvConfig(process.env, [
+  'ENV',
+  'PUBLIC_MAPBOX_TOKEN',
+  'SENTRY_DSN',
+  'SENTRY_ENABLED',
+  'TERRASO_BACKEND',
+  'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
+  'GOOGLE_OAUTH_IOS_CLIENT_ID',
+  'GOOGLE_OAUTH_IOS_URI_SCHEME',
+  'APPLE_OAUTH_CLIENT_ID',
+  'APPLE_OAUTH_REDIRECT_URI',
+  'MICROSOFT_OAUTH_CLIENT_ID',
+  'MICROSOFT_SIGNATURE_HASH',
+] as const);
+
+const APP_VERSION = process.env.APP_VERSION;
+
+if (APP_VERSION === 'string') {
+  if (!VERSION_REGEX.test(APP_VERSION)) {
     throw Error(
-      `invalid app version format: ${process.env.APP_VERSION}. should be v[0-9]+`,
+      `invalid app version format: ${APP_VERSION}. should be v[0-9]+`,
     );
   }
-  appVersion = parseInt(process.env.APP_VERSION.slice(1), 10);
+  appVersion = parseInt(APP_VERSION.slice(1), 10);
 }
 
 export default ({config}: ConfigContext): ExpoConfig => ({
@@ -82,18 +123,18 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     [
       '@sentry/react-native/expo',
       {
-        organization: process.env.SENTRY_ORG,
-        project: process.env.SENTRY_PROJECT,
+        organization: BUILD_CONFIG.SENTRY_ORG,
+        project: BUILD_CONFIG.SENTRY_PROJECT,
       },
     ],
     [
       '@rnmapbox/maps',
       {
-        RNMapboxMapsDownloadToken: process.env.MAPBOX_DOWNLOADS_TOKEN,
+        RNMapboxMapsDownloadToken: BUILD_CONFIG.MAPBOX_DOWNLOADS_TOKEN,
       },
     ],
     [
-      (modConfig: ExpoConfig) => {
+      ((modConfig: ExpoConfig): ExpoConfig => {
         // workaround to remove push notification entitlements: https://github.com/expo/expo/pull/25808#pullrequestreview-1772795646
         withEntitlementsPlist(modConfig, entitlements => {
           delete entitlements.modResults['aps-environment'];
@@ -108,26 +149,8 @@ export default ({config}: ConfigContext): ExpoConfig => ({
           return gradle;
         });
         return modConfig;
-      },
+      }) as any,
     ],
   ],
-  extra: {
-    ...Object.fromEntries(
-      [
-        'ENV',
-        'PUBLIC_MAPBOX_TOKEN',
-        'SENTRY_DSN',
-        'SENTRY_ENABLED',
-        'TERRASO_BACKEND',
-        'TERRASO_BACKEND_ANDROID',
-        'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
-        'GOOGLE_OAUTH_IOS_CLIENT_ID',
-        'GOOGLE_OAUTH_IOS_URI_SCHEME',
-        'APPLE_OAUTH_CLIENT_ID',
-        'APPLE_OAUTH_REDIRECT_URI',
-        'MICROSOFT_OAUTH_CLIENT_ID',
-        'MICROSOFT_SIGNATURE_HASH',
-      ].map(k => [k, process.env[k]]),
-    ),
-  },
+  extra: ENV_CONFIG,
 });

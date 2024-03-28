@@ -13,6 +13,8 @@ jobs:
   ios-build-only:
     name: Build iOS app
     uses: ./.github/workflows/build-shared-ios.yml
+    with:
+      STRICT: 'false'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
@@ -25,6 +27,8 @@ jobs:
   android-build-only:
     name: Build Android app
     uses: ./.github/workflows/build-shared-android.yml
+    with:
+      STRICT: 'false'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
