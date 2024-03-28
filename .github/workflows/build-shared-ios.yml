@@ -17,6 +17,14 @@ on:
         required: false
         type: string
         default: 'v1'
+      SENTRY_ORG:
+        required: false
+        type: string
+        default: 'techmatters'
+      SENTRY_PROJECT:
+        required: false
+        type: string
+        default: 'terraso-lpks'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
@@ -68,15 +76,16 @@ jobs:
       SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
-      SENTRY_ORG: techmatters
-      SENTRY_PROJECT: terraso-lpks
+      SENTRY_ORG: ${{ inputs.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ inputs.SENTRY_PROJECT }}
+      CLANG: clang
+      CLANGPLUSPLUS: clang++
+      LD: clang
+      LDPLUSPLUS: clang++
 
     steps:
       - name: Check out git repository
         uses: actions/checkout@v4
-
-      - name: Enable build cache
-        uses: mikehardy/buildcache-action@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -85,9 +94,28 @@ jobs:
           cache: 'npm'
           cache-dependency-path: dev-client/package-lock.json
 
+      - name: Install and configure ccache
+        run: |
+          brew install ccache
+          ln -s $(which ccache) /usr/local/bin/gcc
+          ln -s $(which ccache) /usr/local/bin/g++
+          ln -s $(which ccache) /usr/local/bin/cc
+          ln -s $(which ccache) /usr/local/bin/c++
+          ln -s $(which ccache) /usr/local/bin/clang
+          ln -s $(which ccache) /usr/local/bin/clang++
+
       - name: Install Node dependencies
         working-directory: dev-client
         run: npm ci
+
+      - name: Restore iOS Expo cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            dev-client/ios
+            dev-client/node_modules
+          key: ${{ runner.os }}-ios-${{ hashFiles('**/package-lock.json', '**/app.config.ts') }}
+          restore-keys: ${{ runner.os }}-ios-
 
       - name: Generate ios directory
         working-directory: dev-client
@@ -98,17 +126,6 @@ jobs:
         with:
           bundler-cache: true
           working-directory: dev-client
-
-      - name: Restore Pods cache
-        uses: actions/cache@v4
-        with:
-          path: dev-client/ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: ${{ runner.os }}-pods-
-
-      - name: CocoaPod Install
-        working-directory: dev-client/ios
-        run: bundle exec pod install
 
       - name: Set Xcode version
         uses: maxim-lobanov/setup-xcode@v1
