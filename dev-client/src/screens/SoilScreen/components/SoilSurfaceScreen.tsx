@@ -73,7 +73,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
         />
         <Box height="lg" />
         <Paragraph>
-          {t('soil.vertical_cracking.description', {units: 'metric'})}
+          {t('soil.vertical_cracking.description', {units: 'METRIC'})}
         </Paragraph>
         <Box width="100%" alignItems="center">
           <Image

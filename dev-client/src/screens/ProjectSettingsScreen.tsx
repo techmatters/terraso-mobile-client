@@ -38,10 +38,7 @@ import {
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {
-  selectProject,
-  useProjectSoilSettings,
-} from 'terraso-client-shared/selectors';
+import {selectProject} from 'terraso-client-shared/selectors';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
@@ -52,8 +49,9 @@ export function ProjectSettingsScreen({
 }: Props) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const {name, description, privacy} = useSelector(selectProject(projectId));
-  const {measurementUnits} = useProjectSoilSettings(projectId);
+  const {name, description, privacy, measurementUnits} = useSelector(
+    selectProject(projectId),
+  );
 
   const onSubmit = async (values: Omit<ProjectUpdateMutationInput, 'id'>) => {
     await dispatch(updateProject({...values, id: projectId, privacy}));
