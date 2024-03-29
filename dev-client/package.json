@@ -62,7 +62,7 @@
     "react-native-tab-view": "^3.5.2",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#40ae7e2",
     "uuid": "^9.0.1",
-    "yup": "^1.3.3"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
