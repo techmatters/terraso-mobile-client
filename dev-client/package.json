@@ -42,7 +42,7 @@
     "haversine": "^1.1.1",
     "i18next": "^23.10.0",
     "jpeg-js": "^0.4.4",
-    "munsell": "^1.1.2",
+    "munsell": "^1.1.5",
     "native-base": "^3.4.28",
     "quantize": "^1.0.2",
     "react": "18.2.0",
