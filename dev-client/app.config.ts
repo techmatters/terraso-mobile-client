@@ -55,8 +55,9 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
   'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
   'GOOGLE_OAUTH_IOS_CLIENT_ID',
   'GOOGLE_OAUTH_IOS_URI_SCHEME',
-  'APPLE_OAUTH_CLIENT_ID',
-  'APPLE_OAUTH_REDIRECT_URI',
+  // TODO: uncomment when these have been generated
+  // 'APPLE_OAUTH_CLIENT_ID',
+  // 'APPLE_OAUTH_REDIRECT_URI',
   'MICROSOFT_OAUTH_CLIENT_ID',
   'MICROSOFT_SIGNATURE_HASH',
 ] as const);
