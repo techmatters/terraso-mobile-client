@@ -25,7 +25,7 @@
     "@react-navigation/native": "^6.1.12",
     "@react-navigation/native-stack": "^6.9.20",
     "@rnmapbox/maps": "^10.1.15",
-    "@sentry/react-native": "^5.19.1",
+    "@sentry/react-native": "^5.20.0",
     "base-64": "^1.0.0",
     "expo": "~50.0.14",
     "expo-auth-session": "~5.4.0",
