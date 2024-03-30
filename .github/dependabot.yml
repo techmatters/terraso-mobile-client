@@ -9,6 +9,7 @@ updates:
     directory: "dev-client" # Location of package manifests
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 20
     allow:
       - dependency-type: "all"
 
