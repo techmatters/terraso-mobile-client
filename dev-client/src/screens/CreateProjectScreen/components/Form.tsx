@@ -107,6 +107,7 @@ const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
       name="description"
       placeholder={showPlaceholders ? t('projects.add.description') : undefined}
       variant="outline"
+      fontSize={16}
       numberOfLines={3}
       autoCompleteType="off"
       label={t('projects.add.description')}
