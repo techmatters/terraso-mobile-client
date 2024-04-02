@@ -28,6 +28,7 @@ import {
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {Pressable, StyleSheet} from 'react-native';
 import {Modal as PaperModal, Portal} from 'react-native-paper';
+import {Divider} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 import {
   Box,
@@ -48,6 +49,7 @@ export type ModalTrigger = (onOpen: () => void) => React.ReactNode;
 
 export type ModalProps = {
   Header?: React.ReactNode;
+  Footer?: React.ReactNode;
   trigger?: ModalTrigger;
   CloseButton?: React.ReactNode | null;
   closeHook?: () => void;
@@ -58,7 +60,16 @@ export const Modal = forwardRef<
   React.PropsWithChildren<ModalProps> & BoxProps
 >(
   (
-    {children, trigger, closeHook, CloseButton, Header, ..._content},
+    {
+      children,
+      trigger,
+      closeHook,
+      CloseButton,
+      Header,
+      Footer,
+      padding = 'lg',
+      ..._content
+    },
     forwardedRef,
   ) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -89,22 +100,29 @@ export const Modal = forwardRef<
             <Box
               backgroundColor="primary.contrast"
               borderRadius="24px"
-              padding="md"
               margin="10%"
               {..._content}>
-              <KeyboardAvoidingView
-                style={styles.keyboardAvoidingView}
-                behavior="padding"
-                keyboardVerticalOffset={100}>
-                <Row mb="md" alignItems="flex-start">
-                  {Header}
-                  <Box flex={1} />
-                  {CloseButton}
-                </Row>
-                <ModalContext.Provider value={handle}>
-                  {children}
-                </ModalContext.Provider>
-              </KeyboardAvoidingView>
+              <Box padding={padding}>
+                <KeyboardAvoidingView
+                  style={styles.keyboardAvoidingView}
+                  behavior="padding"
+                  keyboardVerticalOffset={100}>
+                  <Row mb="md" alignItems="flex-start">
+                    {Header}
+                    <Box flex={1} />
+                    {CloseButton}
+                  </Row>
+                  <ModalContext.Provider value={handle}>
+                    {children}
+                  </ModalContext.Provider>
+                </KeyboardAvoidingView>
+              </Box>
+              {Footer && (
+                <>
+                  <Divider />
+                  <Box padding={padding}>{Footer}</Box>
+                </>
+              )}
             </Box>
           </PaperModal>
         </Portal>
