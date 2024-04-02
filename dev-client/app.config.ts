@@ -22,8 +22,6 @@ import {fromEntries} from 'terraso-client-shared/utils';
 
 const VERSION_REGEX = /^v[0-9]+$/g;
 
-let appVersion = 1;
-
 const STRICT = process.env.STRICT === 'true';
 
 const validateEnvConfig = <K extends string>(
@@ -62,9 +60,10 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
   'MICROSOFT_SIGNATURE_HASH',
 ] as const);
 
+let appVersion = 1;
 const APP_VERSION = process.env.APP_VERSION;
 
-if (APP_VERSION === 'string') {
+if (typeof APP_VERSION === 'string') {
   if (!VERSION_REGEX.test(APP_VERSION)) {
     throw Error(
       `invalid app version format: ${APP_VERSION}. should be v[0-9]+`,
