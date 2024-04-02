@@ -44,7 +44,13 @@ import {
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
-export type Crop = {top: number; left: number; size: number};
+type Crop = {top: number; left: number; size: number};
+
+export type CropResult = {
+  photo: PhotoWithBase64;
+  crop: Crop;
+};
+
 type Dimensions = {width: number; height: number};
 
 const minDim = (dimensions: Dimensions) => {
@@ -64,15 +70,24 @@ const clampCrop = (crop: Crop, dimensions: Dimensions): Crop => {
 
 type Props = {
   photo: Photo;
-  onCrop: (_: PhotoWithBase64) => void;
+  initialCrop?: Crop;
+  onCrop: (_: CropResult) => void;
   title: string;
   description: string;
 };
-export const ColorCropScreen = ({photo, onCrop, title, description}: Props) => {
+export const ColorCropScreen = ({
+  photo,
+  initialCrop,
+  onCrop,
+  title,
+  description,
+}: Props) => {
   const {t} = useTranslation();
 
   const frameDimension = useSharedValue<number>(minDim(photo));
-  const crop = useSharedValue<Crop>({top: 0, left: 0, size: minDim(photo)});
+  const crop = useSharedValue<Crop>(
+    initialCrop ?? {top: 0, left: 0, size: minDim(photo)},
+  );
   const start = useSharedValue<Crop>({...crop.value});
 
   const pan = Gesture.Pan()
@@ -157,7 +172,10 @@ export const ColorCropScreen = ({photo, onCrop, title, description}: Props) => {
       throw Error('unexpected error: missing base64 encoding of cropped photo');
     }
 
-    onCrop({...croppedPhoto, base64: croppedPhoto.base64});
+    onCrop({
+      crop: crop.value,
+      photo: {...croppedPhoto, base64: croppedPhoto.base64},
+    });
   }, [photo.uri, onCrop, crop]);
 
   return (

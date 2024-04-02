@@ -30,15 +30,11 @@ import {
   screens,
   modalScreens,
 } from 'terraso-mobile-client/navigation/screenDefinitions';
+import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 
-const defaultScreenOptions: NativeStackNavigationOptions = {
-  headerShown: false,
-  freezeOnBlur: true,
-};
 const modalScreenOptions: NativeStackNavigationOptions = {
-  headerShown: false,
+  ...DEFAULT_STACK_NAVIGATOR_OPTIONS,
   animation: 'slide_from_bottom',
-  freezeOnBlur: true,
 };
 
 export const RootNavigator = () => {
@@ -86,7 +82,7 @@ export const RootNavigator = () => {
   return (
     <RootStack.Navigator
       initialRouteName={isLoggedIn ? 'BOTTOM_TABS' : 'LOGIN'}>
-      <RootStack.Group screenOptions={defaultScreenOptions}>
+      <RootStack.Group screenOptions={DEFAULT_STACK_NAVIGATOR_OPTIONS}>
         {screens}
       </RootStack.Group>
       <RootStack.Group screenOptions={modalScreenOptions}>
