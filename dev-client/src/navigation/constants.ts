@@ -15,6 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
+
+export const DEFAULT_STACK_NAVIGATOR_OPTIONS: NativeStackNavigationOptions = {
+  headerShown: false,
+  freezeOnBlur: true,
+};
+
 export const enum TabRoutes {
   INPUTS = 'Inputs',
   TEAM = 'Team',

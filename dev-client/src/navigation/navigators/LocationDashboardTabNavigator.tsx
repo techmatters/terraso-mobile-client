@@ -21,7 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import {ParamList} from 'terraso-mobile-client/navigation/types';
-import {ScreenDefinitions} from 'terraso-mobile-client/navigation/screenDefinitions';
+import {ScreenDefinitions} from 'terraso-mobile-client/navigation/types';
 import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
 import {SiteNotesScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/SiteNotesScreen';
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';

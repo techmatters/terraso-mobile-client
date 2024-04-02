@@ -345,7 +345,7 @@
     "SITE_TRANSFER_PROJECT": "Project #{{id}}",
     "CREATE_SITE": "Create Site",
     "COLOR_GUIDE": "Soil Color Guide",
-    "COLOR_ANALYSIS": "Photo Analysis"
+    "COLOR_ANALYSIS_HOME": "Photo Analysis"
   },
   "login": {
     "title": "LandPKS",

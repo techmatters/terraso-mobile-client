@@ -15,12 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useNavigation as useNavigationNative} from '@react-navigation/native';
-import {
-  RootStackParamList,
-  ScreenName,
-} from 'terraso-mobile-client/navigation/types';
+import {RootStackParamList} from 'terraso-mobile-client/navigation/types';
+import {createNavigationHook} from 'terraso-mobile-client/navigation/utils/utils';
 
-export const useNavigation = <Name extends ScreenName = ScreenName>() =>
-  useNavigationNative<NativeStackNavigationProp<RootStackParamList, Name>>();
+export const useNavigation = createNavigationHook<RootStackParamList>();

@@ -15,7 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
@@ -32,7 +31,10 @@ import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScre
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
-import {RootStack, ScreenName} from 'terraso-mobile-client/navigation/types';
+import {
+  RootStack,
+  ScreenDefinitions,
+} from 'terraso-mobile-client/navigation/types';
 import {SlopeShapeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeShapeScreen';
 import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
 import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
@@ -48,11 +50,8 @@ import {PhScreen} from 'terraso-mobile-client/screens/SoilScreen/PhScreen';
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
 import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
 import {ColorGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorGuideScreen';
-import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorAnalysisScreen';
-import {ColorCropReferenceScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorCropReferenceScreen';
-import {ColorCropSoilScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorCropSoilScreen';
-
-export type ScreenDefinitions = Record<string, React.FC<any>>;
+import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
+import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
 
 export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,
@@ -86,8 +85,6 @@ export const screenDefinitions = {
   TEXTURE_GUIDE: TextureGuideScreen,
   COLOR_GUIDE: ColorGuideScreen,
   COLOR_ANALYSIS: ColorAnalysisScreen,
-  COLOR_CROP_REFERENCE: ColorCropReferenceScreen,
-  COLOR_CROP_SOIL: ColorCropSoilScreen,
 } satisfies ScreenDefinitions;
 
 export const modalScreenDefinitions = {
@@ -102,22 +99,6 @@ export const combinedScreenDefinitions = {
   ...modalScreenDefinitions,
 } satisfies ScreenDefinitions;
 
-export const screens = Object.entries(screenDefinitions).map(
-  ([name, Screen]) => (
-    <RootStack.Screen
-      name={name as ScreenName}
-      key={name}
-      children={props => <Screen {...((props.route.params ?? {}) as any)} />}
-    />
-  ),
-);
+export const screens = generateScreens(RootStack, screenDefinitions);
 
-export const modalScreens = Object.entries(modalScreenDefinitions).map(
-  ([name, Screen]) => (
-    <RootStack.Screen
-      name={name as ScreenName}
-      key={name}
-      children={props => <Screen {...((props.route.params ?? {}) as any)} />}
-    />
-  ),
-);
+export const modalScreens = generateScreens(RootStack, modalScreenDefinitions);

@@ -33,9 +33,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
-export const ColorGuideScreen = (
-  props: SoilPitInputScreenProps | undefined,
-) => {
+export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 

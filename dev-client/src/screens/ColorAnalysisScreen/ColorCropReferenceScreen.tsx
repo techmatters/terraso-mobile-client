@@ -17,31 +17,38 @@
 
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {PhotoWithBase64} from 'terraso-mobile-client/components/ImagePicker';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {ColorAnalysisProps} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorAnalysisScreen';
-import {ColorCropScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorCropScreen';
+import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
+import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
+import {
+  ColorCropScreen,
+  CropResult,
+} from 'terraso-mobile-client/screens/ColorAnalysisScreen/components/ColorCropScreen';
 
-export const ColorCropReferenceScreen = (props: ColorAnalysisProps) => {
-  const {photo} = props;
+export const ColorCropReferenceScreen = () => {
   const {t} = useTranslation();
-  const navigation = useNavigation();
+  const {
+    photo,
+    state: {reference, soil},
+    setState,
+  } = useColorAnalysisContext();
+  const colorAnalysisNavigation = useColorAnalysisNavigation();
 
   const onCrop = useCallback(
-    (crop: PhotoWithBase64) => {
-      const newProps = {...props, reference: crop};
-      if (props.soil) {
-        navigation.navigate('COLOR_ANALYSIS', newProps);
+    (crop: CropResult) => {
+      setState(state => ({...state, reference: crop}));
+      if (soil !== undefined) {
+        colorAnalysisNavigation.navigate('COLOR_ANALYSIS_HOME');
       } else {
-        navigation.replace('COLOR_CROP_SOIL', newProps);
+        colorAnalysisNavigation.navigate('COLOR_CROP_SOIL');
       }
     },
-    [navigation, props],
+    [colorAnalysisNavigation, setState, soil],
   );
 
   return (
     <ColorCropScreen
       photo={photo}
+      initialCrop={reference?.crop}
       onCrop={onCrop}
       title={t('soil.color.reference')}
       description={t('soil.color.crop_reference')}
