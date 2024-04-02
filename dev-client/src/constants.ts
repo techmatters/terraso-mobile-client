@@ -17,7 +17,6 @@
 
 import {MeasurementUnit} from 'terraso-client-shared/project/projectSlice';
 
-export const PACKAGE_NAME = 'org.terraso.landpks';
 /** Minimum distance to travel before Mapbox will update user location */
 export const USER_DISPLACEMENT_MIN_DISTANCE_M = 1;
 export const COORDINATE_PRECISION = 5;
