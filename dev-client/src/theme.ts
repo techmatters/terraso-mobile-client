@@ -190,16 +190,6 @@ export const theme = extendTheme({
           width: 'full',
           justifyContent: 'flex-start',
         },
-        confirmModal: {
-          py: '10px',
-          px: '24px',
-          borderRadius: '4px',
-          _text: {
-            fontSize: '14px',
-            fontWeight: 400,
-            lineHeight: '20px',
-          },
-        },
         link: {
           _text: {textDecorationLine: 'underline'},
         },
