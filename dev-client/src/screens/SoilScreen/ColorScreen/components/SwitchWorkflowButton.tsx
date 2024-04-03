@@ -82,6 +82,7 @@ export const SwitchWorkflowButton = ({
       title={t('soil.color.confirm_delete.title')}
       body={t('soil.color.confirm_delete.body')}
       actionName={t('soil.color.confirm_delete.action_name')}
+      isConfirmError
       handleConfirm={switchWorkflow}
       trigger={button}
     />
