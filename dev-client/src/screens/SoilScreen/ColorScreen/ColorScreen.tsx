@@ -51,6 +51,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
+  MunsellColor,
   parseMunsellHue,
   renderMunsellHue,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
@@ -155,6 +156,18 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
       }),
     );
   }, [props.siteId, props.depthInterval, dispatch]);
+
+  const color: MunsellColor | undefined = useMemo(
+    () =>
+      data?.colorHue && data?.colorChroma && data?.colorValue
+        ? {
+            colorHue: data?.colorHue,
+            colorChroma: data?.colorChroma,
+            colorValue: data?.colorValue,
+          }
+        : undefined,
+    [data],
+  );
 
   return (
     <SoilPitInputScreenScaffold {...props}>
@@ -284,11 +297,11 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
           </Column>
         </>
       )}
-      {complete && (
+      {color && (
         <>
           <ColorDisplay
             onDelete={workflow === 'CAMERA' ? onClearValues : undefined}
-            color={data!}
+            color={color}
             dimensions={180}
           />
           {workflow === 'CAMERA' && <PhotoConditions {...props} />}
