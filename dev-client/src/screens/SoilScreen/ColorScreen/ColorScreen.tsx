@@ -287,10 +287,9 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
       {complete && (
         <>
           <ColorDisplay
-            onDelete={
-              complete && workflow === 'CAMERA' ? onClearValues : undefined
-            }
-            {...props}
+            onDelete={workflow === 'CAMERA' ? onClearValues : undefined}
+            color={data!}
+            dimensions={180}
           />
           {workflow === 'CAMERA' && <PhotoConditions {...props} />}
         </>
