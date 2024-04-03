@@ -22,12 +22,12 @@ import {
   launchImageLibraryAsync,
   MediaTypeOptions,
 } from 'expo-image-picker';
-import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 import {
   ModalHandle,
   ModalProps,
   ModalTrigger,
-} from 'terraso-mobile-client/components/Modal';
+} from 'terraso-mobile-client/components/modals/Modal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Button} from 'native-base';
 import {Icon} from 'terraso-mobile-client/components/Icons';

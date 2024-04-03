@@ -20,7 +20,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
-import {Modal} from 'terraso-mobile-client/components/Modal';
+import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {useMemo, useCallback} from 'react';
 import {
   LabelledDepthInterval,
@@ -36,7 +36,7 @@ import {
   selectSoilData,
   useSiteSoilIntervals,
 } from 'terraso-client-shared/selectors';
-import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {

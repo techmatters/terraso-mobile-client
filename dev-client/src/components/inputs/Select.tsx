@@ -16,7 +16,7 @@
  */
 
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 import {
   Box,
   Row,
@@ -24,7 +24,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useCallback, useMemo, useRef} from 'react';
 import {Pressable, ViewStyle} from 'react-native';
-import {ModalHandle} from 'terraso-mobile-client/components/Modal';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {useTranslation} from 'react-i18next';
 import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {TextInput} from 'react-native-paper';

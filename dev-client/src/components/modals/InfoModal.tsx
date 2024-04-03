@@ -15,13 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {Header: React.ReactNode};
 
-export const BottomSheetTooltip = ({
+export const InfoModal = ({
   Header,
   children,
 }: React.PropsWithChildren<Props>) => (

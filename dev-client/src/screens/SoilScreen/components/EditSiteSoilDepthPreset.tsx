@@ -19,13 +19,13 @@ import {Button} from 'native-base';
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {useModal} from 'terraso-mobile-client/components/Modal';
+import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 
 type Props = {
   selected: SoilIdSoilDataDepthIntervalPresetChoices;

@@ -27,7 +27,7 @@ import {
 import {useTranslation} from 'react-i18next';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {munsellToRGB} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 
 export const ColorDisplay = ({
   onDelete,

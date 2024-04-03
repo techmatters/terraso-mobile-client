@@ -39,9 +39,9 @@ import {Button} from 'native-base';
 import {Formik} from 'formik';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
-import {ModalHandle} from 'terraso-mobile-client/components/Modal';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -54,7 +54,7 @@ import {
   Column,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
-import {BottomSheetModal} from 'terraso-mobile-client/components/BottomSheetModal';
+import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {

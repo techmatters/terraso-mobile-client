@@ -16,7 +16,10 @@
  */
 
 import {Button} from 'native-base';
-import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
+import {
+  Modal,
+  ModalHandle,
+} from 'terraso-mobile-client/components/modals/Modal';
 import {useTranslation} from 'react-i18next';
 import {
   forwardRef,

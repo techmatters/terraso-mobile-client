@@ -27,7 +27,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
-import {BottomSheetTooltip} from 'terraso-mobile-client/components/BottomSheetTooltip';
+import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -162,7 +162,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
         <Row alignItems="flex-end">
           <Row alignItems="center">
             <Heading variant="h6">{t('soil.color.title')}</Heading>
-            <BottomSheetTooltip Header={t('soil.color.title')}>
+            <InfoModal Header={t('soil.color.title')}>
               <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
               <BulletList
                 data={[1, 2, 3]}
@@ -172,7 +172,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
               />
               <Paragraph variant="body1">{t('soil.color.info.p2')}</Paragraph>
               <Paragraph variant="body1">{t('soil.color.info.p3')}</Paragraph>
-            </BottomSheetTooltip>
+            </InfoModal>
           </Row>
           <Box flex={1} />
           {(workflow === 'CAMERA' || complete) && (
