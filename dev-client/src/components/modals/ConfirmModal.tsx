@@ -40,7 +40,7 @@ type Props = Omit<ActionsModalProps, 'actions'> & {
 };
 
 /**
- * Modal presented to a user when asked to confirm a decision
+ * Modal presented to a user when asked to confirm or cancel an action
  */
 export const ConfirmModal = forwardRef<ModalHandle, Props>(
   (

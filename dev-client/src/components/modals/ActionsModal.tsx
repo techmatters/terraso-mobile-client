@@ -86,8 +86,9 @@ export type ActionsModalProps = Pick<ModalProps, 'trigger'> & {
   title: string;
   actions: React.ReactNode;
 };
+
 /**
- * Modal presented to a user when asked to confirm a decision
+ * Modal presented to a user when asked to choose from a fixed set of actions
  */
 export const ActionsModal = forwardRef<
   ModalHandle,
