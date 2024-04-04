@@ -39,14 +39,23 @@ export type MunsellColor = {
 
 const COLOR_COUNT = 16;
 
-export const munsellToRGB: (h: number, v: number, c: number) => RGB =
-  mhvcToRgb255;
+export const munsellToRGB = ({
+  colorHue,
+  colorValue,
+  colorChroma,
+}: MunsellColor): RGB => mhvcToRgb255(colorHue, colorValue, colorChroma);
 
+export type ValidColorResult = {result: MunsellColor};
+export type InvalidColorResult = {
+  invalidResult: MunsellColor;
+  nearestValidResult: MunsellColor;
+};
+export type ColorResult = ValidColorResult | InvalidColorResult;
 export const getColor = (
   pixelCard: RGBA[],
   pixelSoil: RGBA[],
   referenceRGB: RGB,
-) => {
+): ColorResult => {
   const getPalette = (pixels: RGBA[]) => {
     // Transform pixel info from canvas so quantize can use it
     const pixelArray = pixels.flatMap(([r, g, b, a]) => {
@@ -85,10 +94,15 @@ export const getColor = (
 
   const sample = correctSampleRGB(paletteCard[0], paletteSample[0]);
   const [colorHue, colorValue, colorChroma] = rgb255ToMhvc(...sample.rgb);
+  const munsell: MunsellColor = {colorHue, colorValue, colorChroma};
+
+  if (isValidSoilColor(munsell)) {
+    return {result: munsell};
+  }
 
   return {
-    ...sample,
-    munsell: {colorHue, colorValue, colorChroma},
+    nearestValidResult: {...munsell, colorChroma: 8},
+    invalidResult: munsell,
   };
 };
 

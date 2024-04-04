@@ -27,7 +27,7 @@ import {
   ModalHandle,
   ModalProps,
   ModalContext,
-} from 'terraso-mobile-client/components/Modal';
+} from 'terraso-mobile-client/components/modals/Modal';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
 import {
   Box,

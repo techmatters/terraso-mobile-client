@@ -25,12 +25,15 @@ import {
   updateProjectDepthInterval,
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {DepthIntervalTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthIntervalTable';
 import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
-import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
+import {
+  Modal,
+  ModalHandle,
+} from 'terraso-mobile-client/components/modals/Modal';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {
   Box,

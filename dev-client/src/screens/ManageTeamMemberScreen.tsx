@@ -30,7 +30,7 @@ import {formatName} from 'terraso-mobile-client/util';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   Box,

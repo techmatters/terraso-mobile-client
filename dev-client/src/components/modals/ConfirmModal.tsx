@@ -15,8 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
-import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {useTranslation} from 'react-i18next';
 import {
   forwardRef,
@@ -25,14 +24,14 @@ import {
   useMemo,
   useRef,
 } from 'react';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
-  Box,
-  HStack,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+  ActionButton,
+  ActionsModal,
+  ActionsModalProps,
+} from 'terraso-mobile-client/components/modals/ActionsModal';
 
-type Props = React.ComponentProps<typeof Modal> & {
+type Props = Omit<ActionsModalProps, 'actions'> & {
   title: string;
   body: string;
   actionName: string;
@@ -41,7 +40,7 @@ type Props = React.ComponentProps<typeof Modal> & {
 };
 
 /**
- * Modal presented to a user when asked to confirm a decision
+ * Modal presented to a user when asked to confirm or cancel an action
  */
 export const ConfirmModal = forwardRef<ModalHandle, Props>(
   (
@@ -65,52 +64,28 @@ export const ConfirmModal = forwardRef<ModalHandle, Props>(
       onClose();
     }, [handleConfirm, onClose]);
 
-    const Footer = useMemo(
+    const actions = useMemo(
       () => (
-        <HStack space="8px" alignSelf="flex-end">
-          <Button
-            onPress={onClose}
-            variant="confirmModal"
-            _text={{
-              color: 'text.primary',
-              fontWeight: '400',
-              fontSize: '14px',
-            }}
-            borderWidth="1px"
-            borderColor="m3.sys.light.outline">
+        <>
+          <ActionButton variant="subtle" onPress={onClose}>
             {t('general.cancel')}
-          </Button>
-          <Button
+          </ActionButton>
+          <ActionButton
             onPress={onConfirm}
-            variant="confirmModal"
-            backgroundColor={isConfirmError ? 'error.main' : 'primary.main'}
-            _text={{
-              color: isConfirmError ? 'error.contrast' : 'primary.contrast',
-              fontWeight: '400',
-              fontSize: '14px',
-            }}>
+            variant={isConfirmError ? 'warning' : 'default'}>
             {actionName}
-          </Button>
-        </HStack>
+          </ActionButton>
+        </>
       ),
       [onConfirm, onClose, actionName, t, isConfirmError],
     );
 
     return (
-      <Modal
-        ref={ref}
-        CloseButton={null}
-        backgroundColor="grey.200"
-        Footer={Footer}
-        {...modalProps}>
-        <Heading variant="h5" textAlign="center">
-          {title}
-        </Heading>
-        <Box height="md" />
+      <ActionsModal title={title} ref={ref} actions={actions} {...modalProps}>
         <Text variant="body1" alignSelf="flex-start">
           {body}
         </Text>
-      </Modal>
+      </ActionsModal>
     );
   },
 );

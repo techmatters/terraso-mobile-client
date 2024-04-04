@@ -17,7 +17,7 @@
 
 import {Button} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {useModal} from 'terraso-mobile-client/components/Modal';
+import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import * as yup from 'yup';

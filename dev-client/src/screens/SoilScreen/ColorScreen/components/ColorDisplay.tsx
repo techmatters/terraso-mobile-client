@@ -15,10 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
-import {useSelector} from 'terraso-mobile-client/store';
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {
   Text,
   Column,
@@ -26,33 +22,30 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {munsellToRGB} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {
+  MunsellColor,
+  munsellToRGB,
+  munsellToString,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 
-export const ColorDisplay = ({
-  onDelete,
-  ...props
-}: SoilPitInputScreenProps & {onDelete?: () => void}) => {
+type Props = {
+  color: MunsellColor;
+  onDelete?: () => void;
+  dimensions: number;
+};
+export const ColorDisplay = ({dimensions, onDelete, color}: Props) => {
   const {t} = useTranslation();
-  const data = useSelector(selectDepthDependentData(props));
-  const {complete, summary} = pitMethodSummary(t, data, 'soilColor');
 
-  if (!complete) {
-    return undefined;
-  }
-  const rgb = munsellToRGB(
-    data?.colorHue!,
-    data?.colorValue!,
-    data?.colorChroma!,
-  );
+  const rgb = munsellToRGB(color);
   const bgColor = rgb ? `rgb(${rgb.join(', ')})` : undefined;
   return (
     <Column alignItems="center">
-      <Text variant="body1-strong">{summary}</Text>
+      <Text variant="body1-strong">{munsellToString(color)}</Text>
       <Box height="8px" />
       <Box
-        width="180px"
-        height="180px"
+        width={dimensions}
+        height={dimensions}
         backgroundColor={bgColor}
         borderWidth="2px">
         {onDelete && (

@@ -331,7 +331,8 @@
     "open_settings": "Open Settings",
     "yes": "Yes",
     "no": "No",
-    "next": "Next"
+    "next": "Next",
+    "proceed": "Proceed"
   },
   "errors": {
     "soilId": "Error saving soil ID information."
@@ -548,6 +549,13 @@
         "title": "Delete data?",
         "body": "This will delete the soil color data associated with this depth interval.",
         "action_name": "Delete"
+      },
+      "unexpected_color": {
+        "title": "Unexpected soil color",
+        "body": "This is not a typical soil color. Do you want to proceed anyway, or use the closest suggested color?",
+        "suggestion": "Suggestion",
+        "your_result": "Your result",
+        "use_suggestion": "Use suggestion"
       },
       "hue": "Hue",
       "value": "Value",

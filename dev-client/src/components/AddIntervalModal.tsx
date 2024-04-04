@@ -28,7 +28,7 @@ import {
   IntervalFormInput,
 } from 'terraso-mobile-client/components/IntervalForm';
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
-import {useModal} from 'terraso-mobile-client/components/Modal';
+import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {

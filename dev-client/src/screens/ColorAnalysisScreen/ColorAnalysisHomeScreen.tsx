@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo} from 'react';
+import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -32,10 +32,11 @@ import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScr
 import {Fab} from 'native-base';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {
+  InvalidColorResult,
+  MunsellColor,
   REFERENCES,
   RGBA,
   getColor,
-  isValidSoilColor,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {
   PhotoWithBase64,
@@ -43,6 +44,12 @@ import {
 } from 'terraso-mobile-client/components/ImagePicker';
 import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
 import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
+import {
+  ActionButton,
+  ActionsModal,
+} from 'terraso-mobile-client/components/modals/ActionsModal';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 
 const analyzeImage = async ({
   reference,
@@ -60,8 +67,7 @@ const analyzeImage = async ({
     return pixels;
   });
 
-  return getColor(referencePixels, soilPixels, REFERENCES.CANARY_POST_IT)
-    .munsell;
+  return getColor(referencePixels, soilPixels, REFERENCES.CANARY_POST_IT);
 };
 
 export const ColorAnalysisHomeScreen = () => {
@@ -74,6 +80,25 @@ export const ColorAnalysisHomeScreen = () => {
   const colorAnalysisNavigation = useColorAnalysisNavigation();
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const modalRef = useRef<ModalHandle>(null);
+  const [colorResult, setColorResult] = useState<InvalidColorResult | null>(
+    null,
+  );
+
+  const dispatchColor = useCallback(
+    (color: MunsellColor) => {
+      dispatch(
+        updateDepthDependentSoilData({
+          siteId: pitProps.siteId,
+          depthInterval: pitProps.depthInterval.depthInterval,
+          ...color,
+          colorPhotoUsed: true,
+        }),
+      );
+      navigation.pop();
+    },
+    [dispatch, pitProps, navigation],
+  );
 
   const onAnalyze = useMemo(() => {
     if (!reference || !soil) {
@@ -86,21 +111,14 @@ export const ColorAnalysisHomeScreen = () => {
         soil: soil.photo,
       });
 
-      if (isValidSoilColor(color)) {
-        dispatch(
-          updateDepthDependentSoilData({
-            siteId: pitProps.siteId,
-            depthInterval: pitProps.depthInterval.depthInterval,
-            ...color,
-            colorPhotoUsed: true,
-          }),
-        );
-        navigation.pop();
+      if ('result' in color) {
+        dispatchColor(color.result);
       } else {
-        console.log('invalid color', color);
+        modalRef.current?.onOpen();
+        setColorResult(color);
       }
     };
-  }, [reference, soil, pitProps, dispatch, navigation]);
+  }, [reference, soil, dispatchColor]);
 
   const onReference = useCallback(() => {
     colorAnalysisNavigation.navigate('COLOR_CROP_REFERENCE');
@@ -109,6 +127,25 @@ export const ColorAnalysisHomeScreen = () => {
   const onSoil = useCallback(() => {
     colorAnalysisNavigation.navigate('COLOR_CROP_SOIL');
   }, [colorAnalysisNavigation]);
+
+  const unexpectedColorActions = useMemo(
+    () =>
+      colorResult && (
+        <>
+          <ActionButton
+            variant="subtle"
+            onPress={() => dispatchColor(colorResult!.nearestValidResult)}>
+            {t('soil.color.unexpected_color.use_suggestion')}
+          </ActionButton>
+          <ActionButton
+            variant="default"
+            onPress={() => dispatchColor(colorResult!.invalidResult)}>
+            {t('general.proceed')}
+          </ActionButton>
+        </>
+      ),
+    [dispatchColor, colorResult, t],
+  );
 
   return (
     <ScreenScaffold>
@@ -166,6 +203,33 @@ export const ColorAnalysisHomeScreen = () => {
         </Row>
       </Column>
       {pitProps && <PhotoConditions {...pitProps} />}
+      <ActionsModal
+        title={t('soil.color.unexpected_color.title')}
+        ref={modalRef}
+        actions={unexpectedColorActions}>
+        <Text>{t('soil.color.unexpected_color.body')}</Text>
+        <Box height="md" />
+        {colorResult && (
+          <Row justifyContent="space-around" alignSelf="stretch">
+            <Column alignItems="center">
+              <ColorDisplay
+                dimensions={100}
+                color={colorResult.nearestValidResult}
+              />
+              <Box height="sm" />
+              <Text>{t('soil.color.unexpected_color.suggestion')}</Text>
+            </Column>
+            <Column alignItems="center">
+              <ColorDisplay
+                dimensions={100}
+                color={colorResult.invalidResult}
+              />
+              <Box height="sm" />
+              <Text>{t('soil.color.unexpected_color.your_result')}</Text>
+            </Column>
+          </Row>
+        )}
+      </ActionsModal>
       <Fab
         label={t('soil.color.analyze')}
         isDisabled={onAnalyze === null}
