@@ -54,9 +54,9 @@ export const pitMethodSummary = (
     summary = t(`soil.texture.rockFragment.${soilData.rockFragmentVolume}`);
   } else if (
     method === 'soilColor' &&
-    soilData.colorHue &&
-    soilData.colorValue &&
-    soilData.colorChroma
+    typeof soilData.colorHue === 'number' &&
+    typeof soilData.colorValue === 'number' &&
+    typeof soilData.colorChroma === 'number'
   ) {
     summary = munsellToString({
       colorHue: soilData.colorHue,

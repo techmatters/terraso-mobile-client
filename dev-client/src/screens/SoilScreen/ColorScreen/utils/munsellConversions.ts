@@ -18,10 +18,16 @@
 import {mhvcToRgb255, rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
 import {
+  nonNeutralColorHues,
   colorHueSubsteps,
-  colorHues,
   colorValues,
+  SoilColorHue,
+  NonNeutralColorHue,
 } from 'terraso-client-shared/soilId/soilIdTypes';
+import {
+  FLATTENED_SOIL_COLORS,
+  MHVC,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
 
 export const REFERENCES = {
   CAMERA_TRAX: [210.15, 213.95, 218.42],
@@ -93,23 +99,65 @@ export const getColor = (
   };
 
   const sample = correctSampleRGB(paletteCard[0], paletteSample[0]);
-  const [colorHue, colorValue, colorChroma] = rgb255ToMhvc(...sample.rgb);
-  const munsell: MunsellColor = {colorHue, colorValue, colorChroma};
+  const predicted = rgb255ToMhvc(...sample.rgb);
 
-  if (isValidSoilColor(munsell)) {
-    return {result: munsell};
+  // take the minimum by distance to predicted color
+  const nearest = FLATTENED_SOIL_COLORS.reduce((a, b) =>
+    munsellDistance(a, predicted) < munsellDistance(b, predicted) ? a : b,
+  );
+
+  const nearestResult = {
+    colorHue: nearest[0],
+    colorValue: nearest[1],
+    colorChroma: nearest[2],
+  };
+
+  if (munsellDistance(nearest, predicted) < 5) {
+    return {result: nearestResult};
   }
 
   return {
-    nearestValidResult: {...munsell, colorChroma: 8},
-    invalidResult: munsell,
+    nearestValidResult: nearestResult,
+    invalidResult: {
+      colorHue: predicted[0],
+      colorValue: predicted[1],
+      colorChroma: predicted[2],
+    },
   };
 };
 
-export const isValidSoilColor = ({colorChroma}: MunsellColor) =>
-  colorChroma < 8.5;
+// garo's janky formula before they know about CIE color difference
+// to be replaced
+const munsellDistance = (
+  [aHue, aValue, aChroma]: MHVC,
+  [bHue, bValue, bChroma]: MHVC,
+): number => {
+  const valueDistance = Math.abs(aValue - bValue);
+  const chromaDistance = Math.abs(aChroma - bChroma);
 
-export const renderMunsellHue = (h: number) => {
+  const hueDistance =
+    Math.min(Math.abs(aHue - bHue), 100 - Math.abs(aHue - bHue)) / 10;
+  const minChroma = Math.min(aChroma, bChroma);
+  const hueScaleFactor = minChroma / (1 + minChroma);
+
+  return valueDistance + chromaDistance + hueDistance * hueScaleFactor;
+};
+
+type MunsellHue = {
+  hue: SoilColorHue | NonNeutralColorHue;
+  substep?: (typeof colorHueSubsteps)[number];
+};
+
+export const renderMunsellHue = ({
+  colorHue: h,
+  colorChroma,
+}: {
+  colorHue: number;
+  colorChroma?: number | null;
+}): MunsellHue => {
+  if (typeof colorChroma === 'number' && Math.round(colorChroma) === 0) {
+    return {substep: undefined, hue: 'N'} as const;
+  }
   if (h === 100) {
     h = 0;
   }
@@ -120,29 +168,27 @@ export const renderMunsellHue = (h: number) => {
     hueIndex = (hueIndex + 9) % 10;
     hueSubstep = 4;
   }
-  const hue = colorHues[hueIndex];
+  const hue = nonNeutralColorHues[hueIndex];
   hueSubstep = (hueSubstep * 5) / 2;
 
-  return {hueSubstep: hueSubstep as (typeof colorHueSubsteps)[number], hue};
+  return {substep: hueSubstep as (typeof colorHueSubsteps)[number], hue};
 };
 
-export const parseMunsellHue = ({
-  hue,
-  hueSubstep,
-}: ReturnType<typeof renderMunsellHue>) =>
-  colorHues.indexOf(hue) * 10 + hueSubstep;
+export const parseMunsellHue = ({hue, substep: hueSubstep}: MunsellHue) =>
+  (hue === 'N' ? 0 : nonNeutralColorHues.indexOf(hue)) * 10 + (hueSubstep ?? 0);
 
-export const munsellToString = ({
-  colorHue: h,
-  colorValue: v,
-  colorChroma: c,
-}: MunsellColor) => {
-  const {hueSubstep, hue} = renderMunsellHue(h);
-  const value = [...colorValues].sort(
-    (v1, v2) => Math.abs(v1 - v) - Math.abs(v2 - v),
-  )[0];
+export const munsellToString = (color: MunsellColor) => {
+  const {substep: hueSubstep, hue} = renderMunsellHue(color);
+  const {colorValue: v, colorChroma: c} = color;
+  const value = [...colorValues].reduce((v1, v2) =>
+    Math.abs(v1 - v) < Math.abs(v2 - v) ? v1 : v2,
+  );
 
   const chroma = Math.round(c);
+
+  if (chroma === 0) {
+    return `N ${value}/`;
+  }
 
   return `${hueSubstep}${hue} ${value}/${chroma}`;
 };

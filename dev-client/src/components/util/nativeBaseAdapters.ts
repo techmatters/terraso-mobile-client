@@ -103,6 +103,7 @@ const nativeBaseStyleProps = {
   justifyContent: 'justifyContent',
   position: 'position',
   flex: 'flex',
+  flexWrap: 'flexWrap',
   flexGrow: 'flexGrow',
   flexDirection: 'flexDirection',
   flexShrink: 'flexShrink',
@@ -115,6 +116,8 @@ const nativeBaseStyleProps = {
   borderStyle: 'borderStyle',
   aspectRatio: 'aspectRatio',
   overflow: 'overflow',
+  columnGap: 'columnGap',
+  rowGap: 'rowGap',
 };
 
 const nativeBaseColorProps = {

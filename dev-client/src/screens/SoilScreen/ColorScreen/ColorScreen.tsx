@@ -82,7 +82,9 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
 
   const color: MunsellColor | undefined = useMemo(
     () =>
-      data?.colorHue && data?.colorChroma && data?.colorValue
+      typeof data?.colorHue === 'number' &&
+      typeof data?.colorChroma === 'number' &&
+      typeof data?.colorValue === 'number'
         ? {
             colorHue: data?.colorHue,
             colorChroma: data?.colorChroma,
