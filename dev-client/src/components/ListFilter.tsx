@@ -26,7 +26,10 @@ import {
 import BadgedIcon from 'terraso-mobile-client/components/BadgedIcon';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {useTranslation} from 'react-i18next';
-import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
+import {
+  Modal,
+  ModalHandle,
+} from 'terraso-mobile-client/components/modals/Modal';
 import {sortCompare} from 'terraso-mobile-client/util';
 import {
   Select,

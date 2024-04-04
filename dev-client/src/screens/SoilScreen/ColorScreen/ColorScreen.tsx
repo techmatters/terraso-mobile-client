@@ -27,7 +27,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
-import {BottomSheetTooltip} from 'terraso-mobile-client/components/BottomSheetTooltip';
+import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -51,6 +51,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
+  MunsellColor,
   parseMunsellHue,
   renderMunsellHue,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
@@ -156,13 +157,25 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
     );
   }, [props.siteId, props.depthInterval, dispatch]);
 
+  const color: MunsellColor | undefined = useMemo(
+    () =>
+      data?.colorHue && data?.colorChroma && data?.colorValue
+        ? {
+            colorHue: data?.colorHue,
+            colorChroma: data?.colorChroma,
+            colorValue: data?.colorValue,
+          }
+        : undefined,
+    [data],
+  );
+
   return (
     <SoilPitInputScreenScaffold {...props}>
       <Column padding="md">
         <Row alignItems="flex-end">
           <Row alignItems="center">
             <Heading variant="h6">{t('soil.color.title')}</Heading>
-            <BottomSheetTooltip Header={t('soil.color.title')}>
+            <InfoModal Header={t('soil.color.title')}>
               <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
               <BulletList
                 data={[1, 2, 3]}
@@ -172,7 +185,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
               />
               <Paragraph variant="body1">{t('soil.color.info.p2')}</Paragraph>
               <Paragraph variant="body1">{t('soil.color.info.p3')}</Paragraph>
-            </BottomSheetTooltip>
+            </InfoModal>
           </Row>
           <Box flex={1} />
           {(workflow === 'CAMERA' || complete) && (
@@ -284,13 +297,12 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
           </Column>
         </>
       )}
-      {complete && (
+      {color && (
         <>
           <ColorDisplay
-            onDelete={
-              complete && workflow === 'CAMERA' ? onClearValues : undefined
-            }
-            {...props}
+            onDelete={workflow === 'CAMERA' ? onClearValues : undefined}
+            color={color}
+            dimensions={180}
           />
           {workflow === 'CAMERA' && <PhotoConditions {...props} />}
         </>

@@ -32,7 +32,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {EditForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/Form';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
   VStack,

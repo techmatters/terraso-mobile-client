@@ -23,7 +23,7 @@ import {
   ProjectMembership,
   ProjectRole,
 } from 'terraso-client-shared/project/projectSlice';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {formatName} from 'terraso-mobile-client/util';
 import {
   Box,

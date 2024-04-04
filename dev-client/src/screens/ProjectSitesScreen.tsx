@@ -42,7 +42,7 @@ import {
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   ListFilterModal,
   ListFilterProvider,

@@ -24,7 +24,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 
 export const SwitchWorkflowButton = ({
   siteId,

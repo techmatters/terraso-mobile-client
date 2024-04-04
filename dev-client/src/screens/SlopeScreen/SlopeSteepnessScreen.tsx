@@ -30,10 +30,13 @@ import {
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {Modal, ModalHandle} from 'terraso-mobile-client/components/Modal';
+import {
+  Modal,
+  ModalHandle,
+} from 'terraso-mobile-client/components/modals/Modal';
 import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
 import {Image, ImageSourcePropType, StyleSheet} from 'react-native';
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   Box,

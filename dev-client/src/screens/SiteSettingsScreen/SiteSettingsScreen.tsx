@@ -36,7 +36,7 @@ import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 
-import {ConfirmModal} from 'terraso-mobile-client/components/ConfirmModal';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 
