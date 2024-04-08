@@ -68,7 +68,7 @@
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
     "@babel/preset-typescript": "^7.24.1",
-    "@babel/runtime": "^7.24.1",
+    "@babel/runtime": "^7.24.4",
     "@react-native-community/cli-doctor": "^13.6.4",
     "@react-native/babel-preset": "^0.74.76",
     "@react-native/eslint-config": "^0.74.76",
