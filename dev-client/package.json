@@ -80,7 +80,7 @@
     "@types/haversine": "^1.1.8",
     "@types/jest": "^29.5.12",
     "@types/quantize": "^1.0.2",
-    "@types/react": "^18.2.73",
+    "@types/react": "^18.2.74",
     "@types/uuid": "^9.0.8",
     "babel-jest": "^29.7.0",
     "babel-plugin-root-import": "^6.6.0",
