@@ -28,7 +28,6 @@ import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/r
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
-import {DepthDependentSelect} from 'terraso-mobile-client/screens/SoilScreen/components/DepthDependentSelect';
 import {
   updateDepthDependentSoilData,
   SoilColorHue,
@@ -47,11 +46,11 @@ import {
 import Animated, {LinearTransition} from 'react-native-reanimated';
 import {StyleSheet} from 'react-native';
 import {
-  isValidChromaFor,
-  isValidSubstepFor,
-  isValidValueFor,
-  validComponents,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
+  ColorUpdate,
+  PartialColor,
+  updateColorSelections,
+  validProperties,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 
 export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
@@ -59,91 +58,47 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const data = useSelector(selectDepthDependentData(props));
   const {complete} = pitMethodSummary(t, data, 'soilColor');
 
-  const {substep: initialSubstep, hue: initialHue} = useMemo(
-    () =>
-      typeof data?.colorHue === 'number'
-        ? renderMunsellHue({
-            colorHue: data?.colorHue,
-            colorChroma: data?.colorChroma,
-          })
-        : {substep: null, hue: null},
-    [data],
-  );
+  const {hue: initialHue, substep: initialSubstep} =
+    typeof data?.colorHue === 'number'
+      ? renderMunsellHue({
+          colorHue: data?.colorHue,
+          colorChroma: data?.colorChroma,
+        })
+      : {substep: null, hue: null};
 
-  const [selectedSubstep, setSelectedSubstep] = useState(
-    initialSubstep ?? null,
-  );
-  const [selectedHue, setSelectedHue] = useState(
-    (initialHue ?? null) as SoilColorHue | null,
-  );
-  const [selectedValue, setSelectedValue] = useState(
-    (data?.colorValue ?? null) as ColorValue | null,
-  );
+  const [color, setColor] = useState<PartialColor>({
+    hue: initialHue as SoilColorHue | null,
+    substep: initialSubstep,
+    value: (data?.colorValue ?? null) as ColorValue | null,
+    chroma: (data?.colorChroma ?? null) as ColorChroma | null,
+  });
 
   const updateColor = useCallback(
-    (
-      color:
-        | {hue: SoilColorHue | null}
-        | {substep: ColorHueSubstep | null}
-        | {value: ColorValue | null},
-    ) => {
-      let hue = selectedHue;
-      let substep = selectedSubstep;
-      let value = selectedValue;
-      let chroma = (data?.colorChroma ?? null) as ColorChroma | 0 | null;
-      if ('value' in color) {
-        value = color.value;
-      } else {
-        if ('hue' in color) {
-          hue = color.hue;
-          if (!isValidSubstepFor({hue: color.hue, substep: selectedSubstep})) {
-            substep = null;
-          }
-          if (hue === 'N') {
-            chroma = 0;
-          }
-        }
-        if ('substep' in color) {
-          substep = color.substep;
-        }
-        if (!isValidValueFor({hue, substep, value})) {
-          value = null;
-        }
-      }
-
-      if (chroma === 0 && hue !== 'N') {
-        chroma = null;
-      } else if (
-        chroma !== 0 &&
-        !isValidChromaFor({hue, substep, value, chroma})
-      ) {
-        chroma = null;
-      }
-
-      setSelectedSubstep(substep);
-      setSelectedHue(hue);
-      setSelectedValue(value);
+    (update: ColorUpdate) => {
+      const newColor = updateColorSelections(color, update);
+      setColor(newColor);
       dispatch(
         updateDepthDependentSoilData({
           siteId: props.siteId,
           depthInterval: props.depthInterval.depthInterval,
           colorHue:
-            hue === 'N'
+            newColor.hue === 'N'
               ? 0
-              : hue && substep
-                ? parseMunsellHue({hue, substep})
+              : newColor.hue && newColor.substep
+                ? parseMunsellHue({
+                    hue: newColor.hue,
+                    substep: newColor.substep,
+                  })
                 : null,
-          colorValue: value,
-          colorChroma: chroma,
+          colorValue: newColor.value,
+          colorChroma: newColor.chroma,
           colorPhotoUsed: false,
         }),
       );
     },
     [
-      selectedHue,
-      selectedSubstep,
-      selectedValue,
-      data?.colorChroma,
+      color,
+      setColor,
       dispatch,
       props.siteId,
       props.depthInterval.depthInterval,
@@ -165,29 +120,26 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
     [updateColor],
   );
 
-  const validOptions = useMemo(
-    () =>
-      validComponents({
-        hue: selectedHue,
-        substep: selectedSubstep,
-        value: selectedValue,
-      }),
-    [selectedHue, selectedSubstep, selectedValue],
+  const onUpdateChroma = useCallback(
+    (chroma: ColorChroma | null) => updateColor({chroma}),
+    [updateColor],
   );
+
+  const validOptions = useMemo(() => validProperties(color), [color]);
 
   return (
     <Column>
       <Row padding="md" rowGap={24} flexWrap="wrap" alignItems="center">
-        {selectedHue !== 'N' && (
+        {color.hue !== 'N' && (
           <>
             <Select
               nullable
               options={validOptions.substeps}
-              value={selectedSubstep}
+              value={color.substep}
               label={t('soil.color.hue')}
               onValueChange={onUpdateSubstep}
               renderValue={value => value.toString()}
-              width={150}
+              {...styles.propertySelect}
             />
             <Box flex={1} />
           </>
@@ -196,23 +148,23 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
           <Select
             nullable
             options={soilColorHues}
-            value={selectedHue}
+            value={color.hue}
             label={t('soil.color.hue')}
             onValueChange={onUpdateHue}
             renderValue={value => value}
-            width={150}
+            {...styles.propertySelect}
           />
         </Animated.View>
-        {selectedHue === 'N' && <Box flex={1} />}
+        {color.hue === 'N' && <Box flex={1} />}
         <Animated.View layout={LinearTransition}>
           <Select
             nullable
-            value={selectedValue}
+            value={color.value}
             options={validOptions.values}
             onValueChange={onUpdateValue}
             renderValue={value => value.toString()}
             label={t('soil.color.value')}
-            width={150}
+            {...styles.propertySelect}
           />
         </Animated.View>
         <Animated.View layout={LinearTransition} style={styles.slash}>
@@ -220,14 +172,15 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
             /
           </Heading>
         </Animated.View>
-        {selectedHue !== 'N' && (
-          <DepthDependentSelect
-            input="colorChroma"
+        {color.chroma !== 0 && (
+          <Select
+            nullable
+            value={color.chroma}
             options={validOptions.chromas}
-            renderValue={(chroma: number) => chroma.toString()}
+            onValueChange={onUpdateChroma}
+            renderValue={chroma => chroma.toString()}
             label={t('soil.color.chroma')}
-            width={150}
-            {...props}
+            {...styles.propertySelect}
           />
         )}
       </Row>
@@ -253,5 +206,8 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
 const styles = StyleSheet.create({
   slash: {
     flex: 1,
+  },
+  propertySelect: {
+    width: 150,
   },
 });

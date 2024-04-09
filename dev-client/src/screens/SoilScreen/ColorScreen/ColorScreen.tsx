@@ -30,7 +30,10 @@ import {
 import {useTranslation} from 'react-i18next';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
+import {
+  isColorComplete,
+  pitMethodSummary,
+} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {Fab} from 'native-base';
@@ -43,7 +46,7 @@ import {useCallback, useMemo} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWokrflow';
+import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
@@ -81,16 +84,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
   }, [props.siteId, props.depthInterval, dispatch]);
 
   const color: MunsellColor | undefined = useMemo(
-    () =>
-      typeof data?.colorHue === 'number' &&
-      typeof data?.colorChroma === 'number' &&
-      typeof data?.colorValue === 'number'
-        ? {
-            colorHue: data?.colorHue,
-            colorChroma: data?.colorChroma,
-            colorValue: data?.colorValue,
-          }
-        : undefined,
+    () => (isColorComplete(data) ? data : undefined),
     [data],
   );
 

@@ -38,6 +38,20 @@ export const renderDepthInterval = (
     : t('soil.depth_interval.bounds', params);
 };
 
+export const isColorComplete = (
+  soilData: DepthDependentSoilData | undefined,
+): soilData is DepthDependentSoilData & {
+  colorHue: number;
+  colorValue: number;
+  colorChroma: number;
+} => {
+  return (
+    typeof soilData?.colorHue === 'number' &&
+    typeof soilData.colorValue === 'number' &&
+    typeof soilData.colorChroma === 'number'
+  );
+};
+
 // TODO: finish this method for other inputs
 export const pitMethodSummary = (
   t: TFunction,
@@ -52,17 +66,8 @@ export const pitMethodSummary = (
     summary = t(`soil.texture.class.${soilData?.texture}`);
   } else if (method === 'rockFragmentVolume' && soilData.rockFragmentVolume) {
     summary = t(`soil.texture.rockFragment.${soilData.rockFragmentVolume}`);
-  } else if (
-    method === 'soilColor' &&
-    typeof soilData.colorHue === 'number' &&
-    typeof soilData.colorValue === 'number' &&
-    typeof soilData.colorChroma === 'number'
-  ) {
-    summary = munsellToString({
-      colorHue: soilData.colorHue,
-      colorValue: soilData.colorValue,
-      colorChroma: soilData.colorChroma,
-    });
+  } else if (method === 'soilColor' && isColorComplete(soilData)) {
+    summary = munsellToString(soilData);
   }
   return {complete: summary !== undefined, summary};
 };

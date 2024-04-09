@@ -15,6 +15,32 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+/*
+ * This file wraps some libraries to allow us to do conversions
+ * within Munsell color space, and between Munsell and RGB color space.
+ *
+ * Background reading on the Munsell color system:
+ *   https://en.wikipedia.org/wiki/Munsell_color_system
+ *
+ * Background reading on the library we use and its data representation:
+ *   https://privet-kitty.github.io/munsell.js/modules.html
+ *
+ * We use the same numeric representation as the munsell library,
+ * i.e. hue is represented by a number in [0, 100], value is in [0, 10],
+ * and chroma is in [0, ∞).
+ *
+ * In the string representation, hues are denoted using 10 major steps,
+ * e.g. R for red, GY for green-yellow, which are subdivided into substeps,
+ * e.g. 2.5R, 5R, to differentiate the hues further. The hue value from [0, 100]
+ * can then be converted to a step/substep pair by dividing/rounding by 10 to
+ * get the step, and taking the remainder modulo 10 to get the substep.
+ *
+ * For chroma values of 0, the special notation N 5/, N 10/, etc is used,
+ * with N standing for "neutral". In this case we don't care about the hue
+ * and the chroma is 0, so both those pieces of information are missing and
+ * the only number left is the value.
+ */
+
 import {mhvcToRgb255, rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
 import {
@@ -23,11 +49,12 @@ import {
   colorValues,
   SoilColorHue,
   NonNeutralColorHue,
+  ColorHueSubstep,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {
-  FLATTENED_SOIL_COLORS,
-  MHVC,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
+  munsellDistance,
+  nearestSoilColor,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 
 export const REFERENCES = {
   CAMERA_TRAX: [210.15, 213.95, 218.42],
@@ -102,9 +129,7 @@ export const getColor = (
   const predicted = rgb255ToMhvc(...sample.rgb);
 
   // take the minimum by distance to predicted color
-  const nearest = FLATTENED_SOIL_COLORS.reduce((a, b) =>
-    munsellDistance(a, predicted) < munsellDistance(b, predicted) ? a : b,
-  );
+  const nearest = nearestSoilColor(predicted);
 
   const nearestResult = {
     colorHue: nearest[0],
@@ -126,26 +151,9 @@ export const getColor = (
   };
 };
 
-// garo's janky formula before they know about CIE color difference
-// to be replaced
-const munsellDistance = (
-  [aHue, aValue, aChroma]: MHVC,
-  [bHue, bValue, bChroma]: MHVC,
-): number => {
-  const valueDistance = Math.abs(aValue - bValue);
-  const chromaDistance = Math.abs(aChroma - bChroma);
-
-  const hueDistance =
-    Math.min(Math.abs(aHue - bHue), 100 - Math.abs(aHue - bHue)) / 10;
-  const minChroma = Math.min(aChroma, bChroma);
-  const hueScaleFactor = minChroma / (1 + minChroma);
-
-  return valueDistance + chromaDistance + hueDistance * hueScaleFactor;
-};
-
 type MunsellHue = {
   hue: SoilColorHue | NonNeutralColorHue;
-  substep?: (typeof colorHueSubsteps)[number];
+  substep: ColorHueSubstep | null;
 };
 
 export const renderMunsellHue = ({
@@ -156,7 +164,7 @@ export const renderMunsellHue = ({
   colorChroma?: number | null;
 }): MunsellHue => {
   if (typeof colorChroma === 'number' && Math.round(colorChroma) === 0) {
-    return {substep: undefined, hue: 'N'} as const;
+    return {substep: null, hue: 'N'} as const;
   }
   if (h === 100) {
     h = 0;
