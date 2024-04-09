@@ -92,6 +92,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       'android.permissions.ACCESS_FINE_LOCATION',
     ],
     blockedPermissions: [
+      'android.permissions.ACTIVITY_RECOGNITION',
       'android.permissions.RECORD_AUDIO',
       'android.permissions.MODIFY_AUDIO_SETTINGS',
       'android.permissions.VIBRATE',
