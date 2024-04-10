@@ -137,7 +137,7 @@ export const getColor = (
     colorChroma: nearest[2],
   };
 
-  if (munsellDistance(nearest, predicted) < 5) {
+  if (munsellDistance(nearest, predicted) < 2) {
     return {result: nearestResult};
   }
 

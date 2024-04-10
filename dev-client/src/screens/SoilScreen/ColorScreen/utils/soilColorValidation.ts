@@ -35,6 +35,8 @@ import {
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {entries} from 'terraso-client-shared/utils';
 import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
+import {LAB, getDeltaE00} from 'delta-e';
+import {mhvcToLab} from 'munsell';
 
 // Munsell hue/value/chroma tuple
 type MunsellHVC = readonly [number, number, number];
@@ -202,19 +204,10 @@ export const nearestSoilColor = (color: MunsellHVC) =>
     munsellDistance(a, color) < munsellDistance(b, color) ? a : b,
   );
 
-// garo's janky formula before they knew about CIE color difference
-// works ok, but should be replaced at some point
-export const munsellDistance = (
-  [aHue, aValue, aChroma]: MunsellHVC,
-  [bHue, bValue, bChroma]: MunsellHVC,
-): number => {
-  const valueDistance = Math.abs(aValue - bValue);
-  const chromaDistance = Math.abs(aChroma - bChroma);
-
-  const hueDistance =
-    Math.min(Math.abs(aHue - bHue), 100 - Math.abs(aHue - bHue)) / 10;
-  const minChroma = Math.min(aChroma, bChroma);
-  const hueScaleFactor = minChroma / (1 + minChroma);
-
-  return valueDistance + chromaDistance + hueDistance * hueScaleFactor;
+const munsellToLAB = (color: MunsellHVC): LAB => {
+  const [L, A, B] = mhvcToLab(...color);
+  return {L, A, B};
 };
+
+export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
+  getDeltaE00(munsellToLAB(a), munsellToLAB(b));
