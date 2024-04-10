@@ -45,7 +45,6 @@ import {mhvcToRgb255, rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
 import {
   nonNeutralColorHues,
-  colorHueSubsteps,
   colorValues,
   SoilColorHue,
   NonNeutralColorHue,
@@ -68,6 +67,12 @@ export type MunsellColor = {
   colorHue: number;
   colorChroma: number;
   colorValue: number;
+};
+
+export type PartialMunsellColor = {
+  colorHue?: number | null;
+  colorChroma?: number | null;
+  colorValue?: number | null;
 };
 
 const COLOR_COUNT = 16;
@@ -151,39 +156,48 @@ export const getColor = (
   };
 };
 
-type MunsellHue = {
-  hue: SoilColorHue | NonNeutralColorHue;
+type PartialHue = {
+  hue: SoilColorHue | NonNeutralColorHue | null;
   substep: ColorHueSubstep | null;
 };
 
 export const renderMunsellHue = ({
-  colorHue: h,
+  colorHue,
   colorChroma,
-}: {
-  colorHue: number;
-  colorChroma?: number | null;
-}): MunsellHue => {
+}: PartialMunsellColor): PartialHue => {
+  if (typeof colorHue !== 'number') {
+    return {substep: null, hue: null};
+  }
   if (typeof colorChroma === 'number' && Math.round(colorChroma) === 0) {
     return {substep: null, hue: 'N'} as const;
   }
-  if (h === 100) {
-    h = 0;
+  if (colorHue === 100) {
+    colorHue = 0;
   }
-  let hueIndex = Math.floor(h / 10);
-  let hueSubstep = Math.round((h % 10) / 2.5);
+  let hueIndex = Math.floor(colorHue / 10);
+  let substep = Math.round((colorHue % 10) / 2.5);
 
-  if (hueSubstep === 0) {
+  if (substep === 0) {
     hueIndex = (hueIndex + 9) % 10;
-    hueSubstep = 4;
+    substep = 4;
   }
-  const hue = nonNeutralColorHues[hueIndex];
-  hueSubstep = (hueSubstep * 5) / 2;
+  substep = (substep * 5) / 2;
 
-  return {substep: hueSubstep as (typeof colorHueSubsteps)[number], hue};
+  return {
+    substep: substep as ColorHueSubstep,
+    hue: nonNeutralColorHues[hueIndex],
+  };
 };
 
-export const parseMunsellHue = ({hue, substep: hueSubstep}: MunsellHue) =>
-  (hue === 'N' ? 0 : nonNeutralColorHues.indexOf(hue)) * 10 + (hueSubstep ?? 0);
+export const parseMunsellHue = ({hue, substep}: PartialHue): number | null => {
+  if (hue === null) {
+    return null;
+  }
+  if (hue === 'N') {
+    return 0;
+  }
+  return nonNeutralColorHues.indexOf(hue) * 10 + (substep ?? 0);
+};
 
 export const munsellToString = (color: MunsellColor) => {
   const {substep: hueSubstep, hue} = renderMunsellHue(color);

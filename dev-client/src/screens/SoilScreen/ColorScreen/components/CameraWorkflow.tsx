@@ -24,10 +24,10 @@ import {
 import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {Pressable} from 'react-native';
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
+import {Photo} from 'terraso-mobile-client/components/ImagePicker';
+import {PickImageButton} from 'terraso-mobile-client/components/inputs/PickImageButton';
 
 export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
@@ -51,27 +51,7 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   return (
     <Column>
       <Box alignItems="center" paddingVertical="lg">
-        <ImagePicker onPick={onPickImage}>
-          {onOpen => (
-            <Pressable onPress={onOpen}>
-              <Box
-                borderRadius="24px"
-                width="180px"
-                height="180px"
-                justifyContent="center"
-                alignItems="center"
-                borderStyle="dashed"
-                borderWidth="2px"
-                borderColor="grey.700">
-                <Icon
-                  name="add-photo-alternate"
-                  color="action.active"
-                  size="lg"
-                />
-              </Box>
-            </Pressable>
-          )}
-        </ImagePicker>
+        <PickImageButton onPick={onPickImage} />
       </Box>
       <Column
         backgroundColor="grey.300"

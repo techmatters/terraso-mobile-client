@@ -59,7 +59,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
     state => state.preferences.colorWorkflow,
   );
   const siteWorkflow =
-    typeof data?.colorPhotoUsed !== 'boolean'
+    typeof data.colorPhotoUsed !== 'boolean'
       ? undefined
       : data.colorPhotoUsed
         ? 'CAMERA'

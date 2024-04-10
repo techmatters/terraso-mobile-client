@@ -39,7 +39,7 @@ export const SwitchWorkflowButton = ({
     state => state.preferences.colorWorkflow,
   );
   const siteWorkflow =
-    typeof data?.colorPhotoUsed !== 'boolean'
+    typeof data.colorPhotoUsed !== 'boolean'
       ? undefined
       : data.colorPhotoUsed
         ? 'CAMERA'

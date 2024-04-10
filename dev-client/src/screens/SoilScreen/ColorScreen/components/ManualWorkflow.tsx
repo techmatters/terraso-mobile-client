@@ -46,8 +46,8 @@ import {
 import Animated, {LinearTransition} from 'react-native-reanimated';
 import {StyleSheet} from 'react-native';
 import {
-  ColorUpdate,
-  PartialColor,
+  ColorPropertyUpdate,
+  ColorProperties,
   updateColorSelections,
   validProperties,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
@@ -58,38 +58,24 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const data = useSelector(selectDepthDependentData(props));
   const {complete} = pitMethodSummary(t, data, 'soilColor');
 
-  const {hue: initialHue, substep: initialSubstep} =
-    typeof data?.colorHue === 'number'
-      ? renderMunsellHue({
-          colorHue: data?.colorHue,
-          colorChroma: data?.colorChroma,
-        })
-      : {substep: null, hue: null};
+  const {hue: initialHue, substep: initialSubstep} = renderMunsellHue(data);
 
-  const [color, setColor] = useState<PartialColor>({
+  const [color, setColor] = useState<ColorProperties>({
     hue: initialHue as SoilColorHue | null,
     substep: initialSubstep,
-    value: (data?.colorValue ?? null) as ColorValue | null,
-    chroma: (data?.colorChroma ?? null) as ColorChroma | null,
+    value: (data.colorValue ?? null) as ColorValue | null,
+    chroma: (data.colorChroma ?? null) as ColorChroma | null,
   });
 
   const updateColor = useCallback(
-    (update: ColorUpdate) => {
+    (update: ColorPropertyUpdate) => {
       const newColor = updateColorSelections(color, update);
       setColor(newColor);
       dispatch(
         updateDepthDependentSoilData({
           siteId: props.siteId,
           depthInterval: props.depthInterval.depthInterval,
-          colorHue:
-            newColor.hue === 'N'
-              ? 0
-              : newColor.hue && newColor.substep
-                ? parseMunsellHue({
-                    hue: newColor.hue,
-                    substep: newColor.substep,
-                  })
-                : null,
+          colorHue: parseMunsellHue(newColor),
           colorValue: newColor.value,
           colorChroma: newColor.chroma,
           colorPhotoUsed: false,

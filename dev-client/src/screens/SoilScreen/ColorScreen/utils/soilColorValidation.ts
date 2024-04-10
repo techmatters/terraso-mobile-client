@@ -41,14 +41,14 @@ import {mhvcToLab} from 'munsell';
 // Munsell hue/value/chroma tuple
 type MunsellHVC = readonly [number, number, number];
 
-export type PartialColor = {
+export type ColorProperties = {
   hue: SoilColorHue | null;
   substep: ColorHueSubstep | null;
   value: ColorValue | null;
   chroma: ColorChroma | 0 | null;
 };
 
-export type ColorUpdate =
+export type ColorPropertyUpdate =
   | {hue: SoilColorHue | null}
   | {substep: ColorHueSubstep | null}
   | {value: ColorValue | null}
@@ -61,9 +61,9 @@ export type ValidProperties = {
 };
 
 export const updateColorSelections = (
-  color: PartialColor,
-  update: ColorUpdate,
-): PartialColor => {
+  color: ColorProperties,
+  update: ColorPropertyUpdate,
+): ColorProperties => {
   color = {...color, ...update};
 
   if ('hue' in update && update.hue === 'N') {
@@ -87,7 +87,7 @@ export const updateColorSelections = (
 // given (possibly unselected) values for Munsell hue, hue substep, and value
 // returns a set of possible values for hue substep, value, and chroma based on
 // the SOIL_COLORS table. note that we take hue
-export const validProperties = (color: PartialColor): ValidProperties => {
+export const validProperties = (color: ColorProperties): ValidProperties => {
   if (color.hue === null) {
     return {
       substeps: colorHueSubsteps,
@@ -150,7 +150,7 @@ export const validProperties = (color: PartialColor): ValidProperties => {
   return {substeps, values, chromas};
 };
 
-export const isSubstepValid = (color: PartialColor) => {
+export const isSubstepValid = (color: ColorProperties) => {
   return (
     color.substep === null ||
     validProperties({
@@ -162,7 +162,7 @@ export const isSubstepValid = (color: PartialColor) => {
   );
 };
 
-export const isValueValid = (color: PartialColor) => {
+export const isValueValid = (color: ColorProperties) => {
   return (
     color.value === null ||
     validProperties({...color, value: null, chroma: null}).values.includes(
@@ -171,7 +171,7 @@ export const isValueValid = (color: PartialColor) => {
   );
 };
 
-export const isChromaValid = (color: PartialColor) => {
+export const isChromaValid = (color: ColorProperties) => {
   if (color.hue === 'N') {
     return color.chroma === 0;
   } else if (color.chroma === 0) {
