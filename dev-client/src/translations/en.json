@@ -617,6 +617,12 @@
   },
   "slope": {
     "title": "Slope",
+    "info": {
+      "title": "Slope",
+      "description1": "Describe the characteristics of the slope of the land on which the site is located.",
+      "description2": "Instructions on how to collect each data input are available by tapping on the input name.",
+      "description3": "Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
+    },
     "steepness": {
       "short_title": "Steepness",
       "long_title": "Slope Steepness",

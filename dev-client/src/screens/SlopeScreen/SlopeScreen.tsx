@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useCallback} from 'react';
+import {useCallback, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
@@ -33,12 +32,25 @@ import {
   selectSoilData,
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
+import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {SlopeInfoModal} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoModal';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
   const soilData = useSelector(selectSoilData(siteId));
   const required = useSiteProjectSoilSettings(siteId)?.slopeRequired ?? false;
   const navigation = useNavigation();
+
+  const infoBottomSheetRef = useRef<BottomSheetModal>(null);
+  const onInfoPress = useCallback(
+    () => infoBottomSheetRef.current?.present(),
+    [infoBottomSheetRef],
+  );
+  const onInfoClose = useCallback(
+    () => infoBottomSheetRef.current?.dismiss(),
+    [infoBottomSheetRef],
+  );
 
   const steepnessValue = renderSteepness(t, soilData);
   const shapeValue = renderShape(t, soilData);
@@ -54,26 +66,33 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
   );
 
   return (
-    <Column space="1px">
-      <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
-        <Heading variant="h6">{t('slope.title')}</Heading>
-        {/* TODO */}
-        <FormTooltip icon="info">Unimplemented tooltip</FormTooltip>
-      </Row>
-      <DataInputSummary
-        required={required}
-        complete={steepnessValue !== undefined}
-        label={t('slope.steepness.short_title').toLocaleUpperCase()}
-        value={steepnessValue}
-        onPress={onSteepness}
-      />
-      <DataInputSummary
-        required={required}
-        complete={shapeValue !== undefined}
-        label={t('slope.shape.title').toLocaleUpperCase()}
-        value={shapeValue}
-        onPress={onShape}
-      />
-    </Column>
+    <>
+      <Column space="1px">
+        <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
+          <Heading variant="h6">{t('slope.title')}</Heading>
+          <IconButton
+            name="info"
+            onPress={onInfoPress}
+            size="md"
+            _icon={{color: 'primary'}}
+          />
+        </Row>
+        <DataInputSummary
+          required={required}
+          complete={steepnessValue !== undefined}
+          label={t('slope.steepness.short_title').toLocaleUpperCase()}
+          value={steepnessValue}
+          onPress={onSteepness}
+        />
+        <DataInputSummary
+          required={required}
+          complete={shapeValue !== undefined}
+          label={t('slope.shape.title').toLocaleUpperCase()}
+          value={shapeValue}
+          onPress={onShape}
+        />
+        <SlopeInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
+      </Column>
+    </>
   );
 };
