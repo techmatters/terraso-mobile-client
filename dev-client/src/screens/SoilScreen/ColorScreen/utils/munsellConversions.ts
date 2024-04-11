@@ -46,9 +46,8 @@ import quantize from 'quantize';
 import {
   nonNeutralColorHues,
   colorValues,
-  SoilColorHue,
-  NonNeutralColorHue,
   ColorHueSubstep,
+  ColorHue,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {
   munsellDistance,
@@ -157,7 +156,7 @@ export const getColor = (
 };
 
 type PartialHue = {
-  hue: SoilColorHue | NonNeutralColorHue | null;
+  hue: ColorHue | null;
   substep: ColorHueSubstep | null;
 };
 
