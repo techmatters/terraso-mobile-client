@@ -17,22 +17,25 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
-
-type Props = {siteId: string} & Pick<
-  React.ComponentProps<typeof DataInputSummary>,
-  'required' | 'complete'
->;
-
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   Column,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSoilData,
+  useSiteProjectSoilSettings,
+} from 'terraso-client-shared/selectors';
 
-export const SoilSurfaceStatus = ({required, complete, siteId}: Props) => {
+type Props = {siteId: string};
+
+export const SoilSurfaceStatus = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const projectSettings = useSiteProjectSoilSettings(siteId);
+  const {surfaceCracksSelect} = useSelector(selectSoilData(siteId));
 
   const onPress = useCallback(() => {
     navigation.push('SOIL_SURFACE', {siteId});
@@ -44,9 +47,10 @@ export const SoilSurfaceStatus = ({required, complete, siteId}: Props) => {
         <Heading variant="h6">{t('soil.surface')}</Heading>
       </Row>
       <DataInputSummary
-        required={required}
-        complete={complete}
+        required={projectSettings?.verticalCrackingRequired ?? false}
+        complete={Boolean(surfaceCracksSelect)}
         label={t('soil.collection_method.verticalCracking')}
+        value={t(`soil.vertical_cracking.value.${surfaceCracksSelect}`)}
         onPress={onPress}
       />
     </Column>

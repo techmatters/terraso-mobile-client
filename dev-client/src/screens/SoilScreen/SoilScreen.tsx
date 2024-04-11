@@ -34,6 +34,7 @@ import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/compon
 import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
 import {
   selectSoilData,
+  useSiteProjectSoilSettings,
   useSiteSoilIntervals,
 } from 'terraso-client-shared/selectors';
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
@@ -48,14 +49,11 @@ import {
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
   const soilData = useSelector(selectSoilData(siteId));
-  const project = useSelector(state => {
-    const projectId = state.site.sites[siteId].projectId;
-    return projectId ? state.soilId.projectSettings[projectId] : undefined;
-  });
+  const projectSettings = useSiteProjectSoilSettings(siteId);
 
   const projectRequiredInputs = useMemo(() => {
-    return soilPitMethods.filter(m => (project ?? {})[methodRequired(m)]);
-  }, [project]);
+    return soilPitMethods.filter(m => projectSettings?.[methodRequired(m)]);
+  }, [projectSettings]);
 
   const allIntervals = useSiteSoilIntervals(siteId);
   const existingIntervals = useMemo(
@@ -81,11 +79,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
 
   return (
     <ScrollView backgroundColor="grey.300">
-      <SoilSurfaceStatus
-        required={project?.verticalCrackingRequired ?? false}
-        complete={Boolean(soilData?.surfaceCracksSelect)}
-        siteId={siteId}
-      />
+      <SoilSurfaceStatus siteId={siteId} />
       <Box height="16px" />
       <Row
         backgroundColor="background.default"
@@ -93,7 +87,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         py="12px"
         justifyContent="space-between">
         <Heading variant="h6">{t('soil.pit')}</Heading>
-        {!project && (
+        {!projectSettings && (
           <BottomSheetModal
             Header={
               <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
