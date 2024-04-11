@@ -48,23 +48,7 @@ import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-
-export type CalloutState =
-  | {
-      kind: 'site';
-      siteId: string;
-    }
-  | {
-      kind: 'location';
-      showCallout: boolean;
-      coords: Coords;
-    }
-  | {
-      kind: 'site_cluster';
-      siteIds: string[];
-      coords: Coords;
-    }
-  | {kind: 'none'};
+import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 
 type HomeScreenRef = {
   showSiteOnMap: (site: Site) => void;

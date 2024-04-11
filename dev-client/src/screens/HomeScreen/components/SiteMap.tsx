@@ -28,7 +28,7 @@ import {
 import {useTheme} from 'native-base';
 import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 import {
   coordsToPosition,
   positionToCoords,

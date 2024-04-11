@@ -19,7 +19,7 @@ import React, {useCallback} from 'react';
 import Mapbox from '@rnmapbox/maps';
 import {Divider, FlatList} from 'native-base';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';

@@ -18,7 +18,7 @@
 import {useCallback} from 'react';
 import {Pressable} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
   Column,
