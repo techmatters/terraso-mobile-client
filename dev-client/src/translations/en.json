@@ -488,6 +488,17 @@
     "texture": {
       "title": "Soil Texture",
       "label": "Texture",
+      "info": {
+        "title": "Soil Texture",
+        "description1": "Soil is made up of particles of different sizes. Once you remove all large particles (anything over 2mm or 1/16” in diameter), what is left is a mixture of sand, silt, and clay.",
+        "description2": "<0>Soil texture</0> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.",
+        "description3": "Soil texture determines many important characteristics of your land, including:",
+        "point1": "How much water the soil can hold",
+        "point2": "How quickly water can be absorbed into and percolate through the soil",
+        "point3": "How easily soil erodes when exposed to wind or water",
+        "point4": "How soil responds to management activities (for example, compaction from tillage operations)",
+        "description4": "Knowing the soil texture also helps you more accurately identify your soil."
+      },
       "guide": {
         "title": "Texture Guide",
         "ball_help": "Does the soil form a ball?",
@@ -513,6 +524,12 @@
       "clay_label": "Percent clay",
       "clay_help": "0–100%",
       "fragment_title": "Rock Fragment Volume",
+      "fragment": {
+        "info": {
+          "title": "",
+          "description": "Rock fragment volume is a measurement of how much of the soil volume is taken up by rocks, which is defined as anything larger than 2mm (1/16”) in diameter.\n\nThis can be estimated visually by comparing the volume of the soil before and after removing the rocks, as well as by comparing the volume of rocks removed to the volume of the remaining soil.\n\nAlternatively, for a more precise measurement, you can place the rocks from the sample in a bucket with a known volume of water and measure the change in volume. Then divide that volume by the volume of the original soil sample to get a percentage."
+        }
+      },
       "class": {
         "CLAY": "Clay",
         "CLAY_LOAM": "Clay Loam",
