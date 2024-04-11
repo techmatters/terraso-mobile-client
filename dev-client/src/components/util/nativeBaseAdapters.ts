@@ -103,6 +103,7 @@ const nativeBaseStyleProps = {
   justifyContent: 'justifyContent',
   position: 'position',
   flex: 'flex',
+  flexWrap: 'flexWrap',
   flexGrow: 'flexGrow',
   flexDirection: 'flexDirection',
   flexShrink: 'flexShrink',
@@ -115,6 +116,8 @@ const nativeBaseStyleProps = {
   borderStyle: 'borderStyle',
   aspectRatio: 'aspectRatio',
   overflow: 'overflow',
+  columnGap: 'columnGap',
+  rowGap: 'rowGap',
 };
 
 const nativeBaseColorProps = {
@@ -165,7 +168,7 @@ type PropsOf<PM extends PropMappers> = {
   [K in keyof PM]?: Parameters<PM[K]>[0];
 };
 
-type NBDimensionValue =
+export type NBDimensionValue =
   | `${number}px`
   | number
   | NonNullable<DimensionValue>

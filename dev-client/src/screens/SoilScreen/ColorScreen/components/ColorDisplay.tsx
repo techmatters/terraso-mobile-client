@@ -32,22 +32,22 @@ import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal
 type Props = {
   color: MunsellColor;
   onDelete?: () => void;
-  dimensions: number;
+  variant: keyof typeof variants;
 };
-export const ColorDisplay = ({dimensions, onDelete, color}: Props) => {
+export const ColorDisplay = ({onDelete, color, variant}: Props) => {
   const {t} = useTranslation();
 
   const rgb = munsellToRGB(color);
   const bgColor = rgb ? `rgb(${rgb.join(', ')})` : undefined;
   return (
     <Column alignItems="center">
-      <Text variant="body1-strong">{munsellToString(color)}</Text>
-      <Box height="8px" />
-      <Box
-        width={dimensions}
-        height={dimensions}
-        backgroundColor={bgColor}
-        borderWidth="2px">
+      {variant !== 'sm' && (
+        <>
+          <Text variant="body1-strong">{munsellToString(color)}</Text>
+          <Box height="sm" />
+        </>
+      )}
+      <Box backgroundColor={bgColor} {...variants[variant]}>
         {onDelete && (
           <ConfirmModal
             title={t('soil.color.confirm_delete.title')}
@@ -73,3 +73,21 @@ export const ColorDisplay = ({dimensions, onDelete, color}: Props) => {
     </Column>
   );
 };
+
+const variants = {
+  sm: {
+    width: '20px',
+    height: '20px',
+    borderWidth: '1px',
+  },
+  md: {
+    width: '100px',
+    height: '100px',
+    borderWidth: '2px',
+  },
+  lg: {
+    width: '180px',
+    height: '180px',
+    borderWidth: '2px',
+  },
+} as const;

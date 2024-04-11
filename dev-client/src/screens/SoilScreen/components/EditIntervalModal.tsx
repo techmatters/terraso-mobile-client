@@ -53,7 +53,7 @@ import {
   Heading,
   Column,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
+import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 
 type EditIntervalFormInput = IntervalFormInput &

@@ -25,7 +25,6 @@ import {
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 import {
   ModalHandle,
-  ModalProps,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -52,7 +51,7 @@ export type PhotoWithBase64 = {
 export const decodeBase64Jpg = (base64: string) =>
   decode(Buffer.from(base64, 'base64'), {useTArray: true});
 
-type Props = Omit<ModalProps, 'trigger'> & {
+type Props = {
   onPick: (result: Photo) => void;
   children: ModalTrigger;
 };

@@ -15,43 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import {useMemo, useState} from 'react';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {Photo} from 'terraso-mobile-client/components/ImagePicker';
-import {CropResult} from 'terraso-mobile-client/screens/ColorAnalysisScreen/components/ColorCropScreen';
 import {
   Stack,
   screens,
-} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
+} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/screenDefinitions';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
+import {
+  ColorAnalysisContext,
+  ColorAnalysisContextState,
+} from 'terraso-mobile-client/screens/ColorAnalysisScreen//context/colorAnalysisContext';
 
 export type ColorAnalysisProps = {
   photo: Photo;
   pitProps: SoilPitInputScreenProps;
 };
-
-type ColorAnalysisContextState = {
-  reference?: CropResult;
-  soil?: CropResult;
-};
-
-type ColorAnalysisContextType = ColorAnalysisProps & {
-  state: ColorAnalysisContextState;
-  setState: Dispatch<SetStateAction<ColorAnalysisContextState>>;
-};
-
-const ColorAnalysisContext = createContext<
-  ColorAnalysisContextType | undefined
->(undefined);
-
-export const useColorAnalysisContext = () => useContext(ColorAnalysisContext)!;
 
 export const ColorAnalysisScreen = ({photo, pitProps}: ColorAnalysisProps) => {
   const [state, setState] = useState<ColorAnalysisContextState>({});

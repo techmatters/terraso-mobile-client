@@ -15,13 +15,44 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+/*
+ * This file wraps some libraries to allow us to do conversions
+ * within Munsell color space, and between Munsell and RGB color space.
+ *
+ * Background reading on the Munsell color system:
+ *   https://en.wikipedia.org/wiki/Munsell_color_system
+ *
+ * Background reading on the library we use and its data representation:
+ *   https://privet-kitty.github.io/munsell.js/modules.html
+ *
+ * We use the same numeric representation as the munsell library,
+ * i.e. hue is represented by a number in [0, 100], value is in [0, 10],
+ * and chroma is in [0, ∞).
+ *
+ * In the string representation, hues are denoted using 10 major steps,
+ * e.g. R for red, GY for green-yellow, which are subdivided into substeps,
+ * e.g. 2.5R, 5R, to differentiate the hues further. The hue value from [0, 100]
+ * can then be converted to a step/substep pair by dividing/rounding by 10 to
+ * get the step, and taking the remainder modulo 10 to get the substep.
+ *
+ * For chroma values of 0, the special notation N 5/, N 10/, etc is used,
+ * with N standing for "neutral". In this case we don't care about the hue
+ * and the chroma is 0, so both those pieces of information are missing and
+ * the only number left is the value.
+ */
+
 import {mhvcToRgb255, rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
 import {
-  colorHueSubsteps,
-  colorHues,
+  nonNeutralColorHues,
   colorValues,
+  ColorHueSubstep,
+  ColorHue,
 } from 'terraso-client-shared/soilId/soilIdTypes';
+import {
+  munsellDistance,
+  nearestSoilColor,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 
 export const REFERENCES = {
   CAMERA_TRAX: [210.15, 213.95, 218.42],
@@ -35,6 +66,12 @@ export type MunsellColor = {
   colorHue: number;
   colorChroma: number;
   colorValue: number;
+};
+
+export type PartialMunsellColor = {
+  colorHue?: number | null;
+  colorChroma?: number | null;
+  colorValue?: number | null;
 };
 
 const COLOR_COUNT = 16;
@@ -93,56 +130,86 @@ export const getColor = (
   };
 
   const sample = correctSampleRGB(paletteCard[0], paletteSample[0]);
-  const [colorHue, colorValue, colorChroma] = rgb255ToMhvc(...sample.rgb);
-  const munsell: MunsellColor = {colorHue, colorValue, colorChroma};
+  const predicted = rgb255ToMhvc(...sample.rgb);
 
-  if (isValidSoilColor(munsell)) {
-    return {result: munsell};
+  // take the minimum by distance to predicted color
+  const nearest = nearestSoilColor(predicted);
+
+  const nearestResult = {
+    colorHue: nearest[0],
+    colorValue: nearest[1],
+    colorChroma: nearest[2],
+  };
+
+  if (munsellDistance(nearest, predicted) < 2) {
+    return {result: nearestResult};
   }
 
   return {
-    nearestValidResult: {...munsell, colorChroma: 8},
-    invalidResult: munsell,
+    nearestValidResult: nearestResult,
+    invalidResult: {
+      colorHue: predicted[0],
+      colorValue: predicted[1],
+      colorChroma: predicted[2],
+    },
   };
 };
 
-export const isValidSoilColor = ({colorChroma}: MunsellColor) =>
-  colorChroma < 8.5;
-
-export const renderMunsellHue = (h: number) => {
-  if (h === 100) {
-    h = 0;
-  }
-  let hueIndex = Math.floor(h / 10);
-  let hueSubstep = Math.round((h % 10) / 2.5);
-
-  if (hueSubstep === 0) {
-    hueIndex = (hueIndex + 9) % 10;
-    hueSubstep = 4;
-  }
-  const hue = colorHues[hueIndex];
-  hueSubstep = (hueSubstep * 5) / 2;
-
-  return {hueSubstep: hueSubstep as (typeof colorHueSubsteps)[number], hue};
+type PartialHue = {
+  hue: ColorHue | null;
+  substep: ColorHueSubstep | null;
 };
 
-export const parseMunsellHue = ({
-  hue,
-  hueSubstep,
-}: ReturnType<typeof renderMunsellHue>) =>
-  colorHues.indexOf(hue) * 10 + hueSubstep;
+export const renderMunsellHue = ({
+  colorHue,
+  colorChroma,
+}: PartialMunsellColor): PartialHue => {
+  if (typeof colorHue !== 'number') {
+    return {substep: null, hue: null};
+  }
+  if (typeof colorChroma === 'number' && Math.round(colorChroma) === 0) {
+    return {substep: null, hue: 'N'} as const;
+  }
+  if (colorHue === 100) {
+    colorHue = 0;
+  }
+  let hueIndex = Math.floor(colorHue / 10);
+  let substep = Math.round((colorHue % 10) / 2.5);
 
-export const munsellToString = ({
-  colorHue: h,
-  colorValue: v,
-  colorChroma: c,
-}: MunsellColor) => {
-  const {hueSubstep, hue} = renderMunsellHue(h);
-  const value = [...colorValues].sort(
-    (v1, v2) => Math.abs(v1 - v) - Math.abs(v2 - v),
-  )[0];
+  if (substep === 0) {
+    hueIndex = (hueIndex + 9) % 10;
+    substep = 4;
+  }
+  substep = (substep * 5) / 2;
+
+  return {
+    substep: substep as ColorHueSubstep,
+    hue: nonNeutralColorHues[hueIndex],
+  };
+};
+
+export const parseMunsellHue = ({hue, substep}: PartialHue): number | null => {
+  if (hue === null) {
+    return null;
+  }
+  if (hue === 'N') {
+    return 0;
+  }
+  return nonNeutralColorHues.indexOf(hue) * 10 + (substep ?? 0);
+};
+
+export const munsellToString = (color: MunsellColor) => {
+  const {substep: hueSubstep, hue} = renderMunsellHue(color);
+  const {colorValue: v, colorChroma: c} = color;
+  const value = [...colorValues].reduce((v1, v2) =>
+    Math.abs(v1 - v) < Math.abs(v2 - v) ? v1 : v2,
+  );
 
   const chroma = Math.round(c);
+
+  if (chroma === 0) {
+    return `N ${value}/`;
+  }
 
   return `${hueSubstep}${hue} ${value}/${chroma}`;
 };
