@@ -48,7 +48,12 @@ import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
+import {
+  CalloutState,
+  noneCallout,
+  siteCallout,
+  locationCallout,
+} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 
 type HomeScreenRef = {
   showSiteOnMap: (site: Site) => void;
@@ -71,9 +76,7 @@ export const HomeScreen = memo(() => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
-  const [calloutState, setCalloutState] = useState<CalloutState>({
-    kind: 'none',
-  });
+  const [calloutState, setCalloutState] = useState<CalloutState>(noneCallout());
   const currentUserID = useSelector(
     state => state.account.currentUser?.data?.id,
   );
@@ -87,7 +90,7 @@ export const HomeScreen = memo(() => {
   const showSiteOnMap = useCallback(
     (targetSite: Site) => {
       mapRef.current?.moveToPoint(targetSite);
-      setCalloutState({kind: 'site', siteId: targetSite.id});
+      setCalloutState(siteCallout(targetSite.id));
       siteListBottomSheetRef.current?.collapse();
     },
     [setCalloutState],
@@ -130,7 +133,7 @@ export const HomeScreen = memo(() => {
 
   const searchFunction = useCallback(
     (coords: Coords) => {
-      setCalloutState({kind: 'location', coords});
+      setCalloutState(locationCallout(coords));
       mapRef.current?.moveToPoint(coords);
     },
     [setCalloutState, mapRef],

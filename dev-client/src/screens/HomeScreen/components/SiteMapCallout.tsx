@@ -19,13 +19,20 @@ import React, {useCallback} from 'react';
 import Mapbox from '@rnmapbox/maps';
 import {Divider, FlatList} from 'native-base';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
+import {
+  CalloutState,
+  noneCallout,
+  getCalloutCoords,
+  getCalloutSite,
+  getCalloutSites,
+} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/HomeScreen/components/SiteClusterCalloutListItem';
 import {TemporarySiteCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporarySiteCallout';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 
 type Props = {
   sites: Record<string, Site>;
@@ -34,45 +41,13 @@ type Props = {
 };
 
 export const SiteMapCallout = ({sites, state, setState}: Props) => {
-  const closeCallout = useCallback(() => setState({kind: 'none'}), [setState]);
-
-  if (state.kind === 'none') {
+  const coords = getCalloutCoords(state, sites);
+  if (!coords) {
     return null;
   }
 
-  const coords = state.kind === 'site' ? sites[state.siteId] : state.coords;
-
-  let child: React.ComponentProps<typeof Mapbox.MarkerView>['children'];
-
-  if (state.kind === 'site') {
-    child = (
-      <SiteCard
-        site={sites[state.siteId]}
-        buttons={<CardCloseButton onPress={closeCallout} />}
-        isPopover={true}
-      />
-    );
-  } else if (state.kind === 'site_cluster') {
-    child = (
-      <Card
-        width="270px"
-        buttons={<CardCloseButton onPress={closeCallout} />}
-        isPopover={true}>
-        <FlatList
-          data={state.siteIds}
-          keyExtractor={id => id}
-          renderItem={({item: id}) => (
-            <SiteClusterCalloutListItem site={sites[id]} setState={setState} />
-          )}
-          ItemSeparatorComponent={() => <Divider my="10px" />}
-        />
-      </Card>
-    );
-  } else if (state.kind === 'location') {
-    child = (
-      <TemporarySiteCallout coords={coords} closeCallout={closeCallout} />
-    );
-  } else {
+  let child = CalloutChild(coords, {sites, state, setState});
+  if (!child) {
     return null;
   }
 
@@ -84,4 +59,52 @@ export const SiteMapCallout = ({sites, state, setState}: Props) => {
       {child}
     </Mapbox.MarkerView>
   );
+};
+
+const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
+  const closeCallout = useCallback(() => setState(noneCallout()), [setState]);
+
+  switch (state.kind) {
+    case 'site':
+      const site = getCalloutSite(state, sites);
+      if (!site) {
+        return null;
+      }
+
+      return (
+        <SiteCard
+          site={site}
+          buttons={<CardCloseButton onPress={closeCallout} />}
+          isPopover={true}
+        />
+      );
+    case 'site_cluster':
+      const clusterSites = getCalloutSites(state, sites);
+      if (!clusterSites) {
+        return null;
+      }
+
+      return (
+        <Card
+          width="270px"
+          buttons={<CardCloseButton onPress={closeCallout} />}
+          isPopover={true}>
+          <FlatList
+            data={Object.keys(clusterSites)}
+            keyExtractor={id => id}
+            renderItem={({item: id}) => (
+              <SiteClusterCalloutListItem
+                site={clusterSites[id]}
+                setState={setState}
+              />
+            )}
+            ItemSeparatorComponent={() => <Divider my="10px" />}
+          />
+        </Card>
+      );
+    default:
+      return (
+        <TemporarySiteCallout coords={coords} closeCallout={closeCallout} />
+      );
+  }
 };
