@@ -24,7 +24,6 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
-import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
@@ -50,13 +49,13 @@ import {
   ColorProperties,
   updateColorSelections,
   validProperties,
+  isColorComplete,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 
 export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const data = useSelector(selectDepthDependentData(props));
-  const {complete} = pitMethodSummary(t, data, 'soilColor');
 
   const {hue: initialHue, substep: initialSubstep} = renderMunsellHue(data);
 
@@ -170,7 +169,7 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
           />
         )}
       </Row>
-      {!complete && (
+      {!isColorComplete(data) && (
         <Column
           paddingHorizontal="md"
           paddingVertical="lg"

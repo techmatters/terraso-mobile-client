@@ -213,17 +213,14 @@ export const ColorAnalysisHomeScreen = () => {
           <Row justifyContent="space-around" alignSelf="stretch">
             <Column alignItems="center">
               <ColorDisplay
-                dimensions={100}
+                variant="md"
                 color={colorResult.nearestValidResult}
               />
               <Box height="sm" />
               <Text>{t('soil.color.unexpected_color.suggestion')}</Text>
             </Column>
             <Column alignItems="center">
-              <ColorDisplay
-                dimensions={100}
-                color={colorResult.invalidResult}
-              />
+              <ColorDisplay variant="md" color={colorResult.invalidResult} />
               <Box height="sm" />
               <Text>{t('soil.color.unexpected_color.your_result')}</Text>
             </Column>

@@ -168,7 +168,7 @@ type PropsOf<PM extends PropMappers> = {
   [K in keyof PM]?: Parameters<PM[K]>[0];
 };
 
-type NBDimensionValue =
+export type NBDimensionValue =
   | `${number}px`
   | number
   | NonNullable<DimensionValue>

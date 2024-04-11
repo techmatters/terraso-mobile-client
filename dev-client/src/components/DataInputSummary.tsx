@@ -26,7 +26,7 @@ type Props = {
   required: boolean;
   complete: boolean;
   label: string;
-  value?: string;
+  value?: React.ReactNode;
   onPress: () => void;
 };
 export const DataInputSummary = ({
@@ -58,7 +58,7 @@ export const DataInputSummary = ({
         {label}
       </Text>
       <Box flex={1} />
-      <Text variant="body1">{value}</Text>
+      {typeof value === 'string' ? <Text variant="body1">{value}</Text> : value}
     </Row>
   </Pressable>
 );

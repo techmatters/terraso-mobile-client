@@ -23,8 +23,8 @@ import {updatePreferences} from 'terraso-mobile-client/model/preferences/prefere
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
-import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
+import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 
 export const SwitchWorkflowButton = ({
   siteId,
@@ -34,7 +34,6 @@ export const SwitchWorkflowButton = ({
   Omit<React.ComponentProps<typeof Button>, 'onPress'>) => {
   const {t} = useTranslation();
   const data = useSelector(selectDepthDependentData({siteId, depthInterval}));
-  const {complete} = pitMethodSummary(t, data, 'soilColor');
   const preferencesWorkflow = useSelector(
     state => state.preferences.colorWorkflow,
   );
@@ -57,7 +56,7 @@ export const SwitchWorkflowButton = ({
       updateDepthDependentSoilData({
         siteId,
         depthInterval: depthInterval.depthInterval,
-        ...(complete
+        ...(isColorComplete(data)
           ? {
               colorHue: null,
               colorValue: null,
@@ -67,7 +66,7 @@ export const SwitchWorkflowButton = ({
         colorPhotoUsed: newWorkflow === 'CAMERA',
       }),
     );
-  }, [dispatch, siteId, depthInterval.depthInterval, workflow, complete]);
+  }, [dispatch, siteId, depthInterval.depthInterval, workflow, data]);
 
   const button = (onPress: () => void) => (
     <Button _text={{textTransform: 'uppercase'}} onPress={onPress} {...props}>
@@ -77,7 +76,7 @@ export const SwitchWorkflowButton = ({
     </Button>
   );
 
-  return complete ? (
+  return isColorComplete(data) ? (
     <ConfirmModal
       title={t('soil.color.confirm_delete.title')}
       body={t('soil.color.confirm_delete.body')}

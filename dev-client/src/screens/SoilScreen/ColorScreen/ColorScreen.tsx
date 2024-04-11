@@ -30,10 +30,6 @@ import {
 import {useTranslation} from 'react-i18next';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {
-  isColorComplete,
-  pitMethodSummary,
-} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {Fab} from 'native-base';
@@ -48,13 +44,13 @@ import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScr
 import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
+import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 
 export const ColorScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const data = useSelector(selectDepthDependentData(props));
-  const {complete} = pitMethodSummary(t, data, 'soilColor');
   const previousWorkflow = useSelector(
     state => state.preferences.colorWorkflow,
   );
@@ -107,7 +103,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
             </InfoModal>
           </Row>
           <Box flex={1} />
-          {(workflow === 'CAMERA' || complete) && (
+          {(workflow === 'CAMERA' || color) && (
             <SwitchWorkflowButton {...props} />
           )}
         </Row>
@@ -120,7 +116,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
           <ColorDisplay
             onDelete={workflow === 'CAMERA' ? onClearValues : undefined}
             color={color}
-            dimensions={180}
+            variant="lg"
           />
           {workflow === 'CAMERA' && <PhotoConditions {...props} />}
         </>
@@ -128,7 +124,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
       <Fab
         label={t('general.done')}
         leftIcon={<Icon name="check" />}
-        isDisabled={!complete}
+        isDisabled={!color}
         onPress={() => navigation.pop()}
       />
     </SoilPitInputScreenScaffold>

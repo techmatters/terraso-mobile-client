@@ -27,6 +27,7 @@ import {
   ColorChroma,
   ColorHueSubstep,
   ColorValue,
+  DepthDependentSoilData,
   SoilColorHue,
   colorChromas,
   colorHueSubsteps,
@@ -37,6 +38,7 @@ import {entries} from 'terraso-client-shared/utils';
 import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
 import {LAB, getDeltaE00} from 'delta-e';
 import {mhvcToLab} from 'munsell';
+import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 
 // Munsell hue/value/chroma tuple
 type MunsellHVC = readonly [number, number, number];
@@ -211,3 +213,13 @@ const munsellToLAB = (color: MunsellHVC): LAB => {
 
 export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
   getDeltaE00(munsellToLAB(a), munsellToLAB(b));
+
+export const isColorComplete = (
+  soilData: DepthDependentSoilData,
+): soilData is DepthDependentSoilData & MunsellColor => {
+  return (
+    typeof soilData?.colorHue === 'number' &&
+    typeof soilData.colorValue === 'number' &&
+    typeof soilData.colorChroma === 'number'
+  );
+};
