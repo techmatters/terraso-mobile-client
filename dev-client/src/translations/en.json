@@ -656,6 +656,15 @@
       "camera_grant": "Grant Camera Permission",
       "no_camera": "No Camera Access",
       "no_camera_explanation": "For best results, allow LandPKS to use your camera in Settings",
+      "info": {
+        "title": "How to use Slope Meter",
+        "description1": "Stand facing the site from at least 10-15 feet away.",
+        "description2": "Identify the direction of the predominant slope at the site.",
+        "description3": "Stand so that you can see the ridge or silhouette of that predominant slope (although you may need to get close to the ground to see it.)",
+        "description4": "The direction you are facing should be perpendicular to the direction of the slope. If you hold your arms out to your sides, the line they make should be parallel to the direction of the slope.",
+        "description5": "Position your phone so that the solid white line is lined up with the land’s slope; try to place the white line along the slope’s edge. You may need to crouch down if the silhouette of the slope is not easy to see while standing.",
+        "description6": "<0>Alternate Method</0>: If the land shape is not too curved or bumpy, you can place a yard stick on the ground at the site and then align your phone on the stick to get the angle of the slope."
+      },
       "select_labels": {
         "FLAT": "Flat 0–2%",
         "GENTLE": "Gentle 2–5%",

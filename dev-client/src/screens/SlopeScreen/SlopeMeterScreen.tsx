@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {Camera} from 'expo-camera';
@@ -36,6 +36,9 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {BasicInfoModal} from 'terraso-mobile-client/components/infoModals/BasicInfoModal';
+import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -81,69 +84,91 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
     navigation.pop();
   }, [dispatch, siteId, deviceTiltDeg, navigation]);
 
+  const infoBottomSheetRef = useRef<BottomSheetModal>(null);
+  const onInfoPress = useCallback(
+    () => infoBottomSheetRef.current?.present(),
+    [infoBottomSheetRef],
+  );
+  const onInfoClose = useCallback(
+    () => infoBottomSheetRef.current?.dismiss(),
+    [infoBottomSheetRef],
+  );
+
   return (
-    <ScreenScaffold AppBar={null} BottomNavigation={null}>
-      <Row flex={1} alignItems="stretch" px="24px" py="20px">
-        <Box flex={1} justifyContent="center">
-          {permission?.granted ? (
-            <Camera style={styles.camera}>
-              <Column flex={1} alignItems="stretch">
-                <Box flex={1} />
-                <Box height="3px" bg="text.primary" />
-                <Box height="3px" bg="primary.contrast" />
-                <Box flex={1} bg="#00000080" />
-              </Column>
-            </Camera>
-          ) : permission?.canAskAgain ? (
-            <Button size="lg" onPress={requestPermission}>
-              {t('slope.steepness.camera_grant')}
-            </Button>
-          ) : (
-            <>
-              <Heading variant="h6">{t('slope.steepness.no_camera')}</Heading>
-              <Text variant="body1" textAlign="center">
-                {t('slope.steepness.no_camera_explanation')}
-              </Text>
-              <Link onPress={Linking.openSettings}>
-                {t('general.open_settings')}
-              </Link>
-            </>
-          )}
-        </Box>
-        <Column alignItems="center">
-          <Box {...styles.closeButtonBox}>
-            <CardCloseButton size="lg" onPress={onClose} />
+    <>
+      <ScreenScaffold AppBar={null} BottomNavigation={null}>
+        <Row flex={1} alignItems="stretch" px="24px" py="20px">
+          <Box flex={1} justifyContent="center">
+            {permission?.granted ? (
+              <Camera style={styles.camera}>
+                <Column flex={1} alignItems="stretch">
+                  <Box flex={1} />
+                  <Box height="3px" bg="text.primary" />
+                  <Box height="3px" bg="primary.contrast" />
+                  <Box flex={1} bg="#00000080" />
+                </Column>
+              </Camera>
+            ) : permission?.canAskAgain ? (
+              <Button size="lg" onPress={requestPermission}>
+                {t('slope.steepness.camera_grant')}
+              </Button>
+            ) : (
+              <>
+                <Heading variant="h6">{t('slope.steepness.no_camera')}</Heading>
+                <Text variant="body1" textAlign="center">
+                  {t('slope.steepness.no_camera_explanation')}
+                </Text>
+                <Link onPress={Linking.openSettings}>
+                  {t('general.open_settings')}
+                </Link>
+              </>
+            )}
           </Box>
-          <Column
-            px="56px"
-            flex={1}
-            justifyContent="center"
-            alignItems="center">
-            <Row alignItems="center">
-              <Heading variant="h6">{t('slope.steepness.slope_meter')}</Heading>
-              <IconButton name="info" _icon={{color: 'action.active'}} />
-            </Row>
-            <Box height="12px" />
-            <Heading variant="h5" fontWeight={700}>
-              {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
-            </Heading>
-            <Box height="5px" />
-            <Heading variant="h6">
-              {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
-            </Heading>
-            <Box height="18px" />
-            <Button
-              onPress={onUse}
-              size="lg"
-              px="46px"
-              py="18px"
-              {...styles.useButton}>
-              {t('general.use')}
-            </Button>
+          <Column alignItems="center">
+            <Box {...styles.closeButtonBox}>
+              <CardCloseButton size="lg" onPress={onClose} />
+            </Box>
+            <Column
+              px="56px"
+              flex={1}
+              justifyContent="center"
+              alignItems="center">
+              <Row alignItems="center">
+                <Heading variant="h6">
+                  {t('slope.steepness.slope_meter')}
+                </Heading>
+                <IconButton
+                  name="info"
+                  onPress={onInfoPress}
+                  size="md"
+                  _icon={{color: 'primary'}}
+                />
+              </Row>
+              <Box height="12px" />
+              <Heading variant="h5" fontWeight={700}>
+                {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
+              </Heading>
+              <Box height="5px" />
+              <Heading variant="h6">
+                {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
+              </Heading>
+              <Box height="18px" />
+              <Button
+                onPress={onUse}
+                size="lg"
+                px="46px"
+                py="18px"
+                {...styles.useButton}>
+                {t('general.use')}
+              </Button>
+            </Column>
           </Column>
-        </Column>
-      </Row>
-    </ScreenScaffold>
+        </Row>
+      </ScreenScaffold>
+      <BasicInfoModal ref={infoBottomSheetRef} onClose={onInfoClose}>
+        <SlopeMeterInfoContent />
+      </BasicInfoModal>
+    </>
   );
 };
 
