@@ -26,6 +26,7 @@ import {
   IssuerOrDiscovery,
   resolveDiscoveryAsync,
 } from 'expo-auth-session';
+import * as AppleAuthentication from 'expo-apple-authentication';
 
 type AuthConfig = AuthRequestConfig & {issuer: IssuerOrDiscovery};
 
@@ -91,18 +92,41 @@ async function exchangeToken(
 const apiConfig = getAPIConfig();
 
 export async function auth(provider: AuthProvider) {
-  const {issuer, ...config} = configs[provider];
-  const authRequest = new AuthRequest(config);
-  const discovery = await resolveDiscoveryAsync(issuer);
-  const result = await authRequest.promptAsync(discovery);
-  if (result.type !== 'success') {
-    return;
+  let idToken: string | undefined;
+  if (provider === 'apple' && Platform.OS === 'ios') {
+    try {
+      idToken = (
+        await AppleAuthentication.signInAsync({
+          requestedScopes: [
+            AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+            AppleAuthentication.AppleAuthenticationScope.EMAIL,
+          ],
+        })
+      ).identityToken;
+    } catch (e) {
+      if (e.code === 'ERR_REQUEST_CANCELED') {
+        console.log('cancelled', e);
+      } else {
+        console.error('error', e);
+      }
+    }
+  } else {
+    const {issuer, ...config} = configs[provider];
+    const authRequest = new AuthRequest(config);
+    const discovery = await resolveDiscoveryAsync(issuer);
+    const result = await authRequest.promptAsync(discovery);
+
+    if (result.type !== 'success') {
+      return;
+    }
+    idToken = (
+      await new AccessTokenRequest({
+        ...config,
+        code: result.params.code,
+        extraParams: {code_verifier: authRequest.codeVerifier ?? ''},
+      }).performAsync(discovery)
+    ).idToken;
   }
-  const tokenResult = await new AccessTokenRequest({
-    ...config,
-    code: result.params.code,
-    extraParams: {code_verifier: authRequest.codeVerifier ?? ''},
-  }).performAsync(discovery);
 
   const platformProvider =
     provider !== 'google'
@@ -111,10 +135,7 @@ export async function auth(provider: AuthProvider) {
         ? 'google-android'
         : 'google-ios';
 
-  let {atoken, rtoken} = await exchangeToken(
-    tokenResult.idToken!,
-    platformProvider,
-  );
+  let {atoken, rtoken} = await exchangeToken(idToken, platformProvider);
 
   return Promise.all([
     apiConfig.tokenStorage.setToken('atoken', atoken),
