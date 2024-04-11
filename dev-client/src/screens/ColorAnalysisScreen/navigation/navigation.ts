@@ -15,28 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ParamList} from 'terraso-mobile-client/navigation/types';
-import {ColorCropReferenceScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorCropReferenceScreen';
-import {ColorCropSoilScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorCropSoilScreen';
-import {
-  generateScreens,
-  createNavigationHook,
-} from 'terraso-mobile-client/navigation/utils/utils';
-import {ScreenDefinitions} from 'terraso-mobile-client/navigation/types';
-import {ColorAnalysisHomeScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen//ColorAnalysisHomeScreen';
-
-const screenDefinitions = {
-  COLOR_ANALYSIS_HOME: ColorAnalysisHomeScreen,
-  COLOR_CROP_REFERENCE: ColorCropReferenceScreen,
-  COLOR_CROP_SOIL: ColorCropSoilScreen,
-} as const satisfies ScreenDefinitions;
-
-type ColorAnalysisParamList = ParamList<typeof screenDefinitions>;
+import {createNavigationHook} from 'terraso-mobile-client/navigation/utils/utils';
+import {ColorAnalysisParamList} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/screenDefinitions';
 
 export const useColorAnalysisNavigation =
   createNavigationHook<ColorAnalysisParamList>();
-
-export const Stack = createNativeStackNavigator<ColorAnalysisParamList>();
-
-export const screens = generateScreens(Stack, screenDefinitions);

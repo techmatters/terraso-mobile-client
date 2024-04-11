@@ -21,7 +21,10 @@ import {
   LabelledDepthInterval,
   SoilPitMethod,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {munsellToString} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
+import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 
 export const renderDepthInterval = (
   t: TFunction,
@@ -41,28 +44,24 @@ export const renderDepthInterval = (
 // TODO: finish this method for other inputs
 export const pitMethodSummary = (
   t: TFunction,
-  soilData: DepthDependentSoilData | undefined,
+  soilData: DepthDependentSoilData,
   method: SoilPitMethod | 'rockFragmentVolume',
-): {complete: boolean; summary?: string} => {
+): {complete: boolean; summary?: React.ReactNode} => {
   if (soilData === undefined) {
     return {complete: false};
   }
-  let summary: string | undefined;
+  let summary: React.ReactNode;
   if (method === 'soilTexture' && soilData.texture) {
     summary = t(`soil.texture.class.${soilData?.texture}`);
   } else if (method === 'rockFragmentVolume' && soilData.rockFragmentVolume) {
     summary = t(`soil.texture.rockFragment.${soilData.rockFragmentVolume}`);
-  } else if (
-    method === 'soilColor' &&
-    soilData.colorHue &&
-    soilData.colorValue &&
-    soilData.colorChroma
-  ) {
-    summary = munsellToString({
-      colorHue: soilData.colorHue,
-      colorValue: soilData.colorValue,
-      colorChroma: soilData.colorChroma,
-    });
+  } else if (method === 'soilColor' && isColorComplete(soilData)) {
+    summary = (
+      <Row alignItems="center" space="sm">
+        <ColorDisplay variant="sm" color={soilData} />
+        <Text variant="body1">{munsellToString(soilData)}</Text>
+      </Row>
+    );
   }
   return {complete: summary !== undefined, summary};
 };

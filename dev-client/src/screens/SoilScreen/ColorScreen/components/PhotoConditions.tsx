@@ -61,7 +61,7 @@ export const PhotoConditions = (props: SoilPitInputScreenProps) => {
     () =>
       ({
         name: 'SOIL',
-        value: data?.colorPhotoSoilCondition ?? undefined,
+        value: data.colorPhotoSoilCondition ?? undefined,
         onChange: (colorPhotoSoilCondition: 'DRY' | 'MOIST') =>
           dispatch(
             updateDepthDependentSoilData({
@@ -72,14 +72,14 @@ export const PhotoConditions = (props: SoilPitInputScreenProps) => {
           ),
         variant: 'oneLine',
       }) as const,
-    [data?.colorPhotoSoilCondition, dispatch, props],
+    [data.colorPhotoSoilCondition, dispatch, props],
   );
 
   const lightingGroupProps = useMemo(
     () =>
       ({
         name: 'LIGHTING',
-        value: data?.colorPhotoLightingCondition ?? undefined,
+        value: data.colorPhotoLightingCondition ?? undefined,
         onChange: (colorPhotoLightingCondition: 'EVEN' | 'UNEVEN') =>
           dispatch(
             updateDepthDependentSoilData({
@@ -90,7 +90,7 @@ export const PhotoConditions = (props: SoilPitInputScreenProps) => {
           ),
         variant: 'oneLine',
       }) as const,
-    [data?.colorPhotoLightingCondition, dispatch, props],
+    [data.colorPhotoLightingCondition, dispatch, props],
   );
 
   return (

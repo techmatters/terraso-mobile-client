@@ -33,7 +33,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {
   pitMethodSummary,
   renderDepthInterval,
-} from 'terraso-mobile-client/screens/SoilScreen/utils/renderValues';
+} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {
   Column,
   Heading,
