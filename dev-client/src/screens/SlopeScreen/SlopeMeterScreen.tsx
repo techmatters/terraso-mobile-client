@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {Camera} from 'expo-camera';
@@ -23,7 +23,7 @@ import {DeviceMotion} from 'expo-sensors';
 import {Button, Link} from 'native-base';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {useTranslation} from 'react-i18next';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/Icons';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
 import {Linking} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -36,8 +36,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {BasicInfoModal} from 'terraso-mobile-client/components/infoModals/BasicInfoModal';
+import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
@@ -84,16 +83,6 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
     navigation.pop();
   }, [dispatch, siteId, deviceTiltDeg, navigation]);
 
-  const infoBottomSheetRef = useRef<BottomSheetModal>(null);
-  const onInfoPress = useCallback(
-    () => infoBottomSheetRef.current?.present(),
-    [infoBottomSheetRef],
-  );
-  const onInfoClose = useCallback(
-    () => infoBottomSheetRef.current?.dismiss(),
-    [infoBottomSheetRef],
-  );
-
   return (
     <>
       <ScreenScaffold AppBar={null} BottomNavigation={null}>
@@ -137,12 +126,9 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                 <Heading variant="h6">
                   {t('slope.steepness.slope_meter')}
                 </Heading>
-                <IconButton
-                  name="info"
-                  onPress={onInfoPress}
-                  size="md"
-                  _icon={{color: 'primary'}}
-                />
+                <InfoModal Header={t('slope.steepness.info.title')}>
+                  <SlopeMeterInfoContent />
+                </InfoModal>
               </Row>
               <Box height="12px" />
               <Heading variant="h5" fontWeight={700}>
@@ -165,9 +151,6 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
           </Column>
         </Row>
       </ScreenScaffold>
-      <BasicInfoModal ref={infoBottomSheetRef} onClose={onInfoClose}>
-        <SlopeMeterInfoContent />
-      </BasicInfoModal>
     </>
   );
 };

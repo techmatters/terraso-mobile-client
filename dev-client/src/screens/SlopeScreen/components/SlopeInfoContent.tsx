@@ -14,28 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {useTranslation} from 'react-i18next';
-
-import {
-  Column,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Paragraph} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SlopeInfoContent = () => {
   const {t} = useTranslation();
 
   return (
-    <BottomSheetScrollView>
-      <Column space={3} pb="65%" pt={5} px={5} mt="48px">
-        <Heading w="full" textAlign="left">
-          {t('slope.info.title')}
-        </Heading>
-        <Text variant="body1">{t('slope.info.description1')}</Text>
-        <Text variant="body1">{t('slope.info.description2')}</Text>
-        <Text variant="body1">{t('slope.info.description3')}</Text>
-      </Column>
-    </BottomSheetScrollView>
+    <>
+      <Paragraph variant="body1">{t('slope.info.description1')}</Paragraph>
+      <Paragraph variant="body1">{t('slope.info.description2')}</Paragraph>
+      <Paragraph variant="body1">{t('slope.info.description3')}</Paragraph>
+    </>
   );
 };

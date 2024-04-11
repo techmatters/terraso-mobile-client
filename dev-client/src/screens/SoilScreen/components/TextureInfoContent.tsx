@@ -14,13 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 
 import {
-  Column,
-  Heading,
+  Paragraph,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -28,25 +26,26 @@ export const TextureInfoContent = () => {
   const {t} = useTranslation();
 
   return (
-    <BottomSheetScrollView>
-      <Column space={3} pb="65%" pt={5} px={5} mt="48px">
-        <Heading w="full" textAlign="left">
-          {t('soil.texture.info.title')}
-        </Heading>
-        <Text variant="body1">{t('soil.texture.info.description1')}</Text>
-        <Text variant="body1">
-          <Trans i18nKey="soil.texture.info.description2">
-            <Text bold>first</Text>
-            <Text>second</Text>
-          </Trans>
-        </Text>
-        <Text variant="body1">{t('soil.texture.info.description3')}</Text>
-        <BulletList
-          data={[1, 2, 3, 4]}
-          renderItem={i => <Text>{t(`soil.texture.info.point${i}`)}</Text>}
-        />
-        <Text variant="body1">{t('soil.texture.info.description4')}</Text>
-      </Column>
-    </BottomSheetScrollView>
+    <>
+      <Paragraph variant="body1">
+        {t('soil.texture.info.description1')}
+      </Paragraph>
+      <Paragraph variant="body1">
+        <Trans i18nKey="soil.texture.info.description2">
+          <Text bold>first</Text>
+          <Text>second</Text>
+        </Trans>
+      </Paragraph>
+      <Paragraph variant="body1">
+        {t('soil.texture.info.description3')}
+      </Paragraph>
+      <BulletList
+        data={[1, 2, 3, 4]}
+        renderItem={i => <Text>{t(`soil.texture.info.point${i}`)}</Text>}
+      />
+      <Paragraph variant="body1">
+        {t('soil.texture.info.description4')}
+      </Paragraph>
+    </>
   );
 };

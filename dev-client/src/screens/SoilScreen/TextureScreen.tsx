@@ -16,7 +16,7 @@
  */
 
 import {Button, ScrollView} from 'native-base';
-import {useCallback, useMemo, useRef} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, ImageSourcePropType} from 'react-native';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
@@ -27,7 +27,7 @@ import {
   textures,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries, entries} from 'terraso-client-shared/utils';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/Icons';
 import {
   ImageRadio,
   radioImage,
@@ -47,10 +47,9 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {BasicInfoModal} from 'terraso-mobile-client/components/infoModals/BasicInfoModal';
 import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/TextureInfoContent';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
+import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),
@@ -69,25 +68,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const intervalData = useSelector(selectDepthDependentData(props));
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  const textureInfoBottomSheetRef = useRef<BottomSheetModal>(null);
-  const onTextureInfoPress = useCallback(
-    () => textureInfoBottomSheetRef.current?.present(),
-    [textureInfoBottomSheetRef],
-  );
-  const onTextureInfoClose = useCallback(
-    () => textureInfoBottomSheetRef.current?.dismiss(),
-    [textureInfoBottomSheetRef],
-  );
-  const rockFragmentVolumeinfoBottomSheetRef = useRef<BottomSheetModal>(null);
-  const onRockFragmentVolumeInfoPress = useCallback(
-    () => rockFragmentVolumeinfoBottomSheetRef.current?.present(),
-    [rockFragmentVolumeinfoBottomSheetRef],
-  );
-  const onRockFragmentVolumeInfoClose = useCallback(
-    () => rockFragmentVolumeinfoBottomSheetRef.current?.dismiss(),
-    [rockFragmentVolumeinfoBottomSheetRef],
-  );
 
   const onTextureChange = useCallback(
     (texture: SoilTexture | null) => {
@@ -161,12 +141,9 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
         <Column p="15px" bg="primary.contrast">
           <Row alignItems="center">
             <Heading variant="h6">{t('soil.texture.title')}</Heading>
-            <IconButton
-              name="info"
-              onPress={onTextureInfoPress}
-              size="md"
-              _icon={{color: 'primary'}}
-            />
+            <InfoModal Header={t('soil.texture.info.title')}>
+              <TextureInfoContent />
+            </InfoModal>
           </Row>
           <LastModified />
           <Box height="sm" />
@@ -206,12 +183,9 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             <Text variant="body1-strong">
               {t('soil.texture.fragment_title')}
             </Text>
-            <IconButton
-              name="info"
-              onPress={onRockFragmentVolumeInfoPress}
-              size="md"
-              _icon={{color: 'primary'}}
-            />
+            <InfoModal Header={t('soil.texture.fragment.info.title')}>
+              <RockFragmentVolumeInfoContent />
+            </InfoModal>
           </Row>
           <Box height="10px" />
           <ImageRadio
@@ -221,16 +195,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             onChange={onFragmentChange}
           />
         </Column>
-        <BasicInfoModal
-          ref={textureInfoBottomSheetRef}
-          onClose={onTextureInfoClose}>
-          <TextureInfoContent />
-        </BasicInfoModal>
-        <BasicInfoModal
-          ref={rockFragmentVolumeinfoBottomSheetRef}
-          onClose={onRockFragmentVolumeInfoClose}>
-          <RockFragmentVolumeInfoContent />
-        </BasicInfoModal>
       </ScrollView>
     </SoilPitInputScreenScaffold>
   );

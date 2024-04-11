@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useCallback, useRef} from 'react';
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -32,26 +32,14 @@ import {
   selectSoilData,
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {BasicInfoModal} from 'terraso-mobile-client/components/infoModals/BasicInfoModal';
 import {SlopeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoContent';
+import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
   const soilData = useSelector(selectSoilData(siteId));
   const required = useSiteProjectSoilSettings(siteId)?.slopeRequired ?? false;
   const navigation = useNavigation();
-
-  const infoBottomSheetRef = useRef<BottomSheetModal>(null);
-  const onInfoPress = useCallback(
-    () => infoBottomSheetRef.current?.present(),
-    [infoBottomSheetRef],
-  );
-  const onInfoClose = useCallback(
-    () => infoBottomSheetRef.current?.dismiss(),
-    [infoBottomSheetRef],
-  );
 
   const steepnessValue = renderSteepness(t, soilData);
   const shapeValue = renderShape(t, soilData);
@@ -71,12 +59,9 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
       <Column space="1px">
         <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
           <Heading variant="h6">{t('slope.title')}</Heading>
-          <IconButton
-            name="info"
-            onPress={onInfoPress}
-            size="md"
-            _icon={{color: 'primary'}}
-          />
+          <InfoModal Header={t('slope.info.title')}>
+            <SlopeInfoContent />
+          </InfoModal>
         </Row>
         <DataInputSummary
           required={required}
@@ -93,9 +78,6 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
           onPress={onShape}
         />
       </Column>
-      <BasicInfoModal ref={infoBottomSheetRef} onClose={onInfoClose}>
-        <SlopeInfoContent />
-      </BasicInfoModal>
     </>
   );
 };

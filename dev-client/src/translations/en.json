@@ -527,7 +527,9 @@
       "fragment": {
         "info": {
           "title": "Rock Fragment Volume",
-          "description": "Rock fragment volume is a measurement of how much of the soil volume is taken up by rocks, which is defined as anything larger than 2mm (1/16”) in diameter.\n\nThis can be estimated visually by comparing the volume of the soil before and after removing the rocks, as well as by comparing the volume of rocks removed to the volume of the remaining soil.\n\nAlternatively, for a more precise measurement, you can place the rocks from the sample in a bucket with a known volume of water and measure the change in volume. Then divide that volume by the volume of the original soil sample to get a percentage."
+          "description1": "Rock fragment volume is a measurement of how much of the soil volume is taken up by rocks, which is defined as anything larger than 2mm (1/16”) in diameter.",
+          "description2": "This can be estimated visually by comparing the volume of the soil before and after removing the rocks, as well as by comparing the volume of rocks removed to the volume of the remaining soil.",
+          "description3": "Alternatively, for a more precise measurement, you can place the rocks from the sample in a bucket with a known volume of water and measure the change in volume. Then divide that volume by the volume of the original soil sample to get a percentage."
         }
       },
       "class": {
