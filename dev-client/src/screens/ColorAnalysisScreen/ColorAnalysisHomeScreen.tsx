@@ -42,7 +42,7 @@ import {
   PhotoWithBase64,
   decodeBase64Jpg,
 } from 'terraso-mobile-client/components/ImagePicker';
-import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
+import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
 import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
 import {
   ActionButton,
