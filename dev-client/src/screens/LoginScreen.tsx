@@ -22,10 +22,7 @@ import {useEffect, useCallback} from 'react';
 import {AuthProvider, auth} from 'terraso-mobile-client/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
-// import {
-//   Icon,
-//   MaterialCommunityIcons,
-// } from 'terraso-mobile-client/components/common/Icons';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
@@ -35,6 +32,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Platform} from 'react-native';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -101,22 +99,21 @@ export const LoginScreen = () => {
             startIcon={<MicrosoftLogo />}>
             {t('account.microsoft_login')}
           </Button>
-          {/*
-          <Button
-            bgColor="primary.contrast"
-            _text={{textTransform: 'uppercase', color: 'primary.main'}}
-            size="lg"
-            onPress={onPress('apple')}
-            startIcon={
-              <Icon
-                as={MaterialCommunityIcons}
-                name="apple"
-                color="primary.main"
-              />
-            }>
-            {t('account.apple_login')}
-          </Button>
-          */}
+          {Platform.OS === 'ios' &&
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={
+                AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+              }
+              buttonStyle={
+                AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+              }
+              style={{
+                width: 275,
+                height: 44,
+              }}
+              onPress={onPress('apple')}
+            />
+          }
         </Button.Group>
       </Column>
       <Box flexGrow={3} />
