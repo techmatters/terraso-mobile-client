@@ -83,15 +83,20 @@ EOF
 $ sudo apt install node watchman openjdk-17-jdk
 ```
 
-## Android
+# Running the app locally
 
-1. Run `npm run start` to start the dev server.
-2. Run `npm run android` to load the app on an emulator or connnected physical device.
+Do **not** use the `a` or `i` subcommands in `npm run start`, they don't work with our workflow.
+The below commands implicitly call `npm run start` when they are finished, so you shouldn't ordinarily
+need to call it manually.
+
+## Android
+1. Run `npm run android` to load the app on an emulator or connnected physical device.
+2. Run `npm run android -- --release` to load a release build of the app onto an emulator or connected physical device.
 
 ## iOS
 
-1. Run `npm run start` to start the dev server.
-2. Run `npm run ios` to load the app in the simulator.
+1. Run `npm run ios` to load the app in the simulator.
+2. Run `npm run ios -- --release` to load a release build of the app in the simulator.
 
 # Releases
 
