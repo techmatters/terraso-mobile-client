@@ -187,12 +187,7 @@ export const SiteMap = memo(
       );
 
       const onTempSitePress = useCallback(
-        () =>
-          setCalloutState(
-            calloutState.kind === 'location'
-              ? {...calloutState, showCallout: true}
-              : calloutState,
-          ),
+        () => setCalloutState(calloutState),
         [calloutState, setCalloutState],
       );
 
@@ -218,7 +213,6 @@ export const SiteMap = memo(
             setCalloutState({
               kind: 'location',
               coords: positionToCoords(feature.geometry.coordinates),
-              showCallout: true,
             });
           } else {
             Keyboard.dismiss();

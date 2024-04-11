@@ -130,7 +130,7 @@ export const HomeScreen = memo(() => {
 
   const searchFunction = useCallback(
     (coords: Coords) => {
-      setCalloutState({kind: 'location', showCallout: false, coords});
+      setCalloutState({kind: 'location', coords});
       mapRef.current?.moveToPoint(coords);
     },
     [setCalloutState, mapRef],

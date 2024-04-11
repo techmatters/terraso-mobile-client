@@ -24,7 +24,6 @@ export type CalloutState =
     }
   | {
       kind: 'location';
-      showCallout: boolean;
       coords: Coords;
     }
   | {
