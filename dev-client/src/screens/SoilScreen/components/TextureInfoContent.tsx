@@ -31,21 +31,21 @@ export const TextureInfoContent = () => {
     <BottomSheetScrollView>
       <Column space={3} pb="65%" pt={5} px={5} mt="48px">
         <Heading w="full" textAlign="left">
-          {t('texture.info.title')}
+          {t('soil.texture.info.title')}
         </Heading>
-        <Text variant="body1">{t('texture.info.description1')}</Text>
+        <Text variant="body1">{t('soil.texture.info.description1')}</Text>
         <Text variant="body1">
-          <Trans i18nKey="texture.info.description2">
+          <Trans i18nKey="soil.texture.info.description2">
             <Text bold>first</Text>
             <Text>second</Text>
           </Trans>
         </Text>
-        <Text variant="body1">{t('texture.info.description3')}</Text>
+        <Text variant="body1">{t('soil.texture.info.description3')}</Text>
         <BulletList
           data={[1, 2, 3, 4]}
-          renderItem={i => <Text>{t(`texture.info.point${i}`)}</Text>}
+          renderItem={i => <Text>{t(`soil.texture.info.point${i}`)}</Text>}
         />
-        <Text variant="body1">{t('texture.info.description4')}</Text>
+        <Text variant="body1">{t('soil.texture.info.description4')}</Text>
       </Column>
     </BottomSheetScrollView>
   );

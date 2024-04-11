@@ -30,9 +30,11 @@ export const RockFragmentVolumeInfoContent = () => {
     <BottomSheetScrollView>
       <Column space={3} pb="65%" pt={5} px={5} mt="48px">
         <Heading w="full" textAlign="left">
-          {t('texture.fragment.info.title')}
+          {t('soil.texture.fragment.info.title')}
         </Heading>
-        <Text variant="body1">{t('texture.fragment.info.description1')}</Text>
+        <Text variant="body1">
+          {t('soil.texture.fragment.info.description')}
+        </Text>
       </Column>
     </BottomSheetScrollView>
   );

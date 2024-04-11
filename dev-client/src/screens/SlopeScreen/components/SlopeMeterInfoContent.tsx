@@ -14,15 +14,15 @@ export const SlopeMeterInfoContent = () => {
     <BottomSheetScrollView>
       <Column space={3} pb="65%" pt={5} px={5} mt="48px">
         <Heading w="full" textAlign="left">
-          {t('steepness.info.title')}
+          {t('slope.steepness.info.title')}
         </Heading>
-        <Text variant="body1">{t('steepness.info.description1')}</Text>
-        <Text variant="body1">{t('steepness.info.description2')}</Text>
-        <Text variant="body1">{t('steepness.info.description3')}</Text>
-        <Text variant="body1">{t('steepness.info.description4')}</Text>
-        <Text variant="body1">{t('steepness.info.description5')}</Text>
+        <Text variant="body1">{t('slope.steepness.info.description1')}</Text>
+        <Text variant="body1">{t('slope.steepness.info.description2')}</Text>
+        <Text variant="body1">{t('slope.steepness.info.description3')}</Text>
+        <Text variant="body1">{t('slope.steepness.info.description4')}</Text>
+        <Text variant="body1">{t('slope.steepness.info.description5')}</Text>
         <Text variant="body1">
-          <Trans i18nKey="steepness.info.description6">
+          <Trans i18nKey="slope.steepness.info.description6">
             <Text bold>first</Text>
             <Text>second</Text>
           </Trans>
