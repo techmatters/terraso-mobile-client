@@ -682,8 +682,21 @@
     "shape": {
       "title": "Shape",
       "long_title": "Slope Shape",
-      "down_slope": "Down Slope",
-      "cross_slope": "Cross Slope",
+      "info": {
+        "title": "Slope Shape",
+        "description1": "Slope shape refers to the way the land curves in the area surrounding your site point.",
+        "description2": "Slope shape is determined in two directions: <0>downslope</0> and <2>cross-slope</2>.",
+        "description3": "First, determine the primary direction of the slope at the site. Ignore small bumps or ditches; look about 20-30 meters / 60-90 feet in all directions.",
+        "description4": "If it rained, in which general direction would water flow downhill? This is called the <0>downslope</0> direction.",
+        "description5": "The cross-slope direction can be found by looking at a right angle (90 degrees) from the downslope direction.",
+        "description6": "If you walk away from the site while staying at the same elevation, this is the <0>cross-slope</0> direction.",
+        "description7": "Second, determine the shape of the slope for each direction.",
+        "description8": "<0>Concave</0> means that the land slopes increasingly upward as you move away from your point along the cross slope or downslope. For example, the downslope is often concave at the foot of a hill as it changes from a steep slope to a more shallow one.",
+        "description9": "<0>Convex</0> means that the land slopes increasingly downward as you move away from your point along a particular direction. For example, the downslope is often convex at the top of a hill as it changes from a shallow slope to a steeper one.",
+        "description10": "<0>Linear</0> means the slope is consistent along the entirety of a particular direction. It does not necessarily mean the land is flat; it just means that the slope does not change.",
+        "down_slope": "Down Slope",
+        "cross_slope": "Cross Slope"
+      },
       "select_labels": {
         "CONCAVE": "Concave",
         "CONVEX": "Convex",
