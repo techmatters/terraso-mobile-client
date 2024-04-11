@@ -14,32 +14,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {forwardRef} from 'react';
+import {PropsWithChildren, forwardRef} from 'react';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SlopeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoContent';
 
-type Props = {onClose: () => void};
+type Props = {
+  onClose: () => void;
+};
 
-export const SlopeInfoModal = forwardRef<BottomSheetModal, Props>(
-  ({onClose}, ref) => {
-    const headerHeight = useHeaderHeight();
+export const BasicInfoModal = forwardRef<
+  BottomSheetModal,
+  PropsWithChildren<Props>
+>(({onClose, children}, ref) => {
+  const headerHeight = useHeaderHeight();
 
-    return (
-      <BottomSheetModal
-        ref={ref}
-        snapPoints={['100%']}
-        handleComponent={null}
-        topInset={headerHeight}
-        backdropComponent={BackdropComponent}>
-        <SlopeInfoContent />
-        <Box position="absolute" top="18px" right="23px">
-          <CardCloseButton onPress={onClose} />
-        </Box>
-      </BottomSheetModal>
-    );
-  },
-);
+  return (
+    <BottomSheetModal
+      ref={ref}
+      snapPoints={['100%']}
+      handleComponent={null}
+      topInset={headerHeight}
+      backdropComponent={BackdropComponent}>
+      {children}
+      <Box position="absolute" top="18px" right="23px">
+        <CardCloseButton onPress={onClose} />
+      </Box>
+    </BottomSheetModal>
+  );
+});
+
+export default BasicInfoModal;

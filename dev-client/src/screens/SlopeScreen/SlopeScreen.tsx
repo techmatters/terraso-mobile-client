@@ -34,7 +34,8 @@ import {
 } from 'terraso-client-shared/selectors';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {SlopeInfoModal} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoModal';
+import {BasicInfoModal} from 'terraso-mobile-client/components/infoModals/BasicInfoModal';
+import {SlopeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoContent';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -91,8 +92,10 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
           value={shapeValue}
           onPress={onShape}
         />
-        <SlopeInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
       </Column>
+      <BasicInfoModal ref={infoBottomSheetRef} onClose={onInfoClose}>
+        <SlopeInfoContent />
+      </BasicInfoModal>
     </>
   );
 };
