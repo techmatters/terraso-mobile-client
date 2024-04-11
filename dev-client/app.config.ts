@@ -108,7 +108,9 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     icon: 'src/assets/landpks-round.png',
     supportsTablet: true,
     requireFullScreen: true,
+    usesAppleSignIn: true,
     infoPlist: {
+      CFBundleAllowMixedLocalizations: true,
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription:
         'Terraso LandPKS uses your photo library to analyze soil color.',
@@ -122,6 +124,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     },
   },
   plugins: [
+    ["expo-apple-authentication"],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
     [
       '@sentry/react-native/expo',
