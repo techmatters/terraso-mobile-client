@@ -57,7 +57,7 @@ export const SwitchWorkflowButton = ({
       updateDepthDependentSoilData({
         siteId,
         depthInterval: depthInterval.depthInterval,
-        ...(complete && workflow === 'MANUAL'
+        ...(complete
           ? {
               colorHue: null,
               colorValue: null,
@@ -77,7 +77,7 @@ export const SwitchWorkflowButton = ({
     </Button>
   );
 
-  return complete && workflow === 'MANUAL' ? (
+  return complete ? (
     <ConfirmModal
       title={t('soil.color.confirm_delete.title')}
       body={t('soil.color.confirm_delete.body')}
