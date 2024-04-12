@@ -134,7 +134,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         RNMapboxMapsDownloadToken: BUILD_CONFIG.MAPBOX_DOWNLOADS_TOKEN,
       },
     ],
-    './plugins/withRemoveiOSNotificationEntitlement.js',
     [
       ((modConfig: ExpoConfig): ExpoConfig => {
         // workaround to avoid double signing with debug keychain
@@ -148,6 +147,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         return modConfig;
       }) as any,
     ],
+    './plugins/withRemoveiOSNotificationEntitlement.js',
   ],
   extra: ENV_CONFIG,
 });
