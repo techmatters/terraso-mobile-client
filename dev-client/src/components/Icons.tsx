@@ -151,14 +151,14 @@ type TooltipIconButtonProps = {
   icon?: IconName;
   onPress: () => void;
 };
-const tooltipIconProps = {color: 'action.active_subtle', size: 'sm'};
+const tooltipIconProps = {color: 'action.active_subtle', size: 'md'};
 export const TooltipIconButton = forwardRef(
   ({icon: name = 'info', onPress}: TooltipIconButtonProps, ref) => (
     <IconButton
       ref={ref}
       _icon={tooltipIconProps}
       ml="6px"
-      size="xs"
+      p="0"
       name={name}
       onPress={onPress}
     />
