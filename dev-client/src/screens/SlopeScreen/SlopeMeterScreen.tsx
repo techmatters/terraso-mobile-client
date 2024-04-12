@@ -38,6 +38,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -84,8 +85,8 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   }, [dispatch, siteId, deviceTiltDeg, navigation]);
 
   return (
-    <>
-      <ScreenScaffold AppBar={null} BottomNavigation={null}>
+    <ScreenScaffold AppBar={null} BottomNavigation={null}>
+      <BottomSheetModalProvider>
         <Row flex={1} alignItems="stretch" px="24px" py="20px">
           <Box flex={1} justifyContent="center">
             {permission?.granted ? (
@@ -150,8 +151,8 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
             </Column>
           </Column>
         </Row>
-      </ScreenScaffold>
-    </>
+      </BottomSheetModalProvider>
+    </ScreenScaffold>
   );
 };
 
