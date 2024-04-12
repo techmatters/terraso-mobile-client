@@ -86,7 +86,10 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   android: {
     package: 'org.terraso.landpks',
     versionCode: appVersion,
-    icon: 'src/assets/landpks-round-1024.png',
+    icon: 'src/assets/landpks-ios-1024.png',
+    adaptiveIcon: {
+      foregroundImage: 'src/assets/landpks-android-1024.png',
+    },
     permissions: [
       'android.permissions.ACCESS_COARSE_LOCATION',
       'android.permissions.ACCESS_FINE_LOCATION',
@@ -101,7 +104,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   ios: {
     bundleIdentifier: 'org.terraso.test.Terraso-LandPKS',
     buildNumber: '0',
-    icon: 'src/assets/landpks-square-1024.png',
+    icon: 'src/assets/landpks-ios-1024.png',
     supportsTablet: true,
     requireFullScreen: true,
     infoPlist: {
