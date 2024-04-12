@@ -17,7 +17,7 @@
 
 import 'ts-node/register';
 import {ExpoConfig, ConfigContext} from 'expo/config';
-import {withEntitlementsPlist, withAppBuildGradle} from 'expo/config-plugins';
+import {withAppBuildGradle} from 'expo/config-plugins';
 import {fromEntries} from 'terraso-client-shared/utils';
 
 const VERSION_REGEX = /^v[0-9]+$/g;
@@ -134,13 +134,9 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         RNMapboxMapsDownloadToken: BUILD_CONFIG.MAPBOX_DOWNLOADS_TOKEN,
       },
     ],
+    './plugins/withRemoveiOSNotificationEntitlement.js',
     [
       ((modConfig: ExpoConfig): ExpoConfig => {
-        // workaround to remove push notification entitlements: https://github.com/expo/expo/pull/25808#pullrequestreview-1772795646
-        withEntitlementsPlist(modConfig, entitlements => {
-          delete entitlements.modResults['aps-environment'];
-          return entitlements;
-        });
         // workaround to avoid double signing with debug keychain
         withAppBuildGradle(modConfig, gradle => {
           gradle.modResults.contents = gradle.modResults.contents.replace(
