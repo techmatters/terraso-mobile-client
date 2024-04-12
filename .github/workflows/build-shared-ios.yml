@@ -141,24 +141,27 @@ jobs:
         with:
           xcode-version: '^15.2'
 
-      - name: Build iOS App
-        uses: yukiarrr/ios-build-action@v1.11.2
-        with:
-          project-path: dev-client/ios/TerrasoLandPKS.xcodeproj
-          p12-base64: ${{ secrets.IOS_P12_BASE64 }}
-          mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
-          code-signing-identity: 'iPhone Distribution'
-          team-id: ${{ secrets.IOS_TEAM_ID }}
-          certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
-          scheme: TerrasoLandPKS
+      # - name: Build iOS App
+      #   uses: yukiarrr/ios-build-action@v1.11.2
+      #   with:
+      #     project-path: dev-client/ios/TerrasoLandPKS.xcodeproj
+      #     p12-base64: ${{ secrets.IOS_P12_BASE64 }}
+      #     mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
+      #     code-signing-identity: 'iPhone Distribution'
+      #     team-id: ${{ secrets.IOS_TEAM_ID }}
+      #     certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+      #     workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
+      #     scheme: TerrasoLandPKS
 
       - name: Archive entitlements
         uses: actions/upload-artifact@v4
         with:
           name: entitlements
           path: |
-            "ios/TerrasoLandPKS/TerrasoLandPKS.entitlements"
+            "dev-client/ios/TerrasoLandPKS/TerrasoLandPKS.entitlements"
+
+      - name: exit
+        run: exit 1
 
       - name: Archive build log and intermediates
         if: '!success()'
