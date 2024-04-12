@@ -147,7 +147,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         return modConfig;
       }) as any,
     ],
-    './plugins/withRemoveiOSNotificationEntitlement.js',
   ],
   extra: ENV_CONFIG,
 });

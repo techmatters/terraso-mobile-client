@@ -158,11 +158,11 @@ jobs:
         with:
           name: entitlements
           path: |
-            "dev-client/ios/TerrasoLandPKS/TerrasoLandPKS.entitlements"
+            "./dev-client/ios/TerrasoLandPKS/TerrasoLandPKS.entitlements"
 
       - name: exit
         run: |
-          ls -R
+          ls -R ./dev-client/ios
           exit 1
 
       - name: Archive build log and intermediates
