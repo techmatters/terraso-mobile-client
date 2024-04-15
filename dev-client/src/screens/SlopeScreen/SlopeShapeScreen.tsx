@@ -46,9 +46,12 @@ import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear
 import {renderShape} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {
   Column,
+  Row,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
+import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
 
 type Props = {
   siteId: string;
@@ -133,7 +136,12 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
         _contentContainerStyle={styles.scrollContentContainer}>
         <Column>
           <Column p="15px" bg="primary.contrast">
-            <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
+            <Row alignItems="center">
+              <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
+              <InfoModal Header={t('slope.shape.info.title')}>
+                <SlopeShapeInfoContent />
+              </InfoModal>
+            </Row>
             <LastModified />
           </Column>
         </Column>
