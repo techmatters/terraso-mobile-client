@@ -14,28 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import {useTranslation} from 'react-i18next';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-import {
-  Box,
-  Column,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+export const SlopeInfoContent = () => {
+  const {t} = useTranslation();
 
-type Props<T> = {data: T[]; renderItem: (t: T) => React.ReactNode};
-export const BulletList = <T,>({data, renderItem}: Props<T>) => {
-  const bulletMargin = 10;
   return (
-    <Column>
-      {data.map((item, index) => (
-        <Row key={index} alignItems="flex-start">
-          <Text variant="body1" marginHorizontal={`${bulletMargin}px`}>
-            {'•'}
-          </Text>
-          <Box mr={`${bulletMargin * 2}px`}>{renderItem(item)}</Box>
-        </Row>
-      ))}
-      <Text variant="body1" />
-    </Column>
+    <>
+      <Text>{t('slope.info.description')}</Text>
+    </>
   );
 };

@@ -16,7 +16,6 @@
  */
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
@@ -33,6 +32,8 @@ import {
   selectSoilData,
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
+import {SlopeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoContent';
+import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -57,8 +58,9 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
     <Column space="1px">
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
         <Heading variant="h6">{t('slope.title')}</Heading>
-        {/* TODO */}
-        <FormTooltip icon="info">Unimplemented tooltip</FormTooltip>
+        <InfoModal Header={t('slope.info.title')}>
+          <SlopeInfoContent />
+        </InfoModal>
       </Row>
       <DataInputSummary
         required={required}

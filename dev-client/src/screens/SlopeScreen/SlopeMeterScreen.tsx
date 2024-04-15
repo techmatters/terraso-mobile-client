@@ -23,7 +23,7 @@ import {DeviceMotion} from 'expo-sensors';
 import {Button, Link} from 'native-base';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {useTranslation} from 'react-i18next';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/Icons';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
 import {Linking} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -36,6 +36,9 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -83,66 +86,72 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
 
   return (
     <ScreenScaffold AppBar={null} BottomNavigation={null}>
-      <Row flex={1} alignItems="stretch" px="24px" py="20px">
-        <Box flex={1} justifyContent="center">
-          {permission?.granted ? (
-            <Camera style={styles.camera}>
-              <Column flex={1} alignItems="stretch">
-                <Box flex={1} />
-                <Box height="3px" bg="text.primary" />
-                <Box height="3px" bg="primary.contrast" />
-                <Box flex={1} bg="#00000080" />
-              </Column>
-            </Camera>
-          ) : permission?.canAskAgain ? (
-            <Button size="lg" onPress={requestPermission}>
-              {t('slope.steepness.camera_grant')}
-            </Button>
-          ) : (
-            <>
-              <Heading variant="h6">{t('slope.steepness.no_camera')}</Heading>
-              <Text variant="body1" textAlign="center">
-                {t('slope.steepness.no_camera_explanation')}
-              </Text>
-              <Link onPress={Linking.openSettings}>
-                {t('general.open_settings')}
-              </Link>
-            </>
-          )}
-        </Box>
-        <Column alignItems="center">
-          <Box {...styles.closeButtonBox}>
-            <CardCloseButton size="lg" onPress={onClose} />
+      <BottomSheetModalProvider>
+        <Row flex={1} alignItems="stretch" px="24px" py="20px">
+          <Box flex={1} justifyContent="center">
+            {permission?.granted ? (
+              <Camera style={styles.camera}>
+                <Column flex={1} alignItems="stretch">
+                  <Box flex={1} />
+                  <Box height="3px" bg="text.primary" />
+                  <Box height="3px" bg="primary.contrast" />
+                  <Box flex={1} bg="#00000080" />
+                </Column>
+              </Camera>
+            ) : permission?.canAskAgain ? (
+              <Button size="lg" onPress={requestPermission}>
+                {t('slope.steepness.camera_grant')}
+              </Button>
+            ) : (
+              <>
+                <Heading variant="h6">{t('slope.steepness.no_camera')}</Heading>
+                <Text variant="body1" textAlign="center">
+                  {t('slope.steepness.no_camera_explanation')}
+                </Text>
+                <Link onPress={Linking.openSettings}>
+                  {t('general.open_settings')}
+                </Link>
+              </>
+            )}
           </Box>
-          <Column
-            px="56px"
-            flex={1}
-            justifyContent="center"
-            alignItems="center">
-            <Row alignItems="center">
-              <Heading variant="h6">{t('slope.steepness.slope_meter')}</Heading>
-              <IconButton name="info" _icon={{color: 'action.active'}} />
-            </Row>
-            <Box height="12px" />
-            <Heading variant="h5" fontWeight={700}>
-              {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
-            </Heading>
-            <Box height="5px" />
-            <Heading variant="h6">
-              {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
-            </Heading>
-            <Box height="18px" />
-            <Button
-              onPress={onUse}
-              size="lg"
-              px="46px"
-              py="18px"
-              {...styles.useButton}>
-              {t('general.use')}
-            </Button>
+          <Column alignItems="center">
+            <Box {...styles.closeButtonBox}>
+              <CardCloseButton size="lg" onPress={onClose} />
+            </Box>
+            <Column
+              px="56px"
+              flex={1}
+              justifyContent="center"
+              alignItems="center">
+              <Row alignItems="center">
+                <Heading variant="h6">
+                  {t('slope.steepness.slope_meter')}
+                </Heading>
+                <InfoModal Header={t('slope.steepness.info.title')}>
+                  <SlopeMeterInfoContent />
+                </InfoModal>
+              </Row>
+              <Box height="12px" />
+              <Heading variant="h5" fontWeight={700}>
+                {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
+              </Heading>
+              <Box height="5px" />
+              <Heading variant="h6">
+                {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
+              </Heading>
+              <Box height="18px" />
+              <Button
+                onPress={onUse}
+                size="lg"
+                px="46px"
+                py="18px"
+                {...styles.useButton}>
+                {t('general.use')}
+              </Button>
+            </Column>
           </Column>
-        </Column>
-      </Row>
+        </Row>
+      </BottomSheetModalProvider>
     </ScreenScaffold>
   );
 };
