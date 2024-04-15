@@ -15,23 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useTranslation} from 'react-i18next';
-
-import {Paragraph} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const RockFragmentVolumeInfoContent = () => {
   const {t} = useTranslation();
 
   return (
-    <>
-      <Paragraph variant="body1">
-        {t('soil.texture.fragment.info.description1')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('soil.texture.fragment.info.description2')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('soil.texture.fragment.info.description3')}
-      </Paragraph>
-    </>
+    <Text>
+      {t('soil.texture.fragment.info.description', {units: 'METRIC'})}
+    </Text>
   );
 };

@@ -14,38 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Trans, useTranslation} from 'react-i18next';
-import {
-  Paragraph,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Trans} from 'react-i18next';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SlopeMeterInfoContent = () => {
-  const {t} = useTranslation();
-
   return (
-    <>
-      <Paragraph variant="body1">
-        {t('slope.steepness.info.description1')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('slope.steepness.info.description2')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('slope.steepness.info.description3')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('slope.steepness.info.description4')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('slope.steepness.info.description5')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        <Trans i18nKey="slope.steepness.info.description6">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Paragraph>
-    </>
+    <Text>
+      <Trans
+        i18nKey="slope.steepness.info.description"
+        values={{units: 'METRIC'}}
+        components={{
+          bold: <Text style={{fontWeight: 'bold'}} />,
+        }}
+      />
+    </Text>
   );
 };

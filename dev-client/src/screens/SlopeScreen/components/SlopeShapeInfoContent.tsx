@@ -14,74 +14,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Trans, useTranslation} from 'react-i18next';
-import {Image} from 'native-base';
-import {
-  Paragraph,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Trans} from 'react-i18next';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SlopeShapeInfoContent = () => {
-  const {t} = useTranslation();
-
   return (
     <>
-      <Paragraph variant="body1">
-        {t('slope.shape.info.description1')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        <Trans i18nKey="slope.shape.info.description2">
-          <Text bold>first</Text>
-          <Text>second</Text>
-          <Text bold>third</Text>
-        </Trans>
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('slope.shape.info.description3')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        <Trans i18nKey="slope.shape.info.description4">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('slope.shape.info.description5')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        <Trans i18nKey="slope.shape.info.description6">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Paragraph>
-      <Paragraph variant="body1">
-        {t('slope.shape.info.description7')}
-      </Paragraph>
-      <Paragraph variant="body1">
-        <Trans i18nKey="slope.shape.info.description8">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Paragraph>
-      <Paragraph variant="body1">
-        <Trans i18nKey="slope.shape.info.description9">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Paragraph>
-      <Image
-        source={require('terraso-mobile-client/assets/landpks_intro_image.png')}
-        resizeMode="contain"
-        w="25%"
-        alignSelf="center"
-        alt={t('home.info.intro_image_alt')}
-      />
-      <Paragraph variant="body1">
-        <Trans i18nKey="slope.shape.info.description10">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Paragraph>
+      <Text>
+        <Trans
+          i18nKey="slope.shape.info.description"
+          values={{units: 'METRIC'}}
+          components={{
+            bold: <Text style={{fontWeight: 'bold'}} />,
+            // TODO: Add SVG images
+          }}
+        />
+      </Text>
     </>
   );
 };

@@ -55,29 +55,27 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
   );
 
   return (
-    <>
-      <Column space="1px">
-        <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
-          <Heading variant="h6">{t('slope.title')}</Heading>
-          <InfoModal Header={t('slope.info.title')}>
-            <SlopeInfoContent />
-          </InfoModal>
-        </Row>
-        <DataInputSummary
-          required={required}
-          complete={steepnessValue !== undefined}
-          label={t('slope.steepness.short_title').toLocaleUpperCase()}
-          value={steepnessValue}
-          onPress={onSteepness}
-        />
-        <DataInputSummary
-          required={required}
-          complete={shapeValue !== undefined}
-          label={t('slope.shape.title').toLocaleUpperCase()}
-          value={shapeValue}
-          onPress={onShape}
-        />
-      </Column>
-    </>
+    <Column space="1px">
+      <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
+        <Heading variant="h6">{t('slope.title')}</Heading>
+        <InfoModal Header={t('slope.info.title')}>
+          <SlopeInfoContent />
+        </InfoModal>
+      </Row>
+      <DataInputSummary
+        required={required}
+        complete={steepnessValue !== undefined}
+        label={t('slope.steepness.short_title').toLocaleUpperCase()}
+        value={steepnessValue}
+        onPress={onSteepness}
+      />
+      <DataInputSummary
+        required={required}
+        complete={shapeValue !== undefined}
+        label={t('slope.shape.title').toLocaleUpperCase()}
+        value={shapeValue}
+        onPress={onShape}
+      />
+    </Column>
   );
 };

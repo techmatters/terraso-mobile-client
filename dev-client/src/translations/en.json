@@ -490,14 +490,13 @@
       "label": "Texture",
       "info": {
         "title": "Soil Texture",
-        "description1": "Soil is made up of particles of different sizes. Once you remove all large particles (anything over 2mm or 1/16” in diameter), what is left is a mixture of sand, silt, and clay.",
-        "description2": "<0>Soil texture</0> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.",
-        "description3": "Soil texture determines many important characteristics of your land, including:",
+        "description": "Soil is made up of particles of different sizes. Once you remove all large particles (anything over $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter), what is left is a mixture of sand, silt, and clay.\n\n<bold>Soil texture</bold> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.\n\nSoil texture determines many important characteristics of your land, including:\n\n<bullets />\nKnowing the soil texture also helps you more accurately identify your soil.",
+        "description_diameter_METRIC": "2mm",
+        "description_diameter_ENGLISH": "1/16”",
         "point1": "How much water the soil can hold",
         "point2": "How quickly water can be absorbed into and percolate through the soil",
         "point3": "How easily soil erodes when exposed to wind or water",
-        "point4": "How soil responds to management activities (for example, compaction from tillage operations)",
-        "description4": "Knowing the soil texture also helps you more accurately identify your soil."
+        "point4": "How soil responds to management activities (for example, compaction from tillage operations)"
       },
       "guide": {
         "title": "Texture Guide",
@@ -527,9 +526,9 @@
       "fragment": {
         "info": {
           "title": "Rock Fragment Volume",
-          "description1": "Rock fragment volume is a measurement of how much of the soil volume is taken up by rocks, which is defined as anything larger than 2mm (1/16”) in diameter.",
-          "description2": "This can be estimated visually by comparing the volume of the soil before and after removing the rocks, as well as by comparing the volume of rocks removed to the volume of the remaining soil.",
-          "description3": "Alternatively, for a more precise measurement, you can place the rocks from the sample in a bucket with a known volume of water and measure the change in volume. Then divide that volume by the volume of the original soil sample to get a percentage."
+          "description": "Rock fragment volume is a measurement of how much of the soil volume is taken up by rocks, which is defined as anything larger than $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter.\n\nThis can be estimated visually by comparing the volume of the soil before and after removing the rocks, as well as by comparing the volume of rocks removed to the volume of the remaining soil.\n\nAlternatively, for a more precise measurement, you can place the rocks from the sample in a bucket with a known volume of water and measure the change in volume. Then divide that volume by the volume of the original soil sample to get a percentage.",
+          "description_diameter_METRIC": "2mm",
+          "description_diameter_ENGLISH": "1/16”"
         }
       },
       "class": {
@@ -638,9 +637,7 @@
     "title": "Slope",
     "info": {
       "title": "Slope",
-      "description1": "Describe the characteristics of the slope of the land on which the site is located.",
-      "description2": "Instructions on how to collect each data input are available by tapping on the input name.",
-      "description3": "Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
+      "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each data input are available by tapping on the input name.\n\nSlope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
     },
     "steepness": {
       "short_title": "Steepness",
@@ -660,12 +657,9 @@
       "no_camera_explanation": "For best results, allow LandPKS to use your camera in Settings",
       "info": {
         "title": "How to use Slope Meter",
-        "description1": "Stand facing the site from at least 10-15 feet away.",
-        "description2": "Identify the direction of the predominant slope at the site.",
-        "description3": "Stand so that you can see the ridge or silhouette of that predominant slope (although you may need to get close to the ground to see it.)",
-        "description4": "The direction you are facing should be perpendicular to the direction of the slope. If you hold your arms out to your sides, the line they make should be parallel to the direction of the slope.",
-        "description5": "Position your phone so that the solid white line is lined up with the land’s slope; try to place the white line along the slope’s edge. You may need to crouch down if the silhouette of the slope is not easy to see while standing.",
-        "description6": "<0>Alternate Method</0>: If the land shape is not too curved or bumpy, you can place a yard stick on the ground at the site and then align your phone on the stick to get the angle of the slope."
+        "description": "Stand facing the site from at least $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) away.\n\nIdentify the direction of the predominant slope at the site.\n\nStand so that you can see the ridge or silhouette of that predominant slope (although you may need to get close to the ground to see it.)\n\nThe direction you are facing should be perpendicular to the direction of the slope. If you hold your arms out to your sides, the line they make should be parallel to the direction of the slope.\n\nPosition your phone so that the solid white line is lined up with the land’s slope; try to place the white line along the slope’s edge. You may need to crouch down if the silhouette of the slope is not easy to see while standing.\n\n<bold>Alternate Method</bold>: If the land shape is not too curved or bumpy, you can place a yard stick on the ground at the site and then align your phone on the stick to get the angle of the slope.",
+        "description_distance_METRIC": "4 meters",
+        "description_distance_ENGLISH": "15 feet"
       },
       "select_labels": {
         "FLAT": "Flat 0–2%",
@@ -684,16 +678,9 @@
       "long_title": "Slope Shape",
       "info": {
         "title": "Slope Shape",
-        "description1": "Slope shape refers to the way the land curves in the area surrounding your site point.",
-        "description2": "Slope shape is determined in two directions: <0>downslope</0> and <2>cross-slope</2>.",
-        "description3": "First, determine the primary direction of the slope at the site. Ignore small bumps or ditches; look about 20-30 meters / 60-90 feet in all directions.",
-        "description4": "If it rained, in which general direction would water flow downhill? This is called the <0>downslope</0> direction.",
-        "description5": "The cross-slope direction can be found by looking at a right angle (90 degrees) from the downslope direction.",
-        "description6": "If you walk away from the site while staying at the same elevation, this is the <0>cross-slope</0> direction.",
-        "description7": "Second, determine the shape of the slope for each direction.",
-        "description8": "<0>Concave</0> means that the land slopes increasingly upward as you move away from your point along the cross slope or downslope. For example, the downslope is often concave at the foot of a hill as it changes from a steep slope to a more shallow one.",
-        "description9": "<0>Convex</0> means that the land slopes increasingly downward as you move away from your point along a particular direction. For example, the downslope is often convex at the top of a hill as it changes from a shallow slope to a steeper one.",
-        "description10": "<0>Linear</0> means the slope is consistent along the entirety of a particular direction. It does not necessarily mean the land is flat; it just means that the slope does not change.",
+        "description": "Slope shape refers to the way the land curves in the area surrounding your site point.\n\nSlope shape is determined in two directions: <bold>downslope</bold> and <bold>cross-slope</bold>.\n\nFirst, determine the primary direction of the slope at the site. Ignore small bumps or ditches; look about $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) in all directions.\n\nIf it rained, in which general direction would water flow downhill? This is called the <bold>downslope</bold> direction.\n\nThe cross-slope direction can be found by looking at a right angle (90 degrees) from the downslope direction.\n\nIf you walk away from the site while staying at the same elevation, this is the <bold>cross-slope</bold> direction.\n\nSecond, determine the shape of the slope for each direction.\n\n<bold>Concave</bold> means that the land slopes increasingly upward as you move away from your point along the cross slope or downslope. For example, the downslope is often concave at the foot of a hill as it changes from a steep slope to a more shallow one.\n\n<bold>Convex</bold> means that the land slopes increasingly downward as you move away from your point along a particular direction. For example, the downslope is often convex at the top of a hill as it changes from a shallow slope to a steeper one.\n\n<bold>Linear</bold> means the slope is consistent along the entirety of a particular direction. It does not necessarily mean the land is flat; it just means that the slope does not change.",
+        "description_distance_METRIC": "20-30 meters",
+        "description_distance_ENGLISH": "60-90 feet",
         "down_slope": "Down Slope",
         "cross_slope": "Cross Slope"
       },
