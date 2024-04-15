@@ -32,7 +32,9 @@ export const TextureInfoContent = () => {
             <BulletList
               data={[1, 2, 3, 4]}
               renderItem={i => (
-                <Text variant="body1">{t(`soil.texture.info.point${i}`)}</Text>
+                <Text variant="body1" color="text.primary">
+                  {t(`soil.texture.info.point${i}`)}
+                </Text>
               )}
             />
           ),
