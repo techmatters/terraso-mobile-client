@@ -24,7 +24,7 @@ export const SlopeMeterInfoContent = () => {
         i18nKey="slope.steepness.info.description"
         values={{units: 'METRIC'}}
         components={{
-          bold: <Text style={{fontWeight: 'bold'}} />,
+          bold: <Text bold />,
         }}
       />
     </Text>

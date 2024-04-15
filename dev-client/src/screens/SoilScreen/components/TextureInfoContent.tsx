@@ -27,7 +27,7 @@ export const TextureInfoContent = () => {
         i18nKey="soil.texture.info.description"
         values={{units: 'METRIC'}}
         components={{
-          bold: <Text style={{fontWeight: 'bold'}} />,
+          bold: <Text bold />,
           bullets: (
             <BulletList
               data={[1, 2, 3, 4]}

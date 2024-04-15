@@ -25,7 +25,7 @@ export const SlopeShapeInfoContent = () => {
           i18nKey="slope.shape.info.description"
           values={{units: 'METRIC'}}
           components={{
-            bold: <Text style={{fontWeight: 'bold'}} />,
+            bold: <Text bold />,
             // TODO: Add SVG images
           }}
         />
