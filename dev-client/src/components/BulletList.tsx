@@ -16,6 +16,7 @@
  */
 
 import {
+  Box,
   Column,
   Row,
   Text,
@@ -23,14 +24,15 @@ import {
 
 type Props<T> = {data: T[]; renderItem: (t: T) => React.ReactNode};
 export const BulletList = <T,>({data, renderItem}: Props<T>) => {
+  const bulletMargin = 10;
   return (
     <Column>
       {data.map((item, index) => (
         <Row key={index} alignItems="flex-start">
-          <Text variant="body1" marginHorizontal="10px">
+          <Text variant="body1" marginHorizontal={`${bulletMargin}px`}>
             {'•'}
           </Text>
-          {renderItem(item)}
+          <Box mr={`${bulletMargin * 2}px`}>{renderItem(item)}</Box>
         </Row>
       ))}
       <Text variant="body1" />
