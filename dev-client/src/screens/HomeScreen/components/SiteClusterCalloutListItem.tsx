@@ -18,7 +18,10 @@
 import {useCallback} from 'react';
 import {Pressable} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {
+  CalloutState,
+  siteCallout,
+} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
   Column,
@@ -41,7 +44,7 @@ export const SiteClusterCalloutListItem = ({
       : state.project.projects[site.projectId],
   );
   const onPress = useCallback(() => {
-    setState({kind: 'site', siteId: site.id});
+    setState(siteCallout(site.id));
   }, [site.id, setState]);
 
   return (

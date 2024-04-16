@@ -35,40 +35,25 @@ import Mapbox from '@rnmapbox/maps';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
 import BottomSheet, {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';
+import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
 import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
+import {getHomeScreenFilters} from 'terraso-mobile-client/screens/HomeScreen/utils/homeScreenFilters';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
-import {
-  ListFilterProvider,
-  SortingOption,
-} from 'terraso-mobile-client/components/ListFilter';
-import {equals, searchText} from 'terraso-mobile-client/util';
+import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {normalizeText} from 'terraso-client-shared/utils';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-
-export type CalloutState =
-  | {
-      kind: 'site';
-      siteId: string;
-    }
-  | {
-      kind: 'location';
-      showCallout: boolean;
-      coords: Coords;
-    }
-  | {
-      kind: 'site_cluster';
-      siteIds: string[];
-      coords: Coords;
-    }
-  | {kind: 'none'};
+import {
+  CalloutState,
+  noneCallout,
+  siteCallout,
+  locationCallout,
+} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 
 type HomeScreenRef = {
   showSiteOnMap: (site: Site) => void;
@@ -91,9 +76,7 @@ export const HomeScreen = memo(() => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
-  const [calloutState, setCalloutState] = useState<CalloutState>({
-    kind: 'none',
-  });
+  const [calloutState, setCalloutState] = useState<CalloutState>(noneCallout());
   const currentUserID = useSelector(
     state => state.account.currentUser?.data?.id,
   );
@@ -107,7 +90,7 @@ export const HomeScreen = memo(() => {
   const showSiteOnMap = useCallback(
     (targetSite: Site) => {
       mapRef.current?.moveToPoint(targetSite);
-      setCalloutState({kind: 'site', siteId: targetSite.id});
+      setCalloutState(siteCallout(targetSite.id));
       siteListBottomSheetRef.current?.collapse();
     },
     [setCalloutState],
@@ -150,7 +133,7 @@ export const HomeScreen = memo(() => {
 
   const searchFunction = useCallback(
     (coords: Coords) => {
-      setCalloutState({kind: 'location', showCallout: false, coords});
+      setCalloutState(locationCallout(coords));
       mapRef.current?.moveToPoint(coords);
     },
     [setCalloutState, mapRef],
@@ -183,75 +166,9 @@ export const HomeScreen = memo(() => {
 
   const {siteDistances} = useGeospatialContext();
 
-  const distanceSorting: Record<string, SortingOption<Site>> | undefined =
-    useMemo(() => {
-      return siteDistances === null
-        ? undefined
-        : {
-            distanceAsc: {
-              record: siteDistances,
-              key: 'id',
-              order: 'ascending',
-            },
-            distanceDesc: {
-              record: siteDistances,
-              key: 'id',
-              order: 'descending',
-            },
-          };
-    }, [siteDistances]);
-
   const filters = useMemo(
-    () =>
-      ({
-        search: {
-          kind: 'filter',
-          f: searchText,
-          preprocess: normalizeText,
-          lookup: {
-            key: ['name', 'notes.content'],
-          },
-          hide: true,
-        },
-        role: {
-          kind: 'filter',
-          f: equals,
-          lookup: {
-            record: siteProjectRoles,
-            key: 'id',
-          },
-        },
-        project: {
-          kind: 'filter',
-          f: equals,
-          lookup: {
-            key: 'projectId',
-          },
-        },
-        sort: {
-          kind: 'sorting',
-          options: {
-            nameDesc: {
-              key: 'name',
-              order: 'descending',
-            },
-            nameAsc: {
-              key: 'name',
-              order: 'ascending',
-            },
-            lastModDesc: {
-              key: 'updatedAt',
-              order: 'descending',
-            },
-            lastModAsc: {
-              key: 'updatedAt',
-              order: 'ascending',
-            },
-            ...distanceSorting,
-          },
-        },
-      }) as const,
-    [distanceSorting, siteProjectRoles],
+    () => getHomeScreenFilters(siteDistances, siteProjectRoles),
+    [siteDistances, siteProjectRoles],
   );
 
   return (
