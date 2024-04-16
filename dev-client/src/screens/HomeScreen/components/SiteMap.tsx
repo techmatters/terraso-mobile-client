@@ -28,7 +28,14 @@ import {
 import {useTheme} from 'native-base';
 import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {CalloutState} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {
+  CalloutState,
+  noneCallout,
+  siteCallout,
+  locationCallout,
+  siteClusterCallout,
+  getCalloutSite,
+} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 import {
   coordsToPosition,
   positionToCoords,
@@ -82,13 +89,10 @@ export const SiteMap = memo(
       }));
 
       const {filteredItems: filteredSites} = useListFilter<Site>();
-
       const sites = Object.fromEntries(
         filteredSites.map(site => [site.id, site]),
       );
-
-      const selectedSite =
-        calloutState.kind === 'site' ? sites[calloutState.siteId] : null;
+      const selectedSite = getCalloutSite(calloutState, sites);
 
       const {colors} = useTheme();
 
@@ -145,13 +149,14 @@ export const SiteMap = memo(
               0,
             )) as GeoJSON.FeatureCollection;
 
-            setCalloutState({
-              kind: 'site_cluster',
-              coords: positionToCoords(
-                (feature.geometry as GeoJSON.Point).coordinates,
+            setCalloutState(
+              siteClusterCallout(
+                positionToCoords(
+                  (feature.geometry as GeoJSON.Point).coordinates,
+                ),
+                leafFeatures.features.map(feat => feat.id as string),
               ),
-              siteIds: leafFeatures.features.map(feat => feat.id as string),
-            });
+            );
           }
         },
         [shapeSourceRef, setCalloutState],
@@ -180,20 +185,10 @@ export const SiteMap = memo(
               paddingBottom: 0,
               cameraRef: cameraRef,
             });
-            setCalloutState({kind: 'site', siteId: feature.id as string});
+            setCalloutState(siteCallout(feature.id as string));
           }
         },
         [setCalloutState, handleClusterPress],
-      );
-
-      const onTempSitePress = useCallback(
-        () =>
-          setCalloutState(
-            calloutState.kind === 'location'
-              ? {...calloutState, showCallout: true}
-              : calloutState,
-          ),
-        [calloutState, setCalloutState],
       );
 
       const onPress = useCallback(
@@ -215,14 +210,12 @@ export const SiteMap = memo(
               paddingBottom: 320,
               cameraRef: cameraRef,
             });
-            setCalloutState({
-              kind: 'location',
-              coords: positionToCoords(feature.geometry.coordinates),
-              showCallout: true,
-            });
+            setCalloutState(
+              locationCallout(positionToCoords(feature.geometry.coordinates)),
+            );
           } else {
             Keyboard.dismiss();
-            setCalloutState({kind: 'none'});
+            setCalloutState(noneCallout());
           }
         },
         [calloutState, setCalloutState],
@@ -319,8 +312,7 @@ export const SiteMap = memo(
           </Mapbox.ShapeSource>
           <Mapbox.ShapeSource
             id="temporarySitesSource"
-            shape={temporarySitesFeature}
-            onPress={onTempSitePress}>
+            shape={temporarySitesFeature}>
             <Mapbox.SymbolLayer
               id="temporarySitesLayer"
               style={mapStyles.temporarySiteLayer}
