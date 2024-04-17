@@ -34,11 +34,9 @@ import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/gr
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
-import {
-  VStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectProject} from 'terraso-client-shared/selectors';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
@@ -88,7 +86,7 @@ export function ProjectSettingsScreen({
             href={downloadLink}>
             {t('projects.settings.copy_download_link').toUpperCase()}
           </IconLink>
-          <Text ml={10}>
+          <Text marginLeft={10} variant="body1">
             {t('projects.settings.download_link_description')}
           </Text>
 

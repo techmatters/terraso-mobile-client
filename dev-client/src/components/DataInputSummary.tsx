@@ -16,8 +16,9 @@
  */
 import {Pressable} from 'react-native';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   required: boolean;

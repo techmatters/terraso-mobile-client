@@ -40,11 +40,9 @@ import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
-import {
-  VStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,
@@ -94,7 +92,7 @@ export const CreateSiteForm = ({
           </FormField>
           <FormField name="coords">
             <FormLabel>{t('site.create.location_label')}</FormLabel>
-            <Text>
+            <Text variant="body1">
               {t('site.create.location_accuracy', {
                 accuracyM: accuracyM?.toFixed(5),
               })}

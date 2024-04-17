@@ -17,11 +17,8 @@
 import {useTranslation} from 'react-i18next';
 import {useRoute} from '@react-navigation/native';
 import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
-import {
-  Row,
-  Column,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   LeftButton?: React.ReactNode;
@@ -44,9 +41,9 @@ export const AppBar = ({
       <Row py="4px" minHeight="56px">
         <Row flex={1} space="24px" alignItems="center">
           {LeftButton}
-          <Heading variant="h6" color="primary.contrast">
+          <Text variant="h6" color="primary.contrast">
             {title ?? t(`screens.${route.name}`)}
-          </Heading>
+          </Text>
         </Row>
         {RightButton}
       </Row>

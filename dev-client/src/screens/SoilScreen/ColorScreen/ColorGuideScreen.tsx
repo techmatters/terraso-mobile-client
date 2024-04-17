@@ -26,12 +26,12 @@ import {
   Column,
   Paragraph,
   Row,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
@@ -53,7 +53,9 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
       <BulletList
         data={[1, 2, 3, 4, 5]}
         renderItem={i => (
-          <Text>{t(`soil.color.guide.step1.bullets.${i}`)}</Text>
+          <Text variant="body1">
+            {t(`soil.color.guide.step1.bullets.${i}`)}
+          </Text>
         )}
       />
       <Box width="100%" alignItems="center">

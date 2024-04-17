@@ -34,11 +34,8 @@ import {
   pitMethodSummary,
   renderDepthInterval,
 } from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
-import {
-  Column,
-  Heading,
-  Row,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type DepthIntervalEditorProps = {
   siteId: string;
@@ -59,9 +56,9 @@ const DepthIntervalEditor = ({
       justifyContent="space-between"
       px="12px"
       py="8px">
-      <Heading variant="h6" color="primary.contrast">
+      <Text variant="h6" color="primary.contrast">
         {renderDepthInterval(t, interval)}
-      </Heading>
+      </Text>
       <EditIntervalModal
         siteId={siteId}
         depthInterval={interval.depthInterval}

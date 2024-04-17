@@ -39,9 +39,9 @@ import {
   Column,
   HStack,
   VStack,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {TextInput} from 'react-native';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;

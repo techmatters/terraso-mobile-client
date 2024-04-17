@@ -21,9 +21,8 @@ import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {
   HStack,
   VStack,
-  Heading,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {query: string; setQuery: (query: string) => void};
 
@@ -32,12 +31,14 @@ export const ListHeader = memo(({query, setQuery}: Props) => {
   return (
     <VStack space="10px" px="12px" pt="5%">
       <HStack>
-        <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
+        <Text variant="body1">{t('projects.transfer_sites.heading', '')}</Text>
         <FormTooltip icon="help">
           {t('projects.transfer_sites.tooltip')}
         </FormTooltip>
       </HStack>
-      <Text>{t('projects.transfer_sites.description', '')}</Text>
+      <Text variant="body1">
+        {t('projects.transfer_sites.description', '')}
+      </Text>
       <SearchBar
         query={query}
         setQuery={setQuery}

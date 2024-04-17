@@ -36,9 +36,9 @@ import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/gr
 import {
   HStack,
   VStack,
-  Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const projectValidationFields = (t: TFunction) => ({
   name: yup
@@ -181,7 +181,9 @@ export default function Form({
   });
 
   const EditHeader = editForm ? (
-    <Heading size="sm">{t('projects.edit.inputHeader')}</Heading>
+    <Text size="sm" variant="body1">
+      {t('projects.edit.inputHeader')}
+    </Text>
   ) : (
     <></>
   );
@@ -212,7 +214,9 @@ export default function Form({
       <RadioBlock
         label={
           <HStack alignItems="center">
-            <Heading size="sm">{t('projects.create.privacy_label')}</Heading>
+            <Text size="sm" variant="body1">
+              {t('projects.create.privacy_label')}
+            </Text>
             <IconButton
               name="info"
               onPress={onInfoPress}

@@ -18,7 +18,6 @@
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {
   Column,
-  Heading,
   Paragraph,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -51,6 +50,7 @@ import {
   isColorComplete,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
@@ -153,9 +153,9 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
           />
         </Animated.View>
         <Animated.View layout={LinearTransition} style={styles.slash}>
-          <Heading variant="h6" textAlign="center">
+          <Text variant="h6" textAlign="center">
             /
-          </Heading>
+          </Text>
         </Animated.View>
         {color.chroma !== 0 && (
           <Select

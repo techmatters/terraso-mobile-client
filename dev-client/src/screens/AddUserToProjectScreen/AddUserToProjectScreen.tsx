@@ -32,11 +32,9 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useKeyboardOpen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/hooks/useKeyboardOpen';
-import {
-  HStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   projectId: string;

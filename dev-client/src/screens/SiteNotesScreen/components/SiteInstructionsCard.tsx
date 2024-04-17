@@ -20,11 +20,9 @@ import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {
-  HStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   siteInstructions: string;
@@ -50,11 +48,16 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
       style={theme.elevation[4]}>
       <HStack>
         <Icon name="place" color="primary.dark" size="sm" mr={1} />
-        <Text bold fontSize="md">
+        <Text fontSize="md" variant="body1-strong">
           {t('site.notes.projectInstructions')}
         </Text>
       </HStack>
-      <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">
+      <Text
+        paddingTop={1}
+        fontSize="md"
+        numberOfLines={3}
+        ellipsizeMode="tail"
+        variant="body1">
         {siteInstructions}
       </Text>
     </Card>

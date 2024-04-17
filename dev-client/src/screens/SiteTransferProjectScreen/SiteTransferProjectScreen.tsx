@@ -29,8 +29,8 @@ import {transferSites} from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {removeKeys} from 'terraso-mobile-client/util';
 import {ListHeader} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/ListHeader';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const UNAFFILIATED = {
   projectId: Symbol('unaffiliated'),
@@ -201,7 +201,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
                 variant="body1"
                 fontWeight={700}
                 color="primary.contrast"
-                py="14px">
+                paddingVertical={14}>
                 {projectName} ({projectSites.length})
               </Text>
             }

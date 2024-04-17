@@ -19,11 +19,7 @@ import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
-import {
-  Column,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch} from 'terraso-mobile-client/store';
@@ -50,6 +46,7 @@ import {
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const analyzeImage = async ({
   reference,
@@ -203,7 +200,7 @@ export const ColorAnalysisHomeScreen = () => {
         title={t('soil.color.unexpected_color.title')}
         ref={modalRef}
         actions={unexpectedColorActions}>
-        <Text>{t('soil.color.unexpected_color.body')}</Text>
+        <Text variant="body1">{t('soil.color.unexpected_color.body')}</Text>
         <Box height="md" />
         {colorResult && (
           <Row justifyContent="space-around" alignSelf="stretch">
@@ -213,12 +210,16 @@ export const ColorAnalysisHomeScreen = () => {
                 color={colorResult.nearestValidResult}
               />
               <Box height="sm" />
-              <Text>{t('soil.color.unexpected_color.suggestion')}</Text>
+              <Text variant="body1">
+                {t('soil.color.unexpected_color.suggestion')}
+              </Text>
             </Column>
             <Column alignItems="center">
               <ColorDisplay variant="md" color={colorResult.invalidResult} />
               <Box height="sm" />
-              <Text>{t('soil.color.unexpected_color.your_result')}</Text>
+              <Text variant="body1">
+                {t('soil.color.unexpected_color.your_result')}
+              </Text>
             </Column>
           </Row>
         )}

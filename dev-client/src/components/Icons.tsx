@@ -24,15 +24,13 @@ import {
   NativeBaseProps,
   convertNBStyles,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
-import {
-  HStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   ThemeColor,
   getThemeColor,
 } from 'terraso-mobile-client/components/core/styleConversions';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export type IconProps = Omit<
   React.ComponentProps<typeof MaterialIcon>,
@@ -77,7 +75,7 @@ export const IconButton = React.forwardRef(
         <Box padding="1">
           {icon}
           <Center>
-            <Text color="primary.contrast" fontSize="xs">
+            <Text color="primary.contrast" fontSize="xs" variant="body1">
               {label}
             </Text>
           </Center>
@@ -124,8 +122,9 @@ export const HorizontalIconButton = React.forwardRef(
             <Text
               color={colorScheme || 'primary.contrast'}
               fontSize="md"
-              pl={1}
-              textTransform={isUppercase ? 'uppercase' : 'none'}>
+              paddingLeft={1}
+              textTransform={isUppercase ? 'uppercase' : 'none'}
+              variant="body1">
               {label}
             </Text>
           </HStack>

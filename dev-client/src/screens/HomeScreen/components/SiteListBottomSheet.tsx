@@ -29,13 +29,9 @@ import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialCont
 import {SiteFilterModal} from 'terraso-mobile-client/screens/HomeScreen/components/SiteFilterModal';
 import {getStartingSnapValue} from 'terraso-mobile-client/screens/HomeScreen/utils/getStartingSnapValue';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
-import {
-  Row,
-  Column,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const WINDOW_SIZE = 3;
 const MAX_TO_RENDER_PER_BATCH = 3;
@@ -91,7 +87,7 @@ export const SiteListBottomSheet = memo(
       );
 
       const ListEmptyComponent = useMemo(
-        () => <Text>{t('site.search.no_matches')}</Text>,
+        () => <Text variant="body1">{t('site.search.no_matches')}</Text>,
         [t],
       );
 
@@ -104,7 +100,7 @@ export const SiteListBottomSheet = memo(
           handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
           <Column px="16px">
             <Row justifyContent="space-between" alignItems="center" pb="4">
-              <Heading variant="h6">{t('site.list_title')}</Heading>
+              <Text variant="h6">{t('site.list_title')}</Text>
             </Row>
             {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
           </Column>

@@ -18,7 +18,7 @@
 import {useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   siteId: string;
@@ -28,7 +28,7 @@ export const SiteTeamSettingsScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
   return (
     <ScreenScaffold AppBar={<AppBar title={site.name} />}>
-      <Text>Unimplemented team settings page</Text>
+      <Text variant="body1">Unimplemented team settings page</Text>
     </ScreenScaffold>
   );
 };

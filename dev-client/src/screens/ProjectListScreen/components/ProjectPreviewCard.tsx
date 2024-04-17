@@ -24,9 +24,8 @@ import {formatDate} from 'terraso-mobile-client/util';
 import {
   HStack,
   Badge,
-  Heading,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   project: Project;
@@ -49,17 +48,19 @@ export const ProjectPreviewCard = ({project}: Props) => {
             {t('badge.new').toUpperCase()}
           </Badge>
         )} **/}
-        <Heading variant="h6" color="primary.main">
+        <Text variant="h6" color="primary.main">
           {project.name}
-        </Heading>
+        </Text>
       </HStack>
-      {project.description.length > 0 && <Text>{project.description}</Text>}
-      <Text variant="subtitle2" color="text.secondary" mb="16px">
+      {project.description.length > 0 && (
+        <Text variant="body1">{project.description}</Text>
+      )}
+      <Text variant="subtitle2" color="text.secondary" marginBottom={16}>
         {t('general.last_modified')}: {formatDate(project.updatedAt)}
       </Text>
       <HStack space={2} alignItems="center">
         {/* TODO: Progress still not stored on backend */}
-        <Text>30%</Text>
+        <Text variant="body1">30%</Text>
         <Badge variant="chip" startIcon={<Icon name="location-on" />}>
           {Object.keys(project.sites).length}
         </Badge>

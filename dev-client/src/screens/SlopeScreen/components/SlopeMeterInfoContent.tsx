@@ -15,16 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Trans} from 'react-i18next';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const SlopeMeterInfoContent = () => {
   return (
-    <Text>
+    <Text variant="body1">
       <Trans
         i18nKey="slope.steepness.info.description"
         values={{units: 'METRIC'}}
         components={{
-          bold: <Text bold />,
+          bold: <Text variant="body1-strong" />,
         }}
       />
     </Text>

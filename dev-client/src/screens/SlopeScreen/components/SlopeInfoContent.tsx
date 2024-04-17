@@ -15,14 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useTranslation} from 'react-i18next';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const SlopeInfoContent = () => {
   const {t} = useTranslation();
 
   return (
     <>
-      <Text>{t('slope.info.description')}</Text>
+      <Text variant="body1">{t('slope.info.description')}</Text>
     </>
   );
 };

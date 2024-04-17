@@ -47,14 +47,11 @@ import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/gr
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {useSiteSoilIntervals} from 'terraso-client-shared/selectors';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
-import {
-  Row,
-  Heading,
-  Column,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -171,11 +168,11 @@ export const EditIntervalModal = ({
         />
       )}
       Header={
-        <Heading variant="h6">
+        <Text variant="h6">
           {mutable
             ? t('soil.depth_interval.edit_title')
             : renderDepthInterval(t, thisInterval)}
-        </Heading>
+        </Text>
       }>
       <Formik
         validationSchema={schema}
@@ -193,9 +190,9 @@ export const EditIntervalModal = ({
                 <Box paddingLeft={2} marginBottom={11}>
                   <IntervalForm />
                 </Box>
-                <Heading variant="h6">
+                <Text variant="h6">
                   {t('soil.depth_interval.data_inputs_title')}
-                </Heading>
+                </Text>
               </>
             )}
             <Column space="20px" mb="12px">

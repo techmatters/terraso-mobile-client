@@ -38,9 +38,9 @@ import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictBy
 import {
   HStack,
   VStack,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -82,7 +82,7 @@ export const ProjectInputScreen = ({
             <RadioBlock
               label={
                 <HStack>
-                  <Text variant="body1" bold>
+                  <Text variant="body1-strong">
                     {t('site.dashboard.privacy')}
                   </Text>
                   <IconButton
@@ -110,10 +110,10 @@ export const ProjectInputScreen = ({
             />
           </HStack>
           <RestrictByProjectRole role="MANAGER">
-            <Text bold fontSize={'md'}>
+            <Text fontSize={'md'} variant="body1-strong">
               {t('projects.inputs.instructions.title')}
             </Text>
-            <Text fontSize={'md'}>
+            <Text fontSize={'md'} variant="body1">
               {t('projects.inputs.instructions.description')}
             </Text>
             <Button
@@ -131,7 +131,10 @@ export const ProjectInputScreen = ({
                   mr={2}
                   name={'edit'}
                 />
-                <Text color="primary.contrast" textTransform={'uppercase'}>
+                <Text
+                  color="primary.contrast"
+                  textTransform={'uppercase'}
+                  variant="body1">
                   {t('projects.inputs.instructions.add_label')}
                 </Text>
               </HStack>
@@ -140,7 +143,12 @@ export const ProjectInputScreen = ({
         </Box>
         <Accordion
           Head={
-            <Text pt={3} pb={3} fontSize={'md'} color={'primary.contrast'}>
+            <Text
+              paddingTop={3}
+              paddingBottom={3}
+              fontSize={'md'}
+              color={'primary.contrast'}
+              variant="body1">
               {t('soil.pit')}
             </Text>
           }>
@@ -149,7 +157,12 @@ export const ProjectInputScreen = ({
         <Box height={4} />
         <Accordion
           Head={
-            <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
+            <Text
+              paddingTop={3}
+              paddingBottom={3}
+              fontSize="md"
+              color="primary.contrast"
+              variant="body1">
               {t('soil.project_settings.required_data_title')}
             </Text>
           }>

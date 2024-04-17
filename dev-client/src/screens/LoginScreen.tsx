@@ -29,12 +29,9 @@ import {useTranslation} from 'react-i18next';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
-import {
-  Column,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -71,18 +68,18 @@ export const LoginScreen = () => {
     <Column bgColor="primary.main" alignItems="center" h="100%">
       <Box flexGrow={2} />
       <Column justifyContent="flex-end" alignItems="center">
-        <Heading variant="h3" fontSize="40px" color="primary.contrast">
+        <Text variant="h3" fontSize={40} color="primary.contrast">
           {t('login.title')}
-        </Heading>
+        </Text>
         <Box height={28} />
-        <Heading
+        <Text
           variant="h5"
           color="primary.contrast"
           textAlign="center"
-          pl={10}
-          pr={10}>
+          paddingLeft={10}
+          paddingRight={10}>
           {t('login.subtitle')}
-        </Heading>
+        </Text>
         <Box height={72} />
         <Button.Group direction="column" space={5}>
           <Button

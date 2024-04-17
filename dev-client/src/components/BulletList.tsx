@@ -15,12 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Column,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props<T> = {data: T[]; renderItem: (t: T) => React.ReactNode};
 export const BulletList = <T,>({data, renderItem}: Props<T>) => {

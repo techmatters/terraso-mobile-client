@@ -24,13 +24,9 @@ import {StyleSheet} from 'react-native';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
-import {
-  Row,
-  Heading,
-  Text,
-  Badge,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const TEMP_MODIFIED_DATE = '8/15/23';
 const TEMP_MODIFIED_NAME = 'Sample Sam';
@@ -64,14 +60,18 @@ export const SiteCard = ({
   return (
     <Card
       Header={
-        <Heading variant="h6" color="primary.main">
+        <Text variant="h6" color="primary.main">
           {site.name}
-        </Heading>
+        </Text>
       }
       onPress={onCardPress}
       buttons={buttons}
       isPopover={isPopover}>
-      {project && <Heading size="md">{project.name}</Heading>}
+      {project && (
+        <Text size="md" variant="body1">
+          {project.name}
+        </Text>
+      )}
       <Text variant="subtitle2" color="text.secondary">
         {t('site.last_updated', {
           date: TEMP_MODIFIED_DATE,

@@ -15,19 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Trans, useTranslation} from 'react-i18next';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const TextureInfoContent = () => {
   const {t} = useTranslation();
 
   return (
-    <Text>
+    <Text variant="body1">
       <Trans
         i18nKey="soil.texture.info.description"
         values={{units: 'METRIC'}}
         components={{
-          bold: <Text bold />,
+          bold: <Text variant="body1-strong" />,
           bullets: (
             <BulletList
               data={[1, 2, 3, 4]}

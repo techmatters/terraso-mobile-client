@@ -44,14 +44,11 @@ import LinearConcave from 'terraso-mobile-client/assets/slope/shape/linear-conca
 import LinearConvex from 'terraso-mobile-client/assets/slope/shape/linear-convex.svg';
 import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear.svg';
 import {renderShape} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
-import {
-  Column,
-  Row,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   siteId: string;
@@ -137,7 +134,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
         <Column>
           <Column p="15px" bg="primary.contrast">
             <Row alignItems="center">
-              <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
+              <Text variant="h6">{t('slope.shape.long_title')}</Text>
               <InfoModal Header={t('slope.shape.info.title')}>
                 <SlopeShapeInfoContent />
               </InfoModal>

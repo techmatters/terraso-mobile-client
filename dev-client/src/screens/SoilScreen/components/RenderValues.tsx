@@ -21,10 +21,11 @@ import {
   LabelledDepthInterval,
   SoilPitMethod,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {munsellToString} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const renderDepthInterval = (
   t: TFunction,

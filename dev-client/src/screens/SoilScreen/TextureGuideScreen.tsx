@@ -31,11 +31,9 @@ import {useDispatch} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ResizeMode, Video} from 'expo-av';
 import {Image, StyleSheet, View} from 'react-native';
-import {
-  Column,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const LENGTH_IMAGE = require('terraso-mobile-client/assets/texture/guide/length.png');
 

@@ -23,11 +23,8 @@ import {
   siteCallout,
 } from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 import {useSelector} from 'terraso-mobile-client/store';
-import {
-  Column,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type SiteClusterCalloutListItemProps = {
   site: Site;
@@ -50,9 +47,9 @@ export const SiteClusterCalloutListItem = ({
   return (
     <Pressable onPress={onPress}>
       <Column>
-        <Heading variant="h6" color="primary.main">
+        <Text variant="h6" color="primary.main">
           {site.name}
-        </Heading>
+        </Text>
         {project && <Text variant="body1">{project.name}</Text>}
       </Column>
     </Pressable>

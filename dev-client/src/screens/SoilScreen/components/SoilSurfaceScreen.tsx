@@ -17,7 +17,6 @@
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
   Column,
-  Heading,
   Paragraph,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
@@ -37,6 +36,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {useCallback} from 'react';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {siteId: string};
 
@@ -60,9 +60,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
   return (
     <ScreenScaffold AppBar={<AppBar title={site.name} />}>
       <Column padding="md">
-        <Heading variant="h6">
-          {t('soil.collection_method.verticalCracking')}
-        </Heading>
+        <Text variant="h6">{t('soil.collection_method.verticalCracking')}</Text>
         <LastModified />
         <Select
           nullable

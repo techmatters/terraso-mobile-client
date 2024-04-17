@@ -39,17 +39,13 @@ import {
   SoilPitInputScreenScaffold,
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {
-  Column,
-  Row,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/TextureInfoContent';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),
@@ -140,7 +136,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
       <ScrollView bg="grey.300">
         <Column p="15px" bg="primary.contrast">
           <Row alignItems="center">
-            <Heading variant="h6">{t('soil.texture.title')}</Heading>
+            <Text variant="h6">{t('soil.texture.title')}</Text>
             <InfoModal Header={t('soil.texture.info.title')}>
               <TextureInfoContent />
             </InfoModal>

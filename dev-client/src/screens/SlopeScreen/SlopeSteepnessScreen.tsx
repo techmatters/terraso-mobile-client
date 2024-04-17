@@ -38,14 +38,10 @@ import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/co
 import {Image, ImageSourcePropType, StyleSheet} from 'react-native';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {
-  Column,
-  Row,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   siteId: string;
@@ -136,7 +132,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
         _contentContainerStyle={styles.scrollContentContainer}>
         <Column>
           <Column p="15px" bg="primary.contrast">
-            <Heading variant="h6">{t('slope.steepness.long_title')}</Heading>
+            <Text variant="h6">{t('slope.steepness.long_title')}</Text>
             <LastModified />
           </Column>
         </Column>

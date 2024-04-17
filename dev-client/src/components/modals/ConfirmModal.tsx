@@ -24,12 +24,12 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   ActionButton,
   ActionsModal,
   ActionsModalProps,
 } from 'terraso-mobile-client/components/modals/ActionsModal';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = Omit<ActionsModalProps, 'actions'> & {
   title: string;

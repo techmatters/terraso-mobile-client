@@ -16,7 +16,7 @@
  */
 
 import {ErrorMessage as FormikErrorMessage} from 'formik';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   fieldName: string;
@@ -25,7 +25,11 @@ type Props = {
 export default function ErrorMessage({fieldName}: Props) {
   return (
     <FormikErrorMessage name={fieldName}>
-      {msg => <Text color="error.main">{msg}</Text>}
+      {msg => (
+        <Text color="error.main" variant="body1">
+          {msg}
+        </Text>
+      )}
     </FormikErrorMessage>
   );
 }

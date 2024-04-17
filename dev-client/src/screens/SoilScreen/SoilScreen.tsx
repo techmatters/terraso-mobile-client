@@ -40,11 +40,9 @@ import {
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  Row,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -86,12 +84,10 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         px="16px"
         py="12px"
         justifyContent="space-between">
-        <Heading variant="h6">{t('soil.pit')}</Heading>
+        <Text variant="h6">{t('soil.pit')}</Text>
         {!projectSettings && (
           <BottomSheetModal
-            Header={
-              <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
-            }
+            Header={<Text variant="h6">{t('soil.soil_preset.header')}</Text>}
             trigger={onOpen => (
               <IconButton
                 name="tune"

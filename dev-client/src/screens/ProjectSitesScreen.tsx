@@ -59,9 +59,9 @@ import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleCo
 import {
   HStack,
   VStack,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type SiteMenuProps = {
   iconName: IconName;
@@ -75,7 +75,7 @@ const SiteMenuItem = ({iconName, text, onPress}: SiteMenuProps) => {
       <Pressable onPress={onPress}>
         <HStack flexDirection="row" space={2} alignItems="center">
           <Icon name={iconName} size="xs" />
-          <Text>{text}</Text>
+          <Text variant="body1">{text}</Text>
         </HStack>
       </Pressable>
     </Menu.Item>
@@ -152,7 +152,9 @@ const SiteCardList = ({showButtons}: {showButtons: boolean}) => {
       )}
       keyExtractor={site => site.id}
       ItemSeparatorComponent={() => <Box height={8} />}
-      ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
+      ListEmptyComponent={
+        <Text variant="body1">{t('site.search.no_matches')}</Text>
+      }
     />
   );
 };
@@ -270,9 +272,9 @@ export function ProjectSitesScreen({
     <VStack m={3} pb={5} space={3} h="100%">
       {isEmpty && (
         <>
-          <Text>{t('projects.sites.empty_viewer')}</Text>
+          <Text variant="body1">{t('projects.sites.empty_viewer')}</Text>
           <RestrictByProjectRole role={['MANAGER', 'CONTRIBUTOR']}>
-            <Text>{t('projects.sites.empty_contributor')}</Text>
+            <Text variant="body1">{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
         </>
       )}

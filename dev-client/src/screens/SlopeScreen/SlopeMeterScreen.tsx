@@ -29,16 +29,12 @@ import {Linking} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {
-  Column,
-  Row,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -104,7 +100,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
               </Button>
             ) : (
               <>
-                <Heading variant="h6">{t('slope.steepness.no_camera')}</Heading>
+                <Text variant="h6">{t('slope.steepness.no_camera')}</Text>
                 <Text variant="body1" textAlign="center">
                   {t('slope.steepness.no_camera_explanation')}
                 </Text>
@@ -124,21 +120,19 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
               justifyContent="center"
               alignItems="center">
               <Row alignItems="center">
-                <Heading variant="h6">
-                  {t('slope.steepness.slope_meter')}
-                </Heading>
+                <Text variant="h6">{t('slope.steepness.slope_meter')}</Text>
                 <InfoModal Header={t('slope.steepness.info.title')}>
                   <SlopeMeterInfoContent />
                 </InfoModal>
               </Row>
               <Box height={12} />
-              <Heading variant="h5" fontWeight={700}>
+              <Text variant="h5" fontWeight={700}>
                 {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
-              </Heading>
+              </Text>
               <Box height={5} />
-              <Heading variant="h6">
+              <Text variant="h6">
                 {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
-              </Heading>
+              </Text>
               <Box height={18} />
               <Button
                 onPress={onUse}

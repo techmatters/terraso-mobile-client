@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useMemo} from 'react';
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   headers: string[];
@@ -32,7 +33,7 @@ export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
   const displayCol = (col: string | React.ReactElement, index: number) => {
     if (typeof col === 'string') {
       return (
-        <Text flex={1} key={index} {...textAlign}>
+        <Text flex={1} key={index} {...textAlign} variant="body1">
           {col}
         </Text>
       );

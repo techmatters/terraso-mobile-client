@@ -35,10 +35,10 @@ import {
   ModalHandle,
 } from 'terraso-mobile-client/components/modals/Modal';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const SoilPitSettings = ({projectId}: {projectId: string}) => {
   const {t} = useTranslation();
@@ -131,7 +131,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
             </Button>
           )}
           Header={
-            <Heading variant="h6">{t('soil.depth_interval.add_title')}</Heading>
+            <Text variant="h6">{t('soil.depth_interval.add_title')}</Text>
           }>
           <AddIntervalModalBody
             onSubmit={onAddDepthInterval}

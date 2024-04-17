@@ -17,7 +17,7 @@
 
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useCallback, useMemo, useRef} from 'react';
 import {Pressable, ViewStyle} from 'react-native';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
@@ -26,6 +26,7 @@ import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {TextInput} from 'react-native-paper';
 import {theme} from 'terraso-mobile-client/theme';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 // utility type so we can strictly validate the types of inputs/callbacks
 // based on whether the select is nullable

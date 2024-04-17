@@ -27,11 +27,9 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Keyboard} from 'react-native';
-import {
-  VStack,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   project: Project;
@@ -74,9 +72,9 @@ export const EditProjectInstructionsScreen = ({project}: Props) => {
       isSubmitting={isSubmitting}>
       {formikProps => (
         <VStack pt={10} pl={5} pr={5} pb={10} flex={1}>
-          <Heading variant="h6" pb={7}>
+          <Text variant="h6" paddingBottom={7}>
             {t('projects.inputs.instructions.title')}
-          </Heading>
+          </Text>
           <Box flexGrow={1}>
             <SiteNoteForm content={formikProps.values.content || ''} />
           </Box>

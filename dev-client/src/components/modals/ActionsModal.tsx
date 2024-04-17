@@ -21,12 +21,10 @@ import {
   ModalProps,
 } from 'terraso-mobile-client/components/modals/Modal';
 import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
-import {
-  HStack,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Button} from 'native-base';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type ActionButtonProps = {
   onPress: () => void;
@@ -113,9 +111,9 @@ export const ActionsModal = forwardRef<
       backgroundColor="grey.200"
       Footer={Footer}
       {...modalProps}>
-      <Heading variant="h5" textAlign="center">
+      <Text variant="h5" textAlign="center">
         {title}
-      </Heading>
+      </Text>
       <Box height="md" />
       {children}
     </Modal>

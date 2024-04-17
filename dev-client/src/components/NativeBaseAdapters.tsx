@@ -113,7 +113,7 @@ type HeadingProps = NativeBaseTextProps &
     variant?: keyof (typeof theme.components)['Heading']['variants'];
   };
 
-export const Heading = (props: React.PropsWithChildren<HeadingProps>) => (
+export const Text = (props: React.PropsWithChildren<HeadingProps>) => (
   <RN.Text
     {...convertNBStyles(
       {

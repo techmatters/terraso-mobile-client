@@ -29,13 +29,10 @@ import {
   percentToDegree,
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {
-  Column,
-  Row,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   siteId: string;
@@ -124,9 +121,9 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
       validateOnChange>
       {({handleSubmit, isValid, isSubmitting, handleChange}) => (
         <Column alignItems="center">
-          <Heading variant="h6" alignSelf="flex-start">
+          <Text variant="h6" alignSelf="flex-start">
             {t('slope.steepness.manual_help')}
-          </Heading>
+          </Text>
           <Box height={30} />
           <Row justifyContent="space-between" space="40px">
             <Box flex={1}>

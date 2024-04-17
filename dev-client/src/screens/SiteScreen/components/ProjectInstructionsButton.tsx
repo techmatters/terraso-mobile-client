@@ -21,11 +21,9 @@ import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useCallback} from 'react';
 import {Project} from 'terraso-client-shared/project/projectSlice';
-import {
-  HStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   project: Project;
@@ -55,7 +53,10 @@ export const ProjectInstructionsButton = ({project}: Props) => {
         onPress={onShowNote()}>
         <HStack>
           <Icon color="primary.contrast" size={'sm'} mr={2} name={'place'} />
-          <Text color="primary.contrast" textTransform={'uppercase'}>
+          <Text
+            color="primary.contrast"
+            textTransform={'uppercase'}
+            variant="body1">
             {t('projects.inputs.instructions.add_label')}
           </Text>
         </HStack>

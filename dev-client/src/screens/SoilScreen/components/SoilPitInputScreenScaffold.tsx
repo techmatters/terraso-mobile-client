@@ -20,8 +20,8 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export type SoilPitInputScreenProps = {
   siteId: string;
@@ -42,9 +42,13 @@ export const SoilPitInputScreenScaffold = ({
         <AppBar
           title={name}
           Content={
-            <Heading px="10px" pb="8px" variant="h6" color="primary.contrast">
+            <Text
+              paddingHorizontal={10}
+              paddingBottom={8}
+              variant="h6"
+              color="primary.contrast">
               {renderDepthInterval(t, depthInterval)}
-            </Heading>
+            </Text>
           }
         />
       }

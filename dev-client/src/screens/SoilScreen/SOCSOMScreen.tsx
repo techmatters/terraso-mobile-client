@@ -18,12 +18,12 @@ import {
   SoilPitInputScreenProps,
   SoilPitInputScreenScaffold,
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const SOCSOMScreen = (props: SoilPitInputScreenProps) => {
   return (
     <SoilPitInputScreenScaffold {...props}>
-      <Text>Unimplemented SOCSOM Screen</Text>
+      <Text variant="body1">Unimplemented SOCSOM Screen</Text>
     </SoilPitInputScreenScaffold>
   );
 };

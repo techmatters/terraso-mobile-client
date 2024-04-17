@@ -15,10 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Text,
-  Column,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {
@@ -30,6 +27,7 @@ import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal
 import {Box} from 'terraso-mobile-client/components/core/Box';
 import {StyleSheet} from 'react-native';
 import {ThemeColor} from 'terraso-mobile-client/components/core/styleConversions';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   color: MunsellColor;

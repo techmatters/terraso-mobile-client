@@ -17,7 +17,7 @@
 
 import {useToken} from 'native-base';
 import {Pressable, StyleSheet, View} from 'react-native';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export type ImageRadioOption = {
   label: string | undefined;

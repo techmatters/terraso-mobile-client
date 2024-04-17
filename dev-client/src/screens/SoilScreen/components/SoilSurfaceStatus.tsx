@@ -18,16 +18,13 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {
-  Column,
-  Heading,
-  Row,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
   selectSoilData,
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {siteId: string};
 
@@ -44,7 +41,7 @@ export const SoilSurfaceStatus = ({siteId}: Props) => {
   return (
     <Column space="1px">
       <Row backgroundColor="background.default" px="16px" py="12px">
-        <Heading variant="h6">{t('soil.surface')}</Heading>
+        <Text variant="h6">{t('soil.surface')}</Text>
       </Row>
       <DataInputSummary
         required={projectSettings?.verticalCrackingRequired ?? false}

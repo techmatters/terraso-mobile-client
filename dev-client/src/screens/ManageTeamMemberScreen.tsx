@@ -32,11 +32,9 @@ import {useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {
-  VStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   projectId: string;
@@ -137,7 +135,7 @@ export const ManageTeamMemberScreen = ({
             actionName={t('projects.manage_member.confirm_removal_action')}
             handleConfirm={removeMembership}
           />
-          <Text ml="20px" variant="caption">
+          <Text marginLeft={20} variant="caption">
             {t('projects.manage_member.remove_help')}
           </Text>
         </VStack>

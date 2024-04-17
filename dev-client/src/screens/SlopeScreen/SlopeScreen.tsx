@@ -23,17 +23,14 @@ import {
   renderShape,
   renderSteepness,
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
-import {
-  Column,
-  Row,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   selectSoilData,
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
 import {SlopeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoContent';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -57,7 +54,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
   return (
     <Column space="1px">
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
-        <Heading variant="h6">{t('slope.title')}</Heading>
+        <Text variant="h6">{t('slope.title')}</Text>
         <InfoModal Header={t('slope.info.title')}>
           <SlopeInfoContent />
         </InfoModal>

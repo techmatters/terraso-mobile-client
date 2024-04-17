@@ -23,7 +23,6 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   HStack,
   VStack,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
@@ -31,6 +30,7 @@ import {
   ProjectRole,
 } from 'terraso-client-shared/project/projectSlice';
 import {useCallback} from 'react';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export type UserFields = Omit<User, 'preferences'>;
 
@@ -61,10 +61,10 @@ export const UserDisplay = ({
           alt={t('general.profile_image_alt')}
         />
         <VStack flexGrow={2} ml="15px">
-          <Text fontWeight={700} fontSize="16px">
+          <Text fontWeight={700} fontSize={16} variant="body1">
             {formatName(firstName, lastName)}
           </Text>
-          <Text fontWeight={400} fontSize="14px">
+          <Text fontWeight={400} fontSize={14} variant="body1">
             {email}
           </Text>
         </VStack>

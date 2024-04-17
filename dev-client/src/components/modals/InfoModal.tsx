@@ -17,7 +17,7 @@
 
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
 import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {Header: React.ReactNode};
 
@@ -28,7 +28,7 @@ export const InfoModal = ({
   <BottomSheetModal
     fullHeight
     trigger={onOpen => <TooltipIconButton onPress={onOpen} />}
-    Header={<Heading variant="h4">{Header}</Heading>}>
+    Header={<Text variant="h4">{Header}</Text>}>
     {children}
   </BottomSheetModal>
 );

@@ -18,12 +18,9 @@ import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
 import {HorizontalIconButton} from 'terraso-mobile-client/components/Icons';
-import {
-  Column,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const PrivacyInfoContent = () => {
   const {t} = useTranslation();
@@ -31,19 +28,19 @@ export const PrivacyInfoContent = () => {
   return (
     <BottomSheetScrollView>
       <Column space={3} pb="65%" pt={5} px={5} mt="48px">
-        <Heading w="full" textAlign="left">
+        <Text width="full" textAlign="left" variant="body1">
           {t('general.info.privacy_title')}
-        </Heading>
+        </Text>
         <Text variant="body1">
           <Trans i18nKey="general.info.privacy_item1">
-            <Text bold>first</Text>
-            <Text>second</Text>
+            <Text variant="body1-strong">first</Text>
+            <Text variant="body1">second</Text>
           </Trans>
         </Text>
         <Text variant="body1">
           <Trans i18nKey="general.info.privacy_item2">
-            <Text bold>first</Text>
-            <Text>second</Text>
+            <Text variant="body1-strong">first</Text>
+            <Text variant="body1">second</Text>
           </Trans>
         </Text>
         <Box paddingTop={1} paddingBottom={1}>
@@ -59,26 +56,26 @@ export const PrivacyInfoContent = () => {
         </Box>
         <Text variant="body1">
           <Trans i18nKey="general.info.privacy_item3">
-            <Text bold>first</Text>
-            <Text>second</Text>
+            <Text variant="body1-strong">first</Text>
+            <Text variant="body1">second</Text>
           </Trans>
         </Text>
         <Text variant="body1">
           <Trans i18nKey="general.info.privacy_item4">
-            <Text bold>first</Text>
-            <Text>second</Text>
+            <Text variant="body1-strong">first</Text>
+            <Text variant="body1">second</Text>
           </Trans>
         </Text>
         <Text variant="body1">
           <Trans i18nKey="general.info.privacy_item5">
-            <Text bold>first</Text>
-            <Text>second</Text>
+            <Text variant="body1-strong">first</Text>
+            <Text variant="body1">second</Text>
           </Trans>
         </Text>
         <Text variant="body1">
           <Trans i18nKey="general.info.privacy_item6">
-            <Text bold>first</Text>
-            <Text>second</Text>
+            <Text variant="body1-strong">first</Text>
+            <Text variant="body1">second</Text>
           </Trans>
         </Text>
         <Box paddingTop={1} paddingBottom={1}>

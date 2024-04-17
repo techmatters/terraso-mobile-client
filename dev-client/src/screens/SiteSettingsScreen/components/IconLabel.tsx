@@ -16,8 +16,9 @@
  */
 
 import {Spacer} from 'native-base';
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   label: string;
@@ -26,7 +27,9 @@ type Props = {
 
 export const IconLabel = ({label, icon}: Props) => (
   <Row alignItems="center">
-    <Text {...(theme.components.FormControlLabel.baseStyle._text as any)}>
+    <Text
+      {...(theme.components.FormControlLabel.baseStyle._text as any)}
+      variant="body1">
       {label}
     </Text>
     <Spacer size="4px" />

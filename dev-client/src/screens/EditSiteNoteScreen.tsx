@@ -28,11 +28,9 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Keyboard} from 'react-native';
-import {
-  VStack,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Props = {
   note: SiteNote;
@@ -80,9 +78,9 @@ export const EditSiteNoteScreen = ({note}: Props) => {
       isSubmitting={isSubmitting}>
       {formikProps => (
         <VStack pt={10} pl={5} pr={5} pb={10} flex={1}>
-          <Heading variant="h6" pb={7}>
+          <Text variant="h6" paddingBottom={7}>
             {t('site.notes.edit_title')}
-          </Heading>
+          </Text>
           <Box flexGrow={1}>
             <SiteNoteForm content={formikProps.values.content} />
           </Box>

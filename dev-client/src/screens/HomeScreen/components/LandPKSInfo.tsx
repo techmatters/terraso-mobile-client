@@ -26,9 +26,8 @@ import {
 import {
   Column,
   HStack,
-  Heading,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const LandPKSInfo = () => {
   const {t} = useTranslation();
@@ -36,9 +35,9 @@ export const LandPKSInfo = () => {
   return (
     <BottomSheetScrollView>
       <Column space={3} pb="65%" pt={5} px={5} mt="48px">
-        <Heading w="full" textAlign="center">
+        <Text width="full" textAlign="center" variant="body1">
           {t('home.info.title')}
-        </Heading>
+        </Text>
         <Image
           source={require('terraso-mobile-client/assets/landpks_intro_image.png')}
           w="100%"
@@ -48,19 +47,19 @@ export const LandPKSInfo = () => {
         />
         <Text variant="body1">
           <Trans i18nKey="home.info.description">
-            <Text bold>first</Text>
-            <Text>second</Text>
-            <Text bold>third</Text>
+            <Text variant="body1-strong">first</Text>
+            <Text variant="body1">second</Text>
+            <Text variant="body1-strong">third</Text>
           </Trans>
         </Text>
         <Column>
           {[1, 2, 3].map(index => (
             <HStack key={index}>
-              <Text variant="body1" mr={2}>
+              <Text variant="body1" marginRight={2}>
                 {index + 1}
                 {'.'}
               </Text>
-              <Text variant="body1" mr={2}>
+              <Text variant="body1" marginRight={2}>
                 <Trans
                   i18nKey={`home.info.list${index}`}
                   components={{icon: <LocationIcon />}}
@@ -75,11 +74,12 @@ export const LandPKSInfo = () => {
             components={{
               icon: <LinkNewWindowIcon />,
             }}>
-            <Text bold>first</Text>
+            <Text variant="body1-strong">first</Text>
             <Text
               underline
               onPress={() => Linking.openURL(t('home.info.link_url'))}
-              color="primary.main">
+              color="primary.main"
+              variant="body1">
               link_text
             </Text>
           </Trans>

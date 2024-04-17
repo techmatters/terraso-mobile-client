@@ -22,8 +22,8 @@ import {useTranslation} from 'react-i18next';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {ProjectPreviewCard} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectPreviewCard';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const WINDOW_SIZE = 6; // Default is 21, bringing it down as the items in this FlatList are very costly to render
 const MAX_TO_RENDER_PER_BATCH = 5; // Similar as above, default is 10
@@ -42,7 +42,7 @@ export const ProjectList = () => {
   );
 
   const ListEmptyComponent = useMemo(
-    () => <Text>{t('projects.search.no_matches')}</Text>,
+    () => <Text variant="body1">{t('projects.search.no_matches')}</Text>,
     [t],
   );
 

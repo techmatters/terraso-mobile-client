@@ -34,12 +34,10 @@ import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
 import {normalizeText} from 'terraso-client-shared/utils';
 import {equals, searchText} from 'terraso-mobile-client/util';
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
-import {
-  VStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const SORT_OPTIONS = ['nameAsc', 'nameDesc'];
 
@@ -98,7 +96,7 @@ export const ProjectListScreen = () => {
           activeProjects.length === 0 && (
             <>
               <Text variant="body1-strong">{t('projects.none.header')}</Text>
-              <Text>{t('projects.none.info')}</Text>
+              <Text variant="body1">{t('projects.none.info')}</Text>
               <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
                 {t('projects.learn_more')}
               </Link>

@@ -33,9 +33,9 @@ import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {
   Column,
   HStack,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';
@@ -56,8 +56,8 @@ type Props = {
 
 const LocationDetail = ({label, value}: {label: string; value: string}) => (
   <Text variant="body1">
-    <Text bold>{label}: </Text>
-    <Text>{value}</Text>
+    <Text variant="body1-strong">{label}: </Text>
+    <Text variant="body1">{value}</Text>
   </Text>
 );
 
@@ -76,17 +76,17 @@ const LocationPrediction = ({
 
   return (
     <Column backgroundColor="primary.main" alignItems="center" py="18px">
-      <Text variant="body1" color="primary.contrast" bold>
+      <Text variant="body1-strong" color="primary.contrast">
         {label}
       </Text>
       <Box height={5} />
       <Text variant="body2" color="primary.contrast">
-        <Text bold>{t('soil.prediction')}: </Text>
-        <Text>{prediction}</Text>
+        <Text variant="body1-strong">{t('soil.prediction')}: </Text>
+        <Text variant="body1">{prediction}</Text>
       </Text>
       <Text variant="body2" color="primary.contrast">
-        <Text bold>{t('soil.confidence')}: </Text>
-        <Text>{confidence}</Text>
+        <Text variant="body1-strong">{t('soil.confidence')}: </Text>
+        <Text variant="body1">{confidence}</Text>
       </Text>
     </Column>
   );
@@ -143,7 +143,7 @@ export const SiteScreen = ({siteId, coords}: Props) => {
               <RadioBlock
                 label={
                   <HStack>
-                    <Text variant="body1" bold>
+                    <Text variant="body1-strong">
                       {t('site.dashboard.privacy')}
                     </Text>
                     <IconButton

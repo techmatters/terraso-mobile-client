@@ -24,9 +24,10 @@ import {
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Switch} from 'react-native';
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const RequiredDataSettings = ({
   projectId,
@@ -66,7 +67,7 @@ export const RequiredDataSettings = ({
               );
             }}
           />
-          <Text bold pl={2} fontSize="md">
+          <Text paddingLeft={2} fontSize="md" variant="body1-strong">
             {t(`soil.collection_method.${method}`)}
           </Text>
         </Row>

@@ -36,13 +36,11 @@ import {
   Photo,
   PhotoWithBase64,
 } from 'terraso-mobile-client/components/ImagePicker';
-import {
-  Text,
-  Column,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type Crop = {top: number; left: number; size: number};
 

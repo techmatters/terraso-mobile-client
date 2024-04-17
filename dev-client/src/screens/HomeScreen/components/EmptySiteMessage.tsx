@@ -17,13 +17,13 @@
 import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
 import {LinkNewWindowIcon} from 'terraso-mobile-client/components/Icons';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const EmptySiteMessage = () => {
   const {t} = useTranslation();
 
   return (
-    <Text px="17px" variant="body1">
+    <Text paddingHorizontal={17} variant="body1">
       <Trans
         i18nKey="site.empty.info"
         components={{
@@ -32,7 +32,8 @@ export const EmptySiteMessage = () => {
         <Text
           underline
           onPress={() => Linking.openURL(t('site.empty.link_url'))}
-          color="primary.main">
+          color="primary.main"
+          variant="body1">
           link_text
         </Text>
       </Trans>

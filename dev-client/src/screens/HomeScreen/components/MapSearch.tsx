@@ -31,9 +31,9 @@ import {
   HStack,
   View,
   VStack,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
@@ -53,8 +53,8 @@ function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
   return (
     <Pressable w="100%" py={1} px={3} onPress={selectSuggestion}>
       <VStack>
-        <Text>{name}</Text>
-        <Text>{address}</Text>
+        <Text variant="body1">{name}</Text>
+        <Text variant="body1">{address}</Text>
       </VStack>
     </Pressable>
   );

@@ -18,12 +18,12 @@ import {
   SoilPitInputScreenProps,
   SoilPitInputScreenScaffold,
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export const PhScreen = (props: SoilPitInputScreenProps) => {
   return (
     <SoilPitInputScreenScaffold {...props}>
-      <Text>Unimplemented Ph Screen</Text>
+      <Text variant="body1">Unimplemented Ph Screen</Text>
     </SoilPitInputScreenScaffold>
   );
 };

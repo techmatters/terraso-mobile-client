@@ -29,9 +29,9 @@ import {
   HStack,
   VStack,
   Badge,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 type ListProps = {
   memberships: [ProjectMembership, User][];
@@ -124,7 +124,9 @@ function UserItem({
                 alt="profile pic"
               />
             </Box>
-            <Text flex={3}>{userName}</Text>
+            <Text flex={3} variant="body1">
+              {userName}
+            </Text>
             <Box>
               <Badge
                 variant="chip"

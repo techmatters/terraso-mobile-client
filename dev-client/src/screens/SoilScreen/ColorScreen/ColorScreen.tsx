@@ -21,10 +21,8 @@ import {
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {
   Column,
-  Heading,
   Paragraph,
   Row,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
@@ -45,6 +43,7 @@ import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScre
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 
@@ -89,7 +88,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
       <Column padding="md">
         <Row alignItems="flex-end">
           <Row alignItems="center">
-            <Heading variant="h6">{t('soil.color.title')}</Heading>
+            <Text variant="h6">{t('soil.color.title')}</Text>
             <InfoModal Header={t('soil.color.title')}>
               <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
               <BulletList

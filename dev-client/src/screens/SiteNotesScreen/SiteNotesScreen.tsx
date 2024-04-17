@@ -23,13 +23,10 @@ import SiteNote from 'terraso-client-shared/site/siteSlice';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
 import {SiteInstructionsCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteInstructionsCard';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {
-  Column,
-  Row,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {Text} from 'terraso-mobile-client/components/core/Text';
 
 export type SiteNote = {
   id: string;
@@ -56,7 +53,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   return (
     <Column>
       <Row backgroundColor="background.default" px="16px" py="12px">
-        <Heading variant="h6">{t('site.notes.title')}</Heading>
+        <Text variant="h6">{t('site.notes.title')}</Text>
       </Row>
       <Box height={16} />
       {project?.siteInstructions && (
