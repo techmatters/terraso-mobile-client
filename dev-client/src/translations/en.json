@@ -682,7 +682,10 @@
         "description_distance_METRIC": "20-30 meters",
         "description_distance_ENGLISH": "60-90 feet",
         "down_slope": "Down Slope",
-        "cross_slope": "Cross Slope"
+        "cross_slope": "Cross Slope",
+        "concave": "Concave",
+        "convex": "Convex",
+        "linear": "Linear"
       },
       "select_labels": {
         "CONCAVE": "Concave",
