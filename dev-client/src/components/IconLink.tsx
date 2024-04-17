@@ -17,7 +17,7 @@
 
 import {Link} from 'native-base';
 import {Icon, IconName} from 'terraso-mobile-client/components/Icons';
-import {ThemeColor} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {ThemeColor} from 'terraso-mobile-client/components/core/styleConversions';
 
 type Props = {
   children?: React.ReactNode;

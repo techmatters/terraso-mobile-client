@@ -18,33 +18,10 @@
 import {ColorValue, DimensionValue, TextStyle, ViewStyle} from 'react-native';
 import {entries, fromEntries} from 'terraso-client-shared/utils';
 import {theme} from 'terraso-mobile-client/theme';
-
-type PathOf<O extends Record<string, any>> = string &
-  keyof {
-    [P in keyof O as O[P] extends Record<string, any>
-      ? `${P & string}.${string & PathOf<O[P]>}`
-      : P]: true;
-  };
-
-type TypeAt<
-  O extends Record<string, any>,
-  K extends PathOf<O>,
-> = K extends `${infer Head}.${infer Tail}`
-  ? TypeAt<O[Head], PathOf<O[Head]> & Tail>
-  : O[K];
-
-export type ThemeColor = PathOf<typeof theme.colors>;
-
-export const getByKey = <O extends Record<string, any>, K extends string>(
-  object: O,
-  key: K,
-) =>
-  key
-    .split('.')
-    .reduce(
-      (o, k) => (typeof o === 'object' ? o[k] : undefined),
-      object,
-    ) as K extends PathOf<O> ? TypeAt<O, K> : undefined;
+import {
+  ThemeColor,
+  getThemeColor,
+} from 'terraso-mobile-client/components/core/styleConversions';
 
 type Variants = {
   [K in keyof typeof theme.components]: 'variants' extends keyof (typeof theme.components)[K]
@@ -211,9 +188,6 @@ export const convertDimensionProp = (
   }
 };
 
-export const convertColorProp = (color: ColorValue | ThemeColor | undefined) =>
-  typeof color === 'string' ? getByKey(theme.colors, color) ?? color : color;
-
 const keys = <O extends object>(obj: O) => Object.keys(obj) as (keyof O)[];
 
 export const convertNBStyles = <
@@ -303,7 +277,7 @@ export const convertNBStyles = <
     } else if (k in nativeBaseColorProps) {
       (styleProp as any)[
         nativeBaseColorProps[k as keyof typeof nativeBaseColorProps]
-      ] = convertColorProp(propValue as ThemeColor | ColorValue);
+      ] = getThemeColor(propValue as ThemeColor | ColorValue);
     } else if (k in nativeBaseSpecialProps) {
       Object.assign(
         styleProp,

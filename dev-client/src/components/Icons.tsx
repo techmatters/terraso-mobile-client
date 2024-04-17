@@ -22,15 +22,17 @@ import MaterialIcon from '@expo/vector-icons/MaterialIcons';
 import {theme} from 'terraso-mobile-client/theme';
 import {
   NativeBaseProps,
-  ThemeColor,
   convertNBStyles,
-  convertColorProp,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {
   Box,
   HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  ThemeColor,
+  getThemeColor,
+} from 'terraso-mobile-client/components/core/styleConversions';
 
 export type IconProps = Omit<
   React.ComponentProps<typeof MaterialIcon>,
@@ -38,17 +40,21 @@ export type IconProps = Omit<
 > &
   NativeBaseProps & {
     size?: keyof typeof theme.components.Icon.sizes | number;
-    color?: ThemeColor | string;
+    color?: ThemeColor;
   };
 
 export type IconName = IconProps['name'];
 
-export const Icon = ({size = 'md', color, ...props}: IconProps) => {
+export const Icon = ({
+  size = 'md',
+  color = 'primary.main',
+  ...props
+}: IconProps) => {
   return (
     <MaterialIcon
       {...convertNBStyles(props)}
       size={typeof size === 'string' ? theme.components.Icon.sizes[size] : size}
-      color={convertColorProp(color)}
+      color={getThemeColor(color)}
     />
   );
 };
@@ -133,7 +139,7 @@ export const LocationIcon = () => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Icon name="my-location" color="black" size={14} />
+      <Icon name="my-location" size={14} />
     </View>
   );
 };
