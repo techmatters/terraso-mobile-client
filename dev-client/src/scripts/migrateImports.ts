@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Node, Project, QuoteKind} from 'ts-morph';
+import {Node, Project, QuoteKind, StructureKind} from 'ts-morph';
 
 export const project = new Project({
   tsConfigFilePath: 'tsconfig.json',
@@ -146,6 +146,31 @@ project.getSourceFiles().forEach(file => {
         !Node.isJsxSelfClosingElement(parent)
       ) {
         return;
+      }
+      if (identifier.getText() === 'Text') {
+        if (!parent.getAttribute('variant')) {
+          parent.addAttribute({
+            kind: StructureKind.JsxAttribute,
+            name: 'variant',
+            initializer: '"body1"',
+          });
+        }
+        if (parent.getAttribute('bold')) {
+          parent.getAttribute('bold')?.remove();
+          const attr = parent.getAttribute('variant')!;
+          if (!Node.isJsxAttribute(attr)) {
+            throw new Error();
+          }
+          attr.setInitializer('"body1-strong"');
+        }
+        if (parent.getAttribute('italic')) {
+          parent.getAttribute('italic')?.remove();
+          parent.addAttribute({
+            kind: StructureKind.JsxAttribute,
+            name: 'fontStyle',
+            initializer: '"italic"',
+          });
+        }
       }
       parent.getAttributes().forEach(attr => {
         if (!Node.isJsxAttribute(attr)) {
