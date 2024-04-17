@@ -96,4 +96,16 @@ const variants = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 32,
   },
+  'table-header': {
+    fontSize: 14,
+    lineHeight: 24,
+    fontWeight: '500',
+    letterSpacing: 0.17,
+  },
+  'input-text': {
+    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 24,
+    letterSpacing: 0.15,
+  },
 });
