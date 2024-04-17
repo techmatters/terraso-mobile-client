@@ -39,6 +39,18 @@ const componentMap: ImportMigration[] = [
     newModule: 'terraso-mobile-client/components/core/Box',
     newImport: 'Box',
   },
+  {
+    oldModule: 'terraso-mobile-client/components/NativeBaseAdapters',
+    oldImport: 'Text',
+    newModule: 'terraso-mobile-client/components/core/Text',
+    newImport: 'Text',
+  },
+  {
+    oldModule: 'terraso-mobile-client/components/NativeBaseAdapters',
+    oldImport: 'Heading',
+    newModule: 'terraso-mobile-client/components/core/Text',
+    newImport: 'Text',
+  },
 ] as const;
 
 const attrMap: Record<string, string> = {
