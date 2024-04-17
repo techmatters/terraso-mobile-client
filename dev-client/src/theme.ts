@@ -102,16 +102,6 @@ export const theme = extendTheme({
     },
   },
   components: {
-    Box: {
-      variants: {
-        card: {
-          borderRadius: '4px',
-          backgroundColor: 'background.default',
-          padding: '16px',
-          shadow: 1,
-        },
-      },
-    },
     Badge: {
       variants: {
         chip: {

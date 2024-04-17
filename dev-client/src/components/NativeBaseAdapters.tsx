@@ -43,13 +43,6 @@ export const View = (props: React.PropsWithChildren<ViewProps>) => (
   <RN.View {...convertNBStyles(props, 'View')} />
 );
 
-export type BoxProps = NativeBaseProps &
-  RN.ViewProps & {
-    variant?: keyof (typeof theme.components)['Box']['variants'];
-  };
-export const Box = (props: React.PropsWithChildren<BoxProps>) => (
-  <RN.View {...convertNBStyles(props, 'Box')} />
-);
 type RowProps = NativeBaseProps &
   RN.ViewProps & {
     variant?: keyof (typeof theme.components)['HStack']['variants'];
