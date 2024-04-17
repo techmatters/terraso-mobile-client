@@ -32,7 +32,14 @@ type ImportMigration = {
   newImport: string;
 };
 
-const componentMap: ImportMigration[] = [] as const;
+const componentMap: ImportMigration[] = [
+  {
+    oldModule: 'terraso-mobile-client/components/NativeBaseAdapters',
+    oldImport: 'Box',
+    newModule: 'terraso-mobile-client/components/core/Box',
+    newImport: 'Box',
+  },
+] as const;
 
 const attrMap: Record<string, string> = {
   mr: 'marginRight',
