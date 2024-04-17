@@ -168,7 +168,7 @@ const textStyleProps = new Set([
 ] as const);
 
 export type ThemedTextStyle = ThemedViewStyle &
-  Omit<TextStyle, 'color'> & {color: ThemeColor};
+  Omit<TextStyle, 'color'> & {color?: ThemeColor};
 
 export type ThemedViewStyle = ThemeSpaceProps &
   ThemeColorProps &
