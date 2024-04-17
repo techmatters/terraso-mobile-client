@@ -28,7 +28,7 @@ export const theme = extendTheme({
       // TODO: This is used for the colorScheme value for Radio
       // We should figure out how the color scheme stuff works and see if we can
       // map our current variables to 100, 200 values etc.
-      600: '#028843',
+      ['600']: '#028843',
     },
     divider: '#0000001F',
     background: {
@@ -42,10 +42,10 @@ export const theme = extendTheme({
       contrast: '#FFFFFF',
     },
     grey: {
-      200: '#EEEEEE',
-      300: '#E0E0E0',
-      700: '#616161',
-      800: '#424242',
+      ['200']: '#EEEEEE',
+      ['300']: '#E0E0E0',
+      ['700']: '#616161',
+      ['800']: '#424242',
     },
     action: {
       active: '#1A202C',
@@ -74,15 +74,32 @@ export const theme = extendTheme({
       },
     },
     transparent: '#00000000',
+    semiTransparent: '#00000080',
   },
   radii: {
     md: 4,
   },
   space: {
+    xs: 4,
     sm: 8,
     md: 16,
     lg: 24,
     xl: 36,
+  },
+  // react native doesn't have a unified or web compatible shadow API
+  // so translating the values from the figma is adhoc.
+  // for android, the 'elevation' prop can be used directly,
+  // for ios, shadowOffset/Radius/Opacity have to be figured out by eye
+  elevation: {
+    4: {
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 4,
+    },
   },
   components: {
     Box: {

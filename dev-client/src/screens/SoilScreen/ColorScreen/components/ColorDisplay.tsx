@@ -28,6 +28,8 @@ import {
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box} from 'terraso-mobile-client/components/core/Box';
+import {StyleSheet} from 'react-native';
+import {ThemeColor} from 'terraso-mobile-client/components/core/styleConversions';
 
 type Props = {
   color: MunsellColor;
@@ -47,7 +49,7 @@ export const ColorDisplay = ({onDelete, color, variant}: Props) => {
           <Box height="sm" />
         </>
       )}
-      <Box backgroundColor={bgColor} {...variants[variant]}>
+      <Box backgroundColor={bgColor as ThemeColor} style={variants[variant]}>
         {onDelete && (
           <ConfirmModal
             title={t('soil.color.confirm_delete.title')}
@@ -74,20 +76,20 @@ export const ColorDisplay = ({onDelete, color, variant}: Props) => {
   );
 };
 
-const variants = {
+const variants = StyleSheet.create({
   sm: {
-    width: '20px',
-    height: '20px',
-    borderWidth: '1px',
+    width: 20,
+    height: 20,
+    borderWidth: 1,
   },
   md: {
-    width: '100px',
-    height: '100px',
-    borderWidth: '2px',
+    width: 100,
+    height: 100,
+    borderWidth: 2,
   },
   lg: {
-    width: '180px',
-    height: '180px',
-    borderWidth: '2px',
+    width: 180,
+    height: 180,
+    borderWidth: 2,
   },
-} as const;
+});

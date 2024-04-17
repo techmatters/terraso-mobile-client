@@ -115,7 +115,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
           projectId={projectId}
           canDeleteInterval={isCustom && userCanUpdateIntervals}
           includeLabel={isCustom}
-          pb="15px"
+          paddingBottom={16}
         />
       )}
       {isCustom && (

@@ -39,7 +39,6 @@ import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const WINDOW_SIZE = 3;
 const MAX_TO_RENDER_PER_BATCH = 3;
-const SEPARATOR_HEIGHT = 8;
 
 type Props = {
   sites: Site[];
@@ -133,5 +132,5 @@ export const SiteListBottomSheet = memo(
 );
 
 const keyExtractor = (site: Site) => site.id;
-const ItemSeparatorComponent = () => <Box height={`${SEPARATOR_HEIGHT}px`} />;
-const ListFooterComponent = <Box height={10} />;
+const ItemSeparatorComponent = () => <Box height="sm" />;
+const ListFooterComponent = <Box height="md" />;

@@ -110,7 +110,7 @@ function UserItem({
   }, [user, isCurrentUser, t]);
 
   return (
-    <Box borderBottomWidth="1" width={275} paddingVertical={2}>
+    <Box borderBottomWidth={1} width={275} paddingVertical={2}>
       <VStack>
         <UserWrapper
           currentUserRole={currentUserRole}

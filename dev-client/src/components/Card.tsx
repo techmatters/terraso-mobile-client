@@ -55,7 +55,12 @@ export const Card = ({
   ...boxProps
 }: Props) => (
   <Pressable onPress={onPress}>
-    <Box variant="card" marginTop={'0px'} shadow={undefined} {...boxProps}>
+    <Box
+      borderRadius={4}
+      backgroundColor="background.default"
+      padding="md"
+      marginTop={0}
+      {...boxProps}>
       {isPopover && <CardTriangle />}
       {(Header || buttons) && (
         <Row alignItems="center">

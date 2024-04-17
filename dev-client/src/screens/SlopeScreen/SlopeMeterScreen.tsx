@@ -95,7 +95,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                   <Box flex={1} />
                   <Box height={3} backgroundColor="text.primary" />
                   <Box height={3} backgroundColor="primary.contrast" />
-                  <Box flex={1} backgroundColor="#00000080" />
+                  <Box flex={1} backgroundColor="semiTransparent" />
                 </Column>
               </Camera>
             ) : permission?.canAskAgain ? (

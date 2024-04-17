@@ -29,10 +29,10 @@ export const BulletList = <T,>({data, renderItem}: Props<T>) => {
     <Column>
       {data.map((item, index) => (
         <Row key={index} alignItems="flex-start">
-          <Text variant="body1" marginHorizontal={`${bulletMargin}px`}>
+          <Text variant="body1" marginHorizontal={bulletMargin}>
             {'•'}
           </Text>
-          <Box marginRight={`${bulletMargin * 2}px`}>{renderItem(item)}</Box>
+          <Box marginRight={bulletMargin * 2}>{renderItem(item)}</Box>
         </Row>
       ))}
       <Text variant="body1" />

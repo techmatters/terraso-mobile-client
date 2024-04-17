@@ -150,11 +150,7 @@ export const ColorAnalysisHomeScreen = () => {
   return (
     <ScreenScaffold>
       <Column padding="xl">
-        <Box
-          backgroundColor="#D9D9D9"
-          borderWidth={2}
-          width="100%"
-          height={180}>
+        <Box borderWidth={2} width="100%" height={180}>
           <Image source={photo} resizeMode="cover" style={styles.image} />
           <IconButton
             position="absolute"

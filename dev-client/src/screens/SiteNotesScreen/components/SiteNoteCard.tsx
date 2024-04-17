@@ -48,10 +48,8 @@ export const SiteNoteCard = ({note}: Props) => {
     <Card
       key={note.id}
       alignItems="flex-start"
-      shadow={0}
-      mb={3}
-      ml={4}
-      mr={4}
+      marginBottom="xs"
+      marginHorizontal="xs"
       onPress={onShowNote}>
       <HStack>
         <Text italic>

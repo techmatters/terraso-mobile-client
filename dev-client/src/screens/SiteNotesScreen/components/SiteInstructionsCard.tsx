@@ -24,6 +24,7 @@ import {
   HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {theme} from 'terraso-mobile-client/theme';
 
 type Props = {
   siteInstructions: string;
@@ -43,11 +44,10 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
   return (
     <Card
       alignItems="flex-start"
-      shadow={4}
-      mb={4}
-      ml={4}
-      mr={4}
-      onPress={onShowNote}>
+      marginBottom="xs"
+      marginHorizontal="xs"
+      onPress={onShowNote}
+      style={theme.elevation[4]}>
       <HStack>
         <Icon name="place" color="primary.dark" size="sm" mr={1} />
         <Text bold fontSize="md">

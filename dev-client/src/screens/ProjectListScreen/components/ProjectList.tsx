@@ -27,7 +27,6 @@ import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const WINDOW_SIZE = 6; // Default is 21, bringing it down as the items in this FlatList are very costly to render
 const MAX_TO_RENDER_PER_BATCH = 5; // Similar as above, default is 10
-const SEPARATOR_HEIGHT = 8;
 
 type RenderItemProps = {
   item: Project;
@@ -61,4 +60,4 @@ export const ProjectList = () => {
 };
 
 const keyExtractor = (project: Project) => project.id;
-const ItemSeparatorComponent = () => <Box height={`${SEPARATOR_HEIGHT}px`} />;
+const ItemSeparatorComponent = () => <Box height="sm" />;
