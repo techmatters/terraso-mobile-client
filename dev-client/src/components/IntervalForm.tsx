@@ -20,7 +20,8 @@ import {useTranslation} from 'react-i18next';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormControl} from 'native-base';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export type IntervalFormInput = {
   label: string;

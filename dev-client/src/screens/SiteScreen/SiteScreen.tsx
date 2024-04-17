@@ -31,11 +31,11 @@ import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScree
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {
-  Box,
   Column,
   HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';
@@ -79,7 +79,7 @@ const LocationPrediction = ({
       <Text variant="body1" color="primary.contrast" bold>
         {label}
       </Text>
-      <Box h="5px" />
+      <Box height={5} />
       <Text variant="body2" color="primary.contrast">
         <Text bold>{t('soil.prediction')}: </Text>
         <Text>{prediction}</Text>
@@ -128,7 +128,7 @@ export const SiteScreen = ({siteId, coords}: Props) => {
             {t('general.details')}
           </Text>
         }>
-        <Box px="16px" py="8px">
+        <Box paddingHorizontal={16} paddingVertical={8}>
           {project && (
             <LocationDetail label={t('projects.label')} value={project.name} />
           )}

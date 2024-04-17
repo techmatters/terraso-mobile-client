@@ -33,10 +33,10 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useKeyboardOpen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/hooks/useKeyboardOpen';
 import {
-  Box,
   HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   projectId: string;
@@ -125,13 +125,13 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar title={projectName} />}>
-      <Box mx="5%" mb="15px" mt="22px">
+      <Box marginHorizontal="5%" marginBottom={15} marginTop={22}>
         <Text variant="body1" fontWeight="bold">
           {t('projects.add_user.heading')}
         </Text>
         <Text variant="body1">{t('projects.add_user.help_text')}</Text>
       </Box>
-      <Box mx="5%" mb="15px">
+      <Box marginHorizontal="5%" marginBottom={15}>
         <FreeformTextInput
           validationFunc={validationFunc}
           placeholder={t('general.example_email')}

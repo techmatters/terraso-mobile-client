@@ -22,11 +22,11 @@ import {
 } from 'terraso-mobile-client/components/modals/Modal';
 import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
 import {
-  Box,
   HStack,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Button} from 'native-base';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type ActionButtonProps = {
   onPress: () => void;

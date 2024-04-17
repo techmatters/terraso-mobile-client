@@ -41,10 +41,10 @@ import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSh
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
-  Box,
   Row,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -80,7 +80,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   return (
     <ScrollView backgroundColor="grey.300">
       <SoilSurfaceStatus siteId={siteId} />
-      <Box height="16px" />
+      <Box height={16} />
       <Row
         backgroundColor="background.default"
         px="16px"

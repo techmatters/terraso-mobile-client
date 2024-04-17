@@ -20,7 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {
-  Box,
   Column,
   Row,
   Text,
@@ -50,6 +49,7 @@ import {
 } from 'terraso-mobile-client/components/modals/ActionsModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const analyzeImage = async ({
   reference,
@@ -152,9 +152,9 @@ export const ColorAnalysisHomeScreen = () => {
       <Column padding="xl">
         <Box
           backgroundColor="#D9D9D9"
-          borderWidth="2px"
+          borderWidth={2}
           width="100%"
-          height="180px">
+          height={180}>
           <Image source={photo} resizeMode="cover" style={styles.image} />
           <IconButton
             position="absolute"
@@ -181,8 +181,8 @@ export const ColorAnalysisHomeScreen = () => {
               <Box height="sm" />
               <Pressable onPress={onPress}>
                 <Box
-                  width="100px"
-                  height="100px"
+                  width={100}
+                  height={100}
                   backgroundColor="grey.300"
                   overflow="hidden">
                   {croppedPhoto ? (

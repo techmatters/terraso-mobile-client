@@ -24,12 +24,9 @@ import {
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Switch} from 'react-native';
-import {
-  Row,
-  Box,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export const RequiredDataSettings = ({
   projectId,
@@ -44,7 +41,7 @@ export const RequiredDataSettings = ({
   const {colors} = useTheme();
 
   return (
-    <Box p={4}>
+    <Box padding={4}>
       {collectionMethods.map(method => (
         <Row
           key={method}

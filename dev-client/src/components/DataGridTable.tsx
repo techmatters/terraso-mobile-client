@@ -15,11 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useMemo} from 'react';
-import {
-  Box,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   headers: string[];

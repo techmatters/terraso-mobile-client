@@ -18,7 +18,6 @@
 import {
   Text,
   Column,
-  Box,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
@@ -28,6 +27,7 @@ import {
   munsellToString,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   color: MunsellColor;

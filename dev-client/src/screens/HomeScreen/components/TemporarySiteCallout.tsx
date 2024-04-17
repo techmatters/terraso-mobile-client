@@ -23,11 +23,8 @@ import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
-import {
-  Column,
-  Row,
-  Box,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
@@ -83,7 +80,7 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
           <Button onPress={onCreate} size="sm" variant="outline">
             {t('site.create.title').toUpperCase()}
           </Button>
-          <Box w="24px" />
+          <Box width={24} />
           <Button onPress={onLearnMore} size="sm">
             {t('site.more_info').toUpperCase()}
           </Button>

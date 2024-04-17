@@ -42,9 +42,9 @@ import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {
   VStack,
-  Box,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,
@@ -153,7 +153,7 @@ export const CreateSiteForm = ({
           <Spacer />
         </VStack>
       </ScrollView>
-      <Box position="absolute" bottom={10} right={3} p={3}>
+      <Box position="absolute" bottom={10} right={3} padding={3}>
         <Button
           onPress={() => handleSubmit()}
           disabled={isSubmitting}

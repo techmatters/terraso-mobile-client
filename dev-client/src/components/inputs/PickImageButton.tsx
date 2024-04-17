@@ -17,8 +17,8 @@
 
 import {Pressable} from 'react-native';
 import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   onPick: (photo: Photo) => void;
@@ -30,13 +30,13 @@ export const PickImageButton = ({onPick}: Props) => {
       {onOpen => (
         <Pressable onPress={onOpen}>
           <Box
-            borderRadius="24px"
-            width="180px"
-            height="180px"
+            borderRadius={24}
+            width={180}
+            height={180}
             justifyContent="center"
             alignItems="center"
             borderStyle="dashed"
-            borderWidth="2px"
+            borderWidth={2}
             borderColor="grey.700">
             <Icon name="add-photo-alternate" color="action.active" size="lg" />
           </Box>

@@ -30,12 +30,12 @@ import {
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {
-  Box,
   Column,
   Row,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   siteId: string;
@@ -127,7 +127,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
           <Heading variant="h6" alignSelf="flex-start">
             {t('slope.steepness.manual_help')}
           </Heading>
-          <Box height="30px" />
+          <Box height={30} />
           <Row justifyContent="space-between" space="40px">
             <Box flex={1}>
               <FormInput
@@ -180,7 +180,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
               />
             </Box>
           </Row>
-          <Box height="25px" />
+          <Box height={25} />
           <Button
             leftIcon={<Icon name="check" />}
             _text={{textTransform: 'uppercase'}}

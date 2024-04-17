@@ -30,11 +30,11 @@ import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
 import {
-  Box,
   Column,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -74,7 +74,7 @@ export const LoginScreen = () => {
         <Heading variant="h3" fontSize="40px" color="primary.contrast">
           {t('login.title')}
         </Heading>
-        <Box h="28px" />
+        <Box height={28} />
         <Heading
           variant="h5"
           color="primary.contrast"
@@ -83,7 +83,7 @@ export const LoginScreen = () => {
           pr={10}>
           {t('login.subtitle')}
         </Heading>
-        <Box h="72px" />
+        <Box height={72} />
         <Button.Group direction="column" space={5}>
           <Button
             bgColor="primary.contrast"
@@ -122,7 +122,7 @@ export const LoginScreen = () => {
       <Box flexGrow={3} />
       <Column pb="60px" alignItems="center" justifyContent="flex-end">
         <TerrasoLogo width="122px" height="39px" />
-        <Box h="12px" />
+        <Box height={12} />
         <Text variant="caption" color="primary.contrast">
           {t('login.description')}
         </Text>

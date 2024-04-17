@@ -29,7 +29,7 @@ import {
 } from 'terraso-mobile-client/components/IntervalForm';
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;
@@ -65,9 +65,9 @@ export const AddIntervalModalBody = ({
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
         <>
-          <Box height="20px" />
+          <Box height={20} />
           <IntervalForm />
-          <Box height="50px" />
+          <Box height={50} />
           <Button
             size="lg"
             mx="auto"

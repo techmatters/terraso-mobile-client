@@ -29,11 +29,8 @@ import {
   ModalContext,
 } from 'terraso-mobile-client/components/modals/Modal';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
-import {
-  Box,
-  Column,
-  Row,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = ModalProps & {
   fullHeight?: boolean;

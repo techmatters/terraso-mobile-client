@@ -21,7 +21,7 @@ import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {LandPKSInfo} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfo';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   onClose: () => void;
@@ -39,7 +39,7 @@ export const LandPKSInfoModal = forwardRef<BottomSheetModal, Props>(
         topInset={headerHeight}
         backdropComponent={BackdropComponent}>
         <LandPKSInfo />
-        <Box position="absolute" top="18px" right="23px">
+        <Box position="absolute" top={18} right={23}>
           <CardCloseButton onPress={onClose} />
         </Box>
       </BottomSheetModal>

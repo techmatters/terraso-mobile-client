@@ -20,7 +20,7 @@ import {PrivacyInfoContent} from 'terraso-mobile-client/components/infoModals/Pr
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {onClose: () => void};
 
@@ -36,7 +36,7 @@ export const PrivacyInfoModal = forwardRef<BottomSheetModal, Props>(
         topInset={headerHeight}
         backdropComponent={BackdropComponent}>
         <PrivacyInfoContent />
-        <Box position="absolute" top="18px" right="23px">
+        <Box position="absolute" top={18} right={23}>
           <CardCloseButton onPress={onClose} />
         </Box>
       </BottomSheetModal>

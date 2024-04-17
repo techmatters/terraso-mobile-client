@@ -17,7 +17,6 @@
 
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {
-  Box,
   Column,
   Paragraph,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -28,6 +27,7 @@ import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Photo} from 'terraso-mobile-client/components/ImagePicker';
 import {PickImageButton} from 'terraso-mobile-client/components/inputs/PickImageButton';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();

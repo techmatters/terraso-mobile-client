@@ -22,7 +22,8 @@ import {useTranslation} from 'react-i18next';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {ProjectPreviewCard} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectPreviewCard';
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const WINDOW_SIZE = 6; // Default is 21, bringing it down as the items in this FlatList are very costly to render
 const MAX_TO_RENDER_PER_BATCH = 5; // Similar as above, default is 10
@@ -60,4 +61,4 @@ export const ProjectList = () => {
 };
 
 const keyExtractor = (project: Project) => project.id;
-const ItemSeparatorComponent = () => <Box h={`${SEPARATOR_HEIGHT}px`} />;
+const ItemSeparatorComponent = () => <Box height={`${SEPARATOR_HEIGHT}px`} />;

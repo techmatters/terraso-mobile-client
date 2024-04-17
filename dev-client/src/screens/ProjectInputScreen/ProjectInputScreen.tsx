@@ -36,11 +36,11 @@ import {RequiredDataSettings} from 'terraso-mobile-client/screens/ProjectInputSc
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {
-  Box,
   HStack,
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -77,7 +77,7 @@ export const ProjectInputScreen = ({
   return (
     <VStack height="full">
       <ScrollView>
-        <Box p={4} alignItems="flex-start">
+        <Box padding={4} alignItems="flex-start">
           <HStack pb={4}>
             <RadioBlock
               label={

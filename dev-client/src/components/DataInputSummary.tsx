@@ -16,11 +16,8 @@
  */
 import {Pressable} from 'react-native';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {
-  Box,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   required: boolean;
@@ -40,7 +37,7 @@ export const DataInputSummary = ({
     <Row
       backgroundColor={complete ? 'primary.lightest' : 'primary.contrast'}
       p="15px">
-      <Box width="37px">
+      <Box width={37}>
         {(complete || required) && (
           <Icon
             color={complete ? 'primary.dark' : undefined}

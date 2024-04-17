@@ -39,13 +39,13 @@ import {Image, ImageSourcePropType, StyleSheet} from 'react-native';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
-  Box,
   Column,
   Row,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   siteId: string;
@@ -142,7 +142,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
         </Column>
         <Column p="15px" bg="grey.300">
           <Text variant="body1">{t('slope.steepness.description')}</Text>
-          <Box height="30px" />
+          <Box height={30} />
           <Row justifyContent="space-between">
             <Modal
               trigger={onOpen => (
@@ -162,7 +162,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
               {t('slope.steepness.slope_meter')}
             </Button>
           </Row>
-          <Box height="15px" />
+          <Box height={15} />
           <Text variant="body1" fontWeight={700} alignSelf="center">
             {renderSteepness(t, soilData)}
           </Text>

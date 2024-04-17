@@ -33,10 +33,10 @@ import {Icon} from 'terraso-mobile-client/components/Icons';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
-  Box,
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   projectId: string;

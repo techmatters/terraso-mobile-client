@@ -23,9 +23,9 @@ import {useCallback} from 'react';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {
   HStack,
-  Box,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   project: Project;
@@ -44,7 +44,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
   }, [navigation, project.siteInstructions]);
 
   return (
-    <Box pt={4} pb={4} alignItems="flex-start">
+    <Box paddingTop={4} paddingBottom={4} alignItems="flex-start">
       <Button
         mt={2}
         pl={4}

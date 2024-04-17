@@ -25,7 +25,6 @@ import {
   convertNBStyles,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {
-  Box,
   HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -33,6 +32,7 @@ import {
   ThemeColor,
   getThemeColor,
 } from 'terraso-mobile-client/components/core/styleConversions';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export type IconProps = Omit<
   React.ComponentProps<typeof MaterialIcon>,
@@ -74,7 +74,7 @@ export const IconButton = React.forwardRef(
     }
     return (
       <Pressable onPress={props.onPress}>
-        <Box p="1">
+        <Box padding="1">
           {icon}
           <Center>
             <Text color="primary.contrast" fontSize="xs">

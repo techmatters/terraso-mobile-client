@@ -23,7 +23,6 @@ import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {Icon} from 'terraso-mobile-client/components/Icons';
 import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
 import {
-  Box,
   Column,
   Paragraph,
   Row,
@@ -32,6 +31,7 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();

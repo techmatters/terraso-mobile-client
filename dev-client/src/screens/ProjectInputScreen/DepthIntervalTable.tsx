@@ -25,7 +25,7 @@ import {
 import {DataGridTable} from 'terraso-mobile-client/components/DataGridTable';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
 import {useDispatch} from 'terraso-mobile-client/store';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type TableProps = {
   depthIntervals: ProjectDepthInterval[];

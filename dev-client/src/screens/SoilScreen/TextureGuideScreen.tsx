@@ -33,9 +33,9 @@ import {ResizeMode, Video} from 'expo-av';
 import {Image, StyleSheet, View} from 'react-native';
 import {
   Column,
-  Box,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const LENGTH_IMAGE = require('terraso-mobile-client/assets/texture/guide/length.png');
 
@@ -198,7 +198,7 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                   result: t(`soil.texture.class.${result}`).toLocaleUpperCase(),
                 })}
               </Text>
-              <Box height="10px" />
+              <Box height={10} />
               {onUseResult !== undefined && (
                 <Button
                   leftIcon={<Icon name="check" />}

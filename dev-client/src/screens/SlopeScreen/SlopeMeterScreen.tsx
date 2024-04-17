@@ -30,7 +30,6 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {useDispatch} from 'terraso-mobile-client/store';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {
-  Box,
   Column,
   Row,
   Heading,
@@ -39,6 +38,7 @@ import {
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -93,9 +93,9 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
               <Camera style={styles.camera}>
                 <Column flex={1} alignItems="stretch">
                   <Box flex={1} />
-                  <Box height="3px" bg="text.primary" />
-                  <Box height="3px" bg="primary.contrast" />
-                  <Box flex={1} bg="#00000080" />
+                  <Box height={3} backgroundColor="text.primary" />
+                  <Box height={3} backgroundColor="primary.contrast" />
+                  <Box flex={1} backgroundColor="#00000080" />
                 </Column>
               </Camera>
             ) : permission?.canAskAgain ? (
@@ -131,15 +131,15 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                   <SlopeMeterInfoContent />
                 </InfoModal>
               </Row>
-              <Box height="12px" />
+              <Box height={12} />
               <Heading variant="h5" fontWeight={700}>
                 {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
               </Heading>
-              <Box height="5px" />
+              <Box height={5} />
               <Heading variant="h6">
                 {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
               </Heading>
-              <Box height="18px" />
+              <Box height={18} />
               <Button
                 onPress={onUse}
                 size="lg"

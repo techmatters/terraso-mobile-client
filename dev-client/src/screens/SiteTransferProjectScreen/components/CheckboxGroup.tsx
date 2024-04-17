@@ -20,10 +20,10 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import CheckBox from '@react-native-community/checkbox';
 import {
-  Box,
   HStack,
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type CheckboxProps = {
   label: string;

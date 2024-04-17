@@ -49,12 +49,12 @@ import {useSiteSoilIntervals} from 'terraso-client-shared/selectors';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {
   Row,
-  Box,
   Heading,
   Column,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -190,7 +190,7 @@ export const EditIntervalModal = ({
           <Column mb="23px" mx="15px">
             {mutable && (
               <>
-                <Box pl="2px" mb="11px">
+                <Box paddingLeft={2} marginBottom={11}>
                   <IntervalForm />
                 </Box>
                 <Heading variant="h6">

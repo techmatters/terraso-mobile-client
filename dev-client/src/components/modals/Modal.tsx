@@ -31,10 +31,10 @@ import {Modal as PaperModal, Portal} from 'react-native-paper';
 import {Divider} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 import {
-  Box,
   BoxProps,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export type ModalHandle = {
   onClose: () => void;
@@ -99,7 +99,7 @@ export const Modal = forwardRef<
           <PaperModal visible={isOpen} onDismiss={onClose}>
             <Box
               backgroundColor="primary.contrast"
-              borderRadius="24px"
+              borderRadius={24}
               margin="10%"
               {..._content}>
               <Box padding={padding}>

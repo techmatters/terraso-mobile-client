@@ -28,12 +28,12 @@ import {Keyboard} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {isValidCoordinates} from 'terraso-mobile-client/util';
 import {
-  Box,
   HStack,
   View,
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
@@ -148,8 +148,8 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       right={0}
       top={0}
       zIndex={1}
-      px={3}
-      py={3}
+      paddingHorizontal={3}
+      paddingVertical={3}
       pointerEvents="box-none">
       <HStack space={3} pointerEvents="box-none">
         <View flex={1} pointerEvents="box-none">

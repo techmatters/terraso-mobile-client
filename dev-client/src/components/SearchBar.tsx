@@ -24,11 +24,8 @@ import {
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
-import {
-  Row,
-  Box,
-  Badge,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   query: string;
@@ -61,7 +58,11 @@ export const SearchBar = ({
   return (
     <Row mb="25px" {...rowProps}>
       {FilterOptions && (
-        <Box alignSelf="center" pr="13px" pt="3px" mr="16px">
+        <Box
+          alignSelf="center"
+          paddingRight={13}
+          paddingTop={3}
+          marginRight={16}>
           {(numFilters ?? 0) > 0 && (
             <Badge
               position="absolute"
@@ -87,7 +88,7 @@ export const SearchBar = ({
           <Modal isOpen={isOpen} onClose={onClose}>
             <Modal.Content>
               <CardCloseButton onPress={onClose} />
-              <Box pt="50px" pb="28px" px="16px">
+              <Box paddingTop={50} paddingBottom={28} paddingHorizontal={16}>
                 {FilterOptions}
                 <Button
                   mt="32px"

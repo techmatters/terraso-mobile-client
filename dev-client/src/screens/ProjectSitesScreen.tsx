@@ -57,11 +57,11 @@ import {normalizeText} from 'terraso-client-shared/utils';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
-  Box,
   HStack,
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type SiteMenuProps = {
   iconName: IconName;
@@ -151,7 +151,7 @@ const SiteCardList = ({showButtons}: {showButtons: boolean}) => {
         />
       )}
       keyExtractor={site => site.id}
-      ItemSeparatorComponent={() => <Box h="8px" />}
+      ItemSeparatorComponent={() => <Box height={8} />}
       ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
     />
   );

@@ -35,11 +35,11 @@ import {normalizeText} from 'terraso-client-shared/utils';
 import {equals, searchText} from 'terraso-mobile-client/util';
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
 import {
-  Box,
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const SORT_OPTIONS = ['nameAsc', 'nameDesc'];
 
@@ -85,7 +85,7 @@ export const ProjectListScreen = () => {
         flexShrink={0}
         flexBasis="70%"
         space="10px">
-        <Box alignItems="flex-start" pb={3}>
+        <Box alignItems="flex-start" paddingBottom={3}>
           <AddButton
             text={t('projects.create_button')}
             buttonProps={{onPress}}

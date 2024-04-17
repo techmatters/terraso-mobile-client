@@ -24,12 +24,12 @@ import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/compon
 import {SiteInstructionsCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteInstructionsCard';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
-  Box,
   Column,
   Row,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export type SiteNote = {
   id: string;
@@ -58,7 +58,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
       <Row backgroundColor="background.default" px="16px" py="12px">
         <Heading variant="h6">{t('site.notes.title')}</Heading>
       </Row>
-      <Box height="16px" />
+      <Box height={16} />
       {project?.siteInstructions && (
         <SiteInstructionsCard siteInstructions={project?.siteInstructions} />
       )}
@@ -68,7 +68,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
           {kind: 'project', role: 'MANAGER'},
           {kind: 'project', role: 'CONTRIBUTOR'},
         ]}>
-        <Box pl={4} pb={4} alignItems="flex-start">
+        <Box paddingLeft={4} paddingBottom={4} alignItems="flex-start">
           <Button
             size="lg"
             backgroundColor="primary.dark"
@@ -83,7 +83,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
         pb={540}
         data={Object.values(site.notes)}
         keyExtractor={note => note.id}
-        ListFooterComponent={<Box height="300px" />}
+        ListFooterComponent={<Box height={300} />}
         renderItem={({item: note}) => <SiteNoteCard note={note} />}
       />
     </Column>

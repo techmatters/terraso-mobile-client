@@ -30,12 +30,12 @@ import {SiteFilterModal} from 'terraso-mobile-client/screens/HomeScreen/componen
 import {getStartingSnapValue} from 'terraso-mobile-client/screens/HomeScreen/utils/getStartingSnapValue';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {
-  Box,
   Row,
   Column,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const WINDOW_SIZE = 3;
 const MAX_TO_RENDER_PER_BATCH = 3;
@@ -133,5 +133,5 @@ export const SiteListBottomSheet = memo(
 );
 
 const keyExtractor = (site: Site) => site.id;
-const ItemSeparatorComponent = () => <Box h={`${SEPARATOR_HEIGHT}px`} />;
-const ListFooterComponent = <Box h="10px" />;
+const ItemSeparatorComponent = () => <Box height={`${SEPARATOR_HEIGHT}px`} />;
+const ListFooterComponent = <Box height={10} />;

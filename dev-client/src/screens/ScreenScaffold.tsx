@@ -21,8 +21,9 @@ import {StatusBar, View, LayoutChangeEvent, StyleSheet} from 'react-native';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   children: React.ReactNode;

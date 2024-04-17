@@ -35,12 +35,10 @@ import {
   ModalHandle,
 } from 'terraso-mobile-client/components/modals/Modal';
 import {Icon} from 'terraso-mobile-client/components/Icons';
-import {
-  Box,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export const SoilPitSettings = ({projectId}: {projectId: string}) => {
   const {t} = useTranslation();
@@ -92,7 +90,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
   );
 
   return (
-    <Box p={4}>
+    <Box padding={4}>
       <ConfirmModal
         ref={modalRef}
         trigger={_ => (

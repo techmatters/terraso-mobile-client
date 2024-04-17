@@ -26,12 +26,12 @@ import {
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {formatName} from 'terraso-mobile-client/util';
 import {
-  Box,
   HStack,
   VStack,
   Badge,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type ListProps = {
   memberships: [ProjectMembership, User][];
@@ -110,7 +110,7 @@ function UserItem({
   }, [user, isCurrentUser, t]);
 
   return (
-    <Box borderBottomWidth="1" width={275} py={2}>
+    <Box borderBottomWidth="1" width={275} paddingVertical={2}>
       <VStack>
         <UserWrapper
           currentUserRole={currentUserRole}

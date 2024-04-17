@@ -47,13 +47,13 @@ import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   CalloutState,
   noneCallout,
   siteCallout,
   locationCallout,
 } from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type HomeScreenRef = {
   showSiteOnMap: (site: Site) => void;

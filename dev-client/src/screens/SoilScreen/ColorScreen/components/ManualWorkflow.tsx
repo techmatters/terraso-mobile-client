@@ -17,7 +17,6 @@
 
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {
-  Box,
   Column,
   Heading,
   Paragraph,
@@ -51,6 +50,7 @@ import {
   validProperties,
   isColorComplete,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();

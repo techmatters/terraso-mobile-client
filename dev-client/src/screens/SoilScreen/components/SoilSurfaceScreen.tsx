@@ -16,7 +16,6 @@
  */
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
-  Box,
   Column,
   Heading,
   Paragraph,
@@ -37,6 +36,7 @@ import {Icon} from 'terraso-mobile-client/components/Icons';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useCallback} from 'react';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {siteId: string};
 

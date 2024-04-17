@@ -26,7 +26,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {Formik, FormikProps} from 'formik';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo} from 'react';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props = {
   onInfoPress: () => void;
@@ -86,7 +86,7 @@ const FormContainer = React.memo(
     return (
       <KeyboardAvoidingView flex={1}>
         <ScrollView bg="background.default">
-          <Box pt="20%" mx={5}>
+          <Box paddingTop="20%" marginHorizontal={5}>
             <Form
               onInfoPress={onInfoPress}
               handleChange={handleChange}
@@ -95,7 +95,7 @@ const FormContainer = React.memo(
             />
           </Box>
         </ScrollView>
-        <Box position="absolute" bottom={8} right={3} p={3}>
+        <Box position="absolute" bottom={8} right={3} padding={3}>
           <Button
             onPress={handleSubmit}
             disabled={isSubmitting}

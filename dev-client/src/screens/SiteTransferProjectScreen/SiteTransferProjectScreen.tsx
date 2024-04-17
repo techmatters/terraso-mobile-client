@@ -29,7 +29,8 @@ import {transferSites} from 'terraso-client-shared/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {removeKeys} from 'terraso-mobile-client/util';
 import {ListHeader} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/ListHeader';
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const UNAFFILIATED = {
   projectId: Symbol('unaffiliated'),
@@ -207,7 +208,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
             initiallyOpen={projectSites.length > 0}
             disableOpen={projectSites.length === 0}>
             {projectSites.length > 0 ? (
-              <Box px="15px" my="15px">
+              <Box paddingHorizontal={15} marginVertical={15}>
                 <CheckboxGroup
                   groupName={projectName}
                   groupId={projId}

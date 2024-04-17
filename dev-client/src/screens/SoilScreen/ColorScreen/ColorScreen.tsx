@@ -20,7 +20,6 @@ import {
   SoilPitInputScreenScaffold,
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {
-  Box,
   Column,
   Heading,
   Paragraph,
@@ -45,6 +44,7 @@ import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 

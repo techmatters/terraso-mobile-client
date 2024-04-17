@@ -25,12 +25,12 @@ import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {
-  Box,
   Row,
   Heading,
   Text,
   Badge,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const TEMP_MODIFIED_DATE = '8/15/23';
 const TEMP_MODIFIED_NAME = 'Sample Sam';
@@ -78,10 +78,10 @@ export const SiteCard = ({
           name: TEMP_MODIFIED_NAME,
         })}
       </Text>
-      <Box h="16px" />
+      <Box height={16} />
       <Row alignItems="center">
         <StaticMapView coords={site} style={styles.mapView} />
-        <Box w="4" />
+        <Box width="4" />
         <Badge variant="chip" startIcon={<Icon name="people" />}>
           1
         </Badge>

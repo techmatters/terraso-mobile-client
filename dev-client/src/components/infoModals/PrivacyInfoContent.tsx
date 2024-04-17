@@ -20,10 +20,10 @@ import {Trans, useTranslation} from 'react-i18next';
 import {HorizontalIconButton} from 'terraso-mobile-client/components/Icons';
 import {
   Column,
-  Box,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 export const PrivacyInfoContent = () => {
   const {t} = useTranslation();
@@ -46,7 +46,7 @@ export const PrivacyInfoContent = () => {
             <Text>second</Text>
           </Trans>
         </Text>
-        <Box pt={1} pb={1}>
+        <Box paddingTop={1} paddingBottom={1}>
           <HorizontalIconButton
             name={'open-in-new'}
             label={t('general.info.data_portal_link_text')}
@@ -81,7 +81,7 @@ export const PrivacyInfoContent = () => {
             <Text>second</Text>
           </Trans>
         </Text>
-        <Box pt={1} pb={1}>
+        <Box paddingTop={1} paddingBottom={1}>
           <HorizontalIconButton
             name={'open-in-new'}
             label={t('general.info.privacy_policy_link_text')}

@@ -40,7 +40,6 @@ import {
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
-  Box,
   Column,
   Row,
   Heading,
@@ -50,6 +49,7 @@ import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/TextureInfoContent';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
 import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),
@@ -158,7 +158,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
         </Column>
         <Column p="15px" alignItems="flex-start">
           <Text variant="body1">{t('soil.texture.guide_intro')}</Text>
-          <Box height="10px" />
+          <Box height={10} />
           <Button
             onPress={onGuide}
             rightIcon={<Icon name="chevron-right" />}
@@ -187,7 +187,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
               <RockFragmentVolumeInfoContent />
             </InfoModal>
           </Row>
-          <Box height="10px" />
+          <Box height={10} />
           <ImageRadio
             value={intervalData?.rockFragmentVolume}
             options={fragmentOptions}

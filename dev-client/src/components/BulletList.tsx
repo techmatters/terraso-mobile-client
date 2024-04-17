@@ -16,11 +16,11 @@
  */
 
 import {
-  Box,
   Column,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/core/Box';
 
 type Props<T> = {data: T[]; renderItem: (t: T) => React.ReactNode};
 export const BulletList = <T,>({data, renderItem}: Props<T>) => {
@@ -32,7 +32,7 @@ export const BulletList = <T,>({data, renderItem}: Props<T>) => {
           <Text variant="body1" marginHorizontal={`${bulletMargin}px`}>
             {'•'}
           </Text>
-          <Box mr={`${bulletMargin * 2}px`}>{renderItem(item)}</Box>
+          <Box marginRight={`${bulletMargin * 2}px`}>{renderItem(item)}</Box>
         </Row>
       ))}
       <Text variant="body1" />
