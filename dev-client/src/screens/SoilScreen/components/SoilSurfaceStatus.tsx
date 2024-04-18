@@ -50,7 +50,11 @@ export const SoilSurfaceStatus = ({siteId}: Props) => {
         required={projectSettings?.verticalCrackingRequired ?? false}
         complete={Boolean(surfaceCracksSelect)}
         label={t('soil.collection_method.verticalCracking')}
-        value={t(`soil.vertical_cracking.value.${surfaceCracksSelect}`)}
+        value={
+          surfaceCracksSelect
+            ? t(`soil.vertical_cracking.value.${surfaceCracksSelect}`)
+            : undefined
+        }
         onPress={onPress}
       />
     </Column>
