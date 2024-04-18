@@ -24,40 +24,41 @@ import {
 } from 'react-native';
 import {theme} from 'terraso-mobile-client/theme';
 
-type PathOf<O extends Record<string, any>> = string &
+type PathOf<Object extends Record<string, any>> = string &
   keyof {
-    [P in keyof O as O[P] extends Record<string, any>
-      ? `${P & string}.${string & PathOf<O[P]>}`
-      : P]: true;
+    [Property in keyof Object as Object[Property] extends Record<string, any>
+      ? `${Property & string}.${string & PathOf<Object[Property]>}`
+      : Property]: true;
   };
 
 type TypeAt<
-  O extends Record<string, any>,
-  K extends PathOf<O>,
-> = K extends `${infer Head}.${infer Tail}`
-  ? TypeAt<O[Head], PathOf<O[Head]> & Tail>
-  : O[K];
+  Object extends Record<string, any>,
+  Key extends PathOf<Object>,
+> = Key extends `${infer Head}.${infer Tail}`
+  ? TypeAt<Object[Head], PathOf<Object[Head]> & Tail>
+  : Object[Key];
 
-export const getByKey = <O extends Record<string, any>, K>(
-  object: O,
-  key: K,
-): K extends PathOf<O> ? TypeAt<O, K> : K =>
+export const getByKey = <Object extends Record<string, any>, Key>(
+  object: Object,
+  key: Key,
+): Key extends PathOf<Object> ? TypeAt<Object, Key> : Key =>
   (typeof key === 'string'
     ? key.split('.').reduce((o, k) => o[k], object) ?? key
-    : key) as K extends PathOf<O> ? TypeAt<O, K> : K;
+    : key) as Key extends PathOf<Object> ? TypeAt<Object, Key> : Key;
 
 export type ThemeColor = PathOf<typeof theme.colors>;
 
-export const getThemeColor = <K extends ThemeColor | ColorValue>(
-  color: K,
+export const getThemeColor = <Value extends ThemeColor | ColorValue>(
+  color: Value,
 ): ColorValue => getByKey(theme.colors, color) as ColorValue;
 
-export type ThemeSpace<T extends DimensionValue> =
-  | T
+export type ThemeSpace<Value extends DimensionValue> =
+  | Value
   | PathOf<typeof theme.space>;
 
-export const getThemeSpace = <T extends ThemeSpace<DimensionValue>>(space: T) =>
-  getByKey(theme.space, space) as Exclude<T, PathOf<typeof theme.space>>;
+export const getThemeSpace = <Value extends ThemeSpace<DimensionValue>>(
+  space: Value,
+) => getByKey(theme.space, space) as Exclude<Value, PathOf<typeof theme.space>>;
 
 type ThemeSpaceProp = Parameters<typeof viewSpaceProps.has>[0];
 export type ThemeSpaceProps = {
@@ -191,9 +192,9 @@ export type ThemedViewStyle = ThemeSpaceProps &
   ThemeColorProps &
   Omit<ViewStyle, ThemeColorProp | ThemeSpaceProp>;
 
-export const convertThemedStyle = <T extends object>(
-  origProps: T & ThemedViewStyle,
-): {style: StyleProp<ViewStyle>; props: T} => {
+export const convertThemedStyle = <Object extends object>(
+  origProps: Object & ThemedViewStyle,
+): {style: StyleProp<ViewStyle>; props: Object} => {
   let style: Record<string, any> = {};
   const props: Record<string, any> = {};
   for (const [key, value] of Object.entries(origProps)) {
@@ -212,5 +213,5 @@ export const convertThemedStyle = <T extends object>(
   if ('style' in origProps) {
     style = [style, origProps.style];
   }
-  return {style, props: props as T};
+  return {style, props: props as Object};
 };
