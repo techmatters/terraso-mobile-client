@@ -20,9 +20,5 @@ import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 export const SlopeInfoContent = () => {
   const {t} = useTranslation();
 
-  return (
-    <>
-      <Text>{t('slope.info.description')}</Text>
-    </>
-  );
+  return <Text>{t('slope.info.description')}</Text>;
 };
