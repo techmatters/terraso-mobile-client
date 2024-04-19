@@ -37,9 +37,6 @@ jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 jest.mock('@gorhom/bottom-sheet', () => 'BottomSheet');
 jest.mock('@rnmapbox/maps', () => 'Mapbox');
 
-let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
-mmkvMock.mock(); // Mock the storage
-
 setAPIConfig({
   terrasoAPIURL: 'http://127.0.0.1:8000',
   graphQLEndpoint: '/graphql',
@@ -61,6 +58,7 @@ global.console.error = jest.fn();
 
 beforeEach(() => {
   // Install the in-memory adapter
+  let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
   mmkvMock.unmock(); // Cleanup if already mocked
   mmkvMock.mock(); // Mock the storage
 });

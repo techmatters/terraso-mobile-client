@@ -21,6 +21,12 @@ import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
 
 const ENV_CONFIG = Constants.expoConfig!.extra!;
+ENV_CONFIG.SENTRY_ENABLED = 'false';
+ENV_CONFIG.PUBLIC_MAPBOX_TOKEN =
+  'pk.eyJ1IjoidGVycmFzbyIsImEiOiJjbGZtbjJuaHkwZGV2M3BxZGV4bzh1eW9tIn0.hF3oI29U0DDLoaDJ0sB0Uw';
+ENV_CONFIG.GOOGLE_OAUTH_ANDROID_CLIENT_ID =
+  '669772374672-6ccskhlohv4ombh0icdc4cpqcr5j5v9k.apps.googleusercontent.com';
+ENV_CONFIG.TERRASO_BACKEND = 'http://192.168.6.1:8000';
 
 const MMKV = new MMKVLoader().withEncryption().initialize();
 

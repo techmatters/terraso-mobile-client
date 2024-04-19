@@ -7,6 +7,10 @@ const {
 
 const defaultConfig = getDefaultConfig(__dirname);
 const {assetExts, sourceExts} = defaultConfig.resolver;
+const extraSourceExts = [];
+if (process.env.ENABLE_MOCKS === 'true') {
+  extraSourceExts.push('mock.ts', 'mock.js');
+}
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
@@ -20,7 +24,7 @@ const config = {
 
   resolver: {
     assetExts: assetExts.filter(ext => ext !== 'svg'),
-    sourceExts: [...sourceExts, 'svg'],
+    sourceExts: [...extraSourceExts, ...sourceExts, 'svg'],
   },
 
   serializer: {

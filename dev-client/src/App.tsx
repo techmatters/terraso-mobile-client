@@ -26,7 +26,7 @@
 import 'react-native-get-random-values';
 
 import {useEffect} from 'react';
-import {PermissionsAndroid, LogBox} from 'react-native';
+import {PermissionsAndroid, LogBox, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
@@ -73,24 +73,26 @@ function App(): React.JSX.Element {
   );
 
   return (
-    <GestureHandlerRootView style={style}>
-      <Provider store={store}>
-        <NativeBaseProvider theme={theme}>
-          <BottomSheetModalProvider>
-            <Portal.Host>
-              <NavigationContainer>
-                <GeospatialProvider>
-                  <Toasts />
-                  <HomeScreenContextProvider>
-                    <RootNavigator />
-                  </HomeScreenContextProvider>
-                </GeospatialProvider>
-              </NavigationContainer>
-            </Portal.Host>
-          </BottomSheetModalProvider>
-        </NativeBaseProvider>
-      </Provider>
-    </GestureHandlerRootView>
+    <View testID="app-root">
+      <GestureHandlerRootView style={style}>
+        <Provider store={store}>
+          <NativeBaseProvider theme={theme}>
+            <BottomSheetModalProvider>
+              <Portal.Host>
+                <NavigationContainer>
+                  <GeospatialProvider>
+                    <Toasts />
+                    <HomeScreenContextProvider>
+                      <RootNavigator />
+                    </HomeScreenContextProvider>
+                  </GeospatialProvider>
+                </NavigationContainer>
+              </Portal.Host>
+            </BottomSheetModalProvider>
+          </NativeBaseProvider>
+        </Provider>
+      </GestureHandlerRootView>
+    </View>
   );
 }
 

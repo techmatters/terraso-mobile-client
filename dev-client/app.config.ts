@@ -123,6 +123,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     },
   },
   plugins: [
+    ['@config-plugins/detox'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
     [
       '@sentry/react-native/expo',
@@ -137,19 +138,19 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         RNMapboxMapsDownloadToken: BUILD_CONFIG.MAPBOX_DOWNLOADS_TOKEN,
       },
     ],
-    [
-      ((modConfig: ExpoConfig): ExpoConfig => {
-        // workaround to avoid double signing with debug keychain
-        withAppBuildGradle(modConfig, gradle => {
-          gradle.modResults.contents = gradle.modResults.contents.replace(
-            /signingConfig signingConfigs.debug/g,
-            '',
-          );
-          return gradle;
-        });
-        return modConfig;
-      }) as any,
-    ],
+    // [
+    //   ((modConfig: ExpoConfig): ExpoConfig => {
+    //     // workaround to avoid double signing with debug keychain
+    //     withAppBuildGradle(modConfig, gradle => {
+    //       gradle.modResults.contents = gradle.modResults.contents.replace(
+    //         /signingConfig signingConfigs.debug/g,
+    //         '',
+    //       );
+    //       return gradle;
+    //     });
+    //     return modConfig;
+    //   }) as any,
+    // ],
   ],
   extra: ENV_CONFIG,
 });

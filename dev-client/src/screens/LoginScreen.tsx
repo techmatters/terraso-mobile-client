@@ -68,7 +68,11 @@ export const LoginScreen = () => {
   }, [loggedIn, navigation]);
 
   return (
-    <Column bgColor="primary.main" alignItems="center" h="100%">
+    <Column
+      testID="login-screen"
+      bgColor="primary.main"
+      alignItems="center"
+      h="100%">
       <Box flexGrow={2} />
       <Column justifyContent="flex-end" alignItems="center">
         <Heading variant="h3" fontSize="40px" color="primary.contrast">
@@ -86,6 +90,7 @@ export const LoginScreen = () => {
         <Box h="72px" />
         <Button.Group direction="column" space={5}>
           <Button
+            testID="google-login"
             bgColor="primary.contrast"
             _text={{color: 'primary.main'}}
             size="lg"
