@@ -609,7 +609,11 @@
           "content": "Place the Post-it note next to the prepared soil sample, in the proper lighting conditions."
         },
         "step5": {
-          "title": "5. Ready to take the photo?",
+          "title": "5. Compose photo.",
+          "content": "Place the camera as close to the soil and Post-It note as you can without creating shadows or blurriness."
+        },
+        "step6": {
+          "title": "6. Ready to take the photo?",
           "content": "If you’ve followed the instructions above, you’re ready! You can take a photo with your device’s camera, or go back to upload a photo."
         },
         "go_back": "Go back",

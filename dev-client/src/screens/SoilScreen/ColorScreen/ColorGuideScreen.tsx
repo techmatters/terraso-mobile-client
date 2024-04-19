@@ -111,9 +111,13 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
       </Box>
     </>,
 
+    <Paragraph variant="body1">
+      {t('soil.color.guide.step5.content')}
+    </Paragraph>,
+
     <>
       <Paragraph variant="body1">
-        {t('soil.color.guide.step5.content')}
+        {t('soil.color.guide.step6.content')}
       </Paragraph>
       <Row justifyContent="space-between">
         <Button variant="link" onPress={onGoBack}>
