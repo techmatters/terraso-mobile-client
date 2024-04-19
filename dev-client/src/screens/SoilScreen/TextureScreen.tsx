@@ -49,7 +49,7 @@ import {
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/TextureInfoContent';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
-import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),

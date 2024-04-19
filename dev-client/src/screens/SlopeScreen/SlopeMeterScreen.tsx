@@ -36,7 +36,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 

@@ -22,7 +22,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/CreateProjectForm';
-import {PrivacyInfoModal} from 'terraso-mobile-client/components/infoModals/PrivacyInfoModal';
+import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/infoModals/PrivacyInfoModal';
 
 export const CreateProjectScreen = () => {
   const infoModalRef = useRef<BottomSheetModal>(null);
