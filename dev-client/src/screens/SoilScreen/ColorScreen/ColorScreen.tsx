@@ -28,7 +28,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
-import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
