@@ -33,7 +33,7 @@ import {
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
 import {SlopeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoContent';
-import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();

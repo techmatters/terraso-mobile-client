@@ -50,7 +50,7 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
-import {InfoModal} from 'terraso-mobile-client/components/modals/InfoModal';
+import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
 
 type Props = {

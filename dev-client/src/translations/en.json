@@ -596,7 +596,9 @@
         },
         "step2": {
           "title": "2. Prepare Soil Sample.",
-          "content": "Use dry soil whenever possible. The app does have a way to indicate if your soil is wet, but dry soil color estimates are more accurate.\n\nIf your soil layer has multiple colors (i.e. mottles, redoximorphic features, or carbonates), isolate the dominant matrix color from the pile.\n\nRun soil through a 2mm sieve to create a pile of homogenous soil, or use your hands to pick out anything larger than 2mm (1/16)”.\n\nFlatten the pile of soil to minimize shadows within the soil sample."
+          "content": "Use dry soil whenever possible. The app does have a way to indicate if your soil is wet, but dry soil color estimates are more accurate.\n\nIf your soil layer has multiple colors (i.e. mottles, redoximorphic features, or carbonates), isolate the dominant matrix color from the pile.\n\nRun soil through a $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) sieve to create a pile of homogenous soil, or use your hands to pick out anything larger than $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n\nFlatten the pile of soil to minimize shadows within the soil sample.",
+          "content_size_METRIC": "2mm",
+          "content_size_ENGLISH": "1/16”"
         },
         "step3": {
           "title": "3. Prepare lighting.",
@@ -607,7 +609,11 @@
           "content": "Place the Post-it note next to the prepared soil sample, in the proper lighting conditions."
         },
         "step5": {
-          "title": "5. Ready to take the photo?",
+          "title": "5. Compose photo.",
+          "content": "Place the camera as close to the soil and Post-It note as you can without creating shadows or blurriness."
+        },
+        "step6": {
+          "title": "6. Ready to take the photo?",
           "content": "If you’ve followed the instructions above, you’re ready! You can take a photo with your device’s camera, or go back to upload a photo."
         },
         "go_back": "Go back",
