@@ -36,7 +36,7 @@ import {Fab} from 'native-base';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {useCallback, useMemo} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';

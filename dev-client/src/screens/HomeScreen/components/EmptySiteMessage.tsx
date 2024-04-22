@@ -16,7 +16,7 @@
  */
 import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
-import {LinkNewWindowIcon} from 'terraso-mobile-client/components/Icons';
+import {LinkNewWindowIcon} from 'terraso-mobile-client/components/icons/LinkNewWindowIcon';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const EmptySiteMessage = () => {

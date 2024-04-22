@@ -19,10 +19,8 @@ import {Linking} from 'react-native';
 import {Image} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
-import {
-  LocationIcon,
-  LinkNewWindowIcon,
-} from 'terraso-mobile-client/components/Icons';
+import {LinkNewWindowIcon} from 'terraso-mobile-client/components/icons/LinkNewWindowIcon';
+import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
 import {
   Column,
   HStack,
