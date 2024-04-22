@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
 import {LinkNewWindowIcon} from 'terraso-mobile-client/components/icons/LinkNewWindowIcon';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -27,15 +26,15 @@ export const EmptySiteMessage = () => {
       <Trans
         i18nKey="site.empty.info"
         components={{
-          icon: <LinkNewWindowIcon />,
-        }}>
-        <Text
-          underline
-          onPress={() => Linking.openURL(t('site.empty.link_url'))}
-          color="primary.main">
-          link_text
-        </Text>
-      </Trans>
+          // TODO-cknipe: Update / delete this too
+          icon: (
+            <LinkNewWindowIcon
+              label={t('site.empty.link_label')}
+              url={t('site.empty.link_url')}
+            />
+          ),
+        }}
+      />
     </Text>
   );
 };

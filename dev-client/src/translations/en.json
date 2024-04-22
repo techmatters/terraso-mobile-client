@@ -3,11 +3,12 @@
     "info": {
       "title": "Soil Science in Your Hands",
       "intro_image_alt": "",
-      "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land to gain insights for grazing and farming options, carbon sequestration, and more.\n\n<2>There are three ways to use the map:</2>",
+      "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.\n\n<2>There are three ways to use the map:</2>",
       "list1": "Tap the map to drop a pin and get more information about that location.",
-      "list2": "Tap the location icon <icon /> to find your current location",
-      "list3": "Enter coordinates, address, or search term in the search bar",
-      "description2": "<0>Find more information and guides</0> in the side menu to the left or at <1>landpotential.org</1> <icon />.",
+      "list2": "Tap the location icon <icon /> to find your current location.",
+      "list3": "Enter coordinates, address, or search term in the search bar.",
+      "description2": "<bold>Find more information and guides</bold> in the app menu or visit:\n<icon />",
+      "link_label": "landpotential.org",
       "link_url": "https://landpotential.org/"
     }
   },

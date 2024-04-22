@@ -15,7 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Linking} from 'react-native';
 import {Image} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
@@ -71,15 +70,15 @@ export const LandPKSInfo = () => {
           <Trans
             i18nKey="home.info.description2"
             components={{
-              icon: <LinkNewWindowIcon />,
+              bold: <Text bold />,
+              icon: (
+                <LinkNewWindowIcon
+                  label={t('home.info.link_label')}
+                  url={t('home.info.link_url')}
+                />
+              ),
             }}>
             <Text bold>first</Text>
-            <Text
-              underline
-              onPress={() => Linking.openURL(t('home.info.link_url'))}
-              color="primary.main">
-              link_text
-            </Text>
           </Trans>
         </Text>
       </Column>
