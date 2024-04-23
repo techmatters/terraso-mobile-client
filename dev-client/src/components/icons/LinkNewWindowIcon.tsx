@@ -1,6 +1,6 @@
 import {IconButton as NativeIconButton} from 'native-base';
 import React from 'react';
-import {Linking, Pressable} from 'react-native';
+import {Linking, Pressable, StyleSheet, View} from 'react-native';
 import {
   Box,
   HStack,
@@ -19,7 +19,6 @@ export const LinkNewWindowIcon = React.forwardRef(
   ({label, url, ...props}: LinkNewWindowIconProps, ref: React.Ref<unknown>) => {
     const icon = (
       <NativeIconButton
-        p={0}
         ref={ref}
         icon={<Icon name={'open-in-new'} />}
         {...props}
@@ -27,23 +26,36 @@ export const LinkNewWindowIcon = React.forwardRef(
     );
 
     return (
-      <Pressable onPress={() => Linking.openURL(url)}>
-        <Box>
-          <HStack>
-            <Text
-              color={'primary.main'}
-              fontSize="md"
-              textTransform={'uppercase'}>
-              {label}
-            </Text>
-            {icon}
-          </HStack>
-        </Box>
-      </Pressable>
+      <View style={styles.container}>
+        <Pressable onPress={() => Linking.openURL(url)}>
+          <Box>
+            <HStack>
+              <Text
+                color={'primary.main'}
+                fontSize="md"
+                textTransform={'uppercase'}
+                style={styles.label}>
+                {label}
+              </Text>
+              {icon}
+            </HStack>
+          </Box>
+        </Pressable>
+      </View>
     );
   },
 );
 
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 11,
+    paddingVertical: 8,
+  },
+  label: {
+    marginRight: 4,
+    verticalAlign: 'middle',
+  },
+});
 // import {View} from 'react-native';
 // import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
