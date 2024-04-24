@@ -5,7 +5,7 @@ export const LocationIcon = () => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Icon name="my-location" color="black" size={14} />
+      <Icon name="my-location" color="text.locationicon" size={14} />
     </View>
   );
 };

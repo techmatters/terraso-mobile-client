@@ -15,12 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Image} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
 import {LinkNewWindowIcon} from 'terraso-mobile-client/components/icons/LinkNewWindowIcon';
 import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
+import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
 import {
+  Box,
   Column,
   HStack,
   Heading,
@@ -36,13 +37,9 @@ export const LandPKSInfo = () => {
         <Heading w="full" textAlign="center">
           {t('home.info.title')}
         </Heading>
-        <Image
-          source={require('terraso-mobile-client/assets/landpks_intro_image.png')}
-          w="100%"
-          h="25%"
-          resizeMode="contain"
-          alt={t('home.info.intro_image_alt')}
-        />
+        <Box width={157} height={128} alignSelf="center" mb={1}>
+          <InfoSVG />
+        </Box>
         <Text variant="body1">
           <Trans i18nKey="home.info.description">
             <Text bold>first</Text>
@@ -54,7 +51,7 @@ export const LandPKSInfo = () => {
           {[1, 2, 3].map(index => (
             <HStack key={index}>
               <Text variant="body1" mr={2}>
-                {index + 1}
+                {index}
                 {'.'}
               </Text>
               <Text variant="body1" mr={2}>
