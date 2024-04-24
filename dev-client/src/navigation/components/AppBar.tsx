@@ -44,7 +44,10 @@ export const AppBar = ({
       <Row py="4px" minHeight="56px">
         <Row flex={1} space="24px" alignItems="center">
           {LeftButton}
-          <Heading variant="h6" color="primary.contrast">
+          <Heading
+            variant="h6"
+            color="primary.contrast"
+            pl={LeftButton ? undefined : '16px'}>
             {title ?? t(`screens.${route.name}`)}
           </Heading>
         </Row>
