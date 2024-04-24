@@ -74,7 +74,7 @@ export const ProjectListScreen = () => {
     <ScreenScaffold
       AppBar={
         <AppBar
-          LeftButton={<AppBarIconButton name="menu" />}
+          LeftButton={null}
           RightButton={<AppBarIconButton name="help" />}
         />
       }>

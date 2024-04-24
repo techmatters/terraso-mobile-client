@@ -175,7 +175,7 @@ export const HomeScreen = memo(() => {
     <ScreenScaffold
       AppBar={
         <AppBar
-          LeftButton={<AppBarIconButton name="menu" />}
+          LeftButton={null}
           RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
         />
       }>
