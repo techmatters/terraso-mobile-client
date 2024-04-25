@@ -37,12 +37,12 @@ type InfoProps = {
 export const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
   const {t} = useTranslation();
   const userLabel = useMemo(() => {
-    let label = formatName(user.firstName, user.lastName);
-
+    let name = formatName(user.firstName, user.lastName);
     if (isCurrentUser) {
-      label += ` (${t('general.you')})`;
+      return t('general.you_name', {name: name});
+    } else {
+      return name;
     }
-    return label;
   }, [user, isCurrentUser, t]);
 
   return (
