@@ -99,18 +99,20 @@
     "typescript": "^5.4.5"
   },
   "jest": {
-    "preset": "react-native",
+    "preset": "jest-expo",
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect",
+      "@rnmapbox/maps/setup-jest",
       "./node_modules/react-native-mmkv-storage/jest/mmkvJestSetup.js",
       "<rootDir>/jest/setup.ts"
     ],
     "moduleNameMapper": {
       "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.ts",
-      "^@testing/(.*)": "<rootDir>/jest/$1"
+      "^@testing/(.*)": "<rootDir>/jest/$1",
+      "^terraso-mobile-client/(.*)": "<rootDir>/src/$1"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|@react-native|react-native-cookies|uuid|react-native-mmkv-storage|react-native-autocomplete-input)/)"
+      "node_modules/(?!(react-native|@react-native|react-native-cookies|uuid|react-native-mmkv-storage|react-native-autocomplete-input|expo(nent)?|@expo(nent)?/.*)|expo-constants|@rnmapbox/)"
     ]
   },
   "expo": {

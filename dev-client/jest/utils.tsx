@@ -14,9 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {render} from '@testing-library/react-native';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {NavigationContainer} from '@react-navigation/native';
+import {render as rnRender} from '@testing-library/react-native';
 import {NativeBaseProvider} from 'native-base';
+import {useRef} from 'react';
 import {Portal} from 'react-native-paper';
+import {Provider} from 'react-redux';
+import {
+  RootStack,
+  RootStackParamList,
+} from 'terraso-mobile-client/navigation/types';
+import {AppState, createStore} from 'terraso-mobile-client/store';
 import {theme} from 'terraso-mobile-client/theme';
 
 // NativeBase: https://docs.nativebase.io/testing
@@ -25,14 +34,48 @@ const nativeBaseInset = {
   insets: {top: 0, left: 0, right: 0, bottom: 0},
 };
 
-const TestWrapper = ({children}: React.PropsWithChildren) => {
+type WrapperProps = {
+  initialState?: Partial<AppState>;
+  route?: keyof RootStackParamList;
+};
+
+const TestWrapper = ({
+  initialState,
+  route,
+  children,
+}: React.PropsWithChildren<WrapperProps>) => {
+  const store = useRef(createStore(initialState));
   return (
-    <NativeBaseProvider theme={theme} initialWindowMetrics={nativeBaseInset}>
-      <Portal.Host>{children}</Portal.Host>
-    </NativeBaseProvider>
+    <Provider store={store.current}>
+      <NavigationContainer>
+        <NativeBaseProvider
+          theme={theme}
+          initialWindowMetrics={nativeBaseInset}>
+          <BottomSheetModalProvider>
+            <Portal.Host>
+              {route && (
+                <RootStack.Navigator>
+                  <RootStack.Screen name={route}>
+                    {() => children}
+                  </RootStack.Screen>
+                </RootStack.Navigator>
+              )}
+              {!route && children}
+            </Portal.Host>
+          </BottomSheetModalProvider>
+        </NativeBaseProvider>
+      </NavigationContainer>
+    </Provider>
   );
 };
 
-export const customRender: typeof render = (ui, options) => {
-  return render(ui, {wrapper: TestWrapper, ...options});
+export const render = (
+  ui: React.ReactElement,
+  wrapperProps: WrapperProps = {},
+) => {
+  const Wrapper = ({children}: React.PropsWithChildren) => (
+    <TestWrapper {...wrapperProps}>{children}</TestWrapper>
+  );
+
+  return rnRender(ui, {wrapper: Wrapper});
 };
