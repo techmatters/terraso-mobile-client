@@ -26,14 +26,14 @@ import {UserItem} from 'terraso-mobile-client/screens/ProjectTeamScreen/componen
 type ListProps = {
   memberships: [ProjectMembership, User][];
   currentUserId?: string;
-  userAction: (membership: ProjectMembership) => () => void;
+  removeUser: (membership: ProjectMembership) => () => void;
   memberAction: (userId: string, memberId: string) => () => void;
   currentUserRole: ProjectRole;
 };
 
 export const UserList = ({
   memberships,
-  userAction,
+  removeUser,
   currentUserId,
   memberAction,
   currentUserRole,
@@ -46,7 +46,7 @@ export const UserList = ({
           membership={membership}
           user={user}
           currentUserId={currentUserId}
-          removeUser={userAction(membership)}
+          removeUser={removeUser(membership)}
           memberAction={memberAction(user.id, membership.id)}
           currentUserRole={currentUserRole}
         />
