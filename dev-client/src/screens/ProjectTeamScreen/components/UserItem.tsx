@@ -47,9 +47,9 @@ function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
 type ItemProps = {
   membership: ProjectMembership;
   user: User;
-  isCurrentUser: boolean;
-  isManager: boolean;
-  hasSingleManager: boolean;
+  isForCurrentUser: boolean;
+  isInManagerView: boolean;
+  isForSingleManagerProject: boolean;
   removeUser: () => void;
   memberAction: () => void;
 };
@@ -57,36 +57,40 @@ type ItemProps = {
 export const UserItem = ({
   membership,
   user,
-  isCurrentUser,
-  isManager,
-  hasSingleManager,
+  isForCurrentUser,
+  isInManagerView,
+  isForSingleManagerProject,
   removeUser,
   memberAction,
 }: ItemProps) => {
   const {t} = useTranslation();
 
-  /* Any non-manager user can leave the project, but managers can only leave if they are not the only manager. */
-  const canLeaveProject = isCurrentUser && !(isManager && hasSingleManager);
+  /*
+   * Any non-manager user can leave the project, but managers can only leave if they are not the
+   * only manager.
+   */
+  const userCanLeaveProject =
+    isForCurrentUser && !(isInManagerView && isForSingleManagerProject);
 
   return (
     <Box borderBottomWidth="1" width={275} py={2}>
       <VStack>
-        {!isCurrentUser && isManager ? (
+        {!isForCurrentUser && isInManagerView ? (
           <Pressable onPress={memberAction}>
             <UserInfo
               membership={membership}
               user={user}
-              isCurrentUser={isCurrentUser}
+              isCurrentUser={isForCurrentUser}
             />
           </Pressable>
         ) : (
           <UserInfo
             membership={membership}
             user={user}
-            isCurrentUser={isCurrentUser}
+            isCurrentUser={isForCurrentUser}
           />
         )}
-        {canLeaveProject && (
+        {userCanLeaveProject && (
           <ConfirmModal
             trigger={onOpen => (
               <LeaveProjectTrigger

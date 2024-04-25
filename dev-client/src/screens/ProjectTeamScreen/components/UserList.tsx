@@ -39,7 +39,8 @@ export const UserList = ({
   memberAction,
   currentUserRole,
 }: ListProps) => {
-  const hasSingleManager = useMemo(
+  /* (The number of managers in a project affects whether certain screen controls are available) */
+  const projectHasSingleManager = useMemo(
     () => memberships.filter(m => m[0].userRole === 'MANAGER').length === 1,
     [memberships],
   );
@@ -51,9 +52,9 @@ export const UserList = ({
         <UserItem
           membership={membership}
           user={user}
-          isCurrentUser={user.id === currentUserId}
-          isManager={currentUserRole === 'MANAGER'}
-          hasSingleManager={hasSingleManager}
+          isForCurrentUser={user.id === currentUserId}
+          isInManagerView={currentUserRole === 'MANAGER'}
+          isForSingleManagerProject={projectHasSingleManager}
           removeUser={removeUser(membership)}
           memberAction={memberAction(user.id, membership.id)}
         />
