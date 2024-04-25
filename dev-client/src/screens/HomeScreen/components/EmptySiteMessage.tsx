@@ -14,27 +14,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Trans, useTranslation} from 'react-i18next';
-import {LinkNewWindowIcon} from 'terraso-mobile-client/components/icons/LinkNewWindowIcon';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Trans} from 'react-i18next';
+import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
 
 export const EmptySiteMessage = () => {
-  const {t} = useTranslation();
-
   return (
-    <Text px="17px" variant="body1">
-      <Trans
-        i18nKey="site.empty.info"
-        components={{
-          // TODO-cknipe: Update / delete this too
-          icon: (
-            <LinkNewWindowIcon
-              label={t('site.empty.link_label')}
-              url={t('site.empty.link_url')}
+    <View px="17px">
+      <Text variant="body1">
+        <Trans
+          i18nKey="site.empty.info"
+          components={{
+            bold: <Text bold />,
+          }}
+        />
+      </Text>
+
+      <BulletList
+        data={[1, 2, 3]}
+        renderItem={i => (
+          <Text variant="body1" color="text.primary">
+            <Trans
+              i18nKey={`site.empty.bullet_${i}`}
+              components={{icon: <LocationIcon />}}
             />
-          ),
-        }}
+          </Text>
+        )}
       />
-    </Text>
+    </View>
   );
 };
