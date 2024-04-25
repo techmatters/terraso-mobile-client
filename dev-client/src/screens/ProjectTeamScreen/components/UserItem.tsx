@@ -15,20 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Center, Image, Pressable} from 'native-base';
+import {Button, Center, Pressable} from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
-import {useMemo} from 'react';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {formatName} from 'terraso-mobile-client/util';
-import {
-  Box,
-  HStack,
-  VStack,
-  Badge,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box, VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {UserInfo} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserInfo';
 
 type TriggerProps = {
   onOpen: () => void;
@@ -50,47 +43,6 @@ function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
     </Center>
   );
 }
-
-type InfoProps = {
-  membership: ProjectMembership;
-  user: User;
-  isCurrentUser: boolean;
-};
-
-const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
-  const {t} = useTranslation();
-  const userLabel = useMemo(() => {
-    let label = formatName(user.firstName, user.lastName);
-
-    if (isCurrentUser) {
-      label += ` (${t('general.you')})`;
-    }
-    return label;
-  }, [user, isCurrentUser, t]);
-
-  return (
-    <HStack space={3} justifyContent="space-between" alignItems="center">
-      <Box>
-        <Image
-          variant="profilePic"
-          source={{uri: user.profileImage}}
-          alt="profile pic"
-        />
-      </Box>
-      <Text flex={3}>{userLabel}</Text>
-      <Box>
-        <Badge
-          variant="chip"
-          bg="primary.lighter"
-          py="5px"
-          px="10px"
-          _text={{color: 'text.primary'}}>
-          {t(`general.role.${membership.userRole}`)}
-        </Badge>
-      </Box>
-    </HStack>
-  );
-};
 
 type ItemProps = {
   membership: ProjectMembership;
