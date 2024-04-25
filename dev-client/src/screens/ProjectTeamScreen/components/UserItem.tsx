@@ -19,10 +19,7 @@ import {Button, Center, Image, Pressable} from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
-import {
-  ProjectMembership,
-  ProjectRole,
-} from 'terraso-client-shared/project/projectSlice';
+import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {formatName} from 'terraso-mobile-client/util';
 import {
@@ -32,15 +29,6 @@ import {
   Badge,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-
-type ItemProps = {
-  membership: ProjectMembership;
-  user: User;
-  currentUserId?: string;
-  removeUser: () => void;
-  memberAction: () => void;
-  currentUserRole: ProjectRole;
-};
 
 type TriggerProps = {
   onOpen: () => void;
@@ -63,72 +51,84 @@ function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
   );
 }
 
-const UserWrapper = ({
-  isCurrentUser,
-  memberAction,
-  currentUserRole,
-  children,
-}: React.PropsWithChildren &
-  Pick<ItemProps, 'memberAction'> & {
-    isCurrentUser: boolean;
-    currentUserRole: ProjectRole;
-  }) =>
-  !isCurrentUser && currentUserRole === 'MANAGER' ? (
-    <Pressable onPress={memberAction}>{children}</Pressable>
-  ) : (
-    <>{children}</>
+type InfoProps = {
+  membership: ProjectMembership;
+  user: User;
+  isCurrentUser: boolean;
+};
+
+const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
+  const {t} = useTranslation();
+  const userLabel = useMemo(() => {
+    let label = formatName(user.firstName, user.lastName);
+
+    if (isCurrentUser) {
+      label += ` (${t('general.you')})`;
+    }
+    return label;
+  }, [user, isCurrentUser, t]);
+
+  return (
+    <HStack space={3} justifyContent="space-between" alignItems="center">
+      <Box>
+        <Image
+          variant="profilePic"
+          source={{uri: user.profileImage}}
+          alt="profile pic"
+        />
+      </Box>
+      <Text flex={3}>{userLabel}</Text>
+      <Box>
+        <Badge
+          variant="chip"
+          bg="primary.lighter"
+          py="5px"
+          px="10px"
+          _text={{color: 'text.primary'}}>
+          {t('general.role.' + membership.userRole)}
+        </Badge>
+      </Box>
+    </HStack>
   );
+};
+
+type ItemProps = {
+  membership: ProjectMembership;
+  user: User;
+  isCurrentUser: boolean;
+  isManager: boolean;
+  removeUser: () => void;
+  memberAction: () => void;
+};
 
 export const UserItem = ({
   membership,
   user,
-  currentUserId,
+  isCurrentUser,
+  isManager,
   removeUser,
   memberAction,
-  currentUserRole,
 }: ItemProps) => {
   const {t} = useTranslation();
-  const isCurrentUser = useMemo(() => {
-    return user.id === currentUserId;
-  }, [user, currentUserId]);
-
-  const userName = useMemo(() => {
-    let name = formatName(user.firstName, user.lastName);
-
-    if (isCurrentUser) {
-      name += ` (${t('general.you')})`;
-    }
-    return name;
-  }, [user, isCurrentUser, t]);
 
   return (
     <Box borderBottomWidth="1" width={275} py={2}>
       <VStack>
-        <UserWrapper
-          currentUserRole={currentUserRole}
-          isCurrentUser={isCurrentUser}
-          memberAction={memberAction}>
-          <HStack space={3} justifyContent="space-between" alignItems="center">
-            <Box>
-              <Image
-                variant="profilePic"
-                source={{uri: user.profileImage}}
-                alt="profile pic"
-              />
-            </Box>
-            <Text flex={3}>{userName}</Text>
-            <Box>
-              <Badge
-                variant="chip"
-                bg="primary.lighter"
-                py="5px"
-                px="10px"
-                _text={{color: 'text.primary'}}>
-                {t('general.role.' + membership.userRole)}
-              </Badge>
-            </Box>
-          </HStack>
-        </UserWrapper>
+        {!isCurrentUser && isManager ? (
+          <Pressable onPress={memberAction}>
+            <UserInfo
+              membership={membership}
+              user={user}
+              isCurrentUser={isCurrentUser}
+            />
+          </Pressable>
+        ) : (
+          <UserInfo
+            membership={membership}
+            user={user}
+            isCurrentUser={isCurrentUser}
+          />
+        )}
         {isCurrentUser && (
           <ConfirmModal
             trigger={onOpen => (

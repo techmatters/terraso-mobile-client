@@ -45,10 +45,10 @@ export const UserList = ({
         <UserItem
           membership={membership}
           user={user}
-          currentUserId={currentUserId}
+          isCurrentUser={user.id === currentUserId}
+          isManager={currentUserRole === 'MANAGER'}
           removeUser={removeUser(membership)}
           memberAction={memberAction(user.id, membership.id)}
-          currentUserRole={currentUserRole}
         />
       )}
       keyExtractor={([membership, _]) => membership.id}
