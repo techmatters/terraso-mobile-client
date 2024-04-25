@@ -85,7 +85,7 @@ const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
           py="5px"
           px="10px"
           _text={{color: 'text.primary'}}>
-          {t('general.role.' + membership.userRole)}
+          {t(`general.role.${membership.userRole}`)}
         </Badge>
       </Box>
     </HStack>
