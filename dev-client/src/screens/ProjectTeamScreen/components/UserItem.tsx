@@ -97,6 +97,7 @@ type ItemProps = {
   user: User;
   isCurrentUser: boolean;
   isManager: boolean;
+  hasSingleManager: boolean;
   removeUser: () => void;
   memberAction: () => void;
 };
@@ -106,10 +107,14 @@ export const UserItem = ({
   user,
   isCurrentUser,
   isManager,
+  hasSingleManager,
   removeUser,
   memberAction,
 }: ItemProps) => {
   const {t} = useTranslation();
+
+  /* Any non-manager user can leave the project, but managers can only leave if they are not the only manager. */
+  const canLeaveProject = isCurrentUser && !(isManager && hasSingleManager);
 
   return (
     <Box borderBottomWidth="1" width={275} py={2}>
@@ -129,7 +134,7 @@ export const UserItem = ({
             isCurrentUser={isCurrentUser}
           />
         )}
-        {isCurrentUser && (
+        {canLeaveProject && (
           <ConfirmModal
             trigger={onOpen => (
               <LeaveProjectTrigger

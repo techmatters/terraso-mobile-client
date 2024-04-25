@@ -16,6 +16,7 @@
  */
 
 import {Divider, FlatList} from 'native-base';
+import {useMemo} from 'react';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   ProjectMembership,
@@ -38,6 +39,11 @@ export const UserList = ({
   memberAction,
   currentUserRole,
 }: ListProps) => {
+  const hasSingleManager = useMemo(
+    () => memberships.filter(m => m[0].userRole === 'MANAGER').length === 1,
+    [memberships],
+  );
+
   return (
     <FlatList
       data={memberships}
@@ -47,6 +53,7 @@ export const UserList = ({
           user={user}
           isCurrentUser={user.id === currentUserId}
           isManager={currentUserRole === 'MANAGER'}
+          hasSingleManager={hasSingleManager}
           removeUser={removeUser(membership)}
           memberAction={memberAction(user.id, membership.id)}
         />
