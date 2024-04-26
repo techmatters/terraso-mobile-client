@@ -18,7 +18,7 @@
 import {useCallback} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {Divider} from 'native-base';
+import {Button, Divider} from 'native-base';
 
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -28,7 +28,7 @@ import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScreen/components/ProjectInstructionsButton';
 
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {
   Box,
@@ -37,6 +37,8 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
+import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
+
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_ACCURACY = '20 ft';
 const TEMP_MODIFIED_DATE = '8/15/23';
@@ -44,10 +46,6 @@ const TEMP_MODIFIED_NAME = 'Sample Sam';
 const TEMP_NOT_FOUND = 'not found';
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
-const TEMP_LCC_PREDICTION = 'Class 1';
-const TEMP_SOIL_ID_CONFIDENCE = '80%';
-const TEMP_ECO_SITE_ID_CONFIDENCE = '80%';
-const TEMP_LCC_CONFIDENCE = '80%';
 
 type Props = {
   siteId?: string;
@@ -63,31 +61,42 @@ const LocationDetail = ({label, value}: {label: string; value: string}) => (
 
 type LocationPredictionProps = {
   label: string;
-  prediction: string;
-  confidence: string;
+  soilName: string;
+  ecologicalSiteName: string;
 };
 
 const LocationPrediction = ({
   label,
-  prediction,
-  confidence,
+  soilName,
+  ecologicalSiteName,
 }: LocationPredictionProps) => {
   const {t} = useTranslation();
 
   return (
-    <Column backgroundColor="primary.main" alignItems="center" py="18px">
-      <Text variant="body1" color="primary.contrast" bold>
+    <Column
+      backgroundColor="background.secondary"
+      alignItems="flex-start"
+      py="18px"
+      pl="16px">
+      <Text variant="body1" color="primary.lighter" bold>
+        <Box mr={15}>
+          <StackedBarChart />
+        </Box>
         {label}
       </Text>
-      <Box h="5px" />
-      <Text variant="body2" color="primary.contrast">
-        <Text bold>{t('soil.prediction')}: </Text>
-        <Text>{prediction}</Text>
+      <Box h="15px" />
+      <Text variant="body2" color="primary.contrast" mb="5px">
+        <Text bold>{t('soil.top_match')}: </Text>
+        <Text>{soilName}</Text>
       </Text>
-      <Text variant="body2" color="primary.contrast">
-        <Text bold>{t('soil.confidence')}: </Text>
-        <Text>{confidence}</Text>
+      <Text variant="body2" color="primary.contrast" mb="25px">
+        <Text bold>{t('soil.ecological_site_name')}: </Text>
+        <Text>{ecologicalSiteName}</Text>
       </Text>
+
+      <Button w="95%" rightIcon={<Icon name="chevron-right" />}>
+        {t('soil.explore_data').toUpperCase()}
+      </Button>
     </Column>
   );
 };
@@ -210,18 +219,8 @@ export const SiteScreen = ({siteId, coords}: Props) => {
       <Column space="20px" padding="16px">
         <LocationPrediction
           label={t('soil.soil_id').toUpperCase()}
-          prediction={TEMP_SOIL_ID_VALUE}
-          confidence={TEMP_SOIL_ID_CONFIDENCE}
-        />
-        <LocationPrediction
-          label={t('soil.ecological_site_id').toUpperCase()}
-          prediction={TEMP_ECO_SITE_PREDICTION}
-          confidence={TEMP_ECO_SITE_ID_CONFIDENCE}
-        />
-        <LocationPrediction
-          label={t('soil.land_capability_classification').toUpperCase()}
-          prediction={TEMP_LCC_PREDICTION}
-          confidence={TEMP_LCC_CONFIDENCE}
+          soilName={TEMP_SOIL_ID_VALUE}
+          ecologicalSiteName={TEMP_ECO_SITE_PREDICTION}
         />
       </Column>
     </ScrollView>
