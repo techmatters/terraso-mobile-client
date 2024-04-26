@@ -34,6 +34,7 @@ import {
   Box,
   Column,
   HStack,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -78,12 +79,14 @@ const LocationPrediction = ({
       alignItems="flex-start"
       py="18px"
       pl="16px">
-      <Text variant="body1" color="primary.lighter" bold>
+      <Row alignItems="center">
         <Box mr={15}>
           <StackedBarChart />
         </Box>
-        {label}
-      </Text>
+        <Text variant="body1" color="primary.lighter" bold>
+          {label}
+        </Text>
+      </Row>
       <Box h="15px" />
       <Text variant="body2" color="primary.contrast" mb="5px">
         <Text bold>{t('soil.top_match')}: </Text>
