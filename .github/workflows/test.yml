@@ -13,7 +13,7 @@ on:
       - synchronize
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Check out git repository
@@ -34,11 +34,3 @@ jobs:
       - name: Test JavaScript
         working-directory: ./dev-client
         run: npm run test
-
-      - name: Typecheck TypeScript
-        working-directory: ./dev-client
-        run: npm run check-ts
-
-      - name: Check NPM module usage
-        working-directory: ./dev-client
-        run: npm run check-modules
