@@ -44,6 +44,11 @@ export const BottomNavigator = memo(
       [navigation],
     );
 
+    const onSettings = useCallback(
+      () => navigation.navigate('SETTINGS'),
+      [navigation],
+    );
+
     const onLogout = useCallback(() => {
       dispatch(signOut());
     }, [dispatch]);
@@ -69,6 +74,7 @@ export const BottomNavigator = memo(
         <BottomNavIconButton
           name="settings"
           label={t('bottom_navigation.settings')}
+          onPress={onSettings}
         />
         <ConfirmModal
           trigger={onOpen => (
