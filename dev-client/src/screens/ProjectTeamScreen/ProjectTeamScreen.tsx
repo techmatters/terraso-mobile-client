@@ -98,7 +98,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
       <UserList
         memberships={members}
         currentUserId={currentUser.data?.id}
-        userAction={removeMembership}
+        removeUser={removeMembership}
         memberAction={manageMember}
         currentUserRole={currentUserRole}
       />
