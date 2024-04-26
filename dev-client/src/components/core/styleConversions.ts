@@ -198,13 +198,13 @@ export const convertThemedStyle = <Object extends object>(
   let style: Record<string, any> = {};
   const props: Record<string, any> = {};
   for (const [key, value] of Object.entries(origProps)) {
-    if (key in viewSpaceProps) {
+    if (viewSpaceProps.has(key)) {
       style[key] = getThemeSpace(value as any);
-    } else if (key in viewColorProps) {
+    } else if (viewColorProps.has(key)) {
       style[key] = getThemeColor(value as any);
-    } else if (key in viewStyleProps) {
+    } else if (viewStyleProps.has(key)) {
       style[key] = value;
-    } else if (key in textStyleProps) {
+    } else if (textStyleProps.has(key)) {
       style[key] = value;
     } else if (key !== 'style') {
       props[key] = value;
