@@ -285,7 +285,7 @@
     "use": "Use",
     "last_modified_by": "last modified {{user}}, {{date}}",
     "select_all": "Select All",
-    "you": "you",
+    "you_name": "{{name}} (you)",
     "details": "Details",
     "apply": "Apply",
     "example_email": "name@domain.com",
