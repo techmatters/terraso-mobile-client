@@ -33,6 +33,7 @@ export const theme = extendTheme({
     divider: '#0000001F',
     background: {
       default: '#FFFFFF',
+      secondary: '#00344D',
     },
     secondary: {
       main: '#C05621',
