@@ -54,7 +54,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
         shadow={5}
         onPress={onShowNote()}>
         <HStack>
-          <Icon color="primary.contrast" size={'sm'} mr={2} name={'place'} />
+          <Icon color="primary.contrast" size={'sm'} mr={2} name={'push-pin'} />
           <Text color="primary.contrast" textTransform={'uppercase'}>
             {t('projects.inputs.instructions.add_label')}
           </Text>
