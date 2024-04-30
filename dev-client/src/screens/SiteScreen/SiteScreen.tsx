@@ -18,15 +18,19 @@
 import {useCallback} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {Button, Divider} from 'native-base';
+import {Button} from 'native-base';
 
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScreen/components/ProjectInstructionsButton';
+// import {FormField} from 'terraso-mobile-client/components/form/FormField';
+// import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
+// import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
+// import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
 
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
@@ -41,10 +45,6 @@ import {
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
 
 const TEMP_ELEVATION = '1900 ft';
-const TEMP_ACCURACY = '20 ft';
-const TEMP_MODIFIED_DATE = '8/15/23';
-const TEMP_MODIFIED_NAME = 'Sample Sam';
-const TEMP_NOT_FOUND = 'not found';
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
 
@@ -54,7 +54,7 @@ type Props = {
 };
 
 const LocationDetail = ({label, value}: {label: string; value: string}) => (
-  <Text variant="body1">
+  <Text variant="body1" mb={1}>
     <Text bold>{label}: </Text>
     <Text>{value}</Text>
   </Text>
@@ -108,6 +108,11 @@ export const SiteScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();
+  const navigation = useNavigation();
+
+  const onCreate = useCallback(() => {
+    navigation.navigate('CREATE_SITE', {coords});
+  }, [navigation, coords]);
 
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
@@ -133,92 +138,101 @@ export const SiteScreen = ({siteId, coords}: Props) => {
         style={styles.mapView}
         displayCenterMarker={true}
       />
-      <Accordion
-        initiallyOpen
-        Head={
-          <Text variant="body1" color="primary.contrast">
-            {t('general.details')}
-          </Text>
-        }>
-        <Box px="16px" py="8px">
-          {project && (
-            <LocationDetail label={t('projects.label')} value={project.name} />
-          )}
-          {project && (
-            <LocationDetail
-              label={t('site.dashboard.privacy')}
-              value={t(`privacy.${project.privacy.toLowerCase()}.title`)}
+      <Box px="16px" py="16px">
+        <LocationDetail
+          label={t('geo.latitude.title')}
+          value={coords?.latitude.toFixed(6)}
+        />
+        <LocationDetail
+          label={t('geo.longitude.title')}
+          value={coords?.longitude.toFixed(6)}
+        />
+        <LocationDetail
+          label={t('geo.elevation.title')}
+          value={TEMP_ELEVATION}
+        />
+        {!site && (
+          <Box mt={5} alignItems="center">
+            <Button w="60%" onPress={onCreate} leftIcon={<Icon name="add" />}>
+              {t('site.create.create_label').toUpperCase()}
+            </Button>
+            <Text variant="body1" mt={5}>
+              {t('site.create.description')}
+            </Text>
+          </Box>
+        )}
+        {project && (
+          <LocationDetail label={t('projects.label')} value={project.name} />
+        )}
+        {project && (
+          <LocationDetail
+            label={t('site.dashboard.privacy')}
+            value={t(`privacy.${project.privacy.toLowerCase()}.title`)}
+          />
+        )}
+        {site && !project && (
+          <HStack>
+            {/*
+            <FormField name="privacy">
+              <FormLabel>
+                {t('site.dashboard.privacy')}
+                <IconButton
+                  pt={0}
+                  pb={0}
+                  pl={2}
+                  size="md"
+                  name="info"
+                  onPress={onInfoPress}
+                  _icon={{color: 'primary'}}
+                />
+              </FormLabel>
+              <FormRadioGroup
+                values={['PUBLIC', 'PRIVATE']}
+                variant="oneLine"
+                value={site.privacy}
+                renderRadio={value => (
+                  <FormRadio key={value} value={value}>
+                    {t(`privacy.${value.toLowerCase()}.title`)}
+                  </FormRadio>
+                )}
+              />
+            </FormField>
+              */}
+
+            <RadioBlock
+              label={
+                <HStack>
+                  <Text variant="body1" bold>
+                    {t('site.dashboard.privacy')}
+                  </Text>
+                  <IconButton
+                    pt={0}
+                    pb={0}
+                    pl={2}
+                    size="md"
+                    name="info"
+                    onPress={onInfoPress}
+                    _icon={{color: 'primary'}}
+                  />
+                </HStack>
+              }
+              options={{
+                PUBLIC: {text: t('privacy.public.title')},
+                PRIVATE: {text: t('privacy.private.title')},
+              }}
+              groupProps={{
+                name: 'site-privacy',
+                onChange: onSitePrivacyChanged,
+                value: site.privacy,
+                ml: '0',
+              }}
             />
-          )}
-          {site && !project && (
-            <HStack>
-              <RadioBlock
-                label={
-                  <HStack>
-                    <Text variant="body1" bold>
-                      {t('site.dashboard.privacy')}
-                    </Text>
-                    <IconButton
-                      pt={0}
-                      pb={0}
-                      pl={2}
-                      size="md"
-                      name="info"
-                      onPress={onInfoPress}
-                      _icon={{color: 'primary'}}
-                    />
-                  </HStack>
-                }
-                options={{
-                  PUBLIC: {text: t('privacy.public.title')},
-                  PRIVATE: {text: t('privacy.private.title')},
-                }}
-                groupProps={{
-                  name: 'site-privacy',
-                  onChange: onSitePrivacyChanged,
-                  value: site.privacy,
-                  ml: '0',
-                }}
-              />
-            </HStack>
-          )}
-          <LocationDetail
-            label={t('geo.latitude.title')}
-            value={coords?.latitude.toFixed(6)}
-          />
-          <LocationDetail
-            label={t('geo.longitude.title')}
-            value={coords?.longitude.toFixed(6)}
-          />
-          <LocationDetail
-            label={t('geo.elevation.title')}
-            value={TEMP_ELEVATION}
-          />
-          {site && (
-            <>
-              <LocationDetail
-                label={t('site.dashboard.location_accuracy')}
-                value={TEMP_ACCURACY}
-              />
-              <LocationDetail
-                label={t('soil.bedrock')}
-                value={TEMP_NOT_FOUND}
-              />
-              <LocationDetail
-                label={t('site.dashboard.last_modified.label')}
-                value={t('site.dashboard.last_modified.value', {
-                  date: TEMP_MODIFIED_DATE,
-                  name: TEMP_MODIFIED_NAME,
-                })}
-              />
-            </>
-          )}
-          {project?.siteInstructions && (
-            <ProjectInstructionsButton project={project} />
-          )}
-        </Box>
-      </Accordion>
-      <Divider />
+          </HStack>
+        )}
+        {project?.siteInstructions && (
+          <ProjectInstructionsButton project={project} />
+        )}
+      </Box>
       <Column space="20px" padding="16px">
         <LocationPrediction
           label={t('soil.soil_id').toUpperCase()}
