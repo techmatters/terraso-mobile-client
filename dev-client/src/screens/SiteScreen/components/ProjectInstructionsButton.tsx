@@ -49,7 +49,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
         mt={2}
         pl={4}
         pr={4}
-        size="lg"
+        size="md"
         backgroundColor="primary.dark"
         shadow={5}
         onPress={onShowNote()}>
