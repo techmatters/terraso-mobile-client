@@ -30,6 +30,8 @@
     },
     "create": {
       "title": "Create Site",
+      "description": "Create a site here to save this location, collect data, and see more detailed reports.",
+      "create_label": "Create Site Here",
       "gps": "Use my current location (GPS)",
       "pin": "Use map pin",
       "manual": "Enter coordinates",
