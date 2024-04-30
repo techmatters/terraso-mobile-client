@@ -154,7 +154,7 @@ export const SiteScreen = ({siteId, coords}: Props) => {
         {!site && (
           <Box mt={5} alignItems="center">
             <Button w="60%" onPress={onCreate} leftIcon={<Icon name="add" />}>
-              {t('site.create.create_label').toUpperCase()}
+              {t('site.create.button_label').toUpperCase()}
             </Button>
             <Text variant="body1" mt={5}>
               {t('site.create.description')}
