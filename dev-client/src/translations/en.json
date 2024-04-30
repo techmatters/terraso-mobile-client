@@ -71,10 +71,6 @@
         "action_name": "Delete"
       },
       "location_accuracy": "Location Accuracy",
-      "last_modified": {
-        "label": "Last Modified",
-        "value": "{{date}} {{name}}"
-      },
       "default_title": "Location Information",
       "speed_dial": {
         "note_label": "NOTE",
