@@ -23,7 +23,8 @@ import {
   Suggestion,
   initMapSearch,
 } from 'terraso-mobile-client/screens/HomeScreen/utils/mapSearchTools';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Keyboard} from 'react-native';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {isValidCoordinates} from 'terraso-mobile-client/util';

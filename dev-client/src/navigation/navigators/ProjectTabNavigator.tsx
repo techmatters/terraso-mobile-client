@@ -24,7 +24,7 @@ import {
 } from 'terraso-mobile-client/navigation/constants';
 import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettingsScreen';
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
-import {Icon, IconName} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 

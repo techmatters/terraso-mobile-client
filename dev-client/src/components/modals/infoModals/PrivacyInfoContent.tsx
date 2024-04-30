@@ -17,7 +17,7 @@
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
-import {HorizontalIconButton} from 'terraso-mobile-client/components/Icons';
+import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/HorizontalIconButton';
 import {
   Column,
   Box,

@@ -39,7 +39,7 @@ import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGro
 import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   VStack,
   Box,

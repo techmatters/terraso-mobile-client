@@ -28,7 +28,7 @@ import {
   degreeToPercent,
   percentToDegree,
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
   Column,

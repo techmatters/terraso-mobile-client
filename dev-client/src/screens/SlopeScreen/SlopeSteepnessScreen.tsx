@@ -21,7 +21,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {LastModified} from 'terraso-mobile-client/components/LastModified';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {renderSteepness} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {
   ImageRadio,

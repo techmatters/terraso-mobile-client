@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,11 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  IconButton,
-  IconButtonProps,
-} from 'terraso-mobile-client/components/icons/IconButton';
+import {View} from 'react-native';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
-export const AppBarIconButton = (props: IconButtonProps) => (
-  <IconButton size="md" _icon={{color: 'primary.contrast'}} {...props} />
-);
+export const LocationIcon = () => {
+  return (
+    // eslint-disable-next-line react-native/no-inline-styles
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <Icon name="my-location" color="text.locationicon" size={14} />
+    </View>
+  );
+};

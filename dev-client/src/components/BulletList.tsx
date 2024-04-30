@@ -22,6 +22,14 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
+// FYI: Text like this fails to wrap on Android:
+//   <Text>
+//     <View>
+//      <Text> this text will not wrap </Text>
+//     </View>
+//   </Text>
+// This appears to be the case for containers like View, Box, Column, Row
+
 type Props<T> = {data: T[]; renderItem: (t: T) => React.ReactNode};
 export const BulletList = <T,>({data, renderItem}: Props<T>) => {
   const bulletMargin = 10;

@@ -16,11 +16,8 @@
  */
 
 import {Input, Modal, Button, useDisclose} from 'native-base';
-import {
-  Icon,
-  IconButton,
-  IconName,
-} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';

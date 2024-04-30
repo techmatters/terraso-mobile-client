@@ -15,15 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Linking} from 'react-native';
-import {Image} from 'native-base';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
+import {LinkNewWindowIcon} from 'terraso-mobile-client/components/icons/LinkNewWindowIcon';
+import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
+import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
 import {
-  LocationIcon,
-  LinkNewWindowIcon,
-} from 'terraso-mobile-client/components/Icons';
-import {
+  Box,
   Column,
   HStack,
   Heading,
@@ -32,6 +30,7 @@ import {
 
 export const LandPKSInfo = () => {
   const {t} = useTranslation();
+  const numberedListMargin = 2;
 
   return (
     <BottomSheetScrollView>
@@ -39,13 +38,9 @@ export const LandPKSInfo = () => {
         <Heading w="full" textAlign="center">
           {t('home.info.title')}
         </Heading>
-        <Image
-          source={require('terraso-mobile-client/assets/landpks_intro_image.png')}
-          w="100%"
-          h="25%"
-          resizeMode="contain"
-          alt={t('home.info.intro_image_alt')}
-        />
+        <Box width={157} height={128} alignSelf="center" mb={1}>
+          <InfoSVG />
+        </Box>
         <Text variant="body1">
           <Trans i18nKey="home.info.description">
             <Text bold>first</Text>
@@ -56,11 +51,11 @@ export const LandPKSInfo = () => {
         <Column>
           {[1, 2, 3].map(index => (
             <HStack key={index}>
-              <Text variant="body1" mr={2}>
-                {index + 1}
+              <Text variant="body1" mr={numberedListMargin}>
+                {index}
                 {'.'}
               </Text>
-              <Text variant="body1" mr={2}>
+              <Text variant="body1" mr={numberedListMargin * 2}>
                 <Trans
                   i18nKey={`home.info.list${index}`}
                   components={{icon: <LocationIcon />}}
@@ -73,15 +68,15 @@ export const LandPKSInfo = () => {
           <Trans
             i18nKey="home.info.description2"
             components={{
-              icon: <LinkNewWindowIcon />,
+              bold: <Text bold />,
+              icon: (
+                <LinkNewWindowIcon
+                  label={t('home.info.link_label')}
+                  url={t('home.info.link_url')}
+                />
+              ),
             }}>
             <Text bold>first</Text>
-            <Text
-              underline
-              onPress={() => Linking.openURL(t('home.info.link_url'))}
-              color="primary.main">
-              link_text
-            </Text>
           </Trans>
         </Text>
       </Column>

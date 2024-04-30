@@ -31,7 +31,7 @@ import {
 } from 'terraso-mobile-client/components/ImageRadio';
 import {useCallback, useMemo} from 'react';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {StyleSheet} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';

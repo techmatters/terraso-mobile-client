@@ -17,7 +17,7 @@
 
 import {Popover} from 'native-base';
 import {memo} from 'react';
-import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
+import {TooltipIconButton} from 'terraso-mobile-client/components/icons/TooltipIconButton';
 
 type TooltipProps = React.PropsWithChildren<{
   icon: string;

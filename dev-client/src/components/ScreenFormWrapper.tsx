@@ -23,7 +23,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {HorizontalIconButton} from 'terraso-mobile-client/components/Icons';
+import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/HorizontalIconButton';
 import {useTranslation} from 'react-i18next';
 import {HStack, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 

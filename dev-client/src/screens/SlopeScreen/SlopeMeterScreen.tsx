@@ -23,7 +23,7 @@ import {DeviceMotion} from 'expo-sensors';
 import {Button, Link} from 'native-base';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
 import {Linking} from 'react-native';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';

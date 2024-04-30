@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {ReactNode, useCallback, useState} from 'react';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Box, HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {

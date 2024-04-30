@@ -18,7 +18,7 @@ import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Card} from 'terraso-mobile-client/components/Card';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {formatDate} from 'terraso-mobile-client/util';
 import {

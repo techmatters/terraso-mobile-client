@@ -18,7 +18,8 @@
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Box,
   Column,

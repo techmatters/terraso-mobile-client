@@ -18,7 +18,7 @@
 import {Pressable} from 'react-native';
 import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
 type Props = {
   onPick: (photo: Photo) => void;

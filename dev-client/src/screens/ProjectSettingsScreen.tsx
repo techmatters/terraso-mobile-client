@@ -22,7 +22,7 @@ import {
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
 import {useTranslation} from 'react-i18next';
-import IconLink from 'terraso-mobile-client/components/IconLink';
+import IconLink from 'terraso-mobile-client/components/icons/IconLink';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   deleteProject,

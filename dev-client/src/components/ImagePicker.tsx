@@ -29,7 +29,7 @@ import {
 } from 'terraso-mobile-client/components/modals/Modal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Button} from 'native-base';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useTranslation} from 'react-i18next';
 import {Buffer} from '@craftzdog/react-native-buffer';
 import {decode} from 'jpeg-js';

@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 
 export const CardCloseButton = (
   props: Omit<React.ComponentProps<typeof IconButton>, 'name'>,
