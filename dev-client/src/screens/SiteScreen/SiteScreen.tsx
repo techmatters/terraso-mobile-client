@@ -76,6 +76,7 @@ const LocationPrediction = ({
   return (
     <Column
       backgroundColor="background.secondary"
+      borderRadius="4px"
       alignItems="flex-start"
       py="18px"
       pl="16px">
