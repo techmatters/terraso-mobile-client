@@ -83,7 +83,7 @@ export const SiteCard = ({
         <StaticMapView coords={site} style={styles.mapView} />
         <Box w="4" />
         {project && (
-          <Badge variant="chip" startIcon={<Icon name="people" />}>
+          <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
             {Object.keys(project.memberships).length}
           </Badge>
         )}
