@@ -1471,30 +1471,53 @@ exports[`renders correctly 1`] = `
                                           "flexDirection": "column",
                                         },
                                         {
-                                          "alignItems": "center",
-                                          "backgroundColor": "#028843",
+                                          "alignItems": "flex-start",
+                                          "backgroundColor": "#00344D",
+                                          "paddingLeft": 16,
                                           "paddingVertical": 18,
                                         },
                                       ]
                                     }
                                   >
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
+                                    <View
                                       style={
-                                        {
-                                          "color": "#FFFFFF",
-                                          "fontSize": 16,
-                                          "fontWeight": "bold",
-                                        }
+                                        [
+                                          {
+                                            "flexDirection": "row",
+                                          },
+                                          {
+                                            "alignItems": "center",
+                                          },
+                                        ]
                                       }
                                     >
-                                      SOIL ID
-                                    </Text>
+                                      <View
+                                        style={
+                                          {
+                                            "marginRight": 15,
+                                          }
+                                        }
+                                      >
+                                        < />
+                                      </View>
+                                      <Text
+                                        letterSpacing="0.15px"
+                                        lineHeight="24px"
+                                        style={
+                                          {
+                                            "color": "#93E39B",
+                                            "fontSize": 16,
+                                            "fontWeight": "bold",
+                                          }
+                                        }
+                                      >
+                                        SOIL ID
+                                      </Text>
+                                    </View>
                                     <View
                                       style={
                                         {
-                                          "height": 5,
+                                          "height": 15,
                                         }
                                       }
                                     />
@@ -1506,6 +1529,7 @@ exports[`renders correctly 1`] = `
                                           "color": "#FFFFFF",
                                           "fontSize": 14,
                                           "fontWeight": "400",
+                                          "marginBottom": 5,
                                         }
                                       }
                                     >
@@ -1516,7 +1540,7 @@ exports[`renders correctly 1`] = `
                                           }
                                         }
                                       >
-                                        Prediction
+                                        Top Match
                                         : 
                                       </Text>
                                       <Text
@@ -1533,6 +1557,7 @@ exports[`renders correctly 1`] = `
                                           "color": "#FFFFFF",
                                           "fontSize": 14,
                                           "fontWeight": "400",
+                                          "marginBottom": 25,
                                         }
                                       }
                                     >
@@ -1543,69 +1568,7 @@ exports[`renders correctly 1`] = `
                                           }
                                         }
                                       >
-                                        Confidence
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        80%
-                                      </Text>
-                                    </Text>
-                                  </View>
-                                  <View
-                                    style={
-                                      [
-                                        {
-                                          "flexDirection": "column",
-                                        },
-                                        {
-                                          "alignItems": "center",
-                                          "backgroundColor": "#028843",
-                                          "paddingVertical": 18,
-                                        },
-                                      ]
-                                    }
-                                  >
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#FFFFFF",
-                                          "fontSize": 16,
-                                          "fontWeight": "bold",
-                                        }
-                                      }
-                                    >
-                                      ECOLOGICAL SITE ID
-                                    </Text>
-                                    <View
-                                      style={
-                                        {
-                                          "height": 5,
-                                        }
-                                      }
-                                    />
-                                    <Text
-                                      letterSpacing="0.17px"
-                                      lineHeight="20px"
-                                      style={
-                                        {
-                                          "color": "#FFFFFF",
-                                          "fontSize": 14,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Prediction
+                                        Ecological Site Name
                                         : 
                                       </Text>
                                       <Text
@@ -1614,122 +1577,103 @@ exports[`renders correctly 1`] = `
                                         Loamy Upland
                                       </Text>
                                     </Text>
-                                    <Text
-                                      letterSpacing="0.17px"
-                                      lineHeight="20px"
-                                      style={
+                                    <View
+                                      accessibilityRole="button"
+                                      accessibilityState={
                                         {
-                                          "color": "#FFFFFF",
-                                          "fontSize": 14,
-                                          "fontWeight": "400",
+                                          "busy": undefined,
+                                          "checked": undefined,
+                                          "disabled": undefined,
+                                          "expanded": undefined,
+                                          "selected": undefined,
                                         }
                                       }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Confidence
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        80%
-                                      </Text>
-                                    </Text>
-                                  </View>
-                                  <View
-                                    style={
-                                      [
+                                      accessibilityValue={
                                         {
-                                          "flexDirection": "column",
-                                        },
+                                          "max": undefined,
+                                          "min": undefined,
+                                          "now": undefined,
+                                          "text": undefined,
+                                        }
+                                      }
+                                      accessible={true}
+                                      collapsable={false}
+                                      colorScheme="primary"
+                                      dataSet={{}}
+                                      focusable={true}
+                                      onBlur={[Function]}
+                                      onClick={[Function]}
+                                      onFocus={[Function]}
+                                      onResponderGrant={[Function]}
+                                      onResponderMove={[Function]}
+                                      onResponderRelease={[Function]}
+                                      onResponderTerminate={[Function]}
+                                      onResponderTerminationRequest={[Function]}
+                                      onStartShouldSetResponder={[Function]}
+                                      style={
                                         {
                                           "alignItems": "center",
                                           "backgroundColor": "#028843",
-                                          "paddingVertical": 18,
-                                        },
-                                      ]
-                                    }
-                                  >
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#FFFFFF",
-                                          "fontSize": 16,
-                                          "fontWeight": "bold",
+                                          "borderRadius": 4,
+                                          "flexDirection": "row",
+                                          "justifyContent": "center",
+                                          "paddingBottom": 6,
+                                          "paddingLeft": 16,
+                                          "paddingRight": 16,
+                                          "paddingTop": 6,
+                                          "width": "95%",
                                         }
                                       }
                                     >
-                                      LAND CAPABILITY CLASSIFICATION
-                                    </Text>
-                                    <View
-                                      style={
-                                        {
-                                          "height": 5,
-                                        }
-                                      }
-                                    />
-                                    <Text
-                                      letterSpacing="0.17px"
-                                      lineHeight="20px"
-                                      style={
-                                        {
-                                          "color": "#FFFFFF",
-                                          "fontSize": 14,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
+                                      <View
+                                        dataSet={{}}
                                         style={
                                           {
-                                            "fontWeight": "bold",
+                                            "alignItems": "center",
+                                            "flexDirection": "row",
                                           }
                                         }
+                                        test={true}
                                       >
-                                        Prediction
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        Class 1
-                                      </Text>
-                                    </Text>
-                                    <Text
-                                      letterSpacing="0.17px"
-                                      lineHeight="20px"
-                                      style={
-                                        {
-                                          "color": "#FFFFFF",
-                                          "fontSize": 14,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
+                                        <View
+                                          dataSet={{}}
+                                          style={{}}
+                                        >
+                                          <Text
+                                            dataSet={{}}
+                                            style={
+                                              {
+                                                "backgroundColor": undefined,
+                                                "color": "#fafafa",
+                                                "fontFamily": undefined,
+                                                "fontSize": 14,
+                                                "fontStyle": "normal",
+                                                "fontWeight": "500",
+                                                "letterSpacing": 0.4,
+                                                "lineHeight": 24,
+                                                "textDecorationLine": undefined,
+                                              }
+                                            }
+                                          >
+                                            EXPLORE THE DATA
+                                          </Text>
+                                        </View>
+                                        <View
+                                          dataSet={{}}
+                                          style={
+                                            {
+                                              "width": 6,
+                                            }
                                           }
-                                        }
-                                      >
-                                        Confidence
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        80%
-                                      </Text>
-                                    </Text>
+                                        />
+                                        <Icon
+                                          color="#fafafa"
+                                          name="chevron-right"
+                                          size={20}
+                                          style={{}}
+                                        />
+                                      </View>
+                                    </View>
                                   </View>
                                 </View>
                               </View>
