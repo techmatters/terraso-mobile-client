@@ -32,6 +32,7 @@ import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScree
 // import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 // import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
 
+import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {
@@ -229,8 +230,15 @@ export const SiteScreen = ({siteId, coords}: Props) => {
             />
           </HStack>
         )}
-        {project?.siteInstructions && (
-          <ProjectInstructionsButton project={project} />
+        {project && (
+          <HStack space={4} alignItems="baseline">
+            <Badge variant="chip" startIcon={<Icon name="people" />}>
+              1
+            </Badge>
+            {project?.siteInstructions && (
+              <ProjectInstructionsButton project={project} />
+            )}
+          </HStack>
         )}
       </Box>
       <Column space="20px" padding="16px">
