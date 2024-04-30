@@ -205,7 +205,7 @@ export const SiteScreen = ({siteId, coords}: Props) => {
         {project && (
           <HStack space={4} alignItems="baseline">
             <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
-              1
+              {Object.keys(project.memberships).length}
             </Badge>
             {project?.siteInstructions && (
               <ProjectInstructionsButton project={project} />
