@@ -82,7 +82,7 @@ export const SiteCard = ({
       <Row alignItems="center">
         <StaticMapView coords={site} style={styles.mapView} />
         <Box w="4" />
-        <Badge variant="chip" startIcon={<Icon name="people" />}>
+        <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
           1
         </Badge>
         <Box flexGrow={1} />

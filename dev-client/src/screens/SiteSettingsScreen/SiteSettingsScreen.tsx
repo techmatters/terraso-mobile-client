@@ -91,7 +91,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             size="container"
             alignItems="center"
             justifyContent="space-around">
-            <Icon name="people" />
+            <Icon name="people-alt" />
             <Spacer flexGrow={0} w="16px" />
             <Text>{t('site.dashboard.team_button')}</Text>
             <Spacer />
