@@ -27,10 +27,6 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScreen/components/ProjectInstructionsButton';
-// import {FormField} from 'terraso-mobile-client/components/form/FormField';
-// import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
-// import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
-// import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
 
 import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
@@ -173,33 +169,6 @@ export const SiteScreen = ({siteId, coords}: Props) => {
         )}
         {site && !project && (
           <HStack>
-            {/*
-            <FormField name="privacy">
-              <FormLabel>
-                {t('site.dashboard.privacy')}
-                <IconButton
-                  pt={0}
-                  pb={0}
-                  pl={2}
-                  size="md"
-                  name="info"
-                  onPress={onInfoPress}
-                  _icon={{color: 'primary'}}
-                />
-              </FormLabel>
-              <FormRadioGroup
-                values={['PUBLIC', 'PRIVATE']}
-                variant="oneLine"
-                value={site.privacy}
-                renderRadio={value => (
-                  <FormRadio key={value} value={value}>
-                    {t(`privacy.${value.toLowerCase()}.title`)}
-                  </FormRadio>
-                )}
-              />
-            </FormField>
-              */}
-
             <RadioBlock
               label={
                 <HStack>
