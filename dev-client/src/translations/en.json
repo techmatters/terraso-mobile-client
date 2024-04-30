@@ -19,7 +19,7 @@
     "last_updated": "Last Modified: {{date}} by {{name}}",
     "progress": "Progress: {{progress}}",
     "members": "{{members}} Members",
-    "more_info": "More info",
+    "more_info": "Learn more",
     "soil_id_prediction": "Soil ID prediction",
     "ecological_site_prediction": "Ecological site prediction",
     "annual_precip_avg": "Annual precipitation avg",
