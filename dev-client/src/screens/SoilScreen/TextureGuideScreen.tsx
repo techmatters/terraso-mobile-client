@@ -26,7 +26,7 @@ import {
   SoilTexture,
   updateDepthDependentSoilData,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ResizeMode, Video} from 'expo-av';

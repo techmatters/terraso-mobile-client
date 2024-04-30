@@ -17,7 +17,7 @@
 
 import Mapbox from '@rnmapbox/maps';
 import {StyleProp, ViewStyle} from 'react-native';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {Position} from '@rnmapbox/maps/lib/typescript/src/types/Position';
 import {useMemo} from 'react';

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,11 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  IconButton,
-  IconButtonProps,
-} from 'terraso-mobile-client/components/icons/IconButton';
+import React, {forwardRef} from 'react';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 
-export const AppBarIconButton = (props: IconButtonProps) => (
-  <IconButton size="md" _icon={{color: 'primary.contrast'}} {...props} />
+type TooltipIconButtonProps = {
+  icon?: IconName;
+  onPress: () => void;
+};
+const tooltipIconProps = {color: 'action.active_subtle', size: 'md'};
+export const TooltipIconButton = forwardRef(
+  ({icon: name = 'info', onPress}: TooltipIconButtonProps, ref) => (
+    <IconButton
+      ref={ref}
+      _icon={tooltipIconProps}
+      ml="6px"
+      p="0"
+      name={name}
+      onPress={onPress}
+    />
+  ),
 );

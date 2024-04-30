@@ -33,7 +33,7 @@ import {
   SurfaceCracks,
   surfaceCracks,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useCallback} from 'react';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';

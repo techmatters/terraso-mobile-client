@@ -18,7 +18,7 @@
 import {Fab, Input, Radio, TextArea} from 'native-base';
 import {Formik, FormikProps} from 'formik';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useTranslation} from 'react-i18next';
 import ErrorMessage from 'terraso-mobile-client/screens/CreateProjectScreen/components/ErrorMessage';
 import * as yup from 'yup';

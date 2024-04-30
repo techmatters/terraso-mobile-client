@@ -16,7 +16,7 @@
  */
 
 import {useState, useCallback} from 'react';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SpeedDial = ({children}: React.PropsWithChildren<{}>) => {

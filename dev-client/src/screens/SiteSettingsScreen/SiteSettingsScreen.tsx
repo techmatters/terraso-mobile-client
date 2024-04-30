@@ -29,7 +29,7 @@ import {
 } from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useTranslation} from 'react-i18next';
 import {IconLabel} from 'terraso-mobile-client/screens/SiteSettingsScreen/components/IconLabel';
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';

@@ -28,7 +28,7 @@ import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen
 import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {SpeedDial} from 'terraso-mobile-client/navigation/components/SpeedDial';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const tabDefinitions = {
