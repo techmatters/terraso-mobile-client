@@ -55,11 +55,7 @@ export const projectValidationFields = (t: TFunction) => ({
         max: PROJECT_NAME_MAX_LENGTH,
       }),
     )
-    .required(
-      t('projects.form.name_min_length_error', {
-        min: PROJECT_NAME_MIN_LENGTH,
-      }),
-    ),
+    .required(t('projects.form.required')),
   description: yup.string().max(
     PROJECT_DESCRIPTION_MAX_LENGTH,
     t('projects.form.description_max_length_error', {

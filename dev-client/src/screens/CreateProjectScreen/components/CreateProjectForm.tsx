@@ -52,14 +52,26 @@ export const CreateProjectForm = ({onInfoPress}: Props) => {
         name: '',
         description: '',
         privacy: 'PRIVATE',
+      }}
+      validateOnMount={true}
+      initialTouched={{
+        name: true,
       }}>
-      {({isSubmitting, handleSubmit, handleChange, handleBlur, values}) => (
+      {({
+        isSubmitting,
+        handleSubmit,
+        handleChange,
+        handleBlur,
+        isValid,
+        values,
+      }) => (
         <FormContainer
           isSubmitting={isSubmitting}
           handleSubmit={handleSubmit}
           handleChange={handleChange}
           handleBlur={handleBlur}
           onInfoPress={onInfoPress}
+          isValid={isValid}
           privacy={values.privacy}
         />
       )}
@@ -75,9 +87,10 @@ const FormContainer = React.memo(
     handleBlur,
     onInfoPress,
     privacy,
+    isValid,
   }: Pick<
     FormikProps<ProjectFormValues>,
-    'isSubmitting' | 'handleSubmit' | 'handleChange' | 'handleBlur'
+    'isSubmitting' | 'handleSubmit' | 'handleChange' | 'handleBlur' | 'isValid'
   > &
     Props &
     Pick<ProjectFormValues, 'privacy'>) => {
@@ -98,7 +111,7 @@ const FormContainer = React.memo(
         <Box position="absolute" bottom={8} right={3} p={3}>
           <Button
             onPress={handleSubmit}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting || !isValid} //TODO-cknipe: Comment in PR: is this what was intended with isSubmitting?
             shadow={5}
             size={'lg'}
             _text={{textTransform: 'uppercase'}}>
