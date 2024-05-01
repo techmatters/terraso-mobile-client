@@ -25,7 +25,8 @@ import {
 } from 'terraso-mobile-client/navigation/constants';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {updateProject} from 'terraso-client-shared/project/projectSlice';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useCallback, useMemo} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'react-native';

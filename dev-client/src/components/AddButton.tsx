@@ -16,7 +16,7 @@
  */
 
 import {Button} from 'native-base';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
 type Props = {
   text: string;

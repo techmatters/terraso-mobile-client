@@ -17,7 +17,7 @@
 
 import {Button} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useCallback} from 'react';
 import {Project} from 'terraso-client-shared/project/projectSlice';
@@ -50,7 +50,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
         pl={4}
         pr={4}
         size="md"
-        backgroundColor="primary.dark"
+        backgroundColor="primary.main"
         shadow={5}
         onPress={onShowNote()}>
         <HStack>

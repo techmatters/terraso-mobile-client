@@ -20,7 +20,7 @@ import {useCallback} from 'react';
 import {Trans, useTranslation} from 'react-i18next';
 import {Image, ScrollView, StyleSheet} from 'react-native';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
 import {
   Box,

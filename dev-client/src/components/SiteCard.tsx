@@ -21,7 +21,8 @@ import {Site} from 'terraso-client-shared/site/siteSlice';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {

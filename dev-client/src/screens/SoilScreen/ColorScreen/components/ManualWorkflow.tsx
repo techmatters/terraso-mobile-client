@@ -35,7 +35,7 @@ import {
   ColorValue,
   ColorChroma,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useCallback, useMemo, useState} from 'react';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
