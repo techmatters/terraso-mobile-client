@@ -16,7 +16,7 @@
  */
 
 import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
 type Props = {
   count: number;
