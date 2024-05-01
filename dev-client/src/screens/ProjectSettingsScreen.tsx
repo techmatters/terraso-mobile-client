@@ -74,12 +74,7 @@ export function ProjectSettingsScreen({
           name={name}
           description={description}
           measurementUnits={measurementUnits}
-          submitProps={{
-            right: 0,
-            bottom: 0,
-            label: t('general.save'),
-            display: userRole === 'MANAGER' ? 'flex' : 'none',
-          }}
+          userRole={userRole}
         />
         <VStack space={1}>
           <IconLink

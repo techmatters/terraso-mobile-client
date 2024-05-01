@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Fab, Input, Radio, TextArea} from 'native-base';
+import {Button, Input, Radio, TextArea} from 'native-base';
 import {Formik, FormikProps} from 'formik';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {IconButton} from 'terraso-mobile-client/components/Icons';
@@ -32,11 +32,15 @@ import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  ProjectMembershipProjectRoleChoices,
+  ProjectUpdateMutationInput,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   HStack,
   VStack,
   Heading,
+  Box,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
 
@@ -115,7 +119,7 @@ type FormValues = Omit<ProjectUpdateMutationInput, 'id'>;
 
 type FormProps = FormValues & {
   onSubmit: (values: FormValues) => void;
-  submitProps?: Omit<React.ComponentProps<typeof Fab>, 'onPress'>;
+  userRole: ProjectMembershipProjectRoleChoices | null;
 };
 
 export const EditProjectForm = ({
@@ -123,7 +127,7 @@ export const EditProjectForm = ({
   name,
   description,
   measurementUnits,
-  submitProps,
+  userRole,
 }: Omit<FormProps, 'privacy'>) => {
   const {t} = useTranslation();
 
@@ -131,6 +135,7 @@ export const EditProjectForm = ({
     <Formik<FormValues>
       validationSchema={editProjectValidationSchema(t)}
       initialValues={{name, description, measurementUnits}}
+      validateOnMount={true}
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
         <>
@@ -145,15 +150,18 @@ export const EditProjectForm = ({
               </Radio>
             )}
           />
-          <Fab
-            onPress={() => handleSubmit()}
-            disabled={!isValid || isSubmitting}
-            label={t('general.submit')}
-            _text={{
-              textTransform: 'uppercase',
-            }}
-            {...submitProps}
-          />
+
+          <Box position="absolute" bottom={0} right={0}>
+            <Button
+              onPress={handleSubmit}
+              isDisabled={isSubmitting || !isValid}
+              shadow={5}
+              size={'lg'}
+              display={userRole === 'MANAGER' ? 'flex' : 'none'}
+              _text={{textTransform: 'uppercase'}}>
+              {t('general.save_fab')}
+            </Button>
+          </Box>
         </>
       )}
     </Formik>
