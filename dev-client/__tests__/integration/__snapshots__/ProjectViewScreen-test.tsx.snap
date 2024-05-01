@@ -1087,7 +1087,7 @@ exports[`renders correctly 1`] = `
                           </RCTScrollView>
                         </View>
                       </View>
-                      <RNCViewPager
+                      <LEGACY_RNCViewPager
                         collapsable={false}
                         initialPage={0}
                         keyboardDismissMode="on-drag"
@@ -1108,6 +1108,7 @@ exports[`renders correctly 1`] = `
                             "flex": 1,
                           }
                         }
+                        useLegacy={true}
                       >
                         <View
                           collapsable={false}
@@ -2131,7 +2132,7 @@ exports[`renders correctly 1`] = `
                             }
                           />
                         </View>
-                      </RNCViewPager>
+                      </LEGACY_RNCViewPager>
                     </View>
                   </View>
                 </View>
