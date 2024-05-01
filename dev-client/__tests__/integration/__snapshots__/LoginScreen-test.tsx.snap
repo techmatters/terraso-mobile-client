@@ -1,0 +1,354 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    collapsable={false}
+    pointerEvents="box-none"
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "flexDirection": "column",
+          },
+          {
+            "alignItems": "center",
+            "backgroundColor": "#028843",
+            "height": "100%",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          {
+            "flexGrow": 2,
+          }
+        }
+      />
+      <View
+        style={
+          [
+            {
+              "flexDirection": "column",
+            },
+            {
+              "alignItems": "center",
+              "justifyContent": "flex-end",
+            },
+          ]
+        }
+      >
+        <Text
+          lineHeight="56px"
+          style={
+            {
+              "color": "#FFFFFF",
+              "fontSize": 40,
+              "fontWeight": "400",
+            }
+          }
+        >
+          LandPKS
+        </Text>
+        <View
+          style={
+            {
+              "height": 28,
+            }
+          }
+        />
+        <Text
+          lineHeight="32px"
+          style={
+            {
+              "color": "#FFFFFF",
+              "fontSize": 24,
+              "fontWeight": "400",
+              "paddingLeft": 40,
+              "paddingRight": 40,
+              "textAlign": "center",
+            }
+          }
+        >
+          Discover the potential of your land
+        </Text>
+        <View
+          style={
+            {
+              "height": 72,
+            }
+          }
+        />
+        <View
+          dataSet={{}}
+          style={
+            {
+              "flexDirection": "column",
+            }
+          }
+        >
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            colorScheme="primary"
+            dataSet={{}}
+            focusable={true}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "alignItems": "center",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": 4,
+                "flexDirection": "row",
+                "justifyContent": "center",
+                "paddingBottom": 8,
+                "paddingLeft": 22,
+                "paddingRight": 22,
+                "paddingTop": 8,
+              }
+            }
+          >
+            <View
+              dataSet={{}}
+              style={
+                {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                }
+              }
+              test={true}
+            >
+              <
+                color="text.50"
+                size="md"
+              />
+              <View
+                dataSet={{}}
+                style={
+                  {
+                    "width": 6,
+                  }
+                }
+              />
+              <View
+                dataSet={{}}
+                style={{}}
+              >
+                <Text
+                  dataSet={{}}
+                  style={
+                    {
+                      "backgroundColor": undefined,
+                      "color": "#028843",
+                      "fontFamily": undefined,
+                      "fontSize": 15,
+                      "fontStyle": "normal",
+                      "fontWeight": "500",
+                      "letterSpacing": 0.46,
+                      "lineHeight": 26,
+                      "textDecorationLine": undefined,
+                    }
+                  }
+                >
+                  SIGN IN WITH GOOGLE
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            dataSet={{}}
+            style={
+              {
+                "height": 20,
+              }
+            }
+          />
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            colorScheme="primary"
+            dataSet={{}}
+            focusable={true}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "alignItems": "center",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": 4,
+                "flexDirection": "row",
+                "justifyContent": "center",
+                "paddingBottom": 8,
+                "paddingLeft": 22,
+                "paddingRight": 22,
+                "paddingTop": 8,
+              }
+            }
+          >
+            <View
+              dataSet={{}}
+              style={
+                {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                }
+              }
+              test={true}
+            >
+              <
+                color="text.50"
+                size="md"
+              />
+              <View
+                dataSet={{}}
+                style={
+                  {
+                    "width": 6,
+                  }
+                }
+              />
+              <View
+                dataSet={{}}
+                style={{}}
+              >
+                <Text
+                  dataSet={{}}
+                  style={
+                    {
+                      "backgroundColor": undefined,
+                      "color": "#028843",
+                      "fontFamily": undefined,
+                      "fontSize": 15,
+                      "fontStyle": "normal",
+                      "fontWeight": "500",
+                      "letterSpacing": 0.46,
+                      "lineHeight": 26,
+                      "textDecorationLine": undefined,
+                    }
+                  }
+                >
+                  SIGN IN WITH MICROSOFT
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View
+        style={
+          {
+            "flexGrow": 3,
+          }
+        }
+      />
+      <View
+        style={
+          [
+            {
+              "flexDirection": "column",
+            },
+            {
+              "alignItems": "center",
+              "justifyContent": "flex-end",
+              "paddingBottom": 60,
+            },
+          ]
+        }
+      >
+        <
+          height="39px"
+          width="122px"
+        />
+        <View
+          style={
+            {
+              "height": 12,
+            }
+          }
+        />
+        <Text
+          letterSpacing="0.4px"
+          lineHeight="20px"
+          style={
+            {
+              "color": "#FFFFFF",
+              "fontSize": 12,
+              "fontWeight": "400",
+            }
+          }
+        >
+          LandPKS is a Terraso soil science tool.
+        </Text>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

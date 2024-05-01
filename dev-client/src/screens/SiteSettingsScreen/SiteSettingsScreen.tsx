@@ -21,7 +21,6 @@ import {
   Input,
   Button,
   // useTheme,
-  FormControl,
   // Row,
   // Text,
   // Spacer,
@@ -29,16 +28,14 @@ import {
 } from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useTranslation} from 'react-i18next';
-import {IconLabel} from 'terraso-mobile-client/screens/SiteSettingsScreen/components/IconLabel';
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 
 type Props = {
   siteId: string;
@@ -72,11 +69,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
       BottomNavigation={null}
       AppBar={<AppBar title={site.name} />}>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
-        <Input
-          value={name}
-          onChangeText={setName}
-          leftElement={<Icon ml="12px" name="edit" />}
-        />
+        <Input value={name} onChangeText={setName} />
         {/*
           TODO: Uncomment button after feature is written.
         <Pressable
@@ -99,25 +92,6 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           </Row>
         </Pressable>
           */}
-        <FormControl>
-          <FormControl.Label>
-            <IconLabel
-              label={t('site.dashboard.transfer_label')}
-              icon={<Icon name="info" />}
-            />
-          </FormControl.Label>
-          <ProjectSelect
-            projectId={site.projectId ?? null}
-            setProjectId={_ => {}}
-          />
-        </FormControl>
-        <Button
-          pl={0}
-          variant="link"
-          startIcon={<Icon name="content-copy" />}
-          endIcon={<Icon name="info" />}>
-          {t('site.dashboard.copy_download_link_button').toUpperCase()}
-        </Button>
         {/*
           TODO: Uncomment button after archiving code is done.
         <FormControl alignItems="flex-start">

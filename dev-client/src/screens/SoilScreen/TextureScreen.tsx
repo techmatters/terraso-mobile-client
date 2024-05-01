@@ -27,7 +27,7 @@ import {
   textures,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries, entries} from 'terraso-client-shared/utils';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
   radioImage,

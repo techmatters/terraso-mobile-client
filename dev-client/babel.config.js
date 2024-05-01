@@ -2,7 +2,7 @@ module.exports = api => {
   api.cache(true);
 
   return {
-    presets: ['module:@react-native/babel-preset'],
+    presets: ['babel-preset-expo', '@babel/preset-typescript'],
     plugins: [
       [
         'babel-plugin-root-import',

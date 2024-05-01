@@ -16,7 +16,7 @@
  */
 
 import {Image} from 'native-base';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {formatName} from 'terraso-mobile-client/util';
 import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';

@@ -18,7 +18,8 @@
 import {Button, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {useMemo, useCallback} from 'react';

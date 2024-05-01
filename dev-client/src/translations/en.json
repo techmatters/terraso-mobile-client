@@ -3,11 +3,12 @@
     "info": {
       "title": "Soil Science in Your Hands",
       "intro_image_alt": "",
-      "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land to gain insights for grazing and farming options, carbon sequestration, and more.\n\n<2>There are three ways to use the map:</2>",
+      "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.\n\n<2>There are three ways to use the map:</2>",
       "list1": "Tap the map to drop a pin and get more information about that location.",
-      "list2": "Tap the location icon <icon /> to find your current location",
-      "list3": "Enter coordinates, address, or search term in the search bar",
-      "description2": "<0>Find more information and guides</0> in the side menu to the left or at <1>landpotential.org</1> <icon />.",
+      "list2": "Tap the location icon <icon/> to find your current GPS location.",
+      "list3": "Enter coordinates, address, or search term in the search bar.",
+      "description2": "<bold>Find more information and guides</bold> at:\n<icon />",
+      "link_label": "landpotential.org",
       "link_url": "https://landpotential.org/"
     }
   },
@@ -25,8 +26,10 @@
     "annual_precip_avg": "Annual precipitation avg",
     "elevation": "Elevation",
     "empty": {
-      "info": "You have not created any sites. Create a site with the button above or by finding the location on the map.\n\nA site allows you to collect and save data, learn more about your land and its potential, and share with others.\n\n<0>Learn more about using LandPKS</0> <icon />.",
-      "link_url": "https://landpotential.org/"
+      "info": "You don’t have any sites yet. A site lets you collect and save data, learn more about your land and its potential, and share with others.\n\n<bold>Use the map to create a site.</bold> There are three ways to use the map to find a location for a site:\n",
+      "bullet_1": "Tap the map to drop a pin and get more information about that location.",
+      "bullet_2": "Tap the location icon <icon/> to find your current GPS location.",
+      "bullet_3": "Enter coordinates, address, or other search term in the search bar."
     },
     "create": {
       "title": "Create Site",

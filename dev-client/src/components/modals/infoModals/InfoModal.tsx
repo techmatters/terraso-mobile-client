@@ -16,7 +16,7 @@
  */
 
 import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
-import {TooltipIconButton} from 'terraso-mobile-client/components/Icons';
+import {TooltipIconButton} from 'terraso-mobile-client/components/icons/TooltipIconButton';
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {Header: React.ReactNode};

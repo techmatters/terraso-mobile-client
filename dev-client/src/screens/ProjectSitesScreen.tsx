@@ -25,11 +25,8 @@ import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import {useCallback, useMemo} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {
-  Icon,
-  IconButton,
-  IconName,
-} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {
   Site,

@@ -34,7 +34,7 @@ import {
   Modal,
   ModalHandle,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
   Heading,
