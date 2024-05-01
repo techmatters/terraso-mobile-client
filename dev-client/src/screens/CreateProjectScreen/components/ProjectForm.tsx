@@ -118,7 +118,7 @@ type FormProps = FormValues & {
   submitProps?: Omit<React.ComponentProps<typeof Fab>, 'onPress'>;
 };
 
-export const EditForm = ({
+export const EditProjectForm = ({
   onSubmit,
   name,
   description,
@@ -160,7 +160,7 @@ export const EditForm = ({
   );
 };
 
-export default function Form({
+export default function ProjectForm({
   editForm = false,
   onInfoPress,
   handleChange,

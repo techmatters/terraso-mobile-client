@@ -29,7 +29,7 @@ import {
   updateProject,
 } from 'terraso-client-shared/project/projectSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {EditForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/Form';
+import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
@@ -69,7 +69,7 @@ export function ProjectSettingsScreen({
   return (
     <ScrollView>
       <VStack px={2} py={4} space={2} m={3} pb="50px">
-        <EditForm
+        <EditProjectForm
           onSubmit={onSubmit}
           name={name}
           description={description}

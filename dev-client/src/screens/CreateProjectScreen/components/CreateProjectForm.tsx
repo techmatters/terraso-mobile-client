@@ -16,10 +16,10 @@
  */
 
 import {Button, KeyboardAvoidingView, ScrollView} from 'native-base';
-import Form, {
+import ProjectForm, {
   ProjectFormValues,
   projectValidationSchema,
-} from 'terraso-mobile-client/screens/CreateProjectScreen/components/Form';
+} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
 import {addProject} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -100,7 +100,7 @@ const FormContainer = React.memo(
       <KeyboardAvoidingView flex={1}>
         <ScrollView bg="background.default">
           <Box pt="20%" mx={5}>
-            <Form
+            <ProjectForm
               onInfoPress={onInfoPress}
               handleChange={handleChange}
               handleBlur={handleBlur}
