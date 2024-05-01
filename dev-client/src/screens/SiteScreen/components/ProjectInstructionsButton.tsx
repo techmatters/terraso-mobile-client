@@ -50,7 +50,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
         pl={4}
         pr={4}
         size="md"
-        backgroundColor="primary.dark"
+        backgroundColor="primary.main"
         shadow={5}
         onPress={onShowNote()}>
         <HStack>
