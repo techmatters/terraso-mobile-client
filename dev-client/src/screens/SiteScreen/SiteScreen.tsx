@@ -77,6 +77,7 @@ const LocationPrediction = ({
   return (
     <Column
       backgroundColor="background.secondary"
+      borderRadius="4px"
       alignItems="flex-start"
       py="18px"
       pl="16px">
@@ -89,11 +90,11 @@ const LocationPrediction = ({
         </Text>
       </Row>
       <Box h="15px" />
-      <Text variant="body2" color="primary.contrast" mb="5px">
+      <Text variant="body1" color="primary.contrast" mb="5px">
         <Text bold>{t('soil.top_match')}: </Text>
         <Text>{soilName}</Text>
       </Text>
-      <Text variant="body2" color="primary.contrast" mb="25px">
+      <Text variant="body1" color="primary.contrast" mb="25px">
         <Text bold>{t('soil.ecological_site_name')}: </Text>
         <Text>{ecologicalSiteName}</Text>
       </Text>
