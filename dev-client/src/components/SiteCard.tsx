@@ -30,8 +30,8 @@ import {
   Row,
   Heading,
   Text,
-  Badge,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 
 const TEMP_MODIFIED_DATE = '8/15/23';
 const TEMP_MODIFIED_NAME = 'Sample Sam';
@@ -84,9 +84,7 @@ export const SiteCard = ({
         <StaticMapView coords={site} style={styles.mapView} />
         <Box w="4" />
         {project && (
-          <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
-            {Object.keys(project.memberships).length}
-          </Badge>
+          <PeopleBadge count={Object.keys(project.memberships).length} />
         )}
         <Box flexGrow={1} />
         {onShowSiteOnMap && (

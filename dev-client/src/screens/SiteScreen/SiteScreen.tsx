@@ -41,6 +41,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
+import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 
 const TEMP_ELEVATION = '1900 ft';
 const TEMP_SOIL_ID_VALUE = 'Clifton';
@@ -206,9 +207,7 @@ export const SiteScreen = ({siteId, coords}: Props) => {
         )}
         {project && (
           <HStack space={4} alignItems="baseline">
-            <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
-              {Object.keys(project.memberships).length}
-            </Badge>
+            <PeopleBadge count={Object.keys(project.memberships).length} />
             {project?.siteInstructions && (
               <ProjectInstructionsButton project={project} />
             )}
