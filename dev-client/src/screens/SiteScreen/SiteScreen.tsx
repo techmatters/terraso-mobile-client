@@ -28,7 +28,6 @@ import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScreen/components/ProjectInstructionsButton';
 
-import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
