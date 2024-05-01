@@ -19,16 +19,16 @@ import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {render} from '@testing/utils';
 
 test('renders correctly', () => {
-  expect(
-    render(<LoginScreen />, {
-      initialState: {
-        account: {
-          currentUser: {
-            data: null,
-            fetching: false,
-          },
-        } as any,
-      },
-    }).toJSON(),
-  ).toMatchSnapshot();
+  const screen = render(<LoginScreen />, {
+    initialState: {
+      account: {
+        currentUser: {
+          data: null,
+          fetching: false,
+        },
+      } as any,
+    },
+  }).toJSON();
+
+  expect(screen).toMatchSnapshot();
 });
