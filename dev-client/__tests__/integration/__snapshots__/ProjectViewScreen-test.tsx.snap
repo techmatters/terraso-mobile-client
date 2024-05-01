@@ -1,0 +1,2632 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    collapsable={false}
+    pointerEvents="box-none"
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "flex": 1,
+          },
+          undefined,
+        ]
+      }
+    >
+      <RNSScreenStack
+        style={
+          {
+            "flex": 1,
+          }
+        }
+      >
+        <RNSScreen
+          collapsable={false}
+          gestureResponseDistance={
+            {
+              "bottom": -1,
+              "end": -1,
+              "start": -1,
+              "top": -1,
+            }
+          }
+          nativeBackButtonDismissalEnabled={false}
+          onAppear={[Function]}
+          onDisappear={[Function]}
+          onDismissed={[Function]}
+          onGestureCancel={[Function]}
+          onHeaderBackButtonClicked={[Function]}
+          onNativeDismissCancelled={[Function]}
+          onTransitionProgress={[Function]}
+          onWillDisappear={[Function]}
+          replaceAnimation="push"
+          sheetAllowedDetents="large"
+          sheetCornerRadius={-1}
+          sheetExpandsWhenScrolledToEdge={true}
+          sheetGrabberVisible={false}
+          sheetLargestUndimmedDetent="all"
+          stackPresentation="push"
+          style={
+            {
+              "bottom": 0,
+              "left": 0,
+              "position": "absolute",
+              "right": 0,
+              "top": 0,
+            }
+          }
+          swipeDirection="horizontal"
+        >
+          <View
+            accessibilityElementsHidden={false}
+            importantForAccessibility="auto"
+            style={
+              {
+                "flex": 1,
+                "flexDirection": "column-reverse",
+              }
+            }
+          >
+            <View
+              collapsable={false}
+              style={
+                [
+                  {
+                    "flex": 1,
+                  },
+                  {
+                    "backgroundColor": "rgb(242, 242, 242)",
+                  },
+                  undefined,
+                ]
+              }
+            >
+              <RNCSafeAreaView
+                edges={
+                  {
+                    "bottom": "additive",
+                    "left": "additive",
+                    "right": "additive",
+                    "top": "additive",
+                  }
+                }
+                style={
+                  [
+                    {
+                      "flex": 1,
+                    },
+                    {
+                      "backgroundColor": "#00582B",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    [
+                      {
+                        "flexDirection": "column",
+                      },
+                      {
+                        "backgroundColor": "#FFFFFF",
+                        "flex": 1,
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    onLayout={[Function]}
+                  >
+                    <View
+                      style={
+                        [
+                          {
+                            "flexDirection": "column",
+                          },
+                          {
+                            "backgroundColor": "#00582B",
+                            "paddingHorizontal": 8,
+                          },
+                        ]
+                      }
+                    >
+                      <View
+                        style={
+                          [
+                            {
+                              "flexDirection": "row",
+                            },
+                            {
+                              "minHeight": 56,
+                              "paddingVertical": 4,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            [
+                              {
+                                "flexDirection": "row",
+                              },
+                              {
+                                "alignItems": "center",
+                                "columnGap": 24,
+                                "flex": 1,
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            accessibilityRole="button"
+                            accessibilityState={
+                              {
+                                "busy": undefined,
+                                "checked": undefined,
+                                "disabled": undefined,
+                                "expanded": undefined,
+                                "selected": undefined,
+                              }
+                            }
+                            accessibilityValue={
+                              {
+                                "max": undefined,
+                                "min": undefined,
+                                "now": undefined,
+                                "text": undefined,
+                              }
+                            }
+                            accessible={true}
+                            collapsable={false}
+                            colorScheme="primary"
+                            dataSet={{}}
+                            focusable={true}
+                            onBlur={[Function]}
+                            onClick={[Function]}
+                            onFocus={[Function]}
+                            onResponderGrant={[Function]}
+                            onResponderMove={[Function]}
+                            onResponderRelease={[Function]}
+                            onResponderTerminate={[Function]}
+                            onResponderTerminationRequest={[Function]}
+                            onStartShouldSetResponder={[Function]}
+                            style={
+                              {
+                                "alignItems": "center",
+                                "borderRadius": 4,
+                                "flexDirection": "row",
+                                "justifyContent": "center",
+                                "paddingBottom": 12,
+                                "paddingLeft": 12,
+                                "paddingRight": 12,
+                                "paddingTop": 12,
+                              }
+                            }
+                          >
+                            <Icon
+                              color="#FFFFFF"
+                              name="arrow-back"
+                              size={24}
+                              style={{}}
+                            />
+                          </View>
+                          <Text
+                            lineHeight="32px"
+                            style={
+                              {
+                                "color": "#FFFFFF",
+                                "fontSize": 20,
+                                "fontWeight": "500",
+                              }
+                            }
+                          >
+                            1
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                  <View
+                    style={
+                      {
+                        "flex": 1,
+                      }
+                    }
+                  >
+                    <View
+                      onLayout={[Function]}
+                      style={
+                        [
+                          {
+                            "flex": 1,
+                            "overflow": "hidden",
+                          },
+                          undefined,
+                        ]
+                      }
+                    >
+                      <View
+                        collapsable={false}
+                        onLayout={[Function]}
+                        style={
+                          {
+                            "backgroundColor": "#EEEEEE",
+                            "elevation": 4,
+                            "shadowColor": "black",
+                            "shadowOffset": {
+                              "height": 0.5,
+                              "width": 0,
+                            },
+                            "shadowOpacity": 0.1,
+                            "shadowRadius": 0.5,
+                            "zIndex": 1,
+                          }
+                        }
+                      >
+                        <View
+                          collapsable={false}
+                          pointerEvents="none"
+                          style={
+                            {
+                              "bottom": 0,
+                              "left": 0,
+                              "position": "absolute",
+                              "right": 0,
+                              "top": 0,
+                              "transform": [
+                                {
+                                  "translateX": -0,
+                                },
+                              ],
+                              "width": "120%",
+                            }
+                          }
+                        >
+                          <View
+                            collapsable={false}
+                            style={
+                              {
+                                "backgroundColor": "#C05621",
+                                "bottom": 0,
+                                "height": "100%",
+                                "left": "0%",
+                                "opacity": 0,
+                                "position": "absolute",
+                                "right": 0,
+                                "transform": [
+                                  {
+                                    "scaleX": 0,
+                                  },
+                                  {
+                                    "translateX": 0.5,
+                                  },
+                                ],
+                                "width": 1,
+                              }
+                            }
+                          />
+                        </View>
+                        <View
+                          style={
+                            {
+                              "overflow": "scroll",
+                            }
+                          }
+                        >
+                          <RCTScrollView
+                            accessibilityRole="tablist"
+                            alwaysBounceHorizontal={false}
+                            automaticallyAdjustContentInsets={false}
+                            collapsable={false}
+                            contentContainerStyle={
+                              [
+                                {
+                                  "flexDirection": "row",
+                                  "flexWrap": "nowrap",
+                                },
+                                {
+                                  "width": "120%",
+                                },
+                                undefined,
+                              ]
+                            }
+                            data={
+                              [
+                                {
+                                  "key": "Inputs-stable-nanoid-id",
+                                  "name": "Inputs",
+                                  "params": {
+                                    "projectId": "1",
+                                  },
+                                },
+                                {
+                                  "key": "Sites-stable-nanoid-id",
+                                  "name": "Sites",
+                                  "params": {
+                                    "projectId": "1",
+                                  },
+                                },
+                                {
+                                  "key": "Team-stable-nanoid-id",
+                                  "name": "Team",
+                                  "params": {
+                                    "projectId": "1",
+                                  },
+                                },
+                              ]
+                            }
+                            getItem={[Function]}
+                            getItemCount={[Function]}
+                            horizontal={true}
+                            initialNumToRender={10}
+                            keyExtractor={[Function]}
+                            keyboardShouldPersistTaps="handled"
+                            onContentSizeChange={[Function]}
+                            onLayout={[Function]}
+                            onMomentumScrollBegin={[Function]}
+                            onMomentumScrollEnd={[Function]}
+                            onScroll={[Function]}
+                            onScrollBeginDrag={[Function]}
+                            onScrollEndDrag={[Function]}
+                            onViewableItemsChanged={[Function]}
+                            overScrollMode="never"
+                            removeClippedSubviews={false}
+                            renderItem={[Function]}
+                            scrollEnabled={true}
+                            scrollEventThrottle={16}
+                            scrollsToTop={false}
+                            showsHorizontalScrollIndicator={false}
+                            showsVerticalScrollIndicator={false}
+                            stickyHeaderIndices={[]}
+                            style={{}}
+                            viewabilityConfigCallbackPairs={
+                              [
+                                {
+                                  "onViewableItemsChanged": [Function],
+                                  "viewabilityConfig": undefined,
+                                },
+                              ]
+                            }
+                          >
+                            <View>
+                              <View
+                                onFocusCapture={[Function]}
+                                onLayout={[Function]}
+                                style={
+                                  [
+                                    {
+                                      "flexDirection": "row",
+                                    },
+                                    null,
+                                  ]
+                                }
+                              >
+                                <View
+                                  accessibilityRole="tab"
+                                  accessibilityState={
+                                    {
+                                      "busy": undefined,
+                                      "checked": undefined,
+                                      "disabled": undefined,
+                                      "expanded": undefined,
+                                      "selected": true,
+                                    }
+                                  }
+                                  accessibilityStates={
+                                    [
+                                      "selected",
+                                    ]
+                                  }
+                                  accessibilityValue={
+                                    {
+                                      "max": undefined,
+                                      "min": undefined,
+                                      "now": undefined,
+                                      "text": undefined,
+                                    }
+                                  }
+                                  accessible={true}
+                                  collapsable={false}
+                                  delayPressIn={0}
+                                  focusable={true}
+                                  onBlur={[Function]}
+                                  onClick={[Function]}
+                                  onFocus={[Function]}
+                                  onLayout={[Function]}
+                                  onResponderGrant={[Function]}
+                                  onResponderMove={[Function]}
+                                  onResponderRelease={[Function]}
+                                  onResponderTerminate={[Function]}
+                                  onResponderTerminationRequest={[Function]}
+                                  onStartShouldSetResponder={[Function]}
+                                  style={
+                                    [
+                                      {
+                                        "opacity": 1,
+                                      },
+                                      [
+                                        {
+                                          "backgroundColor": "transparent",
+                                        },
+                                        null,
+                                      ],
+                                    ]
+                                  }
+                                >
+                                  <View
+                                    pointerEvents="none"
+                                    style={
+                                      [
+                                        {
+                                          "alignItems": "center",
+                                          "flex": 1,
+                                          "justifyContent": "center",
+                                          "minHeight": 48,
+                                          "padding": 10,
+                                        },
+                                        {
+                                          "flexDirection": "row",
+                                          "flexGrow": 1,
+                                          "paddingHorizontal": 16,
+                                          "paddingVertical": 9,
+                                          "width": "auto",
+                                        },
+                                      ]
+                                    }
+                                  >
+                                    <View
+                                      style={
+                                        {
+                                          "margin": 2,
+                                        }
+                                      }
+                                    >
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "opacity": 0,
+                                          }
+                                        }
+                                      >
+                                        <View
+                                          style={
+                                            [
+                                              {
+                                                "height": 24,
+                                                "width": 24,
+                                              },
+                                              undefined,
+                                            ]
+                                          }
+                                        >
+                                          <Icon
+                                            color="#C05621"
+                                            name="tune"
+                                            size={24}
+                                            style={{}}
+                                          />
+                                        </View>
+                                      </View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "bottom": 0,
+                                            "left": 0,
+                                            "opacity": 1,
+                                            "position": "absolute",
+                                            "right": 0,
+                                            "top": 0,
+                                          }
+                                        }
+                                      >
+                                        <View
+                                          style={
+                                            [
+                                              {
+                                                "height": 24,
+                                                "width": 24,
+                                              },
+                                              undefined,
+                                            ]
+                                          }
+                                        >
+                                          <Icon
+                                            color="#FFFFFF"
+                                            name="tune"
+                                            size={24}
+                                            style={{}}
+                                          />
+                                        </View>
+                                      </View>
+                                    </View>
+                                    <View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "opacity": 0,
+                                          }
+                                        }
+                                      >
+                                        <Text
+                                          style={
+                                            [
+                                              {
+                                                "backgroundColor": "transparent",
+                                                "fontSize": 13,
+                                                "margin": 4,
+                                                "textAlign": "center",
+                                                "textTransform": "uppercase",
+                                              },
+                                              {
+                                                "color": "#C05621",
+                                              },
+                                              {
+                                                "fontSize": 14,
+                                                "fontWeight": "500",
+                                                "letterSpacing": 0.4,
+                                                "lineHeight": 24,
+                                              },
+                                            ]
+                                          }
+                                        >
+                                          Inputs
+                                        </Text>
+                                      </View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "bottom": 0,
+                                            "left": 0,
+                                            "opacity": 1,
+                                            "position": "absolute",
+                                            "right": 0,
+                                            "top": 0,
+                                          }
+                                        }
+                                      >
+                                        <Text
+                                          style={
+                                            [
+                                              {
+                                                "backgroundColor": "transparent",
+                                                "fontSize": 13,
+                                                "margin": 4,
+                                                "textAlign": "center",
+                                                "textTransform": "uppercase",
+                                              },
+                                              {
+                                                "color": "#FFFFFF",
+                                              },
+                                              {
+                                                "fontSize": 14,
+                                                "fontWeight": "500",
+                                                "letterSpacing": 0.4,
+                                                "lineHeight": 24,
+                                              },
+                                            ]
+                                          }
+                                        >
+                                          Inputs
+                                        </Text>
+                                      </View>
+                                    </View>
+                                  </View>
+                                </View>
+                              </View>
+                              <View
+                                onFocusCapture={[Function]}
+                                onLayout={[Function]}
+                                style={
+                                  [
+                                    {
+                                      "flexDirection": "row",
+                                    },
+                                    null,
+                                  ]
+                                }
+                              >
+                                <View
+                                  accessibilityRole="tab"
+                                  accessibilityState={
+                                    {
+                                      "busy": undefined,
+                                      "checked": undefined,
+                                      "disabled": undefined,
+                                      "expanded": undefined,
+                                      "selected": false,
+                                    }
+                                  }
+                                  accessibilityStates={[]}
+                                  accessibilityValue={
+                                    {
+                                      "max": undefined,
+                                      "min": undefined,
+                                      "now": undefined,
+                                      "text": undefined,
+                                    }
+                                  }
+                                  accessible={true}
+                                  collapsable={false}
+                                  delayPressIn={0}
+                                  focusable={true}
+                                  onBlur={[Function]}
+                                  onClick={[Function]}
+                                  onFocus={[Function]}
+                                  onLayout={[Function]}
+                                  onResponderGrant={[Function]}
+                                  onResponderMove={[Function]}
+                                  onResponderRelease={[Function]}
+                                  onResponderTerminate={[Function]}
+                                  onResponderTerminationRequest={[Function]}
+                                  onStartShouldSetResponder={[Function]}
+                                  style={
+                                    [
+                                      {
+                                        "opacity": 1,
+                                      },
+                                      [
+                                        {
+                                          "backgroundColor": "transparent",
+                                        },
+                                        null,
+                                      ],
+                                    ]
+                                  }
+                                >
+                                  <View
+                                    pointerEvents="none"
+                                    style={
+                                      [
+                                        {
+                                          "alignItems": "center",
+                                          "flex": 1,
+                                          "justifyContent": "center",
+                                          "minHeight": 48,
+                                          "padding": 10,
+                                        },
+                                        {
+                                          "flexDirection": "row",
+                                          "flexGrow": 1,
+                                          "paddingHorizontal": 16,
+                                          "paddingVertical": 9,
+                                          "width": "auto",
+                                        },
+                                      ]
+                                    }
+                                  >
+                                    <View
+                                      style={
+                                        {
+                                          "margin": 2,
+                                        }
+                                      }
+                                    >
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "opacity": 1,
+                                          }
+                                        }
+                                      >
+                                        <View
+                                          style={
+                                            [
+                                              {
+                                                "height": 24,
+                                                "width": 24,
+                                              },
+                                              undefined,
+                                            ]
+                                          }
+                                        >
+                                          <Icon
+                                            color="#C05621"
+                                            name="location-on"
+                                            size={24}
+                                            style={{}}
+                                          />
+                                        </View>
+                                      </View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "bottom": 0,
+                                            "left": 0,
+                                            "opacity": 0,
+                                            "position": "absolute",
+                                            "right": 0,
+                                            "top": 0,
+                                          }
+                                        }
+                                      >
+                                        <View
+                                          style={
+                                            [
+                                              {
+                                                "height": 24,
+                                                "width": 24,
+                                              },
+                                              undefined,
+                                            ]
+                                          }
+                                        >
+                                          <Icon
+                                            color="#FFFFFF"
+                                            name="location-on"
+                                            size={24}
+                                            style={{}}
+                                          />
+                                        </View>
+                                      </View>
+                                    </View>
+                                    <View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "opacity": 1,
+                                          }
+                                        }
+                                      >
+                                        <Text
+                                          style={
+                                            [
+                                              {
+                                                "backgroundColor": "transparent",
+                                                "fontSize": 13,
+                                                "margin": 4,
+                                                "textAlign": "center",
+                                                "textTransform": "uppercase",
+                                              },
+                                              {
+                                                "color": "#C05621",
+                                              },
+                                              {
+                                                "fontSize": 14,
+                                                "fontWeight": "500",
+                                                "letterSpacing": 0.4,
+                                                "lineHeight": 24,
+                                              },
+                                            ]
+                                          }
+                                        >
+                                          Sites
+                                        </Text>
+                                      </View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "bottom": 0,
+                                            "left": 0,
+                                            "opacity": 0,
+                                            "position": "absolute",
+                                            "right": 0,
+                                            "top": 0,
+                                          }
+                                        }
+                                      >
+                                        <Text
+                                          style={
+                                            [
+                                              {
+                                                "backgroundColor": "transparent",
+                                                "fontSize": 13,
+                                                "margin": 4,
+                                                "textAlign": "center",
+                                                "textTransform": "uppercase",
+                                              },
+                                              {
+                                                "color": "#FFFFFF",
+                                              },
+                                              {
+                                                "fontSize": 14,
+                                                "fontWeight": "500",
+                                                "letterSpacing": 0.4,
+                                                "lineHeight": 24,
+                                              },
+                                            ]
+                                          }
+                                        >
+                                          Sites
+                                        </Text>
+                                      </View>
+                                    </View>
+                                  </View>
+                                </View>
+                              </View>
+                              <View
+                                onFocusCapture={[Function]}
+                                onLayout={[Function]}
+                                style={
+                                  [
+                                    {
+                                      "flexDirection": "row",
+                                    },
+                                    null,
+                                  ]
+                                }
+                              >
+                                <View
+                                  accessibilityRole="tab"
+                                  accessibilityState={
+                                    {
+                                      "busy": undefined,
+                                      "checked": undefined,
+                                      "disabled": undefined,
+                                      "expanded": undefined,
+                                      "selected": false,
+                                    }
+                                  }
+                                  accessibilityStates={[]}
+                                  accessibilityValue={
+                                    {
+                                      "max": undefined,
+                                      "min": undefined,
+                                      "now": undefined,
+                                      "text": undefined,
+                                    }
+                                  }
+                                  accessible={true}
+                                  collapsable={false}
+                                  delayPressIn={0}
+                                  focusable={true}
+                                  onBlur={[Function]}
+                                  onClick={[Function]}
+                                  onFocus={[Function]}
+                                  onLayout={[Function]}
+                                  onResponderGrant={[Function]}
+                                  onResponderMove={[Function]}
+                                  onResponderRelease={[Function]}
+                                  onResponderTerminate={[Function]}
+                                  onResponderTerminationRequest={[Function]}
+                                  onStartShouldSetResponder={[Function]}
+                                  style={
+                                    [
+                                      {
+                                        "opacity": 1,
+                                      },
+                                      [
+                                        {
+                                          "backgroundColor": "transparent",
+                                        },
+                                        null,
+                                      ],
+                                    ]
+                                  }
+                                >
+                                  <View
+                                    pointerEvents="none"
+                                    style={
+                                      [
+                                        {
+                                          "alignItems": "center",
+                                          "flex": 1,
+                                          "justifyContent": "center",
+                                          "minHeight": 48,
+                                          "padding": 10,
+                                        },
+                                        {
+                                          "flexDirection": "row",
+                                          "flexGrow": 1,
+                                          "paddingHorizontal": 16,
+                                          "paddingVertical": 9,
+                                          "width": "auto",
+                                        },
+                                      ]
+                                    }
+                                  >
+                                    <View
+                                      style={
+                                        {
+                                          "margin": 2,
+                                        }
+                                      }
+                                    >
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "opacity": 1,
+                                          }
+                                        }
+                                      >
+                                        <View
+                                          style={
+                                            [
+                                              {
+                                                "height": 24,
+                                                "width": 24,
+                                              },
+                                              undefined,
+                                            ]
+                                          }
+                                        >
+                                          <Icon
+                                            color="#C05621"
+                                            name="people"
+                                            size={24}
+                                            style={{}}
+                                          />
+                                        </View>
+                                      </View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "bottom": 0,
+                                            "left": 0,
+                                            "opacity": 0,
+                                            "position": "absolute",
+                                            "right": 0,
+                                            "top": 0,
+                                          }
+                                        }
+                                      >
+                                        <View
+                                          style={
+                                            [
+                                              {
+                                                "height": 24,
+                                                "width": 24,
+                                              },
+                                              undefined,
+                                            ]
+                                          }
+                                        >
+                                          <Icon
+                                            color="#FFFFFF"
+                                            name="people"
+                                            size={24}
+                                            style={{}}
+                                          />
+                                        </View>
+                                      </View>
+                                    </View>
+                                    <View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "opacity": 1,
+                                          }
+                                        }
+                                      >
+                                        <Text
+                                          style={
+                                            [
+                                              {
+                                                "backgroundColor": "transparent",
+                                                "fontSize": 13,
+                                                "margin": 4,
+                                                "textAlign": "center",
+                                                "textTransform": "uppercase",
+                                              },
+                                              {
+                                                "color": "#C05621",
+                                              },
+                                              {
+                                                "fontSize": 14,
+                                                "fontWeight": "500",
+                                                "letterSpacing": 0.4,
+                                                "lineHeight": 24,
+                                              },
+                                            ]
+                                          }
+                                        >
+                                          Team
+                                        </Text>
+                                      </View>
+                                      <View
+                                        collapsable={false}
+                                        style={
+                                          {
+                                            "bottom": 0,
+                                            "left": 0,
+                                            "opacity": 0,
+                                            "position": "absolute",
+                                            "right": 0,
+                                            "top": 0,
+                                          }
+                                        }
+                                      >
+                                        <Text
+                                          style={
+                                            [
+                                              {
+                                                "backgroundColor": "transparent",
+                                                "fontSize": 13,
+                                                "margin": 4,
+                                                "textAlign": "center",
+                                                "textTransform": "uppercase",
+                                              },
+                                              {
+                                                "color": "#FFFFFF",
+                                              },
+                                              {
+                                                "fontSize": 14,
+                                                "fontWeight": "500",
+                                                "letterSpacing": 0.4,
+                                                "lineHeight": 24,
+                                              },
+                                            ]
+                                          }
+                                        >
+                                          Team
+                                        </Text>
+                                      </View>
+                                    </View>
+                                  </View>
+                                </View>
+                              </View>
+                            </View>
+                          </RCTScrollView>
+                        </View>
+                      </View>
+                      <LEGACY_RNCViewPager
+                        collapsable={false}
+                        initialPage={0}
+                        keyboardDismissMode="on-drag"
+                        layout={
+                          {
+                            "height": 0,
+                            "width": 0,
+                          }
+                        }
+                        layoutDirection="ltr"
+                        onMoveShouldSetResponderCapture={[Function]}
+                        onPageScroll={[Function]}
+                        onPageScrollStateChanged={[Function]}
+                        onPageSelected={[Function]}
+                        scrollEnabled={true}
+                        style={
+                          {
+                            "flex": 1,
+                          }
+                        }
+                        useLegacy={true}
+                      >
+                        <View
+                          collapsable={false}
+                          style={
+                            {
+                              "bottom": 0,
+                              "left": 0,
+                              "position": "absolute",
+                              "right": 0,
+                              "top": 0,
+                            }
+                          }
+                        >
+                          <View
+                            accessibilityElementsHidden={false}
+                            importantForAccessibility="auto"
+                            style={
+                              [
+                                {
+                                  "flex": 1,
+                                  "overflow": "hidden",
+                                },
+                                {
+                                  "bottom": 0,
+                                  "left": 0,
+                                  "position": "absolute",
+                                  "right": 0,
+                                  "top": 0,
+                                },
+                                [
+                                  [
+                                    {
+                                      "backgroundColor": "rgb(242, 242, 242)",
+                                    },
+                                    undefined,
+                                  ],
+                                  {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute",
+                                    "right": 0,
+                                    "top": 0,
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            <View
+                              style={
+                                [
+                                  {
+                                    "flexDirection": "column",
+                                  },
+                                  {
+                                    "height": "100%",
+                                  },
+                                ]
+                              }
+                            >
+                              <RCTScrollView>
+                                <View>
+                                  <View
+                                    style={
+                                      {
+                                        "alignItems": "flex-start",
+                                        "padding": 16,
+                                      }
+                                    }
+                                  >
+                                    <View
+                                      style={
+                                        [
+                                          {
+                                            "flexDirection": "row",
+                                          },
+                                          {
+                                            "paddingBottom": 16,
+                                          },
+                                        ]
+                                      }
+                                    >
+                                      <View
+                                        dataSet={{}}
+                                        style={
+                                          {
+                                            "width": "100%",
+                                          }
+                                        }
+                                      >
+                                        <View
+                                          dataSet={{}}
+                                          feedbackId="field-1-feedback"
+                                          hasFeedbackText={false}
+                                          hasHelpText={false}
+                                          helpTextId="field-1-helptext"
+                                          isDisabled={false}
+                                          isInvalid={false}
+                                          isReadOnly={false}
+                                          isRequired={false}
+                                          labelId="field-1-label"
+                                          nativeID="field-1-label"
+                                          setHasFeedbackText={[Function]}
+                                          setHasHelpText={[Function]}
+                                          style={
+                                            {
+                                              "flexDirection": "row",
+                                              "justifyContent": "flex-start",
+                                              "marginBottom": 4,
+                                              "marginTop": 4,
+                                            }
+                                          }
+                                        >
+                                          <View
+                                            style={
+                                              [
+                                                {
+                                                  "flexDirection": "row",
+                                                },
+                                                {},
+                                              ]
+                                            }
+                                          >
+                                            <Text
+                                              letterSpacing="0.15px"
+                                              lineHeight="24px"
+                                              style={
+                                                {
+                                                  "color": "#1A202C",
+                                                  "fontSize": 16,
+                                                  "fontWeight": "bold",
+                                                }
+                                              }
+                                            >
+                                              Data Privacy
+                                            </Text>
+                                            <View
+                                              accessibilityRole="button"
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": undefined,
+                                                  "disabled": undefined,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              colorScheme="primary"
+                                              dataSet={{}}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
+                                              onResponderTerminationRequest={[Function]}
+                                              onStartShouldSetResponder={[Function]}
+                                              style={
+                                                {
+                                                  "alignItems": "center",
+                                                  "borderRadius": 4,
+                                                  "flexDirection": "row",
+                                                  "justifyContent": "center",
+                                                  "paddingBottom": 0,
+                                                  "paddingLeft": 8,
+                                                  "paddingRight": 12,
+                                                  "paddingTop": 0,
+                                                }
+                                              }
+                                            >
+                                              <Icon
+                                                color="#1A202C"
+                                                name="info"
+                                                size={24}
+                                                style={{}}
+                                              />
+                                            </View>
+                                          </View>
+                                        </View>
+                                        <View
+                                          aria-disabled={false}
+                                          colorScheme="primary"
+                                          dataSet={{}}
+                                          name="project-privacy"
+                                          onChange={[Function]}
+                                          role="radiogroup"
+                                          style={
+                                            {
+                                              "alignItems": "flex-start",
+                                              "marginLeft": 0,
+                                            }
+                                          }
+                                          value="PRIVATE"
+                                        >
+                                          <View
+                                            accessibilityRole="radio"
+                                            accessibilityState={
+                                              {
+                                                "busy": undefined,
+                                                "checked": false,
+                                                "disabled": true,
+                                                "expanded": undefined,
+                                                "selected": undefined,
+                                              }
+                                            }
+                                            accessibilityValue={
+                                              {
+                                                "max": undefined,
+                                                "min": undefined,
+                                                "now": undefined,
+                                                "text": undefined,
+                                              }
+                                            }
+                                            accessible={true}
+                                            checked={false}
+                                            collapsable={false}
+                                            dataSet={{}}
+                                            feedbackId="field-1-feedback"
+                                            focusable={true}
+                                            formControlContext={
+                                              {
+                                                "feedbackId": "field-1-feedback",
+                                                "hasFeedbackText": false,
+                                                "hasHelpText": false,
+                                                "helpTextId": "field-1-helptext",
+                                                "isDisabled": false,
+                                                "isInvalid": false,
+                                                "isReadOnly": false,
+                                                "isRequired": false,
+                                                "labelId": "field-1-label",
+                                                "nativeID": "field-1",
+                                                "setHasFeedbackText": [Function],
+                                                "setHasHelpText": [Function],
+                                              }
+                                            }
+                                            hasFeedbackText={false}
+                                            hasHelpText={false}
+                                            helpTextId="field-1-helptext"
+                                            isInvalid={false}
+                                            isReadOnly={false}
+                                            isRequired={false}
+                                            labelId="field-1-label"
+                                            nativeID="field-1"
+                                            onBlur={[Function]}
+                                            onClick={[Function]}
+                                            onFocus={[Function]}
+                                            onResponderGrant={[Function]}
+                                            onResponderMove={[Function]}
+                                            onResponderRelease={[Function]}
+                                            onResponderTerminate={[Function]}
+                                            onResponderTerminationRequest={[Function]}
+                                            onStartShouldSetResponder={[Function]}
+                                            role="radio"
+                                            setHasFeedbackText={[Function]}
+                                            setHasHelpText={[Function]}
+                                            state={
+                                              {
+                                                "lastFocusedValue": null,
+                                                "name": "project-privacy",
+                                                "selectedValue": "PRIVATE",
+                                                "setLastFocusedValue": [Function],
+                                                "setSelectedValue": [Function],
+                                              }
+                                            }
+                                            style={{}}
+                                            value="PUBLIC"
+                                          >
+                                            <View
+                                              dataSet={{}}
+                                              style={
+                                                {
+                                                  "alignItems": "center",
+                                                  "flexDirection": "row",
+                                                  "opacity": 0.6,
+                                                }
+                                              }
+                                            >
+                                              <View
+                                                dataSet={{}}
+                                                style={
+                                                  {
+                                                    "alignItems": "center",
+                                                    "display": "flex",
+                                                    "justifyContent": "center",
+                                                  }
+                                                }
+                                              >
+                                                <View
+                                                  dataSet={{}}
+                                                  style={{}}
+                                                />
+                                                <View
+                                                  colorScheme="primary"
+                                                  dataSet={{}}
+                                                  defaultIsChecked={false}
+                                                  feedbackId="field-1-feedback"
+                                                  formControlContext={
+                                                    {
+                                                      "feedbackId": "field-1-feedback",
+                                                      "hasFeedbackText": false,
+                                                      "hasHelpText": false,
+                                                      "helpTextId": "field-1-helptext",
+                                                      "isDisabled": false,
+                                                      "isInvalid": false,
+                                                      "isReadOnly": false,
+                                                      "isRequired": false,
+                                                      "labelId": "field-1-label",
+                                                      "nativeID": "field-1",
+                                                      "setHasFeedbackText": [Function],
+                                                      "setHasHelpText": [Function],
+                                                    }
+                                                  }
+                                                  hasFeedbackText={false}
+                                                  hasHelpText={false}
+                                                  helpTextId="field-1-helptext"
+                                                  isDisabled={true}
+                                                  isInvalid={false}
+                                                  isReadOnly={false}
+                                                  isRequired={false}
+                                                  labelId="field-1-label"
+                                                  nativeID="field-1"
+                                                  setHasFeedbackText={[Function]}
+                                                  setHasHelpText={[Function]}
+                                                  state={
+                                                    {
+                                                      "lastFocusedValue": null,
+                                                      "name": "project-privacy",
+                                                      "selectedValue": "PRIVATE",
+                                                      "setLastFocusedValue": [Function],
+                                                      "setSelectedValue": [Function],
+                                                    }
+                                                  }
+                                                  style={
+                                                    {
+                                                      "alignItems": "center",
+                                                      "backgroundColor": "#fafafa",
+                                                      "borderColor": "#a3a3a3",
+                                                      "borderRadius": 9999,
+                                                      "borderWidth": 2,
+                                                      "display": "flex",
+                                                      "fontSize": 16,
+                                                      "fontWeight": "400",
+                                                      "justifyContent": "center",
+                                                      "letterSpacing": 0.15,
+                                                      "lineHeight": 24,
+                                                      "marginBottom": 8,
+                                                      "marginLeft": 8,
+                                                      "marginRight": 0,
+                                                      "marginTop": 8,
+                                                      "opacity": 0.6,
+                                                      "paddingBottom": 4,
+                                                      "paddingLeft": 4,
+                                                      "paddingRight": 4,
+                                                      "paddingTop": 4,
+                                                    }
+                                                  }
+                                                  value="PUBLIC"
+                                                >
+                                                  <RNSVGSvgView
+                                                    accessibilityRole="image"
+                                                    align="xMidYMid"
+                                                    bbHeight={12}
+                                                    bbWidth={12}
+                                                    dataSet={{}}
+                                                    focusable={false}
+                                                    meetOrSlice={0}
+                                                    minX={0}
+                                                    minY={0}
+                                                    stroke=""
+                                                    style={
+                                                      [
+                                                        {
+                                                          "backgroundColor": "transparent",
+                                                          "borderWidth": 0,
+                                                        },
+                                                        {
+                                                          "backgroundColor": "#00000000",
+                                                          "color": "#737373",
+                                                          "height": 12,
+                                                          "opacity": 0,
+                                                          "width": 12,
+                                                        },
+                                                        {
+                                                          "flex": 0,
+                                                          "height": 12,
+                                                          "width": 12,
+                                                        },
+                                                      ]
+                                                    }
+                                                    tintColor="#737373"
+                                                    vbHeight={24}
+                                                    vbWidth={24}
+                                                  >
+                                                    <RNSVGGroup
+                                                      fill={
+                                                        {
+                                                          "payload": 4278190080,
+                                                          "type": 0,
+                                                        }
+                                                      }
+                                                      opacity={0}
+                                                      propList={
+                                                        [
+                                                          "stroke",
+                                                        ]
+                                                      }
+                                                      stroke={null}
+                                                    >
+                                                      <RNSVGGroup
+                                                        fill={
+                                                          {
+                                                            "payload": 4278190080,
+                                                            "type": 0,
+                                                          }
+                                                        }
+                                                      >
+                                                        <RNSVGPath
+                                                          d="M0 12C-2.34822e-08 13.5759 0.310389 15.1363 0.913445 16.5922C1.5165 18.0481 2.40042 19.371 3.51472 20.4853C4.62902 21.5996 5.95189 22.4835 7.4078 23.0866C8.86371 23.6896 10.4241 24 12 24C13.5759 24 15.1363 23.6896 16.5922 23.0866C18.0481 22.4835 19.371 21.5996 20.4853 20.4853C21.5996 19.371 22.4835 18.0481 23.0866 16.5922C23.6896 15.1363 24 13.5759 24 12C24 10.4241 23.6896 8.86371 23.0866 7.4078C22.4835 5.95189 21.5996 4.62902 20.4853 3.51472C19.371 2.40042 18.0481 1.5165 16.5922 0.913446C15.1363 0.310389 13.5759 0 12 0C10.4241 0 8.86371 0.310389 7.4078 0.913446C5.95189 1.5165 4.62902 2.40042 3.51472 3.51472C2.40042 4.62902 1.5165 5.95189 0.913445 7.4078C0.310389 8.86371 -2.34822e-08 10.4241 0 12Z"
+                                                          fill={
+                                                            {
+                                                              "type": 2,
+                                                            }
+                                                          }
+                                                          propList={
+                                                            [
+                                                              "fill",
+                                                              "stroke",
+                                                            ]
+                                                          }
+                                                          stroke={null}
+                                                        />
+                                                      </RNSVGGroup>
+                                                    </RNSVGGroup>
+                                                  </RNSVGSvgView>
+                                                </View>
+                                              </View>
+                                              <View
+                                                dataSet={{}}
+                                                style={
+                                                  {
+                                                    "width": 8,
+                                                  }
+                                                }
+                                              />
+                                              <Text
+                                                dataSet={{}}
+                                                style={
+                                                  {
+                                                    "backgroundColor": undefined,
+                                                    "color": "#171717",
+                                                    "fontFamily": undefined,
+                                                    "fontSize": 16,
+                                                    "fontStyle": "normal",
+                                                    "fontWeight": "400",
+                                                    "letterSpacing": 0,
+                                                    "lineHeight": 24,
+                                                    "textDecorationLine": undefined,
+                                                  }
+                                                }
+                                              >
+                                                Public
+                                              </Text>
+                                            </View>
+                                          </View>
+                                          <View
+                                            dataSet={{}}
+                                            style={{}}
+                                          />
+                                          <View
+                                            accessibilityRole="radio"
+                                            accessibilityState={
+                                              {
+                                                "busy": undefined,
+                                                "checked": true,
+                                                "disabled": true,
+                                                "expanded": undefined,
+                                                "selected": undefined,
+                                              }
+                                            }
+                                            accessibilityValue={
+                                              {
+                                                "max": undefined,
+                                                "min": undefined,
+                                                "now": undefined,
+                                                "text": undefined,
+                                              }
+                                            }
+                                            accessible={true}
+                                            checked={true}
+                                            collapsable={false}
+                                            dataSet={{}}
+                                            feedbackId="field-1-feedback"
+                                            focusable={true}
+                                            formControlContext={
+                                              {
+                                                "feedbackId": "field-1-feedback",
+                                                "hasFeedbackText": false,
+                                                "hasHelpText": false,
+                                                "helpTextId": "field-1-helptext",
+                                                "isDisabled": false,
+                                                "isInvalid": false,
+                                                "isReadOnly": false,
+                                                "isRequired": false,
+                                                "labelId": "field-1-label",
+                                                "nativeID": "field-1",
+                                                "setHasFeedbackText": [Function],
+                                                "setHasHelpText": [Function],
+                                              }
+                                            }
+                                            hasFeedbackText={false}
+                                            hasHelpText={false}
+                                            helpTextId="field-1-helptext"
+                                            isInvalid={false}
+                                            isReadOnly={false}
+                                            isRequired={false}
+                                            labelId="field-1-label"
+                                            nativeID="field-1"
+                                            onBlur={[Function]}
+                                            onClick={[Function]}
+                                            onFocus={[Function]}
+                                            onResponderGrant={[Function]}
+                                            onResponderMove={[Function]}
+                                            onResponderRelease={[Function]}
+                                            onResponderTerminate={[Function]}
+                                            onResponderTerminationRequest={[Function]}
+                                            onStartShouldSetResponder={[Function]}
+                                            role="radio"
+                                            setHasFeedbackText={[Function]}
+                                            setHasHelpText={[Function]}
+                                            state={
+                                              {
+                                                "lastFocusedValue": null,
+                                                "name": "project-privacy",
+                                                "selectedValue": "PRIVATE",
+                                                "setLastFocusedValue": [Function],
+                                                "setSelectedValue": [Function],
+                                              }
+                                            }
+                                            style={{}}
+                                            value="PRIVATE"
+                                          >
+                                            <View
+                                              dataSet={{}}
+                                              style={
+                                                {
+                                                  "alignItems": "center",
+                                                  "flexDirection": "row",
+                                                  "opacity": 0.6,
+                                                }
+                                              }
+                                            >
+                                              <View
+                                                dataSet={{}}
+                                                style={
+                                                  {
+                                                    "alignItems": "center",
+                                                    "display": "flex",
+                                                    "justifyContent": "center",
+                                                  }
+                                                }
+                                              >
+                                                <View
+                                                  dataSet={{}}
+                                                  style={{}}
+                                                />
+                                                <View
+                                                  colorScheme="primary"
+                                                  dataSet={{}}
+                                                  defaultIsChecked={false}
+                                                  feedbackId="field-1-feedback"
+                                                  formControlContext={
+                                                    {
+                                                      "feedbackId": "field-1-feedback",
+                                                      "hasFeedbackText": false,
+                                                      "hasHelpText": false,
+                                                      "helpTextId": "field-1-helptext",
+                                                      "isDisabled": false,
+                                                      "isInvalid": false,
+                                                      "isReadOnly": false,
+                                                      "isRequired": false,
+                                                      "labelId": "field-1-label",
+                                                      "nativeID": "field-1",
+                                                      "setHasFeedbackText": [Function],
+                                                      "setHasHelpText": [Function],
+                                                    }
+                                                  }
+                                                  hasFeedbackText={false}
+                                                  hasHelpText={false}
+                                                  helpTextId="field-1-helptext"
+                                                  isDisabled={true}
+                                                  isInvalid={false}
+                                                  isReadOnly={false}
+                                                  isRequired={false}
+                                                  labelId="field-1-label"
+                                                  nativeID="field-1"
+                                                  setHasFeedbackText={[Function]}
+                                                  setHasHelpText={[Function]}
+                                                  state={
+                                                    {
+                                                      "lastFocusedValue": null,
+                                                      "name": "project-privacy",
+                                                      "selectedValue": "PRIVATE",
+                                                      "setLastFocusedValue": [Function],
+                                                      "setSelectedValue": [Function],
+                                                    }
+                                                  }
+                                                  style={
+                                                    {
+                                                      "alignItems": "center",
+                                                      "backgroundColor": "#fafafa",
+                                                      "borderColor": "#028843",
+                                                      "borderRadius": 9999,
+                                                      "borderWidth": 2,
+                                                      "display": "flex",
+                                                      "fontSize": 16,
+                                                      "fontWeight": "400",
+                                                      "justifyContent": "center",
+                                                      "letterSpacing": 0.15,
+                                                      "lineHeight": 24,
+                                                      "marginBottom": 8,
+                                                      "marginLeft": 8,
+                                                      "marginRight": 0,
+                                                      "marginTop": 8,
+                                                      "opacity": 0.6,
+                                                      "paddingBottom": 4,
+                                                      "paddingLeft": 4,
+                                                      "paddingRight": 4,
+                                                      "paddingTop": 4,
+                                                    }
+                                                  }
+                                                  value="PRIVATE"
+                                                >
+                                                  <RNSVGSvgView
+                                                    accessibilityRole="image"
+                                                    align="xMidYMid"
+                                                    bbHeight={12}
+                                                    bbWidth={12}
+                                                    dataSet={{}}
+                                                    focusable={false}
+                                                    meetOrSlice={0}
+                                                    minX={0}
+                                                    minY={0}
+                                                    stroke=""
+                                                    style={
+                                                      [
+                                                        {
+                                                          "backgroundColor": "transparent",
+                                                          "borderWidth": 0,
+                                                        },
+                                                        {
+                                                          "backgroundColor": "#00000000",
+                                                          "color": "#028843",
+                                                          "height": 12,
+                                                          "opacity": 1,
+                                                          "width": 12,
+                                                        },
+                                                        {
+                                                          "flex": 0,
+                                                          "height": 12,
+                                                          "width": 12,
+                                                        },
+                                                      ]
+                                                    }
+                                                    tintColor="#028843"
+                                                    vbHeight={24}
+                                                    vbWidth={24}
+                                                  >
+                                                    <RNSVGGroup
+                                                      fill={
+                                                        {
+                                                          "payload": 4278190080,
+                                                          "type": 0,
+                                                        }
+                                                      }
+                                                      opacity={1}
+                                                      propList={
+                                                        [
+                                                          "stroke",
+                                                        ]
+                                                      }
+                                                      stroke={null}
+                                                    >
+                                                      <RNSVGGroup
+                                                        fill={
+                                                          {
+                                                            "payload": 4278190080,
+                                                            "type": 0,
+                                                          }
+                                                        }
+                                                      >
+                                                        <RNSVGPath
+                                                          d="M0 12C-2.34822e-08 13.5759 0.310389 15.1363 0.913445 16.5922C1.5165 18.0481 2.40042 19.371 3.51472 20.4853C4.62902 21.5996 5.95189 22.4835 7.4078 23.0866C8.86371 23.6896 10.4241 24 12 24C13.5759 24 15.1363 23.6896 16.5922 23.0866C18.0481 22.4835 19.371 21.5996 20.4853 20.4853C21.5996 19.371 22.4835 18.0481 23.0866 16.5922C23.6896 15.1363 24 13.5759 24 12C24 10.4241 23.6896 8.86371 23.0866 7.4078C22.4835 5.95189 21.5996 4.62902 20.4853 3.51472C19.371 2.40042 18.0481 1.5165 16.5922 0.913446C15.1363 0.310389 13.5759 0 12 0C10.4241 0 8.86371 0.310389 7.4078 0.913446C5.95189 1.5165 4.62902 2.40042 3.51472 3.51472C2.40042 4.62902 1.5165 5.95189 0.913445 7.4078C0.310389 8.86371 -2.34822e-08 10.4241 0 12Z"
+                                                          fill={
+                                                            {
+                                                              "type": 2,
+                                                            }
+                                                          }
+                                                          propList={
+                                                            [
+                                                              "fill",
+                                                              "stroke",
+                                                            ]
+                                                          }
+                                                          stroke={null}
+                                                        />
+                                                      </RNSVGGroup>
+                                                    </RNSVGGroup>
+                                                  </RNSVGSvgView>
+                                                </View>
+                                              </View>
+                                              <View
+                                                dataSet={{}}
+                                                style={
+                                                  {
+                                                    "width": 8,
+                                                  }
+                                                }
+                                              />
+                                              <Text
+                                                dataSet={{}}
+                                                style={
+                                                  {
+                                                    "backgroundColor": undefined,
+                                                    "color": "#171717",
+                                                    "fontFamily": undefined,
+                                                    "fontSize": 16,
+                                                    "fontStyle": "normal",
+                                                    "fontWeight": "400",
+                                                    "letterSpacing": 0,
+                                                    "lineHeight": 24,
+                                                    "textDecorationLine": undefined,
+                                                  }
+                                                }
+                                              >
+                                                Private
+                                              </Text>
+                                            </View>
+                                          </View>
+                                        </View>
+                                      </View>
+                                    </View>
+                                  </View>
+                                  <View
+                                    style={{}}
+                                  >
+                                    <View
+                                      style={
+                                        [
+                                          {
+                                            "flexDirection": "row",
+                                          },
+                                          {
+                                            "alignItems": "center",
+                                            "backgroundColor": "#00582B",
+                                            "justifyContent": "space-between",
+                                            "paddingHorizontal": 16,
+                                          },
+                                        ]
+                                      }
+                                    >
+                                      <Text
+                                        letterSpacing="0.15px"
+                                        lineHeight="24px"
+                                        style={
+                                          {
+                                            "color": "#FFFFFF",
+                                            "fontSize": 16,
+                                            "fontWeight": "400",
+                                            "paddingBottom": 12,
+                                            "paddingTop": 12,
+                                          }
+                                        }
+                                      >
+                                        Soil Pit
+                                      </Text>
+                                      <View
+                                        accessibilityRole="button"
+                                        accessibilityState={
+                                          {
+                                            "busy": undefined,
+                                            "checked": undefined,
+                                            "disabled": undefined,
+                                            "expanded": undefined,
+                                            "selected": undefined,
+                                          }
+                                        }
+                                        accessibilityValue={
+                                          {
+                                            "max": undefined,
+                                            "min": undefined,
+                                            "now": undefined,
+                                            "text": undefined,
+                                          }
+                                        }
+                                        accessible={true}
+                                        collapsable={false}
+                                        colorScheme="primary"
+                                        dataSet={{}}
+                                        focusable={true}
+                                        onBlur={[Function]}
+                                        onClick={[Function]}
+                                        onFocus={[Function]}
+                                        onResponderGrant={[Function]}
+                                        onResponderMove={[Function]}
+                                        onResponderRelease={[Function]}
+                                        onResponderTerminate={[Function]}
+                                        onResponderTerminationRequest={[Function]}
+                                        onStartShouldSetResponder={[Function]}
+                                        style={
+                                          {
+                                            "alignItems": "center",
+                                            "borderRadius": 4,
+                                            "flexDirection": "row",
+                                            "justifyContent": "center",
+                                            "paddingBottom": 4,
+                                            "paddingLeft": 4,
+                                            "paddingRight": 4,
+                                            "paddingTop": 4,
+                                          }
+                                        }
+                                      >
+                                        <Icon
+                                          color="#FFFFFF"
+                                          name="expand-more"
+                                          size={24}
+                                          style={{}}
+                                        />
+                                      </View>
+                                    </View>
+                                  </View>
+                                  <View
+                                    style={
+                                      {
+                                        "height": 16,
+                                      }
+                                    }
+                                  />
+                                  <View
+                                    style={{}}
+                                  >
+                                    <View
+                                      style={
+                                        [
+                                          {
+                                            "flexDirection": "row",
+                                          },
+                                          {
+                                            "alignItems": "center",
+                                            "backgroundColor": "#00582B",
+                                            "justifyContent": "space-between",
+                                            "paddingHorizontal": 16,
+                                          },
+                                        ]
+                                      }
+                                    >
+                                      <Text
+                                        letterSpacing="0.15px"
+                                        lineHeight="24px"
+                                        style={
+                                          {
+                                            "color": "#FFFFFF",
+                                            "fontSize": 16,
+                                            "fontWeight": "400",
+                                            "paddingBottom": 12,
+                                            "paddingTop": 12,
+                                          }
+                                        }
+                                      >
+                                        Data Collection Requirements
+                                      </Text>
+                                      <View
+                                        accessibilityRole="button"
+                                        accessibilityState={
+                                          {
+                                            "busy": undefined,
+                                            "checked": undefined,
+                                            "disabled": undefined,
+                                            "expanded": undefined,
+                                            "selected": undefined,
+                                          }
+                                        }
+                                        accessibilityValue={
+                                          {
+                                            "max": undefined,
+                                            "min": undefined,
+                                            "now": undefined,
+                                            "text": undefined,
+                                          }
+                                        }
+                                        accessible={true}
+                                        collapsable={false}
+                                        colorScheme="primary"
+                                        dataSet={{}}
+                                        focusable={true}
+                                        onBlur={[Function]}
+                                        onClick={[Function]}
+                                        onFocus={[Function]}
+                                        onResponderGrant={[Function]}
+                                        onResponderMove={[Function]}
+                                        onResponderRelease={[Function]}
+                                        onResponderTerminate={[Function]}
+                                        onResponderTerminationRequest={[Function]}
+                                        onStartShouldSetResponder={[Function]}
+                                        style={
+                                          {
+                                            "alignItems": "center",
+                                            "borderRadius": 4,
+                                            "flexDirection": "row",
+                                            "justifyContent": "center",
+                                            "paddingBottom": 4,
+                                            "paddingLeft": 4,
+                                            "paddingRight": 4,
+                                            "paddingTop": 4,
+                                          }
+                                        }
+                                      >
+                                        <Icon
+                                          color="#FFFFFF"
+                                          name="expand-more"
+                                          size={24}
+                                          style={{}}
+                                        />
+                                      </View>
+                                    </View>
+                                  </View>
+                                </View>
+                              </RCTScrollView>
+                            </View>
+                          </View>
+                        </View>
+                        <View
+                          collapsable={false}
+                          style={
+                            {
+                              "bottom": 0,
+                              "left": 0,
+                              "position": "absolute",
+                              "right": 0,
+                              "top": 0,
+                            }
+                          }
+                        >
+                          <View
+                            accessibilityElementsHidden={true}
+                            importantForAccessibility="no-hide-descendants"
+                            style={
+                              [
+                                {
+                                  "flex": 1,
+                                  "overflow": "hidden",
+                                },
+                                null,
+                                [
+                                  [
+                                    {
+                                      "backgroundColor": "rgb(242, 242, 242)",
+                                    },
+                                    undefined,
+                                  ],
+                                  {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute",
+                                    "right": 0,
+                                    "top": 0,
+                                  },
+                                ],
+                              ]
+                            }
+                          />
+                        </View>
+                        <View
+                          collapsable={false}
+                          style={
+                            {
+                              "bottom": 0,
+                              "left": 0,
+                              "position": "absolute",
+                              "right": 0,
+                              "top": 0,
+                            }
+                          }
+                        >
+                          <View
+                            accessibilityElementsHidden={true}
+                            importantForAccessibility="no-hide-descendants"
+                            style={
+                              [
+                                {
+                                  "flex": 1,
+                                  "overflow": "hidden",
+                                },
+                                null,
+                                [
+                                  [
+                                    {
+                                      "backgroundColor": "rgb(242, 242, 242)",
+                                    },
+                                    undefined,
+                                  ],
+                                  {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute",
+                                    "right": 0,
+                                    "top": 0,
+                                  },
+                                ],
+                              ]
+                            }
+                          />
+                        </View>
+                      </LEGACY_RNCViewPager>
+                    </View>
+                  </View>
+                </View>
+              </RNCSafeAreaView>
+              <RCTScrollView>
+                <View>
+                  <View
+                    style={
+                      [
+                        {
+                          "flexDirection": "column",
+                        },
+                        {
+                          "marginTop": 48,
+                          "paddingBottom": "65%",
+                          "paddingHorizontal": 20,
+                          "paddingTop": 20,
+                          "rowGap": 12,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      lineHeight="32px"
+                      style={
+                        {
+                          "color": "#1A202C",
+                          "fontSize": 20,
+                          "fontWeight": "500",
+                          "textAlign": "left",
+                          "width": "100%",
+                        }
+                      }
+                    >
+                      LandPKS Data Privacy
+                    </Text>
+                    <Text
+                      letterSpacing="0.15px"
+                      lineHeight="24px"
+                      style={
+                        {
+                          "color": "#1A202C",
+                          "fontSize": 16,
+                          "fontWeight": "400",
+                        }
+                      }
+                    >
+                      <Text
+                        style={
+                          {
+                            "fontWeight": "bold",
+                          }
+                        }
+                      >
+                        The data visible in public sites
+                      </Text>
+                       includes all data entered into the LandPKS mobile app except for personally identifiable information (PII).
+                    </Text>
+                    <Text
+                      letterSpacing="0.15px"
+                      lineHeight="24px"
+                      style={
+                        {
+                          "color": "#1A202C",
+                          "fontSize": 16,
+                          "fontWeight": "400",
+                        }
+                      }
+                    >
+                      <Text
+                        style={
+                          {
+                            "fontWeight": "bold",
+                          }
+                        }
+                      >
+                        Public sites
+                      </Text>
+                       are visible to anyone on the LandPKS data portal. This means anyone can view information about this site.
+                    </Text>
+                    <View
+                      style={
+                        {
+                          "paddingBottom": 4,
+                          "paddingTop": 4,
+                        }
+                      }
+                    >
+                      <View
+                        accessibilityState={
+                          {
+                            "busy": undefined,
+                            "checked": undefined,
+                            "disabled": undefined,
+                            "expanded": undefined,
+                            "selected": undefined,
+                          }
+                        }
+                        accessibilityValue={
+                          {
+                            "max": undefined,
+                            "min": undefined,
+                            "now": undefined,
+                            "text": undefined,
+                          }
+                        }
+                        accessible={true}
+                        collapsable={false}
+                        focusable={true}
+                        onBlur={[Function]}
+                        onClick={[Function]}
+                        onFocus={[Function]}
+                        onResponderGrant={[Function]}
+                        onResponderMove={[Function]}
+                        onResponderRelease={[Function]}
+                        onResponderTerminate={[Function]}
+                        onResponderTerminationRequest={[Function]}
+                        onStartShouldSetResponder={[Function]}
+                      >
+                        <View
+                          style={{}}
+                        >
+                          <View
+                            style={
+                              [
+                                {
+                                  "flexDirection": "row",
+                                },
+                                {},
+                              ]
+                            }
+                          >
+                            <View
+                              accessibilityRole="button"
+                              accessibilityState={
+                                {
+                                  "busy": undefined,
+                                  "checked": undefined,
+                                  "disabled": undefined,
+                                  "expanded": undefined,
+                                  "selected": undefined,
+                                }
+                              }
+                              accessibilityValue={
+                                {
+                                  "max": undefined,
+                                  "min": undefined,
+                                  "now": undefined,
+                                  "text": undefined,
+                                }
+                              }
+                              accessible={true}
+                              collapsable={false}
+                              colorScheme="primary"
+                              dataSet={{}}
+                              focusable={true}
+                              onBlur={[Function]}
+                              onClick={[Function]}
+                              onFocus={[Function]}
+                              onResponderGrant={[Function]}
+                              onResponderMove={[Function]}
+                              onResponderRelease={[Function]}
+                              onResponderTerminate={[Function]}
+                              onResponderTerminationRequest={[Function]}
+                              onStartShouldSetResponder={[Function]}
+                              style={
+                                {
+                                  "alignItems": "center",
+                                  "borderRadius": 4,
+                                  "flexDirection": "row",
+                                  "justifyContent": "center",
+                                  "paddingBottom": 0,
+                                  "paddingLeft": 0,
+                                  "paddingRight": 0,
+                                  "paddingTop": 0,
+                                }
+                              }
+                            >
+                              <Icon
+                                color="#028843"
+                                name="open-in-new"
+                                size={24}
+                                style={{}}
+                              />
+                            </View>
+                            <Text
+                              letterSpacing="0.15px"
+                              lineHeight="24px"
+                              style={
+                                {
+                                  "color": "#028843",
+                                  "fontSize": 16,
+                                  "fontWeight": "400",
+                                  "paddingLeft": 4,
+                                  "textTransform": "uppercase",
+                                }
+                              }
+                            >
+                              LandPKS Data Portal
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                    <Text
+                      letterSpacing="0.15px"
+                      lineHeight="24px"
+                      style={
+                        {
+                          "color": "#1A202C",
+                          "fontSize": 16,
+                          "fontWeight": "400",
+                        }
+                      }
+                    >
+                      <Text
+                        style={
+                          {
+                            "fontWeight": "bold",
+                          }
+                        }
+                      >
+                        Unaffiliated private sites
+                      </Text>
+                       are only visible to you. You can change the privacy of the site at any time.
+                    </Text>
+                    <Text
+                      letterSpacing="0.15px"
+                      lineHeight="24px"
+                      style={
+                        {
+                          "color": "#1A202C",
+                          "fontSize": 16,
+                          "fontWeight": "400",
+                        }
+                      }
+                    >
+                      <Text
+                        style={
+                          {
+                            "fontWeight": "bold",
+                          }
+                        }
+                      >
+                        A project’s privacy setting determines the privacy of its affiliated sites.
+                      </Text>
+                       Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time.
+                    </Text>
+                    <Text
+                      letterSpacing="0.15px"
+                      lineHeight="24px"
+                      style={
+                        {
+                          "color": "#1A202C",
+                          "fontSize": 16,
+                          "fontWeight": "400",
+                        }
+                      }
+                    >
+                      <Text
+                        style={
+                          {
+                            "fontWeight": "bold",
+                          }
+                        }
+                      >
+                        When a site is transferred to a project,
+                      </Text>
+                       the project will determine the site’s privacy setting.
+                    </Text>
+                    <Text
+                      letterSpacing="0.15px"
+                      lineHeight="24px"
+                      style={
+                        {
+                          "color": "#1A202C",
+                          "fontSize": 16,
+                          "fontWeight": "400",
+                        }
+                      }
+                    >
+                      Read more about our data privacy policy:
+                    </Text>
+                    <View
+                      style={
+                        {
+                          "paddingBottom": 4,
+                          "paddingTop": 4,
+                        }
+                      }
+                    >
+                      <View
+                        accessibilityState={
+                          {
+                            "busy": undefined,
+                            "checked": undefined,
+                            "disabled": undefined,
+                            "expanded": undefined,
+                            "selected": undefined,
+                          }
+                        }
+                        accessibilityValue={
+                          {
+                            "max": undefined,
+                            "min": undefined,
+                            "now": undefined,
+                            "text": undefined,
+                          }
+                        }
+                        accessible={true}
+                        collapsable={false}
+                        focusable={true}
+                        onBlur={[Function]}
+                        onClick={[Function]}
+                        onFocus={[Function]}
+                        onResponderGrant={[Function]}
+                        onResponderMove={[Function]}
+                        onResponderRelease={[Function]}
+                        onResponderTerminate={[Function]}
+                        onResponderTerminationRequest={[Function]}
+                        onStartShouldSetResponder={[Function]}
+                      >
+                        <View
+                          style={{}}
+                        >
+                          <View
+                            style={
+                              [
+                                {
+                                  "flexDirection": "row",
+                                },
+                                {},
+                              ]
+                            }
+                          >
+                            <View
+                              accessibilityRole="button"
+                              accessibilityState={
+                                {
+                                  "busy": undefined,
+                                  "checked": undefined,
+                                  "disabled": undefined,
+                                  "expanded": undefined,
+                                  "selected": undefined,
+                                }
+                              }
+                              accessibilityValue={
+                                {
+                                  "max": undefined,
+                                  "min": undefined,
+                                  "now": undefined,
+                                  "text": undefined,
+                                }
+                              }
+                              accessible={true}
+                              collapsable={false}
+                              colorScheme="primary"
+                              dataSet={{}}
+                              focusable={true}
+                              onBlur={[Function]}
+                              onClick={[Function]}
+                              onFocus={[Function]}
+                              onResponderGrant={[Function]}
+                              onResponderMove={[Function]}
+                              onResponderRelease={[Function]}
+                              onResponderTerminate={[Function]}
+                              onResponderTerminationRequest={[Function]}
+                              onStartShouldSetResponder={[Function]}
+                              style={
+                                {
+                                  "alignItems": "center",
+                                  "borderRadius": 4,
+                                  "flexDirection": "row",
+                                  "justifyContent": "center",
+                                  "paddingBottom": 0,
+                                  "paddingLeft": 0,
+                                  "paddingRight": 0,
+                                  "paddingTop": 0,
+                                }
+                              }
+                            >
+                              <Icon
+                                color="#028843"
+                                name="open-in-new"
+                                size={24}
+                                style={{}}
+                              />
+                            </View>
+                            <Text
+                              letterSpacing="0.15px"
+                              lineHeight="24px"
+                              style={
+                                {
+                                  "color": "#028843",
+                                  "fontSize": 16,
+                                  "fontWeight": "400",
+                                  "paddingLeft": 4,
+                                  "textTransform": "uppercase",
+                                }
+                              }
+                            >
+                              LandPKS Privacy Policy
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </RCTScrollView>
+              <View
+                style={
+                  {
+                    "position": "absolute",
+                    "right": 23,
+                    "top": 18,
+                  }
+                }
+              >
+                <View
+                  accessibilityRole="button"
+                  accessibilityState={
+                    {
+                      "busy": undefined,
+                      "checked": undefined,
+                      "disabled": undefined,
+                      "expanded": undefined,
+                      "selected": undefined,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  colorScheme="primary"
+                  dataSet={{}}
+                  focusable={true}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    {
+                      "alignItems": "center",
+                      "backgroundColor": "#EEEEEE",
+                      "borderRadius": 9999,
+                      "flexDirection": "row",
+                      "justifyContent": "center",
+                      "paddingBottom": 4,
+                      "paddingLeft": 4,
+                      "paddingRight": 4,
+                      "paddingTop": 4,
+                    }
+                  }
+                >
+                  <Icon
+                    color="#1A202C"
+                    name="close"
+                    size={24}
+                    style={{}}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+          <RNSScreenStackHeaderConfig
+            backButtonInCustomView={false}
+            backTitleVisible={true}
+            backgroundColor="rgb(255, 255, 255)"
+            color="rgb(0, 122, 255)"
+            direction="ltr"
+            disableBackButtonMenu={false}
+            hidden={false}
+            hideBackButton={false}
+            largeTitleHideShadow={false}
+            title="PROJECT_VIEW"
+            titleColor="rgb(28, 28, 30)"
+            topInsetEnabled={false}
+            translucent={false}
+          />
+        </RNSScreen>
+      </RNSScreenStack>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

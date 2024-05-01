@@ -20,7 +20,7 @@ import 'terraso-mobile-client/translations';
 import 'react-native-gesture-handler/jestSetup';
 import {setAPIConfig} from 'terraso-client-shared/config';
 
-// include this section and the NativeAnimatedHelper section for mocking react-native-reanimated
+// the next 3 jest calls are to get animated components to work in tests
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
 
@@ -30,12 +30,20 @@ jest.mock('react-native-reanimated', () => {
 
   return Reanimated;
 });
-
-// Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
+jest.useFakeTimers();
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
-jest.mock('@gorhom/bottom-sheet', () => 'BottomSheet');
-jest.mock('@rnmapbox/maps', () => 'Mapbox');
+// nanoid is a randomness source used by react navigation, here we are
+// setting it to a stable value to get stable snapshot tests
+jest.mock('nanoid/non-secure', () => ({nanoid: () => 'stable-nanoid-id'}));
+
+jest.mock('@gorhom/bottom-sheet', () => require('@gorhom/bottom-sheet/mock'));
+
+jest.mock('@expo/vector-icons/MaterialIcons', () => 'Icon');
+
+jest.mock('terraso-mobile-client/config', () => ({
+  APP_CONFIG: {},
+}));
 
 let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
 mmkvMock.mock(); // Mock the storage
