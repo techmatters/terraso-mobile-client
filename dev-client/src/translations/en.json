@@ -274,6 +274,12 @@
       "nameDesc": "Sort (Z to A)"
     }
   },
+  "settings": {
+    "unknownUser": "Unknown user",
+    "logOut": "Log Out",
+    "deleteAccount": "Delete Account",
+    "unknownVersion": "Untagged application version"
+  },
   "badge": {
     "new": "New"
   },
