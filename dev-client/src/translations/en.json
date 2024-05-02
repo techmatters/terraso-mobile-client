@@ -45,6 +45,7 @@
       "privacy_tooltip_link": "Learn more"
     },
     "form": {
+      "required": "Required",
       "name_min_length_error": "Site name must be at least {{min}} characters",
       "name_max_length_error": "Site name must be at most {{max}} characters",
       "coords_parse_error": {

@@ -86,12 +86,17 @@ export const CreateSiteView = ({
         coords: defaultCoords ? coordsToString(defaultCoords) : '',
         projectId: defaultProject?.id,
         privacy: defaultProject?.privacy ?? 'PUBLIC',
+      }}
+      validateOnMount={true}
+      initialTouched={{
+        name: true,
       }}>
-      {props => (
+      {({isValid, ...props}) => (
         <CreateSiteForm
           {...props}
           sitePin={sitePin}
           onInfoPress={onInfoPress}
+          isValid={isValid}
         />
       )}
     </Formik>
