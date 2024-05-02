@@ -362,9 +362,8 @@
     "description": "LandPKS is a Terraso soil science tool."
   },
   "logout": {
-    "confirm_title": "Sign out",
-    "confirm_body": "Sign out of Terraso?",
-    "confirm_action": "Sign out"
+    "confirm_body": "Are you sure you want to log out?",
+    "confirm_action": "Log out"
   },
   "account": {
     "google_login": "Sign in with Google",

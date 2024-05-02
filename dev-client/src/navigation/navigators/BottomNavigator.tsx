@@ -15,16 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {memo, useCallback, useEffect} from 'react';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {signOut} from 'terraso-client-shared/account/accountSlice';
 import {BottomNavIconButton} from 'terraso-mobile-client/navigation/components/BottomNavIconButton';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {NavigationHelpers} from '@react-navigation/native';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {LogoutModal} from 'terraso-mobile-client/components/modals/LogoutModal';
 
 export const BottomTabs = createBottomTabNavigator<BottomTabsParamList>();
 
@@ -32,7 +31,6 @@ export const BottomNavigator = memo(
   ({navigation}: {navigation: NavigationHelpers<BottomTabsParamList>}) => {
     const {t} = useTranslation();
     const stackNavigation = useNavigation();
-    const dispatch = useDispatch();
     const loggedIn = useSelector(
       state => state.account.currentUser.data !== null,
     );
@@ -48,10 +46,6 @@ export const BottomNavigator = memo(
       () => navigation.navigate('SETTINGS'),
       [navigation],
     );
-
-    const onLogout = useCallback(() => {
-      dispatch(signOut());
-    }, [dispatch]);
 
     useEffect(() => {
       if (!loggedIn) {
@@ -76,7 +70,7 @@ export const BottomNavigator = memo(
           label={t('bottom_navigation.settings')}
           onPress={onSettings}
         />
-        <ConfirmModal
+        <LogoutModal
           trigger={onOpen => (
             <BottomNavIconButton
               name="logout"
@@ -84,10 +78,6 @@ export const BottomNavigator = memo(
               onPress={onOpen}
             />
           )}
-          title={t('logout.confirm_title')}
-          body={t('logout.confirm_body')}
-          actionName={t('logout.confirm_action')}
-          handleConfirm={onLogout}
         />
       </Row>
     );
