@@ -21,7 +21,6 @@ import {Site} from 'terraso-client-shared/site/siteSlice';
 import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
@@ -30,8 +29,8 @@ import {
   Row,
   Heading,
   Text,
-  Badge,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 
 const TEMP_MODIFIED_DATE = '8/15/23';
 const TEMP_MODIFIED_NAME = 'Sample Sam';
@@ -83,9 +82,9 @@ export const SiteCard = ({
       <Row alignItems="center">
         <StaticMapView coords={site} style={styles.mapView} />
         <Box w="4" />
-        <Badge variant="chip" startIcon={<Icon name="people" />}>
-          1
-        </Badge>
+        {project && (
+          <PeopleBadge count={Object.keys(project.memberships).length} />
+        )}
         <Box flexGrow={1} />
         {onShowSiteOnMap && (
           <IconButton

@@ -96,7 +96,7 @@ export const CreateSiteForm = ({
             <FormLabel>{t('site.create.location_label')}</FormLabel>
             <Text>
               {t('site.create.location_accuracy', {
-                accuracyM: accuracyM?.toFixed(5),
+                accuracyM: accuracyM?.toFixed(0),
               })}
             </Text>
             <FormInput keyboardType="decimal-pad" />

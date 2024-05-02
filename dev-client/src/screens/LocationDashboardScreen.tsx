@@ -51,18 +51,9 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
   );
 
   const appBarRightButton = useMemo(() => {
-    // display add button if no site associated with location
-    if (!siteId) {
-      return (
-        <AppBarIconButton
-          name="add"
-          onPress={() => navigation.navigate('CREATE_SITE', {coords})}
-        />
-      );
-    }
-
-    // display nothing if user does not own the site / is not manager
-    if (userRole === null || !isSiteManager(userRole)) {
+    // display nothing if no site associated with location or
+    // user does not own the site / is not manager
+    if (!siteId || userRole === null || !isSiteManager(userRole)) {
       return undefined;
     }
 
@@ -73,7 +64,7 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
         onPress={() => navigation.navigate('SITE_SETTINGS', {siteId})}
       />
     );
-  }, [siteId, coords, navigation, userRole]);
+  }, [siteId, navigation, userRole]);
 
   const onInfoPress = useCallback(
     () => infoModalRef.current?.present(),

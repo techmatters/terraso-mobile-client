@@ -20,7 +20,7 @@
     "last_updated": "Last Modified: {{date}} by {{name}}",
     "progress": "Progress: {{progress}}",
     "members": "{{members}} Members",
-    "more_info": "More info",
+    "more_info": "Learn more",
     "soil_id_prediction": "Soil ID prediction",
     "ecological_site_prediction": "Ecological site prediction",
     "annual_precip_avg": "Annual precipitation avg",
@@ -33,6 +33,8 @@
     },
     "create": {
       "title": "Create Site",
+      "description": "Create a site here to save this location, collect data, and see more detailed reports.",
+      "button_label": "Create Site Here",
       "gps": "Use my current location (GPS)",
       "pin": "Use map pin",
       "manual": "Enter coordinates",
@@ -74,10 +76,6 @@
         "action_name": "Delete"
       },
       "location_accuracy": "Location Accuracy",
-      "last_modified": {
-        "label": "Last Modified",
-        "value": "{{date}} {{name}}"
-      },
       "default_title": "Location Information",
       "speed_dial": {
         "note_label": "NOTE",
@@ -261,7 +259,7 @@
       "heading": "Transfer existing sites",
       "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project.",
       "unaffiliated": "Unaffiliated",
-      "tooltip": "Sites you transfer to this project will inherit this project’s data settings, input requirements, and team members. Learn more..."
+      "tooltip": "Sites you transfer to this project will inherit this project’s data settings, input requirements, and team members."
     },
     "form": {
       "name_min_length_error": "Project name must be at least {{min}} characters",

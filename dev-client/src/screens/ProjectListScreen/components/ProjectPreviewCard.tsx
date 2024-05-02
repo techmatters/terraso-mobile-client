@@ -27,6 +27,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 
 type Props = {
   project: Project;
@@ -63,9 +64,7 @@ export const ProjectPreviewCard = ({project}: Props) => {
         <Badge variant="chip" startIcon={<Icon name="location-on" />}>
           {Object.keys(project.sites).length}
         </Badge>
-        <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
-          {Object.keys(project.memberships).length}
-        </Badge>
+        <PeopleBadge count={Object.keys(project.memberships).length} />
       </HStack>
     </Card>
   );
