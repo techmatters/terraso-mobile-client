@@ -13,8 +13,7 @@ export function LogOutButton() {
           size="md"
           variant="ghost"
           alignSelf="flex-start"
-          _text={{color: 'text.primary'}}
-          textTransform={'uppercase'}
+          _text={{color: 'text.primary', textTransform: 'uppercase'}}
           leftIcon={<Icon name="logout" color="text.primary" />}
           onPress={onOpen}>
           {t('settings.logOut')}

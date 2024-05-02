@@ -10,9 +10,8 @@ export function DeleteAccountButton() {
       size="md"
       variant="ghost"
       alignSelf="flex-start"
-      _text={{color: 'error.main'}}
+      _text={{color: 'error.main', textTransform: 'uppercase'}}
       _pressed={{backgroundColor: 'red.100'}}
-      textTransform={'uppercase'}
       leftIcon={<Icon name="delete" color="error.main" />}>
       {t('settings.deleteAccount')}
     </Button>
