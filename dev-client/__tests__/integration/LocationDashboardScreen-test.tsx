@@ -16,7 +16,7 @@
  */
 import {testState} from '@testing/data';
 import {render} from '@testing/utils';
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationDashboardScreen';
+import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 
 test('renders correctly', () => {
   const screen = render(<LocationDashboardScreen siteId="1" />, {

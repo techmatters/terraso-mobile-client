@@ -26,7 +26,7 @@ import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/AddSiteNoteScreen
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/EditSiteNoteScreen';
 import {ReadNoteScreen} from 'terraso-mobile-client/screens/ReadNoteScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationDashboardScreen';
+import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';

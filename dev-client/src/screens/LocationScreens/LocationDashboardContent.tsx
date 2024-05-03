@@ -26,7 +26,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
-import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScreen/components/ProjectInstructionsButton';
+import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
@@ -103,7 +103,7 @@ const LocationPrediction = ({
   );
 };
 
-export const SiteScreen = ({siteId, coords}: Props) => {
+export const LocationDashboardContent = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();

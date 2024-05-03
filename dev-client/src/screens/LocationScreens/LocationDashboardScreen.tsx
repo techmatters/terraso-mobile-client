@@ -24,7 +24,7 @@ import {useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
+import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/infoModals/PrivacyInfoModal';
@@ -35,6 +35,7 @@ import {isSiteManager} from 'terraso-mobile-client/util';
 
 type Props = {siteId?: string; coords?: Coords};
 
+// A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with coords)
 export const LocationDashboardScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
@@ -90,7 +91,7 @@ export const LocationDashboardScreen = ({siteId, coords}: Props) => {
             <LocationDashboardTabNavigator siteId={siteId} />
           </SiteRoleContextProvider>
         ) : (
-          <SiteScreen siteId={siteId} coords={coords} />
+          <LocationDashboardContent siteId={siteId} coords={coords} />
         )}
         <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
       </ScreenScaffold>
