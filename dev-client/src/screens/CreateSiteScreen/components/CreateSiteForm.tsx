@@ -157,7 +157,7 @@ export const CreateSiteForm = ({
       <Box position="absolute" bottom={10} right={3} p={3}>
         <Button
           onPress={() => handleSubmit()}
-          isDisabled={isSubmitting || !isValid} // TODO-cknipe: Do we know if this was intended? (Same question as in project)
+          isDisabled={isSubmitting || !isValid}
           shadow={5}
           size={'lg'}
           _text={{textTransform: 'uppercase'}}>

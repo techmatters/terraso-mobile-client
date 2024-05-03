@@ -111,7 +111,7 @@ const FormContainer = React.memo(
         <Box position="absolute" bottom={8} right={3} p={3}>
           <Button
             onPress={handleSubmit}
-            isDisabled={isSubmitting || !isValid} //TODO-cknipe: Comment in PR: is this what was intended with isSubmitting?
+            isDisabled={isSubmitting || !isValid}
             shadow={5}
             size={'lg'}
             _text={{textTransform: 'uppercase'}}>
