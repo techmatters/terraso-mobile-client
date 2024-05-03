@@ -383,7 +383,7 @@
     }
   },
   "bottom_navigation": {
-    "home": "Home",
+    "sites": "Sites",
     "projects": "Projects",
     "settings": "Settings"
   },

@@ -35,7 +35,10 @@ export const BottomNavigator = memo(
       state => state.account.currentUser.data !== null,
     );
 
-    const onHome = useCallback(() => navigation.navigate('HOME'), [navigation]);
+    const onSites = useCallback(
+      () => navigation.navigate('HOME'),
+      [navigation],
+    );
 
     const onProject = useCallback(
       () => navigation.navigate('PROJECT_LIST'),
@@ -57,8 +60,8 @@ export const BottomNavigator = memo(
       <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
         <BottomNavIconButton
           name="location-pin"
-          label={t('bottom_navigation.home')}
-          onPress={onHome}
+          label={t('bottom_navigation.sites')}
+          onPress={onSites}
         />
         <BottomNavIconButton
           name="work"
