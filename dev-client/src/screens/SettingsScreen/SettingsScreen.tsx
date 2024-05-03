@@ -15,30 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Column,
-  VStack,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {VersionIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/VersionIndicatorComponent';
 import {UserIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/UserIndicatorComponent';
-import {Divider} from 'native-base';
 import {LogOutButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/LogOutButton';
 import {DeleteAccountButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/DeleteAccountButton';
+import {ButtonList} from 'terraso-mobile-client/components/buttons/ButtonList';
 
 export function SettingsScreen() {
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} RightButton={null} />}>
       <VStack height="full" margin="12px">
         <UserIndicator />
-        <Column mt="12px" mb="24px" space="6px">
-          <Divider />
+        <ButtonList>
           <LogOutButton />
-          <Divider />
           <DeleteAccountButton />
-          <Divider />
-        </Column>
+        </ButtonList>
         <VersionIndicator />
       </VStack>
     </ScreenScaffold>

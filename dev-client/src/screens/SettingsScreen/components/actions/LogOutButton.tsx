@@ -15,9 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/Icons';
+import {ListButton} from 'terraso-mobile-client/components/buttons/ListButton';
 import {LogoutModal} from 'terraso-mobile-client/components/modals/LogoutModal';
 
 export function LogOutButton() {
@@ -26,15 +25,12 @@ export function LogOutButton() {
   return (
     <LogoutModal
       trigger={onOpen => (
-        <Button
-          size="md"
-          variant="ghost"
-          alignSelf="flex-start"
-          _text={{color: 'text.primary', textTransform: 'uppercase'}}
-          leftIcon={<Icon name="logout" color="text.primary" />}
-          onPress={onOpen}>
-          {t('settings.logOut')}
-        </Button>
+        <ListButton
+          type="default"
+          name="logout"
+          labelText={t('settings.logOut')}
+          onPress={onOpen}
+        />
       )}
     />
   );
