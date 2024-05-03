@@ -1130,8 +1130,153 @@ exports[`renders correctly 1`] = `
                                   }
                                 />
                                 <View
-                                  style={{}}
+                                  style={
+                                    {
+                                      "paddingHorizontal": 16,
+                                      "paddingVertical": 16,
+                                    }
+                                  }
                                 >
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginBottom": 4,
+                                      }
+                                    }
+                                  >
+                                    <Text
+                                      style={
+                                        {
+                                          "fontWeight": "bold",
+                                        }
+                                      }
+                                    >
+                                      Latitude
+                                      : 
+                                    </Text>
+                                    <Text
+                                      style={{}}
+                                    >
+                                      1.000000
+                                    </Text>
+                                  </Text>
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginBottom": 4,
+                                      }
+                                    }
+                                  >
+                                    <Text
+                                      style={
+                                        {
+                                          "fontWeight": "bold",
+                                        }
+                                      }
+                                    >
+                                      Longitude
+                                      : 
+                                    </Text>
+                                    <Text
+                                      style={{}}
+                                    >
+                                      1.000000
+                                    </Text>
+                                  </Text>
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginBottom": 4,
+                                      }
+                                    }
+                                  >
+                                    <Text
+                                      style={
+                                        {
+                                          "fontWeight": "bold",
+                                        }
+                                      }
+                                    >
+                                      Elevation
+                                      : 
+                                    </Text>
+                                    <Text
+                                      style={{}}
+                                    >
+                                      1900 ft
+                                    </Text>
+                                  </Text>
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginBottom": 4,
+                                      }
+                                    }
+                                  >
+                                    <Text
+                                      style={
+                                        {
+                                          "fontWeight": "bold",
+                                        }
+                                      }
+                                    >
+                                      Project
+                                      : 
+                                    </Text>
+                                    <Text
+                                      style={{}}
+                                    >
+                                      1
+                                    </Text>
+                                  </Text>
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginBottom": 4,
+                                      }
+                                    }
+                                  >
+                                    <Text
+                                      style={
+                                        {
+                                          "fontWeight": "bold",
+                                        }
+                                      }
+                                    >
+                                      Data Privacy
+                                      : 
+                                    </Text>
+                                    <Text
+                                      style={{}}
+                                    >
+                                      Private
+                                    </Text>
+                                  </Text>
                                   <View
                                     style={
                                       [
@@ -1139,319 +1284,59 @@ exports[`renders correctly 1`] = `
                                           "flexDirection": "row",
                                         },
                                         {
-                                          "alignItems": "center",
-                                          "backgroundColor": "#00582B",
-                                          "justifyContent": "space-between",
-                                          "paddingHorizontal": 16,
+                                          "alignItems": "baseline",
+                                          "columnGap": 16,
                                         },
                                       ]
                                     }
                                   >
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#FFFFFF",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      Details
-                                    </Text>
                                     <View
-                                      accessibilityRole="button"
-                                      accessibilityState={
-                                        {
-                                          "busy": undefined,
-                                          "checked": undefined,
-                                          "disabled": undefined,
-                                          "expanded": undefined,
-                                          "selected": undefined,
-                                        }
-                                      }
-                                      accessibilityValue={
-                                        {
-                                          "max": undefined,
-                                          "min": undefined,
-                                          "now": undefined,
-                                          "text": undefined,
-                                        }
-                                      }
-                                      accessible={true}
-                                      collapsable={false}
-                                      colorScheme="primary"
-                                      dataSet={{}}
-                                      focusable={true}
-                                      onBlur={[Function]}
-                                      onClick={[Function]}
-                                      onFocus={[Function]}
-                                      onResponderGrant={[Function]}
-                                      onResponderMove={[Function]}
-                                      onResponderRelease={[Function]}
-                                      onResponderTerminate={[Function]}
-                                      onResponderTerminationRequest={[Function]}
-                                      onStartShouldSetResponder={[Function]}
                                       style={
-                                        {
-                                          "alignItems": "center",
-                                          "borderRadius": 4,
-                                          "flexDirection": "row",
-                                          "justifyContent": "center",
-                                          "paddingBottom": 4,
-                                          "paddingLeft": 4,
-                                          "paddingRight": 4,
-                                          "paddingTop": 4,
-                                        }
+                                        [
+                                          {
+                                            "alignItems": "center",
+                                            "columnGap": 4,
+                                            "flexDirection": "row",
+                                            "justifyContent": "center",
+                                            "paddingHorizontal": 8,
+                                            "paddingVertical": 2,
+                                          },
+                                          {
+                                            "alignItems": "center",
+                                            "backgroundColor": "#93E39B",
+                                            "borderRadius": 100,
+                                            "columnGap": 4,
+                                            "flexDirection": "row",
+                                            "justifyContent": "center",
+                                            "padding": 4,
+                                            "paddingHorizontal": 8,
+                                            "paddingVertical": 2,
+                                          },
+                                        ]
                                       }
                                     >
                                       <Icon
-                                        color="#FFFFFF"
-                                        name="expand-less"
+                                        color="#1A202C"
+                                        name="people-alt"
                                         size={24}
                                         style={{}}
                                       />
+                                      <Text
+                                        letterSpacing="0.15px"
+                                        lineHeight="24px"
+                                        style={
+                                          {
+                                            "color": "#1A202C",
+                                            "fontSize": 12,
+                                            "fontWeight": "medium",
+                                          }
+                                        }
+                                      >
+                                        0
+                                      </Text>
                                     </View>
                                   </View>
-                                  <View
-                                    style={
-                                      {
-                                        "paddingHorizontal": 16,
-                                        "paddingVertical": 8,
-                                      }
-                                    }
-                                  >
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Project
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        1
-                                      </Text>
-                                    </Text>
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Data Privacy
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        Private
-                                      </Text>
-                                    </Text>
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Latitude
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        1.000000
-                                      </Text>
-                                    </Text>
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Longitude
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        1.000000
-                                      </Text>
-                                    </Text>
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Elevation
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        1900 ft
-                                      </Text>
-                                    </Text>
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Location Accuracy
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        20 ft
-                                      </Text>
-                                    </Text>
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Bedrock
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        not found
-                                      </Text>
-                                    </Text>
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
-                                      style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        style={
-                                          {
-                                            "fontWeight": "bold",
-                                          }
-                                        }
-                                      >
-                                        Last Modified
-                                        : 
-                                      </Text>
-                                      <Text
-                                        style={{}}
-                                      >
-                                        8/15/23 Sample Sam
-                                      </Text>
-                                    </Text>
-                                  </View>
                                 </View>
-                                <View
-                                  aria-orientation="horizontal"
-                                  dataSet={{}}
-                                  style={
-                                    {
-                                      "backgroundColor": "#d4d4d4",
-                                      "height": 1,
-                                      "width": "100%",
-                                    }
-                                  }
-                                  thickness="1"
-                                />
                                 <View
                                   style={
                                     [
@@ -1474,6 +1359,7 @@ exports[`renders correctly 1`] = `
                                         {
                                           "alignItems": "flex-start",
                                           "backgroundColor": "#00344D",
+                                          "borderRadius": 4,
                                           "paddingLeft": 16,
                                           "paddingVertical": 18,
                                         },
@@ -1523,12 +1409,12 @@ exports[`renders correctly 1`] = `
                                       }
                                     />
                                     <Text
-                                      letterSpacing="0.17px"
-                                      lineHeight="20px"
+                                      letterSpacing="0.15px"
+                                      lineHeight="24px"
                                       style={
                                         {
                                           "color": "#FFFFFF",
-                                          "fontSize": 14,
+                                          "fontSize": 16,
                                           "fontWeight": "400",
                                           "marginBottom": 5,
                                         }
@@ -1551,12 +1437,12 @@ exports[`renders correctly 1`] = `
                                       </Text>
                                     </Text>
                                     <Text
-                                      letterSpacing="0.17px"
-                                      lineHeight="20px"
+                                      letterSpacing="0.15px"
+                                      lineHeight="24px"
                                       style={
                                         {
                                           "color": "#FFFFFF",
-                                          "fontSize": 14,
+                                          "fontSize": 16,
                                           "fontWeight": "400",
                                           "marginBottom": 25,
                                         }
