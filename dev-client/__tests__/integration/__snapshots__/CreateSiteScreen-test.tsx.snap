@@ -303,16 +303,16 @@ exports[`renders correctly 1`] = `
                             >
                               <View
                                 dataSet={{}}
-                                feedbackId="field-1-feedback"
+                                feedbackId="field-6-feedback"
                                 hasFeedbackText={false}
                                 hasHelpText={false}
-                                helpTextId="field-1-helptext"
+                                helpTextId="field-6-helptext"
                                 isDisabled={false}
                                 isInvalid={false}
                                 isReadOnly={false}
                                 isRequired={false}
-                                labelId="field-1-label"
-                                nativeID="field-1-label"
+                                labelId="field-6-label"
+                                nativeID="field-6-label"
                                 setHasFeedbackText={[Function]}
                                 setHasHelpText={[Function]}
                                 style={
@@ -363,7 +363,7 @@ exports[`renders correctly 1`] = `
                                   disabled={false}
                                   editable={true}
                                   isRequired={false}
-                                  nativeID="field-1-input"
+                                  nativeID="field-6-input"
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
@@ -404,16 +404,16 @@ exports[`renders correctly 1`] = `
                             >
                               <View
                                 dataSet={{}}
-                                feedbackId="field-2-feedback"
+                                feedbackId="field-7-feedback"
                                 hasFeedbackText={false}
                                 hasHelpText={false}
-                                helpTextId="field-2-helptext"
+                                helpTextId="field-7-helptext"
                                 isDisabled={false}
                                 isInvalid={false}
                                 isReadOnly={false}
                                 isRequired={false}
-                                labelId="field-2-label"
-                                nativeID="field-2-label"
+                                labelId="field-7-label"
+                                nativeID="field-7-label"
                                 setHasFeedbackText={[Function]}
                                 setHasHelpText={[Function]}
                                 style={
@@ -478,7 +478,7 @@ exports[`renders correctly 1`] = `
                                   editable={true}
                                   isRequired={false}
                                   keyboardType="decimal-pad"
-                                  nativeID="field-2-input"
+                                  nativeID="field-7-input"
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
@@ -509,16 +509,16 @@ exports[`renders correctly 1`] = `
                               </View>
                               <View
                                 dataSet={{}}
-                                feedbackId="field-2-feedback"
+                                feedbackId="field-7-feedback"
                                 hasFeedbackText={false}
                                 hasHelpText={false}
-                                helpTextId="field-2-helptext"
+                                helpTextId="field-7-helptext"
                                 isDisabled={false}
                                 isInvalid={false}
                                 isReadOnly={false}
                                 isRequired={false}
-                                labelId="field-2-label"
-                                nativeID="field-2-label"
+                                labelId="field-7-label"
+                                nativeID="field-7-label"
                                 setHasFeedbackText={[Function]}
                                 setHasHelpText={[Function]}
                                 style={
@@ -560,16 +560,16 @@ exports[`renders correctly 1`] = `
                             >
                               <View
                                 dataSet={{}}
-                                feedbackId="field-3-feedback"
+                                feedbackId="field-8-feedback"
                                 hasFeedbackText={false}
                                 hasHelpText={false}
-                                helpTextId="field-3-helptext"
+                                helpTextId="field-8-helptext"
                                 isDisabled={false}
                                 isInvalid={false}
                                 isReadOnly={false}
                                 isRequired={false}
-                                labelId="field-3-label"
-                                nativeID="field-3-label"
+                                labelId="field-8-label"
+                                nativeID="field-8-label"
                                 setHasFeedbackText={[Function]}
                                 setHasHelpText={[Function]}
                                 style={
@@ -1156,16 +1156,16 @@ exports[`renders correctly 1`] = `
                             >
                               <View
                                 dataSet={{}}
-                                feedbackId="field-5-feedback"
+                                feedbackId="field-10-feedback"
                                 hasFeedbackText={false}
                                 hasHelpText={false}
-                                helpTextId="field-5-helptext"
+                                helpTextId="field-10-helptext"
                                 isDisabled={false}
                                 isInvalid={false}
                                 isReadOnly={false}
                                 isRequired={false}
-                                labelId="field-5-label"
-                                nativeID="field-5-label"
+                                labelId="field-10-label"
+                                nativeID="field-10-label"
                                 setHasFeedbackText={[Function]}
                                 setHasHelpText={[Function]}
                                 style={
@@ -1365,32 +1365,32 @@ exports[`renders correctly 1`] = `
                                         colorScheme="primary"
                                         dataSet={{}}
                                         defaultIsChecked={false}
-                                        feedbackId="field-5-feedback"
+                                        feedbackId="field-10-feedback"
                                         formControlContext={
                                           {
-                                            "feedbackId": "field-5-feedback",
+                                            "feedbackId": "field-10-feedback",
                                             "hasFeedbackText": false,
                                             "hasHelpText": false,
-                                            "helpTextId": "field-5-helptext",
+                                            "helpTextId": "field-10-helptext",
                                             "isDisabled": false,
                                             "isInvalid": false,
                                             "isReadOnly": false,
                                             "isRequired": false,
-                                            "labelId": "field-5-label",
-                                            "nativeID": "field-5",
+                                            "labelId": "field-10-label",
+                                            "nativeID": "field-10",
                                             "setHasFeedbackText": [Function],
                                             "setHasHelpText": [Function],
                                           }
                                         }
                                         hasFeedbackText={false}
                                         hasHelpText={false}
-                                        helpTextId="field-5-helptext"
+                                        helpTextId="field-10-helptext"
                                         isDisabled={false}
                                         isInvalid={false}
                                         isReadOnly={false}
                                         isRequired={false}
-                                        labelId="field-5-label"
-                                        nativeID="field-5"
+                                        labelId="field-10-label"
+                                        nativeID="field-10"
                                         setHasFeedbackText={[Function]}
                                         setHasHelpText={[Function]}
                                         state={
@@ -1640,32 +1640,32 @@ exports[`renders correctly 1`] = `
                                         colorScheme="primary"
                                         dataSet={{}}
                                         defaultIsChecked={false}
-                                        feedbackId="field-5-feedback"
+                                        feedbackId="field-10-feedback"
                                         formControlContext={
                                           {
-                                            "feedbackId": "field-5-feedback",
+                                            "feedbackId": "field-10-feedback",
                                             "hasFeedbackText": false,
                                             "hasHelpText": false,
-                                            "helpTextId": "field-5-helptext",
+                                            "helpTextId": "field-10-helptext",
                                             "isDisabled": false,
                                             "isInvalid": false,
                                             "isReadOnly": false,
                                             "isRequired": false,
-                                            "labelId": "field-5-label",
-                                            "nativeID": "field-5",
+                                            "labelId": "field-10-label",
+                                            "nativeID": "field-10",
                                             "setHasFeedbackText": [Function],
                                             "setHasHelpText": [Function],
                                           }
                                         }
                                         hasFeedbackText={false}
                                         hasHelpText={false}
-                                        helpTextId="field-5-helptext"
+                                        helpTextId="field-10-helptext"
                                         isDisabled={false}
                                         isInvalid={false}
                                         isReadOnly={false}
                                         isRequired={false}
-                                        labelId="field-5-label"
-                                        nativeID="field-5"
+                                        labelId="field-10-label"
+                                        nativeID="field-10"
                                         setHasFeedbackText={[Function]}
                                         setHasHelpText={[Function]}
                                         state={

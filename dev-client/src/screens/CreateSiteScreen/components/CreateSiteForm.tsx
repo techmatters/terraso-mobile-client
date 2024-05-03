@@ -61,6 +61,7 @@ export const CreateSiteForm = ({
   values,
   sitePin,
   onInfoPress,
+  isValid,
 }: FormikProps<FormState> & {
   sitePin: Coords | undefined;
   onInfoPress: () => void;
@@ -156,7 +157,7 @@ export const CreateSiteForm = ({
       <Box position="absolute" bottom={10} right={3} p={3}>
         <Button
           onPress={() => handleSubmit()}
-          disabled={isSubmitting}
+          isDisabled={isSubmitting || !isValid}
           shadow={5}
           size={'lg'}
           _text={{textTransform: 'uppercase'}}>
