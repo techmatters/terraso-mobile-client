@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Fab, Input, Radio, TextArea} from 'native-base';
+import {Button, Input, Radio, TextArea} from 'native-base';
 import {Formik, FormikProps} from 'formik';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
@@ -32,11 +32,15 @@ import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  ProjectMembershipProjectRoleChoices,
+  ProjectUpdateMutationInput,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   HStack,
   VStack,
   Heading,
+  Box,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
 
@@ -55,11 +59,7 @@ export const projectValidationFields = (t: TFunction) => ({
         max: PROJECT_NAME_MAX_LENGTH,
       }),
     )
-    .required(
-      t('projects.form.name_min_length_error', {
-        min: PROJECT_NAME_MIN_LENGTH,
-      }),
-    ),
+    .required(t('general.required')),
   description: yup.string().max(
     PROJECT_DESCRIPTION_MAX_LENGTH,
     t('projects.form.description_max_length_error', {
@@ -119,15 +119,15 @@ type FormValues = Omit<ProjectUpdateMutationInput, 'id'>;
 
 type FormProps = FormValues & {
   onSubmit: (values: FormValues) => void;
-  submitProps?: Omit<React.ComponentProps<typeof Fab>, 'onPress'>;
+  userRole: ProjectMembershipProjectRoleChoices | null;
 };
 
-export const EditForm = ({
+export const EditProjectForm = ({
   onSubmit,
   name,
   description,
   measurementUnits,
-  submitProps,
+  userRole,
 }: Omit<FormProps, 'privacy'>) => {
   const {t} = useTranslation();
 
@@ -135,6 +135,7 @@ export const EditForm = ({
     <Formik<FormValues>
       validationSchema={editProjectValidationSchema(t)}
       initialValues={{name, description, measurementUnits}}
+      validateOnMount={true}
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
         <>
@@ -149,22 +150,27 @@ export const EditForm = ({
               </Radio>
             )}
           />
-          <Fab
-            onPress={() => handleSubmit()}
-            disabled={!isValid || isSubmitting}
-            label={t('general.submit')}
-            _text={{
-              textTransform: 'uppercase',
-            }}
-            {...submitProps}
-          />
+
+          {userRole === 'MANAGER' && (
+            <Box position="absolute" bottom={0} right={0}>
+              <Button
+                onPress={handleSubmit}
+                isDisabled={isSubmitting || !isValid}
+                shadow={5}
+                size={'lg'}
+                display={'flex'}
+                _text={{textTransform: 'uppercase'}}>
+                {t('general.save_fab')}
+              </Button>
+            </Box>
+          )}
         </>
       )}
     </Formik>
   );
 };
 
-export default function Form({
+export default function ProjectForm({
   editForm = false,
   onInfoPress,
   handleChange,
