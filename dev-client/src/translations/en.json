@@ -278,7 +278,8 @@
     "unknownUser": "Unknown user",
     "logOut": "Log Out",
     "deleteAccount": "Delete Account",
-    "unknownVersion": "Untagged application version"
+    "unknownVersion": "Untagged application version",
+    "version": "Version {{version}}"
   },
   "badge": {
     "new": "New"
