@@ -24,7 +24,7 @@ export function DeleteAccountButton() {
   return (
     <ListButton
       type="error"
-      name="delete"
+      iconName="delete"
       labelText={t('settings.deleteAccount')}
     />
   );

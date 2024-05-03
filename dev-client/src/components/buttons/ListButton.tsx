@@ -1,19 +1,20 @@
-import {IconProps, Icon} from 'terraso-mobile-client/components/Icons';
 import {Button} from 'native-base';
 import {useMemo} from 'react';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
+import {Icon, IconName} from 'terraso-mobile-client/components/Icons';
+
 export type ListButtonType = 'default' | 'error';
 
-export type ListButtonProps = Pick<IconProps, 'name'> &
-  Pick<PressableProps, 'onPress'> & {
-    type: ListButtonType;
-    labelText: string;
-  };
+export type ListButtonProps = Pick<PressableProps, 'onPress'> & {
+  type: ListButtonType;
+  labelText: string;
+  iconName: IconName;
+};
 
 export function ListButton({
   type = 'default',
-  name,
+  iconName,
   labelText,
   onPress,
 }: ListButtonProps) {
@@ -32,7 +33,7 @@ export function ListButton({
       variant="ghost"
       alignSelf="flex-start"
       _text={{color: color, textTransform: 'uppercase'}}
-      leftIcon={name ? <Icon name={name} color={color} /> : undefined}
+      leftIcon={iconName ? <Icon name={iconName} color={color} /> : undefined}
       _pressed={{backgroundColor: pressedColor}}
       onPress={onPress}>
       {labelText}

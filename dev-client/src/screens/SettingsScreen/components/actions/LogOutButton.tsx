@@ -27,7 +27,7 @@ export function LogOutButton() {
       trigger={onOpen => (
         <ListButton
           type="default"
-          name="logout"
+          iconName="logout"
           labelText={t('settings.logOut')}
           onPress={onOpen}
         />
