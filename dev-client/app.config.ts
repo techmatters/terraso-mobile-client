@@ -113,8 +113,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         'Terraso LandPKS uses your photo library to analyze soil color.',
       NSCameraUsageDescription:
         'Terraso LandPKS uses your location to take photos of sites.',
-      NSMicrophoneUsageDescription:
-        'This application does not use your microphone.',
       NSLocationAlwaysAndWhenInUseUsageDescription:
         'Terraso LandPKS uses your location to create sites.',
       NSLocationWhenInUseUsageDescription: 'Show current location on map.',

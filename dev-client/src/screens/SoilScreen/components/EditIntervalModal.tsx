@@ -44,7 +44,8 @@ import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Icon, IconButton} from 'terraso-mobile-client/components/Icons';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useSiteSoilIntervals} from 'terraso-client-shared/selectors';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {

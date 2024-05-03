@@ -31,7 +31,6 @@ import {
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
-const TEMP_PRECIPITATION = '28 inches';
 const TEMP_ELEVATION = '2800 feet';
 
 type Props = {
@@ -67,11 +66,6 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
         <CalloutDetail
           label={t('site.ecological_site_prediction').toUpperCase()}
           value={TEMP_ECO_SITE_PREDICTION.toUpperCase()}
-        />
-        <Divider />
-        <CalloutDetail
-          label={t('site.annual_precip_avg').toUpperCase()}
-          value={TEMP_PRECIPITATION.toUpperCase()}
         />
         <Divider />
         <CalloutDetail

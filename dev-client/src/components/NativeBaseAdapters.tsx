@@ -29,7 +29,7 @@ import {
   convertNBStyles,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
-import {IconProps} from 'terraso-mobile-client/components/Icons';
+import {IconProps} from 'terraso-mobile-client/components/icons/Icon';
 
 const withProps = (node: React.ReactNode, props: object | undefined) =>
   !isValidElement(node) || props === undefined

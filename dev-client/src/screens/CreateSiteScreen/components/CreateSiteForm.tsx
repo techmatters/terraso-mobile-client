@@ -39,7 +39,7 @@ import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGro
 import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
-import {IconButton} from 'terraso-mobile-client/components/Icons';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   VStack,
   Box,
@@ -97,7 +97,7 @@ export const CreateSiteForm = ({
             <FormLabel>{t('site.create.location_label')}</FormLabel>
             <Text>
               {t('site.create.location_accuracy', {
-                accuracyM: accuracyM?.toFixed(5),
+                accuracyM: accuracyM?.toFixed(0),
               })}
             </Text>
             <FormInput keyboardType="decimal-pad" />
