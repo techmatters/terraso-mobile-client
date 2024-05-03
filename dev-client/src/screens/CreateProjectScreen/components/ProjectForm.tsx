@@ -59,7 +59,7 @@ export const projectValidationFields = (t: TFunction) => ({
         max: PROJECT_NAME_MAX_LENGTH,
       }),
     )
-    .required(t('projects.form.required')),
+    .required(t('general.required')),
   description: yup.string().max(
     PROJECT_DESCRIPTION_MAX_LENGTH,
     t('projects.form.description_max_length_error', {
@@ -151,17 +151,19 @@ export const EditProjectForm = ({
             )}
           />
 
-          <Box position="absolute" bottom={0} right={0}>
-            <Button
-              onPress={handleSubmit}
-              isDisabled={isSubmitting || !isValid}
-              shadow={5}
-              size={'lg'}
-              display={userRole === 'MANAGER' ? 'flex' : 'none'}
-              _text={{textTransform: 'uppercase'}}>
-              {t('general.save_fab')}
-            </Button>
-          </Box>
+          {userRole === 'MANAGER' && (
+            <Box position="absolute" bottom={0} right={0}>
+              <Button
+                onPress={handleSubmit}
+                isDisabled={isSubmitting || !isValid}
+                shadow={5}
+                size={'lg'}
+                display={'flex'}
+                _text={{textTransform: 'uppercase'}}>
+                {t('general.save_fab')}
+              </Button>
+            </Box>
+          )}
         </>
       )}
     </Formik>

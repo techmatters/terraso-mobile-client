@@ -50,7 +50,6 @@
       "privacy_tooltip_link": "Learn more"
     },
     "form": {
-      "required": "Required",
       "name_min_length_error": "Site name must be at least {{min}} characters",
       "name_max_length_error": "Site name must be at most {{max}} characters",
       "coords_parse_error": {
@@ -263,7 +262,6 @@
       "tooltip": "Sites you transfer to this project will inherit this project’s data settings, input requirements, and team members."
     },
     "form": {
-      "required": "Required",
       "name_min_length_error": "Project name must be at least {{min}} characters",
       "name_max_length_error": "Project name must be at most {{max}} characters",
       "description_max_length_error": "Project description must be at most {{max}} characters"

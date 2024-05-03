@@ -47,7 +47,7 @@ export const siteValidationSchema = (t: TFunction) =>
           max: SITE_NAME_MAX,
         }),
       )
-      .required(t('site.form.required')),
+      .required(t('general.required')),
     coords: yup
       .string()
       .required(t('site.form.coords_parse_error.COORDS_PARSE'))
