@@ -70,15 +70,6 @@ export const BottomNavigator = memo(
           label={t('bottom_navigation.settings')}
           onPress={onSettings}
         />
-        <LogoutModal
-          trigger={onOpen => (
-            <BottomNavIconButton
-              name="logout"
-              label={t('bottom_navigation.sign_out')}
-              onPress={onOpen}
-            />
-          )}
-        />
       </Row>
     );
   },
