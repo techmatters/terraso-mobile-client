@@ -6,10 +6,11 @@ import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 
 export type ListButtonType = 'default' | 'error';
 
-export type ListButtonProps = Pick<PressableProps, 'onPress'> & {
+export type ListButtonProps = {
   type: ListButtonType;
   labelText: string;
   iconName: IconName;
+  onPress?: PressableProps['onPress'];
 };
 
 export function ListButton({
