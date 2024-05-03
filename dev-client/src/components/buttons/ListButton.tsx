@@ -2,7 +2,7 @@ import {Button} from 'native-base';
 import {useMemo} from 'react';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
-import {Icon, IconName} from 'terraso-mobile-client/components/Icons';
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 
 export type ListButtonType = 'default' | 'error';
 
