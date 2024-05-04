@@ -62,12 +62,14 @@ type LocationPredictionProps = {
   label: string;
   soilName: string;
   ecologicalSiteName: string;
+  onExploreDataPress: () => void;
 };
 
 const LocationPrediction = ({
   label,
   soilName,
   ecologicalSiteName,
+  onExploreDataPress,
 }: LocationPredictionProps) => {
   const {t} = useTranslation();
 
@@ -96,7 +98,10 @@ const LocationPrediction = ({
         <Text>{ecologicalSiteName}</Text>
       </Text>
 
-      <Button w="95%" rightIcon={<Icon name="chevron-right" />}>
+      <Button
+        w="95%"
+        rightIcon={<Icon name="chevron-right" />}
+        onPress={onExploreDataPress}>
         {t('soil.explore_data').toUpperCase()}
       </Button>
     </Column>
@@ -112,6 +117,10 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
   const onCreate = useCallback(() => {
     navigation.navigate('CREATE_SITE', {coords});
   }, [navigation, coords]);
+
+  const onExploreDataPress = useCallback(() => {
+    navigation.navigate('LOCATION_SOIL_ID', {siteId});
+  }, [navigation, siteId]);
 
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
@@ -218,6 +227,7 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
           label={t('soil.soil_id').toUpperCase()}
           soilName={TEMP_SOIL_ID_VALUE}
           ecologicalSiteName={TEMP_ECO_SITE_PREDICTION}
+          onExploreDataPress={onExploreDataPress}
         />
       </Column>
     </ScrollView>

@@ -76,11 +76,29 @@
         "action_name": "Delete"
       },
       "location_accuracy": "Location Accuracy",
-      "default_title": "Location Information",
+      "default_title": "Temporary Pin",
       "speed_dial": {
         "note_label": "NOTE",
         "photo_label": "PHOTO",
         "bedrock_label": "BEDROCK"
+      }
+    },
+    "soil_id": {
+      "title": "Soil ID",
+      "description": {
+        "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter data and improve the results.",
+        "site": "LandPKS Soil ID uses data from soil maps and data entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties."
+      },
+      "matches": {
+        "title": "Top Soil Matches",
+        "info": {
+          "title": "Top soil matches",
+          "description": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil data to improve accuracy of the match scores. When this data is entered, the list will automatically update."
+        }
+      },
+      "site_data": {
+        "title": "Site Data",
+        "description": "Improve Soil ID results by entering some data for this site using the helpful guides along the way."
       }
     },
     "notes": {

@@ -35,7 +35,7 @@ import {isSiteManager} from 'terraso-mobile-client/util';
 
 type Props = {siteId?: string; coords?: Coords};
 
-// A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with coords)
+// A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with only coords)
 export const LocationDashboardScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
