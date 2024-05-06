@@ -24,6 +24,7 @@ import {NavigationHelpers} from '@react-navigation/native';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
+import {SettingsScreen} from 'terraso-mobile-client/screens/SettingsScreen/SettingsScreen';
 
 export const BottomTabsScreen = memo(() => {
   return (
@@ -38,6 +39,7 @@ export const BottomTabsScreen = memo(() => {
       screenOptions={{headerShown: false}}>
       <BottomTabs.Screen name="HOME" component={HomeScreen} />
       <BottomTabs.Screen name="PROJECT_LIST" component={ProjectListScreen} />
+      <BottomTabs.Screen name="SETTINGS" component={SettingsScreen} />
     </BottomTabs.Navigator>
   );
 });

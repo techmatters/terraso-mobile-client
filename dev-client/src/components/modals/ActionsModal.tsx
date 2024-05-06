@@ -83,7 +83,7 @@ export const ActionButton = ({
 };
 
 export type ActionsModalProps = Pick<ModalProps, 'trigger'> & {
-  title: string;
+  title?: string;
   actions: React.ReactNode;
 };
 
@@ -96,6 +96,8 @@ export const ActionsModal = forwardRef<
 >(({title, actions, children, ...modalProps}, forwardedRef) => {
   const ref = useRef<ModalHandle>(null);
   useImperativeHandle(forwardedRef, () => ref.current!);
+
+  const hasTitle = title !== undefined;
 
   const Footer = useMemo(
     () => (
@@ -113,10 +115,15 @@ export const ActionsModal = forwardRef<
       backgroundColor="grey.200"
       Footer={Footer}
       {...modalProps}>
-      <Heading variant="h5" textAlign="center">
-        {title}
-      </Heading>
-      <Box height="md" />
+      {hasTitle && (
+        <Heading variant="h5" textAlign="center">
+          {title}
+        </Heading>
+      )}
+
+      {/* (Box spacer between header & body is only present for modals w/ titles) */}
+      {hasTitle && <Box height="md" />}
+
       {children}
     </Modal>
   );
