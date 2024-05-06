@@ -29,7 +29,7 @@ export const Toasts = () => {
   useEffect(() => {
     if (soilIdStatus === 'error') {
       toast.show({
-        description: t('errors.soilId'),
+        description: t('errors.generic'),
       });
       dispatch(setSoilIdStatus('ready'));
     }

@@ -114,7 +114,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
         entries(FRAGMENT_IMAGES).map(([value, image]) => [
           value,
           {
-            label: t(`soil.texture.rockFragment.${value}`),
+            label: t(`soil.texture.rock_fragment.${value}`),
             image: <Image style={radioImage} source={image} />,
           },
         ]),
