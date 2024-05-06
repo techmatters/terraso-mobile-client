@@ -51,7 +51,7 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
       <HStack>
         <Icon name="place" color="primary.dark" size="sm" mr={1} />
         <Text bold fontSize="md">
-          {t('site.notes.projectInstructions')}
+          {t('site.notes.project_instructions')}
         </Text>
       </HStack>
       <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">

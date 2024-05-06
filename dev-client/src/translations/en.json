@@ -93,7 +93,7 @@
       "confirm_removal_body": "This action cannot be undone.",
       "min_length_error": "Must be at least {{min}} characters",
       "placeholder_text": "Start typing your note…",
-      "projectInstructions": "Site Instructions"
+      "project_instructions": "Site Instructions"
     },
     "search": {
       "placeholder": "Search sites",
@@ -185,7 +185,7 @@
       }
     },
     "edit": {
-      "inputHeader": "General Project Settings"
+      "input_header": "General Project Settings"
     },
     "settings": {
       "copy_download_link": "Copy project download link",
@@ -336,7 +336,7 @@
     "proceed": "Proceed"
   },
   "errors": {
-    "soilId": "Error saving soil ID information."
+    "generic": "Error saving soil ID information."
   },
   "screens": {
     "HOME": "LandPKS",
@@ -545,7 +545,7 @@
         "SILTY_CLAY_LOAM": "Silty Clay Loam",
         "SILT_LOAM": "Silt Loam"
       },
-      "rockFragment": {
+      "rock_fragment": {
         "VOLUME_0_1": "0–1%",
         "VOLUME_1_15": "1–15%",
         "VOLUME_15_35": "15–35%",
@@ -629,11 +629,11 @@
       "use_photo_instead": "Don’t know the soil color values? Use a photo instead (guide included.)",
       "photo_need_help": "To use a photo to determine soil color, you’ll need a 3M Canary Yellow Post-it Note for color reference and a properly prepared soil sample. Need help? Use the step-by-step guide.",
       "use_guide_label": "Use Guide",
-      "colorPhotoSoilCondition": {
+      "color_photo_soil_condition": {
         "MOIST": "Moist",
         "DRY": "Dry"
       },
-      "colorPhotoLightingCondition": {
+      "color_photo_lighting_condition": {
         "EVEN": "Yes",
         "UNEVEN": "No"
       }

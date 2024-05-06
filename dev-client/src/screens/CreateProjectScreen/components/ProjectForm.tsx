@@ -187,7 +187,7 @@ export default function ProjectForm({
   });
 
   const EditHeader = editForm ? (
-    <Heading size="sm">{t('projects.edit.inputHeader')}</Heading>
+    <Heading size="sm">{t('projects.edit.input_header')}</Heading>
   ) : (
     <></>
   );

@@ -34,7 +34,7 @@ export const PhotoConditions = (props: SoilPitInputScreenProps) => {
         (['MOIST', 'DRY'] as const).map(condition => [
           condition,
           {
-            text: t(`soil.color.colorPhotoSoilCondition.${condition}`),
+            text: t(`soil.color.color_photo_soil_condition.${condition}`),
           },
         ]),
       ),
@@ -47,7 +47,7 @@ export const PhotoConditions = (props: SoilPitInputScreenProps) => {
         (['EVEN', 'UNEVEN'] as const).map(condition => [
           condition,
           {
-            text: t(`soil.color.colorPhotoLightingCondition.${condition}`),
+            text: t(`soil.color.color_photo_lighting_condition.${condition}`),
           },
         ]),
       ),
