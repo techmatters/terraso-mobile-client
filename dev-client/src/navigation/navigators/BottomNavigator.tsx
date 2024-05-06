@@ -23,7 +23,6 @@ import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {NavigationHelpers} from '@react-navigation/native';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {LogoutModal} from 'terraso-mobile-client/components/modals/LogoutModal';
 
 export const BottomTabs = createBottomTabNavigator<BottomTabsParamList>();
 
