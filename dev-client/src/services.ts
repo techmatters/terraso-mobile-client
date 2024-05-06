@@ -16,7 +16,7 @@
  */
 
 export const getElevation = async (lat: number, lng: number) => {
-  // TypeScript complains if the values passed to URLSearchParams are floats instead of strings
+  // TypeScript complains if the values passed to URLSearchParams are floats instead of strings.
   // This API uses X for longitude and Y for latitude. That's not a typo.
   const params = {
     x: lng.toString(),
