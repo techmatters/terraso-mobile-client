@@ -25,7 +25,7 @@ export function UserIndicator() {
 
   return (
     <Text variant="body1">
-      {currentUser?.email ?? t('settings.unknownUser')}
+      {currentUser?.email ?? t('settings.unknown_user')}
     </Text>
   );
 }

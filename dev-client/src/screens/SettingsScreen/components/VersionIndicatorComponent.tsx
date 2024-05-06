@@ -26,7 +26,7 @@ export function VersionIndicator() {
     <Text variant="body2">
       {APP_CONFIG.version
         ? t('settings.version', {version: APP_CONFIG.version})
-        : `(${t('settings.unknownVersion')})`}
+        : `(${t('settings.unknown_version')})`}
     </Text>
   );
 }

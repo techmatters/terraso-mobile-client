@@ -28,7 +28,7 @@ export function LogOutButton() {
         <ListButton
           type="default"
           iconName="logout"
-          labelText={t('settings.logOut')}
+          labelText={t('settings.log_out')}
           onPress={onOpen}
         />
       )}

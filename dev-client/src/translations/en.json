@@ -275,10 +275,10 @@
     }
   },
   "settings": {
-    "unknownUser": "Unknown user",
-    "logOut": "Log Out",
-    "deleteAccount": "Delete Account",
-    "unknownVersion": "Untagged application version",
+    "unknown_user": "Unknown user",
+    "log_out": "Log Out",
+    "delete_account": "Delete Account",
+    "unknown_version": "Untagged application version",
     "version": "Version {{version}}"
   },
   "badge": {
