@@ -32,7 +32,7 @@ import {
 } from 'terraso-mobile-client/components/modals/ActionsModal';
 
 type Props = Omit<ActionsModalProps, 'actions'> & {
-  title: string;
+  title?: string;
   body: string;
   actionName: string;
   handleConfirm: () => void;

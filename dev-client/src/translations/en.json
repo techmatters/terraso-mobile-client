@@ -274,6 +274,13 @@
       "nameDesc": "Sort (Z to A)"
     }
   },
+  "settings": {
+    "unknown_user": "Unknown user",
+    "log_out": "Log Out",
+    "delete_account": "Delete Account",
+    "unknown_version": "Untagged application version",
+    "version": "Version {{version}}"
+  },
   "badge": {
     "new": "New"
   },
@@ -347,7 +354,8 @@
     "SITE_TRANSFER_PROJECT": "Project #{{id}}",
     "CREATE_SITE": "Create Site",
     "COLOR_GUIDE": "Soil Color Guide",
-    "COLOR_ANALYSIS_HOME": "Photo Analysis"
+    "COLOR_ANALYSIS_HOME": "Photo Analysis",
+    "SETTINGS": "Settings"
   },
   "login": {
     "title": "LandPKS",
@@ -355,9 +363,8 @@
     "description": "LandPKS is a Terraso soil science tool."
   },
   "logout": {
-    "confirm_title": "Sign out",
-    "confirm_body": "Sign out of Terraso?",
-    "confirm_action": "Sign out"
+    "confirm_body": "Are you sure you want to log out?",
+    "confirm_action": "Log out"
   },
   "account": {
     "google_login": "Sign in with Google",
