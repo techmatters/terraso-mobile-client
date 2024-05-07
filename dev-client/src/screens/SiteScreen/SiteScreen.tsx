@@ -96,8 +96,11 @@ const LocationPrediction = ({
         <Text>{ecologicalSiteName}</Text>
       </Text>
 
-      <Button w="95%" rightIcon={<Icon name="chevron-right" />}>
-        {t('soil.explore_data').toUpperCase()}
+      <Button
+        w="95%"
+        _text={{textTransform: 'uppercase'}}
+        rightIcon={<Icon name="chevron-right" />}>
+        {t('soil.explore_data')}
       </Button>
     </Column>
   );
