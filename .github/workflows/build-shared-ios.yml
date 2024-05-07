@@ -38,8 +38,6 @@ on:
         required: true
       IOS_MOBILE_PROVISION_BASE64:
         required: true
-      IOS_TEAM_ID:
-        required: true
       IOS_CERTIFICATE_PASSWORD:
         required: true
       APPLE_ISSUER_ID:
@@ -148,7 +146,7 @@ jobs:
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
           code-signing-identity: 'iPhone Distribution'
-          team-id: ${{ secrets.IOS_TEAM_ID }}
+          team-id: ${{ vars.APPLE_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
           scheme: TerrasoLandPKS
