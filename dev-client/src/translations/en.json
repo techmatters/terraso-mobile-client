@@ -41,7 +41,7 @@
       "manual": "Enter coordinates",
       "name_label": "Site Name",
       "location_label": "Site Location",
-      "location_accuracy": "GPS accuracy: {{accuracyM}}m",
+      "location_accuracy": "GPS accuracy: {{accuracyM}} m",
       "coords_label": "Latitude, Longitude",
       "coords_help": "Enter decimal degrees, with latitude and longitude separated by a comma.",
       "name_placeholder": "Site name",
