@@ -27,6 +27,7 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
+import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
@@ -114,14 +115,6 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
   const onInfoPress = useInfoPress();
   const navigation = useNavigation();
 
-  const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {coords});
-  }, [navigation, coords]);
-
-  const onExploreDataPress = useCallback(() => {
-    navigation.navigate('LOCATION_SOIL_ID', {siteId});
-  }, [navigation, siteId]);
-
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
   );
@@ -133,6 +126,10 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
       ? undefined
       : state.project.projects[site.projectId],
   );
+
+  const onExploreDataPress = useCallback(() => {
+    navigation.navigate('LOCATION_SOIL_ID', {siteId, coords});
+  }, [navigation, siteId, coords]);
 
   const onSitePrivacyChanged = useCallback(
     (privacy: SitePrivacy) => dispatch(updateSite({id: site!.id, privacy})),
@@ -161,12 +158,8 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
         />
         {!site && (
           <Box mt={5}>
-            <Button
-              alignSelf="center"
-              onPress={onCreate}
-              leftIcon={<Icon name="add" />}>
-              {t('site.create.button_label').toUpperCase()}
-            </Button>
+            <CreateSiteButton coords={coords} />
+
             <Text variant="body1" mt={5}>
               {t('site.create.description')}
             </Text>

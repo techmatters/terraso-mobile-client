@@ -27,6 +27,8 @@ import {
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {
   TopSoilMatchesInfoContent_Site,
   TopSoilMatchesInfoContent_TempLocation,
@@ -64,9 +66,12 @@ export const SiteDataSection = () => {
   );
 };
 
-type Props = {siteId?: string};
+type Props = {
+  siteId?: string;
+  coords: Coords;
+};
 
-export const LocationSoilIdScreen = ({siteId}: Props) => {
+export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
@@ -86,7 +91,7 @@ export const LocationSoilIdScreen = ({siteId}: Props) => {
 
       <SoilIdMatchesSection siteId={siteId} />
 
-      {siteId && <SiteDataSection />}
+      {siteId ? <SiteDataSection /> : <CreateSiteButton coords={coords} />}
     </ScreenScaffold>
   );
 };
