@@ -26,6 +26,7 @@
     "annual_precip_avg": "Annual precipitation avg",
     "elevation_label": "Elevation",
     "elevation_value": "{{value}} {{units}}",
+    "elevation_unknown": "unknown",
     "empty": {
       "info": "You don’t have any sites yet. A site lets you collect and save data, learn more about your land and its potential, and share with others.\n\n<bold>Use the map to create a site.</bold> There are three ways to use the map to find a location for a site:\n",
       "bullet_1": "Tap the map to drop a pin and get more information about that location.",
