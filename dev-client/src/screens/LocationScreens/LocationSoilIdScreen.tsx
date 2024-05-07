@@ -22,17 +22,32 @@ import {
   Heading,
   Box,
   Text,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
+import {
+  TopSoilMatchesInfoContent_Site,
+  TopSoilMatchesInfoContent_TempLocation,
+} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 
-// TODO-cknipe: Move to general component
-export const SoilIdMatchesSection = () => {
+type SoilIdMatchesSectionProps = {siteId?: string};
+export const SoilIdMatchesSection = ({siteId}: SoilIdMatchesSectionProps) => {
   const {t} = useTranslation();
 
   return (
     <Box backgroundColor="grey.200">
-      <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
+      <Row alignItems="center">
+        <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
+        <InfoModal Header={t('site.soil_id.matches.info.title')}>
+          {siteId ? (
+            <TopSoilMatchesInfoContent_Site />
+          ) : (
+            <TopSoilMatchesInfoContent_TempLocation />
+          )}
+        </InfoModal>
+      </Row>
     </Box>
   );
 };
@@ -69,7 +84,7 @@ export const LocationSoilIdScreen = ({siteId}: Props) => {
           : t('site.soil_id.description.temp_location')}
       </Text>
 
-      <SoilIdMatchesSection />
+      <SoilIdMatchesSection siteId={siteId} />
 
       {siteId && <SiteDataSection />}
     </ScreenScaffold>
