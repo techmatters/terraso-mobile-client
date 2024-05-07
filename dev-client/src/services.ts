@@ -15,7 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-export const getElevation = async (lat: number, lng: number) => {
+export const getElevation = async (
+  lat: number,
+  lng: number,
+): Promise<number | undefined> => {
   // TypeScript complains if the values passed to URLSearchParams are floats instead of strings.
   // This API uses X for longitude and Y for latitude. That's not a typo.
   const params = {
@@ -23,7 +26,7 @@ export const getElevation = async (lat: number, lng: number) => {
     y: lat.toString(),
     units: 'Meters', // TODO: switch based on user preference
   };
-  let elevation = 'unknown';
+  let elevation;
 
   try {
     const response = await fetch(
@@ -31,7 +34,7 @@ export const getElevation = async (lat: number, lng: number) => {
     );
     const result = await response.json();
 
-    elevation = parseFloat(result.value).toFixed(2);
+    elevation = parseFloat(result.value);
   } catch (error) {
     console.error(error);
   }
