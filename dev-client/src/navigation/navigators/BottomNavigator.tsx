@@ -23,7 +23,6 @@ import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {NavigationHelpers} from '@react-navigation/native';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {LogoutModal} from 'terraso-mobile-client/components/modals/LogoutModal';
 
 export const BottomTabs = createBottomTabNavigator<BottomTabsParamList>();
 
@@ -35,7 +34,10 @@ export const BottomNavigator = memo(
       state => state.account.currentUser.data !== null,
     );
 
-    const onHome = useCallback(() => navigation.navigate('HOME'), [navigation]);
+    const onSites = useCallback(
+      () => navigation.navigate('HOME'),
+      [navigation],
+    );
 
     const onProject = useCallback(
       () => navigation.navigate('PROJECT_LIST'),
@@ -57,8 +59,8 @@ export const BottomNavigator = memo(
       <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
         <BottomNavIconButton
           name="location-pin"
-          label={t('bottom_navigation.home')}
-          onPress={onHome}
+          label={t('bottom_navigation.sites')}
+          onPress={onSites}
         />
         <BottomNavIconButton
           name="work"
@@ -69,15 +71,6 @@ export const BottomNavigator = memo(
           name="settings"
           label={t('bottom_navigation.settings')}
           onPress={onSettings}
-        />
-        <LogoutModal
-          trigger={onOpen => (
-            <BottomNavIconButton
-              name="logout"
-              label={t('bottom_navigation.sign_out')}
-              onPress={onOpen}
-            />
-          )}
         />
       </Row>
     );
