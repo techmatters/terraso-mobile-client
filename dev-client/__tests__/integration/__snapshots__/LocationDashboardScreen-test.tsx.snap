@@ -1218,7 +1218,7 @@ exports[`renders correctly 1`] = `
                                     <Text
                                       style={{}}
                                     >
-                                      1900 ft
+                                      1.00 m
                                     </Text>
                                   </Text>
                                   <Text
@@ -1539,10 +1539,11 @@ exports[`renders correctly 1`] = `
                                                 "letterSpacing": 0.4,
                                                 "lineHeight": 24,
                                                 "textDecorationLine": undefined,
+                                                "textTransform": "uppercase",
                                               }
                                             }
                                           >
-                                            EXPLORE THE DATA
+                                            Explore the data
                                           </Text>
                                         </View>
                                         <View

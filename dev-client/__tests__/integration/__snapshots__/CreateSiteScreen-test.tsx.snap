@@ -455,7 +455,7 @@ exports[`renders correctly 1`] = `
                                   }
                                 }
                               >
-                                GPS accuracy: m
+                                GPS accuracy:  m
                               </Text>
                               <View
                                 dataSet={{}}

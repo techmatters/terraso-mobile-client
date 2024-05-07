@@ -37,17 +37,22 @@ const TestComponent = ({mock}: Props) => {
   return <></>;
 };
 
-const USER_LOCATION = {latitude: 0, longitude: 0};
+const USER_LOCATION = {latitude: 0, longitude: 0, elevation: 0};
 
 const EXAMPLE_SITES = [
-  {id: 'Abidjan', latitude: 5.316667, longitude: -4.033333},
-  {id: 'Accra', latitude: 5.55, longitude: -0.2},
-  {id: 'Lomé', latitude: 6.131944, longitude: 1.222778},
-  {id: 'Porto Novo', latitude: 6.497222, longitude: 2.605},
-  {id: 'Lagos', latitude: 6.455027, longitude: 3.384082},
-  {id: 'Douala', latitude: 4.05, longitude: 9.7},
-  {id: 'Libreville', latitude: 0.390278, longitude: 9.454167},
-  {id: 'Luanda', latitude: -8.838333, longitude: 13.234444},
+  {id: 'Abidjan', latitude: 5.316667, longitude: -4.033333, elevation: 123.45},
+  {id: 'Accra', latitude: 5.55, longitude: -0.2, elevation: 123.45},
+  {id: 'Lomé', latitude: 6.131944, longitude: 1.222778, elevation: 123.45},
+  {id: 'Porto Novo', latitude: 6.497222, longitude: 2.605, elevation: 123.45},
+  {id: 'Lagos', latitude: 6.455027, longitude: 3.384082, elevation: 123.45},
+  {id: 'Douala', latitude: 4.05, longitude: 9.7, elevation: 123.45},
+  {
+    id: 'Libreville',
+    latitude: 0.390278,
+    longitude: 9.454167,
+    elevation: 123.45,
+  },
+  {id: 'Luanda', latitude: -8.838333, longitude: 13.234444, elevation: 123.45},
 ];
 
 const SORTED_EXAMPLE = [
