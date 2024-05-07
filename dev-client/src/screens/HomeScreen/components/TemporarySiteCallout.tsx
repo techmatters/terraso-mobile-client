@@ -29,6 +29,7 @@ import {
   Row,
   Box,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {renderElevation} from 'terraso-mobile-client/components/util/site';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
@@ -48,7 +49,7 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
       parseFloat(coords.latitude.toFixed(5)),
       parseFloat(coords.longitude.toFixed(5)),
     );
-    setSiteElevation(t('site.elevation_value', {value: elevation, units: 'm'}));
+    setSiteElevation(renderElevation(t, elevation));
   }, [coords, t]);
 
   const onCreate = useCallback(() => {
