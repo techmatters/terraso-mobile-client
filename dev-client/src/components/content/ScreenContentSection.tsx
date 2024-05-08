@@ -34,8 +34,8 @@ export const ScreenContentSection = ({
 }: Props) => {
   return (
     <Box
-      paddingHorizontal={'16px'}
-      paddingVertical={'16px'}
+      paddingHorizontal="md"
+      paddingVertical="md"
       backgroundColor={backgroundColor}>
       {title && (
         <Heading variant="h4" pb={'10px'}>

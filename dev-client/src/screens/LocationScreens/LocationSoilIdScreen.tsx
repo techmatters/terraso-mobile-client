@@ -73,10 +73,10 @@ export const SiteDataSection = () => {
   return (
     <ScreenContentSection title={t('site.soil_id.site_data.title')}>
       <Text variant="body1">{t('site.soil_id.site_data.description')}</Text>
-      <Heading variant="h6" pt={'24px'}>
+      <Heading variant="h6" pt="lg">
         {t('site.soil_id.site_data.slope.title')}
       </Heading>
-      <Heading variant="h6" pt={'24px'}>
+      <Heading variant="h6" pt="lg">
         {t('site.soil_id.site_data.soil_properties.title')}
       </Heading>
     </ScreenContentSection>

@@ -35,7 +35,7 @@ export const CreateSiteButton = ({coords}: Props) => {
   }, [navigation, coords]);
 
   return (
-    <Box paddingVertical={5}>
+    <Box paddingVertical={'20px'}>
       <Button
         alignSelf="center"
         onPress={onCreate}
