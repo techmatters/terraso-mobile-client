@@ -124,7 +124,7 @@ export const SiteScreen = ({siteId, coords, elevation}: Props) => {
     coords = site!;
   }
   if (elevation === undefined) {
-    elevation = site!.elevation;
+    elevation = site?.elevation;
   }
   const project = useSelector(state =>
     site?.projectId === undefined
