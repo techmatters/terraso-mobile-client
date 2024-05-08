@@ -18,7 +18,6 @@
 import {useCallback, useMemo} from 'react';
 import {useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -71,13 +70,7 @@ export const ProjectListScreen = () => {
   );
 
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar
-          LeftButton={null}
-          RightButton={<AppBarIconButton name="help" />}
-        />
-      }>
+    <ScreenScaffold AppBar={<AppBar LeftButton={null} />}>
       <VStack
         bg="grey.200"
         p={5}
