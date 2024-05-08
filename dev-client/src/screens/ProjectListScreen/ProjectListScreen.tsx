@@ -78,24 +78,22 @@ export const ProjectListScreen = () => {
         flexShrink={0}
         flexBasis="70%"
         space="10px">
+        {isLoadingData ? (
+          <Spinner size="lg" />
+        ) : (
+          activeProjects.length === 0 && (
+            <Box mb={4}>
+              <Text bold>{t('projects.none.header')}</Text>
+              <Text>{t('projects.none.info')}</Text>
+            </Box>
+          )
+        )}
         <Box alignItems="flex-start" pb={3}>
           <AddButton
             text={t('projects.create_button')}
             buttonProps={{onPress}}
           />
         </Box>
-
-        {isLoadingData ? (
-          <Spinner size="lg" />
-        ) : (
-          activeProjects.length === 0 && (
-            <>
-              <Text variant="body1-strong">{t('projects.none.header')}</Text>
-              <Text>{t('projects.none.info')}</Text>
-            </>
-          )
-        )}
-
         {activeProjects.length > 0 && (
           <ListFilterProvider
             items={activeProjects}
