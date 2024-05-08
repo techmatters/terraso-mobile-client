@@ -60,8 +60,6 @@ on:
         required: false
       SENTRY_AUTH_TOKEN:
         required: false
-      SENTRY_ENABLED:
-        required: false
 
 jobs:
   ios-build:
@@ -80,7 +78,7 @@ jobs:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
+      SENTRY_ENABLED: ${{ vars.SENTRY_ENABLED }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
       SENTRY_ORG: ${{ inputs.SENTRY_ORG }}
