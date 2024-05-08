@@ -55,9 +55,6 @@ export const ProjectPreviewCard = ({project}: Props) => {
         </Heading>
       </HStack>
       {project.description.length > 0 && <Text>{project.description}</Text>}
-      <Text variant="subtitle2" color="text.secondary" mb="16px">
-        {t('general.last_modified')}: {formatDate(project.updatedAt)}
-      </Text>
       <HStack space={2} alignItems="center">
         {/* TODO: Progress still not stored on backend */}
         <Text>30%</Text>
