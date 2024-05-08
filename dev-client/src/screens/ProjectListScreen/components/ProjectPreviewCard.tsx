@@ -17,15 +17,14 @@
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Card} from 'terraso-mobile-client/components/Card';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Project} from 'terraso-client-shared/project/projectSlice';
 import {
   HStack,
-  Badge,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
+import {SiteBadge} from 'terraso-mobile-client/components/SiteBadge';
 
 type Props = {
   project: Project;
@@ -46,10 +45,8 @@ export const ProjectPreviewCard = ({project}: Props) => {
         </Heading>
       </HStack>
       {project.description.length > 0 && <Text>{project.description}</Text>}
-      <HStack space={2} alignItems="center">
-        <Badge variant="chip" startIcon={<Icon name="location-on" />}>
-          {Object.keys(project.sites).length}
-        </Badge>
+      <HStack space={2} pt={4} alignItems="center">
+        <SiteBadge count={Object.keys(project.sites).length} />
         <PeopleBadge count={Object.keys(project.memberships).length} />
       </HStack>
     </Card>
