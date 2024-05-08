@@ -15,23 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
-import {Button, Divider} from 'native-base';
+import {useCallback, useMemo, useState} from 'react';
+import {Button, Divider, Spinner} from 'native-base';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
+import {getElevation} from 'terraso-mobile-client/services';
 import {
   Column,
   Row,
   Box,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {renderElevation} from 'terraso-mobile-client/components/util/site';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
-const TEMP_ELEVATION = '2800 feet';
 
 type Props = {
   coords: Coords;
@@ -41,6 +42,12 @@ type Props = {
 export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const [siteElevationString, setSiteElevationString] = useState('');
+
+  useMemo(async () => {
+    const elevation = await getElevation(coords.latitude, coords.longitude);
+    setSiteElevationString(renderElevation(t, elevation));
+  }, [coords, t]);
 
   const onCreate = useCallback(() => {
     navigation.navigate('CREATE_SITE', {coords});
@@ -68,10 +75,14 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
           value={TEMP_ECO_SITE_PREDICTION.toUpperCase()}
         />
         <Divider />
-        <CalloutDetail
-          label={t('site.elevation').toUpperCase()}
-          value={TEMP_ELEVATION.toUpperCase()}
-        />
+        {siteElevationString ? (
+          <CalloutDetail
+            label={t('site.elevation_label').toUpperCase()}
+            value={siteElevationString}
+          />
+        ) : (
+          <Spinner size="sm" />
+        )}
         <Divider />
         <Row justifyContent="flex-end">
           <Button onPress={onCreate} size="sm" variant="outline">

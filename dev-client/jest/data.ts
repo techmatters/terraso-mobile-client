@@ -48,6 +48,7 @@ export const testState: Partial<AppState> = {
         name: '1',
         latitude: 1,
         longitude: 1,
+        elevation: 1,
         privacy: 'PRIVATE',
         archived: false,
         updatedAt: '',
