@@ -18,70 +18,15 @@
 import {useTranslation} from 'react-i18next';
 
 import {useSelector} from 'terraso-mobile-client/store';
-import {
-  Heading,
-  Text,
-  Row,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {
-  TopSoilMatchesInfoContent_Site,
-  TopSoilMatchesInfoContent_TempLocation,
-} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
-import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-
-type SoilIdSectionProps = {siteId?: string};
-export const SoilIdDescriptionSection = ({siteId}: SoilIdSectionProps) => {
-  const {t} = useTranslation();
-  return (
-    <ScreenContentSection title={t('site.soil_id.title')}>
-      <Text variant="body1">
-        {siteId
-          ? t('site.soil_id.description.site')
-          : t('site.soil_id.description.temp_location')}
-      </Text>
-    </ScreenContentSection>
-  );
-};
-
-export const SoilIdMatchesSection = ({siteId}: SoilIdSectionProps) => {
-  const {t} = useTranslation();
-
-  return (
-    <ScreenContentSection backgroundColor="grey.200">
-      <Row alignItems="center">
-        <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
-        <InfoModal Header={t('site.soil_id.matches.info.title')}>
-          {siteId ? (
-            <TopSoilMatchesInfoContent_Site />
-          ) : (
-            <TopSoilMatchesInfoContent_TempLocation />
-          )}
-        </InfoModal>
-      </Row>
-    </ScreenContentSection>
-  );
-};
-
-export const SiteDataSection = () => {
-  const {t} = useTranslation();
-
-  return (
-    <ScreenContentSection title={t('site.soil_id.site_data.title')}>
-      <Text variant="body1">{t('site.soil_id.site_data.description')}</Text>
-      <Heading variant="h6" pt="lg">
-        {t('site.soil_id.site_data.slope.title')}
-      </Heading>
-      <Heading variant="h6" pt="lg">
-        {t('site.soil_id.site_data.soil_properties.title')}
-      </Heading>
-    </ScreenContentSection>
-  );
-};
+  SoilIdDescriptionSection,
+  SoilIdMatchesSection,
+} from 'terraso-mobile-client/screens/LocationScreens/components/SoilIdSections';
+import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/SiteDataSection';
 
 type Props = {
   siteId?: string;
@@ -101,7 +46,6 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
       }>
       <SoilIdDescriptionSection />
       <SoilIdMatchesSection siteId={siteId} />
-
       {siteId ? <SiteDataSection /> : <CreateSiteButton coords={coords} />}
     </ScreenScaffold>
   );
