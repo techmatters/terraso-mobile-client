@@ -41,14 +41,15 @@ import {
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
+import {renderElevation} from 'terraso-mobile-client/components/util/site';
 
-const TEMP_ELEVATION = '1900 ft';
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
 
 type Props = {
   siteId?: string;
   coords?: Coords;
+  elevation?: number;
 };
 
 const LocationDetail = ({label, value}: {label: string; value: string}) => (
@@ -96,14 +97,17 @@ const LocationPrediction = ({
         <Text>{ecologicalSiteName}</Text>
       </Text>
 
-      <Button w="95%" rightIcon={<Icon name="chevron-right" />}>
-        {t('soil.explore_data').toUpperCase()}
+      <Button
+        w="95%"
+        _text={{textTransform: 'uppercase'}}
+        rightIcon={<Icon name="chevron-right" />}>
+        {t('soil.explore_data')}
       </Button>
     </Column>
   );
 };
 
-export const SiteScreen = ({siteId, coords}: Props) => {
+export const SiteScreen = ({siteId, coords, elevation}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();
@@ -118,6 +122,9 @@ export const SiteScreen = ({siteId, coords}: Props) => {
   );
   if (coords === undefined) {
     coords = site!;
+  }
+  if (elevation === undefined) {
+    elevation = site?.elevation;
   }
   const project = useSelector(state =>
     site?.projectId === undefined
@@ -148,7 +155,7 @@ export const SiteScreen = ({siteId, coords}: Props) => {
         />
         <LocationDetail
           label={t('geo.elevation.title')}
-          value={TEMP_ELEVATION}
+          value={renderElevation(t, elevation)}
         />
         {!site && (
           <Box mt={5}>
