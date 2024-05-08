@@ -48,8 +48,6 @@ let googleClientId: string;
 let googleRedirectURI: string;
 let microsoftRedirectURI: string;
 
-ENV_CONFIG.MICROSOFT_SIGNATURE_HASH;
-
 if (Platform.OS === 'ios') {
   googleClientId = ENV_CONFIG.GOOGLE_OAUTH_IOS_CLIENT_ID;
   googleRedirectURI = `${ENV_CONFIG.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect`;
