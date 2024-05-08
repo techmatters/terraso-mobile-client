@@ -190,10 +190,11 @@ exports[`renders correctly 1`] = `
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
+                      "textTransform": "uppercase",
                     }
                   }
                 >
-                  SIGN IN WITH GOOGLE
+                  Sign in with Google
                 </Text>
               </View>
             </View>
@@ -292,10 +293,11 @@ exports[`renders correctly 1`] = `
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
+                      "textTransform": "uppercase",
                     }
                   }
                 >
-                  SIGN IN WITH MICROSOFT
+                  Sign in with Microsoft
                 </Text>
               </View>
             </View>
