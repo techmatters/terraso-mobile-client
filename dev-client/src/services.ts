@@ -19,18 +19,19 @@ export const getElevation = async (
   lat: number,
   lng: number,
 ): Promise<number | undefined> => {
-  // TypeScript complains if the values passed to URLSearchParams are floats instead of strings.
-  // This API uses X for longitude and Y for latitude. That's not a typo.
-  const params = {
+  // 1. TypeScript requires values passed to URLSearchParams strings,
+  //    which is why we convert the floats to strings.
+  // 2. This API uses X for longitude and Y for latitude. That's not a typo.
+  const queryString = new URLSearchParams({
     x: lng.toString(),
     y: lat.toString(),
     units: 'Meters', // TODO: switch based on user preference
-  };
+  });
   let elevation;
 
   try {
     const response = await fetch(
-      `https://epqs.nationalmap.gov/v1/json/?${new URLSearchParams(params)}`,
+      `https://epqs.nationalmap.gov/v1/json/?${queryString}`,
     );
     const result = await response.json();
 
