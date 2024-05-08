@@ -21,7 +21,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Link, Spinner} from 'native-base';
+import {Spinner} from 'native-base';
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {
   ListFilterModal,
@@ -92,9 +92,6 @@ export const ProjectListScreen = () => {
             <>
               <Text variant="body1-strong">{t('projects.none.header')}</Text>
               <Text>{t('projects.none.info')}</Text>
-              <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
-                {t('projects.learn_more')}
-              </Link>
             </>
           )
         )}
