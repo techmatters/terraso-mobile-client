@@ -101,7 +101,13 @@
       },
       "site_data": {
         "title": "Site Data",
-        "description": "Improve Soil ID results by entering some data for this site using the helpful guides along the way."
+        "description": "Improve Soil ID results by entering some data for this site using the helpful guides along the way.",
+        "slope": {
+          "title": "Slope"
+        },
+        "soil_properties": {
+          "title": "Soil Properties"
+        }
       }
     },
     "notes": {

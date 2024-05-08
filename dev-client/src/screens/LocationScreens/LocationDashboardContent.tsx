@@ -157,12 +157,9 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
           value={TEMP_ELEVATION}
         />
         {!site && (
-          <Box mt={5}>
+          <Box>
             <CreateSiteButton coords={coords} />
-
-            <Text variant="body1" mt={5}>
-              {t('site.create.description')}
-            </Text>
+            <Text variant="body1">{t('site.create.description')}</Text>
           </Box>
         )}
         {project && (

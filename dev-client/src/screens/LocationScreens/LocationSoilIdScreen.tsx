@@ -20,7 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
   Heading,
-  Box,
   Text,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -33,13 +32,27 @@ import {
   TopSoilMatchesInfoContent_Site,
   TopSoilMatchesInfoContent_TempLocation,
 } from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
+import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 
-type SoilIdMatchesSectionProps = {siteId?: string};
-export const SoilIdMatchesSection = ({siteId}: SoilIdMatchesSectionProps) => {
+type SoilIdSectionProps = {siteId?: string};
+export const SoilIdDescriptionSection = ({siteId}: SoilIdSectionProps) => {
+  const {t} = useTranslation();
+  return (
+    <ScreenContentSection title={t('site.soil_id.title')}>
+      <Text variant="body1">
+        {siteId
+          ? t('site.soil_id.description.site')
+          : t('site.soil_id.description.temp_location')}
+      </Text>
+    </ScreenContentSection>
+  );
+};
+
+export const SoilIdMatchesSection = ({siteId}: SoilIdSectionProps) => {
   const {t} = useTranslation();
 
   return (
-    <Box backgroundColor="grey.200">
+    <ScreenContentSection backgroundColor="grey.200">
       <Row alignItems="center">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
         <InfoModal Header={t('site.soil_id.matches.info.title')}>
@@ -50,19 +63,23 @@ export const SoilIdMatchesSection = ({siteId}: SoilIdMatchesSectionProps) => {
           )}
         </InfoModal>
       </Row>
-    </Box>
+    </ScreenContentSection>
   );
 };
 
-// TODO-cknipe: Move to general component
 export const SiteDataSection = () => {
   const {t} = useTranslation();
 
   return (
-    <>
-      <Heading variant="h4">{t('site.soil_id.site_data.title')}</Heading>
+    <ScreenContentSection title={t('site.soil_id.site_data.title')}>
       <Text variant="body1">{t('site.soil_id.site_data.description')}</Text>
-    </>
+      <Heading variant="h6" pt={'24px'}>
+        {t('site.soil_id.site_data.slope.title')}
+      </Heading>
+      <Heading variant="h6" pt={'24px'}>
+        {t('site.soil_id.site_data.soil_properties.title')}
+      </Heading>
+    </ScreenContentSection>
   );
 };
 
@@ -82,13 +99,7 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
       AppBar={
         <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
       }>
-      <Heading variant="h4">{t('site.soil_id.title')}</Heading>
-      <Text variant="body1">
-        {siteId
-          ? t('site.soil_id.description.site')
-          : t('site.soil_id.description.temp_location')}
-      </Text>
-
+      <SoilIdDescriptionSection />
       <SoilIdMatchesSection siteId={siteId} />
 
       {siteId ? <SiteDataSection /> : <CreateSiteButton coords={coords} />}

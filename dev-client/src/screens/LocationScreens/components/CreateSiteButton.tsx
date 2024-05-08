@@ -22,6 +22,7 @@ import {Button} from 'native-base';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {coords: Coords};
 
@@ -34,11 +35,13 @@ export const CreateSiteButton = ({coords}: Props) => {
   }, [navigation, coords]);
 
   return (
-    <Button
-      alignSelf="center"
-      onPress={onCreate}
-      leftIcon={<Icon name="add" />}>
-      {t('site.create.button_label').toUpperCase()}
-    </Button>
+    <Box paddingVertical={5}>
+      <Button
+        alignSelf="center"
+        onPress={onCreate}
+        leftIcon={<Icon name="add" />}>
+        {t('site.create.button_label').toUpperCase()}
+      </Button>
+    </Box>
   );
 };
