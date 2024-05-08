@@ -96,7 +96,8 @@ need to call it manually.
 ## iOS
 
 1. Run `npm run ios` to load the app in the simulator.
-2. Run `npm run ios -- --release` to load a release build of the app in the simulator.
+2. Run `npm run ios -- --configuration release` to load a release build of the app in the simulator.
+3. Run `npm run ios -- --device "Jane iPhone"` to load the app in on your device.
 
 # Releases
 
