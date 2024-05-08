@@ -25,8 +25,10 @@ export const CalloutDetail = ({
 }) => {
   return (
     <Box>
-      <Text>{label}</Text>
-      <Text bold>{value}</Text>
+      <Text textTransform="uppercase">{label}</Text>
+      <Text bold textTransform="uppercase">
+        {value}
+      </Text>
     </Box>
   );
 };

@@ -81,7 +81,7 @@ export function ProjectSettingsScreen({
             iconName="content-copy"
             isUnderlined={false}
             href={downloadLink}>
-            {t('projects.settings.copy_download_link').toUpperCase()}
+            {t('projects.settings.copy_download_link')}
           </IconLink>
           <Text ml={10}>
             {t('projects.settings.download_link_description')}
