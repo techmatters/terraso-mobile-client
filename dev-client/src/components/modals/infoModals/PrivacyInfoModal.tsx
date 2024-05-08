@@ -18,7 +18,7 @@ import {forwardRef} from 'react';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {PrivacyInfoContent} from 'terraso-mobile-client/components/modals/infoModals/PrivacyInfoContent';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -37,7 +37,7 @@ export const PrivacyInfoModal = forwardRef<BottomSheetModal, Props>(
         backdropComponent={BackdropComponent}>
         <PrivacyInfoContent />
         <Box position="absolute" top="18px" right="23px">
-          <CardCloseButton onPress={onClose} />
+          <CloseButton onPress={onClose} />
         </Box>
       </BottomSheetModal>
     );

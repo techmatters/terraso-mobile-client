@@ -17,7 +17,7 @@
 
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 
-export const CardCloseButton = (
+export const CloseButton = (
   props: Omit<React.ComponentProps<typeof IconButton>, 'name'>,
 ) => {
   return (

@@ -21,7 +21,7 @@ import {
   BottomSheetModal as GorhomBottomSheetModal,
 } from '@gorhom/bottom-sheet';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {Pressable} from 'react-native';
 import {
   ModalHandle,
@@ -50,7 +50,7 @@ export const BottomSheetModal = forwardRef<
       Header,
       children,
       trigger,
-      CloseButton,
+      Closer,
       fullHeight = false,
       scrollable = true,
       maxHeight,
@@ -69,15 +69,15 @@ export const BottomSheetModal = forwardRef<
     useImperativeHandle(forwardedRef, () => methods, [methods]);
 
     const contents =
-      Header || CloseButton ? (
+      Header || Closer ? (
         <Column padding="md">
           <Row alignItems="center" mb="md">
             {Header}
             <Box flex={1} />
-            {CloseButton === undefined ? (
-              <CardCloseButton size="lg" onPress={methods.onClose} />
+            {Closer === undefined ? (
+              <CloseButton size="lg" onPress={methods.onClose} />
             ) : (
-              CloseButton
+              Closer
             )}
           </Row>
           {children}

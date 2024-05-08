@@ -89,7 +89,7 @@ export const ImagePicker = ({onPick, children, ...modalProps}: Props) => {
     <BottomSheetModal
       ref={ref}
       trigger={children}
-      CloseButton={null}
+      Closer={null}
       {...modalProps}>
       <Column padding="lg" space="md">
         <Button

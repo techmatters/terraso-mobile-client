@@ -21,7 +21,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import {Camera} from 'expo-camera';
 import {DeviceMotion} from 'expo-sensors';
 import {Button, Link} from 'native-base';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
@@ -116,7 +116,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
           </Box>
           <Column alignItems="center">
             <Box {...styles.closeButtonBox}>
-              <CardCloseButton size="lg" onPress={onClose} />
+              <CloseButton size="lg" onPress={onClose} />
             </Box>
             <Column
               px="56px"

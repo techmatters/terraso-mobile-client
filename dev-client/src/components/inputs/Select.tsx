@@ -124,7 +124,7 @@ export const Select = <T, Nullable extends boolean>({
     <BottomSheetModal
       ref={ref}
       scrollable={false}
-      CloseButton={null}
+      Closer={null}
       trigger={onOpen => (
         <Pressable
           accessibilityState={{disabled}}
