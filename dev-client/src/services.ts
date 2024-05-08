@@ -23,8 +23,8 @@ export const getElevation = async (
   //    which is why we convert the floats to strings.
   // 2. This API uses X for longitude and Y for latitude. That's not a typo.
   const queryString = new URLSearchParams({
-    x: lng.toString(),
-    y: lat.toString(),
+    x: lng.toFixed(5),
+    y: lat.toFixed(5),
     units: 'Meters', // TODO: switch based on user preference
   });
   let elevation;

@@ -42,14 +42,11 @@ type Props = {
 export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const [siteElevation, setSiteElevation] = useState('');
+  const [siteElevationString, setSiteElevationString] = useState('');
 
   useMemo(async () => {
-    const elevation = await getElevation(
-      parseFloat(coords.latitude.toFixed(5)),
-      parseFloat(coords.longitude.toFixed(5)),
-    );
-    setSiteElevation(renderElevation(t, elevation));
+    const elevation = await getElevation(coords.latitude, coords.longitude);
+    setSiteElevationString(renderElevation(t, elevation));
   }, [coords, t]);
 
   const onCreate = useCallback(() => {
@@ -78,10 +75,10 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
           value={TEMP_ECO_SITE_PREDICTION.toUpperCase()}
         />
         <Divider />
-        {siteElevation ? (
+        {siteElevationString ? (
           <CalloutDetail
             label={t('site.elevation_label').toUpperCase()}
-            value={siteElevation}
+            value={siteElevationString}
           />
         ) : (
           <Spinner size="sm" />
