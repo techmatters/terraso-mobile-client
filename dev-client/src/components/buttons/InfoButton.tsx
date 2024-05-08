@@ -15,24 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {forwardRef} from 'react';
+import {forwardRef} from 'react';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
-type TooltipIconButtonProps = {
-  icon?: IconName;
-  onPress: () => void;
+type InfoButtonProps = {
+  onPress?: PressableProps['onPress'];
 };
-const tooltipIconProps = {color: 'action.active_subtle', size: 'md'};
-export const TooltipIconButton = forwardRef(
-  ({icon: name = 'info', onPress}: TooltipIconButtonProps, ref) => (
-    <IconButton
-      ref={ref}
-      _icon={tooltipIconProps}
-      ml="6px"
-      p="0"
-      name={name}
-      onPress={onPress}
-    />
-  ),
-);
+
+export const InfoButton = forwardRef(({onPress}: InfoButtonProps, ref) => (
+  <IconButton
+    ref={ref}
+    _icon={iconProps}
+    ml="6px"
+    p="0"
+    name={'info'}
+    onPress={onPress}
+  />
+));
+
+const iconProps = {color: 'action.active_subtle', size: 'md'};
