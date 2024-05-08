@@ -17,7 +17,6 @@ jobs:
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
       IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
       IOS_MOBILE_PROVISION_BASE64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
-      IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
       IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
       APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
       APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
