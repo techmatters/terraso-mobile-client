@@ -19,7 +19,6 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import React, {useCallback} from 'react';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {useSelector} from 'terraso-mobile-client/store';
-import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
@@ -31,9 +30,6 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
-
-const TEMP_MODIFIED_DATE = '8/15/23';
-const TEMP_MODIFIED_NAME = 'Sample Sam';
 
 type Props = {
   site: Site;
@@ -48,7 +44,6 @@ export const SiteCard = ({
   buttons,
   isPopover,
 }: Props) => {
-  const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state =>
     site.projectId === undefined
@@ -71,15 +66,8 @@ export const SiteCard = ({
       onPress={onCardPress}
       buttons={buttons}
       isPopover={isPopover}>
-      {project && <Heading size="md">{project.name}</Heading>}
-      <Text variant="subtitle2" color="text.secondary">
-        {t('site.last_updated', {
-          date: TEMP_MODIFIED_DATE,
-          name: TEMP_MODIFIED_NAME,
-        })}
-      </Text>
-      <Box h="16px" />
-      <Row alignItems="center">
+      {project && <Text variant="body1">{project.name}</Text>}
+      <Row alignItems="center" pt="md">
         <StaticMapView coords={site} style={styles.mapView} />
         <Box w="4" />
         {project && (
