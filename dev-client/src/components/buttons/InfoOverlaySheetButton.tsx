@@ -15,7 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/InfoButton';
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 
@@ -29,7 +28,7 @@ export const InfoOverlaySheetButton = ({
 }: React.PropsWithChildren<Props>) => (
   <InfoOverlaySheet
     trigger={onOpen => <InfoButton onPress={onOpen} />}
-    Header={<Heading variant="h4">{Header}</Heading>}>
+    Header={Header}>
     {children}
   </InfoOverlaySheet>
 );
