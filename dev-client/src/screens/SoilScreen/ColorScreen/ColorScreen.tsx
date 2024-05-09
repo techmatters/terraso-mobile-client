@@ -44,7 +44,7 @@ import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/buttons/InfoOverlaySheetButton';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 

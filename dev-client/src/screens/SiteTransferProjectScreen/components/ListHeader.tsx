@@ -23,7 +23,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {HelpTooltipButton} from 'terraso-mobile-client/components/buttons/HelpTooltipButton';
+import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 
 type Props = {query: string; setQuery: (query: string) => void};
 

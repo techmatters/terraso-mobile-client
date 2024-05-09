@@ -44,7 +44,7 @@ import {
   Box,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {HelpTooltipButton} from 'terraso-mobile-client/components/buttons/HelpTooltipButton';
+import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 
 export type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,

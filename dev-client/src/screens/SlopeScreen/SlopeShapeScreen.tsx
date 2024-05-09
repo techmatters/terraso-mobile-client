@@ -51,7 +51,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/buttons/InfoOverlaySheetButton';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 
 type Props = {
   siteId: string;

@@ -38,7 +38,7 @@ import {
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/buttons/InfoOverlaySheetButton';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
