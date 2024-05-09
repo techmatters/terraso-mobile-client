@@ -98,9 +98,10 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           <Button
             pl={0}
             variant="link"
+            _text={{textTransform: 'uppercase'}}
             startIcon={<Icon name="archive" />}
             endIcon={<Icon name="info" />}>
-            {t('site.dashboard.archive_button').toUpperCase()}
+            {t('site.dashboard.archive_button')}
           </Button>
           <FormControl.HelperText ml="26px" mt={0}>
             {t('site.dashboard.archive_button_help_text')}
@@ -112,10 +113,10 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             <Button
               pl={0}
               variant="link"
-              _text={{color: 'error.main'}}
+              _text={{textTransform: 'uppercase', color: 'error.main'}}
               startIcon={<Icon color="error.main" name="delete-forever" />}
               onPress={onOpen}>
-              {t('site.dashboard.delete_button').toUpperCase()}
+              {t('site.dashboard.delete_button')}
             </Button>
           )}
           title={t('site.dashboard.delete_site_modal.title')}
