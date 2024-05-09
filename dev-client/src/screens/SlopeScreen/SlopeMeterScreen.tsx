@@ -35,10 +35,10 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/buttons/InfoOverlaySheetButton';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -127,9 +127,10 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                 <Heading variant="h6">
                   {t('slope.steepness.slope_meter')}
                 </Heading>
-                <InfoOverlaySheet Header={t('slope.steepness.info.title')}>
+                <InfoOverlaySheetButton
+                  Header={t('slope.steepness.info.title')}>
                   <SlopeMeterInfoContent />
-                </InfoOverlaySheet>
+                </InfoOverlaySheetButton>
               </Row>
               <Box height="12px" />
               <Heading variant="h5" fontWeight={700}>

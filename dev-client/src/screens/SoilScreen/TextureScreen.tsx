@@ -49,7 +49,7 @@ import {
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/TextureInfoContent';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
-import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/buttons/InfoOverlaySheetButton';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),
@@ -141,9 +141,9 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
         <Column p="15px" bg="primary.contrast">
           <Row alignItems="center">
             <Heading variant="h6">{t('soil.texture.title')}</Heading>
-            <InfoOverlaySheet Header={t('soil.texture.info.title')}>
+            <InfoOverlaySheetButton Header={t('soil.texture.info.title')}>
               <TextureInfoContent />
-            </InfoOverlaySheet>
+            </InfoOverlaySheetButton>
           </Row>
           <LastModified />
           <Box height="sm" />
@@ -183,9 +183,10 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             <Text variant="body1-strong">
               {t('soil.texture.fragment_title')}
             </Text>
-            <InfoOverlaySheet Header={t('soil.texture.fragment.info.title')}>
+            <InfoOverlaySheetButton
+              Header={t('soil.texture.fragment.info.title')}>
               <RockFragmentVolumeInfoContent />
-            </InfoOverlaySheet>
+            </InfoOverlaySheetButton>
           </Row>
           <Box height="10px" />
           <ImageRadio
