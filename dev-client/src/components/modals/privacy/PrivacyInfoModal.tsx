@@ -16,7 +16,7 @@
  */
 import {forwardRef} from 'react';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {PrivacyInfoContent} from 'terraso-mobile-client/components/modals/infoModals/PrivacyInfoContent';
+import {PrivacyInfoContent} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoContent';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
