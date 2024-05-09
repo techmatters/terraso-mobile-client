@@ -14,13 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Project} from 'terraso-client-shared/project/projectSlice';
-import {formatDate} from 'terraso-mobile-client/util';
 import {
   HStack,
   Badge,
@@ -34,7 +32,6 @@ type Props = {
 };
 
 export const ProjectPreviewCard = ({project}: Props) => {
-  const {t} = useTranslation();
   const navigation = useNavigation();
 
   const goToProject = useCallback(async () => {
@@ -44,12 +41,6 @@ export const ProjectPreviewCard = ({project}: Props) => {
   return (
     <Card onPress={goToProject}>
       <HStack mb="8px">
-        {/** TODO: backend does not have isNew status
-        {project.isNew && (
-          <Badge variant="chip" flexGrow={0} borderRadius={8} _text={{textTransform: 'uppercase'}}>
-            {t('badge.new')}
-          </Badge>
-        )} **/}
         <Heading variant="h6" color="primary.main">
           {project.name}
         </Heading>
