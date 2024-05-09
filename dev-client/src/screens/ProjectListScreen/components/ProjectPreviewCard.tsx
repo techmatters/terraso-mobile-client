@@ -14,27 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useTranslation} from 'react-i18next';
 import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Card} from 'terraso-mobile-client/components/Card';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Project} from 'terraso-client-shared/project/projectSlice';
-import {formatDate} from 'terraso-mobile-client/util';
 import {
   HStack,
-  Badge,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
+import {SiteBadge} from 'terraso-mobile-client/components/SiteBadge';
 
 type Props = {
   project: Project;
 };
 
 export const ProjectPreviewCard = ({project}: Props) => {
-  const {t} = useTranslation();
   const navigation = useNavigation();
 
   const goToProject = useCallback(async () => {
@@ -44,26 +40,13 @@ export const ProjectPreviewCard = ({project}: Props) => {
   return (
     <Card onPress={goToProject}>
       <HStack mb="8px">
-        {/** TODO: backend does not have isNew status
-        {project.isNew && (
-          <Badge variant="chip" flexGrow={0} borderRadius={8} _text={{textTransform: 'uppercase'}}>
-            {t('badge.new')}
-          </Badge>
-        )} **/}
         <Heading variant="h6" color="primary.main">
           {project.name}
         </Heading>
       </HStack>
       {project.description.length > 0 && <Text>{project.description}</Text>}
-      <Text variant="subtitle2" color="text.secondary" mb="16px">
-        {t('general.last_modified')}: {formatDate(project.updatedAt)}
-      </Text>
-      <HStack space={2} alignItems="center">
-        {/* TODO: Progress still not stored on backend */}
-        <Text>30%</Text>
-        <Badge variant="chip" startIcon={<Icon name="location-on" />}>
-          {Object.keys(project.sites).length}
-        </Badge>
+      <HStack space={2} pt={4} alignItems="center">
+        <SiteBadge count={Object.keys(project.sites).length} />
         <PeopleBadge count={Object.keys(project.memberships).length} />
       </HStack>
     </Card>
