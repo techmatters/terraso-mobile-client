@@ -126,7 +126,7 @@
     "header": "Projects",
     "none": {
       "header": "You don’t have any projects.",
-      "info": "Projects let you group sites, set data needs, manage team members, and see audit logs."
+      "info": "Projects let you group sites, set data needs, and manage team members."
     },
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
