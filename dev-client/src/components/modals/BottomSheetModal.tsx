@@ -21,7 +21,6 @@ import {
   BottomSheetModal as GorhomBottomSheetModal,
 } from '@gorhom/bottom-sheet';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
-import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {Pressable} from 'react-native';
 import {
   ModalHandle,
@@ -34,6 +33,7 @@ import {
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
 
 type Props = ModalProps & {
   fullHeight?: boolean;
@@ -75,7 +75,7 @@ export const BottomSheetModal = forwardRef<
             {Header}
             <Box flex={1} />
             {Closer === undefined ? (
-              <CloseButton size="lg" onPress={methods.onClose} />
+              <BigCloseButton onPress={methods.onClose} />
             ) : (
               Closer
             )}

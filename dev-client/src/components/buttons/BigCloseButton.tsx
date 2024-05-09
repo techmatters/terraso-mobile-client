@@ -18,15 +18,15 @@
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 
-type CloseButtonProps = {
+type BigCloseButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export const CloseButton = ({onPress}: CloseButtonProps) => {
+export const BigCloseButton = ({onPress}: BigCloseButtonProps) => {
   return (
     <IconButton
       name="close"
-      size="sm"
+      size="lg"
       background="grey.200"
       _icon={iconProps}
       borderRadius="full"

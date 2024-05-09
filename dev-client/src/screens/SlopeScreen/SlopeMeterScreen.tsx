@@ -21,7 +21,6 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import {Camera} from 'expo-camera';
 import {DeviceMotion} from 'expo-sensors';
 import {Button, Link} from 'native-base';
-import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
@@ -39,6 +38,7 @@ import {
 import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -116,7 +116,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
           </Box>
           <Column alignItems="center">
             <Box {...styles.closeButtonBox}>
-              <CloseButton size="lg" onPress={onClose} />
+              <BigCloseButton onPress={onClose} />
             </Box>
             <Column
               px="56px"
