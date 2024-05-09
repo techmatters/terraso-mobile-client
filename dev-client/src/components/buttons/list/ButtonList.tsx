@@ -17,11 +17,9 @@
 
 import {Divider} from 'native-base';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Fragment, Children} from 'react';
+import {Children} from 'react';
 
-export type ButtonListProps = {
-  children: React.ReactNode;
-};
+export type ButtonListProps = React.PropsWithChildren;
 
 export function ButtonList({children}: ButtonListProps) {
   return (
@@ -29,10 +27,10 @@ export function ButtonList({children}: ButtonListProps) {
       <Divider />
       {Children.map(children, child => {
         return (
-          <Fragment>
+          <>
             {child}
             <Divider />
-          </Fragment>
+          </>
         );
       })}
     </Column>
