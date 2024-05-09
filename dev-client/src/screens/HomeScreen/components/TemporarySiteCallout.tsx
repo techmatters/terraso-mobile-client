@@ -62,8 +62,8 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
     <Card
       Header={
         <CalloutDetail
-          label={t('site.soil_id_prediction').toUpperCase()}
-          value={TEMP_SOIL_ID_VALUE.toUpperCase()}
+          label={t('site.soil_id_prediction')}
+          value={TEMP_SOIL_ID_VALUE}
         />
       }
       buttons={<CardCloseButton onPress={closeCallout} />}
@@ -71,8 +71,8 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
       <Column mt="12px" space="12px">
         <Divider />
         <CalloutDetail
-          label={t('site.ecological_site_prediction').toUpperCase()}
-          value={TEMP_ECO_SITE_PREDICTION.toUpperCase()}
+          label={t('site.ecological_site_prediction')}
+          value={TEMP_ECO_SITE_PREDICTION}
         />
         <Divider />
         {siteElevationString ? (
@@ -85,12 +85,19 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
         )}
         <Divider />
         <Row justifyContent="flex-end">
-          <Button onPress={onCreate} size="sm" variant="outline">
-            {t('site.create.title').toUpperCase()}
+          <Button
+            onPress={onCreate}
+            _text={{textTransform: 'uppercase'}}
+            size="sm"
+            variant="outline">
+            {t('site.create.title')}
           </Button>
           <Box w="24px" />
-          <Button onPress={onLearnMore} size="sm">
-            {t('site.more_info').toUpperCase()}
+          <Button
+            onPress={onLearnMore}
+            _text={{textTransform: 'uppercase'}}
+            size="sm">
+            {t('site.more_info')}
           </Button>
         </Row>
       </Column>

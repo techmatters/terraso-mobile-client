@@ -83,7 +83,11 @@ const LocationPrediction = ({
         <Box mr={15}>
           <StackedBarChart />
         </Box>
-        <Text variant="body1" color="primary.lighter" bold>
+        <Text
+          variant="body1"
+          color="primary.lighter"
+          textTransform="uppercase"
+          bold>
           {label}
         </Text>
       </Row>
@@ -162,8 +166,9 @@ export const SiteScreen = ({siteId, coords, elevation}: Props) => {
             <Button
               alignSelf="center"
               onPress={onCreate}
+              _text={{textTransform: 'uppercase'}}
               leftIcon={<Icon name="add" />}>
-              {t('site.create.button_label').toUpperCase()}
+              {t('site.create.button_label')}
             </Button>
             <Text variant="body1" mt={5}>
               {t('site.create.description')}
@@ -222,7 +227,7 @@ export const SiteScreen = ({siteId, coords, elevation}: Props) => {
       </Box>
       <Column space="20px" padding="16px">
         <LocationPrediction
-          label={t('soil.soil_id').toUpperCase()}
+          label={t('soil.soil_id')}
           soilName={TEMP_SOIL_ID_VALUE}
           ecologicalSiteName={TEMP_ECO_SITE_PREDICTION}
         />

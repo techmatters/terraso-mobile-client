@@ -87,24 +87,24 @@ export const LoginScreen = () => {
         <Button.Group direction="column" space={5}>
           <Button
             bgColor="primary.contrast"
-            _text={{color: 'primary.main'}}
+            _text={{textTransform: 'uppercase', color: 'primary.main'}}
             size="lg"
             onPress={onPress('google')}
             startIcon={<GoogleLogo />}>
-            {t('account.google_login').toUpperCase()}
+            {t('account.google_login')}
           </Button>
           <Button
             bgColor="primary.contrast"
-            _text={{color: 'primary.main'}}
+            _text={{textTransform: 'uppercase', color: 'primary.main'}}
             size="lg"
             onPress={onPress('microsoft')}
             startIcon={<MicrosoftLogo />}>
-            {t('account.microsoft_login').toUpperCase()}
+            {t('account.microsoft_login')}
           </Button>
           {/*
           <Button
             bgColor="primary.contrast"
-            _text={{color: 'primary.main'}}
+            _text={{textTransform: 'uppercase', color: 'primary.main'}}
             size="lg"
             onPress={onPress('apple')}
             startIcon={
@@ -114,7 +114,7 @@ export const LoginScreen = () => {
                 color="primary.main"
               />
             }>
-            {t('account.apple_login').toUpperCase()}
+            {t('account.apple_login')}
           </Button>
           */}
         </Button.Group>

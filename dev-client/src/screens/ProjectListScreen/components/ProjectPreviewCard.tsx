@@ -46,8 +46,8 @@ export const ProjectPreviewCard = ({project}: Props) => {
       <HStack mb="8px">
         {/** TODO: backend does not have isNew status
         {project.isNew && (
-          <Badge flexGrow={0} borderRadius={8}>
-            {t('badge.new').toUpperCase()}
+          <Badge variant="chip" flexGrow={0} borderRadius={8} _text={{textTransform: 'uppercase'}}>
+            {t('badge.new')}
           </Badge>
         )} **/}
         <Heading variant="h6" color="primary.main">

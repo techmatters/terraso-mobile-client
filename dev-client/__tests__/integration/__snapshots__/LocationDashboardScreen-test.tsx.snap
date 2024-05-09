@@ -1395,10 +1395,11 @@ exports[`renders correctly 1`] = `
                                             "color": "#93E39B",
                                             "fontSize": 16,
                                             "fontWeight": "bold",
+                                            "textTransform": "uppercase",
                                           }
                                         }
                                       >
-                                        SOIL ID
+                                        Soil ID
                                       </Text>
                                     </View>
                                     <View
