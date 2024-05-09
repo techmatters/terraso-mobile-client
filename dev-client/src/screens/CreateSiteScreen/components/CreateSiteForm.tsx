@@ -108,7 +108,7 @@ export const CreateSiteForm = ({
           <FormField name="projectId">
             <FormLabel>
               {t('site.create.add_to_project_label')}
-              <FormTooltip icon="help">
+              <FormTooltip>
                 <Text color="primary.contrast" variant="body1">
                   {t('site.create.add_to_project_tooltip')}
                 </Text>

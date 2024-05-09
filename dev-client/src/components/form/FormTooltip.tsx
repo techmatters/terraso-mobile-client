@@ -17,15 +17,13 @@
 
 import {Popover} from 'native-base';
 import {memo} from 'react';
-import {TooltipButton} from 'terraso-mobile-client/components/buttons/TooltipButton';
+import {HelpButton} from 'terraso-mobile-client/components/buttons/HelpButton';
 
-type TooltipProps = React.PropsWithChildren<{
-  icon: string;
-}>;
+type TooltipProps = React.PropsWithChildren;
 
-export const FormTooltip = memo(({icon, children}: TooltipProps) => {
+export const FormTooltip = memo(({children}: TooltipProps) => {
   return (
-    <Popover trigger={props => <TooltipButton {...props} icon={icon} />}>
+    <Popover trigger={props => <HelpButton {...props} />}>
       <Popover.Content bg="grey.800" p="0px" shadow="0">
         <Popover.Arrow bg="grey.800" shadow="0" />
         <Popover.Body

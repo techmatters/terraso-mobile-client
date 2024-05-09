@@ -33,9 +33,7 @@ export const ListHeader = memo(({query, setQuery}: Props) => {
     <VStack space="10px" px="12px" pt="5%">
       <HStack>
         <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
-        <FormTooltip icon="help">
-          {t('projects.transfer_sites.tooltip')}
-        </FormTooltip>
+        <FormTooltip>{t('projects.transfer_sites.tooltip')}</FormTooltip>
       </HStack>
       <Text>{t('projects.transfer_sites.description', '')}</Text>
       <SearchBar
