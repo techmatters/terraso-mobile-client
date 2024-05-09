@@ -22,7 +22,7 @@ import {
   launchImageLibraryAsync,
   MediaTypeOptions,
 } from 'expo-image-picker';
-import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {
   ModalHandle,
   ModalTrigger,
@@ -86,11 +86,7 @@ export const ImagePicker = ({onPick, children, ...modalProps}: Props) => {
   const onCancel = useCallback(() => ref.current?.onClose(), [ref]);
 
   return (
-    <BottomSheetModal
-      ref={ref}
-      trigger={children}
-      Closer={null}
-      {...modalProps}>
+    <OverlaySheet ref={ref} trigger={children} Closer={null} {...modalProps}>
       <Column padding="lg" space="md">
         <Button
           _text={{textTransform: 'uppercase'}}
@@ -111,6 +107,6 @@ export const ImagePicker = ({onPick, children, ...modalProps}: Props) => {
           {t('general.cancel')}
         </Button>
       </Column>
-    </BottomSheetModal>
+    </OverlaySheet>
   );
 };

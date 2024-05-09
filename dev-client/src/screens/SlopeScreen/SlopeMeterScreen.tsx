@@ -35,7 +35,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
+import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
@@ -127,9 +127,9 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                 <Heading variant="h6">
                   {t('slope.steepness.slope_meter')}
                 </Heading>
-                <InfoModal Header={t('slope.steepness.info.title')}>
+                <InfoOverlaySheet Header={t('slope.steepness.info.title')}>
                   <SlopeMeterInfoContent />
-                </InfoModal>
+                </InfoOverlaySheet>
               </Row>
               <Box height="12px" />
               <Heading variant="h5" fontWeight={700}>

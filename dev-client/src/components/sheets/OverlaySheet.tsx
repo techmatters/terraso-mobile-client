@@ -41,7 +41,7 @@ type Props = ModalProps & {
   scrollable?: boolean;
 };
 
-export const BottomSheetModal = forwardRef<
+export const OverlaySheet = forwardRef<
   ModalHandle,
   React.PropsWithChildren<Props>
 >(

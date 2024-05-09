@@ -50,7 +50,7 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
-import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
+import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
 
 type Props = {
@@ -138,9 +138,9 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
           <Column p="15px" bg="primary.contrast">
             <Row alignItems="center">
               <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
-              <InfoModal Header={t('slope.shape.info.title')}>
+              <InfoOverlaySheet Header={t('slope.shape.info.title')}>
                 <SlopeShapeInfoContent />
-              </InfoModal>
+              </InfoOverlaySheet>
             </Row>
             <LastModified />
           </Column>
