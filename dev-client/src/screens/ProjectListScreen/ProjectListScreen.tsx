@@ -82,13 +82,13 @@ export const ProjectListScreen = () => {
           <Spinner size="lg" />
         ) : (
           activeProjects.length === 0 && (
-            <Box mb={4}>
+            <Box mb="md">
               <Text bold>{t('projects.none.header')}</Text>
               <Text>{t('projects.none.info')}</Text>
             </Box>
           )
         )}
-        <Box alignItems="flex-start" pb={3}>
+        <Box alignItems="flex-start" pb="md">
           <AddButton
             text={t('projects.create_button')}
             buttonProps={{onPress}}
