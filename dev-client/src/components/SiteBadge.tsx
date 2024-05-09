@@ -21,6 +21,6 @@ type Props = {
   count: number;
 };
 
-export const PeopleBadge = ({count}: Props) => {
-  return <ChipBadge count={count} iconName="people-alt" />;
+export const SiteBadge = ({count}: Props) => {
+  return <ChipBadge count={count} iconName="location-on" />;
 };

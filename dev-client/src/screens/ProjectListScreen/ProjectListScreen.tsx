@@ -18,11 +18,10 @@
 import {useCallback, useMemo} from 'react';
 import {useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Link, Spinner} from 'native-base';
+import {Spinner} from 'native-base';
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {
   ListFilterModal,
@@ -71,13 +70,7 @@ export const ProjectListScreen = () => {
   );
 
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar
-          LeftButton={null}
-          RightButton={<AppBarIconButton name="help" />}
-        />
-      }>
+    <ScreenScaffold AppBar={<AppBar LeftButton={null} />}>
       <VStack
         bg="grey.200"
         p={5}
@@ -85,27 +78,22 @@ export const ProjectListScreen = () => {
         flexShrink={0}
         flexBasis="70%"
         space="10px">
-        <Box alignItems="flex-start" pb={3}>
+        {isLoadingData ? (
+          <Spinner size="lg" />
+        ) : (
+          activeProjects.length === 0 && (
+            <Box mb="md">
+              <Text bold>{t('projects.none.header')}</Text>
+              <Text>{t('projects.none.info')}</Text>
+            </Box>
+          )
+        )}
+        <Box alignItems="flex-start" pb="md">
           <AddButton
             text={t('projects.create_button')}
             buttonProps={{onPress}}
           />
         </Box>
-
-        {isLoadingData ? (
-          <Spinner size="lg" />
-        ) : (
-          activeProjects.length === 0 && (
-            <>
-              <Text variant="body1-strong">{t('projects.none.header')}</Text>
-              <Text>{t('projects.none.info')}</Text>
-              <Link _text={{color: 'primary.main'}} alignItems="center" mb="4">
-                {t('projects.learn_more')}
-              </Link>
-            </>
-          )
-        )}
-
         {activeProjects.length > 0 && (
           <ListFilterProvider
             items={activeProjects}
