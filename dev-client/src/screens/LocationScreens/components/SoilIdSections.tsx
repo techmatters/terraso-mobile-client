@@ -22,7 +22,7 @@ import {
   Text,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 
@@ -47,9 +47,9 @@ export const SoilIdMatchesSection = ({siteId}: SoilIdSectionProps) => {
     <ScreenContentSection backgroundColor="grey.200">
       <Row alignItems="center">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
-        <InfoModal Header={t('site.soil_id.matches.info.title')}>
+        <InfoOverlaySheetButton Header={t('site.soil_id.matches.info.title')}>
           <TopSoilMatchesInfoContent isSite={!!siteId} />
-        </InfoModal>
+        </InfoOverlaySheetButton>
       </Row>
     </ScreenContentSection>
   );

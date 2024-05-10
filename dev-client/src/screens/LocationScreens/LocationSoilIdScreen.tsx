@@ -46,7 +46,7 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
       AppBar={
         <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
       }>
-      <SoilIdDescriptionSection />
+      <SoilIdDescriptionSection siteId={siteId} />
       <SoilIdMatchesSection siteId={siteId} />
       {siteId ? (
         <SiteDataSection />
