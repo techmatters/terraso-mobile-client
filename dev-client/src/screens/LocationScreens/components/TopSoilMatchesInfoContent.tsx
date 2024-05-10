@@ -14,15 +14,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/data';
-import {render} from '@testing/utils';
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 
-test('renders correctly', () => {
-  const screen = render(<LocationDashboardScreen siteId="1" />, {
-    route: 'LOCATION_DASHBOARD',
-    initialState: testState,
-  }).toJSON();
+import {useTranslation} from 'react-i18next';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-  expect(screen).toMatchSnapshot();
-});
+type Props = {
+  isSite: boolean;
+};
+
+export const TopSoilMatchesInfoContent = ({isSite}: Props) => {
+  const {t} = useTranslation();
+
+  return (
+    <Text variant="body1">
+      {isSite
+        ? t('site.soil_id.matches.info.description.site')
+        : t('site.soil_id.matches.info.description.temp_location')}
+    </Text>
+  );
+};

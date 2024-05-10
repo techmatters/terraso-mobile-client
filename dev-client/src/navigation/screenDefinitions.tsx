@@ -26,7 +26,8 @@ import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/AddSiteNoteScreen
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/EditSiteNoteScreen';
 import {ReadNoteScreen} from 'terraso-mobile-client/screens/ReadNoteScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationDashboardScreen';
+import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
+import {LocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationSoilIdScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
@@ -68,6 +69,7 @@ export const screenDefinitions = {
   SITE_TRANSFER_PROJECT: SiteTransferProjectScreen,
   CREATE_SITE: CreateSiteScreen,
   LOCATION_DASHBOARD: LocationDashboardScreen,
+  LOCATION_SOIL_ID: LocationSoilIdScreen,
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,

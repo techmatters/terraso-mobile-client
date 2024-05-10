@@ -14,15 +14,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/data';
-import {render} from '@testing/utils';
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 
-test('renders correctly', () => {
-  const screen = render(<LocationDashboardScreen siteId="1" />, {
-    route: 'LOCATION_DASHBOARD',
-    initialState: testState,
-  }).toJSON();
+import {ReactNode} from 'react';
+import {
+  Heading,
+  Box,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-  expect(screen).toMatchSnapshot();
-});
+type Props = {
+  title?: string;
+  backgroundColor?: string;
+  children: ReactNode;
+};
+
+export const ScreenContentSection = ({
+  title,
+  backgroundColor,
+  children,
+}: Props) => {
+  return (
+    <Box
+      paddingHorizontal="md"
+      paddingVertical="md"
+      backgroundColor={backgroundColor}>
+      {title && (
+        <Heading variant="h4" pb="10px">
+          {title}
+        </Heading>
+      )}
+      {children}
+    </Box>
+  );
+};

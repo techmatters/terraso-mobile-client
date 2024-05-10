@@ -22,7 +22,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 
 import {ParamList} from 'terraso-mobile-client/navigation/types';
 import {ScreenDefinitions} from 'terraso-mobile-client/navigation/types';
-import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
+import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
 import {SiteNotesScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/SiteNotesScreen';
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
@@ -32,7 +32,7 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const tabDefinitions = {
-  SITE: SiteScreen,
+  SITE: LocationDashboardContent,
   SLOPE: SlopeScreen,
   SOIL: SoilScreen,
   NOTES: SiteNotesScreen,
