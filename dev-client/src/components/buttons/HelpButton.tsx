@@ -15,20 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
-import {TooltipIconButton} from 'terraso-mobile-client/components/icons/TooltipIconButton';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {forwardRef} from 'react';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
-type Props = {Header: React.ReactNode};
+type HelpButtonProps = {
+  onPress?: PressableProps['onPress'];
+};
 
-export const InfoModal = ({
-  Header,
-  children,
-}: React.PropsWithChildren<Props>) => (
-  <BottomSheetModal
-    fullHeight
-    trigger={onOpen => <TooltipIconButton onPress={onOpen} />}
-    Header={<Heading variant="h4">{Header}</Heading>}>
-    {children}
-  </BottomSheetModal>
-);
+export const HelpButton = forwardRef(({onPress}: HelpButtonProps, ref) => (
+  <IconButton
+    ref={ref}
+    _icon={iconProps}
+    ml="6px"
+    p="0"
+    name="help"
+    onPress={onPress}
+  />
+));
+
+const iconProps = {color: 'action.active_subtle', size: 'md'};

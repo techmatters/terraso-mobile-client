@@ -17,7 +17,7 @@
 
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
-import {LinkNewWindowIcon} from 'terraso-mobile-client/components/icons/LinkNewWindowIcon';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
 import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
 import {
@@ -70,7 +70,7 @@ export const LandPKSInfo = () => {
             components={{
               bold: <Text bold />,
               icon: (
-                <LinkNewWindowIcon
+                <ExternalLink
                   label={t('home.info.link_label')}
                   url={t('home.info.link_url')}
                 />

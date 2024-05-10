@@ -17,13 +17,13 @@
 import {SearchBar} from 'terraso-mobile-client/components/SearchBar';
 import {useTranslation} from 'react-i18next';
 import {memo} from 'react';
-import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {
   HStack,
   VStack,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 
 type Props = {query: string; setQuery: (query: string) => void};
 
@@ -33,9 +33,9 @@ export const ListHeader = memo(({query, setQuery}: Props) => {
     <VStack space="10px" px="12px" pt="5%">
       <HStack>
         <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
-        <FormTooltip icon="help">
+        <HelpTooltipButton>
           {t('projects.transfer_sites.tooltip')}
-        </FormTooltip>
+        </HelpTooltipButton>
       </HStack>
       <Text>{t('projects.transfer_sites.description', '')}</Text>
       <SearchBar

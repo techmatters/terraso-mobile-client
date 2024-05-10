@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -21,7 +21,6 @@ import {
   BottomSheetModal as GorhomBottomSheetModal,
 } from '@gorhom/bottom-sheet';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {Pressable} from 'react-native';
 import {
   ModalHandle,
@@ -34,6 +33,7 @@ import {
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
 
 type Props = ModalProps & {
   fullHeight?: boolean;
@@ -41,7 +41,7 @@ type Props = ModalProps & {
   scrollable?: boolean;
 };
 
-export const BottomSheetModal = forwardRef<
+export const OverlaySheet = forwardRef<
   ModalHandle,
   React.PropsWithChildren<Props>
 >(
@@ -50,7 +50,7 @@ export const BottomSheetModal = forwardRef<
       Header,
       children,
       trigger,
-      CloseButton,
+      Closer,
       fullHeight = false,
       scrollable = true,
       maxHeight,
@@ -69,15 +69,15 @@ export const BottomSheetModal = forwardRef<
     useImperativeHandle(forwardedRef, () => methods, [methods]);
 
     const contents =
-      Header || CloseButton ? (
+      Header || Closer ? (
         <Column padding="md">
           <Row alignItems="center" mb="md">
             {Header}
             <Box flex={1} />
-            {CloseButton === undefined ? (
-              <CardCloseButton size="lg" onPress={methods.onClose} />
+            {Closer === undefined ? (
+              <BigCloseButton onPress={methods.onClose} />
             ) : (
-              CloseButton
+              Closer
             )}
           </Row>
           {children}

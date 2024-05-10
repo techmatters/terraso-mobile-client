@@ -27,7 +27,7 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {SiteScreen} from 'terraso-mobile-client/screens/SiteScreen/SiteScreen';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
-import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/infoModals/PrivacyInfoModal';
+import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {selectUserRoleSite} from 'terraso-client-shared/selectors';

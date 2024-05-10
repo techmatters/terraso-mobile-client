@@ -16,7 +16,7 @@
  */
 
 import {useTranslation} from 'react-i18next';
-import {ListButton} from 'terraso-mobile-client/components/buttons/ListButton';
+import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
 
 export function DeleteAccountButton() {
   const {t} = useTranslation();

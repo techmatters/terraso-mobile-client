@@ -15,26 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Divider} from 'native-base';
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Fragment, Children} from 'react';
+import {Link} from 'native-base';
+import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
 
-export type ButtonListProps = {
-  children: React.ReactNode;
+type InternalLinkProps = {
+  label: string;
+  onPress?: InterfaceLinkProps['onPress'];
 };
 
-export function ButtonList({children}: ButtonListProps) {
+export default function InternalLink({label, onPress}: InternalLinkProps) {
   return (
-    <Column mt="12px" mb="24px" space="6px">
-      <Divider />
-      {Children.map(children, child => {
-        return (
-          <Fragment>
-            {child}
-            <Divider />
-          </Fragment>
-        );
-      })}
-    </Column>
+    <Link _text={{color: 'primary.main'}} isUnderlined={true} onPress={onPress}>
+      {label}
+    </Link>
   );
 }

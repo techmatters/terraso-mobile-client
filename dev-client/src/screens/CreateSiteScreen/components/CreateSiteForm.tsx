@@ -36,7 +36,6 @@ import {coordsToString} from 'terraso-mobile-client/components/StaticMapView';
 import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
-import {FormTooltip} from 'terraso-mobile-client/components/form/FormTooltip';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
@@ -45,6 +44,7 @@ import {
   Box,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 
 export type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,
@@ -108,11 +108,11 @@ export const CreateSiteForm = ({
           <FormField name="projectId">
             <FormLabel>
               {t('site.create.add_to_project_label')}
-              <FormTooltip icon="help">
+              <HelpTooltipButton>
                 <Text color="primary.contrast" variant="body1">
                   {t('site.create.add_to_project_tooltip')}
                 </Text>
-              </FormTooltip>
+              </HelpTooltipButton>
             </FormLabel>
             <ProjectSelect
               projectId={values.projectId ?? null}

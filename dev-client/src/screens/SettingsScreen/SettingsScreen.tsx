@@ -22,7 +22,7 @@ import {VersionIndicator} from 'terraso-mobile-client/screens/SettingsScreen/com
 import {UserIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/UserIndicatorComponent';
 import {LogOutButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/LogOutButton';
 import {DeleteAccountButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/DeleteAccountButton';
-import {ButtonList} from 'terraso-mobile-client/components/buttons/ButtonList';
+import {ButtonList} from 'terraso-mobile-client/components/buttons/list/ButtonList';
 
 export function SettingsScreen() {
   return (

@@ -55,7 +55,7 @@ import {
   Column,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
-import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -162,7 +162,7 @@ export const EditIntervalModal = ({
   }, [dispatch, depthInterval, siteId, onClose]);
 
   return (
-    <BottomSheetModal
+    <OverlaySheet
       ref={modalRef}
       trigger={onOpen => (
         <IconButton
@@ -247,7 +247,7 @@ export const EditIntervalModal = ({
           </Column>
         )}
       </Formik>
-    </BottomSheetModal>
+    </OverlaySheet>
   );
 };
 

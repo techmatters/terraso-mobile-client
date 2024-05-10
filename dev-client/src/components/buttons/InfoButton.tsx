@@ -15,23 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
-import {LogoutModal} from 'terraso-mobile-client/components/modals/LogoutModal';
+import {forwardRef} from 'react';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
-export function LogOutButton() {
-  const {t} = useTranslation();
+type InfoButtonProps = {
+  onPress?: PressableProps['onPress'];
+};
 
-  return (
-    <LogoutModal
-      trigger={onOpen => (
-        <ListButton
-          type="default"
-          iconName="logout"
-          labelText={t('settings.log_out')}
-          onPress={onOpen}
-        />
-      )}
-    />
-  );
-}
+export const InfoButton = forwardRef(({onPress}: InfoButtonProps, ref) => (
+  <IconButton
+    ref={ref}
+    _icon={iconProps}
+    ml="6px"
+    p="0"
+    name="info"
+    onPress={onPress}
+  />
+));
+
+const iconProps = {color: 'action.active_subtle', size: 'md'};

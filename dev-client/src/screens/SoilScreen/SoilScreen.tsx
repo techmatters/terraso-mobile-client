@@ -38,7 +38,7 @@ import {
   useSiteProjectSoilSettings,
   useSiteSoilIntervals,
 } from 'terraso-client-shared/selectors';
-import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
@@ -89,7 +89,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         justifyContent="space-between">
         <Heading variant="h6">{t('soil.pit')}</Heading>
         {!projectSettings && (
-          <BottomSheetModal
+          <OverlaySheet
             Header={
               <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
             }
@@ -104,7 +104,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               selected={soilData.depthIntervalPreset}
               updateChoice={updateSoilDataDepthPreset}
             />
-          </BottomSheetModal>
+          </OverlaySheet>
         )}
       </Row>
       {allIntervals.map(interval => (
