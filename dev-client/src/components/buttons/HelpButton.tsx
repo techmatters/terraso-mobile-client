@@ -29,7 +29,7 @@ export const HelpButton = forwardRef(({onPress}: HelpButtonProps, ref) => (
     _icon={iconProps}
     ml="6px"
     p="0"
-    name={'help'}
+    name="help"
     onPress={onPress}
   />
 ));
