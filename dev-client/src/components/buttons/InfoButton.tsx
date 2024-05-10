@@ -29,7 +29,7 @@ export const InfoButton = forwardRef(({onPress}: InfoButtonProps, ref) => (
     _icon={iconProps}
     ml="6px"
     p="0"
-    name={'info'}
+    name="info"
     onPress={onPress}
   />
 ));
