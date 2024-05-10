@@ -30,22 +30,21 @@ import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/na
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/infoModals/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {selectUserRoleSite} from 'terraso-client-shared/selectors';
+import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
 import {isSiteManager} from 'terraso-mobile-client/util';
 
-type Props = {siteId?: string; coords?: Coords};
+type Props = {siteId: string} | {coords: Coords};
 
 // A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with only coords)
-export const LocationDashboardScreen = ({siteId, coords}: Props) => {
+export const LocationDashboardScreen = (props: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const infoModalRef = useRef<BottomSheetModal>(null);
+  const siteId = 'siteId' in props ? props.siteId : undefined;
   const site = useSelector(state =>
-    siteId === undefined ? undefined : state.site.sites[siteId],
+    siteId === undefined ? undefined : selectSite(siteId)(state),
   );
-  if (coords === undefined) {
-    coords = site!;
-  }
+  const coords = 'coords' in props ? props.coords : site!;
 
   const userRole = useSelector(state =>
     siteId === undefined ? null : selectUserRoleSite(state, siteId),
