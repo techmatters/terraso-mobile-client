@@ -25,21 +25,15 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
-export type ExternalLinkProps = React.ComponentProps<
-  typeof NativeIconButton
-> & {
+export type ExternalLinkProps = {
   label: string;
   url: string;
 };
 
 export const ExternalLink = React.forwardRef(
-  ({label, url, ...props}: ExternalLinkProps, ref: React.Ref<unknown>) => {
+  ({label, url}: ExternalLinkProps, ref: React.Ref<unknown>) => {
     const icon = (
-      <NativeIconButton
-        ref={ref}
-        icon={<Icon name={'open-in-new'} />}
-        {...props}
-      />
+      <NativeIconButton ref={ref} icon={<Icon name={'open-in-new'} />} />
     );
 
     return (

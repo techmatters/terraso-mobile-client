@@ -16,14 +16,16 @@
  */
 
 import {Link} from 'native-base';
+import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
 
 type InternalLink = {
   label: string;
-} & React.ComponentProps<typeof Link>;
+  onPress?: InterfaceLinkProps['onPress'];
+};
 
-export default function InternalLink({label, ...props}: InternalLink) {
+export default function InternalLink({label, onPress}: InternalLink) {
   return (
-    <Link _text={{color: 'primary.main'}} isUnderlined={true} {...props}>
+    <Link _text={{color: 'primary.main'}} isUnderlined={true} onPress={onPress}>
       {label}
     </Link>
   );
