@@ -21,7 +21,6 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import {Camera} from 'expo-camera';
 import {DeviceMotion} from 'expo-sensors';
 import {Button, Link} from 'native-base';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
 import {useTranslation} from 'react-i18next';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
@@ -36,9 +35,10 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -116,7 +116,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
           </Box>
           <Column alignItems="center">
             <Box {...styles.closeButtonBox}>
-              <CardCloseButton size="lg" onPress={onClose} />
+              <BigCloseButton onPress={onClose} />
             </Box>
             <Column
               px="56px"
@@ -127,9 +127,10 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                 <Heading variant="h6">
                   {t('slope.steepness.slope_meter')}
                 </Heading>
-                <InfoModal Header={t('slope.steepness.info.title')}>
+                <InfoOverlaySheetButton
+                  Header={t('slope.steepness.info.title')}>
                   <SlopeMeterInfoContent />
-                </InfoModal>
+                </InfoOverlaySheetButton>
               </Row>
               <Box height="12px" />
               <Heading variant="h5" fontWeight={700}>

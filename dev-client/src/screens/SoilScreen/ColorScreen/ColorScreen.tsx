@@ -28,7 +28,6 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
-import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
@@ -45,6 +44,7 @@ import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 
@@ -90,7 +90,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
         <Row alignItems="flex-end">
           <Row alignItems="center">
             <Heading variant="h6">{t('soil.color.title')}</Heading>
-            <InfoModal Header={t('soil.color.title')}>
+            <InfoOverlaySheetButton Header={t('soil.color.title')}>
               <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
               <BulletList
                 data={[1, 2, 3]}
@@ -100,7 +100,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
               />
               <Paragraph variant="body1">{t('soil.color.info.p2')}</Paragraph>
               <Paragraph variant="body1">{t('soil.color.info.p3')}</Paragraph>
-            </InfoModal>
+            </InfoOverlaySheetButton>
           </Row>
           <Box flex={1} />
           {(workflow === 'CAMERA' || color) && (

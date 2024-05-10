@@ -15,24 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {forwardRef} from 'react';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/InfoButton';
+import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 
-type TooltipIconButtonProps = {
-  icon?: IconName;
-  onPress: () => void;
+type Props = {
+  Header: React.ReactNode;
 };
-const tooltipIconProps = {color: 'action.active_subtle', size: 'md'};
-export const TooltipIconButton = forwardRef(
-  ({icon: name = 'info', onPress}: TooltipIconButtonProps, ref) => (
-    <IconButton
-      ref={ref}
-      _icon={tooltipIconProps}
-      ml="6px"
-      p="0"
-      name={name}
-      onPress={onPress}
-    />
-  ),
+
+export const InfoOverlaySheetButton = ({
+  Header,
+  children,
+}: React.PropsWithChildren<Props>) => (
+  <InfoOverlaySheet
+    trigger={onOpen => <InfoButton onPress={onOpen} />}
+    Header={Header}>
+    {children}
+  </InfoOverlaySheet>
 );

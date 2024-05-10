@@ -15,23 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
-import {LogoutModal} from 'terraso-mobile-client/components/modals/LogoutModal';
+import {memo} from 'react';
+import {HelpButton} from 'terraso-mobile-client/components/buttons/HelpButton';
+import {Tooltip} from 'terraso-mobile-client/components/tooltips/Tooltip';
 
-export function LogOutButton() {
-  const {t} = useTranslation();
+type Props = React.PropsWithChildren;
 
+export const HelpTooltipButton = memo(({children}: Props) => {
   return (
-    <LogoutModal
-      trigger={onOpen => (
-        <ListButton
-          type="default"
-          iconName="logout"
-          labelText={t('settings.log_out')}
-          onPress={onOpen}
-        />
-      )}
-    />
+    <Tooltip trigger={props => <HelpButton {...props} />}>{children}</Tooltip>
   );
-}
+});

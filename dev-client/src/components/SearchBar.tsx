@@ -20,7 +20,7 @@ import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {
   Row,
   Box,
@@ -83,7 +83,7 @@ export const SearchBar = ({
           />
           <Modal isOpen={isOpen} onClose={onClose}>
             <Modal.Content>
-              <CardCloseButton onPress={onClose} />
+              <CloseButton onPress={onClose} />
               <Box pt="50px" pb="28px" px="16px">
                 {FilterOptions}
                 <Button

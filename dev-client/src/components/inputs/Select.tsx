@@ -16,7 +16,7 @@
  */
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {BottomSheetModal} from 'terraso-mobile-client/components/modals/BottomSheetModal';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {
   Box,
   Row,
@@ -121,10 +121,10 @@ export const Select = <T, Nullable extends boolean>({
   );
 
   return (
-    <BottomSheetModal
+    <OverlaySheet
       ref={ref}
       scrollable={false}
-      CloseButton={null}
+      Closer={null}
       trigger={onOpen => (
         <Pressable
           accessibilityState={{disabled}}
@@ -157,6 +157,6 @@ export const Select = <T, Nullable extends boolean>({
         data={optionsWithNull}
         renderItem={renderOption}
       />
-    </BottomSheetModal>
+    </OverlaySheet>
   );
 };

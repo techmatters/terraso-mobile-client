@@ -111,7 +111,7 @@ export const ActionsModal = forwardRef<
   return (
     <Modal
       ref={ref}
-      CloseButton={null}
+      Closer={null}
       backgroundColor="grey.200"
       Footer={Footer}
       {...modalProps}>

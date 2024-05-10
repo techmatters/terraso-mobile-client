@@ -21,7 +21,7 @@ import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/Card';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
 import {getElevation} from 'terraso-mobile-client/services';
 import {
@@ -66,7 +66,7 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
           value={TEMP_SOIL_ID_VALUE}
         />
       }
-      buttons={<CardCloseButton onPress={closeCallout} />}
+      buttons={<CloseButton onPress={closeCallout} />}
       isPopover={true}>
       <Column mt="12px" space="12px">
         <Divider />

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,17 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Popover} from 'native-base';
+import {IPopoverProps, Popover} from 'native-base';
 import {memo} from 'react';
-import {TooltipIconButton} from 'terraso-mobile-client/components/icons/TooltipIconButton';
 
 type TooltipProps = React.PropsWithChildren<{
-  icon: string;
+  trigger: IPopoverProps['trigger'];
 }>;
 
-export const FormTooltip = memo(({icon, children}: TooltipProps) => {
+export const Tooltip = memo(({trigger, children}: TooltipProps) => {
   return (
-    <Popover trigger={props => <TooltipIconButton {...props} icon={icon} />}>
+    <Popover trigger={trigger}>
       <Popover.Content bg="grey.800" p="0px" shadow="0">
         <Popover.Arrow bg="grey.800" shadow="0" />
         <Popover.Body

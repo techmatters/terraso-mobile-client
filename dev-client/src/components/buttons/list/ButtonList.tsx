@@ -15,23 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
-import {LogoutModal} from 'terraso-mobile-client/components/modals/LogoutModal';
+import {Divider} from 'native-base';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Children} from 'react';
 
-export function LogOutButton() {
-  const {t} = useTranslation();
+export type ButtonListProps = React.PropsWithChildren;
 
+export function ButtonList({children}: ButtonListProps) {
   return (
-    <LogoutModal
-      trigger={onOpen => (
-        <ListButton
-          type="default"
-          iconName="logout"
-          labelText={t('settings.log_out')}
-          onPress={onOpen}
-        />
-      )}
-    />
+    <Column mt="12px" mb="24px" space="6px">
+      <Divider />
+      {Children.map(children, child => {
+        return (
+          <>
+            {child}
+            <Divider />
+          </>
+        );
+      })}
+    </Column>
   );
 }

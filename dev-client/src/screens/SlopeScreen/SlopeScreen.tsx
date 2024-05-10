@@ -33,7 +33,7 @@ import {
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
 import {SlopeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoContent';
-import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
@@ -58,9 +58,9 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
     <Column space="1px">
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
         <Heading variant="h6">{t('slope.title')}</Heading>
-        <InfoModal Header={t('slope.info.title')}>
+        <InfoOverlaySheetButton Header={t('slope.info.title')}>
           <SlopeInfoContent />
-        </InfoModal>
+        </InfoOverlaySheetButton>
       </Row>
       <DataInputSummary
         required={required}

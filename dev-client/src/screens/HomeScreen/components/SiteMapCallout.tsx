@@ -28,7 +28,7 @@ import {
 } from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/HomeScreen/components/SiteClusterCalloutListItem';
 import {TemporarySiteCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporarySiteCallout';
@@ -74,7 +74,7 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
       return (
         <SiteCard
           site={site}
-          buttons={<CardCloseButton onPress={closeCallout} />}
+          buttons={<CloseButton onPress={closeCallout} />}
           isPopover={true}
         />
       );
@@ -87,7 +87,7 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
       return (
         <Card
           width="270px"
-          buttons={<CardCloseButton onPress={closeCallout} />}
+          buttons={<CloseButton onPress={closeCallout} />}
           isPopover={true}>
           <FlatList
             data={Object.keys(clusterSites)}

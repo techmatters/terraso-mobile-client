@@ -25,7 +25,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import {CardCloseButton} from 'terraso-mobile-client/components/CardCloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {Pressable, StyleSheet} from 'react-native';
 import {Modal as PaperModal, Portal} from 'react-native-paper';
 import {Divider} from 'native-base';
@@ -51,7 +51,7 @@ export type ModalProps = {
   Header?: React.ReactNode;
   Footer?: React.ReactNode;
   trigger?: ModalTrigger;
-  CloseButton?: React.ReactNode | null;
+  Closer?: React.ReactNode | null;
   closeHook?: () => void;
 };
 
@@ -64,7 +64,7 @@ export const Modal = forwardRef<
       children,
       trigger,
       closeHook,
-      CloseButton,
+      Closer,
       Header,
       Footer,
       padding = 'lg',
@@ -76,8 +76,8 @@ export const Modal = forwardRef<
     const onOpen = useCallback(() => setIsOpen(true), [setIsOpen]);
     const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
     const handle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
-    if (CloseButton === undefined) {
-      CloseButton = <CardCloseButton onPress={onClose} />;
+    if (Closer === undefined) {
+      Closer = <CloseButton onPress={onClose} />;
     }
 
     useEffect(() => {
@@ -110,7 +110,7 @@ export const Modal = forwardRef<
                   <Row mb="md" alignItems="flex-start">
                     {Header}
                     <Box flex={1} />
-                    {CloseButton}
+                    {Closer}
                   </Row>
                   <ModalContext.Provider value={handle}>
                     {children}
