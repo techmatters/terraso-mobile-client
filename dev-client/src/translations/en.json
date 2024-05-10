@@ -57,6 +57,10 @@
     "form": {
       "name_min_length_error": "Site name must be at least {{min}} characters",
       "name_max_length_error": "Site name must be at most {{max}} characters",
+      "min_latitude_error": "Latitude must be at least {{LATITUDE_MIN}}",
+      "max_latitude_error": "Latitude must be at most {{LATITUDE_MAX}}",
+      "min_longitude_error": "Longitude must be at least {{LONGITUDE_MIN}}",
+      "max_longitude_error": "Longitude must be at most {{LONGITUDE_MAX}}",
       "coords_parse_error": {
         "COORDS_PARSE": "Coordinates must be comma-separated decimal numbers representing a latitude, longitude pair",
         "LATITUDE_PARSE": "Latitude must be a decimal number",
