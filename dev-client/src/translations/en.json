@@ -60,16 +60,7 @@
       "min_latitude_error": "Latitude must be at least {{LATITUDE_MIN}}",
       "max_latitude_error": "Latitude must be at most {{LATITUDE_MAX}}",
       "min_longitude_error": "Longitude must be at least {{LONGITUDE_MIN}}",
-      "max_longitude_error": "Longitude must be at most {{LONGITUDE_MAX}}",
-      "coords_parse_error": {
-        "COORDS_PARSE": "Coordinates must be comma-separated decimal numbers representing a latitude, longitude pair",
-        "LATITUDE_PARSE": "Latitude must be a decimal number",
-        "LATITUDE_MIN": "Latitude must be at least {{LATITUDE_MIN}}",
-        "LATITUDE_MAX": "Latitude must be at most {{LATITUDE_MAX}}",
-        "LONGITUDE_PARSE": "Longitude must be a decimal number",
-        "LONGITUDE_MIN": "Longitude must be at least {{LONGITUDE_MIN}}",
-        "LONGITUDE_MAX": "Longitude must be at most {{LONGITUDE_MAX}}"
-      }
+      "max_longitude_error": "Longitude must be at most {{LONGITUDE_MAX}}"
     },
     "dashboard": {
       "privacy": "Data Privacy",
