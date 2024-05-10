@@ -27,6 +27,8 @@ import {
   SoilIdMatchesSection,
 } from 'terraso-mobile-client/screens/LocationScreens/components/SoilIdSections';
 import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/SiteDataSection';
+import {selectSite} from 'terraso-client-shared/selectors';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   siteId?: string;
@@ -36,7 +38,7 @@ type Props = {
 export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
   const site = useSelector(state =>
-    siteId === undefined ? undefined : state.site.sites[siteId],
+    siteId === undefined ? undefined : selectSite(siteId)(state),
   );
 
   return (
@@ -46,7 +48,13 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
       }>
       <SoilIdDescriptionSection />
       <SoilIdMatchesSection siteId={siteId} />
-      {siteId ? <SiteDataSection /> : <CreateSiteButton coords={coords} />}
+      {siteId ? (
+        <SiteDataSection />
+      ) : (
+        <Box paddingVertical="md">
+          <CreateSiteButton coords={coords} />
+        </Box>
+      )}
     </ScreenScaffold>
   );
 };

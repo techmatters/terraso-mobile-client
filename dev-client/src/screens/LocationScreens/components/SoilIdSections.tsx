@@ -23,10 +23,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoModal} from 'terraso-mobile-client/components/modals/infoModals/InfoModal';
-import {
-  TopSoilMatchesInfoContent_Site,
-  TopSoilMatchesInfoContent_TempLocation,
-} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
+import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 
 type SoilIdSectionProps = {siteId?: string};
@@ -51,11 +48,7 @@ export const SoilIdMatchesSection = ({siteId}: SoilIdSectionProps) => {
       <Row alignItems="center">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
         <InfoModal Header={t('site.soil_id.matches.info.title')}>
-          {siteId ? (
-            <TopSoilMatchesInfoContent_Site />
-          ) : (
-            <TopSoilMatchesInfoContent_TempLocation />
-          )}
+          <TopSoilMatchesInfoContent isSite={!!siteId} />
         </InfoModal>
       </Row>
     </ScreenContentSection>

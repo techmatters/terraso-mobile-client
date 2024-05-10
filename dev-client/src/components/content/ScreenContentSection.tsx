@@ -38,7 +38,7 @@ export const ScreenContentSection = ({
       paddingVertical="md"
       backgroundColor={backgroundColor}>
       {title && (
-        <Heading variant="h4" pb={'10px'}>
+        <Heading variant="h4" pb="10px">
           {title}
         </Heading>
       )}

@@ -18,22 +18,18 @@
 import {useTranslation} from 'react-i18next';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const TopSoilMatchesInfoContent_Site = () => {
-  const {t} = useTranslation();
-
-  return (
-    <Text variant="body1">
-      {t('site.soil_id.matches.info.description.site')}
-    </Text>
-  );
+type Props = {
+  isSite: boolean;
 };
 
-export const TopSoilMatchesInfoContent_TempLocation = () => {
+export const TopSoilMatchesInfoContent = ({isSite}: Props) => {
   const {t} = useTranslation();
 
   return (
     <Text variant="body1">
-      {t('site.soil_id.matches.info.description.temp_location')}
+      {isSite
+        ? t('site.soil_id.matches.info.description.site')
+        : t('site.soil_id.matches.info.description.temp_location')}
     </Text>
   );
 };
