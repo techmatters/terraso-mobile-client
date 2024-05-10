@@ -24,10 +24,6 @@ import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql'
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
-import {
-  coordsToString,
-  parseCoords,
-} from 'terraso-mobile-client/components/StaticMapView';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {
@@ -66,10 +62,10 @@ export const CreateSiteView = ({
 
   const onSave = useCallback(
     async ({...form}: FormState) => {
-      const {coords, ...site} = validationSchema.cast(form);
+      delete form?.coords;
+      const {...site} = validationSchema.cast(form);
       const createdSite = await createSiteCallback({
         ...site,
-        ...parseCoords(coords),
       });
       if (createdSite !== undefined) {
         homeScreen?.showSiteOnMap(createdSite);
@@ -85,7 +81,8 @@ export const CreateSiteView = ({
       validationSchema={validationSchema}
       initialValues={{
         name: '',
-        coords: defaultCoords ? coordsToString(defaultCoords) : '',
+        latitude: defaultCoords?.latitude.toString(),
+        longitude: defaultCoords?.longitude.toString(),
         projectId: defaultProject?.id,
         privacy: defaultProject?.privacy ?? 'PUBLIC',
       }}
