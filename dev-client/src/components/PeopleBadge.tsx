@@ -15,17 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ChipBadge} from 'terraso-mobile-client/components/ChipBadge';
 
 type Props = {
   count: number;
 };
 
 export const PeopleBadge = ({count}: Props) => {
-  return (
-    <Badge variant="chip" startIcon={<Icon name="people-alt" />}>
-      {count}
-    </Badge>
-  );
+  return <ChipBadge count={count} iconName="people-alt" />;
 };

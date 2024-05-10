@@ -38,8 +38,6 @@ on:
         required: true
       IOS_MOBILE_PROVISION_BASE64:
         required: true
-      IOS_TEAM_ID:
-        required: true
       IOS_CERTIFICATE_PASSWORD:
         required: true
       APPLE_ISSUER_ID:
@@ -62,8 +60,6 @@ on:
         required: false
       SENTRY_AUTH_TOKEN:
         required: false
-      SENTRY_ENABLED:
-        required: false
 
 jobs:
   ios-build:
@@ -82,7 +78,7 @@ jobs:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      SENTRY_ENABLED: ${{ secrets.SENTRY_ENABLED }}
+      SENTRY_ENABLED: ${{ vars.SENTRY_ENABLED }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DISABLE_AUTO_UPLOAD: ${{ inputs.upload == 'false' && 'true' || 'false' }}
       SENTRY_ORG: ${{ inputs.SENTRY_ORG }}
@@ -148,7 +144,7 @@ jobs:
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
           code-signing-identity: 'iPhone Distribution'
-          team-id: ${{ secrets.IOS_TEAM_ID }}
+          team-id: ${{ vars.APPLE_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
           scheme: TerrasoLandPKS

@@ -54,7 +54,7 @@ export const pitMethodSummary = (
   if (method === 'soilTexture' && soilData.texture) {
     summary = t(`soil.texture.class.${soilData?.texture}`);
   } else if (method === 'rockFragmentVolume' && soilData.rockFragmentVolume) {
-    summary = t(`soil.texture.rockFragment.${soilData.rockFragmentVolume}`);
+    summary = t(`soil.texture.rock_fragment.${soilData.rockFragmentVolume}`);
   } else if (method === 'soilColor' && isColorComplete(soilData)) {
     summary = (
       <Row alignItems="center" space="sm">

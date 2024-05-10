@@ -15,10 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {memo, useCallback, useEffect} from 'react';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {signOut} from 'terraso-client-shared/account/accountSlice';
 import {BottomNavIconButton} from 'terraso-mobile-client/navigation/components/BottomNavIconButton';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
@@ -32,21 +30,24 @@ export const BottomNavigator = memo(
   ({navigation}: {navigation: NavigationHelpers<BottomTabsParamList>}) => {
     const {t} = useTranslation();
     const stackNavigation = useNavigation();
-    const dispatch = useDispatch();
     const loggedIn = useSelector(
       state => state.account.currentUser.data !== null,
     );
 
-    const onHome = useCallback(() => navigation.navigate('HOME'), [navigation]);
+    const onSites = useCallback(
+      () => navigation.navigate('HOME'),
+      [navigation],
+    );
 
     const onProject = useCallback(
       () => navigation.navigate('PROJECT_LIST'),
       [navigation],
     );
 
-    const onLogout = useCallback(() => {
-      dispatch(signOut());
-    }, [dispatch]);
+    const onSettings = useCallback(
+      () => navigation.navigate('SETTINGS'),
+      [navigation],
+    );
 
     useEffect(() => {
       if (!loggedIn) {
@@ -58,8 +59,8 @@ export const BottomNavigator = memo(
       <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
         <BottomNavIconButton
           name="location-pin"
-          label={t('bottom_navigation.home')}
-          onPress={onHome}
+          label={t('bottom_navigation.sites')}
+          onPress={onSites}
         />
         <BottomNavIconButton
           name="work"
@@ -69,19 +70,7 @@ export const BottomNavigator = memo(
         <BottomNavIconButton
           name="settings"
           label={t('bottom_navigation.settings')}
-        />
-        <ConfirmModal
-          trigger={onOpen => (
-            <BottomNavIconButton
-              name="logout"
-              label={t('bottom_navigation.sign_out')}
-              onPress={onOpen}
-            />
-          )}
-          title={t('logout.confirm_title')}
-          body={t('logout.confirm_body')}
-          actionName={t('logout.confirm_action')}
-          handleConfirm={onLogout}
+          onPress={onSettings}
         />
       </Row>
     );

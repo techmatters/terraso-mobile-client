@@ -91,12 +91,13 @@ need to call it manually.
 
 ## Android
 1. Run `npm run android` to load the app on an emulator or connnected physical device.
-2. Run `npm run android -- --release` to load a release build of the app onto an emulator or connected physical device.
+2. Run `npm run android -- --variant release` to load a release build of the app onto an emulator or connected physical device.
 
 ## iOS
 
 1. Run `npm run ios` to load the app in the simulator.
-2. Run `npm run ios -- --release` to load a release build of the app in the simulator.
+2. Run `npm run ios -- --configuration release` to load a release build of the app in the simulator.
+3. Run `npm run ios -- --device "Jane iPhone"` to load the app in on your device.
 
 # Releases
 

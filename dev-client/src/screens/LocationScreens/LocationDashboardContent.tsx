@@ -42,14 +42,15 @@ import {
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
+import {renderElevation} from 'terraso-mobile-client/components/util/site';
 
-const TEMP_ELEVATION = '1900 ft';
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
 
 type Props = {
   siteId?: string;
   coords?: Coords;
+  elevation?: number;
 };
 
 const LocationDetail = ({label, value}: {label: string; value: string}) => (
@@ -85,7 +86,11 @@ const LocationPrediction = ({
         <Box mr={15}>
           <StackedBarChart />
         </Box>
-        <Text variant="body1" color="primary.lighter" bold>
+        <Text
+          variant="body1"
+          color="primary.lighter"
+          textTransform="uppercase"
+          bold>
           {label}
         </Text>
       </Row>
@@ -101,15 +106,20 @@ const LocationPrediction = ({
 
       <Button
         w="95%"
+        _text={{textTransform: 'uppercase'}}
         rightIcon={<Icon name="chevron-right" />}
         onPress={onExploreDataPress}>
-        {t('soil.explore_data').toUpperCase()}
+        {t('soil.explore_data')}
       </Button>
     </Column>
   );
 };
 
-export const LocationDashboardContent = ({siteId, coords}: Props) => {
+export const LocationDashboardContent = ({
+  siteId,
+  coords,
+  elevation,
+}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();
@@ -120,6 +130,9 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
   );
   if (coords === undefined) {
     coords = site!;
+  }
+  if (elevation === undefined) {
+    elevation = site?.elevation;
   }
   const project = useSelector(state =>
     site?.projectId === undefined
@@ -154,7 +167,7 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
         />
         <LocationDetail
           label={t('geo.elevation.title')}
-          value={TEMP_ELEVATION}
+          value={renderElevation(t, elevation)}
         />
         {!site && (
           <Box>
@@ -216,7 +229,7 @@ export const LocationDashboardContent = ({siteId, coords}: Props) => {
       </Box>
       <Column space="20px" padding="16px">
         <LocationPrediction
-          label={t('soil.soil_id').toUpperCase()}
+          label={t('soil.soil_id')}
           soilName={TEMP_SOIL_ID_VALUE}
           ecologicalSiteName={TEMP_ECO_SITE_PREDICTION}
           onExploreDataPress={onExploreDataPress}

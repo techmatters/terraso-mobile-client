@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,26 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useToast} from 'native-base';
-import {useEffect} from 'react';
+
 import {useTranslation} from 'react-i18next';
-import {setSoilIdStatus} from 'terraso-client-shared/soilId/soilIdSlice';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 
-export const Toasts = () => {
-  const dispatch = useDispatch();
+export function VersionIndicator() {
   const {t} = useTranslation();
-  const toast = useToast();
-  const soilIdStatus = useSelector(state => state.soilId.status);
 
-  useEffect(() => {
-    if (soilIdStatus === 'error') {
-      toast.show({
-        description: t('errors.generic'),
-      });
-      dispatch(setSoilIdStatus('ready'));
-    }
-  }, [soilIdStatus, dispatch, toast, t]);
-
-  return <></>;
-};
+  return (
+    <Text variant="body2">
+      {APP_CONFIG.version
+        ? t('settings.version', {version: APP_CONFIG.version})
+        : `(${t('settings.unknown_version')})`}
+    </Text>
+  );
+}

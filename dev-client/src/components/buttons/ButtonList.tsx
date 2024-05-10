@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,21 +14,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const CalloutDetail = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) => {
-  return (
-    <Box>
-      <Text textTransform="uppercase">{label}</Text>
-      <Text bold textTransform="uppercase">
-        {value}
-      </Text>
-    </Box>
-  );
+import {Divider} from 'native-base';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Fragment, Children} from 'react';
+
+export type ButtonListProps = {
+  children: React.ReactNode;
 };
+
+export function ButtonList({children}: ButtonListProps) {
+  return (
+    <Column mt="12px" mb="24px" space="6px">
+      <Divider />
+      {Children.map(children, child => {
+        return (
+          <Fragment>
+            {child}
+            <Divider />
+          </Fragment>
+        );
+      })}
+    </Column>
+  );
+}

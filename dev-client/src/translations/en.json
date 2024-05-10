@@ -21,10 +21,12 @@
     "progress": "Progress: {{progress}}",
     "members": "{{members}} Members",
     "more_info": "Learn more",
-    "soil_id_prediction": "Soil ID prediction",
-    "ecological_site_prediction": "Ecological site prediction",
+    "soil_id_prediction": "Soil ID top match",
+    "ecological_site_prediction": "Ecological site top match",
     "annual_precip_avg": "Annual precipitation avg",
-    "elevation": "Elevation",
+    "elevation_label": "Elevation",
+    "elevation_value": "{{value}} {{units}}",
+    "elevation_unknown": "unknown",
     "empty": {
       "info": "You don’t have any sites yet. A site lets you collect and save data, learn more about your land and its potential, and share with others.\n\n<bold>Use the map to create a site.</bold> There are three ways to use the map to find a location for a site:\n",
       "bullet_1": "Tap the map to drop a pin and get more information about that location.",
@@ -40,7 +42,7 @@
       "manual": "Enter coordinates",
       "name_label": "Site Name",
       "location_label": "Site Location",
-      "location_accuracy": "GPS accuracy: {{accuracyM}}m",
+      "location_accuracy": "GPS accuracy: {{accuracyM}} m",
       "coords_label": "Latitude, Longitude",
       "coords_help": "Enter decimal degrees, with latitude and longitude separated by a comma.",
       "name_placeholder": "Site name",
@@ -120,7 +122,7 @@
       "confirm_removal_body": "This action cannot be undone.",
       "min_length_error": "Must be at least {{min}} characters",
       "placeholder_text": "Start typing your note…",
-      "projectInstructions": "Site Instructions"
+      "project_instructions": "Site Instructions"
     },
     "search": {
       "placeholder": "Search sites",
@@ -151,7 +153,7 @@
     "header": "Projects",
     "none": {
       "header": "You don’t have any projects.",
-      "info": "Projects let you group sites, set data needs, manage team members, and see audit logs."
+      "info": "Projects let you group sites, set data needs, and manage team members."
     },
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
@@ -212,7 +214,7 @@
       }
     },
     "edit": {
-      "inputHeader": "General Project Settings"
+      "input_header": "General Project Settings"
     },
     "settings": {
       "copy_download_link": "Copy project download link",
@@ -301,6 +303,13 @@
       "nameDesc": "Sort (Z to A)"
     }
   },
+  "settings": {
+    "unknown_user": "Unknown user",
+    "log_out": "Log Out",
+    "delete_account": "Delete Account",
+    "unknown_version": "Untagged application version",
+    "version": "Version {{version}}"
+  },
   "badge": {
     "new": "New"
   },
@@ -363,7 +372,7 @@
     "proceed": "Proceed"
   },
   "errors": {
-    "soilId": "Error saving soil ID information."
+    "generic": "Error saving soil ID information."
   },
   "screens": {
     "HOME": "LandPKS",
@@ -374,7 +383,8 @@
     "SITE_TRANSFER_PROJECT": "Project #{{id}}",
     "CREATE_SITE": "Create Site",
     "COLOR_GUIDE": "Soil Color Guide",
-    "COLOR_ANALYSIS_HOME": "Photo Analysis"
+    "COLOR_ANALYSIS_HOME": "Photo Analysis",
+    "SETTINGS": "Settings"
   },
   "login": {
     "title": "LandPKS",
@@ -382,9 +392,8 @@
     "description": "LandPKS is a Terraso soil science tool."
   },
   "logout": {
-    "confirm_title": "Sign out",
-    "confirm_body": "Sign out of Terraso?",
-    "confirm_action": "Sign out"
+    "confirm_body": "Are you sure you want to log out?",
+    "confirm_action": "Log out"
   },
   "account": {
     "google_login": "Sign in with Google",
@@ -403,10 +412,9 @@
     }
   },
   "bottom_navigation": {
-    "home": "Home",
+    "sites": "Sites",
     "projects": "Projects",
-    "settings": "Settings",
-    "sign_out": "Sign Out"
+    "settings": "Settings"
   },
   "geo": {
     "latitude": {
@@ -572,7 +580,7 @@
         "SILTY_CLAY_LOAM": "Silty Clay Loam",
         "SILT_LOAM": "Silt Loam"
       },
-      "rockFragment": {
+      "rock_fragment": {
         "VOLUME_0_1": "0–1%",
         "VOLUME_1_15": "1–15%",
         "VOLUME_15_35": "15–35%",
@@ -656,11 +664,11 @@
       "use_photo_instead": "Don’t know the soil color values? Use a photo instead (guide included.)",
       "photo_need_help": "To use a photo to determine soil color, you’ll need a 3M Canary Yellow Post-it Note for color reference and a properly prepared soil sample. Need help? Use the step-by-step guide.",
       "use_guide_label": "Use Guide",
-      "colorPhotoSoilCondition": {
+      "color_photo_soil_condition": {
         "MOIST": "Moist",
         "DRY": "Dry"
       },
-      "colorPhotoLightingCondition": {
+      "color_photo_lighting_condition": {
         "EVEN": "Yes",
         "UNEVEN": "No"
       }

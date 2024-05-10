@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,21 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const CalloutDetail = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) => {
+import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+
+type Props = {
+  count: number;
+  iconName: IconName;
+};
+
+export const ChipBadge = ({count, iconName}: Props) => {
   return (
-    <Box>
-      <Text textTransform="uppercase">{label}</Text>
-      <Text bold textTransform="uppercase">
-        {value}
-      </Text>
-    </Box>
+    <Badge variant="chip" startIcon={<Icon name={iconName} />}>
+      {count}
+    </Badge>
   );
 };

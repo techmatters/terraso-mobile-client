@@ -48,8 +48,6 @@ let googleClientId: string;
 let googleRedirectURI: string;
 let microsoftRedirectURI: string;
 
-ENV_CONFIG.MICROSOFT_SIGNATURE_HASH;
-
 if (Platform.OS === 'ios') {
   googleClientId = ENV_CONFIG.GOOGLE_OAUTH_IOS_CLIENT_ID;
   googleRedirectURI = `${ENV_CONFIG.GOOGLE_OAUTH_IOS_URI_SCHEME}:/oauth2redirect`;
@@ -78,6 +76,7 @@ export const APP_CONFIG = {
   sentryDsn: ENV_CONFIG.SENTRY_DSN,
   sentryEnabled: sentryEnabled === 'true',
   environment: ENV_CONFIG.ENV,
+  version: ENV_CONFIG.APP_VERSION,
   googleClientId,
   googleRedirectURI,
   microsoftRedirectURI,

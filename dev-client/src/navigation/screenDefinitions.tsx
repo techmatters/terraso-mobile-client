@@ -53,10 +53,12 @@ import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
 import {ColorGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorGuideScreen';
 import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
 import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
+import {SettingsScreen} from 'terraso-mobile-client/screens/SettingsScreen/SettingsScreen';
 
 export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,
   HOME: HomeScreen,
+  SETTINGS: SettingsScreen,
 } satisfies ScreenDefinitions;
 
 export const screenDefinitions = {
