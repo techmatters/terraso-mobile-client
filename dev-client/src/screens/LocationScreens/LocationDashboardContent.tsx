@@ -26,7 +26,8 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
-import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/SiteScreen/components/ProjectInstructionsButton';
+import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
+import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
@@ -63,12 +64,14 @@ type LocationPredictionProps = {
   label: string;
   soilName: string;
   ecologicalSiteName: string;
+  onExploreDataPress: () => void;
 };
 
 const LocationPrediction = ({
   label,
   soilName,
   ecologicalSiteName,
+  onExploreDataPress,
 }: LocationPredictionProps) => {
   const {t} = useTranslation();
 
@@ -104,22 +107,23 @@ const LocationPrediction = ({
       <Button
         w="95%"
         _text={{textTransform: 'uppercase'}}
-        rightIcon={<Icon name="chevron-right" />}>
+        rightIcon={<Icon name="chevron-right" />}
+        onPress={onExploreDataPress}>
         {t('soil.explore_data')}
       </Button>
     </Column>
   );
 };
 
-export const SiteScreen = ({siteId, coords, elevation}: Props) => {
+export const LocationDashboardContent = ({
+  siteId,
+  coords,
+  elevation,
+}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const onInfoPress = useInfoPress();
   const navigation = useNavigation();
-
-  const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {coords});
-  }, [navigation, coords]);
 
   const site = useSelector(state =>
     siteId === undefined ? undefined : state.site.sites[siteId],
@@ -135,6 +139,10 @@ export const SiteScreen = ({siteId, coords, elevation}: Props) => {
       ? undefined
       : state.project.projects[site.projectId],
   );
+
+  const onExploreDataPress = useCallback(() => {
+    navigation.navigate('LOCATION_SOIL_ID', {siteId, coords});
+  }, [navigation, siteId, coords]);
 
   const onSitePrivacyChanged = useCallback(
     (privacy: SitePrivacy) => dispatch(updateSite({id: site!.id, privacy})),
@@ -162,17 +170,11 @@ export const SiteScreen = ({siteId, coords, elevation}: Props) => {
           value={renderElevation(t, elevation)}
         />
         {!site && (
-          <Box mt={5}>
-            <Button
-              alignSelf="center"
-              onPress={onCreate}
-              _text={{textTransform: 'uppercase'}}
-              leftIcon={<Icon name="add" />}>
-              {t('site.create.button_label')}
-            </Button>
-            <Text variant="body1" mt={5}>
-              {t('site.create.description')}
-            </Text>
+          <Box>
+            <Box paddingVertical="20px">
+              <CreateSiteButton coords={coords} />
+            </Box>
+            <Text variant="body1">{t('site.create.description')}</Text>
           </Box>
         )}
         {project && (
@@ -230,6 +232,7 @@ export const SiteScreen = ({siteId, coords, elevation}: Props) => {
           label={t('soil.soil_id')}
           soilName={TEMP_SOIL_ID_VALUE}
           ecologicalSiteName={TEMP_ECO_SITE_PREDICTION}
+          onExploreDataPress={onExploreDataPress}
         />
       </Column>
     </ScrollView>
