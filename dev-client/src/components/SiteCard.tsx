@@ -67,7 +67,7 @@ export const SiteCard = ({
       buttons={buttons}
       isPopover={isPopover}>
       {project && <Text variant="body1">{project.name}</Text>}
-      <Row alignItems="center" pt="md">
+      <Row alignItems="center" pt="md" w="280px">
         <StaticMapView coords={site} style={styles.mapView} />
         <Box w="4" />
         {project && (
