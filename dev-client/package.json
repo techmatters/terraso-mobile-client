@@ -36,7 +36,7 @@
     "expo-crypto": "~12.8.1",
     "expo-image-manipulator": "~11.8.0",
     "expo-image-picker": "~14.7.1",
-    "expo-media-library": "~15.9.2",
+    "expo-media-library": "~16.0.3",
     "expo-screen-orientation": "~6.4.1",
     "expo-sensors": "~12.9.1",
     "formik": "^2.4.6",
