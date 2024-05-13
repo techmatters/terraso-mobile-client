@@ -67,13 +67,15 @@ export const SiteCard = ({
       buttons={buttons}
       isPopover={isPopover}>
       {project && <Text variant="body1">{project.name}</Text>}
-      <Row alignItems="center" pt="md" w="280px">
+      <Row
+        alignItems="center"
+        pt="md"
+        justifyContent="space-between"
+        w={isPopover ? '300px' : ''}>
         <StaticMapView coords={site} style={styles.mapView} />
-        <Box w="4" />
         {project && (
           <PeopleBadge count={Object.keys(project.memberships).length} />
         )}
-        <Box flexGrow={1} />
         {onShowSiteOnMap && (
           <IconButton
             name="location-on"
