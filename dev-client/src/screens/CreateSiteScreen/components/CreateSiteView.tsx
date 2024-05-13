@@ -62,11 +62,8 @@ export const CreateSiteView = ({
 
   const onSave = useCallback(
     async ({...form}: FormState) => {
-      delete form?.coords;
       const {...site} = validationSchema.cast(form);
-      const createdSite = await createSiteCallback({
-        ...site,
-      });
+      const createdSite = await createSiteCallback(site);
       if (createdSite !== undefined) {
         homeScreen?.showSiteOnMap(createdSite);
         navigation.pop();
