@@ -11,7 +11,7 @@ your local git running the following command:
 $ make setup-git-hooks
 ```
 
-This will activate two git hooks to automatically check JavaScript code
+This will activate two git hooks to check JavaScript code
 style and commit message structure before each commit.
 
 # Installation
