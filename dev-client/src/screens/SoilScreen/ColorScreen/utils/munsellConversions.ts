@@ -53,6 +53,8 @@ import {
 import {entries} from 'terraso-client-shared/utils';
 import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
 
+const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;
+
 export const REFERENCES = {
   CAMERA_TRAX: [210.15, 213.95, 218.42],
   CANARY_POST_IT: [249.92, 242.07, 161.42],
@@ -152,7 +154,7 @@ export const getColor = (
     colorChroma: nearest[2],
   };
 
-  if (munsellDistance(nearest, predicted) < 2) {
+  if (munsellDistance(nearest, predicted) < SOIL_COLOR_SIMILARITY_THRESHOLD) {
     return {result: nearestResult};
   }
 
