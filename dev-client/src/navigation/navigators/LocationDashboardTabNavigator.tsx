@@ -16,7 +16,6 @@
  */
 
 import {memo, useMemo} from 'react';
-import {Button} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
@@ -27,8 +26,6 @@ import {SiteNotesScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/Sit
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
-import {SpeedDial} from 'terraso-mobile-client/navigation/components/SpeedDial';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const tabDefinitions = {
@@ -66,17 +63,6 @@ export const LocationDashboardTabNavigator = memo(
     return (
       <BottomSheetModalProvider>
         <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
-        <SpeedDial>
-          <Button variant="speedDial" leftIcon={<Icon name="description" />}>
-            {t('site.dashboard.speed_dial.note_label')}
-          </Button>
-          <Button variant="speedDial" leftIcon={<Icon name="image" />}>
-            {t('site.dashboard.speed_dial.photo_label')}
-          </Button>
-          <Button variant="speedDial" leftIcon={<Icon name="image" />}>
-            {t('site.dashboard.speed_dial.bedrock_label')}
-          </Button>
-        </SpeedDial>
       </BottomSheetModalProvider>
     );
   },
