@@ -28,7 +28,7 @@
     "@sentry/react-native": "^5.22.2",
     "base-64": "^1.0.0",
     "delta-e": "^0.0.8",
-    "expo": "~50.0.17",
+    "expo": "~51.0.2",
     "expo-auth-session": "~5.4.0",
     "expo-av": "~13.10.6",
     "expo-camera": "~14.1.3",
