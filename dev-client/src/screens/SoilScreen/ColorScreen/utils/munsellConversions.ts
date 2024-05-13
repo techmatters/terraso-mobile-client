@@ -41,7 +41,8 @@
  * the only number left is the value.
  */
 
-import {mhvcToRgb255, rgb255ToMhvc} from 'munsell';
+import {LAB, getDeltaE00} from 'delta-e';
+import {labToMhvc, mhvcToLab, mhvcToRgb255, rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
 import {
   nonNeutralColorHues,
@@ -49,10 +50,8 @@ import {
   ColorHueSubstep,
   ColorHue,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {
-  munsellDistance,
-  nearestSoilColor,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+import {entries} from 'terraso-client-shared/utils';
+import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
 
 export const REFERENCES = {
   CAMERA_TRAX: [210.15, 213.95, 218.42],
@@ -62,6 +61,8 @@ export const REFERENCES = {
 
 export type RGBA = [number, number, number, number];
 export type RGB = [number, number, number];
+// Munsell hue/value/chroma tuple
+export type MunsellHVC = readonly [number, number, number];
 export type MunsellColor = {
   colorHue: number;
   colorChroma: number;
@@ -81,6 +82,16 @@ export const munsellToRGB = ({
   colorValue,
   colorChroma,
 }: MunsellColor): RGB => mhvcToRgb255(colorHue, colorValue, colorChroma);
+
+export const munsellHVCToLAB = (color: MunsellHVC): LAB => {
+  const [L, A, B] = mhvcToLab(...color);
+  return {L, A, B};
+};
+
+export const LABToMunsell = ({L, A, B}: LAB): MunsellColor => {
+  const [colorHue, colorValue, colorChroma] = labToMhvc(L, A, B);
+  return {colorHue, colorValue, colorChroma};
+};
 
 export type ValidColorResult = {result: MunsellColor};
 export type InvalidColorResult = {
@@ -213,3 +224,27 @@ export const munsellToString = (color: MunsellColor) => {
 
   return `${hueSubstep}${hue} ${value}/${chroma}`;
 };
+
+export const nearestSoilColor = (color: MunsellHVC) =>
+  FLATTENED_SOIL_COLORS.reduce((a, b) =>
+    munsellDistance(a, color) < munsellDistance(b, color) ? a : b,
+  );
+
+export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
+  getDeltaE00(munsellHVCToLAB(a), munsellHVCToLAB(b));
+
+const FLATTENED_SOIL_COLORS: MunsellHVC[] = entries(SOIL_COLORS).flatMap(
+  ([hue, substepValueChromas]) =>
+    substepValueChromas.flatMap(([substep, valueChromas]) =>
+      valueChromas.flatMap(([value, chromas]) =>
+        chromas.map(
+          chroma =>
+            [
+              hue === 'N' ? 0 : nonNeutralColorHues.indexOf(hue) * 10 + substep,
+              value,
+              chroma,
+            ] as const,
+        ),
+      ),
+    ),
+);
