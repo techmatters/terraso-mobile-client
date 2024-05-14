@@ -108,7 +108,8 @@
           "title": "Slope"
         },
         "soil_properties": {
-          "title": "Soil Properties"
+          "title": "Soil Properties",
+          "add_data": "Add soil data"
         }
       }
     },

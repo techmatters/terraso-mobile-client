@@ -16,14 +16,51 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {Button} from 'native-base';
 
 import {
+  Box,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useCallback} from 'react';
 
-export const SiteDataSection = () => {
+// TODO-cknipe: Move the table to its own thing
+// Make sure it can share whatever makes sense between soil & site id variants
+// TODO-cknipe: Hide button for Viewer role
+type Props = {siteId: string};
+export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
+  const {t} = useTranslation();
+  const navigation = useNavigation();
+
+  // TODO-cknipe: How to make it navigate to the Soil tab? (LocationDashboardTabNavigator)
+  const onAddSoilDataPress = useCallback(() => {
+    navigation.navigate('LOCATION_DASHBOARD', {siteId});
+  }, [navigation, siteId]);
+
+  return (
+    <>
+      <Heading variant="h6" pt="lg">
+        {t('site.soil_id.site_data.soil_properties.title')}
+      </Heading>
+
+      <Box paddingVertical={'lg'}>
+        <Button
+          _text={{textTransform: 'uppercase'}}
+          alignSelf={'flex-end'}
+          rightIcon={<Icon name="chevron-right" />}
+          onPress={onAddSoilDataPress}>
+          {t('site.soil_id.site_data.soil_properties.add_data')}
+        </Button>
+      </Box>
+    </>
+  );
+};
+
+export const SiteDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
 
   return (
@@ -32,9 +69,8 @@ export const SiteDataSection = () => {
       <Heading variant="h6" pt="lg">
         {t('site.soil_id.site_data.slope.title')}
       </Heading>
-      <Heading variant="h6" pt="lg">
-        {t('site.soil_id.site_data.soil_properties.title')}
-      </Heading>
+
+      <SiteSoilPropertiesDataSection siteId={siteId} />
     </ScreenContentSection>
   );
 };

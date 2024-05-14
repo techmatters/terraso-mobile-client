@@ -40,6 +40,8 @@ type ScreenName = keyof TabsParamList;
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
+// TODO-cknipe: Add to LocationDashboardTabNavigator params something that sets it initialRouteName to whatever you want.
+// TODO-cknipe: Anything special with memo()?
 export const LocationDashboardTabNavigator = memo(
   (params: {siteId: string}) => {
     const {t} = useTranslation();
