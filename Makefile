@@ -7,3 +7,8 @@ setup-git-hooks:
 	@echo "git hooks installed"
 
 pre-commit: lint
+
+clean:
+	watchman watch-del-all
+	rm -rf dev-client/node_modules dev-client/ios dev-client/android
+	cd dev-client && npm ci && npm run prebuild --clean && npm run start -- --reset-cache
