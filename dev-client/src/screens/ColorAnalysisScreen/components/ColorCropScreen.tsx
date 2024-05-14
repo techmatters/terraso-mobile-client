@@ -163,7 +163,7 @@ export const ColorCropScreen = ({
       [cropAction, resizeAction],
       {
         base64: true,
-        compress: 0.0,
+        compress: 1.0,
         format: SaveFormat.JPEG,
       },
     );
