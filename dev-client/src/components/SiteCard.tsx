@@ -70,7 +70,7 @@ export const SiteCard = ({
         alignItems="center"
         pt="md"
         justifyContent="space-between"
-        w={isPopover ? '300px' : ''}>
+        w={isPopover ? '300px' : undefined}>
         <StaticMapView coords={site} style={styles.mapView} />
         {project && (
           <PeopleBadge count={Object.keys(project.memberships).length} />
