@@ -101,8 +101,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: dev-client/android
-          key: ${{ runner.os }}-android-${{ hashFiles('**/package-lock.json', '**/app.config.ts') }}
-          restore-keys: ${{ runner.os }}-android-
+          key: expo-cache-${{ runner.os }}-android-${{ hashFiles('**/package-lock.json', '**/app.config.ts') }}
+          restore-keys: expo-cache-${{ runner.os }}-android-
 
       - name: Generate android directory
         working-directory: dev-client
