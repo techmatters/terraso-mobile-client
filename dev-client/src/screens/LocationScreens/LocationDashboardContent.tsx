@@ -132,7 +132,7 @@ export const LocationDashboardContent = ({
     coords = site!;
   }
   if (elevation === undefined) {
-    elevation = site?.elevation;
+    elevation = site?.elevation ?? undefined;
   }
   const project = useSelector(state =>
     site?.projectId === undefined
