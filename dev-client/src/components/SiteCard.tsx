@@ -24,7 +24,6 @@ import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {
-  Box,
   Row,
   Heading,
   Text,
