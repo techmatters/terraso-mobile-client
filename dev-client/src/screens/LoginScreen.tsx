@@ -99,7 +99,7 @@ export const LoginScreen = () => {
             startIcon={<MicrosoftLogo />}>
             {t('account.microsoft_login')}
           </Button>
-          {Platform.OS === 'ios' &&
+          {Platform.OS === 'ios' && (
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={
                 AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
@@ -113,7 +113,7 @@ export const LoginScreen = () => {
               }}
               onPress={onPress('apple')}
             />
-          }
+          )}
         </Button.Group>
       </Column>
       <Box flexGrow={3} />
