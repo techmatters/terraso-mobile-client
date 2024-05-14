@@ -5,9 +5,9 @@
   "scripts": {
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "lint": "eslint .",
+    "lint": "eslint ./ --ext .js --ext .ts --ext .tsx --max-warnings 0 --ignore-path ../.gitignore",
     "lint-js": "npm run lint",
-    "format": "eslint . --fix",
+    "format": "npm run lint -- --fix",
     "format-js": "npm run format",
     "start": "expo start",
     "test": "jest",
