@@ -17,6 +17,8 @@
 
 import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
+import {ScrollView} from 'react-native-gesture-handler';
+import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 
 import {
   Box,
@@ -41,11 +43,22 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
     navigation.navigate('LOCATION_DASHBOARD', {siteId});
   }, [navigation, siteId]);
 
+  const bogusDataRows: [string, string, string, string][] = [
+    ['0-10', 'Clay', '7.5YR 8.5/1', '50-85%'],
+    ['11-20', 'Sandy Clay Loam', '7.5YR 8.5/1', '1-15%'],
+    ['100-120', '', '', ''],
+  ];
+
   return (
     <>
       <Heading variant="h6" pt="lg">
         {t('site.soil_id.site_data.soil_properties.title')}
       </Heading>
+
+      <Box marginTop={'sm'} />
+      <ScrollView horizontal={true}>
+        <SoilPropertiesDataTable rows={bogusDataRows} />
+      </ScrollView>
 
       <Box paddingVertical={'lg'}>
         <Button

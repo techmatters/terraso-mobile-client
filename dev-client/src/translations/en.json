@@ -109,6 +109,10 @@
         },
         "soil_properties": {
           "title": "Soil Properties",
+          "depth": "Depth (cm)",
+          "texture": "Texture",
+          "color": "Color",
+          "rock_fragment": "Rock Fragment",
           "add_data": "Add soil data"
         }
       }

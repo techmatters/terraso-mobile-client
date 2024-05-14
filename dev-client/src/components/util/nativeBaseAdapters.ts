@@ -89,6 +89,7 @@ const nativeBaseDimensions = {
 } as const;
 
 const nativeBaseNumerics = {
+  borderTopWidth: 'borderTopWidth',
   borderBottomWidth: 'borderBottomWidth',
   borderLeftWidth: 'borderLeftWidth',
   borderRightWidth: 'borderRightWidth',
