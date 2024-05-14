@@ -32,16 +32,9 @@ import {
   colorChromas,
   colorHueSubsteps,
   colorValues,
-  nonNeutralColorHues,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {entries} from 'terraso-client-shared/utils';
 import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
-import {LAB, getDeltaE00} from 'delta-e';
-import {mhvcToLab} from 'munsell';
 import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-
-// Munsell hue/value/chroma tuple
-type MunsellHVC = readonly [number, number, number];
 
 export type ColorProperties = {
   hue: SoilColorHue | null;
@@ -184,35 +177,6 @@ export const isChromaValid = (color: ColorProperties) => {
     validProperties(color).chromas.includes(color.chroma)
   );
 };
-
-const FLATTENED_SOIL_COLORS: MunsellHVC[] = entries(SOIL_COLORS).flatMap(
-  ([hue, substepValueChromas]) =>
-    substepValueChromas.flatMap(([substep, valueChromas]) =>
-      valueChromas.flatMap(([value, chromas]) =>
-        chromas.map(
-          chroma =>
-            [
-              hue === 'N' ? 0 : nonNeutralColorHues.indexOf(hue) * 10 + substep,
-              value,
-              chroma,
-            ] as const,
-        ),
-      ),
-    ),
-);
-
-export const nearestSoilColor = (color: MunsellHVC) =>
-  FLATTENED_SOIL_COLORS.reduce((a, b) =>
-    munsellDistance(a, color) < munsellDistance(b, color) ? a : b,
-  );
-
-const munsellToLAB = (color: MunsellHVC): LAB => {
-  const [L, A, B] = mhvcToLab(...color);
-  return {L, A, B};
-};
-
-export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
-  getDeltaE00(munsellToLAB(a), munsellToLAB(b));
 
 export const isColorComplete = (
   soilData: DepthDependentSoilData,
