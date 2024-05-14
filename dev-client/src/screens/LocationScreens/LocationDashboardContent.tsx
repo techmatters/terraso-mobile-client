@@ -25,7 +25,6 @@ import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 
@@ -43,6 +42,7 @@ import {
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
+import {Coords} from 'terraso-client-shared/types';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';

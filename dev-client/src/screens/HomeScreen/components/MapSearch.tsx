@@ -26,7 +26,6 @@ import {
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Keyboard} from 'react-native';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {isValidCoordinates} from 'terraso-mobile-client/util';
 import {
   Box,
@@ -35,6 +34,7 @@ import {
   VStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Coords} from 'terraso-client-shared/types';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 

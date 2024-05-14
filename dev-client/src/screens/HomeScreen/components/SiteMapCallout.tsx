@@ -32,7 +32,7 @@ import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton'
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/HomeScreen/components/SiteClusterCalloutListItem';
 import {TemporarySiteCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporarySiteCallout';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {Coords} from 'terraso-client-shared/types';
 
 type Props = {
   sites: Record<string, Site>;

@@ -20,8 +20,8 @@ import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
 
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {Coords} from 'terraso-client-shared/types';
 
 type Props = {coords: Coords};
 
