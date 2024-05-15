@@ -49,9 +49,9 @@ export function LocationScoreDisplay({
   const isInMap = match.distanceToNearestMapUnitM <= 0;
   const soilWebUrl = useMemo(() => getSoilWebUrl(coords), [coords]);
   return (
-    <VStack>
+    <VStack space="16px">
       <HStack justifyContent="space-between" alignItems="center">
-        <Column>
+        <Column space="12px">
           <Row alignItems="stretch">
             <Heading variant="h6">
               {t('site.soil_id.location_score_info.header')}

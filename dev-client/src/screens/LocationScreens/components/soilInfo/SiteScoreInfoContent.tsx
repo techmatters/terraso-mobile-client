@@ -44,13 +44,13 @@ export function SiteScoreInfoContent({
         soilInfo={dataMatch.soilInfo}
       />
       <Divider />
-      <PropertiesScoreDisplay match={dataMatch} />
-      <Divider />
       <LocationScoreDisplay
         isSite={true}
         match={locationMatch}
         coords={coords}
       />
+      <Divider />
+      <PropertiesScoreDisplay match={dataMatch} />
     </ScoreInfoContainer>
   );
 }
