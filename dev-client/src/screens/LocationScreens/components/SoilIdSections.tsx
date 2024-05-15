@@ -25,8 +25,18 @@ import {
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {
+  DATA_BASED_SOIL_MATCH,
+  LOCATION_BASED_SOIL_MATCH,
+} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
+import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
+import {Button} from 'native-base';
+import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 
-type SoilIdSectionProps = {siteId?: string};
+type SoilIdSectionProps = {siteId?: string; coords: Coords};
+
 export const SoilIdDescriptionSection = ({siteId}: SoilIdSectionProps) => {
   const {t} = useTranslation();
   return (
@@ -40,17 +50,38 @@ export const SoilIdDescriptionSection = ({siteId}: SoilIdSectionProps) => {
   );
 };
 
-export const SoilIdMatchesSection = ({siteId}: SoilIdSectionProps) => {
+export const SoilIdMatchesSection = ({siteId, coords}: SoilIdSectionProps) => {
   const {t} = useTranslation();
+  const isSite = !!siteId;
+
+  const locationMatch = LOCATION_BASED_SOIL_MATCH;
+  const dataMatch = DATA_BASED_SOIL_MATCH;
 
   return (
     <ScreenContentSection backgroundColor="grey.200">
       <Row alignItems="center">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
         <InfoOverlaySheetButton Header={t('site.soil_id.matches.info.title')}>
-          <TopSoilMatchesInfoContent isSite={!!siteId} />
+          <TopSoilMatchesInfoContent isSite={isSite} />
         </InfoOverlaySheetButton>
       </Row>
+      <InfoOverlaySheet
+        Header={DATA_BASED_SOIL_MATCH.soilInfo.soilSeries.name}
+        trigger={onOpen => (
+          <Button backgroundColor="background.secondary" onPress={onOpen}>
+            (Match Goes Here)
+          </Button>
+        )}>
+        {isSite ? (
+          <SiteScoreInfoContent
+            locationMatch={locationMatch}
+            dataMatch={dataMatch}
+            coords={coords}
+          />
+        ) : (
+          <TempScoreInfoContent locationMatch={locationMatch} coords={coords} />
+        )}
+      </InfoOverlaySheet>
     </ScreenContentSection>
   );
 };
