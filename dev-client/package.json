@@ -61,7 +61,7 @@
     "react-native-screens": "^3.31.1",
     "react-native-svg": "^15.2.0",
     "react-native-tab-view": "^3.5.2",
-    "terraso-client-shared": "github:techmatters/terraso-client-shared#fc3c380",
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#7841647",
     "uuid": "^9.0.1",
     "yup": "^1.4.0"
   },
