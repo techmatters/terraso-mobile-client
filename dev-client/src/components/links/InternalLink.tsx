@@ -37,7 +37,7 @@ export default function InternalLink({label, onPress, url}: InternalLinkProps) {
     <Link
       _text={{color: 'primary.main'}}
       isUnderlined={true}
-      onPress={url ? openUrl : onPress}>
+      onPress={onPress ? onPress : openUrl}>
       {label}
     </Link>
   );
