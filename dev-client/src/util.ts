@@ -46,6 +46,10 @@ export const formatDate = (dateString: string) => {
   return shortDateFormatters[locale].format(new Date(dateString));
 };
 
+export const formatPercent = (value: number) => {
+  return value.toLocaleString(undefined, {style: 'percent'});
+};
+
 export const formatName = (firstName: string, lastName?: string) => {
   return [lastName, firstName].filter(Boolean).join(', ');
 };

@@ -388,6 +388,11 @@ export const theme = extendTheme({
           lineHeight: '24px',
           letterSpacing: '0.15px',
         },
+        'score-tile': {
+          fontWeight: 400,
+          fontSize: '30px',
+          lineHeight: '48px',
+        },
       },
     },
     Heading: {
