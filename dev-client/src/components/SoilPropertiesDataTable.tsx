@@ -30,7 +30,7 @@ type DataTableHeaderProps = {
 const DataTableHeader = ({width, text}: DataTableHeaderProps) => {
   return (
     <Text
-      variant="table-header"
+      variant="body1-medium"
       width={width}
       paddingHorizontal="sm"
       pb="sm"
@@ -41,10 +41,10 @@ const DataTableHeader = ({width, text}: DataTableHeaderProps) => {
 };
 
 type DataTableCellProps = {
-  text: string;
   width: NBDimensionValue;
+  text: string;
 };
-const DataTableCell = ({text, width}: DataTableCellProps) => {
+const DataTableCell = ({width, text}: DataTableCellProps) => {
   return (
     <Box
       flex={1}
@@ -67,10 +67,10 @@ type Props = {
 export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
   const {t} = useTranslation();
 
-  const columnWidthDepth: NBDimensionValue = '80px';
-  const columnWidthTexture: NBDimensionValue = '100px';
-  const columnWidthColor: NBDimensionValue = '100px';
-  const columnWidthRockFragment: NBDimensionValue = '80px';
+  const columnWidthDepth: NBDimensionValue = '85px';
+  const columnWidthTexture: NBDimensionValue = '115px';
+  const columnWidthColor: NBDimensionValue = '110px';
+  const columnWidthRockFragment: NBDimensionValue = '110px';
 
   // React wants a `key` prop on components rendered with map, for DOM reconciliation purposes.
   // However, using the index alone for the key is an anti-pattern,
