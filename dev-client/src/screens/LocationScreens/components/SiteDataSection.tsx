@@ -30,15 +30,11 @@ import {ScreenContentSection} from 'terraso-mobile-client/components/content/Scr
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useCallback} from 'react';
 
-// TODO-cknipe: Move the table to its own thing
-// Make sure it can share whatever makes sense between soil & site id variants
-// TODO-cknipe: Hide button for Viewer role
 type Props = {siteId: string};
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
-  // TODO-cknipe: How to make it navigate to the Soil tab? (LocationDashboardTabNavigator)
   const onAddSoilDataPress = useCallback(() => {
     navigation.navigate('LOCATION_DASHBOARD', {siteId});
   }, [navigation, siteId]);

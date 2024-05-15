@@ -50,10 +50,11 @@ const DataTableCell = ({text, index, width}: DataTableCellProps) => {
       flex={1}
       key={index}
       width={width}
-      borderRightWidth={'1px'}
-      borderBottomWidth={'1px'}
-      paddingHorizontal={'8px'}
-      paddingVertical={'4px'}>
+      borderRightWidth="1px"
+      borderBottomWidth="1px"
+      paddingHorizontal="8px"
+      paddingVertical="4px"
+      justifyContent="center">
       <Text>{text}</Text>
     </Box>
   );
@@ -61,7 +62,6 @@ const DataTableCell = ({text, index, width}: DataTableCellProps) => {
 
 type Props = {
   rows: [string, string, string, string][];
-  // rows: string[][4];
 } & React.ComponentProps<typeof Box>;
 
 export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
