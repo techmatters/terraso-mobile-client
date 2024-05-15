@@ -24,7 +24,6 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {
   coordsToString,
   parseCoords,
@@ -34,6 +33,7 @@ import {
   FormState,
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
 import {useHomeScreenContext} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {Coords} from 'terraso-client-shared/types';
 
 type Props = {
   defaultProjectId?: string;

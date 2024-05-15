@@ -16,11 +16,7 @@
  */
 
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-
-export type Coords = {
-  latitude: number;
-  longitude: number;
-};
+import {Coords} from 'terraso-client-shared/types';
 
 export type UserLocation = {
   coords: Coords | null;

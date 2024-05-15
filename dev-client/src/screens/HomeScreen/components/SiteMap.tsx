@@ -45,7 +45,7 @@ import {repositionCamera} from 'terraso-mobile-client/screens/HomeScreen/utils/r
 import {SiteMapCallout} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMapCallout';
 import {CustomUserLocation} from 'terraso-mobile-client/screens/HomeScreen/components/CustomUserLocation';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {Coords} from 'terraso-client-shared/types';
 
 const DEFAULT_LOCATION = [-98.0, 38.5];
 const MAX_EXPANSION_ZOOM = 15;

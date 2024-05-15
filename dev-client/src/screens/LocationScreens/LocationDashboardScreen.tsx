@@ -25,13 +25,13 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
 import {isSiteManager} from 'terraso-mobile-client/util';
+import {Coords} from 'terraso-client-shared/types';
 
 type Props = {siteId: string} | {coords: Coords};
 

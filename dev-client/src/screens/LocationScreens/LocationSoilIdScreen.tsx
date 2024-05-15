@@ -20,7 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {
   SoilIdDescriptionSection,
@@ -29,6 +28,7 @@ import {
 import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/SiteDataSection';
 import {selectSite} from 'terraso-client-shared/selectors';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Coords} from 'terraso-client-shared/types';
 
 type Props = {
   siteId?: string;

@@ -16,7 +16,7 @@
  */
 
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {Coords} from 'terraso-client-shared/types';
 
 export type CalloutState =
   | {

@@ -30,7 +30,6 @@ import {FormikProps} from 'formik';
 
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 import {coordsToString} from 'terraso-mobile-client/components/StaticMapView';
 import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
@@ -45,6 +44,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
+import {Coords} from 'terraso-client-shared/types';
 
 export type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,
