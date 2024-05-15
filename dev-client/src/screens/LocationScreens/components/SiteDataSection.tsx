@@ -54,15 +54,15 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
         {t('site.soil_id.site_data.soil_properties.title')}
       </Heading>
 
-      <Box marginTop={'sm'} />
+      <Box marginTop="sm" />
       <ScrollView horizontal={true}>
         <SoilPropertiesDataTable rows={bogusDataRows} />
       </ScrollView>
 
-      <Box paddingVertical={'lg'}>
+      <Box paddingVertical="lg">
         <Button
           _text={{textTransform: 'uppercase'}}
-          alignSelf={'flex-end'}
+          alignSelf="flex-end"
           rightIcon={<Icon name="chevron-right" />}
           onPress={onAddSoilDataPress}>
           {t('site.soil_id.site_data.soil_properties.add_data')}
