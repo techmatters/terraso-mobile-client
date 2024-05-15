@@ -157,8 +157,8 @@ export const EditProjectForm = ({
                 onPress={handleSubmit}
                 isDisabled={isSubmitting || !isValid}
                 shadow={5}
-                size={'lg'}
-                display={'flex'}
+                size="lg"
+                display="flex"
                 _text={{textTransform: 'uppercase'}}>
                 {t('general.save_fab')}
               </Button>

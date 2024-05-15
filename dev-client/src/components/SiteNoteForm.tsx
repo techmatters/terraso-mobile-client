@@ -41,13 +41,13 @@ export const SiteNoteForm = ({content}: Props) => {
       ref={formInputRef}
       padding={0}
       borderWidth={0}
-      backgroundColor={'transparent'}
+      backgroundColor="transparent"
       name="content"
       placeholder={t('site.notes.placeholder_text')}
       value={content}
       multiline
       maxHeight={200}
-      overflow={'scroll'}
+      overflow="scroll"
       textAlignVertical="top"
     />
   );

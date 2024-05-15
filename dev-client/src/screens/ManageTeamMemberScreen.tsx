@@ -127,7 +127,7 @@ export const ManageTeamMemberScreen = ({
                 onPress={onOpen}
                 _text={{color: 'error.main'}}
                 _pressed={{backgroundColor: 'red.100'}}
-                textTransform={'uppercase'}
+                textTransform="uppercase"
                 leftIcon={<Icon name="delete" color="error.main" />}>
                 {t('projects.manage_member.remove')}
               </Button>

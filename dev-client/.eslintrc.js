@@ -4,6 +4,7 @@ module.exports = {
   rules: {
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
+    'react/jsx-curly-brace-presence': 'error',
     'react/no-unstable-nested-components': [
       'error',
       {

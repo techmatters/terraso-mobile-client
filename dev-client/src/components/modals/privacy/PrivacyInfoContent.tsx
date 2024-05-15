@@ -48,7 +48,7 @@ export const PrivacyInfoContent = () => {
         </Text>
         <Box pt={1} pb={1}>
           <HorizontalIconButton
-            name={'open-in-new'}
+            name="open-in-new"
             label={t('general.info.data_portal_link_text')}
             colorScheme="primary.main"
             isUppercase={true}
@@ -83,7 +83,7 @@ export const PrivacyInfoContent = () => {
         </Text>
         <Box pt={1} pb={1}>
           <HorizontalIconButton
-            name={'open-in-new'}
+            name="open-in-new"
             label={t('general.info.privacy_policy_link_text')}
             colorScheme="primary.main"
             isUppercase={true}

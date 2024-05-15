@@ -113,7 +113,7 @@ const FormContainer = React.memo(
             onPress={handleSubmit}
             isDisabled={isSubmitting || !isValid}
             shadow={5}
-            size={'lg'}
+            size="lg"
             _text={{textTransform: 'uppercase'}}>
             {t('general.save_fab')}
           </Button>
