@@ -18,8 +18,10 @@
 import {useTranslation} from 'react-i18next';
 
 import {
+  Column,
   Heading,
   HStack,
+  Row,
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
@@ -47,14 +49,16 @@ export function LocationScoreDisplay({
   return (
     <VStack>
       <HStack justifyContent="space-between" alignItems="center">
-        <VStack>
-          <Heading variant="h6" pb="10px" maxWidth={'50%'}>
-            {t('site.soil_id.location_score_info.header')}
+        <Column>
+          <Row alignItems="stretch">
+            <Heading variant="h6" pb="10px">
+              {t('site.soil_id.location_score_info.header')}
+            </Heading>
             <InfoOverlaySheetButton
               Header={t('site.soil_id.location_score_info.header')}>
               <SoilPropertiesScoreInfoContent />
             </InfoOverlaySheetButton>
-          </Heading>
+          </Row>
           <TranslatedBody
             i18nKey={
               isInMap
@@ -62,7 +66,7 @@ export function LocationScoreDisplay({
                 : 'site.soil_id.soil_info.outside_map_label'
             }
           />
-        </VStack>
+        </Column>
         <ScoreTile score={match.match.score} />
       </HStack>
       <ExternalLink

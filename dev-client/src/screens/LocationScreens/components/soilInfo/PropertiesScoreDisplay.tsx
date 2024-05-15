@@ -20,6 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {
   Heading,
   HStack,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {DataBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
@@ -34,13 +35,15 @@ export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
   const {t} = useTranslation();
   return (
     <HStack justifyContent="space-between" alignItems="center">
-      <Heading variant="h6" pb="10px" maxWidth={'50%'}>
-        {t('site.soil_id.soil_properties_score_info.header')}
+      <Row alignItems="stretch">
+        <Heading variant="h6" pb="10px">
+          {t('site.soil_id.soil_properties_score_info.header')}
+        </Heading>
         <InfoOverlaySheetButton
           Header={t('site.soil_id.soil_properties_score_info.header')}>
           <SoilPropertiesScoreInfoContent />
         </InfoOverlaySheetButton>
-      </Heading>
+      </Row>
       <ScoreTile score={match.combinedMatch.score} />
     </HStack>
   );
