@@ -18,16 +18,22 @@
 import {Trans} from 'react-i18next';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type BodyTextProps = {
+type TranslatedBodyProps = {
   i18nKey: string;
   variant?: 'body1' | 'body2';
+  values?: {};
 };
 
-export function BodyText({i18nKey, variant = 'body1'}: BodyTextProps) {
+export function TranslatedBody({
+  i18nKey,
+  variant = 'body1',
+  values,
+}: TranslatedBodyProps) {
   return (
     <Text variant={variant}>
       <Trans
         i18nKey={i18nKey}
+        values={values}
         components={{
           bold: <Text bold />,
           italic: <Text italic />,

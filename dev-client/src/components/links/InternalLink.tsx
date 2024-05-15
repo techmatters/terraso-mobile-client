@@ -17,15 +17,27 @@
 
 import {Link} from 'native-base';
 import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
+import {useCallback} from 'react';
+import {Linking} from 'react-native';
 
 type InternalLinkProps = {
   label: string;
   onPress?: InterfaceLinkProps['onPress'];
+  url?: string;
 };
 
-export default function InternalLink({label, onPress}: InternalLinkProps) {
+export default function InternalLink({label, onPress, url}: InternalLinkProps) {
+  const openUrl = useCallback(() => {
+    if (url !== undefined) {
+      Linking.openURL(url);
+    }
+  }, [url]);
+
   return (
-    <Link _text={{color: 'primary.main'}} isUnderlined={true} onPress={onPress}>
+    <Link
+      _text={{color: 'primary.main'}}
+      isUnderlined={true}
+      onPress={url ? openUrl : onPress}>
       {label}
     </Link>
   );

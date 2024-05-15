@@ -18,19 +18,19 @@
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {BodyText} from 'terraso-mobile-client/components/content/text/BodyText';
+import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
 
 export function SoilPropertiesScoreInfoContent() {
   return (
     <Column space={3}>
-      <BodyText i18nKey="site.soil_id.soil_properties_score_info.p1" />
-      <BodyText i18nKey="site.soil_id.soil_properties_score_info.p2" />
-      <BodyText i18nKey="site.soil_id.soil_properties_score_info.p3" />
-      <BodyText i18nKey="site.soil_id.soil_properties_score_info.p4" />
+      <TranslatedBody i18nKey="site.soil_id.soil_properties_score_info.p1" />
+      <TranslatedBody i18nKey="site.soil_id.soil_properties_score_info.p2" />
+      <TranslatedBody i18nKey="site.soil_id.soil_properties_score_info.p3" />
+      <TranslatedBody i18nKey="site.soil_id.soil_properties_score_info.p4" />
       <BulletList
         data={[1, 2, 3, 4, 5]}
         renderItem={i => (
-          <BodyText
+          <TranslatedBody
             i18nKey={`site.soil_id.soil_properties_score_info.bullets.${i}`}
           />
         )}

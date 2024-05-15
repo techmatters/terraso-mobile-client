@@ -16,7 +16,7 @@
  */
 
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {BodyText} from 'terraso-mobile-client/components/content/text/BodyText';
+import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
 
 type LocationScoreInfoContentProps = {
   isSite: boolean;
@@ -27,9 +27,11 @@ export function LocationScoreInfoContent({
 }: LocationScoreInfoContentProps) {
   return (
     <Column space={3}>
-      {isSite && <BodyText i18nKey="site.soil_id.location_score_info.p1" />}
-      <BodyText i18nKey="site.soil_id.location_score_info.p2" />
-      <BodyText i18nKey="site.soil_id.location_score_info.p3" />
+      {isSite && (
+        <TranslatedBody i18nKey="site.soil_id.location_score_info.p1" />
+      )}
+      <TranslatedBody i18nKey="site.soil_id.location_score_info.p2" />
+      <TranslatedBody i18nKey="site.soil_id.location_score_info.p3" />
     </Column>
   );
 }
