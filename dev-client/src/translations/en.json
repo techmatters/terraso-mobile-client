@@ -109,7 +109,9 @@
         },
         "soil_properties": {
           "title": "Soil Properties",
-          "depth": "Depth (cm)",
+          "depth": "Depth ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
+          "depth_units_METRIC": "cm",
+          "depth_units_ENGLISH": "”",
           "texture": "Texture",
           "color": "Color",
           "rock_fragment": "Rock Fragment",

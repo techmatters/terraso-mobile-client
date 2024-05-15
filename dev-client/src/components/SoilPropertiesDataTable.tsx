@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+
 import {useTranslation} from 'react-i18next';
 import {
   Box,
@@ -31,9 +32,9 @@ const DataTableHeader = ({width, text}: DataTableHeaderProps) => {
     <Text
       variant="table-header"
       width={width}
-      paddingHorizontal={'sm'}
-      pb={'sm'}
-      alignSelf={'flex-end'}>
+      paddingHorizontal="sm"
+      pb="sm"
+      alignSelf="flex-end">
       {text}
     </Text>
   );
@@ -41,14 +42,12 @@ const DataTableHeader = ({width, text}: DataTableHeaderProps) => {
 
 type DataTableCellProps = {
   text: string;
-  index: number;
   width: NBDimensionValue;
 };
-const DataTableCell = ({text, index, width}: DataTableCellProps) => {
+const DataTableCell = ({text, width}: DataTableCellProps) => {
   return (
     <Box
       flex={1}
-      key={index}
       width={width}
       borderRightWidth="1px"
       borderBottomWidth="1px"
@@ -60,8 +59,9 @@ const DataTableCell = ({text, index, width}: DataTableCellProps) => {
   );
 };
 
+type Row = [string, string, string, string];
 type Props = {
-  rows: [string, string, string, string][];
+  rows: Row[];
 } & React.ComponentProps<typeof Box>;
 
 export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
@@ -72,12 +72,25 @@ export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
   const columnWidthColor: NBDimensionValue = '100px';
   const columnWidthRockFragment: NBDimensionValue = '80px';
 
+  // React wants a `key` prop on components rendered with map, for DOM reconciliation purposes.
+  // However, using the index alone for the key is an anti-pattern,
+  // as that can cause an issue if list items are rearranged, added, or removed.
+  // This should be a sufficiently unique id for our purposes;
+  // I expect the data to be unique for each row -- unless the entire row is empty,
+  // in which case I expect using the index to be fine.
+  // And I don't expect there to be much rearranging of items anyway.
+  const uniqueKeyForRow = (row: Row, index: number) => {
+    return row[0] + row[1] + row[2] + row[3] + index.toString();
+  };
+
   return (
     <Box {...containerProps}>
       <Row justifyContent="flex-start">
         <DataTableHeader
           width={columnWidthDepth}
-          text={t('site.soil_id.site_data.soil_properties.depth')}
+          text={t('site.soil_id.site_data.soil_properties.depth', {
+            units: 'METRIC',
+          })}
         />
         <DataTableHeader
           width={columnWidthTexture}
@@ -93,17 +106,13 @@ export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
         />
       </Row>
 
-      <Box borderTopWidth={'1px'} borderLeftWidth={'1px'}>
+      <Box borderTopWidth="1px" borderLeftWidth="1px">
         {rows.map((row: (typeof rows)[number], i: number) => (
-          <Row justifyContent="flex-start" key={i}>
-            <DataTableCell text={row[0]} index={0} width={columnWidthDepth} />
-            <DataTableCell text={row[1]} index={1} width={columnWidthTexture} />
-            <DataTableCell text={row[2]} index={2} width={columnWidthColor} />
-            <DataTableCell
-              text={row[3]}
-              index={3}
-              width={columnWidthRockFragment}
-            />
+          <Row justifyContent="flex-start" key={uniqueKeyForRow(row, i)}>
+            <DataTableCell text={row[0]} width={columnWidthDepth} />
+            <DataTableCell text={row[1]} width={columnWidthTexture} />
+            <DataTableCell text={row[2]} width={columnWidthColor} />
+            <DataTableCell text={row[3]} width={columnWidthRockFragment} />
           </Row>
         ))}
       </Box>
