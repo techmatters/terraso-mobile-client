@@ -67,6 +67,10 @@ export function LocationScoreDisplay({
                 ? 'site.soil_id.soil_info.inside_map_label'
                 : 'site.soil_id.soil_info.outside_map_label'
             }
+            values={{
+              distance: match.distanceToNearestMapUnitM,
+              units: 'meters',
+            }}
           />
         </Column>
         <ScoreTile score={match.match.score} />
