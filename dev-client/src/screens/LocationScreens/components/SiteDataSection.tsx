@@ -28,7 +28,10 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
+import {
+  SoilPropertiesDataTable,
+  SoilPropertiesDataTableRow,
+} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 
 type Props = {siteId: string};
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
@@ -39,7 +42,7 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
     navigation.navigate('LOCATION_DASHBOARD', {siteId});
   }, [navigation, siteId]);
 
-  const bogusDataRows: [string, string, string, string][] = [
+  const bogusDataRows: SoilPropertiesDataTableRow[] = [
     ['0-10', 'Clay', '7.5YR 8.5/1', '50-85%'],
     ['11-20', 'Sandy Clay Loam', '7.5YR 8.5/1', '1-15%'],
     ['100-120', '', '', ''],

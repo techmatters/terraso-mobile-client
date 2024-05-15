@@ -59,9 +59,9 @@ const DataTableCell = ({text, width}: DataTableCellProps) => {
   );
 };
 
-type Row = [string, string, string, string];
+export type SoilPropertiesDataTableRow = [string, string, string, string];
 type Props = {
-  rows: Row[];
+  rows: SoilPropertiesDataTableRow[];
 } & React.ComponentProps<typeof Box>;
 
 export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
@@ -79,7 +79,7 @@ export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
   // I expect the data to be unique for each row -- unless the entire row is empty,
   // in which case I expect using the index to be fine.
   // And I don't expect there to be much rearranging of items anyway.
-  const uniqueKeyForRow = (row: Row, index: number) => {
+  const uniqueKeyForRow = (row: SoilPropertiesDataTableRow, index: number) => {
     return row[0] + row[1] + row[2] + row[3] + index.toString();
   };
 
