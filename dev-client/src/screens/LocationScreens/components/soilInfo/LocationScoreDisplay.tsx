@@ -26,7 +26,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {LocationBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
-import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
+import {LocationScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
@@ -35,11 +35,13 @@ import {useMemo} from 'react';
 import {getSoilWebUrl} from 'terraso-mobile-client/util';
 
 type LocationScoreDisplayProps = {
+  isSite: boolean;
   match: LocationBasedSoilMatch;
   coords: Coords;
 };
 
 export function LocationScoreDisplay({
+  isSite,
   match,
   coords,
 }: LocationScoreDisplayProps) {
@@ -56,7 +58,7 @@ export function LocationScoreDisplay({
             </Heading>
             <InfoOverlaySheetButton
               Header={t('site.soil_id.location_score_info.header')}>
-              <SoilPropertiesScoreInfoContent />
+              <LocationScoreInfoContent isSite={isSite} />
             </InfoOverlaySheetButton>
           </Row>
           <TranslatedBody
