@@ -51,7 +51,7 @@ export function LocationScoreDisplay({
       <HStack justifyContent="space-between" alignItems="center">
         <Column>
           <Row alignItems="stretch">
-            <Heading variant="h6" pb="10px">
+            <Heading variant="h6">
               {t('site.soil_id.location_score_info.header')}
             </Heading>
             <InfoOverlaySheetButton

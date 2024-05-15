@@ -36,7 +36,7 @@ export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
   return (
     <HStack justifyContent="space-between" alignItems="center">
       <Row alignItems="stretch">
-        <Heading variant="h6" pb="10px">
+        <Heading variant="h6">
           {t('site.soil_id.soil_properties_score_info.header')}
         </Heading>
         <InfoOverlaySheetButton
