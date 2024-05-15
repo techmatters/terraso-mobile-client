@@ -105,7 +105,7 @@ export const ScreenFormWrapper = forwardRef(
               onPress={handlePressSubmit}
               isDisabled={isSubmitting}
               shadow={1}
-              size={'lg'}
+              size="lg"
               _text={{textTransform: 'uppercase'}}>
               {t('general.done')}
             </Button>

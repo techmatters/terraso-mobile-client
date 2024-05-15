@@ -38,7 +38,7 @@ export const BulletList = <T,>({data, renderItem}: Props<T>) => {
       {data.map((item, index) => (
         <Row key={index} alignItems="flex-start">
           <Text variant="body1" marginHorizontal={`${bulletMargin}px`}>
-            {'•'}
+            •
           </Text>
           <Box mr={`${bulletMargin * 2}px`}>{renderItem(item)}</Box>
         </Row>
