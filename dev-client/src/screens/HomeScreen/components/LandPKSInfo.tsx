@@ -52,8 +52,7 @@ export const LandPKSInfo = () => {
           {[1, 2, 3].map(index => (
             <HStack key={index}>
               <Text variant="body1" mr={numberedListMargin}>
-                {index}
-                {'.'}
+                {index}.
               </Text>
               <Text variant="body1" mr={numberedListMargin * 2}>
                 <Trans

@@ -111,10 +111,10 @@ export const ProjectInputScreen = ({
             />
           </HStack>
           <RestrictByProjectRole role="MANAGER">
-            <Text bold fontSize={'md'}>
+            <Text bold fontSize="md">
               {t('projects.inputs.instructions.title')}
             </Text>
-            <Text fontSize={'md'}>
+            <Text fontSize="md">
               {t('projects.inputs.instructions.description')}
             </Text>
             <Button
@@ -126,13 +126,8 @@ export const ProjectInputScreen = ({
               shadow={5}
               onPress={onEditInstructions}>
               <HStack>
-                <Icon
-                  color="primary.contrast"
-                  size={'sm'}
-                  mr={2}
-                  name={'edit'}
-                />
-                <Text color="primary.contrast" textTransform={'uppercase'}>
+                <Icon color="primary.contrast" size="sm" mr={2} name="edit" />
+                <Text color="primary.contrast" textTransform="uppercase">
                   {t('projects.inputs.instructions.add_label')}
                 </Text>
               </HStack>
@@ -141,7 +136,7 @@ export const ProjectInputScreen = ({
         </Box>
         <Accordion
           Head={
-            <Text pt={3} pb={3} fontSize={'md'} color={'primary.contrast'}>
+            <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
               {t('soil.pit')}
             </Text>
           }>
@@ -160,7 +155,7 @@ export const ProjectInputScreen = ({
       <RestrictByProjectRole role="MANAGER">
         <Fab
           onPress={() => onSave()}
-          textTransform={'uppercase'}
+          textTransform="uppercase"
           label={t('general.save_fab')}
           renderInPortal={false}
         />

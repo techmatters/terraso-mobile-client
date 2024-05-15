@@ -55,7 +55,7 @@ export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
           <Button
             onPress={handleClose}
             shadow={1}
-            size={'lg'}
+            size="lg"
             _text={{textTransform: 'uppercase'}}>
             {t('general.close_fab')}
           </Button>

@@ -33,7 +33,7 @@ export type ExternalLinkProps = {
 export const ExternalLink = React.forwardRef(
   ({label, url}: ExternalLinkProps, ref: React.Ref<unknown>) => {
     const icon = (
-      <NativeIconButton ref={ref} icon={<Icon name={'open-in-new'} />} />
+      <NativeIconButton ref={ref} icon={<Icon name="open-in-new" />} />
     );
 
     return (
@@ -42,9 +42,9 @@ export const ExternalLink = React.forwardRef(
           <Box>
             <HStack>
               <Text
-                color={'primary.main'}
+                color="primary.main"
                 fontSize="md"
-                textTransform={'uppercase'}
+                textTransform="uppercase"
                 style={styles.label}>
                 {label}
               </Text>
