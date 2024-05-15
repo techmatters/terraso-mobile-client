@@ -17,7 +17,6 @@
 
 import {useCallback, useMemo, useState} from 'react';
 import {Button, Divider, Spinner} from 'native-base';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useTranslation} from 'react-i18next';
 import {Card} from 'terraso-mobile-client/components/Card';
@@ -30,6 +29,7 @@ import {
   Box,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
+import {Coords} from 'terraso-client-shared/types';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';

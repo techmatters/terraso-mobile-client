@@ -32,7 +32,6 @@ import {
   useImperativeHandle,
 } from 'react';
 import Mapbox from '@rnmapbox/maps';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -54,6 +53,7 @@ import {
   siteCallout,
   locationCallout,
 } from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
+import {Coords} from 'terraso-client-shared/types';
 
 type HomeScreenRef = {
   showSiteOnMap: (site: Site) => void;
