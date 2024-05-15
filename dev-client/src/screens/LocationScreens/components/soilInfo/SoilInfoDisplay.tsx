@@ -27,12 +27,12 @@ import {TranslatedBody} from 'terraso-mobile-client/components/content/text/Tran
 import InternalLink from 'terraso-mobile-client/components/links/InternalLink';
 import {SoilInfo} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 
-type SoilInfoContentProps = {
+type SoilInfoDisplayProps = {
   dataSource: string;
   soilInfo: SoilInfo;
 };
 
-export function SoilInfoContent({dataSource, soilInfo}: SoilInfoContentProps) {
+export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
   const {t} = useTranslation();
   return (
     <Column space={3}>
