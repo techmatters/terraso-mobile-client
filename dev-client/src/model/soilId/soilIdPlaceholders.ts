@@ -19,6 +19,7 @@
 
 export type LocationBasedSoilMatch = {
   dataSource: string;
+  distanceToNearestMapUnitM: number;
   soilInfo: SoilInfo;
   match: SoilMatchInfo;
 };
@@ -83,6 +84,7 @@ export const SOIL_MATCH_INFO: SoilMatchInfo = {
 
 export const LOCATION_BASED_SOIL_MATCH: LocationBasedSoilMatch = {
   dataSource: 'SSURGO/STATSGO',
+  distanceToNearestMapUnitM: 0,
   soilInfo: SOIL_INFO,
   match: SOIL_MATCH_INFO,
 };

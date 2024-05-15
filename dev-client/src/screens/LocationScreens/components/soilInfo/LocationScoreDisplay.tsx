@@ -1,0 +1,74 @@
+/*
+ * Copyright © 2024 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+import {useTranslation} from 'react-i18next';
+
+import {
+  Heading,
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {LocationBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
+import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
+import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
+import {useMemo} from 'react';
+import {getSoilWebUrl} from 'terraso-mobile-client/util';
+
+type LocationScoreDisplayProps = {
+  match: LocationBasedSoilMatch;
+  coords: Coords;
+};
+
+export function LocationScoreDisplay({
+  match,
+  coords,
+}: LocationScoreDisplayProps) {
+  const {t} = useTranslation();
+  const isInMap = match.distanceToNearestMapUnitM <= 0;
+  const soilWebUrl = useMemo(() => getSoilWebUrl(coords), [coords]);
+  return (
+    <VStack>
+      <HStack justifyContent="space-between" alignItems="center">
+        <VStack>
+          <Heading variant="h6" pb="10px" maxWidth={'50%'}>
+            {t('site.soil_id.location_score_info.header')}
+            <InfoOverlaySheetButton
+              Header={t('site.soil_id.location_score_info.header')}>
+              <SoilPropertiesScoreInfoContent />
+            </InfoOverlaySheetButton>
+          </Heading>
+          <TranslatedBody
+            i18nKey={
+              isInMap
+                ? 'site.soil_id.soil_info.inside_map_label'
+                : 'site.soil_id.soil_info.outside_map_label'
+            }
+          />
+        </VStack>
+        <ScoreTile score={match.match.score} />
+      </HStack>
+      <ExternalLink
+        label={t('site.soil_id.soil_info.location_url')}
+        url={soilWebUrl}
+      />
+    </VStack>
+  );
+}

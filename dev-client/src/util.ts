@@ -21,6 +21,7 @@ import {
   isValidLatitude,
   normalizeText,
 } from 'terraso-client-shared/utils';
+import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 
 export const getSystemLocale = () => {
   let locale;
@@ -142,3 +143,7 @@ export const isSiteManager = matchesRole([
   {kind: 'site', role: 'OWNER'},
   {kind: 'project', role: 'MANAGER'},
 ]);
+
+export const getSoilWebUrl = (coords: Coords) => {
+  return `https://casoilresource.lawr.ucdavis.edu/gmap/?loc=${coords.latitude},${coords.longitude}`;
+};

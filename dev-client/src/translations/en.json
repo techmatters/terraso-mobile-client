@@ -124,7 +124,10 @@
         "eco_name_label": "<bold>Ecological Site Name:</bold> {{name}}",
         "eco_id_label": "<bold>Ecological Site ID:</bold> {{id}}",
         "land_class_label": "<bold>Land Capability Class:</bold> {{land}}",
-        "data_source_label": "<bold>Ecological Site Name:</bold> {{source}}"
+        "data_source_label": "<bold>Ecological Site Name:</bold> {{source}}",
+        "location_url": "View location on soil web",
+        "inside_map_label": "In soil map unit",
+        "outside_map_label": "In adjacent map unit, {{distance}} meters distance"
       },
       "location_score_info": {
         "header": "Location Score",
