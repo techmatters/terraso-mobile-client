@@ -121,10 +121,10 @@
       "soil_info": {
         "series_descr_url": "Soil Series Full Description",
         "eco_descr_url": "Ecological Site Full Description",
-        "eco_name_label": "<bold>Ecological Site Name:</bold> {name}",
-        "eco_id_label": "<bold>Ecological Site ID:</bold> {id}",
-        "land_class_label": "<bold>Land Capability Class:</bold> {land}",
-        "data_source_label": "<bold>Ecological Site Name:</bold> {source}"
+        "eco_name_label": "<bold>Ecological Site Name:</bold> {{name}}",
+        "eco_id_label": "<bold>Ecological Site ID:</bold> {{id}}",
+        "land_class_label": "<bold>Land Capability Class:</bold> {{land}}",
+        "data_source_label": "<bold>Ecological Site Name:</bold> {{source}}"
       },
       "location_score_info": {
         "header": "Location Score",
