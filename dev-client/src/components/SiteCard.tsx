@@ -24,6 +24,7 @@ import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {
+  Box,
   Row,
   Heading,
   Text,
@@ -75,6 +76,7 @@ export const SiteCard = ({
         {project && (
           <PeopleBadge count={Object.keys(project.memberships).length} />
         )}
+        <Box flexGrow={1} />
         {onShowSiteOnMap && (
           <IconButton
             name="location-on"
@@ -92,4 +94,6 @@ export const SiteCard = ({
   );
 };
 
-const styles = StyleSheet.create({mapView: {height: 60, width: 60}});
+const styles = StyleSheet.create({
+  mapView: {height: 60, width: 60, marginRight: 10},
+});
