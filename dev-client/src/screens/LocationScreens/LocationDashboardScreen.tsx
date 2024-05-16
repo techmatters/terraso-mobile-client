@@ -25,7 +25,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
-import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
+import {SiteLocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
@@ -87,7 +87,7 @@ export const LocationDashboardScreen = (props: Props) => {
         BottomNavigation={null}>
         {siteId ? (
           <SiteRoleContextProvider siteId={siteId}>
-            <LocationDashboardTabNavigator siteId={siteId} />
+            <SiteLocationDashboardTabNavigator siteId={siteId} />
           </SiteRoleContextProvider>
         ) : (
           <LocationDashboardContent siteId={siteId} coords={coords} />

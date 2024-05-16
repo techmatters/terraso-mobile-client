@@ -28,6 +28,8 @@ import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
+type TabsParamList = ParamList<typeof tabDefinitions>;
+type SiteTabName = keyof TabsParamList;
 const tabDefinitions = {
   SITE: LocationDashboardContent,
   SLOPE: SlopeScreen,
@@ -35,35 +37,31 @@ const tabDefinitions = {
   NOTES: SiteNotesScreen,
 } satisfies ScreenDefinitions;
 
-type TabsParamList = ParamList<typeof tabDefinitions>;
-type ScreenName = keyof TabsParamList;
-
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
-export const LocationDashboardTabNavigator = memo(
-  (params: {siteId: string}) => {
-    const {t} = useTranslation();
-    const defaultOptions = useDefaultTabOptions();
-    const tabs = useMemo(
-      () =>
-        Object.entries(tabDefinitions).map(([name, View]) => (
-          <Tab.Screen
-            name={name as ScreenName}
-            key={name}
-            initialParams={params}
-            options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
-            children={props => (
-              <View {...((props.route.params ?? {}) as any)} />
-            )}
-          />
-        )),
-      [params, t, defaultOptions],
-    );
+type Props = {
+  siteId: string;
+};
+export const SiteLocationDashboardTabNavigator = memo((params: Props) => {
+  const {t} = useTranslation();
+  const defaultOptions = useDefaultTabOptions();
+  const tabs = useMemo(
+    () =>
+      Object.entries(tabDefinitions).map(([name, View]) => (
+        <Tab.Screen
+          name={name as SiteTabName}
+          key={name}
+          initialParams={params}
+          options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
+          children={props => <View {...((props.route.params ?? {}) as any)} />}
+        />
+      )),
+    [params, t, defaultOptions],
+  );
 
-    return (
-      <BottomSheetModalProvider>
-        <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
-      </BottomSheetModalProvider>
-    );
-  },
-);
+  return (
+    <BottomSheetModalProvider>
+      <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
+    </BottomSheetModalProvider>
+  );
+});
