@@ -419,12 +419,6 @@ export const theme = extendTheme({
           fontWeight: 500,
           lineHeight: '32px',
         },
-        h6Italic: {
-          fontSize: '20px',
-          fontWeight: 500,
-          lineHeight: '32px',
-          fontStyle: 'italic',
-        },
       },
     },
     Link: {

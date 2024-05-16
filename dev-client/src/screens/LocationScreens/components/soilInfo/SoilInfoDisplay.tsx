@@ -36,7 +36,7 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
   const {t} = useTranslation();
   return (
     <Column space={3}>
-      <Heading variant="h6Italic" pb="10px">
+      <Heading variant="h6" fontStyle="italic" pb="10px">
         {soilInfo.soilSeries.taxonomySubgroup}
       </Heading>
       <Text variant="body1">{soilInfo.soilSeries.description}</Text>
