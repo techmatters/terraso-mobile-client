@@ -15,30 +15,25 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Link} from 'native-base';
-import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
-import {useCallback} from 'react';
-import {Linking} from 'react-native';
+import {Text, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {formatPercent} from 'terraso-mobile-client/util';
 
-type InternalLinkProps = {
-  label: string;
-  onPress?: InterfaceLinkProps['onPress'];
-  url?: string;
+type ScoreTileProps = {
+  score: number;
 };
 
-export default function InternalLink({label, onPress, url}: InternalLinkProps) {
-  const openUrl = useCallback(() => {
-    if (url !== undefined) {
-      Linking.openURL(url);
-    }
-  }, [url]);
-
+export function ScoreTile({score}: ScoreTileProps) {
   return (
-    <Link
-      _text={{color: 'primary.main'}}
-      isUnderlined={true}
-      onPress={onPress ? onPress : openUrl}>
-      {label}
-    </Link>
+    <Box
+      width="94px"
+      height="54px"
+      borderRadius="4px"
+      backgroundColor="background.secondary"
+      justifyContent="center"
+      alignItems="center">
+      <Text variant="score-tile" color="primary.lighter">
+        {formatPercent(score)}
+      </Text>
+    </Box>
   );
 }

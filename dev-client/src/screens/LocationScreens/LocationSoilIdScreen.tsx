@@ -29,6 +29,7 @@ import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/com
 import {selectSite} from 'terraso-client-shared/selectors';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Coords} from 'terraso-client-shared/types';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 type Props = {
   siteId?: string;
@@ -42,19 +43,21 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
   );
 
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
-      }>
-      <SoilIdDescriptionSection siteId={siteId} />
-      <SoilIdMatchesSection siteId={siteId} />
-      {siteId ? (
-        <SiteDataSection siteId={siteId} />
-      ) : (
-        <Box paddingVertical="md">
-          <CreateSiteButton coords={coords} />
-        </Box>
-      )}
-    </ScreenScaffold>
+    <BottomSheetModalProvider>
+      <ScreenScaffold
+        AppBar={
+          <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
+        }>
+        <SoilIdDescriptionSection siteId={siteId} coords={coords} />
+        <SoilIdMatchesSection siteId={siteId} coords={coords} />
+        {siteId ? (
+          <SiteDataSection siteId={siteId} />
+        ) : (
+          <Box paddingVertical="md">
+            <CreateSiteButton coords={coords} />
+          </Box>
+        )}
+      </ScreenScaffold>
+    </BottomSheetModalProvider>
   );
 };

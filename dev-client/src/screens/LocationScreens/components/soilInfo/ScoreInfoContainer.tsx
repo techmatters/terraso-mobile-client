@@ -15,30 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Link} from 'native-base';
-import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
-import {useCallback} from 'react';
-import {Linking} from 'react-native';
+import {PropsWithChildren} from 'react';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type InternalLinkProps = {
-  label: string;
-  onPress?: InterfaceLinkProps['onPress'];
-  url?: string;
-};
-
-export default function InternalLink({label, onPress, url}: InternalLinkProps) {
-  const openUrl = useCallback(() => {
-    if (url !== undefined) {
-      Linking.openURL(url);
-    }
-  }, [url]);
-
-  return (
-    <Link
-      _text={{color: 'primary.main'}}
-      isUnderlined={true}
-      onPress={onPress ? onPress : openUrl}>
-      {label}
-    </Link>
-  );
+export function ScoreInfoContainer({children}: PropsWithChildren) {
+  return <Column space={6}>{children}</Column>;
 }
