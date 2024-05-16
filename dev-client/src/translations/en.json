@@ -127,7 +127,8 @@
         "data_source_label": "<bold>Ecological Site Name:</bold> {{source}}",
         "location_url": "View location on soil web",
         "inside_map_label": "In soil map unit",
-        "outside_map_label": "In adjacent map unit, {{distance}} {{units}} distance"
+        "outside_map_label": "In adjacent map unit, {{distance}} {{units}} distance",
+        "map_units_METRIC": "meters"
       },
       "location_score_info": {
         "header": "Location Score",

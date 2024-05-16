@@ -35,7 +35,7 @@ export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
   const {t} = useTranslation();
   return (
     <HStack justifyContent="space-between" alignItems="center">
-      <Row alignItems="stretch">
+      <Row alignItems="stretch" maxWidth="75%">
         <Heading variant="h6">
           {t('site.soil_id.soil_properties_score_info.header')}
         </Heading>

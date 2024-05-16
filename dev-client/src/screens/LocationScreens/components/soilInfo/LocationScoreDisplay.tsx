@@ -30,9 +30,9 @@ import {LocationScoreInfoContent} from 'terraso-mobile-client/screens/LocationSc
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {useMemo} from 'react';
 import {getSoilWebUrl} from 'terraso-mobile-client/util';
+import {Coords} from 'terraso-client-shared/types';
 
 type LocationScoreDisplayProps = {
   isSite: boolean;
@@ -51,7 +51,7 @@ export function LocationScoreDisplay({
   return (
     <VStack space="16px">
       <HStack justifyContent="space-between" alignItems="center">
-        <Column space="12px">
+        <Column space="12px" maxWidth="75%">
           <Row alignItems="stretch">
             <Heading variant="h6">
               {t('site.soil_id.location_score_info.header')}
@@ -69,7 +69,7 @@ export function LocationScoreDisplay({
             }
             values={{
               distance: match.distanceToNearestMapUnitM,
-              units: 'meters',
+              units: t('site.soil_id.soil_info.map_units_METRIC'),
             }}
           />
         </Column>
