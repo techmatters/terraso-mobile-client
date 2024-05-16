@@ -108,7 +108,14 @@
           "title": "Slope"
         },
         "soil_properties": {
-          "title": "Soil Properties"
+          "title": "Soil Properties",
+          "depth": "Depth ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
+          "depth_units_METRIC": "cm",
+          "depth_units_ENGLISH": "”",
+          "texture": "Texture",
+          "color": "Color",
+          "rock_fragment": "Rock Fragment",
+          "add_data": "Add soil data"
         }
       }
     },

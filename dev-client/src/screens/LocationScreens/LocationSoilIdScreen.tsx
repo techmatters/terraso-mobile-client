@@ -49,7 +49,7 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
       <SoilIdDescriptionSection siteId={siteId} />
       <SoilIdMatchesSection siteId={siteId} />
       {siteId ? (
-        <SiteDataSection />
+        <SiteDataSection siteId={siteId} />
       ) : (
         <Box paddingVertical="md">
           <CreateSiteButton coords={coords} />
