@@ -29,6 +29,7 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 
 type Props = {siteId: string};
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
@@ -36,7 +37,11 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const navigation = useNavigation();
 
   const onAddSoilDataPress = useCallback(() => {
-    navigation.navigate('LOCATION_DASHBOARD', {siteId});
+    // TODO-cknipe: Confirm this navigation stack behavior is okay
+    navigation.push('LOCATION_DASHBOARD', {
+      siteId: siteId,
+      initialTab: 'SOIL' as SiteTabName,
+    });
   }, [navigation, siteId]);
 
   return (

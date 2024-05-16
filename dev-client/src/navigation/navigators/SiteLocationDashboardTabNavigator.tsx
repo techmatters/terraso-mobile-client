@@ -29,7 +29,7 @@ import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDe
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 type TabsParamList = ParamList<typeof tabDefinitions>;
-type SiteTabName = keyof TabsParamList;
+export type SiteTabName = keyof TabsParamList;
 const tabDefinitions = {
   SITE: LocationDashboardContent,
   SLOPE: SlopeScreen,
@@ -41,27 +41,32 @@ const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
 type Props = {
   siteId: string;
+  initialTab: SiteTabName;
 };
-export const SiteLocationDashboardTabNavigator = memo((params: Props) => {
-  const {t} = useTranslation();
-  const defaultOptions = useDefaultTabOptions();
-  const tabs = useMemo(
-    () =>
-      Object.entries(tabDefinitions).map(([name, View]) => (
-        <Tab.Screen
-          name={name as SiteTabName}
-          key={name}
-          initialParams={params}
-          options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
-          children={props => <View {...((props.route.params ?? {}) as any)} />}
-        />
-      )),
-    [params, t, defaultOptions],
-  );
+export const SiteLocationDashboardTabNavigator = memo(
+  ({siteId, initialTab}: Props) => {
+    const {t} = useTranslation();
+    const defaultOptions = useDefaultTabOptions();
+    const tabs = useMemo(
+      () =>
+        Object.entries(tabDefinitions).map(([name, View]) => (
+          <Tab.Screen
+            name={name as SiteTabName}
+            key={name}
+            initialParams={{siteId}}
+            options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
+            children={props => (
+              <View {...((props.route.params ?? {}) as any)} />
+            )}
+          />
+        )),
+      [siteId, t, defaultOptions],
+    );
 
-  return (
-    <BottomSheetModalProvider>
-      <Tab.Navigator initialRouteName="SITE">{tabs}</Tab.Navigator>
-    </BottomSheetModalProvider>
-  );
-});
+    return (
+      <BottomSheetModalProvider>
+        <Tab.Navigator initialRouteName={initialTab}>{tabs}</Tab.Navigator>
+      </BottomSheetModalProvider>
+    );
+  },
+);
