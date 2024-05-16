@@ -351,6 +351,12 @@ export const theme = extendTheme({
           fontSize: '16px',
           lineHeight: '24px',
         },
+        'body1-medium': {
+          fontSize: '16px',
+          fontWeight: 500,
+          lineHeight: '24px',
+          letterSpacing: '0.17px',
+        },
         body2: {
           fontSize: '14px',
           fontWeight: 400,

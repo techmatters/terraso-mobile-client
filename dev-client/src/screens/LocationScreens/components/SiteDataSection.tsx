@@ -15,15 +15,64 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Button} from 'native-base';
+import {ScrollView} from 'react-native-gesture-handler';
 
 import {
+  Box,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {
+  SoilPropertiesDataTable,
+  SoilPropertiesDataTableRow,
+} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 
-export const SiteDataSection = () => {
+type Props = {siteId: string};
+export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
+  const {t} = useTranslation();
+  const navigation = useNavigation();
+
+  const onAddSoilDataPress = useCallback(() => {
+    navigation.navigate('LOCATION_DASHBOARD', {siteId});
+  }, [navigation, siteId]);
+
+  const bogusDataRows: SoilPropertiesDataTableRow[] = [
+    ['0-10', 'Clay', '7.5YR 8.5/1', '50-85%'],
+    ['11-20', 'Sandy Clay Loam', '7.5YR 8.5/1', '1-15%'],
+    ['100-120', '', '', ''],
+  ];
+
+  return (
+    <>
+      <Heading variant="h6" pt="lg">
+        {t('site.soil_id.site_data.soil_properties.title')}
+      </Heading>
+
+      <Box marginTop="sm" />
+      <ScrollView horizontal={true}>
+        <SoilPropertiesDataTable rows={bogusDataRows} />
+      </ScrollView>
+
+      <Box paddingVertical="lg">
+        <Button
+          _text={{textTransform: 'uppercase'}}
+          alignSelf="flex-end"
+          rightIcon={<Icon name="chevron-right" />}
+          onPress={onAddSoilDataPress}>
+          {t('site.soil_id.site_data.soil_properties.add_data')}
+        </Button>
+      </Box>
+    </>
+  );
+};
+
+export const SiteDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
 
   return (
@@ -32,9 +81,8 @@ export const SiteDataSection = () => {
       <Heading variant="h6" pt="lg">
         {t('site.soil_id.site_data.slope.title')}
       </Heading>
-      <Heading variant="h6" pt="lg">
-        {t('site.soil_id.site_data.soil_properties.title')}
-      </Heading>
+
+      <SiteSoilPropertiesDataSection siteId={siteId} />
     </ScreenContentSection>
   );
 };
