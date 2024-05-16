@@ -32,7 +32,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Platform} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -107,10 +107,7 @@ export const LoginScreen = () => {
               buttonStyle={
                 AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
               }
-              style={{
-                width: 275,
-                height: 44,
-              }}
+              style={styles.appleloginButton}
               onPress={onPress('apple')}
             />
           )}
@@ -127,3 +124,10 @@ export const LoginScreen = () => {
     </Column>
   );
 };
+
+const styles = StyleSheet.create({
+  appleloginButton: {
+    width: 275,
+    height: 44,
+  },
+});
