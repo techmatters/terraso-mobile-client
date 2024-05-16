@@ -15,30 +15,31 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Link} from 'native-base';
-import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
-import {useCallback} from 'react';
-import {Linking} from 'react-native';
+import {Trans} from 'react-i18next';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type InternalLinkProps = {
-  label: string;
-  onPress?: InterfaceLinkProps['onPress'];
-  url?: string;
+type TranslatedBodyProps = {
+  i18nKey: string;
+  variant?: 'body1' | 'body2';
+  values?: {};
 };
 
-export default function InternalLink({label, onPress, url}: InternalLinkProps) {
-  const openUrl = useCallback(() => {
-    if (url !== undefined) {
-      Linking.openURL(url);
-    }
-  }, [url]);
-
+export function TranslatedBody({
+  i18nKey,
+  variant = 'body1',
+  values,
+}: TranslatedBodyProps) {
   return (
-    <Link
-      _text={{color: 'primary.main'}}
-      isUnderlined={true}
-      onPress={onPress ? onPress : openUrl}>
-      {label}
-    </Link>
+    <Text variant={variant}>
+      <Trans
+        i18nKey={i18nKey}
+        values={values}
+        components={{
+          bold: <Text bold />,
+          italic: <Text italic />,
+          underline: <Text underline />,
+        }}
+      />
+    </Text>
   );
 }

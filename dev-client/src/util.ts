@@ -16,6 +16,7 @@
  */
 import {NativeModules, Platform} from 'react-native';
 import {SiteUserRole} from 'terraso-client-shared/selectors';
+import {Coords} from 'terraso-client-shared/types';
 import {
   isValidLongitude,
   isValidLatitude,
@@ -44,6 +45,10 @@ export const formatDate = (dateString: string) => {
     dateStyle: 'short',
   });
   return shortDateFormatters[locale].format(new Date(dateString));
+};
+
+export const formatPercent = (value: number) => {
+  return value.toLocaleString(undefined, {style: 'percent'});
 };
 
 export const formatName = (firstName: string, lastName?: string) => {
@@ -138,3 +143,7 @@ export const isSiteManager = matchesRole([
   {kind: 'site', role: 'OWNER'},
   {kind: 'project', role: 'MANAGER'},
 ]);
+
+export const getSoilWebUrl = (coords: Coords) => {
+  return `https://casoilresource.lawr.ucdavis.edu/gmap/?loc=${coords.latitude},${coords.longitude}`;
+};

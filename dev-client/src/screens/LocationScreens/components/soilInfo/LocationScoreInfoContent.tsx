@@ -15,30 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Link} from 'native-base';
-import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
-import {useCallback} from 'react';
-import {Linking} from 'react-native';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
 
-type InternalLinkProps = {
-  label: string;
-  onPress?: InterfaceLinkProps['onPress'];
-  url?: string;
+type LocationScoreInfoContentProps = {
+  isSite: boolean;
 };
 
-export default function InternalLink({label, onPress, url}: InternalLinkProps) {
-  const openUrl = useCallback(() => {
-    if (url !== undefined) {
-      Linking.openURL(url);
-    }
-  }, [url]);
-
+export function LocationScoreInfoContent({
+  isSite,
+}: LocationScoreInfoContentProps) {
   return (
-    <Link
-      _text={{color: 'primary.main'}}
-      isUnderlined={true}
-      onPress={onPress ? onPress : openUrl}>
-      {label}
-    </Link>
+    <Column space={3}>
+      {isSite && (
+        <TranslatedBody i18nKey="site.soil_id.location_score_info.p1" />
+      )}
+      <TranslatedBody i18nKey="site.soil_id.location_score_info.p2" />
+      <TranslatedBody i18nKey="site.soil_id.location_score_info.p3" />
+    </Column>
   );
 }
