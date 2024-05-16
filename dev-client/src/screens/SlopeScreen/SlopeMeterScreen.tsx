@@ -18,7 +18,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import {Camera} from 'expo-camera';
+import {CameraView, useCameraPermissions} from 'expo-camera';
 import {DeviceMotion} from 'expo-sensors';
 import {Button, Link} from 'native-base';
 import {useTranslation} from 'react-i18next';
@@ -44,7 +44,7 @@ const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
 export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [permission, requestPermission] = useCameraPermissions();
   const [deviceTiltDeg, setDeviceTiltDeg] = useState<number | null>(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -90,14 +90,14 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
         <Row flex={1} alignItems="stretch" px="24px" py="20px">
           <Box flex={1} justifyContent="center">
             {permission?.granted ? (
-              <Camera style={styles.camera}>
+              <CameraView style={styles.camera}>
                 <Column flex={1} alignItems="stretch">
                   <Box flex={1} />
                   <Box height="3px" bg="text.primary" />
                   <Box height="3px" bg="primary.contrast" />
                   <Box flex={1} bg="#00000080" />
                 </Column>
-              </Camera>
+              </CameraView>
             ) : permission?.canAskAgain ? (
               <Button size="lg" onPress={requestPermission}>
                 {t('slope.steepness.camera_grant')}
