@@ -40,6 +40,7 @@ export const LoginScreen = () => {
   const loggedIn = useSelector(
     state => state.account.currentUser.data !== null,
   );
+  const showAppleAuth = Platform.OS === 'ios';
 
   // note: we intentionally run this on every render,
   // so we can't accidentally get stuck on this view because
@@ -99,7 +100,7 @@ export const LoginScreen = () => {
             startIcon={<MicrosoftLogo />}>
             {t('account.microsoft_login')}
           </Button>
-          {Platform.OS === 'ios' && (
+          {showAppleAuth ? (
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={
                 AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
@@ -110,6 +111,8 @@ export const LoginScreen = () => {
               style={styles.appleloginButton}
               onPress={onPress('apple')}
             />
+          ) : (
+            <></>
           )}
         </Button.Group>
       </Column>

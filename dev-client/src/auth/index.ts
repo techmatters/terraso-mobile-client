@@ -26,7 +26,7 @@ import {
   IssuerOrDiscovery,
   resolveDiscoveryAsync,
 } from 'expo-auth-session';
-import * as AppleAuthentication from 'expo-apple-authentication';
+import {AppleAuthenticationScope, signInAsync} from 'expo-apple-authentication';
 
 type AuthConfig = AuthRequestConfig & {issuer: IssuerOrDiscovery};
 
@@ -92,18 +92,26 @@ async function exchangeToken(
 const apiConfig = getAPIConfig();
 
 export async function auth(provider: AuthProvider) {
+  // The two auth methods have different types the return:
+  // - signInAsync can return string|null
+  // - AccessTokenRequest can return string|undefined
+  // To work around this, I created appleIdToken and assign that back to
+  // idToken once I confirm it's not null.
   let idToken: string | undefined;
   if (provider === 'apple' && Platform.OS === 'ios') {
     try {
-      idToken = (
-        await AppleAuthentication.signInAsync({
+      let appleIdToken = (
+        await signInAsync({
           requestedScopes: [
-            AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-            AppleAuthentication.AppleAuthenticationScope.EMAIL,
+            AppleAuthenticationScope.FULL_NAME,
+            AppleAuthenticationScope.EMAIL,
           ],
         })
       ).identityToken;
-    } catch (e) {
+      if (appleIdToken !== null) {
+        idToken = appleIdToken;
+      }
+    } catch (e: any) {
       if (e.code === 'ERR_REQUEST_CANCELED') {
         console.log('cancelled', e);
       } else {
@@ -126,6 +134,10 @@ export async function auth(provider: AuthProvider) {
         extraParams: {code_verifier: authRequest.codeVerifier ?? ''},
       }).performAsync(discovery)
     ).idToken;
+  }
+
+  if (!idToken) {
+    return Promise.reject('No ID token');
   }
 
   const platformProvider =
