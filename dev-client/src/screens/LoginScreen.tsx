@@ -33,6 +33,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Platform, StyleSheet} from 'react-native';
+import Constants from 'expo-constants';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -41,6 +42,7 @@ export const LoginScreen = () => {
     state => state.account.currentUser.data !== null,
   );
   const showAppleAuth = Platform.OS === 'ios';
+  const isDevelopmentMode = Constants.expoConfig!.extra?.ENV === 'development';
 
   // note: we intentionally run this on every render,
   // so we can't accidentally get stuck on this view because
@@ -123,6 +125,11 @@ export const LoginScreen = () => {
         <Text variant="caption" color="primary.contrast">
           {t('login.description')}
         </Text>
+        {isDevelopmentMode && (
+          <Text variant="caption" color="primary.contrast">
+            {Constants.expoConfig!.ios?.bundleIdentifier}
+          </Text>
+        )}
       </Column>
     </Column>
   );
