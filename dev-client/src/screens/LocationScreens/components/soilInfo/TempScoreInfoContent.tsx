@@ -19,9 +19,9 @@ import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/com
 import {LocationBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {Divider} from 'native-base';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
+import {Coords} from 'terraso-client-shared/types';
 
 type TempScoreInfoContentProps = {
   locationMatch: LocationBasedSoilMatch;

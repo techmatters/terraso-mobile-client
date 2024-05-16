@@ -23,8 +23,8 @@ import {
 import {Divider} from 'native-base';
 import {PropertiesScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesScoreDisplay';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
+import {Coords} from 'terraso-client-shared/types';
 
 type SiteScoreInfoContentProps = {
   locationMatch: LocationBasedSoilMatch;

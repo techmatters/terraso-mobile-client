@@ -25,7 +25,6 @@ import {
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 import {
   DATA_BASED_SOIL_MATCH,
   LOCATION_BASED_SOIL_MATCH,
@@ -34,6 +33,7 @@ import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreen
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {Button} from 'native-base';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
+import {Coords} from 'terraso-client-shared/types';
 
 type SoilIdSectionProps = {siteId?: string; coords: Coords};
 

@@ -16,12 +16,12 @@
  */
 import {NativeModules, Platform} from 'react-native';
 import {SiteUserRole} from 'terraso-client-shared/selectors';
+import {Coords} from 'terraso-client-shared/types';
 import {
   isValidLongitude,
   isValidLatitude,
   normalizeText,
 } from 'terraso-client-shared/utils';
-import {Coords} from 'terraso-mobile-client/model/map/mapSlice';
 
 export const getSystemLocale = () => {
   let locale;
