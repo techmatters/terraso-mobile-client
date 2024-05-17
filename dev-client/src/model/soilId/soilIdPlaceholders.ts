@@ -105,3 +105,5 @@ export const DATA_BASED_SOIL_MATCH: DataBasedSoilMatch = {
   dataMatch: SOIL_MATCH_INFO,
   combinedMatch: SOIL_MATCH_INFO,
 };
+
+export const SOIL_DATA: any = {};
