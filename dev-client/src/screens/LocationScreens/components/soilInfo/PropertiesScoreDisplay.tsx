@@ -30,7 +30,6 @@ import {
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
-import {ScrollView} from 'react-native-gesture-handler';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 
 type PropertiesScoreDisplayProps = {
@@ -53,9 +52,7 @@ export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
         </Row>
         <ScoreTile score={match.combinedMatch.score} />
       </HStack>
-      <ScrollView horizontal={true}>
-        <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
-      </ScrollView>
+      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
     </VStack>
   );
 }

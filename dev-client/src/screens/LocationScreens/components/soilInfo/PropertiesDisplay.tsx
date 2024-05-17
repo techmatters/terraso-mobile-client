@@ -22,7 +22,6 @@ import {
   LocationBasedSoilMatch,
   SOIL_PROPERTIES_TABLE_ROWS,
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
-import {ScrollView} from 'react-native-gesture-handler';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 import {VStack} from 'native-base';
 
@@ -37,9 +36,7 @@ export function PropertiesDisplay({}: PropertiesDisplayProps) {
       <Heading variant="h6">
         {t('site.soil_id.soil_info.properties_header')}
       </Heading>
-      <ScrollView horizontal={true}>
-        <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
-      </ScrollView>
+      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
     </VStack>
   );
 }

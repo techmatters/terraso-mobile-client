@@ -18,7 +18,6 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
 
 import {
   Box,
@@ -47,9 +46,7 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
       </Heading>
 
       <Box marginTop="sm" />
-      <ScrollView horizontal={true}>
-        <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
-      </ScrollView>
+      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
 
       <Box paddingVertical="lg">
         <Button
