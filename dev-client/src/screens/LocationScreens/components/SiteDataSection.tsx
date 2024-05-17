@@ -38,7 +38,6 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const navigation = useNavigation();
 
   const onAddSoilDataPress = useCallback(() => {
-    // TODO-cknipe: Confirm this navigation stack behavior is okay
     navigation.push('LOCATION_DASHBOARD', {
       siteId: siteId,
       initialTab: 'SOIL' as SiteTabName,
