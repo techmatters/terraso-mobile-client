@@ -17,42 +17,26 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
-  Heading,
-  HStack,
-  Row,
-  VStack,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {
-  DataBasedSoilMatch,
+  LocationBasedSoilMatch,
   SOIL_PROPERTIES_TABLE_ROWS,
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
-import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
-import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {ScrollView} from 'react-native-gesture-handler';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
+import {VStack} from 'native-base';
 
-type PropertiesScoreDisplayProps = {
-  match: DataBasedSoilMatch;
+type PropertiesDisplayProps = {
+  match: LocationBasedSoilMatch;
 };
 
-export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
+export function PropertiesDisplay({}: PropertiesDisplayProps) {
   const {t} = useTranslation();
   return (
     <VStack space="16px">
-      <HStack justifyContent="space-between" alignItems="center">
-        <Row alignItems="stretch" maxWidth="75%">
-          <Heading variant="h6">
-            {t('site.soil_id.soil_properties_score_info.header')}
-          </Heading>
-          <InfoOverlaySheetButton
-            Header={t('site.soil_id.soil_properties_score_info.header')}>
-            <SoilPropertiesScoreInfoContent />
-          </InfoOverlaySheetButton>
-        </Row>
-        <ScoreTile score={match.combinedMatch.score} />
-      </HStack>
+      <Heading variant="h6">
+        {t('site.soil_id.soil_info.properties_header')}
+      </Heading>
       <ScrollView horizontal={true}>
         <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
       </ScrollView>

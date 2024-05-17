@@ -19,15 +19,12 @@ import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/com
 import {
   DataBasedSoilMatch,
   LocationBasedSoilMatch,
-  SOIL_PROPERTIES_TABLE_ROWS,
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {Divider} from 'native-base';
 import {PropertiesScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesScoreDisplay';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
 import {Coords} from 'terraso-client-shared/types';
-import {ScrollView} from 'react-native-gesture-handler';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 
 type SiteScoreInfoContentProps = {
   locationMatch: LocationBasedSoilMatch;
@@ -54,9 +51,6 @@ export function SiteScoreInfoContent({
       />
       <Divider />
       <PropertiesScoreDisplay match={dataMatch} />
-      <ScrollView horizontal={true}>
-        <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
-      </ScrollView>
     </ScoreInfoContainer>
   );
 }

@@ -16,19 +16,13 @@
  */
 
 import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
-import {
-  LocationBasedSoilMatch,
-  SOIL_PROPERTIES_TABLE_ROWS,
-} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+import {LocationBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {Divider} from 'native-base';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {Coords} from 'terraso-client-shared/types';
-import {ScrollView} from 'react-native-gesture-handler';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useTranslation} from 'react-i18next';
+import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
 
 type TempScoreInfoContentProps = {
   locationMatch: LocationBasedSoilMatch;
@@ -39,7 +33,6 @@ export function TempScoreInfoContent({
   locationMatch,
   coords,
 }: TempScoreInfoContentProps) {
-  const {t} = useTranslation();
   return (
     <ScoreInfoContainer>
       <SoilInfoDisplay
@@ -53,12 +46,7 @@ export function TempScoreInfoContent({
         coords={coords}
       />
       <Divider />
-      <Heading variant="h6">
-        {t('site.soil_id.soil_info.properties_header')}
-      </Heading>
-      <ScrollView horizontal={true}>
-        <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
-      </ScrollView>
+      <PropertiesDisplay match={locationMatch} />
       <CreateSiteButton coords={coords} />
     </ScoreInfoContainer>
   );
