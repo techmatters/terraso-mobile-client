@@ -120,9 +120,9 @@ export async function auth(provider: AuthProvider) {
       }
     } catch (e: any) {
       if (e.code === 'ERR_REQUEST_CANCELED') {
-        console.log('cancelled', e);
+        console.log('Sign in with Apple cancelled', e);
       } else {
-        console.error('error', e);
+        console.error('Sign in with Apple error', e);
       }
     }
   } else {
