@@ -27,6 +27,7 @@ import {
   resolveDiscoveryAsync,
 } from 'expo-auth-session';
 import {AppleAuthenticationScope, signInAsync} from 'expo-apple-authentication';
+import Constants from 'expo-constants';
 
 type AuthConfig = AuthRequestConfig & {issuer: IssuerOrDiscovery};
 
@@ -79,7 +80,11 @@ async function exchangeToken(
 ) {
   const payload = await request<AuthTokens>({
     path: '/auth/token-exchange',
-    body: {provider, jwt: identityJwt},
+    body: {
+      provider,
+      client_id: Constants.expoConfig!.ios?.bundleIdentifier,
+      jwt: identityJwt,
+    },
     headers: {'content-type': 'application/json'},
   });
 
