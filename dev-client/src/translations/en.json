@@ -128,7 +128,8 @@
         "location_url": "View location on soil web",
         "inside_map_label": "In soil map unit",
         "outside_map_label": "In adjacent map unit, {{distance}} {{units}} distance",
-        "map_units_METRIC": "meters"
+        "map_units_METRIC": "meters",
+        "properties_header": "Soil Properties"
       },
       "location_score_info": {
         "header": "Location Score",

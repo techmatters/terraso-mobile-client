@@ -28,6 +28,7 @@ import {ScreenContentSection} from 'terraso-mobile-client/components/content/Scr
 import {
   DATA_BASED_SOIL_MATCH,
   LOCATION_BASED_SOIL_MATCH,
+  SOIL_DATA,
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
@@ -55,6 +56,7 @@ export const SoilIdMatchesSection = ({siteId, coords}: SoilIdSectionProps) => {
   const isSite = !!siteId;
 
   const locationMatch = LOCATION_BASED_SOIL_MATCH;
+  const soilData = SOIL_DATA;
   const dataMatch = DATA_BASED_SOIL_MATCH;
 
   return (
@@ -76,6 +78,7 @@ export const SoilIdMatchesSection = ({siteId, coords}: SoilIdSectionProps) => {
           <SiteScoreInfoContent
             locationMatch={locationMatch}
             dataMatch={dataMatch}
+            soilData={soilData}
             coords={coords}
           />
         ) : (
