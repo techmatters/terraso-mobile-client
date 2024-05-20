@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilPropertiesDataTableRow} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
+import {SoilPropertiesDataTableRow} from 'terraso-mobile-client/components/tables/soilPropertiesData/SoilPropertiesDataTable';
 
 /* To be replaced with actual integration w/ soilId schema */
 
