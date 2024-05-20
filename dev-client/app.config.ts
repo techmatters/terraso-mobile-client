@@ -147,8 +147,8 @@ export default ({config}: ConfigContext): ExpoConfig => ({
             );
             return gradle;
           });
-          return modConfig;
         }
+        return modConfig;
       }) as any,
     ],
   ],
