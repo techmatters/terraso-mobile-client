@@ -29,6 +29,7 @@ import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soi
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
+// TODO-cknipe: Move to another file or don't export
 type Props = {siteId: string};
 
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
