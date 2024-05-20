@@ -22,6 +22,7 @@ import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreen
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {Coords} from 'terraso-client-shared/types';
+import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
 
 type TempScoreInfoContentProps = {
   locationMatch: LocationBasedSoilMatch;
@@ -44,6 +45,8 @@ export function TempScoreInfoContent({
         match={locationMatch}
         coords={coords}
       />
+      <Divider />
+      <PropertiesDisplay match={locationMatch} />
       <CreateSiteButton coords={coords} />
     </ScoreInfoContainer>
   );

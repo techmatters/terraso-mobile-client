@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {ScrollView} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {
   Box,
@@ -64,7 +65,7 @@ type Props = {
   rows: SoilPropertiesDataTableRow[];
 } & React.ComponentProps<typeof Box>;
 
-export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
+export const SoilPropertiesDataTable = ({rows}: Props) => {
   const {t} = useTranslation();
 
   const columnWidthDepth: NBDimensionValue = '85px';
@@ -84,38 +85,40 @@ export const SoilPropertiesDataTable = ({rows, ...containerProps}: Props) => {
   };
 
   return (
-    <Box {...containerProps}>
-      <Row justifyContent="flex-start">
-        <DataTableHeader
-          width={columnWidthDepth}
-          text={t('site.soil_id.site_data.soil_properties.depth', {
-            units: 'METRIC',
-          })}
-        />
-        <DataTableHeader
-          width={columnWidthTexture}
-          text={t('site.soil_id.site_data.soil_properties.texture')}
-        />
-        <DataTableHeader
-          width={columnWidthColor}
-          text={t('site.soil_id.site_data.soil_properties.color')}
-        />
-        <DataTableHeader
-          width={columnWidthRockFragment}
-          text={t('site.soil_id.site_data.soil_properties.rock_fragment')}
-        />
-      </Row>
+    <ScrollView horizontal={true}>
+      <Box>
+        <Row justifyContent="flex-start">
+          <DataTableHeader
+            width={columnWidthDepth}
+            text={t('site.soil_id.site_data.soil_properties.depth', {
+              units: 'METRIC',
+            })}
+          />
+          <DataTableHeader
+            width={columnWidthTexture}
+            text={t('site.soil_id.site_data.soil_properties.texture')}
+          />
+          <DataTableHeader
+            width={columnWidthColor}
+            text={t('site.soil_id.site_data.soil_properties.color')}
+          />
+          <DataTableHeader
+            width={columnWidthRockFragment}
+            text={t('site.soil_id.site_data.soil_properties.rock_fragment')}
+          />
+        </Row>
 
-      <Box borderTopWidth="1px" borderLeftWidth="1px">
-        {rows.map((row: (typeof rows)[number], i: number) => (
-          <Row justifyContent="flex-start" key={uniqueKeyForRow(row, i)}>
-            <DataTableCell text={row[0]} width={columnWidthDepth} />
-            <DataTableCell text={row[1]} width={columnWidthTexture} />
-            <DataTableCell text={row[2]} width={columnWidthColor} />
-            <DataTableCell text={row[3]} width={columnWidthRockFragment} />
-          </Row>
-        ))}
+        <Box borderTopWidth="1px" borderLeftWidth="1px">
+          {rows.map((row: (typeof rows)[number], i: number) => (
+            <Row justifyContent="flex-start" key={uniqueKeyForRow(row, i)}>
+              <DataTableCell text={row[0]} width={columnWidthDepth} />
+              <DataTableCell text={row[1]} width={columnWidthTexture} />
+              <DataTableCell text={row[2]} width={columnWidthColor} />
+              <DataTableCell text={row[3]} width={columnWidthRockFragment} />
+            </Row>
+          ))}
+        </Box>
       </Box>
-    </Box>
+    </ScrollView>
   );
 };

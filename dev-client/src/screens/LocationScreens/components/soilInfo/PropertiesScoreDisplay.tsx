@@ -21,30 +21,40 @@ import {
   Heading,
   HStack,
   Row,
+  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {DataBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+import {
+  DataBasedSoilMatch,
+  SOIL_PROPERTIES_TABLE_ROWS,
+} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
+import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
+import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 type PropertiesScoreDisplayProps = {
+  data: SoilData;
   match: DataBasedSoilMatch;
 };
 
 export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
   const {t} = useTranslation();
   return (
-    <HStack justifyContent="space-between" alignItems="center">
-      <Row alignItems="stretch" maxWidth="75%">
-        <Heading variant="h6">
-          {t('site.soil_id.soil_properties_score_info.header')}
-        </Heading>
-        <InfoOverlaySheetButton
-          Header={t('site.soil_id.soil_properties_score_info.header')}>
-          <SoilPropertiesScoreInfoContent />
-        </InfoOverlaySheetButton>
-      </Row>
-      <ScoreTile score={match.combinedMatch.score} />
-    </HStack>
+    <VStack space="16px">
+      <HStack justifyContent="space-between" alignItems="center">
+        <Row alignItems="stretch" maxWidth="75%">
+          <Heading variant="h6">
+            {t('site.soil_id.soil_properties_score_info.header')}
+          </Heading>
+          <InfoOverlaySheetButton
+            Header={t('site.soil_id.soil_properties_score_info.header')}>
+            <SoilPropertiesScoreInfoContent />
+          </InfoOverlaySheetButton>
+        </Row>
+        <ScoreTile score={match.combinedMatch.score} />
+      </HStack>
+      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
+    </VStack>
   );
 }
