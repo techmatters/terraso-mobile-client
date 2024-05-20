@@ -32,7 +32,45 @@ import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocat
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 
+// TODO-cknipe: Move to another file or don't export
 type Props = {siteId: string};
+export const SiteSlopeDataSection = ({siteId}: Props) => {
+  const {t} = useTranslation();
+  const navigation = useNavigation();
+
+  const onAddSoilDataPress = useCallback(() => {
+    navigation.push('LOCATION_DASHBOARD', {
+      siteId: siteId,
+      initialTab: 'SLOPE' as SiteTabName,
+    });
+  }, [navigation, siteId]);
+
+  return (
+    <>
+      <Heading variant="h6" pt="lg">
+        {t('site.soil_id.site_data.slope.title')}
+      </Heading>
+
+      <RestrictBySiteRole
+        role={[
+          {kind: 'site', role: 'OWNER'},
+          {kind: 'project', role: 'MANAGER'},
+          {kind: 'project', role: 'CONTRIBUTOR'},
+        ]}>
+        <Box paddingVertical="lg">
+          <Button
+            _text={{textTransform: 'uppercase'}}
+            alignSelf="flex-end"
+            rightIcon={<Icon name="chevron-right" />}
+            onPress={onAddSoilDataPress}>
+            {t('site.soil_id.site_data.slope.add_data')}
+          </Button>
+        </Box>
+      </RestrictBySiteRole>
+    </>
+  );
+};
+
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
@@ -79,10 +117,7 @@ export const SiteDataSection = ({siteId}: Props) => {
   return (
     <ScreenContentSection title={t('site.soil_id.site_data.title')}>
       <Text variant="body1">{t('site.soil_id.site_data.description')}</Text>
-      <Heading variant="h6" pt="lg">
-        {t('site.soil_id.site_data.slope.title')}
-      </Heading>
-
+      <SiteSlopeDataSection siteId={siteId} />
       <SiteSoilPropertiesDataSection siteId={siteId} />
     </ScreenContentSection>
   );
