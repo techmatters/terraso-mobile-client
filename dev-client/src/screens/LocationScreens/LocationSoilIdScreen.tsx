@@ -30,6 +30,7 @@ import {selectSite} from 'terraso-client-shared/selectors';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Coords} from 'terraso-client-shared/types';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 
 type Props = {
   siteId?: string;
@@ -51,7 +52,9 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
         <SoilIdDescriptionSection siteId={siteId} coords={coords} />
         <SoilIdMatchesSection siteId={siteId} coords={coords} />
         {siteId ? (
-          <SiteDataSection siteId={siteId} />
+          <SiteRoleContextProvider siteId={siteId}>
+            <SiteDataSection siteId={siteId} />
+          </SiteRoleContextProvider>
         ) : (
           <Box paddingVertical="md">
             <CreateSiteButton coords={coords} />

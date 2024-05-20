@@ -29,6 +29,8 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 
 type Props = {siteId: string};
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
@@ -36,7 +38,10 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const navigation = useNavigation();
 
   const onAddSoilDataPress = useCallback(() => {
-    navigation.navigate('LOCATION_DASHBOARD', {siteId});
+    navigation.push('LOCATION_DASHBOARD', {
+      siteId: siteId,
+      initialTab: 'SOIL' as SiteTabName,
+    });
   }, [navigation, siteId]);
 
   return (
@@ -48,15 +53,22 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
       <Box marginTop="sm" />
       <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
 
-      <Box paddingVertical="lg">
-        <Button
-          _text={{textTransform: 'uppercase'}}
-          alignSelf="flex-end"
-          rightIcon={<Icon name="chevron-right" />}
-          onPress={onAddSoilDataPress}>
-          {t('site.soil_id.site_data.soil_properties.add_data')}
-        </Button>
-      </Box>
+      <RestrictBySiteRole
+        role={[
+          {kind: 'site', role: 'OWNER'},
+          {kind: 'project', role: 'MANAGER'},
+          {kind: 'project', role: 'CONTRIBUTOR'},
+        ]}>
+        <Box paddingVertical="lg">
+          <Button
+            _text={{textTransform: 'uppercase'}}
+            alignSelf="flex-end"
+            rightIcon={<Icon name="chevron-right" />}
+            onPress={onAddSoilDataPress}>
+            {t('site.soil_id.site_data.soil_properties.add_data')}
+          </Button>
+        </Box>
+      </RestrictBySiteRole>
     </>
   );
 };

@@ -25,7 +25,10 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
-import {LocationDashboardTabNavigator} from 'terraso-mobile-client/navigation/navigators/LocationDashboardTabNavigator';
+import {
+  SiteTabName,
+  SiteLocationDashboardTabNavigator,
+} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
@@ -33,13 +36,15 @@ import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
 import {isSiteManager} from 'terraso-mobile-client/util';
 import {Coords} from 'terraso-client-shared/types';
 
-type Props = {siteId: string} | {coords: Coords};
+type Props = ({siteId: string} | {coords: Coords}) & {initialTab?: SiteTabName};
 
 // A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with only coords)
 export const LocationDashboardScreen = (props: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const infoModalRef = useRef<BottomSheetModal>(null);
+  const initialTab = props.initialTab === undefined ? 'SITE' : props.initialTab;
+
   const siteId = 'siteId' in props ? props.siteId : undefined;
   const site = useSelector(state =>
     siteId === undefined ? undefined : selectSite(siteId)(state),
@@ -87,7 +92,10 @@ export const LocationDashboardScreen = (props: Props) => {
         BottomNavigation={null}>
         {siteId ? (
           <SiteRoleContextProvider siteId={siteId}>
-            <LocationDashboardTabNavigator siteId={siteId} />
+            <SiteLocationDashboardTabNavigator
+              siteId={siteId}
+              initialTab={initialTab}
+            />
           </SiteRoleContextProvider>
         ) : (
           <LocationDashboardContent siteId={siteId} coords={coords} />
