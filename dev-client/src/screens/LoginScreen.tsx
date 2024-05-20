@@ -22,7 +22,11 @@ import {useEffect, useCallback} from 'react';
 import {AuthProvider, auth} from 'terraso-mobile-client/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
-import * as AppleAuthentication from 'expo-apple-authentication';
+import {
+  AppleAuthenticationButton,
+  AppleAuthenticationButtonStyle,
+  AppleAuthenticationButtonType,
+} from 'expo-apple-authentication';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
@@ -103,13 +107,9 @@ export const LoginScreen = () => {
             {t('account.microsoft_login')}
           </Button>
           {showAppleAuth ? (
-            <AppleAuthentication.AppleAuthenticationButton
-              buttonType={
-                AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
-              }
-              buttonStyle={
-                AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
-              }
+            <AppleAuthenticationButton
+              buttonType={AppleAuthenticationButtonType.SIGN_IN}
+              buttonStyle={AppleAuthenticationButtonStyle.WHITE}
               style={styles.appleloginButton}
               onPress={onPress('apple')}
             />
