@@ -39,10 +39,12 @@ const configs = {
     redirectUri: APP_CONFIG.googleRedirectURI,
     scopes: ['openid', 'profile', 'email'],
   },
+  // For Apple Authentication, we use native code and don't redirect.
+  // TypeScript requries that redirectUri is present.
   apple: {
     issuer: 'https://appleid.apple.com',
     clientId: APP_CONFIG.appleClientId,
-    redirectUri: APP_CONFIG.appleRedirectURI,
+    redirectUri: '',
     scopes: ['name', 'email'],
   },
   /*
