@@ -17,6 +17,7 @@
 
 import 'ts-node/register';
 import {ExpoConfig, ConfigContext} from 'expo/config';
+import {withAppBuildGradle} from 'expo/config-plugins';
 import {fromEntries} from 'terraso-client-shared/utils';
 
 const VERSION_REGEX = /^v[0-9]+$/g;
@@ -44,6 +45,7 @@ const BUILD_CONFIG = validateEnvConfig(process.env, [
 ] as const);
 
 const ENV_CONFIG = validateEnvConfig(process.env, [
+  'CI',
   'ENV',
   'PUBLIC_MAPBOX_TOKEN',
   'SENTRY_DSN',
@@ -133,6 +135,21 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       {
         RNMapboxMapsDownloadToken: BUILD_CONFIG.MAPBOX_DOWNLOADS_TOKEN,
       },
+    ],
+    [
+      ((modConfig: ExpoConfig): ExpoConfig => {
+        // Avoid double signing with debug keychain when using GitHub actions.
+        if (ENV_CONFIG.CI === 'true') {
+          withAppBuildGradle(modConfig, gradle => {
+            gradle.modResults.contents = gradle.modResults.contents.replace(
+              /signingConfig signingConfigs.debug/g,
+              '',
+            );
+            return gradle;
+          });
+          return modConfig;
+        }
+      }) as any,
     ],
   ],
   extra: ENV_CONFIG,
