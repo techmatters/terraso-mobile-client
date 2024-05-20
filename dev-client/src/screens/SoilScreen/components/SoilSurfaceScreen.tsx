@@ -27,7 +27,6 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectSite, selectSoilData} from 'terraso-client-shared/selectors';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {Image} from 'react-native';
-import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {Fab} from 'native-base';
 import {
   SurfaceCracks,
@@ -63,7 +62,6 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
         <Heading variant="h6">
           {t('soil.collection_method.verticalCracking')}
         </Heading>
-        <LastModified />
         <Select
           nullable
           value={cracking ?? null}

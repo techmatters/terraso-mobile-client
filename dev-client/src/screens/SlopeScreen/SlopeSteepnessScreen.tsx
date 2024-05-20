@@ -20,7 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {renderSteepness} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {
@@ -137,7 +136,6 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
         <Column>
           <Column p="15px" bg="primary.contrast">
             <Heading variant="h6">{t('slope.steepness.long_title')}</Heading>
-            <LastModified />
           </Column>
         </Column>
         <Column p="15px" bg="grey.300">

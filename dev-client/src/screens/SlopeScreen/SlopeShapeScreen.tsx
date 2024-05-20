@@ -24,7 +24,6 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
-import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {
   ImageRadio,
   ImageRadioOption,
@@ -142,7 +141,6 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
                 <SlopeShapeInfoContent />
               </InfoOverlaySheetButton>
             </Row>
-            <LastModified />
           </Column>
         </Column>
         <ImageRadio
