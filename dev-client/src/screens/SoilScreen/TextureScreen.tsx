@@ -32,7 +32,6 @@ import {
   ImageRadio,
   radioImage,
 } from 'terraso-mobile-client/components/ImageRadio';
-import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   SoilPitInputScreenProps,
@@ -145,7 +144,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
               <TextureInfoContent />
             </InfoOverlaySheetButton>
           </Row>
-          <LastModified />
           <Box height="sm" />
           <Select
             nullable

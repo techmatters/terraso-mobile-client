@@ -36,7 +36,6 @@ import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/Col
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {LastModified} from 'terraso-mobile-client/components/LastModified';
 import {useCallback, useMemo} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
@@ -107,7 +106,6 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
             <SwitchWorkflowButton {...props} />
           )}
         </Row>
-        <LastModified />
       </Column>
       {workflow === 'MANUAL' && <ManualWorkflow {...props} />}
       {workflow === 'CAMERA' && !color && <CameraWorkflow {...props} />}
