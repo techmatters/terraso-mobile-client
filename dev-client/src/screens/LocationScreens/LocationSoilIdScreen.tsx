@@ -24,8 +24,8 @@ import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/co
 import {
   SoilIdDescriptionSection,
   SoilIdMatchesSection,
-} from 'terraso-mobile-client/screens/LocationScreens/components/SoilIdSections';
-import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/SiteDataSection';
+} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdSections';
+import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
 import {selectSite} from 'terraso-client-shared/selectors';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Coords} from 'terraso-client-shared/types';

@@ -35,7 +35,7 @@ import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/s
 import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
+import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
 import {renderSteepnessForNarrowDisplay} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 
 const getSlopeSteepnessImageSource = (soilData: SoilData) => {
