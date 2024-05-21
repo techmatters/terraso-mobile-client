@@ -21,28 +21,32 @@ import {SoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 export const renderSteepness = (
   t: TFunction,
   {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
-) =>
-  slopeSteepnessSelect
-    ? renderSlopeSteepnessSelectInline(t, slopeSteepnessSelect)
-    : typeof slopeSteepnessPercent === 'number'
-      ? `${slopeSteepnessPercent.toFixed(0)}%`
-      : typeof slopeSteepnessDegree === 'number'
-        ? `${slopeSteepnessDegree}°`
-        : undefined;
+) => {
+  if (slopeSteepnessSelect) {
+    return renderSlopeSteepnessSelectInline(t, slopeSteepnessSelect);
+  } else if (typeof slopeSteepnessPercent === 'number') {
+    return renderSlopeSteepnessPercent(t, slopeSteepnessPercent);
+  } else if (typeof slopeSteepnessDegree === 'number') {
+    return renderSlopeSteepnessDegree(t, slopeSteepnessDegree);
+  } else {
+    return undefined;
+  }
+};
 
 export const renderSteepnessForNarrowDisplay = (
   t: TFunction,
   {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
-) =>
-  slopeSteepnessSelect
-    ? t(`slope.steepness.select_labels.${slopeSteepnessSelect}`) +
-      '\n' +
-      t(`slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`)
-    : typeof slopeSteepnessPercent === 'number'
-      ? `${slopeSteepnessPercent.toFixed(0)}%`
-      : typeof slopeSteepnessDegree === 'number'
-        ? `${slopeSteepnessDegree}°`
-        : undefined;
+) => {
+  if (slopeSteepnessSelect) {
+    return renderSlopeSteepnessSelectMultipleLines(t, slopeSteepnessSelect);
+  } else if (typeof slopeSteepnessPercent === 'number') {
+    return renderSlopeSteepnessPercent(t, slopeSteepnessPercent);
+  } else if (typeof slopeSteepnessDegree === 'number') {
+    return renderSlopeSteepnessDegree(t, slopeSteepnessDegree);
+  } else {
+    return undefined;
+  }
+};
 
 export const renderSlopeSteepnessSelectInline = (
   t: TFunction,
@@ -53,6 +57,35 @@ export const renderSlopeSteepnessSelectInline = (
     ' ' +
     t(`slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`)
   );
+};
+
+const renderSlopeSteepnessSelectMultipleLines = (
+  t: TFunction,
+  slopeSteepnessSelect: string,
+) => {
+  return (
+    t(`slope.steepness.select_labels.${slopeSteepnessSelect}`) +
+    '\n' +
+    t(`slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`)
+  );
+};
+
+const renderSlopeSteepnessPercent = (
+  t: TFunction,
+  slopeSteepnessPercent: number,
+) => {
+  return t('slope.steepness.percentage', {
+    value: slopeSteepnessPercent.toFixed(0),
+  });
+};
+
+const renderSlopeSteepnessDegree = (
+  t: TFunction,
+  slopeSteepnessDegree: number,
+) => {
+  return t('slope.steepness.degree', {
+    value: slopeSteepnessDegree.toFixed(0),
+  });
 };
 
 export const renderShape = (
