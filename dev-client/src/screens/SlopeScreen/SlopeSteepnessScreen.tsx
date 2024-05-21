@@ -50,7 +50,8 @@ type Props = {
   siteId: string;
 };
 
-const STEEPNESS_IMAGES = {
+// TODO-cknipe: Move this
+export const STEEPNESS_IMAGES = {
   FLAT: require('terraso-mobile-client/assets/slope/steepness/flat.png'),
   GENTLE: require('terraso-mobile-client/assets/slope/steepness/gentle.png'),
   MODERATE: require('terraso-mobile-client/assets/slope/steepness/moderate.png'),
