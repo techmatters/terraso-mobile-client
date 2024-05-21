@@ -41,6 +41,8 @@ export const FormSwitch = memo(
             {...props}
           />
           <Text
+            ml="10px"
+            mt="5px"
             color={
               props.disabled
                 ? theme.colors.text.disabled

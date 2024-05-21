@@ -212,7 +212,7 @@ export const EditIntervalModal = ({
 
             <Row mb="12px">
               <FormCheckbox name="applyToAll" />
-              <FormLabel variant="body1">
+              <FormLabel variant="body1" ml="10px">
                 {t('soil.depth_interval.apply_to_all_label')}
               </FormLabel>
             </Row>
