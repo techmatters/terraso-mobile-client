@@ -21,7 +21,10 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {renderSteepness} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
+import {
+  renderSlopeSteepnessSelectInline,
+  renderSteepness,
+} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {
   ImageRadio,
   radioImage,
@@ -82,7 +85,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
         Object.entries(STEEPNESS_IMAGES).map(([value, image]) => [
           value,
           {
-            label: t(`slope.steepness.select_labels.${value}`),
+            label: renderSlopeSteepnessSelectInline(t, value),
             image: <Image style={radioImage} source={image} />,
           },
         ]),

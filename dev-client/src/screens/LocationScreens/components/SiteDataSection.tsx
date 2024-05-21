@@ -17,7 +17,7 @@
 
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Button, HStack} from 'native-base';
+import {Button} from 'native-base';
 import {Image, StyleSheet} from 'react-native';
 
 import {SoilData} from 'terraso-client-shared/soilId/soilIdSlice';
@@ -36,6 +36,7 @@ import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soi
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
+import {renderSteepnessForNarrowDisplay} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 
 const getSlopeSteepnessImageSource = (soilData: SoilData) => {
   return soilData.slopeSteepnessSelect
@@ -58,6 +59,7 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
   }, [navigation, siteId]);
 
   const imageSrc = getSlopeSteepnessImageSource(soilData);
+  const steepnessValue = renderSteepnessForNarrowDisplay(t, soilData);
 
   return (
     <>
@@ -65,9 +67,13 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
         {t('site.soil_id.site_data.slope.title')}
       </Heading>
 
-      <HStack justifyContent="space-between">
-        <Box borderWidth="2px" width="85px" height="85px">
+      <Box flexDirection="row">
+        <Box borderWidth="2px" width="85px" height="85px" mr="md">
           {imageSrc && <Image style={styles.image} source={imageSrc} />}
+        </Box>
+
+        <Box flex={1}>
+          <Text bold>{steepnessValue}</Text>
         </Box>
 
         <RestrictBySiteRole
@@ -86,7 +92,7 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
             </Button>
           </Box>
         </RestrictBySiteRole>
-      </HStack>
+      </Box>
     </>
   );
 };

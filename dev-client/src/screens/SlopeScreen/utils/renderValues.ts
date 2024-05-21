@@ -23,12 +23,37 @@ export const renderSteepness = (
   {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
 ) =>
   slopeSteepnessSelect
-    ? t(`slope.steepness.select_labels.${slopeSteepnessSelect}`)
+    ? renderSlopeSteepnessSelectInline(t, slopeSteepnessSelect)
     : typeof slopeSteepnessPercent === 'number'
       ? `${slopeSteepnessPercent.toFixed(0)}%`
       : typeof slopeSteepnessDegree === 'number'
         ? `${slopeSteepnessDegree}°`
         : undefined;
+
+export const renderSteepnessForNarrowDisplay = (
+  t: TFunction,
+  {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
+) =>
+  slopeSteepnessSelect
+    ? t(`slope.steepness.select_labels.${slopeSteepnessSelect}`) +
+      '\n' +
+      t(`slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`)
+    : typeof slopeSteepnessPercent === 'number'
+      ? `${slopeSteepnessPercent.toFixed(0)}%`
+      : typeof slopeSteepnessDegree === 'number'
+        ? `${slopeSteepnessDegree}°`
+        : undefined;
+
+export const renderSlopeSteepnessSelectInline = (
+  t: TFunction,
+  slopeSteepnessSelect: string,
+) => {
+  return (
+    t(`slope.steepness.select_labels.${slopeSteepnessSelect}`) +
+    ' ' +
+    t(`slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`)
+  );
+};
 
 export const renderShape = (
   t: TFunction,

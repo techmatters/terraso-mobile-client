@@ -744,15 +744,24 @@
         "description_distance_ENGLISH": "15 feet"
       },
       "select_labels": {
-        "FLAT": "Flat 0–2%",
-        "GENTLE": "Gentle 2–5%",
-        "MODERATE": "Moderate 5–10%",
-        "ROLLING": "Rolling 10–15%",
-        "HILLY": "Hilly 15–30%",
-        "STEEP": "Steep 30–50%",
-        "MODERATELY_STEEP": "Moderately Steep 50–60%",
-        "VERY_STEEP": "Very Steep 60–100%",
-        "STEEPEST": "Steepest 100%+"
+        "FLAT": "Flat",
+        "FLAT_PERCENT": "0–2%",
+        "GENTLE": "Gentle",
+        "GENTLE_PERCENT": "2–5%",
+        "MODERATE": "Moderate",
+        "MODERATE_PERCENT": "5–10%",
+        "ROLLING": "Rolling",
+        "ROLLING_PERCENT": "10–15%",
+        "HILLY": "Hilly",
+        "HILLY_PERCENT": "15–30%",
+        "STEEP": "Steep",
+        "STEEP_PERCENT": "30–50%",
+        "MODERATELY_STEEP": "Moderately Steep",
+        "MODERATELY_STEEP_PERCENT": "50–60%",
+        "VERY_STEEP": "Very Steep",
+        "VERY_STEEP_PERCENT": "60–100%",
+        "STEEPEST": "Steepest",
+        "STEEPEST_PERCENT": "100%+"
       }
     },
     "shape": {
