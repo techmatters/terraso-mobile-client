@@ -22,8 +22,8 @@ import {
   LocationBasedSoilMatch,
   SOIL_PROPERTIES_TABLE_ROWS,
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilPropertiesData/SoilPropertiesDataTable';
 import {VStack} from 'native-base';
+import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 
 type PropertiesDisplayProps = {
   match: LocationBasedSoilMatch;

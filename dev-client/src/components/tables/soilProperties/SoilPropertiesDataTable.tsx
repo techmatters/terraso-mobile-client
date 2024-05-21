@@ -23,6 +23,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {NBDimensionValue} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {SoilPropertiesDataTableRow} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 
 type DataTableHeaderProps = {
   width: NBDimensionValue;
@@ -60,7 +61,6 @@ const DataTableCell = ({width, text}: DataTableCellProps) => {
   );
 };
 
-export type SoilPropertiesDataTableRow = [string, string, string, string];
 type Props = {
   rows: SoilPropertiesDataTableRow[];
 } & React.ComponentProps<typeof Box>;
@@ -81,7 +81,13 @@ export const SoilPropertiesDataTable = ({rows}: Props) => {
   // in which case I expect using the index to be fine.
   // And I don't expect there to be much rearranging of items anyway.
   const uniqueKeyForRow = (row: SoilPropertiesDataTableRow, index: number) => {
-    return row[0] + row[1] + row[2] + row[3] + index.toString();
+    return (
+      index.toString() +
+      row.depth +
+      row.texture +
+      row.munsellColor +
+      row.rockFragment
+    );
   };
 
   return (
@@ -111,10 +117,26 @@ export const SoilPropertiesDataTable = ({rows}: Props) => {
         <Box borderTopWidth="1px" borderLeftWidth="1px">
           {rows.map((row: (typeof rows)[number], i: number) => (
             <Row justifyContent="flex-start" key={uniqueKeyForRow(row, i)}>
-              <DataTableCell text={row[0]} width={columnWidthDepth} />
-              <DataTableCell text={row[1]} width={columnWidthTexture} />
-              <DataTableCell text={row[2]} width={columnWidthColor} />
-              <DataTableCell text={row[3]} width={columnWidthRockFragment} />
+              <DataTableCell
+                text={t('soil.depth_interval.bounds_unitless', row.depth)}
+                width={columnWidthDepth}
+              />
+              <DataTableCell
+                text={row.texture ? t(`soil.texture.class.${row.texture}`) : ''}
+                width={columnWidthTexture}
+              />
+              <DataTableCell
+                text={row.munsellColor ?? ''}
+                width={columnWidthColor}
+              />
+              <DataTableCell
+                text={
+                  row.rockFragment
+                    ? t(`soil.texture.rock_fragment.${row.rockFragment}`)
+                    : ''
+                }
+                width={columnWidthRockFragment}
+              />
             </Row>
           ))}
         </Box>
