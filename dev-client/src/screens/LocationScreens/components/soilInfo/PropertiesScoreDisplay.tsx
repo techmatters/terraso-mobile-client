@@ -24,12 +24,13 @@ import {
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {DataBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+import {
+  DataBasedSoilMatch,
+  SOIL_PROPERTIES_TABLE_ROWS,
+} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
-import {useMemo} from 'react';
-import {rowsFromSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 
 type PropertiesScoreDisplayProps = {
@@ -37,11 +38,7 @@ type PropertiesScoreDisplayProps = {
   match: DataBasedSoilMatch;
 };
 
-export function PropertiesScoreDisplay({
-  data,
-  match,
-}: PropertiesScoreDisplayProps) {
-  const rows = useMemo(() => rowsFromSoilData(data), [data]);
+export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
   const {t} = useTranslation();
   return (
     <VStack space="16px">
@@ -57,7 +54,7 @@ export function PropertiesScoreDisplay({
         </Row>
         <ScoreTile score={match.combinedMatch.score} />
       </HStack>
-      <SoilPropertiesDataTable rows={rows} />
+      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
     </VStack>
   );
 }

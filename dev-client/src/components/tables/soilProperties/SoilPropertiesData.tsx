@@ -16,9 +16,19 @@
  */
 
 import {
+  SoilIdDepthDependentData,
   SoilIdDepthDependentSoilDataRockFragmentVolumeChoices,
   SoilIdDepthDependentSoilDataTextureChoices,
+  SoilIdSoilData,
 } from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  DepthDependentSoilData,
+  SoilData,
+} from 'terraso-client-shared/soilId/soilIdTypes';
+import {
+  fullMunsellColor,
+  munsellToString,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 
 export type SoilPropertiesDataTableRow = {
   depth: {
@@ -28,4 +38,49 @@ export type SoilPropertiesDataTableRow = {
   texture?: SoilIdDepthDependentSoilDataTextureChoices;
   rockFragment?: SoilIdDepthDependentSoilDataRockFragmentVolumeChoices;
   munsellColor?: string;
+};
+
+export const rowsFromSoilData = (
+  data: SoilData,
+): SoilPropertiesDataTableRow[] => {
+  return data.depthDependentData.map(d => rowFromSoilData(d));
+};
+
+export const rowFromSoilData = (
+  data: DepthDependentSoilData,
+): SoilPropertiesDataTableRow => {
+  const color = fullMunsellColor({
+    colorHue: data.colorHue,
+    colorChroma: data.colorChroma,
+    colorValue: data.colorValue,
+  });
+  return {
+    depth: {
+      start: data.depthInterval.start,
+      end: data.depthInterval.end,
+    },
+    texture: data.texture ?? undefined,
+    rockFragment: data.rockFragmentVolume ?? undefined,
+    munsellColor: color ? munsellToString(color) : undefined,
+  };
+};
+
+export const rowsFromSoilIdData = (
+  data: SoilIdSoilData,
+): SoilPropertiesDataTableRow[] => {
+  return data.depthDependentData.map(d => rowFromSoilIdData(d));
+};
+
+export const rowFromSoilIdData = (
+  data: SoilIdDepthDependentData,
+): SoilPropertiesDataTableRow => {
+  return {
+    depth: {
+      start: data.depthInterval.start,
+      end: data.depthInterval.end,
+    },
+    texture: data.texture ?? undefined,
+    rockFragment: data.rockFragmentVolume ?? undefined,
+    munsellColor: data.munsellColorString ?? undefined,
+  };
 };
