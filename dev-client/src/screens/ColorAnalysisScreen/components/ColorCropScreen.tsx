@@ -38,7 +38,7 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Photo,
   PhotoWithBase64,
-} from 'terraso-mobile-client/components/ImagePicker';
+} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {
   Box,
   Column,

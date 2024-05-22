@@ -17,7 +17,7 @@
 
 import {useMemo, useState} from 'react';
 
-import {Photo} from 'terraso-mobile-client/components/ImagePicker';
+import {Photo} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 import {
   ColorAnalysisContext,
