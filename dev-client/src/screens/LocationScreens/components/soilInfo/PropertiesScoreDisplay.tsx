@@ -30,8 +30,8 @@ import {
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 
 type PropertiesScoreDisplayProps = {
   data: SoilData;
