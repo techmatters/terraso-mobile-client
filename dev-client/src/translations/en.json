@@ -729,7 +729,6 @@
       "manual_help": "Enter steepness percentage or degree:",
       "confirm_title": "Change slope?",
       "confirm_body": "Are you sure you want to override the slope data?",
-      "percentage": "{{value}}%",
       "percentage_placeholder": "Percentage",
       "percentage_help": "0% minimum",
       "degree": "{{value}}°",
@@ -764,7 +763,9 @@
         "VERY_STEEP_PERCENT": "60–100%",
         "STEEPEST": "Steepest",
         "STEEPEST_PERCENT": "100%+"
-      }
+      },
+      "select_display": "{{steepness_name}} {{steepness_percent}}",
+      "select_display_newline": "{{steepness_name}}\n{{steepness_percent}}"
     },
     "shape": {
       "title": "Shape",

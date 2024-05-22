@@ -17,6 +17,7 @@
 
 import {TFunction} from 'i18next';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {formatPercent} from 'terraso-mobile-client/util';
 
 export const renderSteepness = (
   t: TFunction,
@@ -25,7 +26,7 @@ export const renderSteepness = (
   if (slopeSteepnessSelect) {
     return renderSlopeSteepnessSelectInline(t, slopeSteepnessSelect);
   } else if (typeof slopeSteepnessPercent === 'number') {
-    return renderSlopeSteepnessPercent(t, slopeSteepnessPercent);
+    return formatPercent(Math.round(slopeSteepnessPercent));
   } else if (typeof slopeSteepnessDegree === 'number') {
     return renderSlopeSteepnessDegree(t, slopeSteepnessDegree);
   } else {
@@ -40,7 +41,7 @@ export const renderSteepnessForNarrowDisplay = (
   if (slopeSteepnessSelect) {
     return renderSlopeSteepnessSelectMultipleLines(t, slopeSteepnessSelect);
   } else if (typeof slopeSteepnessPercent === 'number') {
-    return renderSlopeSteepnessPercent(t, slopeSteepnessPercent);
+    return formatPercent(Math.round(slopeSteepnessPercent));
   } else if (typeof slopeSteepnessDegree === 'number') {
     return renderSlopeSteepnessDegree(t, slopeSteepnessDegree);
   } else {
@@ -52,30 +53,23 @@ export const renderSlopeSteepnessSelectInline = (
   t: TFunction,
   slopeSteepnessSelect: string,
 ) => {
-  return (
-    t(`slope.steepness.select_labels.${slopeSteepnessSelect}`) +
-    ' ' +
-    t(`slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`)
-  );
+  return t('slope.steepness.select_display', {
+    steepness_name: t(`slope.steepness.select_labels.${slopeSteepnessSelect}`),
+    steepness_percent: t(
+      `slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`,
+    ),
+  });
 };
 
 const renderSlopeSteepnessSelectMultipleLines = (
   t: TFunction,
   slopeSteepnessSelect: string,
 ) => {
-  return (
-    t(`slope.steepness.select_labels.${slopeSteepnessSelect}`) +
-    '\n' +
-    t(`slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`)
-  );
-};
-
-const renderSlopeSteepnessPercent = (
-  t: TFunction,
-  slopeSteepnessPercent: number,
-) => {
-  return t('slope.steepness.percentage', {
-    value: slopeSteepnessPercent.toFixed(0),
+  return t('slope.steepness.select_display_newline', {
+    steepness_name: t(`slope.steepness.select_labels.${slopeSteepnessSelect}`),
+    steepness_percent: t(
+      `slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`,
+    ),
   });
 };
 
