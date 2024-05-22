@@ -26,7 +26,7 @@ export const renderSteepness = (
   if (slopeSteepnessSelect) {
     return renderSlopeSteepnessSelectInline(t, slopeSteepnessSelect);
   } else if (typeof slopeSteepnessPercent === 'number') {
-    return renderSlopeSteepnessPercent(t, slopeSteepnessPercent);
+    return formatPercent(Math.round(slopeSteepnessPercent));
   } else if (typeof slopeSteepnessDegree === 'number') {
     return renderSlopeSteepnessDegree(t, slopeSteepnessDegree);
   } else {
