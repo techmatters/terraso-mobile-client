@@ -36,8 +36,6 @@ on:
         required: false
       ANDROID_SIGNING_KEY:
         required: false
-      ANDROID_ALIAS:
-        required: false
       ANDROID_KEY_STORE_PASSWORD:
         required: false
       ANDROID_KEY_PASSWORD:
@@ -138,7 +136,7 @@ jobs:
         with:
           releaseDirectory: ./dev-client/android/app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-          alias: ${{ secrets.ANDROID_ALIAS }}
+          alias: ${{ vars.ANDROID_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
