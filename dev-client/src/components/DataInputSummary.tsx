@@ -44,6 +44,7 @@ export const DataInputSummary = ({
         {(complete || required) && (
           <Icon
             color={complete ? 'primary.dark' : undefined}
+            mt="-3px"
             name={
               complete && required
                 ? 'check-circle'
@@ -54,11 +55,11 @@ export const DataInputSummary = ({
           />
         )}
       </Box>
-      <Text variant="body1" fontWeight={700} textTransform="uppercase">
+      <Text variant="body2" fontWeight={700} textTransform="uppercase">
         {label}
       </Text>
       <Box flex={1} />
-      {typeof value === 'string' ? <Text variant="body1">{value}</Text> : value}
+      {typeof value === 'string' ? <Text variant="body2">{value}</Text> : value}
     </Row>
   </Pressable>
 );
