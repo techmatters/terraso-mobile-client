@@ -603,6 +603,264 @@ exports[`renders correctly 1`] = `
                                     Color (required)
                                   </Text>
                                 </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={true}
+                                    name="soilStructureEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={true}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#9EA8AB",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Structure (required)
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="carbonatesEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Carbonates
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="phEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    pH
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="electricalConductivityEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Electrical Conductivity
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="soilOrganicCarbonMatterEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SOC/SOM
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="sodiumAdsorptionRatioEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SAR
+                                  </Text>
+                                </View>
                               </View>
                               <View
                                 style={
@@ -1066,6 +1324,90 @@ exports[`renders correctly 1`] = `
                           }
                         >
                           Color
+                        </Text>
+                        <View
+                          style={
+                            {
+                              "flex": 1,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                    >
+                      <View
+                        style={
+                          [
+                            {
+                              "flexDirection": "row",
+                            },
+                            {
+                              "backgroundColor": "#FFFFFF",
+                              "padding": 15,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            {
+                              "width": 37,
+                            }
+                          }
+                        >
+                          <Icon
+                            name="radio-button-unchecked"
+                            size={24}
+                            style={
+                              {
+                                "marginTop": -3,
+                              }
+                            }
+                          />
+                        </View>
+                        <Text
+                          letterSpacing="0.17px"
+                          lineHeight="20px"
+                          style={
+                            {
+                              "color": "#1A202C",
+                              "fontSize": 14,
+                              "fontWeight": "700",
+                              "textTransform": "uppercase",
+                            }
+                          }
+                        >
+                          Structure
                         </Text>
                         <View
                           style={
@@ -1414,6 +1756,264 @@ exports[`renders correctly 1`] = `
                                     Color (required)
                                   </Text>
                                 </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={true}
+                                    name="soilStructureEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={true}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#9EA8AB",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Structure (required)
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="carbonatesEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Carbonates
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="phEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    pH
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="electricalConductivityEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Electrical Conductivity
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="soilOrganicCarbonMatterEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SOC/SOM
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="sodiumAdsorptionRatioEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SAR
+                                  </Text>
+                                </View>
                               </View>
                               <View
                                 style={
@@ -1877,6 +2477,90 @@ exports[`renders correctly 1`] = `
                           }
                         >
                           Color
+                        </Text>
+                        <View
+                          style={
+                            {
+                              "flex": 1,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                    >
+                      <View
+                        style={
+                          [
+                            {
+                              "flexDirection": "row",
+                            },
+                            {
+                              "backgroundColor": "#FFFFFF",
+                              "padding": 15,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            {
+                              "width": 37,
+                            }
+                          }
+                        >
+                          <Icon
+                            name="radio-button-unchecked"
+                            size={24}
+                            style={
+                              {
+                                "marginTop": -3,
+                              }
+                            }
+                          />
+                        </View>
+                        <Text
+                          letterSpacing="0.17px"
+                          lineHeight="20px"
+                          style={
+                            {
+                              "color": "#1A202C",
+                              "fontSize": 14,
+                              "fontWeight": "700",
+                              "textTransform": "uppercase",
+                            }
+                          }
+                        >
+                          Structure
                         </Text>
                         <View
                           style={
@@ -2225,6 +2909,264 @@ exports[`renders correctly 1`] = `
                                     Color (required)
                                   </Text>
                                 </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={true}
+                                    name="soilStructureEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={true}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#9EA8AB",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Structure (required)
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="carbonatesEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Carbonates
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="phEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    pH
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="electricalConductivityEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Electrical Conductivity
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="soilOrganicCarbonMatterEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SOC/SOM
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="sodiumAdsorptionRatioEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SAR
+                                  </Text>
+                                </View>
                               </View>
                               <View
                                 style={
@@ -2688,6 +3630,90 @@ exports[`renders correctly 1`] = `
                           }
                         >
                           Color
+                        </Text>
+                        <View
+                          style={
+                            {
+                              "flex": 1,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                    >
+                      <View
+                        style={
+                          [
+                            {
+                              "flexDirection": "row",
+                            },
+                            {
+                              "backgroundColor": "#FFFFFF",
+                              "padding": 15,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            {
+                              "width": 37,
+                            }
+                          }
+                        >
+                          <Icon
+                            name="radio-button-unchecked"
+                            size={24}
+                            style={
+                              {
+                                "marginTop": -3,
+                              }
+                            }
+                          />
+                        </View>
+                        <Text
+                          letterSpacing="0.17px"
+                          lineHeight="20px"
+                          style={
+                            {
+                              "color": "#1A202C",
+                              "fontSize": 14,
+                              "fontWeight": "700",
+                              "textTransform": "uppercase",
+                            }
+                          }
+                        >
+                          Structure
                         </Text>
                         <View
                           style={
@@ -3036,6 +4062,264 @@ exports[`renders correctly 1`] = `
                                     Color (required)
                                   </Text>
                                 </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={true}
+                                    name="soilStructureEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={true}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#9EA8AB",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Structure (required)
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="carbonatesEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Carbonates
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="phEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    pH
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="electricalConductivityEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Electrical Conductivity
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="soilOrganicCarbonMatterEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SOC/SOM
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="sodiumAdsorptionRatioEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SAR
+                                  </Text>
+                                </View>
                               </View>
                               <View
                                 style={
@@ -3499,6 +4783,90 @@ exports[`renders correctly 1`] = `
                           }
                         >
                           Color
+                        </Text>
+                        <View
+                          style={
+                            {
+                              "flex": 1,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                    >
+                      <View
+                        style={
+                          [
+                            {
+                              "flexDirection": "row",
+                            },
+                            {
+                              "backgroundColor": "#FFFFFF",
+                              "padding": 15,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            {
+                              "width": 37,
+                            }
+                          }
+                        >
+                          <Icon
+                            name="radio-button-unchecked"
+                            size={24}
+                            style={
+                              {
+                                "marginTop": -3,
+                              }
+                            }
+                          />
+                        </View>
+                        <Text
+                          letterSpacing="0.17px"
+                          lineHeight="20px"
+                          style={
+                            {
+                              "color": "#1A202C",
+                              "fontSize": 14,
+                              "fontWeight": "700",
+                              "textTransform": "uppercase",
+                            }
+                          }
+                        >
+                          Structure
                         </Text>
                         <View
                           style={
@@ -3847,6 +5215,264 @@ exports[`renders correctly 1`] = `
                                     Color (required)
                                   </Text>
                                 </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={true}
+                                    name="soilStructureEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={true}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#9EA8AB",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Structure (required)
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="carbonatesEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Carbonates
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="phEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    pH
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="electricalConductivityEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Electrical Conductivity
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="soilOrganicCarbonMatterEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SOC/SOM
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="sodiumAdsorptionRatioEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SAR
+                                  </Text>
+                                </View>
                               </View>
                               <View
                                 style={
@@ -4310,6 +5936,90 @@ exports[`renders correctly 1`] = `
                           }
                         >
                           Color
+                        </Text>
+                        <View
+                          style={
+                            {
+                              "flex": 1,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                    >
+                      <View
+                        style={
+                          [
+                            {
+                              "flexDirection": "row",
+                            },
+                            {
+                              "backgroundColor": "#FFFFFF",
+                              "padding": 15,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            {
+                              "width": 37,
+                            }
+                          }
+                        >
+                          <Icon
+                            name="radio-button-unchecked"
+                            size={24}
+                            style={
+                              {
+                                "marginTop": -3,
+                              }
+                            }
+                          />
+                        </View>
+                        <Text
+                          letterSpacing="0.17px"
+                          lineHeight="20px"
+                          style={
+                            {
+                              "color": "#1A202C",
+                              "fontSize": 14,
+                              "fontWeight": "700",
+                              "textTransform": "uppercase",
+                            }
+                          }
+                        >
+                          Structure
                         </Text>
                         <View
                           style={
@@ -4658,6 +6368,264 @@ exports[`renders correctly 1`] = `
                                     Color (required)
                                   </Text>
                                 </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={true}
+                                    name="soilStructureEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={true}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#9EA8AB",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Structure (required)
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="carbonatesEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Carbonates
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="phEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    pH
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="electricalConductivityEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    Electrical Conductivity
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="soilOrganicCarbonMatterEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SOC/SOM
+                                  </Text>
+                                </View>
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "row",
+                                      },
+                                      {
+                                        "justifyContent": "flex-start",
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <RCTSwitch
+                                    accessibilityRole="switch"
+                                    disabled={false}
+                                    name="sodiumAdsorptionRatioEnabled"
+                                    onChange={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      {
+                                        "height": 31,
+                                        "width": 51,
+                                      }
+                                    }
+                                    value={false}
+                                  />
+                                  <Text
+                                    letterSpacing="0.15px"
+                                    lineHeight="24px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 16,
+                                        "fontWeight": "400",
+                                        "marginLeft": 10,
+                                        "marginTop": 5,
+                                      }
+                                    }
+                                  >
+                                    SAR
+                                  </Text>
+                                </View>
                               </View>
                               <View
                                 style={
@@ -5121,6 +7089,90 @@ exports[`renders correctly 1`] = `
                           }
                         >
                           Color
+                        </Text>
+                        <View
+                          style={
+                            {
+                              "flex": 1,
+                            }
+                          }
+                        />
+                      </View>
+                    </View>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                    >
+                      <View
+                        style={
+                          [
+                            {
+                              "flexDirection": "row",
+                            },
+                            {
+                              "backgroundColor": "#FFFFFF",
+                              "padding": 15,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            {
+                              "width": 37,
+                            }
+                          }
+                        >
+                          <Icon
+                            name="radio-button-unchecked"
+                            size={24}
+                            style={
+                              {
+                                "marginTop": -3,
+                              }
+                            }
+                          />
+                        </View>
+                        <Text
+                          letterSpacing="0.17px"
+                          lineHeight="20px"
+                          style={
+                            {
+                              "color": "#1A202C",
+                              "fontSize": 14,
+                              "fontWeight": "700",
+                              "textTransform": "uppercase",
+                            }
+                          }
+                        >
+                          Structure
                         </Text>
                         <View
                           style={
