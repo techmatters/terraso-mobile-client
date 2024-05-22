@@ -57,9 +57,9 @@ export const SoilIdMatchesSection = ({siteId, coords}: SoilIdSectionProps) => {
   const {t} = useTranslation();
   const isSite = !!siteId;
 
-  const locationMatch = LOCATION_BASED_SOIL_MATCH;
-  const soilData = SOIL_DATA;
-  const dataMatch = DATA_BASED_SOIL_MATCH;
+  const locationMatch: any = LOCATION_BASED_SOIL_MATCH;
+  const soilData: any = SOIL_DATA;
+  const dataMatch: any = DATA_BASED_SOIL_MATCH;
 
   return (
     <ScreenContentSection backgroundColor="grey.200">

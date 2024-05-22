@@ -62,7 +62,6 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
 
       <Box marginTop="sm" />
       <SoilPropertiesDataTable rows={dataTableRows} />
-
       <RestrictBySiteRole
         role={[
           {kind: 'site', role: 'OWNER'},

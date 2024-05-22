@@ -15,72 +15,59 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilPropertiesDataTableRow} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
-
-/* To be replaced with actual integration w/ soilId schema */
-
-export const SOIL_PROPERTIES_TABLE_ROWS: SoilPropertiesDataTableRow[] = [
-  {
-    depth: {start: 0, end: 10},
-    texture: 'CLAY',
-    munsellColor: '7.5YR 8.5/1',
-    rockFragment: 'VOLUME_60',
-  },
-  {
-    depth: {start: 11, end: 20},
-    texture: 'SANDY_CLAY_LOAM',
-    munsellColor: '7.5YR 8.5/1',
-    rockFragment: 'VOLUME_1_15',
-  },
-  {
-    depth: {start: 100, end: 120},
-    texture: undefined,
-    munsellColor: undefined,
-    rockFragment: undefined,
-  },
-];
-
-export type LocationBasedSoilMatch = {
-  dataSource: string;
-  distanceToNearestMapUnitM: number;
-  soilInfo: SoilInfo;
-  match: SoilMatchInfo;
+export const SOIL_DATA: any = {
+  depthDependentData: [
+    {
+      depthInterval: {start: 0, end: 10},
+      texture: 'CLAY',
+      colorChroma: 0.5,
+      colorHue: 0.5,
+      colorValue: 0.5,
+      rockFragment: 'VOLUME_60',
+    },
+    {
+      depthInterval: {start: 11, end: 20},
+      texture: 'SANDY_CLAY_LOAM',
+      colorChroma: 0.4,
+      colorHue: 0.4,
+      colorValue: 0.4,
+      rockFragment: 'VOLUME_1_15',
+    },
+    {
+      depthInterval: {start: 100, end: 120},
+      texture: undefined,
+      colorChroma: undefined,
+      colorHue: undefined,
+      colorValue: undefined,
+      rockFragment: undefined,
+    },
+  ],
 };
 
-export type DataBasedSoilMatch = {
-  dataSource: string;
-  distanceToNearestMapUnitM: number;
-  soilInfo: SoilInfo;
-  locationMatch: SoilMatchInfo;
-  dataMatch: SoilMatchInfo;
-  combinedMatch: SoilMatchInfo;
+export const SOIL_ID_DATA = {
+  depthDependentData: [
+    {
+      depthInterval: {start: 0, end: 10},
+      texture: 'CLAY',
+      munsellColorString: '7.5YR 8.5/1',
+      rockFragment: 'VOLUME_60',
+    },
+    {
+      depthInterval: {start: 11, end: 20},
+      texture: 'SANDY_CLAY_LOAM',
+      munsellColorString: '7.5YR 8.5/1',
+      rockFragment: 'VOLUME_1_15',
+    },
+    {
+      depthInterval: {start: 100, end: 120},
+      texture: undefined,
+      munsellColorString: undefined,
+      rockFragment: undefined,
+    },
+  ],
 };
 
-export type SoilInfo = {
-  soilSeries: {
-    name: string;
-    taxonomySubgroup: string;
-    description: string;
-    fullDescriptionUrl: string;
-  };
-  ecologicalSite?: {
-    name: string;
-    id: string;
-    url: string;
-  };
-  landCapabilityClass: {
-    capabilityClass: string;
-    subClass: string;
-  };
-  soilData: any;
-};
-
-export type SoilMatchInfo = {
-  score: number;
-  rank: number;
-};
-
-export const SOIL_INFO: SoilInfo = {
+export const SOIL_INFO = {
   soilSeries: {
     name: 'Yemassee',
     taxonomySubgroup: 'Aeric Endoaquults',
@@ -97,22 +84,22 @@ export const SOIL_INFO: SoilInfo = {
     capabilityClass: '8 - w',
     subClass: '',
   },
-  soilData: {},
+  soilData: SOIL_ID_DATA,
 };
 
-export const SOIL_MATCH_INFO: SoilMatchInfo = {
+export const SOIL_MATCH_INFO = {
   score: 0.98,
   rank: 1,
 };
 
-export const LOCATION_BASED_SOIL_MATCH: LocationBasedSoilMatch = {
+export const LOCATION_BASED_SOIL_MATCH = {
   dataSource: 'SSURGO/STATSGO',
   distanceToNearestMapUnitM: 0,
   soilInfo: SOIL_INFO,
   match: SOIL_MATCH_INFO,
 };
 
-export const DATA_BASED_SOIL_MATCH: DataBasedSoilMatch = {
+export const DATA_BASED_SOIL_MATCH = {
   dataSource: 'SSURGO/STATSGO',
   distanceToNearestMapUnitM: 0,
   soilInfo: SOIL_INFO,
@@ -120,5 +107,3 @@ export const DATA_BASED_SOIL_MATCH: DataBasedSoilMatch = {
   dataMatch: SOIL_MATCH_INFO,
   combinedMatch: SOIL_MATCH_INFO,
 };
-
-export const SOIL_DATA: any = {};

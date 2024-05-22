@@ -17,13 +17,13 @@
 
 import {Divider} from 'native-base';
 
-import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
-import {Coords} from 'terraso-client-shared/types';
-
 import {
   DataBasedSoilMatch,
   LocationBasedSoilMatch,
-} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
+import {Coords} from 'terraso-client-shared/types';
+
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesScoreDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';

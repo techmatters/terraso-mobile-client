@@ -15,29 +15,33 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {VStack} from 'native-base';
 
+import {LocationBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {
-  LocationBasedSoilMatch,
-  SOIL_PROPERTIES_TABLE_ROWS,
-} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 
 type PropertiesDisplayProps = {
   match: LocationBasedSoilMatch;
 };
 
-export function PropertiesDisplay({}: PropertiesDisplayProps) {
+export function PropertiesDisplay({match}: PropertiesDisplayProps) {
   const {t} = useTranslation();
+  const rows = useMemo(
+    () => rowsFromSoilIdData(match.soilInfo.soilData),
+    [match.soilInfo.soilData],
+  );
   return (
     <VStack space="16px">
       <Heading variant="h6">
         {t('site.soil_id.soil_info.properties_header')}
       </Heading>
-      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
+      <SoilPropertiesDataTable rows={rows} />
     </VStack>
   );
 }
