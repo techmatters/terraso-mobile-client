@@ -98,53 +98,61 @@ async function exchangeToken(
 
 const apiConfig = getAPIConfig();
 
+async function getAppleIdToken() {
+  try {
+    let idToken = (
+      await signInAsync({
+        requestedScopes: [
+          AppleAuthenticationScope.FULL_NAME,
+          AppleAuthenticationScope.EMAIL,
+        ],
+      })
+    ).identityToken;
+
+    // The two auth methods have different types the return:
+    // - signInAsync can return string|null
+    // - AccessTokenRequest can return string|undefined
+    // To work around this, I confirm the Apple idToken is not null.
+    // before returning it.
+    return idToken !== null ? idToken : undefined;
+  } catch (e: any) {
+    if (e.code === 'ERR_REQUEST_CANCELED') {
+      console.log('Sign in with Apple canceled', e);
+    } else {
+      console.error('Sign in with Apple error', e);
+    }
+  }
+}
+
+async function getGoogleMicrosoftIdToken(provider: AuthProvider) {
+  const {issuer, ...config} = configs[provider];
+  const authRequest = new AuthRequest(config);
+  const discovery = await resolveDiscoveryAsync(issuer);
+  const result = await authRequest.promptAsync(discovery);
+
+  if (result.type !== 'success') {
+    return;
+  }
+
+  return (
+    await new AccessTokenRequest({
+      ...config,
+      code: result.params.code,
+      extraParams: {code_verifier: authRequest.codeVerifier ?? ''},
+    }).performAsync(discovery)
+  ).idToken;
+}
+
 export async function auth(provider: AuthProvider) {
-  // The two auth methods have different types the return:
-  // - signInAsync can return string|null
-  // - AccessTokenRequest can return string|undefined
-  // To work around this, I created appleIdToken and assign that back to
-  // idToken once I confirm it's not null.
   let idToken: string | undefined;
   if (provider === 'apple' && Platform.OS === 'ios') {
-    try {
-      let appleIdToken = (
-        await signInAsync({
-          requestedScopes: [
-            AppleAuthenticationScope.FULL_NAME,
-            AppleAuthenticationScope.EMAIL,
-          ],
-        })
-      ).identityToken;
-      if (appleIdToken !== null) {
-        idToken = appleIdToken;
-      }
-    } catch (e: any) {
-      if (e.code === 'ERR_REQUEST_CANCELED') {
-        console.log('Sign in with Apple cancelled', e);
-      } else {
-        console.error('Sign in with Apple error', e);
-      }
-    }
+    idToken = await getAppleIdToken();
   } else {
-    const {issuer, ...config} = configs[provider];
-    const authRequest = new AuthRequest(config);
-    const discovery = await resolveDiscoveryAsync(issuer);
-    const result = await authRequest.promptAsync(discovery);
-
-    if (result.type !== 'success') {
-      return;
-    }
-    idToken = (
-      await new AccessTokenRequest({
-        ...config,
-        code: result.params.code,
-        extraParams: {code_verifier: authRequest.codeVerifier ?? ''},
-      }).performAsync(discovery)
-    ).idToken;
+    idToken = await getGoogleMicrosoftIdToken(provider);
   }
 
   if (!idToken) {
-    return Promise.reject('No ID token');
+    return Promise.reject('Authentication: no ID token found');
   }
 
   const platformProvider =
