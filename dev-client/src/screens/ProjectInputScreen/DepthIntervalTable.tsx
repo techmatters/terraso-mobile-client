@@ -22,7 +22,7 @@ import {
   ProjectDepthInterval,
   deleteProjectDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {DataGridTable} from 'terraso-mobile-client/components/DataGridTable';
+import {DataGridTable} from 'terraso-mobile-client/components/tables/DataGridTable';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';

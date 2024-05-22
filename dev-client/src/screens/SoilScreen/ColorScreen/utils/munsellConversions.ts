@@ -79,6 +79,24 @@ export type PartialMunsellColor = {
 
 const COLOR_COUNT = 16;
 
+export const fullMunsellColor = (
+  color: PartialMunsellColor,
+): MunsellColor | undefined => {
+  if (
+    typeof color.colorHue === 'number' &&
+    typeof color.colorChroma === 'number' &&
+    typeof color.colorValue === 'number'
+  ) {
+    return {
+      colorHue: color.colorHue,
+      colorChroma: color.colorChroma,
+      colorValue: color.colorValue,
+    };
+  } else {
+    return undefined;
+  }
+};
+
 export const munsellToRGB = ({
   colorHue,
   colorValue,

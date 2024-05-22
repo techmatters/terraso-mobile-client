@@ -15,14 +15,29 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilPropertiesDataTableRow} from 'terraso-mobile-client/components/SoilPropertiesDataTable';
+import {SoilPropertiesDataTableRow} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 
 /* To be replaced with actual integration w/ soilId schema */
 
 export const SOIL_PROPERTIES_TABLE_ROWS: SoilPropertiesDataTableRow[] = [
-  ['0-10', 'Clay', '7.5YR 8.5/1', '50-85%'],
-  ['11-20', 'Sandy Clay Loam', '7.5YR 8.5/1', '1-15%'],
-  ['100-120', '', '', ''],
+  {
+    depth: {start: 0, end: 10},
+    texture: 'CLAY',
+    munsellColor: '7.5YR 8.5/1',
+    rockFragment: 'VOLUME_60',
+  },
+  {
+    depth: {start: 11, end: 20},
+    texture: 'SANDY_CLAY_LOAM',
+    munsellColor: '7.5YR 8.5/1',
+    rockFragment: 'VOLUME_1_15',
+  },
+  {
+    depth: {start: 100, end: 120},
+    texture: undefined,
+    munsellColor: undefined,
+    rockFragment: undefined,
+  },
 ];
 
 export type LocationBasedSoilMatch = {
