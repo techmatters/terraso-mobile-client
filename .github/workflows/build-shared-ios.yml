@@ -34,11 +34,11 @@ on:
         required: true
       PUBLIC_MAPBOX_TOKEN:
         required: false
-      IOS_P12_BASE64:
+      APPLE_P12_BASE64:
         required: true
-      IOS_MOBILE_PROVISION_BASE64:
+      APPLE_MOBILE_PROVISION_BASE64:
         required: true
-      IOS_CERTIFICATE_PASSWORD:
+      APPLE_CERTIFICATE_PASSWORD:
         required: true
       APPLE_ISSUER_ID:
         required: false
@@ -141,11 +141,11 @@ jobs:
         uses: yukiarrr/ios-build-action@v1.11.2
         with:
           project-path: dev-client/ios/TerrasoLandPKS.xcodeproj
-          p12-base64: ${{ secrets.IOS_P12_BASE64 }}
-          mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
+          p12-base64: ${{ secrets.APPLE_P12_BASE64 }}
+          mobileprovision-base64: ${{ secrets.APPLE_MOBILE_PROVISION_BASE64 }}
           code-signing-identity: 'iPhone Distribution'
           team-id: ${{ vars.APPLE_TEAM_ID }}
-          certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          certificate-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
           scheme: TerrasoLandPKS
 
@@ -165,4 +165,4 @@ jobs:
           app-path: 'output.ipa'
           issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPLE_KEY_ID }}
-          api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
+          api-private-key: ${{ secrets.APPLE_APP_STORE_CONNECT_PRIVATE_KEY }}
