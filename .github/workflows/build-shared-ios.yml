@@ -44,7 +44,7 @@ on:
         required: false
       APPLE_KEY_ID:
         required: false
-      APPLE_PRIVATE_KEY:
+      APPLE_APP_STORE_CONNECT_PRIVATE_KEY:
         required: false
       GOOGLE_OAUTH_ANDROID_CLIENT_ID:
         required: false
