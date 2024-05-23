@@ -19,6 +19,7 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
 
+import {selectSoilData} from 'terraso-client-shared/selectors';
 import {
   Box,
   Heading,
@@ -29,7 +30,6 @@ import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRol
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {selectSoilData} from 'terraso-client-shared/selectors';
 import {rowsFromSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 
 type Props = {siteId: string};
@@ -38,7 +38,6 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
-  // TODO: Later we'll likely want the table columns to be based on the required inputs of the project, like in SoilScreen
   const soilData = useSelector(selectSoilData(siteId));
   const dataTableRows = rowsFromSoilData(soilData);
 
