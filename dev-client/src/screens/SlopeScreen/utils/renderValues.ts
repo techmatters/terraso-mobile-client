@@ -17,18 +17,50 @@
 
 import {TFunction} from 'i18next';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {formatPercent} from 'terraso-mobile-client/util';
 
 export const renderSteepness = (
   t: TFunction,
   {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
-) =>
-  slopeSteepnessSelect
-    ? t(`slope.steepness.select_labels.${slopeSteepnessSelect}`)
-    : typeof slopeSteepnessPercent === 'number'
-      ? `${slopeSteepnessPercent.toFixed(0)}%`
-      : typeof slopeSteepnessDegree === 'number'
-        ? `${slopeSteepnessDegree}°`
-        : undefined;
+) => {
+  if (slopeSteepnessSelect) {
+    return renderSlopeSteepnessSelectInline(t, slopeSteepnessSelect);
+  } else if (typeof slopeSteepnessPercent === 'number') {
+    return renderSlopeSteepnessPercent(t, slopeSteepnessPercent);
+  } else if (typeof slopeSteepnessDegree === 'number') {
+    return renderSlopeSteepnessDegree(t, slopeSteepnessDegree);
+  } else {
+    return undefined;
+  }
+};
+
+export const renderSlopeSteepnessSelectInline = (
+  t: TFunction,
+  slopeSteepnessSelect: string,
+) => {
+  return t('slope.steepness.select_display', {
+    steepness_name: t(`slope.steepness.select_labels.${slopeSteepnessSelect}`),
+    steepness_percent: t(
+      `slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`,
+    ),
+  });
+};
+
+export const renderSlopeSteepnessPercent = (
+  t: TFunction,
+  slopeSteepnessPercent: number,
+) => {
+  return formatPercent(slopeSteepnessPercent / 100);
+};
+
+export const renderSlopeSteepnessDegree = (
+  t: TFunction,
+  slopeSteepnessDegree: number,
+) => {
+  return t('slope.steepness.degree', {
+    value: slopeSteepnessDegree.toFixed(0),
+  });
+};
 
 export const renderShape = (
   t: TFunction,

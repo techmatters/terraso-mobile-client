@@ -18,21 +18,19 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
-
 import {
   Box,
   Heading,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
-import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
+import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
+import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
 type Props = {siteId: string};
+
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
@@ -70,20 +68,5 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
         </Box>
       </RestrictBySiteRole>
     </>
-  );
-};
-
-export const SiteDataSection = ({siteId}: Props) => {
-  const {t} = useTranslation();
-
-  return (
-    <ScreenContentSection title={t('site.soil_id.site_data.title')}>
-      <Text variant="body1">{t('site.soil_id.site_data.description')}</Text>
-      <Heading variant="h6" pt="lg">
-        {t('site.soil_id.site_data.slope.title')}
-      </Heading>
-
-      <SiteSoilPropertiesDataSection siteId={siteId} />
-    </ScreenContentSection>
   );
 };

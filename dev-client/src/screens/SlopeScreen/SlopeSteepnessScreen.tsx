@@ -21,7 +21,10 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {renderSteepness} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
+import {
+  renderSlopeSteepnessSelectInline,
+  renderSteepness,
+} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {
   ImageRadio,
   radioImage,
@@ -34,7 +37,7 @@ import {
   ModalHandle,
 } from 'terraso-mobile-client/components/modals/Modal';
 import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
-import {Image, ImageSourcePropType, StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
@@ -45,25 +48,11 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
+import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
 
 type Props = {
   siteId: string;
 };
-
-const STEEPNESS_IMAGES = {
-  FLAT: require('terraso-mobile-client/assets/slope/steepness/flat.png'),
-  GENTLE: require('terraso-mobile-client/assets/slope/steepness/gentle.png'),
-  MODERATE: require('terraso-mobile-client/assets/slope/steepness/moderate.png'),
-  ROLLING: require('terraso-mobile-client/assets/slope/steepness/rolling.png'),
-  HILLY: require('terraso-mobile-client/assets/slope/steepness/hilly.png'),
-  STEEP: require('terraso-mobile-client/assets/slope/steepness/steep.png'),
-  MODERATELY_STEEP: require('terraso-mobile-client/assets/slope/steepness/moderately-steep.png'),
-  VERY_STEEP: require('terraso-mobile-client/assets/slope/steepness/very-steep.png'),
-  STEEPEST: require('terraso-mobile-client/assets/slope/steepness/steepest.png'),
-} satisfies Record<
-  SoilIdSoilDataSlopeSteepnessSelectChoices,
-  ImageSourcePropType
-> as Record<SoilIdSoilDataSlopeSteepnessSelectChoices, ImageSourcePropType>;
 
 export const SlopeSteepnessScreen = ({siteId}: Props) => {
   const name = useSelector(state => state.site.sites[siteId].name);
@@ -81,7 +70,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
         Object.entries(STEEPNESS_IMAGES).map(([value, image]) => [
           value,
           {
-            label: t(`slope.steepness.select_labels.${value}`),
+            label: renderSlopeSteepnessSelectInline(t, value),
             image: <Image style={radioImage} source={image} />,
           },
         ]),
