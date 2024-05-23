@@ -24,13 +24,14 @@ import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/co
 import {
   SoilIdDescriptionSection,
   SoilIdMatchesSection,
-} from 'terraso-mobile-client/screens/LocationScreens/components/SoilIdSections';
-import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/SiteDataSection';
+} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdSections';
+import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
 import {selectSite} from 'terraso-client-shared/selectors';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Coords} from 'terraso-client-shared/types';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {ScrollView} from 'react-native-gesture-handler';
 
 type Props = {
   siteId?: string;
@@ -49,17 +50,19 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
         AppBar={
           <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
         }>
-        <SoilIdDescriptionSection siteId={siteId} coords={coords} />
-        <SoilIdMatchesSection siteId={siteId} coords={coords} />
-        {siteId ? (
-          <SiteRoleContextProvider siteId={siteId}>
-            <SiteDataSection siteId={siteId} />
-          </SiteRoleContextProvider>
-        ) : (
-          <Box paddingVertical="md">
-            <CreateSiteButton coords={coords} />
-          </Box>
-        )}
+        <ScrollView>
+          <SoilIdDescriptionSection siteId={siteId} coords={coords} />
+          <SoilIdMatchesSection siteId={siteId} coords={coords} />
+          {siteId ? (
+            <SiteRoleContextProvider siteId={siteId}>
+              <SiteDataSection siteId={siteId} />
+            </SiteRoleContextProvider>
+          ) : (
+            <Box paddingVertical="md">
+              <CreateSiteButton coords={coords} />
+            </Box>
+          )}
+        </ScrollView>
       </ScreenScaffold>
     </BottomSheetModalProvider>
   );
