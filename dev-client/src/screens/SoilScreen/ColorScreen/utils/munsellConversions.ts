@@ -113,6 +113,26 @@ export const LABToMunsell = ({L, A, B}: LAB): MunsellColor => {
   return {colorHue, colorValue, colorChroma};
 };
 
+export const getPalette = (pixels: RGBA[]) => {
+  // Transform pixel info from canvas so quantize can use it
+  const pixelArray = pixels.flatMap(([r, g, b, a]) => {
+    // If pixel is mostly opaque and not white
+    if (a >= 125) {
+      if (!(r > 250 && g > 250 && b > 250)) {
+        return [[r, g, b] as quantize.RgbPixel];
+      }
+    }
+    return [];
+  });
+  // Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
+  var cmap = quantize(pixelArray, COLOR_COUNT);
+  if (cmap === false) {
+    throw new Error('Unexpected color algorithm failure!');
+  }
+
+  return cmap.palette();
+};
+
 export type ValidColorResult = {result: MunsellColor};
 export type InvalidColorResult = {
   invalidResult: MunsellColor;
@@ -124,26 +144,6 @@ export const getColor = (
   pixelSoil: RGBA[],
   referenceRGB: RGB,
 ): ColorResult => {
-  const getPalette = (pixels: RGBA[]) => {
-    // Transform pixel info from canvas so quantize can use it
-    const pixelArray = pixels.flatMap(([r, g, b, a]) => {
-      // If pixel is mostly opaque and not white
-      if (a >= 125) {
-        if (!(r > 250 && g > 250 && b > 250)) {
-          return [[r, g, b] as quantize.RgbPixel];
-        }
-      }
-      return [];
-    });
-    // Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
-    var cmap = quantize(pixelArray, COLOR_COUNT);
-    if (cmap === false) {
-      throw new Error('Unexpected color algorithm failure!');
-    }
-
-    return cmap.palette();
-  };
-
   // Get the color palettes of both soil and card
   const paletteCard = getPalette(pixelCard);
   const paletteSample = getPalette(pixelSoil);
