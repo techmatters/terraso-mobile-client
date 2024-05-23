@@ -30,9 +30,6 @@ import {
 import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
@@ -104,56 +101,3 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 });
-
-// TODO-cknipe: Move to another file or don't export
-export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
-  const {t} = useTranslation();
-  const navigation = useNavigation();
-
-  const onAddSoilDataPress = useCallback(() => {
-    navigation.push('LOCATION_DASHBOARD', {
-      siteId: siteId,
-      initialTab: 'SOIL' as SiteTabName,
-    });
-  }, [navigation, siteId]);
-
-  return (
-    <>
-      <Heading variant="h6" pt="lg">
-        {t('site.soil_id.site_data.soil_properties.title')}
-      </Heading>
-
-      <Box marginTop="sm" />
-      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
-
-      <RestrictBySiteRole
-        role={[
-          {kind: 'site', role: 'OWNER'},
-          {kind: 'project', role: 'MANAGER'},
-          {kind: 'project', role: 'CONTRIBUTOR'},
-        ]}>
-        <Box paddingVertical="lg">
-          <Button
-            _text={{textTransform: 'uppercase'}}
-            alignSelf="flex-end"
-            rightIcon={<Icon name="chevron-right" />}
-            onPress={onAddSoilDataPress}>
-            {t('site.soil_id.site_data.soil_properties.add_data')}
-          </Button>
-        </Box>
-      </RestrictBySiteRole>
-    </>
-  );
-};
-
-export const SiteDataSection = ({siteId}: Props) => {
-  const {t} = useTranslation();
-
-  return (
-    <ScreenContentSection title={t('site.soil_id.site_data.title')}>
-      <Text variant="body1">{t('site.soil_id.site_data.description')}</Text>
-      <SiteSlopeDataSection siteId={siteId} />
-      <SiteSoilPropertiesDataSection siteId={siteId} />
-    </ScreenContentSection>
-  );
-};
