@@ -764,8 +764,7 @@
         "STEEPEST": "Steepest",
         "STEEPEST_PERCENT": "100%+"
       },
-      "select_display": "{{steepness_name}} {{steepness_percent}}",
-      "select_display_newline": "{{steepness_name}}\n{{steepness_percent}}"
+      "select_display": "{{steepness_name}} {{steepness_percent}}"
     },
     "shape": {
       "title": "Shape",

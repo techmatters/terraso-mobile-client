@@ -33,15 +33,11 @@ import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRol
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
-import {renderSteepnessForNarrowDisplay} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
+import {
+  renderSlopeSteepnessDegree,
+  renderSlopeSteepnessPercent,
+} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 
-const getSlopeSteepnessImageSource = (soilData: SoilData) => {
-  return soilData.slopeSteepnessSelect
-    ? STEEPNESS_IMAGES[soilData.slopeSteepnessSelect]
-    : undefined;
-};
-
-// TODO-cknipe: Move to another file or don't export
 type Props = {siteId: string};
 export const SiteSlopeDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
@@ -56,7 +52,6 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
   }, [navigation, siteId]);
 
   const imageSrc = getSlopeSteepnessImageSource(soilData);
-  const steepnessValue = renderSteepnessForNarrowDisplay(t, soilData);
 
   return (
     <>
@@ -70,7 +65,7 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
         </Box>
 
         <Box flex={1}>
-          <Text bold>{steepnessValue}</Text>
+          <SlopeSteepnessTextSection {...soilData} />
         </Box>
 
         <RestrictBySiteRole
@@ -92,6 +87,43 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
       </Box>
     </>
   );
+};
+
+const getSlopeSteepnessImageSource = (soilData: SoilData) => {
+  return soilData.slopeSteepnessSelect
+    ? STEEPNESS_IMAGES[soilData.slopeSteepnessSelect]
+    : undefined;
+};
+
+const SlopeSteepnessTextSection = ({
+  slopeSteepnessSelect,
+  slopeSteepnessPercent,
+  slopeSteepnessDegree,
+}: SoilData) => {
+  const {t} = useTranslation();
+
+  if (slopeSteepnessSelect) {
+    return (
+      <>
+        <Text bold>
+          {t(`slope.steepness.select_labels.${slopeSteepnessSelect}`)}
+        </Text>
+        <Text bold>
+          {t(`slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`)}
+        </Text>
+      </>
+    );
+  } else if (typeof slopeSteepnessPercent === 'number') {
+    return (
+      <Text bold>{renderSlopeSteepnessPercent(t, slopeSteepnessPercent)}</Text>
+    );
+  } else if (typeof slopeSteepnessDegree === 'number') {
+    return (
+      <Text bold>{renderSlopeSteepnessDegree(t, slopeSteepnessDegree)}</Text>
+    );
+  } else {
+    return undefined;
+  }
 };
 
 const styles = StyleSheet.create({

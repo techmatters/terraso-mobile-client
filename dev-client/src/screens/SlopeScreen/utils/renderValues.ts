@@ -26,22 +26,7 @@ export const renderSteepness = (
   if (slopeSteepnessSelect) {
     return renderSlopeSteepnessSelectInline(t, slopeSteepnessSelect);
   } else if (typeof slopeSteepnessPercent === 'number') {
-    return formatPercent(Math.round(slopeSteepnessPercent));
-  } else if (typeof slopeSteepnessDegree === 'number') {
-    return renderSlopeSteepnessDegree(t, slopeSteepnessDegree);
-  } else {
-    return undefined;
-  }
-};
-
-export const renderSteepnessForNarrowDisplay = (
-  t: TFunction,
-  {slopeSteepnessDegree, slopeSteepnessPercent, slopeSteepnessSelect}: SoilData,
-) => {
-  if (slopeSteepnessSelect) {
-    return renderSlopeSteepnessSelectMultipleLines(t, slopeSteepnessSelect);
-  } else if (typeof slopeSteepnessPercent === 'number') {
-    return formatPercent(Math.round(slopeSteepnessPercent));
+    return renderSlopeSteepnessPercent(t, slopeSteepnessPercent);
   } else if (typeof slopeSteepnessDegree === 'number') {
     return renderSlopeSteepnessDegree(t, slopeSteepnessDegree);
   } else {
@@ -61,19 +46,14 @@ export const renderSlopeSteepnessSelectInline = (
   });
 };
 
-const renderSlopeSteepnessSelectMultipleLines = (
+export const renderSlopeSteepnessPercent = (
   t: TFunction,
-  slopeSteepnessSelect: string,
+  slopeSteepnessPercent: number,
 ) => {
-  return t('slope.steepness.select_display_newline', {
-    steepness_name: t(`slope.steepness.select_labels.${slopeSteepnessSelect}`),
-    steepness_percent: t(
-      `slope.steepness.select_labels.${slopeSteepnessSelect}_PERCENT`,
-    ),
-  });
+  return formatPercent(slopeSteepnessPercent / 100);
 };
 
-const renderSlopeSteepnessDegree = (
+export const renderSlopeSteepnessDegree = (
   t: TFunction,
   slopeSteepnessDegree: number,
 ) => {
