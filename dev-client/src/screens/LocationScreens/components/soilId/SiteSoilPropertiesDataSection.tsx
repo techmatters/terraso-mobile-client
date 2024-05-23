@@ -18,22 +18,29 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
+
 import {
   Box,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {selectSoilData} from 'terraso-client-shared/selectors';
+import {rowsFromSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 
 type Props = {siteId: string};
 
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+
+  // TODO: Later we'll likely want the table columns to be based on the required inputs of the project, like in SoilScreen
+  const soilData = useSelector(selectSoilData(siteId));
+  const dataTableRows = rowsFromSoilData(soilData);
 
   const onAddSoilDataPress = useCallback(() => {
     navigation.push('LOCATION_DASHBOARD', {
@@ -49,7 +56,7 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
       </Heading>
 
       <Box marginTop="sm" />
-      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
+      <SoilPropertiesDataTable rows={dataTableRows} />
 
       <RestrictBySiteRole
         role={[
