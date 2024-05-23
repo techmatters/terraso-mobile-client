@@ -38,7 +38,6 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
-  // TODO: Later we'll likely want the table columns to be based on the required inputs of the project, like in SoilScreen
   const soilData = useSelector(selectSoilData(siteId));
   const dataTableRows = rowsFromSoilData(soilData);
 
