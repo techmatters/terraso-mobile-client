@@ -26,6 +26,8 @@ import {
   IssuerOrDiscovery,
   resolveDiscoveryAsync,
 } from 'expo-auth-session';
+import {AppleAuthenticationScope, signInAsync} from 'expo-apple-authentication';
+import Constants from 'expo-constants';
 
 type AuthConfig = AuthRequestConfig & {issuer: IssuerOrDiscovery};
 
@@ -37,10 +39,12 @@ const configs = {
     redirectUri: APP_CONFIG.googleRedirectURI,
     scopes: ['openid', 'profile', 'email'],
   },
+  // For Apple Authentication, we use native code and don't redirect.
+  // TypeScript requries that redirectUri is present.
   apple: {
     issuer: 'https://appleid.apple.com',
     clientId: APP_CONFIG.appleClientId,
-    redirectUri: APP_CONFIG.appleRedirectURI,
+    redirectUri: '',
     scopes: ['name', 'email'],
   },
   /*
@@ -78,7 +82,11 @@ async function exchangeToken(
 ) {
   const payload = await request<AuthTokens>({
     path: '/auth/token-exchange',
-    body: {provider, jwt: identityJwt},
+    body: {
+      provider,
+      client_id: Constants.expoConfig!.ios?.bundleIdentifier,
+      jwt: identityJwt,
+    },
     headers: {'content-type': 'application/json'},
   });
 
@@ -90,19 +98,62 @@ async function exchangeToken(
 
 const apiConfig = getAPIConfig();
 
-export async function auth(provider: AuthProvider) {
+async function getAppleIdToken() {
+  try {
+    let idToken = (
+      await signInAsync({
+        requestedScopes: [
+          AppleAuthenticationScope.FULL_NAME,
+          AppleAuthenticationScope.EMAIL,
+        ],
+      })
+    ).identityToken;
+
+    // The two auth methods have different types the return:
+    // - signInAsync can return string|null
+    // - AccessTokenRequest can return string|undefined
+    // To work around this, I confirm the Apple idToken is not null.
+    // before returning it.
+    return idToken !== null ? idToken : undefined;
+  } catch (e: any) {
+    if (e.code === 'ERR_REQUEST_CANCELED') {
+      console.log('Sign in with Apple canceled', e);
+    } else {
+      console.error('Sign in with Apple error', e);
+    }
+  }
+}
+
+async function getGoogleMicrosoftIdToken(provider: AuthProvider) {
   const {issuer, ...config} = configs[provider];
   const authRequest = new AuthRequest(config);
   const discovery = await resolveDiscoveryAsync(issuer);
   const result = await authRequest.promptAsync(discovery);
+
   if (result.type !== 'success') {
     return;
   }
-  const tokenResult = await new AccessTokenRequest({
-    ...config,
-    code: result.params.code,
-    extraParams: {code_verifier: authRequest.codeVerifier ?? ''},
-  }).performAsync(discovery);
+
+  return (
+    await new AccessTokenRequest({
+      ...config,
+      code: result.params.code,
+      extraParams: {code_verifier: authRequest.codeVerifier ?? ''},
+    }).performAsync(discovery)
+  ).idToken;
+}
+
+export async function auth(provider: AuthProvider) {
+  let idToken: string | undefined;
+  if (provider === 'apple' && Platform.OS === 'ios') {
+    idToken = await getAppleIdToken();
+  } else {
+    idToken = await getGoogleMicrosoftIdToken(provider);
+  }
+
+  if (!idToken) {
+    return Promise.reject('Authentication: no ID token found');
+  }
 
   const platformProvider =
     provider !== 'google'
@@ -111,10 +162,7 @@ export async function auth(provider: AuthProvider) {
         ? 'google-android'
         : 'google-ios';
 
-  let {atoken, rtoken} = await exchangeToken(
-    tokenResult.idToken!,
-    platformProvider,
-  );
+  let {atoken, rtoken} = await exchangeToken(idToken, platformProvider);
 
   return Promise.all([
     apiConfig.tokenStorage.setToken('atoken', atoken),

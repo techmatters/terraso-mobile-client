@@ -54,9 +54,6 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
   'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
   'GOOGLE_OAUTH_IOS_CLIENT_ID',
   'GOOGLE_OAUTH_IOS_URI_SCHEME',
-  // TODO: uncomment when these have been generated
-  // 'APPLE_OAUTH_CLIENT_ID',
-  // 'APPLE_OAUTH_REDIRECT_URI',
   'MICROSOFT_OAUTH_CLIENT_ID',
   'MICROSOFT_SIGNATURE_HASH',
 ] as const);
@@ -108,7 +105,9 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     icon: 'src/assets/landpks-round.png',
     supportsTablet: true,
     requireFullScreen: true,
+    usesAppleSignIn: true,
     infoPlist: {
+      CFBundleAllowMixedLocalizations: true,
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription:
         'Terraso LandPKS uses your photo library to analyze soil color.',
@@ -122,6 +121,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     },
   },
   plugins: [
+    ['expo-apple-authentication'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
     [
       '@sentry/react-native/expo',
