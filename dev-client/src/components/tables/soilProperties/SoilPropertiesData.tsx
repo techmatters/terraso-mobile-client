@@ -22,6 +22,7 @@ import {
   SoilIdDepthDependentSoilDataTextureChoices,
   SoilIdSoilData,
 } from 'terraso-client-shared/graphqlSchema/graphql';
+import {AggregatedInterval} from 'terraso-client-shared/selectors';
 import {sameDepth} from 'terraso-client-shared/soilId/soilIdSlice';
 import {
   SoilData,
@@ -39,10 +40,11 @@ export type SoilPropertiesDataTableRow = {
   munsellColor?: string;
 };
 
-export const rowsFromSoilData = (
+export const rowsFromSiteSoilData = (
   data: SoilData,
+  intervals: AggregatedInterval[],
 ): SoilPropertiesDataTableRow[] => {
-  return data.depthIntervals.map(interval => rowFromSoilData(data, interval));
+  return intervals.map(interval => rowFromSoilData(data, interval.interval));
 };
 
 export const rowFromSoilData = (

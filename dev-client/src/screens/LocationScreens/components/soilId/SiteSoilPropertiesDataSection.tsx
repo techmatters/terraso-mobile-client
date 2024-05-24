@@ -23,14 +23,17 @@ import {
   Box,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useSelector} from 'terraso-mobile-client/store';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {selectSoilData} from 'terraso-client-shared/selectors';
-import {rowsFromSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
+import {rowsFromSiteSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
+import {
+  selectSoilData,
+  useSiteSoilIntervals,
+} from 'terraso-client-shared/selectors';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {siteId: string};
 
@@ -38,8 +41,9 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
+  const allIntervals = useSiteSoilIntervals(siteId);
   const soilData = useSelector(selectSoilData(siteId));
-  const dataTableRows = rowsFromSoilData(soilData);
+  const dataTableRows = rowsFromSiteSoilData(soilData, allIntervals);
 
   const onAddSoilDataPress = useCallback(() => {
     navigation.push('LOCATION_DASHBOARD', {
