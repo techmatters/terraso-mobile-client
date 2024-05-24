@@ -18,6 +18,7 @@ import {useTranslation} from 'react-i18next';
 import {Coords} from 'terraso-client-shared/types';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSelector} from 'terraso-mobile-client/store';
+import {formatCoordinate} from 'terraso-mobile-client/util';
 
 type NewType = {
   isCurrentLocation: boolean;
@@ -37,8 +38,8 @@ export const LatLngDetail = ({isCurrentLocation, coords}: NewType) => {
       )}
       <Text variant="body2">
         {t('site.coords', {
-          lat: coords.latitude.toFixed(5),
-          lng: coords.longitude.toFixed(5),
+          lat: formatCoordinate(coords.latitude),
+          lng: formatCoordinate(coords.longitude),
         })}
       </Text>
       {isCurrentLocation && (

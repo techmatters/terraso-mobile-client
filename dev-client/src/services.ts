@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {formatCoordinate} from 'terraso-mobile-client/util';
+
 export const getElevation = async (
   lat: number,
   lng: number,
@@ -23,8 +25,8 @@ export const getElevation = async (
   //    which is why we convert the floats to strings.
   // 2. This API uses X for longitude and Y for latitude. That's not a typo.
   const queryString = new URLSearchParams({
-    x: lng.toFixed(5),
-    y: lat.toFixed(5),
+    x: formatCoordinate(lng),
+    y: formatCoordinate(lat),
     units: 'Meters', // TODO: switch based on user preference
   });
   let elevation;
