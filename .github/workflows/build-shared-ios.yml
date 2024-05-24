@@ -173,5 +173,6 @@ jobs:
         with:
           name: build-products
           path: |
-            "/Users/runner/Library/Developer/Xcode/DerivedData/"
-  
+            "/Users/runner/Library/Developer/Xcode/"
+            "/Users/runner/work/terraso-mobile-client/"
+
