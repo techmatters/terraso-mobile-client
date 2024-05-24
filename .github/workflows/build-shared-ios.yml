@@ -173,5 +173,5 @@ jobs:
         with:
           name: build-products
           path: |
-            "/Users/runner/Library/Developer/Xcode/DerivedData/**/Build/Products/"
+            "/Users/runner/Library/Developer/Xcode/DerivedData/"
   
