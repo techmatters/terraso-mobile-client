@@ -20,7 +20,6 @@ import {StyleProp, ViewStyle} from 'react-native';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Position} from '@rnmapbox/maps/lib/typescript/src/types/Position';
 import {useMemo} from 'react';
-import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
 import {
   LATITUDE_MAX,
   LATITUDE_MIN,
@@ -28,6 +27,7 @@ import {
   LONGITUDE_MAX,
 } from 'terraso-mobile-client/constants';
 import {Coords} from 'terraso-client-shared/types';
+import {formatCoordinate} from 'terraso-mobile-client/util';
 
 const coordsRegex = /^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/;
 export type CoordsParseErrorReason =
@@ -73,10 +73,8 @@ export const parseCoords = (coords: string) => {
   }
 };
 
-export const coordToString = (coord: number) =>
-  coord.toFixed(COORDINATE_PRECISION);
 export const coordsToString = ({latitude, longitude}: Coords): string =>
-  `${coordToString(latitude)},${coordToString(longitude)}`;
+  `${formatCoordinate(latitude)},${formatCoordinate(longitude)}`;
 
 export const coordsToPosition = ({latitude, longitude}: Coords): Position => [
   longitude,
