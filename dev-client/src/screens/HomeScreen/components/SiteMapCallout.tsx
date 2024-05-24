@@ -103,8 +103,14 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
         </Card>
       );
     default:
+      const isCurrentLocation =
+        state.kind === 'location' ? state.isCurrentLocation : false;
       return (
-        <TemporarySiteCallout coords={coords} closeCallout={closeCallout} />
+        <TemporarySiteCallout
+          coords={coords}
+          closeCallout={closeCallout}
+          isCurrentLocation={isCurrentLocation}
+        />
       );
   }
 };
