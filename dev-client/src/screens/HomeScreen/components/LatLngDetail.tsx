@@ -17,6 +17,7 @@
 import {useTranslation} from 'react-i18next';
 import {Coords} from 'terraso-client-shared/types';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type NewType = {
   isCurrentLocation: boolean;
@@ -25,16 +26,28 @@ type NewType = {
 
 export const LatLngDetail = ({isCurrentLocation, coords}: NewType) => {
   const {t} = useTranslation();
+  const {accuracyM} = useSelector(state => state.map.userLocation);
 
   return (
     <Box>
-      {isCurrentLocation && <Text bold>{t('site.your_location')}</Text>}
+      {isCurrentLocation && (
+        <Text variant="body2" bold>
+          {t('site.your_location')}
+        </Text>
+      )}
       <Text variant="body2">
         {t('site.coords', {
           lat: coords.latitude.toFixed(5),
           lng: coords.longitude.toFixed(5),
         })}
       </Text>
+      {isCurrentLocation && (
+        <Text variant="body2">
+          {t('site.create.location_accuracy', {
+            accuracyM: accuracyM?.toFixed(0),
+          })}
+        </Text>
+      )}
     </Box>
   );
 };
