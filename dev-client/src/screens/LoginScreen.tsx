@@ -22,10 +22,11 @@ import {useEffect, useCallback} from 'react';
 import {AuthProvider, auth} from 'terraso-mobile-client/auth';
 import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
-// import {
-//   Icon,
-//   MaterialCommunityIcons,
-// } from 'terraso-mobile-client/components/common/Icons';
+import {
+  AppleAuthenticationButton,
+  AppleAuthenticationButtonStyle,
+  AppleAuthenticationButtonType,
+} from 'expo-apple-authentication';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
@@ -35,6 +36,8 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Platform, StyleSheet} from 'react-native';
+import Constants from 'expo-constants';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -42,6 +45,8 @@ export const LoginScreen = () => {
   const loggedIn = useSelector(
     state => state.account.currentUser.data !== null,
   );
+  const showAppleAuth = Platform.OS === 'ios';
+  const isDevelopmentMode = Constants.expoConfig!.extra?.ENV === 'development';
 
   // note: we intentionally run this on every render,
   // so we can't accidentally get stuck on this view because
@@ -87,7 +92,7 @@ export const LoginScreen = () => {
         <Button.Group direction="column" space={5}>
           <Button
             bgColor="primary.contrast"
-            _text={{textTransform: 'uppercase', color: 'primary.main'}}
+            _text={{color: 'text.primary'}}
             size="lg"
             onPress={onPress('google')}
             startIcon={<GoogleLogo />}>
@@ -95,28 +100,22 @@ export const LoginScreen = () => {
           </Button>
           <Button
             bgColor="primary.contrast"
-            _text={{textTransform: 'uppercase', color: 'primary.main'}}
+            _text={{color: 'text.primary'}}
             size="lg"
             onPress={onPress('microsoft')}
             startIcon={<MicrosoftLogo />}>
             {t('account.microsoft_login')}
           </Button>
-          {/*
-          <Button
-            bgColor="primary.contrast"
-            _text={{textTransform: 'uppercase', color: 'primary.main'}}
-            size="lg"
-            onPress={onPress('apple')}
-            startIcon={
-              <Icon
-                as={MaterialCommunityIcons}
-                name="apple"
-                color="primary.main"
-              />
-            }>
-            {t('account.apple_login')}
-          </Button>
-          */}
+          {showAppleAuth ? (
+            <AppleAuthenticationButton
+              buttonType={AppleAuthenticationButtonType.SIGN_IN}
+              buttonStyle={AppleAuthenticationButtonStyle.WHITE}
+              style={styles.appleloginButton}
+              onPress={onPress('apple')}
+            />
+          ) : (
+            <></>
+          )}
         </Button.Group>
       </Column>
       <Box flexGrow={3} />
@@ -126,7 +125,19 @@ export const LoginScreen = () => {
         <Text variant="caption" color="primary.contrast">
           {t('login.description')}
         </Text>
+        {isDevelopmentMode && (
+          <Text variant="caption" color="primary.contrast">
+            {Constants.expoConfig!.ios?.bundleIdentifier}
+          </Text>
+        )}
       </Column>
     </Column>
   );
 };
+
+const styles = StyleSheet.create({
+  appleloginButton: {
+    width: 275,
+    height: 44,
+  },
+});

@@ -182,7 +182,7 @@ exports[`renders correctly 1`] = `
                   style={
                     {
                       "backgroundColor": undefined,
-                      "color": "#028843",
+                      "color": "#1A202C",
                       "fontFamily": undefined,
                       "fontSize": 15,
                       "fontStyle": "normal",
@@ -190,7 +190,6 @@ exports[`renders correctly 1`] = `
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
-                      "textTransform": "uppercase",
                     }
                   }
                 >
@@ -285,7 +284,7 @@ exports[`renders correctly 1`] = `
                   style={
                     {
                       "backgroundColor": undefined,
-                      "color": "#028843",
+                      "color": "#1A202C",
                       "fontFamily": undefined,
                       "fontSize": 15,
                       "fontStyle": "normal",
@@ -293,7 +292,6 @@ exports[`renders correctly 1`] = `
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
-                      "textTransform": "uppercase",
                     }
                   }
                 >
@@ -302,6 +300,25 @@ exports[`renders correctly 1`] = `
               </View>
             </View>
           </View>
+          <View
+            dataSet={{}}
+            style={
+              {
+                "height": 20,
+              }
+            }
+          />
+          <ViewManagerAdapter_ExpoAppleAuthentication
+            buttonStyle={0}
+            buttonType={0}
+            onButtonPress={[Function]}
+            style={
+              {
+                "height": 44,
+                "width": 275,
+              }
+            }
+          />
         </View>
       </View>
       <View

@@ -68,9 +68,7 @@ if (sentryEnabled !== 'true' && sentryEnabled !== 'false') {
 }
 
 export const APP_CONFIG = {
-  // TODO: make apple config settings required when they are implemented
-  appleClientId: ENV_CONFIG.APPLE_OAUTH_CLIENT_ID,
-  appleRedirectURI: ENV_CONFIG.APPLE_OAUTH_REDIRECT_URI,
+  appleClientId: Constants.expoConfig!.ios?.bundleIdentifier!,
   microsoftClientId: ENV_CONFIG.MICROSOFT_OAUTH_CLIENT_ID,
   mapboxAccessToken: ENV_CONFIG.PUBLIC_MAPBOX_TOKEN,
   sentryDsn: ENV_CONFIG.SENTRY_DSN,
