@@ -51,6 +51,10 @@ export const formatPercent = (value: number) => {
   return value.toLocaleString(undefined, {style: 'percent'});
 };
 
+export const formatCoordinate = (value: number) => {
+  return value.toLocaleString(undefined, {maximumFractionDigits: 5});
+};
+
 export const formatName = (firstName: string, lastName?: string) => {
   return [lastName, firstName].filter(Boolean).join(', ');
 };
