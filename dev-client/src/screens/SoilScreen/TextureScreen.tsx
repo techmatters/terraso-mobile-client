@@ -194,12 +194,12 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             onChange={onFragmentChange}
           />
         </Column>
-        <Fab
-          onPress={() => navigation.pop()}
-          leftIcon={<Icon name="check" />}
-          label={t('general.done')}
-        />
       </ScrollView>
+      <Fab
+        onPress={() => navigation.pop()}
+        leftIcon={<Icon name="check" />}
+        label={t('general.done')}
+      />
     </SoilPitInputScreenScaffold>
   );
 };
