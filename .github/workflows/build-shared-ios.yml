@@ -155,7 +155,7 @@ jobs:
         with:
           name: dist-log-intermediates
           path: |
-            "/Users/runner/Library/Logs/gym/Terraso LandPKS-Terraso LandPKS.log"
+            "/Users/runner/Library/Logs/gym/TerrasoLandPKS-TerrasoLandPKS.log"
             "/Users/runner/Library/Developer/Xcode/DerivedData/TerrasoLandPKS-*/Build/Intermediates.noindex/ArchiveIntermediates/"
 
       - name: Upload app to TestFlight
@@ -166,3 +166,12 @@ jobs:
           issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPLE_KEY_ID }}
           api-private-key: ${{ secrets.APPLE_APP_STORE_CONNECT_PRIVATE_KEY }}
+
+      - name: Archive build product
+        if: '!success()'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-products
+          path: |
+            "/Users/runner/Library/Developer/Xcode/DerivedData/TerrasoLandPKS-*/Build/Products/"
+  
