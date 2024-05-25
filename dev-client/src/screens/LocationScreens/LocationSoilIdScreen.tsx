@@ -45,6 +45,7 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
   const site = useSelector(state =>
     siteId === undefined ? undefined : selectSite(siteId)(state),
   );
+  const {status} = useSoilIdData(coords, siteId);
 
   return (
     <BottomSheetModalProvider>
@@ -54,7 +55,9 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
         }>
         <ScrollView>
           <SoilIdDescriptionSection siteId={siteId} coords={coords} />
-          <SoilIdMatchesSection siteId={siteId} coords={coords} />
+          {status === 'ready' && (
+            <SoilIdMatchesSection siteId={siteId} coords={coords} />
+          )}
           {siteId ? (
             <SiteRoleContextProvider siteId={siteId}>
               <SiteDataSection siteId={siteId} />

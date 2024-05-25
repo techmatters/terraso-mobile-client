@@ -57,6 +57,8 @@ export const LocationDashboardScreen = (props: Props) => {
     siteId === undefined ? null : selectUserRoleSite(state, siteId),
   );
 
+  useSoilIdData(coords, siteId);
+
   const appBarRightButton = useMemo(() => {
     // display nothing if no site associated with location or
     // user does not own the site / is not manager

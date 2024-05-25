@@ -17,24 +17,25 @@
 
 import {useEffect} from 'react';
 import {useSelector} from 'react-redux';
-import {isEquivalentCoords} from 'terraso-client-shared/utils';
 
+import {
+  DataBasedSoilMatch,
+  LocationBasedSoilMatch,
+} from 'terraso-client-shared/graphqlSchema/graphql';
+import {selectSoilData} from 'terraso-client-shared/selectors';
 import {
   selectSoilIdData,
   selectSoilIdInput,
   selectSoilIdStatus,
 } from 'terraso-client-shared/soilId/soilIdSelectors';
 import {
-  LoadingState,
   fetchSoilIdMatches,
+  LoadingState,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {selectSoilData} from 'terraso-client-shared/selectors';
-import {useDispatch} from 'terraso-mobile-client/store';
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
+import {isEquivalentCoords} from 'terraso-client-shared/utils';
+
+import {useDispatch} from 'terraso-mobile-client/store';
 
 /*
  * Note that the soilId redux slice only supports a single cached value for soil ID data.
