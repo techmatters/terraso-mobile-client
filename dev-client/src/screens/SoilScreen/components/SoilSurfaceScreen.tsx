@@ -27,15 +27,13 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectSite, selectSoilData} from 'terraso-client-shared/selectors';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {Image} from 'react-native';
-import {Fab} from 'native-base';
 import {
   SurfaceCracks,
   surfaceCracks,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useCallback} from 'react';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 
 type Props = {siteId: string};
 
@@ -43,7 +41,6 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const site = useSelector(selectSite(siteId));
   const {surfaceCracksSelect: cracking} = useSelector(selectSoilData(siteId));
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const onUpdate = useCallback(
     (surfaceCracksSelect: SurfaceCracks | null) =>
@@ -79,12 +76,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
           />
         </Box>
       </Column>
-      <Fab
-        leftIcon={<Icon name="check" />}
-        label={t('general.done')}
-        isDisabled={!cracking}
-        onPress={() => navigation.pop()}
-      />
+      <DoneButton isDisabled={!cracking} />
     </ScreenScaffold>
   );
 };
