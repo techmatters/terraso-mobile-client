@@ -42,7 +42,7 @@ import {Coords} from 'terraso-client-shared/types';
  * will not function correctly.
  */
 export const useSoilIdData = (
-  coords?: Coords,
+  coords: Coords,
   siteId?: string,
 ): {
   locationBasedMatches: LocationBasedSoilMatch[];
