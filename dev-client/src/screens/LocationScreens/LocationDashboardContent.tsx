@@ -44,9 +44,6 @@ import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/co
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
-const TEMP_SOIL_ID_VALUE = 'Clifton';
-const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
-
 type Props = {
   siteId?: string;
   coords?: Coords;
@@ -140,6 +137,9 @@ export const LocationDashboardContent = ({
       : state.project.projects[site.projectId],
   );
 
+  const soilIdData = useSelector(selectSoilIdData());
+  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+
   const onExploreDataPress = useCallback(() => {
     navigation.navigate('LOCATION_SOIL_ID', {siteId, coords});
   }, [navigation, siteId, coords]);
@@ -228,12 +228,16 @@ export const LocationDashboardContent = ({
         )}
       </Box>
       <Column space="20px" padding="16px">
-        <LocationPrediction
-          label={t('soil.soil_id')}
-          soilName={TEMP_SOIL_ID_VALUE}
-          ecologicalSiteName={TEMP_ECO_SITE_PREDICTION}
-          onExploreDataPress={onExploreDataPress}
-        />
+        {topSoilMatch && (
+          <LocationPrediction
+            label={t('soil.soil_id')}
+            soilName={topSoilMatch.soilInfo.soilSeries.name}
+            ecologicalSiteName={
+              topSoilMatch.soilInfo.ecologicalSite?.name ?? ''
+            }
+            onExploreDataPress={onExploreDataPress}
+          />
+        )}
       </Column>
     </ScrollView>
   );
