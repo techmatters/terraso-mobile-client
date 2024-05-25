@@ -22,7 +22,6 @@ import {
   DataBasedSoilMatch,
   SoilMatchInfo,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
   Heading,

@@ -19,6 +19,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
+import {selectSoilIdData} from 'terraso-client-shared/soilId/soilIdSelectors';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
@@ -28,13 +29,10 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {
-  DATA_BASED_SOIL_MATCH,
-  LOCATION_BASED_SOIL_MATCH,
-} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
 
@@ -44,9 +42,7 @@ export const SoilIdMatchesSection = ({
 }: SoilIdMatchesSectionProps) => {
   const {t} = useTranslation();
   const isSite = !!siteId;
-
-  const locationMatch: any = LOCATION_BASED_SOIL_MATCH;
-  const dataMatch: any = DATA_BASED_SOIL_MATCH;
+  const soilIdData = useSelector(selectSoilIdData());
 
   return (
     <ScreenContentSection backgroundColor="grey.200">
@@ -56,19 +52,33 @@ export const SoilIdMatchesSection = ({
           <TopSoilMatchesInfoContent isSite={isSite} />
         </InfoOverlaySheetButton>
       </Row>
-      <InfoOverlaySheet
-        Header={DATA_BASED_SOIL_MATCH.soilInfo.soilSeries.name}
-        trigger={onOpen => (
-          <Button backgroundColor="background.secondary" onPress={onOpen}>
-            (Match Goes Here)
-          </Button>
-        )}>
-        {isSite ? (
-          <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
-        ) : (
-          <TempScoreInfoContent locationMatch={locationMatch} coords={coords} />
-        )}
-      </InfoOverlaySheet>
+      {isSite
+        ? soilIdData.dataBasedMatches.map(dataMatch => (
+            <InfoOverlaySheet
+              Header={dataMatch.soilInfo.soilSeries.name}
+              trigger={onOpen => (
+                <Button backgroundColor="background.secondary" onPress={onOpen}>
+                  (Match Goes Here)
+                </Button>
+              )}>
+              <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
+            </InfoOverlaySheet>
+          ))
+        : soilIdData.locationBasedMatches.map(locationMatch => (
+            <InfoOverlaySheet
+              Header={locationMatch.soilInfo.soilSeries.name}
+              trigger={onOpen => (
+                <Button backgroundColor="background.secondary" onPress={onOpen}>
+                  (Match Goes Here)
+                </Button>
+              )}>
+              <TempScoreInfoContent
+                locationMatch={locationMatch}
+                coords={coords}
+              />
+            </InfoOverlaySheet>
+          ))}
+      ;
     </ScreenContentSection>
   );
 };
