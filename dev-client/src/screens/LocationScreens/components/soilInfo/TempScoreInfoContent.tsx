@@ -45,6 +45,7 @@ export function TempScoreInfoContent({
       <LocationScoreDisplay
         isSite={false}
         match={locationMatch}
+        matchInfo={locationMatch.match}
         coords={coords}
       />
       <Divider />

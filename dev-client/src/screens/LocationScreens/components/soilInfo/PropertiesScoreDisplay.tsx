@@ -18,7 +18,10 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  DataBasedSoilMatch,
+  SoilMatchInfo,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
@@ -34,11 +37,14 @@ import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/component
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 
 type PropertiesScoreDisplayProps = {
-  data: SoilData;
   match: DataBasedSoilMatch;
+  matchInfo: SoilMatchInfo;
 };
 
-export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
+export function PropertiesScoreDisplay({
+  match,
+  matchInfo,
+}: PropertiesScoreDisplayProps) {
   const {t} = useTranslation();
   const rows = useMemo(
     () => rowsFromSoilIdData(match.soilInfo.soilData),
@@ -56,7 +62,7 @@ export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
             <SoilPropertiesScoreInfoContent />
           </InfoOverlaySheetButton>
         </Row>
-        <ScoreTile score={match.combinedMatch.score} />
+        <ScoreTile score={matchInfo.score} />
       </HStack>
       <SoilPropertiesDataTable rows={rows} />
     </VStack>

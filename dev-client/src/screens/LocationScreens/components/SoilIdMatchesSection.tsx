@@ -31,7 +31,6 @@ import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/In
 import {
   DATA_BASED_SOIL_MATCH,
   LOCATION_BASED_SOIL_MATCH,
-  SOIL_DATA,
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
@@ -47,7 +46,6 @@ export const SoilIdMatchesSection = ({
   const isSite = !!siteId;
 
   const locationMatch: any = LOCATION_BASED_SOIL_MATCH;
-  const soilData: any = SOIL_DATA;
   const dataMatch: any = DATA_BASED_SOIL_MATCH;
 
   return (
@@ -66,12 +64,7 @@ export const SoilIdMatchesSection = ({
           </Button>
         )}>
         {isSite ? (
-          <SiteScoreInfoContent
-            locationMatch={locationMatch}
-            dataMatch={dataMatch}
-            soilData={soilData}
-            coords={coords}
-          />
+          <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
         ) : (
           <TempScoreInfoContent locationMatch={locationMatch} coords={coords} />
         )}

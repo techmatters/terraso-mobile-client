@@ -17,11 +17,7 @@
 
 import {Divider} from 'native-base';
 
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
@@ -30,15 +26,11 @@ import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/
 import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
 
 type SiteScoreInfoContentProps = {
-  locationMatch: LocationBasedSoilMatch;
-  soilData: SoilData;
   dataMatch: DataBasedSoilMatch;
   coords: Coords;
 };
 
 export function SiteScoreInfoContent({
-  locationMatch,
-  soilData,
   dataMatch,
   coords,
 }: SiteScoreInfoContentProps) {
@@ -51,11 +43,15 @@ export function SiteScoreInfoContent({
       <Divider />
       <LocationScoreDisplay
         isSite={true}
-        match={locationMatch}
+        match={dataMatch}
+        matchInfo={dataMatch.locationMatch}
         coords={coords}
       />
       <Divider />
-      <PropertiesScoreDisplay data={soilData} match={dataMatch} />
+      <PropertiesScoreDisplay
+        match={dataMatch}
+        matchInfo={dataMatch.dataMatch}
+      />
     </ScoreInfoContainer>
   );
 }
