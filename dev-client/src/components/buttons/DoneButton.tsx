@@ -7,7 +7,7 @@
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * but WITHOUT ANY WARRANTY; without even the implied warFFranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
@@ -21,11 +21,11 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useTranslation} from 'react-i18next';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type DoneButtobProps = {
+type DoneButtonProps = {
   isDisabled?: boolean;
 };
 
-export const DoneButton = ({isDisabled}: DoneButtobProps) => {
+export const DoneButton = ({isDisabled}: DoneButtonProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
