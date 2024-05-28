@@ -49,6 +49,7 @@ import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/TextureInfoContent';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),
@@ -195,6 +196,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
           />
         </Column>
       </ScrollView>
+      <DoneButton />
     </SoilPitInputScreenScaffold>
   );
 };
