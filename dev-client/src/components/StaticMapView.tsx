@@ -28,6 +28,7 @@ import {
 } from 'terraso-mobile-client/constants';
 import {Coords} from 'terraso-client-shared/types';
 import {formatCoordinate} from 'terraso-mobile-client/util';
+import i18n from 'terraso-mobile-client/translations';
 
 const coordsRegex = /^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/;
 export type CoordsParseErrorReason =
@@ -73,8 +74,12 @@ export const parseCoords = (coords: string) => {
   }
 };
 
-export const coordsToString = ({latitude, longitude}: Coords): string =>
-  `${formatCoordinate(latitude)},${formatCoordinate(longitude)}`;
+export const coordsToString = ({latitude, longitude}: Coords): string => {
+  return i18n.t('site.coords', {
+    lat: formatCoordinate(latitude),
+    lng: formatCoordinate(longitude),
+  });
+};
 
 export const coordsToPosition = ({latitude, longitude}: Coords): Position => [
   longitude,
