@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Fab, ScrollView} from 'native-base';
+import {Button, ScrollView} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -49,6 +49,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {selectSoilData} from 'terraso-client-shared/selectors';
 import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 
 type Props = {
   siteId: string;
@@ -169,11 +170,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
           minimumPerRow={2}
         />
       </ScrollView>
-      <Fab
-        onPress={() => navigation.pop()}
-        leftIcon={<Icon name="check" />}
-        label={t('general.done')}
-      />
+      <DoneButton />
     </ScreenScaffold>
   );
 };

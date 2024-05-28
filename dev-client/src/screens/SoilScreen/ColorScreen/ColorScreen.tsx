@@ -31,19 +31,17 @@ import {useTranslation} from 'react-i18next';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
-import {Fab} from 'native-base';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useCallback, useMemo} from 'react';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 
@@ -61,8 +59,6 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
         : 'MANUAL';
 
   const workflow = siteWorkflow ?? previousWorkflow;
-
-  const navigation = useNavigation();
 
   const dispatch = useDispatch();
 
@@ -119,12 +115,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
           {workflow === 'CAMERA' && <PhotoConditions {...props} />}
         </>
       )}
-      <Fab
-        label={t('general.done')}
-        leftIcon={<Icon name="check" />}
-        isDisabled={!color}
-        onPress={() => navigation.pop()}
-      />
+      <DoneButton isDisabled={!color} />
     </SoilPitInputScreenScaffold>
   );
 };

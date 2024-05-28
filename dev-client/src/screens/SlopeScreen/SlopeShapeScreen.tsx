@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Fab, ScrollView} from 'native-base';
+import {ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
@@ -30,9 +30,7 @@ import {
 } from 'terraso-mobile-client/components/ImageRadio';
 import {useCallback, useMemo} from 'react';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {StyleSheet} from 'react-native';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';
 import ConcaveConvex from 'terraso-mobile-client/assets/slope/shape/concave-convex.svg';
 import ConcaveLinear from 'terraso-mobile-client/assets/slope/shape/concave-linear.svg';
@@ -51,6 +49,7 @@ import {
 import {selectSoilData} from 'terraso-client-shared/selectors';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 
 type Props = {
   siteId: string;
@@ -64,7 +63,6 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const {downSlope, crossSlope} = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const options = useMemo<Record<CombinedSlope, ImageRadioOption>>(
     () => ({
@@ -152,11 +150,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
           minimumPerRow={3}
         />
       </ScrollView>
-      <Fab
-        onPress={() => navigation.pop()}
-        leftIcon={<Icon name="check" />}
-        label={t('general.done')}
-      />
+      <DoneButton />
     </ScreenScaffold>
   );
 };
