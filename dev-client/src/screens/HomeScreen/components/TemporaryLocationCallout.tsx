@@ -41,7 +41,7 @@ type Props = {
   isCurrentLocation: boolean;
 };
 
-export const TemporarySiteCallout = ({
+export const TemporaryLocationCallout = ({
   coords,
   closeCallout,
   isCurrentLocation,
