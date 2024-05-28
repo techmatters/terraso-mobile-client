@@ -46,6 +46,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const site = useSelector(state => state.site.sites[siteId]);
+  const [name, setName] = useState(site?.name);
 
   const onSave = useCallback(
     () => dispatch(updateSite({id: site.id, name})),
@@ -54,13 +55,15 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
 
   const onDelete = useCallback(async () => {
     await dispatch(deleteSite(site));
-    navigation.pop();
+    navigation.navigate('BOTTOM_TABS');
   }, [dispatch, navigation, site]);
 
+  if (!site) {
+    return null;
+  }
+
   return (
-    <ScreenScaffold
-      BottomNavigation={null}
-      AppBar={<AppBar title={site.name} />}>
+    <ScreenScaffold BottomNavigation={null} AppBar={<AppBar title={name} />}>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
         <Input value={name} onChangeText={setName} />
         <ConfirmModal
