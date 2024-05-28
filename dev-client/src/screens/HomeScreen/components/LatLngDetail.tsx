@@ -20,12 +20,12 @@ import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSelector} from 'terraso-mobile-client/store';
 import {formatCoordinate} from 'terraso-mobile-client/util';
 
-type NewType = {
+type Props = {
   isCurrentLocation: boolean;
   coords: Coords;
 };
 
-export const LatLngDetail = ({isCurrentLocation, coords}: NewType) => {
+export const LatLngDetail = ({isCurrentLocation, coords}: Props) => {
   const {t} = useTranslation();
   const {accuracyM} = useSelector(state => state.map.userLocation);
 
