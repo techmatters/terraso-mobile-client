@@ -167,12 +167,17 @@ jobs:
           api-key-id: ${{ secrets.APPLE_KEY_ID }}
           api-private-key: ${{ secrets.APPLE_APP_STORE_CONNECT_PRIVATE_KEY }}
 
-      - name: Archive build product
-        if: '!success()'
+      - name: Archive build product 1
         uses: actions/upload-artifact@v4
         with:
-          name: build-products
+          name: build-products-1
           path: |
             /Users/runner/Library/Developer/Xcode/
+
+      - name: Archive build product 2
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-products-2
+          path: |
             /Users/runner/work/terraso-mobile-client/
 
