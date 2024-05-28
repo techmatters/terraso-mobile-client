@@ -38,6 +38,7 @@ import {
   REFERENCES,
   RGBA,
   getColor,
+  getPalette,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {
   PhotoWithBase64,
@@ -51,6 +52,9 @@ import {
 } from 'terraso-mobile-client/components/modals/ActionsModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
+import {Buffer} from '@craftzdog/react-native-buffer';
+
+import * as Sentry from '@sentry/react-native';
 
 const analyzeImage = async ({
   reference,
@@ -68,7 +72,37 @@ const analyzeImage = async ({
     return pixels;
   });
 
-  return getColor(referencePixels, soilPixels, REFERENCES.CANARY_POST_IT);
+  const result = getColor(
+    referencePixels,
+    soilPixels,
+    REFERENCES.CANARY_POST_IT,
+  );
+
+  Sentry.captureEvent(
+    {message: 'color analysis result'},
+    {
+      attachments: [
+        {
+          filename: 'reference.jpg',
+          data: Buffer.from(reference.base64, 'base64'),
+        },
+        {
+          filename: 'soil.jpg',
+          data: Buffer.from(soil.base64, 'base64'),
+        },
+        {
+          filename: 'result.json',
+          data: JSON.stringify({
+            result,
+            referencePalette: getPalette(referencePixels),
+            soilPalette: getPalette(soilPixels),
+          }),
+        },
+      ],
+    },
+  );
+
+  return result;
 };
 
 export const ColorAnalysisHomeScreen = () => {
