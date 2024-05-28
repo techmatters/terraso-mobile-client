@@ -16,14 +16,17 @@
  */
 
 import {
+  DepthInterval,
   SoilIdDepthDependentData,
   SoilIdDepthDependentSoilDataRockFragmentVolumeChoices,
   SoilIdDepthDependentSoilDataTextureChoices,
   SoilIdSoilData,
 } from 'terraso-client-shared/graphqlSchema/graphql';
+import {AggregatedInterval} from 'terraso-client-shared/selectors';
+import {sameDepth} from 'terraso-client-shared/soilId/soilIdSlice';
 import {
-  DepthDependentSoilData,
   SoilData,
+  SoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {
   fullMunsellColor,
@@ -31,36 +34,36 @@ import {
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 
 export type SoilPropertiesDataTableRow = {
-  depth: {
-    start: number;
-    end: number;
-  };
+  depth: DepthInterval;
   texture?: SoilIdDepthDependentSoilDataTextureChoices;
   rockFragment?: SoilIdDepthDependentSoilDataRockFragmentVolumeChoices;
   munsellColor?: string;
 };
 
-export const rowsFromSoilData = (
+export const rowsFromSiteSoilData = (
   data: SoilData,
+  intervals: AggregatedInterval[],
 ): SoilPropertiesDataTableRow[] => {
-  return data.depthDependentData.map(d => rowFromSoilData(d));
+  return intervals.map(interval => rowFromSoilData(data, interval.interval));
 };
 
 export const rowFromSoilData = (
-  data: DepthDependentSoilData,
+  data: SoilData,
+  interval: SoilDataDepthInterval,
 ): SoilPropertiesDataTableRow => {
-  const color = fullMunsellColor({
-    colorHue: data.colorHue,
-    colorChroma: data.colorChroma,
-    colorValue: data.colorValue,
-  });
+  const dataForInterval = data.depthDependentData.find(sameDepth(interval));
+
+  const color =
+    dataForInterval &&
+    fullMunsellColor({
+      colorHue: dataForInterval.colorHue,
+      colorChroma: dataForInterval.colorChroma,
+      colorValue: dataForInterval.colorValue,
+    });
   return {
-    depth: {
-      start: data.depthInterval.start,
-      end: data.depthInterval.end,
-    },
-    texture: data.texture ?? undefined,
-    rockFragment: data.rockFragmentVolume ?? undefined,
+    depth: interval.depthInterval,
+    texture: dataForInterval?.texture ?? undefined,
+    rockFragment: dataForInterval?.rockFragmentVolume ?? undefined,
     munsellColor: color ? munsellToString(color) : undefined,
   };
 };
@@ -75,10 +78,7 @@ export const rowFromSoilIdData = (
   data: SoilIdDepthDependentData,
 ): SoilPropertiesDataTableRow => {
   return {
-    depth: {
-      start: data.depthInterval.start,
-      end: data.depthInterval.end,
-    },
+    depth: data.depthInterval,
     texture: data.texture ?? undefined,
     rockFragment: data.rockFragmentVolume ?? undefined,
     munsellColor: data.munsellColorString ?? undefined,

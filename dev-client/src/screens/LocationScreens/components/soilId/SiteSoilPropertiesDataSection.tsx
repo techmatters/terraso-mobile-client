@@ -18,6 +18,7 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
+
 import {
   Box,
   Heading,
@@ -25,15 +26,24 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {SOIL_PROPERTIES_TABLE_ROWS} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {rowsFromSiteSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
+import {
+  selectSoilData,
+  useSiteSoilIntervals,
+} from 'terraso-client-shared/selectors';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {siteId: string};
 
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+
+  const allIntervals = useSiteSoilIntervals(siteId);
+  const soilData = useSelector(selectSoilData(siteId));
+  const dataTableRows = rowsFromSiteSoilData(soilData, allIntervals);
 
   const onAddSoilDataPress = useCallback(() => {
     navigation.push('LOCATION_DASHBOARD', {
@@ -49,7 +59,7 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
       </Heading>
 
       <Box marginTop="sm" />
-      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
+      <SoilPropertiesDataTable rows={dataTableRows} />
 
       <RestrictBySiteRole
         role={[
