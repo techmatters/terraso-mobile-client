@@ -169,6 +169,7 @@ jobs:
 
       - name: Archive build product 1
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: build-products-1
           path: |
@@ -176,6 +177,7 @@ jobs:
 
       - name: Archive build product 2
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: build-products-2
           path: |
