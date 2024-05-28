@@ -149,15 +149,6 @@ jobs:
           workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
           scheme: TerrasoLandPKS
 
-      - name: Archive build log and intermediates
-        if: '!success()'
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-log-intermediates
-          path: |
-            "/Users/runner/Library/Logs/gym/Terraso LandPKS-Terraso LandPKS.log"
-            "/Users/runner/Library/Developer/Xcode/DerivedData/TerrasoLandPKS-*/Build/Intermediates.noindex/ArchiveIntermediates/"
-
       - name: Upload app to TestFlight
         uses: apple-actions/upload-testflight-build@v1
         if: ${{ inputs.upload == 'true' }}
