@@ -70,7 +70,7 @@ export const theme = extendTheme({
     },
     input: {
       standard: {
-        enabledBorder: '#0000006B',
+        enabledBorder: '#8B8B8B',
       },
       filled: {
         enabledFill: '#0000000F',
