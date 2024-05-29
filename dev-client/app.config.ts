@@ -45,6 +45,7 @@ const BUILD_CONFIG = validateEnvConfig(process.env, [
 ] as const);
 
 const ENV_CONFIG = validateEnvConfig(process.env, [
+  'APP_VERSION',
   'CI',
   'ENV',
   'PUBLIC_MAPBOX_TOKEN',
@@ -68,6 +69,7 @@ if (typeof APP_VERSION === 'string') {
     );
   }
   appVersion = parseInt(APP_VERSION.slice(1), 10);
+  ENV_CONFIG.APP_VERSION = appVersion.toString();
 }
 
 export default ({config}: ConfigContext): ExpoConfig => ({
