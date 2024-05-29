@@ -25,10 +25,11 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "@rnmapbox/maps": "^10.1.24",
-    "@sentry/react-native": "^5.22.2",
+    "@sentry/react-native": "^5.22.3",
     "base-64": "^1.0.0",
     "delta-e": "^0.0.8",
     "expo": "~51.0.9",
+    "expo-apple-authentication": "~6.4.1",
     "expo-auth-session": "~5.5.2",
     "expo-av": "~14.0.5",
     "expo-camera": "~15.0.10",
@@ -63,8 +64,7 @@
     "react-native-tab-view": "^3.5.2",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#7841647",
     "uuid": "^9.0.1",
-    "yup": "^1.4.0",
-    "expo-apple-authentication": "~6.4.1"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",
