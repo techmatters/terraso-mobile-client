@@ -18,7 +18,6 @@
 import {useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Pressable, ViewStyle} from 'react-native';
-import {TextInput} from 'react-native-paper';
 
 import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 
@@ -131,27 +130,15 @@ export const Select = <T, Nullable extends boolean>({
         <Pressable
           accessibilityState={{disabled}}
           onPress={disabled ? null : onOpen}>
-          <TextInput
-            editable={false}
-            value={value === null ? '' : renderValue(value)}
-            label={label}
-            theme={{
-              colors: {
-                surfaceVariant: theme.colors.input.filled.enabledFill,
-              },
-            }}
-            underlineColor={theme.colors.input.standard.enabledBorder}
-            right={
-              <TextInput.Icon
-                disabled={true}
-                icon={() => (
-                  <Icon color="action.active" name="arrow-drop-down" />
-                )}
-              />
-            }
-            disabled={disabled}
+          <Row
+            justifyContent="space-between"
+            backgroundColor={theme.colors.input.filled.enabledFill}
+            borderBottomColor={theme.colors.input.standard.enabledBorder}
             style={style}
-          />
+            padding="10px">
+            <Text>{value === null ? label : renderValue(value)}</Text>
+            <Icon color="action.active" name="arrow-drop-down" />
+          </Row>
         </Pressable>
       )}>
       <BottomSheetFlatList
