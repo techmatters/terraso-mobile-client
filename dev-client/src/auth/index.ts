@@ -84,7 +84,7 @@ async function exchangeToken(
     provider,
     jwt: identityJwt,
   };
-  if (provider === 'apple') {
+  if (provider === 'apple' && Platform.OS === 'ios') {
     body.client_id = Constants.expoConfig!.ios?.bundleIdentifier;
   }
   const payload = await request<AuthTokens>({
