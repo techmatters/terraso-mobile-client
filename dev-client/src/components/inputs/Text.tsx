@@ -16,38 +16,53 @@
  */
 
 import {ViewStyle} from 'react-native';
-import {TextInput} from 'react-native-paper';
+import {Props as TextInputProps, TextInput} from 'react-native-paper';
 import {theme} from 'terraso-mobile-client/theme';
 import {StyleSheet} from 'react-native';
 
 export type TextProps = {
+  ref?: string;
   value?: string;
   label?: string;
+  placeholder?: string;
   onChangeText?: (a: string) => void;
+  onBlur?: (args: any) => void;
+  style?: any;
   disabled?: boolean;
+  textInputProps?: Omit<TextInputProps, 'label'>;
 } & ViewStyle;
 
 const styles = StyleSheet.create({
   text: {
     width: '100%',
+    padding: 0,
     backgroundColor: theme.colors.input.filled.enabledFill,
   },
 });
 
 export const Text = ({
+  ref,
   value,
   label,
+  placeholder,
   onChangeText,
+  onBlur,
   disabled = false,
-  ...style
+  style,
+  textInputProps,
 }: TextProps) => {
   return (
     <TextInput
+      ref={ref}
       label={label}
       value={value}
+      placeholder={placeholder}
       onChangeText={onChangeText}
+      onBlur={onBlur}
       disabled={disabled}
+      activeUnderlineColor={theme.colors.input.standard.enabledBorder}
       style={{...styles.text, ...style}}
+      {...textInputProps}
     />
   );
 };
