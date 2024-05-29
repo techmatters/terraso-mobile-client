@@ -26,6 +26,7 @@ export type CalloutState =
   | {
       kind: 'location';
       coords: Coords;
+      isCurrentLocation: boolean;
     }
   | {
       kind: 'site_cluster';
@@ -45,8 +46,11 @@ export function siteClusterCallout(
   return {kind: 'site_cluster', coords, siteIds: Array.from(siteIds)};
 }
 
-export function locationCallout(coords: Coords): CalloutState {
-  return {kind: 'location', coords};
+export function locationCallout(
+  coords: Coords,
+  isCurrentLocation: boolean = false,
+): CalloutState {
+  return {kind: 'location', coords, isCurrentLocation};
 }
 
 export function noneCallout(): CalloutState {

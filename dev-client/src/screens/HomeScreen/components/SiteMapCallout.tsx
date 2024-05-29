@@ -31,7 +31,7 @@ import {Card} from 'terraso-mobile-client/components/Card';
 import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/HomeScreen/components/SiteClusterCalloutListItem';
-import {TemporarySiteCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporarySiteCallout';
+import {TemporaryLocationCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporaryLocationCallout';
 import {Coords} from 'terraso-client-shared/types';
 
 type Props = {
@@ -103,8 +103,14 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
         </Card>
       );
     default:
+      const isCurrentLocation =
+        state.kind === 'location' ? state.isCurrentLocation : false;
       return (
-        <TemporarySiteCallout coords={coords} closeCallout={closeCallout} />
+        <TemporaryLocationCallout
+          coords={coords}
+          closeCallout={closeCallout}
+          isCurrentLocation={isCurrentLocation}
+        />
       );
   }
 };
