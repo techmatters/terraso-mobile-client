@@ -192,7 +192,10 @@ export const SiteMap = memo(
       );
 
       const onPress = useCallback(
-        async (feature: GeoJSON.Feature) => {
+        async (
+          feature: GeoJSON.Feature,
+          isCurrentLocation: boolean = false,
+        ) => {
           if (
             calloutState.kind === 'none' &&
             feature.geometry?.type === 'Point'
@@ -211,7 +214,10 @@ export const SiteMap = memo(
               cameraRef: cameraRef,
             });
             setCalloutState(
-              locationCallout(positionToCoords(feature.geometry.coordinates)),
+              locationCallout(
+                positionToCoords(feature.geometry.coordinates),
+                isCurrentLocation,
+              ),
             );
           } else {
             Keyboard.dismiss();
@@ -225,7 +231,7 @@ export const SiteMap = memo(
         async (event?: GeoJSON.GeoJsonProperties) => {
           if (event?.features[0]) {
             const feature = event.features[0];
-            onPress(feature);
+            onPress(feature, true);
           }
         },
         [onPress],

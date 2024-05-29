@@ -22,6 +22,7 @@ import {
   isValidLatitude,
   normalizeText,
 } from 'terraso-client-shared/utils';
+import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
 
 export const getSystemLocale = () => {
   let locale;
@@ -49,6 +50,12 @@ export const formatDate = (dateString: string) => {
 
 export const formatPercent = (value: number) => {
   return value.toLocaleString(undefined, {style: 'percent'});
+};
+
+export const formatCoordinate = (value: number) => {
+  return value.toLocaleString(undefined, {
+    maximumFractionDigits: COORDINATE_PRECISION,
+  });
 };
 
 export const formatName = (firstName: string, lastName?: string) => {

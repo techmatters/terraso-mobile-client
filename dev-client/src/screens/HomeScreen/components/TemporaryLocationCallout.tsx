@@ -30,6 +30,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {Coords} from 'terraso-client-shared/types';
+import {LatLngDetail} from 'terraso-mobile-client/screens/HomeScreen/components/LatLngDetail';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
@@ -37,9 +38,14 @@ const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
 type Props = {
   coords: Coords;
   closeCallout: () => void;
+  isCurrentLocation: boolean;
 };
 
-export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
+export const TemporaryLocationCallout = ({
+  coords,
+  closeCallout,
+  isCurrentLocation,
+}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const [siteElevationString, setSiteElevationString] = useState('');
@@ -61,14 +67,15 @@ export const TemporarySiteCallout = ({coords, closeCallout}: Props) => {
   return (
     <Card
       Header={
-        <CalloutDetail
-          label={t('site.soil_id_prediction')}
-          value={TEMP_SOIL_ID_VALUE}
-        />
+        <LatLngDetail isCurrentLocation={isCurrentLocation} coords={coords} />
       }
       buttons={<CloseButton onPress={closeCallout} />}
       isPopover={true}>
       <Column mt="12px" space="12px">
+        <CalloutDetail
+          label={t('site.soil_id_prediction')}
+          value={TEMP_SOIL_ID_VALUE}
+        />
         <Divider />
         <CalloutDetail
           label={t('site.ecological_site_prediction')}
