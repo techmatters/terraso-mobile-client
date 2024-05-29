@@ -8,7 +8,9 @@ setup-git-hooks:
 
 pre-commit: lint
 
-clean:
+clean-watchman:
 	watchman watch-del-all
+
+clean: clean-watchman
 	rm -rf dev-client/node_modules dev-client/ios dev-client/android
 	cd dev-client && npm ci && npm run prebuild --clean && npm run start -- --reset-cache
