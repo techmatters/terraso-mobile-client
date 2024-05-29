@@ -29,7 +29,7 @@
     "base-64": "^1.0.0",
     "delta-e": "^0.0.8",
     "expo": "~51.0.9",
-    "expo-apple-authentication": "~6.4.1"
+    "expo-apple-authentication": "~6.4.1",
     "expo-auth-session": "~5.5.2",
     "expo-av": "~14.0.5",
     "expo-camera": "~15.0.10",
