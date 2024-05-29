@@ -18,16 +18,7 @@
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  Button,
-  Fab,
-  Input,
-  // useTheme,
-  // Row,
-  // Text,
-  // Spacer,
-  // Pressable,
-} from 'native-base';
+import {Button, Fab, Input} from 'native-base';
 
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
 
