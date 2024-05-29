@@ -42,7 +42,7 @@
     "expo-sensors": "~13.0.8",
     "formik": "^2.4.6",
     "haversine": "^1.1.1",
-    "i18next": "^23.11.4",
+    "i18next": "^23.11.5",
     "jpeg-js": "^0.4.4",
     "munsell": "^1.1.5",
     "native-base": "^3.4.28",
