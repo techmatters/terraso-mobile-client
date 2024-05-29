@@ -18,7 +18,7 @@
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.0.5",
     "@expo/vector-icons": "^14.0.2",
-    "@gorhom/bottom-sheet": "^4.6.1",
+    "@gorhom/bottom-sheet": "^4.6.3",
     "@react-native-community/checkbox": "^0.5.17",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/material-top-tabs": "^6.6.13",
@@ -29,6 +29,7 @@
     "base-64": "^1.0.0",
     "delta-e": "^0.0.8",
     "expo": "~51.0.8",
+    "expo-apple-authentication": "~6.3.0",
     "expo-auth-session": "~5.5.2",
     "expo-av": "~14.0.5",
     "expo-camera": "~15.0.9",
@@ -63,8 +64,7 @@
     "react-native-tab-view": "^3.5.2",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#7841647",
     "uuid": "^9.0.1",
-    "yup": "^1.4.0",
-    "expo-apple-authentication": "~6.3.0"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",
