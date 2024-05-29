@@ -29,6 +29,7 @@
     "base-64": "^1.0.0",
     "delta-e": "^0.0.8",
     "expo": "~51.0.8",
+    "expo-apple-authentication": "~6.3.0",
     "expo-auth-session": "~5.5.2",
     "expo-av": "~14.0.5",
     "expo-camera": "~15.0.9",
@@ -41,7 +42,7 @@
     "expo-sensors": "~13.0.7",
     "formik": "^2.4.6",
     "haversine": "^1.1.1",
-    "i18next": "^23.11.4",
+    "i18next": "^23.11.5",
     "jpeg-js": "^0.4.4",
     "munsell": "^1.1.5",
     "native-base": "^3.4.28",
@@ -63,8 +64,7 @@
     "react-native-tab-view": "^3.5.2",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#7841647",
     "uuid": "^9.0.1",
-    "yup": "^1.4.0",
-    "expo-apple-authentication": "~6.3.0"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",
