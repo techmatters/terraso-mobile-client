@@ -728,8 +728,11 @@ exports[`renders correctly 1`] = `
                                           "flexDirection": "row",
                                         },
                                         [
-                                          {},
                                           {
+                                            "borderBottomWidth": 0.5,
+                                          },
+                                          {
+                                            "alignItems": "center",
                                             "backgroundColor": "#0000000F",
                                             "borderBottomColor": "#0000006B",
                                             "justifyContent": "space-between",
@@ -739,17 +742,30 @@ exports[`renders correctly 1`] = `
                                       ]
                                     }
                                   >
-                                    <Text
-                                      letterSpacing="0.15px"
-                                      lineHeight="24px"
+                                    <View
                                       style={
-                                        {
-                                          "color": "#1A202C",
-                                          "fontSize": 16,
-                                          "fontWeight": "400",
-                                        }
+                                        [
+                                          {
+                                            "flexDirection": "column",
+                                          },
+                                          {
+                                            "justifyContent": "center",
+                                          },
+                                        ]
                                       }
-                                    />
+                                    >
+                                      <Text
+                                        letterSpacing="0.15px"
+                                        lineHeight="24px"
+                                        style={
+                                          {
+                                            "color": "#1A202C",
+                                            "fontSize": 16,
+                                            "fontWeight": "400",
+                                          }
+                                        }
+                                      />
+                                    </View>
                                     <Icon
                                       color="#1A202C"
                                       name="arrow-drop-down"
