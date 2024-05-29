@@ -31,6 +31,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {theme} from 'terraso-mobile-client/theme';
+import {StyleSheet} from 'react-native';
 
 // utility type so we can strictly validate the types of inputs/callbacks
 // based on whether the select is nullable
