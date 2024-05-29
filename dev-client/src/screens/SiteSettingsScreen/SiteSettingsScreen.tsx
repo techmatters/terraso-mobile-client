@@ -23,7 +23,7 @@ import {Button, Fab} from 'native-base';
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {Text} from 'terraso-mobile-client/components/inputs/Text';
+import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -57,7 +57,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={<AppBar title={name} />}>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
-        <Text value={name} onChangeText={setName} />
+        <TextInput value={name} onChangeText={setName} />
         <ConfirmModal
           trigger={onOpen => (
             <Button

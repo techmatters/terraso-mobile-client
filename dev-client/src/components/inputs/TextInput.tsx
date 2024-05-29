@@ -16,7 +16,7 @@
  */
 
 import {ViewStyle} from 'react-native';
-import {TextInputProps, TextInput} from 'react-native-paper';
+import {TextInputProps, TextInput as RNPTextInput} from 'react-native-paper';
 import {theme} from 'terraso-mobile-client/theme';
 import {StyleSheet} from 'react-native';
 
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export const Text = ({
+export const TextInput = ({
   mode,
   ref,
   value,
@@ -54,7 +54,7 @@ export const Text = ({
   textInputProps,
 }: TextProps) => {
   return (
-    <TextInput
+    <RNPTextInput
       ref={ref}
       mode={mode}
       label={label}
