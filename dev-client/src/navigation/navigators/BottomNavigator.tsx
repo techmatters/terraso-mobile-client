@@ -56,7 +56,7 @@ export const BottomNavigator = memo(
     }, [loggedIn, stackNavigation]);
 
     return (
-      <Row bg="primary.main" justifyContent="center" space={10} pb={2}>
+      <Row bg="primary.main" justifyContent="space-around" pb={2}>
         <BottomNavIconButton
           name="location-pin"
           label={t('bottom_navigation.sites')}
