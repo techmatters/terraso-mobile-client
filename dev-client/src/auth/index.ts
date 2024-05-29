@@ -80,13 +80,16 @@ async function exchangeToken(
   identityJwt: string,
   provider: Omit<AuthProvider, 'google'> | `google-${'ios' | 'android'}`,
 ) {
+  let body: any = {
+    provider,
+    jwt: identityJwt,
+  };
+  if (provider === 'apple') {
+    body.client_id = Constants.expoConfig!.ios?.bundleIdentifier;
+  }
   const payload = await request<AuthTokens>({
     path: '/auth/token-exchange',
-    body: {
-      provider,
-      client_id: Constants.expoConfig!.ios?.bundleIdentifier,
-      jwt: identityJwt,
-    },
+    body: body,
     headers: {'content-type': 'application/json'},
   });
 
