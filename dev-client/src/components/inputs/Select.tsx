@@ -31,6 +31,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {theme} from 'terraso-mobile-client/theme';
+import {StyleSheet} from 'react-native';
 
 // utility type so we can strictly validate the types of inputs/callbacks
 // based on whether the select is nullable
@@ -133,9 +134,10 @@ export const Select = <T, Nullable extends boolean>({
           onPress={disabled ? null : onOpen}>
           <Row
             justifyContent="space-between"
+            alignItems="center"
             backgroundColor={theme.colors.input.filled.enabledFill}
             borderBottomColor={theme.colors.input.standard.enabledBorder}
-            style={style}
+            style={{...style, borderBottomWidth: StyleSheet.hairlineWidth}}
             padding="10px">
             <Column justifyContent="center">
               {value !== null && label ? (
