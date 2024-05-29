@@ -16,12 +16,13 @@
  */
 
 import {ViewStyle} from 'react-native';
-import {Props as TextInputProps, TextInput} from 'react-native-paper';
+import {TextInputProps, TextInput} from 'react-native-paper';
 import {theme} from 'terraso-mobile-client/theme';
 import {StyleSheet} from 'react-native';
 
 export type TextProps = {
   ref?: string;
+  mode?: TextInputProps['mode'];
   value?: string;
   label?: string;
   placeholder?: string;
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
 });
 
 export const Text = ({
+  mode,
   ref,
   value,
   label,
@@ -54,6 +56,7 @@ export const Text = ({
   return (
     <TextInput
       ref={ref}
+      mode={mode}
       label={label}
       value={value}
       placeholder={placeholder}
