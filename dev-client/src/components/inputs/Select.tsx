@@ -25,6 +25,7 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
+  Column,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -136,7 +137,16 @@ export const Select = <T, Nullable extends boolean>({
             borderBottomColor={theme.colors.input.standard.enabledBorder}
             style={style}
             padding="10px">
-            <Text>{value === null ? label : renderValue(value)}</Text>
+            <Column justifyContent="center">
+              {value !== null && label ? (
+                <Text variant="caption">{label}</Text>
+              ) : (
+                <></>
+              )}
+              <Text variant="input-text">
+                {value === null ? label : renderValue(value)}
+              </Text>
+            </Column>
             <Icon color="action.active" name="arrow-drop-down" />
           </Row>
         </Pressable>
