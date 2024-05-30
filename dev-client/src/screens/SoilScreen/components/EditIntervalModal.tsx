@@ -55,6 +55,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {SWITCH_PADDING} from 'terraso-mobile-client/constants';
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
@@ -214,7 +215,7 @@ export const EditIntervalModal = ({
 
             <Row mb="12px">
               <FormCheckbox name="applyToAll" />
-              <FormLabel variant="body1" ml="10px">
+              <FormLabel variant="body1" ml={SWITCH_PADDING}>
                 {t('soil.depth_interval.apply_to_all_label')}
               </FormLabel>
             </Row>

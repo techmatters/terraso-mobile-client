@@ -23,6 +23,7 @@ import {
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SWITCH_PADDING} from 'terraso-mobile-client/constants';
 import {theme} from 'terraso-mobile-client/theme';
 
 type Props = FormFieldWrapperProps &
@@ -42,7 +43,7 @@ export const FormSwitch = memo(
             {...props}
           />
           <Text
-            ml="10px"
+            ml={SWITCH_PADDING}
             mt="5px"
             color={
               props.disabled
