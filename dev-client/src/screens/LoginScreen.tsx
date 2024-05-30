@@ -38,6 +38,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Platform, StyleSheet} from 'react-native';
 import Constants from 'expo-constants';
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -127,7 +128,7 @@ export const LoginScreen = () => {
         </Text>
         {isDevelopmentMode && (
           <Text variant="caption" color="primary.contrast">
-            {Constants.expoConfig!.ios?.bundleIdentifier}
+            {APP_CONFIG.appleClientId}
           </Text>
         )}
       </Column>
