@@ -23,6 +23,7 @@ import {StyleSheet} from 'react-native';
 export type TextProps = {
   ref?: string;
   mode?: TextInputProps['mode'];
+  multiline?: boolean;
   value?: string;
   label?: string;
   placeholder?: string;
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
 
 export const TextInput = ({
   mode,
+  multiline,
   ref,
   value,
   label,
@@ -53,6 +55,12 @@ export const TextInput = ({
   style,
   textInputProps,
 }: TextProps) => {
+  if (multiline) {
+    style = {
+      minHeight: 100,
+    };
+  }
+
   return (
     <RNPTextInput
       ref={ref}
@@ -60,6 +68,7 @@ export const TextInput = ({
       label={label}
       value={value}
       placeholder={placeholder}
+      multiline={multiline}
       onChangeText={onChangeText}
       onBlur={onBlur}
       disabled={disabled}
