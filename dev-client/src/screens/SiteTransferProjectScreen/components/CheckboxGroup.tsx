@@ -26,6 +26,10 @@ import {
   HStack,
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  SWITCH_PADDING,
+  SWITCH_VERTICAL_PADDING,
+} from 'terraso-mobile-client/constants';
 
 type CheckboxProps = {
   label: string;
@@ -65,23 +69,32 @@ export const CheckboxGroup = ({
     <Box>
       <HStack>
         <CheckBox
-          id={'select-all-' + groupName}
+          id={`select-all-${groupName}`}
           onValueChange={onSelectAll}
           value={selectAllChecked}
         />
-        <FormControl.Label htmlFor={'select-all-' + groupName} variant="body1">
+        <FormControl.Label
+          htmlFor={`select-all-${groupName}`}
+          variant="body1"
+          pl={SWITCH_PADDING}>
           {t('general.select_all')}
         </FormControl.Label>
       </HStack>
       <VStack px="20px">
         {checkboxes.map(({label, id, checked}) => (
-          <HStack key={id}>
+          <HStack
+            key={id}
+            mt={SWITCH_VERTICAL_PADDING}
+            mb={SWITCH_VERTICAL_PADDING}>
             <CheckBox
               id={'checkbox-' + id}
               onValueChange={onChangeValue(groupId, id)}
               value={checked}
             />
-            <FormControl.Label htmlFor={'checkbox-' + id} variant="body1">
+            <FormControl.Label
+              htmlFor={'checkbox-' + id}
+              variant="body1"
+              pl={SWITCH_PADDING}>
               {label}
             </FormControl.Label>
           </HStack>
