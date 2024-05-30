@@ -16,13 +16,16 @@
  */
 
 import {useCallback, useState} from 'react';
+import {TextInputProps} from 'react-native-paper';
 
-import {FormControl, IInputProps, Input} from 'native-base';
+import {FormControl} from 'native-base';
+
+import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 
 type Props = {
   validationFunc: (input: string) => Promise<null | string>;
   placeholder?: string;
-  inputProps?: IInputProps;
+  inputProps?: TextInputProps;
 };
 
 /**
@@ -50,12 +53,12 @@ export const FreeformTextInput = ({
 
   return (
     <FormControl isInvalid={hasError !== null}>
-      <Input
-        placeholder={placeholder !== undefined ? placeholder : ''}
+      <TextInput
+        placeholder={placeholder}
         onSubmitEditing={handleSubmit}
         onChangeText={text => setTextValue(text)}
         value={textValue}
-        {...inputProps}
+        textInputProps={inputProps}
       />
       <FormControl.ErrorMessage>{hasError}</FormControl.ErrorMessage>
     </FormControl>
