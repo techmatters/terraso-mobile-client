@@ -58,7 +58,7 @@ export const SoilIdMatchesSection = ({
               Header={dataMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
                 <Button backgroundColor="background.secondary" onPress={onOpen}>
-                  (Match Goes Here)
+                  {dataMatch.soilInfo.soilSeries.name}
                 </Button>
               )}>
               <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
