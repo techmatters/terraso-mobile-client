@@ -78,7 +78,6 @@ export const SoilIdMatchesSection = ({
               />
             </InfoOverlaySheet>
           ))}
-      ;
     </ScreenContentSection>
   );
 };
