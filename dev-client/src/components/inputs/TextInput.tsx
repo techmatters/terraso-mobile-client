@@ -29,6 +29,7 @@ export type TextProps = {
   placeholder?: string;
   onChangeText?: (a: string) => void;
   onBlur?: (args: any) => void;
+  onSubmitEditing?: (args: any) => void;
   style?: any;
   disabled?: boolean;
   textInputProps?: Omit<TextInputProps, 'label'>;
@@ -51,6 +52,7 @@ export const TextInput = ({
   placeholder,
   onChangeText,
   onBlur,
+  onSubmitEditing,
   disabled = false,
   style,
   textInputProps,
@@ -71,6 +73,7 @@ export const TextInput = ({
       multiline={multiline}
       onChangeText={onChangeText}
       onBlur={onBlur}
+      onSubmitEditing={onSubmitEditing}
       disabled={disabled}
       activeUnderlineColor={theme.colors.input.standard.enabledBorder}
       style={{...styles.text, ...style}}
