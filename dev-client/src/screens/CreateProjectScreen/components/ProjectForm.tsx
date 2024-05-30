@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikProps} from 'formik';
 import {TFunction} from 'i18next';
-import {Button, Input, TextArea} from 'native-base';
+import {Button} from 'native-base';
 import * as yup from 'yup';
 
 import {
@@ -31,6 +31,7 @@ import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
   Box,
   Heading,
@@ -178,32 +179,28 @@ export default function ProjectForm({
   );
 
   return (
-    <VStack space={3}>
+    <VStack space={2}>
       {EditHeader}
       <FormLabel>{t('projects.create.name_label')}</FormLabel>
-      <Input
+      <TextInput
         placeholder={t('projects.add.name')}
-        defaultValue=""
-        autoCorrect={false}
-        scrollEnabled={false}
         {...inputParams('name')}
       />
       <ErrorMessage fieldName="name" />
 
       <FormLabel>{t('projects.create.description_label')}</FormLabel>
-      <TextArea
+      <TextInput
         placeholder={t('projects.add.description')}
-        numberOfLines={3}
-        fontSize={16}
-        autoCompleteType="off"
-        autoCorrect={false}
+        multiline={true}
         {...inputParams('description')}
       />
       <ErrorMessage fieldName="description" />
       <RadioBlock
         label={
           <HStack alignItems="center">
-            <Heading size="sm">{t('projects.create.privacy_label')}</Heading>
+            <Heading bold size="md">
+              {t('projects.create.privacy_label')}
+            </Heading>
             <IconButton
               name="info"
               onPress={onInfoPress}
