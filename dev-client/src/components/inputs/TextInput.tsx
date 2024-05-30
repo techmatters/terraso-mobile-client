@@ -16,13 +16,16 @@
  */
 
 import {ViewStyle} from 'react-native';
-import {TextInputProps, TextInput as RNPTextInput} from 'react-native-paper';
+import {
+  TextInputProps as RNPTextInputProps,
+  TextInput as RNPTextInput,
+} from 'react-native-paper';
 import {theme} from 'terraso-mobile-client/theme';
 import {StyleSheet} from 'react-native';
 
-export type TextProps = {
+export type TextInputProps = {
   ref?: string;
-  mode?: TextInputProps['mode'];
+  mode?: RNPTextInputProps['mode'];
   multiline?: boolean;
   value?: string;
   label?: string;
@@ -32,7 +35,7 @@ export type TextProps = {
   onSubmitEditing?: (args: any) => void;
   style?: any;
   disabled?: boolean;
-  textInputProps?: Omit<TextInputProps, 'label'>;
+  textInputProps?: Omit<RNPTextInputProps, 'label'>;
 } & ViewStyle;
 
 const styles = StyleSheet.create({
@@ -56,7 +59,7 @@ export const TextInput = ({
   disabled = false,
   style,
   textInputProps,
-}: TextProps) => {
+}: TextInputProps) => {
   if (multiline) {
     style = {
       minHeight: 100,
