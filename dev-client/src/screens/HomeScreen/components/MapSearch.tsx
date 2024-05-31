@@ -19,13 +19,14 @@ import {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
+import {Searchbar} from 'react-native-paper';
 
-import {Input, Pressable} from 'native-base';
+import {Pressable} from 'native-base';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {searchFilterStyles} from 'terraso-mobile-client/components/ListFilter';
 import {
   Box,
   HStack,
@@ -138,11 +139,6 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
     Keyboard.dismiss();
   };
 
-  const clearQuery = () => {
-    setQuery('');
-    setHideResults(true);
-  };
-
   async function lookupFeature(mapboxId: string) {
     let {features} = await retrieveFeature(mapboxId);
     // TODO: For now we are just going to zoom to the first feature
@@ -182,9 +178,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
             }}
             inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
             renderTextInput={() => (
-              <Input
-                borderRadius={10}
-                bgColor="white"
+              <Searchbar
                 onChangeText={newText => {
                   setQuery(newText);
                   querySuggestions(newText);
@@ -198,12 +192,8 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
                 }}
                 value={query}
                 placeholder={t('search.placeholder')}
-                InputLeftElement={<Icon ml={3} name="search" size="md" />}
-                InputRightElement={
-                  query.length > 0 ? (
-                    <Icon mr={3} name="close" size="sm" onPress={clearQuery} />
-                  ) : undefined
-                }
+                style={searchFilterStyles.search}
+                inputStyle={searchFilterStyles.input}
               />
             )}
           />

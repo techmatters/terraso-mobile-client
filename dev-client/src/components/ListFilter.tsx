@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+
 import {
   createContext,
   useCallback,
@@ -23,13 +24,12 @@ import {
   useState,
 } from 'react';
 import {useTranslation} from 'react-i18next';
-import {Keyboard, TextInput} from 'react-native';
+import {Keyboard, StyleSheet, TextInput} from 'react-native';
+import {Searchbar} from 'react-native-paper';
 
-import {Button, FormControl, Input, Radio} from 'native-base';
+import {Button, FormControl, Radio} from 'native-base';
 
 import BadgedIcon from 'terraso-mobile-client/components/BadgedIcon';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Select,
   SelectProps,
@@ -44,6 +44,7 @@ import {
   Text,
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {theme} from 'terraso-mobile-client/theme';
 import {sortCompare} from 'terraso-mobile-client/util';
 
 type Lookup<Item, RecordValue = string> = {
@@ -335,8 +336,21 @@ type TextInputProps = {
   name: string;
 };
 
+export const searchFilterStyles = StyleSheet.create({
+  search: {
+    width: '85%',
+    padding: 0,
+    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: theme.colors.background.default,
+    height: 40,
+    justifyContent: 'center',
+  },
+  input: {
+    minHeight: 40,
+  },
+});
+
 export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
-  const {t} = useTranslation();
   const ref = useRef<TextInput>(null);
   const {value, setValue} = useListFilter<any>(name);
 
@@ -345,34 +359,15 @@ export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
     [setValue],
   );
 
-  const onClear = useCallback(() => {
-    setValue('', true);
-    ref?.current?.clear();
-  }, [setValue]);
-
   return (
-    <Input
+    <Searchbar
       ref={ref}
+      value={value !== undefined ? value : ''}
       onChangeText={onChangeText}
       placeholder={placeholder}
-      accessibilityLabel={label}
-      flex={1}
-      bg="background.default"
-      pl="8px"
-      py="6px"
-      InputLeftElement={<Icon ml="16px" name="search" />}
-      InputRightElement={
-        value !== undefined && value.length ? (
-          <IconButton
-            name="close"
-            onPress={onClear}
-            accessibilityLabel={t('listfilter.clear_search_label')}
-            _icon={{
-              color: 'action.active',
-            }}
-          />
-        ) : undefined
-      }
+      searchAccessibilityLabel={label}
+      style={searchFilterStyles.search}
+      inputStyle={searchFilterStyles.input}
     />
   );
 };
@@ -442,7 +437,7 @@ export const FilterModalTrigger = ({
   const {numFilters} = useListFilter<any>();
 
   return (
-    <HStack space="20px" mb="15px">
+    <HStack space="20px" mb="15px" alignItems="center">
       <BadgedIcon
         iconName="filter-list"
         onPress={() => {

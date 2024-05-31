@@ -16,14 +16,15 @@
  */
 import {memo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Searchbar} from 'react-native-paper';
 
+import {searchFilterStyles} from 'terraso-mobile-client/components/ListFilter';
 import {
   Heading,
   HStack,
   Text,
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SearchBar} from 'terraso-mobile-client/components/SearchBar';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 
 type Props = {query: string; setQuery: (query: string) => void};
@@ -31,18 +32,20 @@ type Props = {query: string; setQuery: (query: string) => void};
 export const ListHeader = memo(({query, setQuery}: Props) => {
   const {t} = useTranslation();
   return (
-    <VStack space="10px" px="12px" pt="5%">
+    <VStack space="10px" px="12px" pt={5} pb={5}>
       <HStack>
-        <Heading>{t('projects.transfer_sites.heading', '')}</Heading>
+        <Heading>{t('projects.transfer_sites.heading')}</Heading>
         <HelpTooltipButton>
           {t('projects.transfer_sites.tooltip')}
         </HelpTooltipButton>
       </HStack>
-      <Text>{t('projects.transfer_sites.description', '')}</Text>
-      <SearchBar
-        query={query}
-        setQuery={setQuery}
+      <Text>{t('projects.transfer_sites.description')}</Text>
+      <Searchbar
+        value={query !== undefined ? query : ''}
+        onChangeText={setQuery}
         placeholder={t('site.search.placeholder')}
+        style={searchFilterStyles.search}
+        inputStyle={searchFilterStyles.input}
       />
     </VStack>
   );
