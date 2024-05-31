@@ -136,7 +136,6 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
               <FormInput
                 keyboardType="numeric"
                 name="slopeSteepnessPercent"
-                variant="underlined"
                 helpText={t('slope.steepness.percentage_help')}
                 placeholder={t('slope.steepness.percentage_placeholder')}
                 onChangeText={text => {
@@ -161,7 +160,6 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
               <FormInput
                 keyboardType="numeric"
                 name="slopeSteepnessDegree"
-                variant="underlined"
                 helpText={t('slope.steepness.degree_help')}
                 placeholder={t('slope.steepness.degree_placeholder')}
                 onChangeText={text => {

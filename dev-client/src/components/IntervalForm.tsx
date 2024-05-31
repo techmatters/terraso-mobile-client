@@ -39,7 +39,6 @@ export const IntervalForm = () => {
         <FormInput
           name="label"
           placeholder={t('soil.depth_interval.label_placeholder')}
-          variant="underlined"
           maxLength={FORM_LABEL_MAX}
         />
         <FormControl.HelperText>
@@ -53,7 +52,6 @@ export const IntervalForm = () => {
         <Box flex={1}>
           <FormInput
             name="start"
-            variant="underlined"
             placeholder={t('soil.depth_interval.start_label', {
               units: 'cm',
             })}
@@ -62,7 +60,6 @@ export const IntervalForm = () => {
         <Box flex={1}>
           <FormInput
             name="end"
-            variant="underlined"
             placeholder={t('soil.depth_interval.end_label', {
               units: 'cm',
             })}
