@@ -29,6 +29,7 @@ import {
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
@@ -45,7 +46,7 @@ export const SoilIdMatchesSection = ({
 
   return (
     <ScreenContentSection backgroundColor="grey.200">
-      <Row alignItems="center">
+      <Row alignItems="center" pb="12px">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
         <InfoOverlaySheetButton Header={t('site.soil_id.matches.info.title')}>
           <TopSoilMatchesInfoContent isSite={isSite} />
@@ -57,9 +58,11 @@ export const SoilIdMatchesSection = ({
               key={dataMatch.soilInfo.soilSeries.name}
               Header={dataMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
-                <Button backgroundColor="background.secondary" onPress={onOpen}>
-                  {dataMatch.soilInfo.soilSeries.name}
-                </Button>
+                <SoilMatchTile
+                  soil_name={dataMatch.soilInfo.soilSeries.name}
+                  score={dataMatch.combinedMatch.score} //TODO-cknipe: Also sort by combinedMatch.rank
+                  onPress={onOpen}
+                />
               )}>
               <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
             </InfoOverlaySheet>
@@ -69,9 +72,11 @@ export const SoilIdMatchesSection = ({
               key={locationMatch.soilInfo.soilSeries.name}
               Header={locationMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
-                <Button backgroundColor="background.secondary" onPress={onOpen}>
-                  {locationMatch.soilInfo.soilSeries.name}
-                </Button>
+                <SoilMatchTile
+                  soil_name={locationMatch.soilInfo.soilSeries.name}
+                  score={locationMatch.match.score} //TODO-cknipe: Sort them by match.rank
+                  onPress={onOpen}
+                />
               )}>
               <TempScoreInfoContent
                 locationMatch={locationMatch}

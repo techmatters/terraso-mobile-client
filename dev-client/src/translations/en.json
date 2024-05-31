@@ -101,7 +101,8 @@
             "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil data to improve accuracy of the match scores. When this data is entered, the list will automatically update.",
             "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended data to improve accuracy of the match scores. "
           }
-        }
+        },
+        "match": "match"
       },
       "site_data": {
         "title": "Site Data",

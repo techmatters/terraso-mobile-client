@@ -393,6 +393,12 @@ export const theme = extendTheme({
           fontSize: '30px',
           lineHeight: '48px',
         },
+        'match-tile-name': {
+          fontWeight: 700,
+          fontSize: '18px',
+          lineHeight: '27px',
+          letterSpacing: '0.15px',
+        },
       },
     },
     Heading: {
