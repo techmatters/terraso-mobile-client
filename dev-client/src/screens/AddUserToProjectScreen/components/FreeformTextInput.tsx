@@ -58,7 +58,7 @@ export const FreeformTextInput = ({
         onSubmitEditing={handleSubmit}
         onChangeText={text => setTextValue(text)}
         value={textValue}
-        textInputProps={inputProps}
+        {...inputProps}
       />
       <FormControl.ErrorMessage>{hasError}</FormControl.ErrorMessage>
     </FormControl>
