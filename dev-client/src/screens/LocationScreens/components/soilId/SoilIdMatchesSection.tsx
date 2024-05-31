@@ -71,7 +71,7 @@ export const SoilIdMatchesSection = ({
               Header={locationMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
                 <Button backgroundColor="background.secondary" onPress={onOpen}>
-                  (Match Goes Here)
+                  {locationMatch.soilInfo.soilSeries.name}
                 </Button>
               )}>
               <TempScoreInfoContent
