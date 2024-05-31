@@ -55,6 +55,7 @@ export const SoilIdMatchesSection = ({
       {isSite
         ? soilIdData.dataBasedMatches.map(dataMatch => (
             <InfoOverlaySheet
+              key={dataMatch.soilInfo.soilSeries.name}
               Header={dataMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
                 <Button backgroundColor="background.secondary" onPress={onOpen}>
@@ -66,6 +67,7 @@ export const SoilIdMatchesSection = ({
           ))
         : soilIdData.locationBasedMatches.map(locationMatch => (
             <InfoOverlaySheet
+              key={locationMatch.soilInfo.soilSeries.name}
               Header={locationMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
                 <Button backgroundColor="background.secondary" onPress={onOpen}>
