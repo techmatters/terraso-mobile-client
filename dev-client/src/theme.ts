@@ -73,7 +73,7 @@ export const theme = extendTheme({
         enabledBorder: '#8B8B8B',
       },
       filled: {
-        enabledFill: '#0000000F',
+        enabledFill: '#e4e4e4',
       },
     },
     transparent: '#00000000',
