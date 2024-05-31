@@ -30,7 +30,6 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
     const styles = StyleSheet.create({
       text: {
         width: mode === 'outlined' ? '85%' : '100%',
-        padding: 0,
         minHeight: multiline ? 100 : undefined,
         backgroundColor:
           mode === 'outlined'
