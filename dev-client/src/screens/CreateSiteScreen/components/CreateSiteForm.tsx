@@ -75,8 +75,8 @@ export const CreateSiteForm = ({
         <VStack p="16px" pt="30px" space="18px">
           <FormField name="name">
             <FormInput
-              placeholder={t('site.create.name_placeholder')}
-              textInputLabel={t('site.create.name_placeholder')}
+              placeholder={t('site.create.name_label')}
+              textInputLabel={t('site.create.name_label')}
             />
           </FormField>
 

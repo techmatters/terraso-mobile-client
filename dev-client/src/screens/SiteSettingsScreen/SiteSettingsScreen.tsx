@@ -57,7 +57,12 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={<AppBar title={name} />}>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
-        <TextInput value={name} onChangeText={setName} />
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          label={t('site.create.name_label')}
+          placeholder={t('site.create.name_label')}
+        />
         <ConfirmModal
           trigger={onOpen => (
             <Button
