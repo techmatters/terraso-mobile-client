@@ -17,7 +17,7 @@
 
 import {useEffect, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {TextInput} from 'react-native';
+import {StyleSheet, TextInput} from 'react-native';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 
@@ -35,21 +35,26 @@ export const SiteNoteForm = ({content}: Props) => {
     }
   }, []);
 
+  const styles = StyleSheet.create({
+    box: {
+      backgroundColor: 'transparent',
+    },
+    content: {
+      marginVertical: -20,
+      marginHorizontal: -15,
+    },
+  });
+
   return (
     <FormInput
-      pt={2}
-      pb={4}
       ref={formInputRef}
-      padding={0}
-      borderWidth={0}
-      backgroundColor="transparent"
       name="content"
       placeholder={t('site.notes.placeholder_text')}
       value={content}
-      multiline
-      maxHeight={200}
-      overflow="scroll"
-      textAlignVertical="top"
+      multiline={true}
+      activeUnderlineColor="transparent"
+      style={styles.box}
+      contentStyle={styles.content}
     />
   );
 };
