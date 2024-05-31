@@ -15,72 +15,40 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ViewStyle} from 'react-native';
+import {StyleSheet, TextInput as RNTextInput} from 'react-native';
 import {
   TextInputProps as RNPTextInputProps,
   TextInput as RNPTextInput,
 } from 'react-native-paper';
 import {theme} from 'terraso-mobile-client/theme';
-import {StyleSheet} from 'react-native';
+import {forwardRef} from 'react';
 
-export type TextInputProps = {
-  ref?: string;
-  mode?: RNPTextInputProps['mode'];
-  multiline?: boolean;
-  value?: string;
-  label?: string;
-  placeholder?: string;
-  onChangeText?: (a: string) => void;
-  onBlur?: (args: any) => void;
-  onSubmitEditing?: (args: any) => void;
-  style?: any;
-  disabled?: boolean;
-  textInputProps?: Omit<RNPTextInputProps, 'label'>;
-} & ViewStyle;
+export type TextInputProps = RNPTextInputProps;
 
-const styles = StyleSheet.create({
-  text: {
-    width: '100%',
-    padding: 0,
-    backgroundColor: theme.colors.input.filled.enabledFill,
+export const TextInput = forwardRef<RNTextInput, TextInputProps>(
+  ({mode, multiline, disabled = false, style, ...props}, ref) => {
+    const styles = StyleSheet.create({
+      text: {
+        width: mode === 'outlined' ? '85%' : '100%',
+        padding: 0,
+        minHeight: multiline ? 100 : undefined,
+        backgroundColor:
+          mode === 'outlined'
+            ? theme.colors.background.default
+            : theme.colors.input.filled.enabledFill,
+      },
+    });
+
+    return (
+      <RNPTextInput
+        ref={ref}
+        mode={mode}
+        multiline={multiline}
+        disabled={disabled}
+        activeUnderlineColor={theme.colors.input.standard.enabledBorder}
+        style={[styles.text, style]}
+        {...props}
+      />
+    );
   },
-});
-
-export const TextInput = ({
-  mode,
-  multiline,
-  ref,
-  value,
-  label,
-  placeholder,
-  onChangeText,
-  onBlur,
-  onSubmitEditing,
-  disabled = false,
-  style,
-  textInputProps,
-}: TextInputProps) => {
-  if (multiline) {
-    style = {
-      minHeight: 100,
-    };
-  }
-
-  return (
-    <RNPTextInput
-      ref={ref}
-      mode={mode}
-      label={label}
-      value={value}
-      placeholder={placeholder}
-      multiline={multiline}
-      onChangeText={onChangeText}
-      onBlur={onBlur}
-      onSubmitEditing={onSubmitEditing}
-      disabled={disabled}
-      activeUnderlineColor={theme.colors.input.standard.enabledBorder}
-      style={{...styles.text, ...style}}
-      {...textInputProps}
-    />
-  );
-};
+);
