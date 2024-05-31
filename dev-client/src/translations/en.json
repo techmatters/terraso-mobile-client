@@ -199,7 +199,6 @@
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
     "go_to": "Go to Project",
-    "search_placeholder": "Search",
     "search_label": "Enter text to filter projects by name",
     "role_filter_label": "Filter projects by role",
     "create": {
