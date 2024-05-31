@@ -308,10 +308,6 @@
         "distanceAsc": "Distance (nearest to me)"
       }
     },
-    "add": {
-      "name": "Project Name",
-      "description": "Project Description"
-    },
     "add_user": {
       "heading": "Add Team Members",
       "help_text": "Enter a Terraso email address",
