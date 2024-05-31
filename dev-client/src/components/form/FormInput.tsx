@@ -16,22 +16,27 @@
  */
 
 import {forwardRef, memo, useImperativeHandle, useRef} from 'react';
-import {TextInput} from 'react-native';
-
-import {Input} from 'native-base';
+import {TextInput as RNTextInput} from 'react-native';
 
 import {
   FormFieldWrapper,
   Props as FormFieldWrapperProps,
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 
-type Props = FormFieldWrapperProps & React.ComponentProps<typeof Input>;
+export type FormInputProps = {
+  textInputLabel?: string;
+};
+
+type Props = FormFieldWrapperProps &
+  FormInputProps &
+  React.ComponentProps<typeof TextInput>;
 
 export const FormInput = memo(
   forwardRef((props: Props, ref) => {
     const {value, onChange, onBlur} = useFieldContext(props.name);
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<RNTextInput>(null);
 
     useImperativeHandle(ref, () => ({
       focus: () => {
@@ -43,11 +48,12 @@ export const FormInput = memo(
 
     return (
       <FormFieldWrapper {...props}>
-        <Input
+        <TextInput
           ref={inputRef}
           value={value}
           onChangeText={onChange}
           onBlur={onBlur}
+          label={props?.textInputLabel}
           {...props}
         />
       </FormFieldWrapper>
