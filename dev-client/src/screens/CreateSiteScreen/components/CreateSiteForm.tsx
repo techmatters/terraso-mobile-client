@@ -84,10 +84,16 @@ export const CreateSiteForm = ({
             })}
           </Text>
           <FormField name="latitude">
-            <FormInput keyboardType="decimal-pad" />
+            <FormInput
+              value={values.latitude.toString()}
+              keyboardType="decimal-pad"
+            />
           </FormField>
           <FormField name="longitude">
-            <FormInput keyboardType="decimal-pad" />
+            <FormInput
+              value={values.longitude.toString()}
+              keyboardType="decimal-pad"
+            />
           </FormField>
           {hasProjects && (
             <FormField name="projectId">
