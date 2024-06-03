@@ -52,10 +52,10 @@ export const getBetterLocationMatch = (
 
 export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) =>
   [...soilIdData.dataBasedMatches].sort(
-    (a, b) => b.combinedMatch.score - a.combinedMatch.score,
+    (a, b) => a.combinedMatch.rank - b.combinedMatch.rank,
   );
 
 export const getSortedLocationBasedMatches = (soilIdData: SoilIdResults) =>
   [...soilIdData.locationBasedMatches].sort(
-    (a, b) => b.match.score - a.match.score,
+    (a, b) => a.match.rank - b.match.rank,
   );
