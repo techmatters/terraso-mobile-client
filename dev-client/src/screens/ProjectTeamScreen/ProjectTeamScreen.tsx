@@ -14,25 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {AddButton} from 'terraso-mobile-client/components/AddButton';
-import {UserList} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserList';
+import {useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
+
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+
+import {
+  deleteUserFromProject,
+  ProjectMembership,
+} from 'terraso-client-shared/project/projectSlice';
+import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors';
+
+import {AddButton} from 'terraso-mobile-client/components/AddButton';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
   TabRoutes,
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {useCallback} from 'react';
-import {
-  ProjectMembership,
-  deleteUserFromProject,
-} from 'terraso-client-shared/project/projectSlice';
-import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors';
-import {useTranslation} from 'react-i18next';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
-import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {UserList} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserList';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 

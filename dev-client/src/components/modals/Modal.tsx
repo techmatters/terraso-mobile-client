@@ -25,11 +25,12 @@ import {
   useMemo,
   useState,
 } from 'react';
-import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
-import {Pressable, StyleSheet} from 'react-native';
+import {KeyboardAvoidingView, Pressable, StyleSheet} from 'react-native';
 import {Modal as PaperModal, Portal} from 'react-native-paper';
+
 import {Divider} from 'native-base';
-import {KeyboardAvoidingView} from 'react-native';
+
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {
   Box,
   BoxProps,

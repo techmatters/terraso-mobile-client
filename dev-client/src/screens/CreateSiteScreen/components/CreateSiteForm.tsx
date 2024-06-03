@@ -15,36 +15,38 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useEffect, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Platform} from 'react-native';
+
+import {FormikProps} from 'formik';
 import {
+  Button,
   FormControl,
+  KeyboardAvoidingView,
   ScrollView,
   Spacer,
-  Button,
-  KeyboardAvoidingView,
 } from 'native-base';
-import {useMemo, useEffect} from 'react';
-import {Platform} from 'react-native';
 import {InferType} from 'yup';
-import {useTranslation} from 'react-i18next';
-import {FormikProps} from 'formik';
 
-import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
-import {useSelector} from 'terraso-mobile-client/store';
-import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
-import {coordsToString} from 'terraso-mobile-client/components/StaticMapView';
-import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
-import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
-import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
+import {Coords} from 'terraso-client-shared/types';
+
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
+import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
+import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
+import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
+import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
-  VStack,
   Box,
   Text,
+  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
+import {coordsToString} from 'terraso-mobile-client/components/StaticMapView';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
-import {Coords} from 'terraso-client-shared/types';
+import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
+import {useSelector} from 'terraso-mobile-client/store';
 
 export type FormState = Omit<
   InferType<ReturnType<typeof siteValidationSchema>>,

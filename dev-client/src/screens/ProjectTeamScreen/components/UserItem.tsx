@@ -15,10 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Center, Pressable} from 'native-base';
-import {User} from 'terraso-client-shared/account/accountSlice';
 import {useTranslation} from 'react-i18next';
+
+import {Button, Center, Pressable} from 'native-base';
+
+import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
+
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {UserInfo} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserInfo';

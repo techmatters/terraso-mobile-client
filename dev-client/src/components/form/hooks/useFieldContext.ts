@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {createContext, useCallback, useContext} from 'react';
+
 import {useFormikContext} from 'formik';
-import {createContext, useContext, useCallback} from 'react';
 
 type FieldContextType<Name extends string = string, T = string> = {
   name?: Name;

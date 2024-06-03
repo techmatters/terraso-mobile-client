@@ -16,8 +16,9 @@
  */
 
 import {useTranslation} from 'react-i18next';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SiteSlopeDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteSlopeDataSection';
 import {SiteSoilPropertiesDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteSoilPropertiesDataSection';
 

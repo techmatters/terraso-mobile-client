@@ -15,10 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {APP_CONFIG} from 'terraso-mobile-client/config';
-import {request} from 'terraso-client-shared/terrasoApi/api';
-import {getAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
+
+import {AppleAuthenticationScope, signInAsync} from 'expo-apple-authentication';
 import {
   AccessTokenRequest,
   AuthRequest,
@@ -26,7 +25,11 @@ import {
   IssuerOrDiscovery,
   resolveDiscoveryAsync,
 } from 'expo-auth-session';
-import {AppleAuthenticationScope, signInAsync} from 'expo-apple-authentication';
+
+import {getAPIConfig} from 'terraso-client-shared/config';
+import {request} from 'terraso-client-shared/terrasoApi/api';
+
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 
 type AuthConfig = AuthRequestConfig & {issuer: IssuerOrDiscovery};
 

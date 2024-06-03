@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Project, QuoteKind, Node} from 'ts-morph';
+import {Node, Project, QuoteKind} from 'ts-morph';
 
 const countLibraryUsages = (library: string, project: Project) => {
   const usages: Record<string, [number, Set<String>]> = {};

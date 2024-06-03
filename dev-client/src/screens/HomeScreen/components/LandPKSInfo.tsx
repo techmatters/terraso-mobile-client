@@ -15,16 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Trans, useTranslation} from 'react-i18next';
-import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
-import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
+
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+
 import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
+import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
   Box,
   Column,
-  HStack,
   Heading,
+  HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 

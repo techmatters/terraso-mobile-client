@@ -15,9 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Divider} from 'native-base';
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Children} from 'react';
+
+import {Divider} from 'native-base';
+
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type ButtonListProps = React.PropsWithChildren;
 

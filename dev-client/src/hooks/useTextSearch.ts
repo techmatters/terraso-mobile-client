@@ -16,6 +16,7 @@
  */
 
 import {useMemo, useState} from 'react';
+
 import {normalizeText} from 'terraso-client-shared/utils';
 
 type TextSearchOptions<K extends string, T extends Record<K, string>> = {

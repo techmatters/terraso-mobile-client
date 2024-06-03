@@ -15,10 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import Constants from 'expo-constants';
-import {MMKVLoader} from 'react-native-mmkv-storage';
-import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 import {Platform} from 'react-native';
+import {MMKVLoader} from 'react-native-mmkv-storage';
+
+import Constants from 'expo-constants';
+
+import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 
 const ENV_CONFIG = Constants.expoConfig!.extra!;
 

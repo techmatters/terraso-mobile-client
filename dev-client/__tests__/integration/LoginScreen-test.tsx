@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {render} from '@testing/utils';
+
+import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 
 test('renders correctly', () => {
   const screen = render(<LoginScreen />, {

@@ -16,6 +16,7 @@
  */
 
 import {Spacer} from 'native-base';
+
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
 

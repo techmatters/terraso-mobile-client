@@ -17,11 +17,13 @@
 
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+
 import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
+
 import {
-  TextInputFilter,
   ListFilterModal,
   SelectFilter,
+  TextInputFilter,
 } from 'terraso-mobile-client/components/ListFilter';
 import {useSelector} from 'terraso-mobile-client/store';
 

@@ -16,24 +16,26 @@
  */
 
 import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
+import {Pressable} from 'react-native';
+
 import {
   BottomSheetScrollView,
   BottomSheetModal as GorhomBottomSheetModal,
 } from '@gorhom/bottom-sheet';
-import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
-import {Pressable} from 'react-native';
+
+import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
 import {
+  ModalContext,
   ModalHandle,
   ModalProps,
-  ModalContext,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
 import {
   Box,
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
+import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 type Props = ModalProps & {
   fullHeight?: boolean;

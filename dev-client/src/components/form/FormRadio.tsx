@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Radio} from 'native-base';
 import {memo} from 'react';
+
+import {Radio} from 'native-base';
 
 export const FormRadio = memo((props: React.ComponentProps<typeof Radio>) => (
   <Radio key={props.value} {...props} />

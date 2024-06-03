@@ -16,12 +16,12 @@
  */
 
 import {useCallback, useState} from 'react';
-import {StatusBar, View, LayoutChangeEvent, StyleSheet} from 'react-native';
-
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
+import {LayoutChangeEvent, StatusBar, StyleSheet, View} from 'react-native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {theme} from 'terraso-mobile-client/theme';
 
 type Props = {

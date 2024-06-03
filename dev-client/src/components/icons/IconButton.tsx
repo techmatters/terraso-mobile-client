@@ -15,11 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {IconButton as NativeIconButton, Center} from 'native-base';
 import React from 'react';
 import {Pressable} from 'react-native';
+
+import {Center, IconButton as NativeIconButton} from 'native-base';
+
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {IconName, Icon} from 'terraso-mobile-client/components/icons/Icon';
 
 export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
   name: IconName;

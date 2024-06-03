@@ -16,11 +16,13 @@
  */
 
 import {memo} from 'react';
+
+import {NavigationHelpers} from '@react-navigation/native';
+
 import {
   BottomNavigator,
   BottomTabs,
 } from 'terraso-mobile-client/navigation/navigators/BottomNavigator';
-import {NavigationHelpers} from '@react-navigation/native';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';

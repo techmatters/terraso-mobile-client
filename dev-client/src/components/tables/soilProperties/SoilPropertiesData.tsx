@@ -28,6 +28,7 @@ import {
   SoilData,
   SoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdTypes';
+
 import {
   fullMunsellColor,
   munsellToString,

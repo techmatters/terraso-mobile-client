@@ -16,6 +16,7 @@
  */
 import {testState} from '@testing/data';
 import {render} from '@testing/utils';
+
 import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 
 test('renders correctly', () => {

@@ -18,6 +18,7 @@ import '@testing-library/jest-native';
 import 'terraso-mobile-client/translations';
 // include this line for mocking react-native-gesture-handler
 import 'react-native-gesture-handler/jestSetup';
+
 import {setAPIConfig} from 'terraso-client-shared/config';
 
 // the next 3 jest calls are to get animated components to work in tests

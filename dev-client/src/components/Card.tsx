@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Pressable} from 'react-native';
+
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 const TRIANGLE_BORDER_WIDTH = 15;

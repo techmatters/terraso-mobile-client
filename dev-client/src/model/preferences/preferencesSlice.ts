@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+
 import {ColorWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreen';
-import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 
 type Preferences = typeof initialState;
 

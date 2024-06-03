@@ -15,34 +15,37 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Input, Radio, TextArea} from 'native-base';
-import {Formik, FormikProps} from 'formik';
-import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useTranslation} from 'react-i18next';
-import ErrorMessage from 'terraso-mobile-client/screens/CreateProjectScreen/components/ErrorMessage';
+
+import {Formik, FormikProps} from 'formik';
+import {TFunction} from 'i18next';
+import {Button, Input, Radio, TextArea} from 'native-base';
 import * as yup from 'yup';
+
+import {
+  ProjectMembershipProjectRoleChoices,
+  ProjectUpdateMutationInput,
+} from 'terraso-client-shared/graphqlSchema/graphql';
+import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
+
+import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
+import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
+import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
+import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {
+  Box,
+  Heading,
+  HStack,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   PROJECT_DESCRIPTION_MAX_LENGTH,
   PROJECT_NAME_MAX_LENGTH,
   PROJECT_NAME_MIN_LENGTH,
 } from 'terraso-mobile-client/constants';
-import {TFunction} from 'i18next';
-import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
-import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
-import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {
-  ProjectMembershipProjectRoleChoices,
-  ProjectUpdateMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  HStack,
-  VStack,
-  Heading,
-  Box,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
+import ErrorMessage from 'terraso-mobile-client/screens/CreateProjectScreen/components/ErrorMessage';
 
 export const projectValidationFields = (t: TFunction) => ({
   name: yup

@@ -15,26 +15,28 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo, useCallback, useRef} from 'react';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
-import {
-  SiteTabName,
-  SiteLocationDashboardTabNavigator,
-} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+
+import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
+import {Coords} from 'terraso-client-shared/types';
+
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  SiteLocationDashboardTabNavigator,
+  SiteTabName,
+} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
+import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useSelector} from 'terraso-mobile-client/store';
 import {isSiteManager} from 'terraso-mobile-client/util';
-import {Coords} from 'terraso-client-shared/types';
 
 type Props = ({siteId: string} | {coords: Coords}) & {initialTab?: SiteTabName};
 

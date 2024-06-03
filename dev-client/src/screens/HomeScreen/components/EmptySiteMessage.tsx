@@ -15,9 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Trans} from 'react-i18next';
+
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
+import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const EmptySiteMessage = () => {
   return (

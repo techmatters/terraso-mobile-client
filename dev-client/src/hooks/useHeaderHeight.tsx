@@ -16,6 +16,7 @@
  */
 
 import {useContext} from 'react';
+
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 
 export const useHeaderHeight = () => useContext(HeaderHeightContext);

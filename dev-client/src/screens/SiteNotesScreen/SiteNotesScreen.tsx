@@ -16,20 +16,23 @@
  */
 
 import {useCallback} from 'react';
-import {Button, FlatList} from 'native-base';
-import {useSelector} from 'terraso-mobile-client/store';
 import {useTranslation} from 'react-i18next';
+
+import {Button, FlatList} from 'native-base';
+
 import SiteNote from 'terraso-client-shared/site/siteSlice';
-import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
-import {SiteInstructionsCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteInstructionsCard';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+
 import {
   Box,
   Column,
-  Row,
   Heading,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {SiteInstructionsCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteInstructionsCard';
+import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
+import {useSelector} from 'terraso-mobile-client/store';
 
 export type SiteNote = {
   id: string;

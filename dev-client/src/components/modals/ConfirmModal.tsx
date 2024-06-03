@@ -15,8 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
-import {useTranslation} from 'react-i18next';
 import {
   forwardRef,
   useCallback,
@@ -24,12 +22,15 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useTranslation} from 'react-i18next';
+
 import {
   ActionButton,
   ActionsModal,
   ActionsModalProps,
 } from 'terraso-mobile-client/components/modals/ActionsModal';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = Omit<ActionsModalProps, 'actions'> & {
   title?: string;

@@ -14,13 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import {useRef} from 'react';
+import {Portal} from 'react-native-paper';
+import {Provider} from 'react-redux';
+
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {NavigationContainer} from '@react-navigation/native';
 import {render as rnRender} from '@testing-library/react-native';
 import {NativeBaseProvider} from 'native-base';
-import {useRef} from 'react';
-import {Portal} from 'react-native-paper';
-import {Provider} from 'react-redux';
+
 import {
   RootStack,
   RootStackParamList,

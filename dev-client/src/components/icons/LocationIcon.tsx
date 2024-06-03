@@ -16,6 +16,7 @@
  */
 
 import {View} from 'react-native';
+
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
 export const LocationIcon = () => {

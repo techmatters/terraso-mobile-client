@@ -16,22 +16,24 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {ScrollView} from 'react-native-gesture-handler';
 
-import {useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+
+import {selectSite} from 'terraso-client-shared/selectors';
+import {Coords} from 'terraso-client-shared/types';
+
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
+import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
 import {
   SoilIdDescriptionSection,
   SoilIdMatchesSection,
 } from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdSections';
-import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
-import {selectSite} from 'terraso-client-shared/selectors';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Coords} from 'terraso-client-shared/types';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   siteId?: string;

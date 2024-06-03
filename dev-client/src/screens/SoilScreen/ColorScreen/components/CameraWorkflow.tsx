@@ -15,19 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {Button} from 'native-base';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {Photo} from 'terraso-mobile-client/components/ImagePicker';
+import {PickImageButton} from 'terraso-mobile-client/components/inputs/PickImageButton';
 import {
   Box,
   Column,
   Paragraph,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useTranslation} from 'react-i18next';
-import {Button} from 'native-base';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useCallback} from 'react';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Photo} from 'terraso-mobile-client/components/ImagePicker';
-import {PickImageButton} from 'terraso-mobile-client/components/inputs/PickImageButton';
+import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
 export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();

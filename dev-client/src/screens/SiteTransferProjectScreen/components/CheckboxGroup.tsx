@@ -15,10 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FormControl} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+
 import CheckBox from '@react-native-community/checkbox';
+import {FormControl} from 'native-base';
+
 import {
   Box,
   HStack,

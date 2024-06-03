@@ -15,8 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useMemo} from 'react';
+
 import {ProjectRole} from 'terraso-client-shared/project/projectSlice';
 import {SiteUserRole} from 'terraso-client-shared/selectors';
+
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
 

@@ -15,13 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {NativeModules, Platform} from 'react-native';
+
 import {SiteUserRole} from 'terraso-client-shared/selectors';
 import {Coords} from 'terraso-client-shared/types';
 import {
-  isValidLongitude,
   isValidLatitude,
+  isValidLongitude,
   normalizeText,
 } from 'terraso-client-shared/utils';
+
 import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
 
 export const getSystemLocale = () => {

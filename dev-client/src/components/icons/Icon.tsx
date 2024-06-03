@@ -16,14 +16,16 @@
  */
 
 import React from 'react';
+
 import MaterialIcon from '@expo/vector-icons/MaterialIcons';
-import {theme} from 'terraso-mobile-client/theme';
+
 import {
+  convertColorProp,
+  convertNBStyles,
   NativeBaseProps,
   ThemeColor,
-  convertNBStyles,
-  convertColorProp,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {theme} from 'terraso-mobile-client/theme';
 
 export type IconProps = Omit<
   React.ComponentProps<typeof MaterialIcon>,

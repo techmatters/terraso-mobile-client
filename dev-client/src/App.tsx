@@ -26,27 +26,31 @@
 import 'react-native-get-random-values';
 
 import {useEffect} from 'react';
-import {PermissionsAndroid, LogBox} from 'react-native';
+import {LogBox, PermissionsAndroid} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
+
 import {NavigationContainer} from '@react-navigation/native';
-import {NativeBaseProvider} from 'native-base';
 import Mapbox from '@rnmapbox/maps';
+import {NativeBaseProvider} from 'native-base';
 
 import 'terraso-mobile-client/translations';
 import 'terraso-mobile-client/config';
-import {theme} from 'terraso-mobile-client/theme';
-import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
-import {createStore} from 'terraso-mobile-client/store';
-import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
+
+import {Portal} from 'react-native-paper';
+import {enableFreeze} from 'react-native-screens';
+
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import * as Sentry from '@sentry/react-native';
+
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
-import {Toasts} from 'terraso-mobile-client/screens/Toasts';
-import * as Sentry from '@sentry/react-native';
-import {enableFreeze} from 'react-native-screens';
+import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
+import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {HomeScreenContextProvider} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
-import {Portal} from 'react-native-paper';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {Toasts} from 'terraso-mobile-client/screens/Toasts';
+import {createStore} from 'terraso-mobile-client/store';
+import {theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
 
