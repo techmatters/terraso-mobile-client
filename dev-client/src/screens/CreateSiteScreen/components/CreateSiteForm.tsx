@@ -40,24 +40,13 @@ import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpT
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
 
-export type FormState = InferType<ReturnType<typeof siteValidationSchema>> & {
-  coords: string;
-};
-
-// export type FormState = Omit<
-//   InferType<ReturnType<typeof siteValidationSchema>>,
-//   'coords'
-// > & {
-//   coords: string;
-// };
+export type FormState = InferType<ReturnType<typeof siteValidationSchema>>;
 
 export const CreateSiteForm = ({
   isSubmitting,
   handleSubmit,
-  // handleChange,
   setValues,
   values,
-  // sitePin,
   onInfoPress,
   isValid,
 }: FormikProps<FormState> & {
@@ -66,13 +55,6 @@ export const CreateSiteForm = ({
 }) => {
   const {t} = useTranslation();
   const {accuracyM} = useSelector(state => state.map.userLocation);
-  // const currentCoords = useMemo(() => sitePin, [sitePin]);
-
-  // useEffect(() => {
-  //   if (currentCoords && values.coords !== coordsToString(currentCoords)) {
-  //     handleChange('coords')(coordsToString(currentCoords));
-  //   }
-  // }, [currentCoords, values.coords, handleChange]);
 
   const projectPrivacy = useSelector(state =>
     values.projectId
