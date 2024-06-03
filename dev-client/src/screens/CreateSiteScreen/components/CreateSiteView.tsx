@@ -78,8 +78,10 @@ export const CreateSiteView = ({
       validationSchema={validationSchema}
       initialValues={{
         name: '',
-        latitude: defaultCoords?.latitude.toString(),
-        longitude: defaultCoords?.longitude.toString(),
+        latitude:
+          defaultCoords?.latitude !== undefined ? defaultCoords?.latitude : 0,
+        longitude:
+          defaultCoords?.longitude !== undefined ? defaultCoords?.longitude : 0,
         projectId: defaultProject?.id,
         privacy: defaultProject?.privacy ?? 'PUBLIC',
       }}
