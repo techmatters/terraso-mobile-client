@@ -9,7 +9,7 @@
     "lint-js": "npm run lint",
     "format": "npm run lint -- --fix",
     "format-js": "npm run format",
-    "start": "expo start",
+    "start": "expo start --dev-client",
     "test": "jest",
     "update-tests": "npm run test -- -u",
     "check-ts": "tsc --noEmit",
@@ -65,7 +65,8 @@
     "react-native-tab-view": "^3.5.2",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#7841647",
     "uuid": "^9.0.1",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "expo-dev-client": "~3.3.11"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",
