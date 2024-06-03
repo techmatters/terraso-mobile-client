@@ -11,6 +11,7 @@
     "format-js": "npm run format",
     "start": "expo start",
     "test": "jest",
+    "update-tests": "npm run test -- -u",
     "check-ts": "tsc --noEmit",
     "check-modules": "depcheck",
     "prebuild": "expo prebuild"
