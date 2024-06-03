@@ -68,10 +68,10 @@ type Props = {
 export const SoilPropertiesDataTable = ({rows}: Props) => {
   const {t} = useTranslation();
 
-  const columnWidthDepth: NBDimensionValue = '85px';
-  const columnWidthTexture: NBDimensionValue = '115px';
-  const columnWidthColor: NBDimensionValue = '110px';
-  const columnWidthRockFragment: NBDimensionValue = '110px';
+  const columnWidthDepth: NBDimensionValue = '90px';
+  const columnWidthTexture: NBDimensionValue = '120px';
+  const columnWidthColor: NBDimensionValue = '120px';
+  const columnWidthRockFragment: NBDimensionValue = '120px';
 
   // React wants a `key` prop on components rendered with map, for DOM reconciliation purposes.
   // However, using the index alone for the key is an anti-pattern,
