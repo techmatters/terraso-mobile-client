@@ -29,6 +29,10 @@ import {
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {
+  getSortedDataBasedMatches,
+  getSortedLocationBasedMatches,
+} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
@@ -53,28 +57,28 @@ export const SoilIdMatchesSection = ({
         </InfoOverlaySheetButton>
       </Row>
       {isSite
-        ? soilIdData.dataBasedMatches.map(dataMatch => (
+        ? getSortedDataBasedMatches(soilIdData).map(dataMatch => (
             <InfoOverlaySheet
               key={dataMatch.soilInfo.soilSeries.name}
               Header={dataMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
                 <SoilMatchTile
                   soil_name={dataMatch.soilInfo.soilSeries.name}
-                  score={dataMatch.combinedMatch.score} //TODO-cknipe: Also sort by combinedMatch.rank
+                  score={dataMatch.combinedMatch.score}
                   onPress={onOpen}
                 />
               )}>
               <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
             </InfoOverlaySheet>
           ))
-        : soilIdData.locationBasedMatches.map(locationMatch => (
+        : getSortedLocationBasedMatches(soilIdData).map(locationMatch => (
             <InfoOverlaySheet
               key={locationMatch.soilInfo.soilSeries.name}
               Header={locationMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
                 <SoilMatchTile
                   soil_name={locationMatch.soilInfo.soilSeries.name}
-                  score={locationMatch.match.score} //TODO-cknipe: Sort them by match.rank
+                  score={locationMatch.match.score}
                   onPress={onOpen}
                 />
               )}>

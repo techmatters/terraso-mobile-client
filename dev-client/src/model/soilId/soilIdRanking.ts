@@ -49,3 +49,13 @@ export const getBetterLocationMatch = (
 ): LocationBasedSoilMatch => {
   return a.match.rank < b.match.rank ? a : b;
 };
+
+export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) =>
+  [...soilIdData.dataBasedMatches].sort(
+    (a, b) => b.combinedMatch.score - a.combinedMatch.score,
+  );
+
+export const getSortedLocationBasedMatches = (soilIdData: SoilIdResults) =>
+  [...soilIdData.locationBasedMatches].sort(
+    (a, b) => b.match.score - a.match.score,
+  );
