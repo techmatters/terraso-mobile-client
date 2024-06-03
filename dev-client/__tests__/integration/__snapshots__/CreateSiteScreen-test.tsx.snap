@@ -303,48 +303,6 @@ exports[`renders correctly 1`] = `
                             >
                               <View
                                 dataSet={{}}
-                                feedbackId="field-6-feedback"
-                                hasFeedbackText={false}
-                                hasHelpText={false}
-                                helpTextId="field-6-helptext"
-                                isDisabled={false}
-                                isInvalid={false}
-                                isReadOnly={false}
-                                isRequired={false}
-                                labelId="field-6-label"
-                                nativeID="field-6-label"
-                                setHasFeedbackText={[Function]}
-                                setHasHelpText={[Function]}
-                                style={
-                                  {
-                                    "flexDirection": "row",
-                                    "justifyContent": "flex-start",
-                                    "marginBottom": 4,
-                                    "marginTop": 4,
-                                  }
-                                }
-                              >
-                                <Text
-                                  dataSet={{}}
-                                  style={
-                                    {
-                                      "backgroundColor": undefined,
-                                      "color": "#1A202C",
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "700",
-                                      "letterSpacing": 0.15,
-                                      "lineHeight": 24,
-                                      "textDecorationLine": undefined,
-                                    }
-                                  }
-                                >
-                                  Site Name
-                                </Text>
-                              </View>
-                              <View
-                                dataSet={{}}
                                 isFocused={false}
                                 style={
                                   {
@@ -363,7 +321,7 @@ exports[`renders correctly 1`] = `
                                   disabled={false}
                                   editable={true}
                                   isRequired={false}
-                                  nativeID="field-6-input"
+                                  nativeID="field-5-input"
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
@@ -398,65 +356,112 @@ exports[`renders correctly 1`] = `
                               dataSet={{}}
                               style={
                                 {
+                                  "flexDirection": "row",
+                                  "justifyContent": "flex-start",
+                                  "marginBottom": 4,
+                                  "marginTop": 4,
+                                }
+                              }
+                            >
+                              <Text
+                                dataSet={{}}
+                                style={
+                                  {
+                                    "backgroundColor": undefined,
+                                    "color": "#1A202C",
+                                    "fontFamily": undefined,
+                                    "fontSize": 16,
+                                    "fontStyle": "normal",
+                                    "fontWeight": "700",
+                                    "letterSpacing": 0.15,
+                                    "lineHeight": 24,
+                                    "textDecorationLine": undefined,
+                                  }
+                                }
+                              >
+                                Site Location
+                              </Text>
+                            </View>
+                            <Text
+                              letterSpacing="0.15px"
+                              lineHeight="24px"
+                              style={
+                                {
+                                  "color": "#1A202C",
+                                  "fontSize": 16,
+                                  "fontWeight": "400",
+                                }
+                              }
+                            >
+                              GPS accuracy:  m
+                            </Text>
+                            <View
+                              dataSet={{}}
+                              style={
+                                {
                                   "width": "100%",
                                 }
                               }
                             >
                               <View
                                 dataSet={{}}
-                                feedbackId="field-7-feedback"
-                                hasFeedbackText={false}
-                                hasHelpText={false}
-                                helpTextId="field-7-helptext"
-                                isDisabled={false}
-                                isInvalid={false}
-                                isReadOnly={false}
-                                isRequired={false}
-                                labelId="field-7-label"
-                                nativeID="field-7-label"
-                                setHasFeedbackText={[Function]}
-                                setHasHelpText={[Function]}
+                                isFocused={false}
                                 style={
                                   {
+                                    "alignItems": "center",
+                                    "borderColor": "#d4d4d4",
+                                    "borderRadius": 4,
+                                    "borderWidth": 1,
                                     "flexDirection": "row",
-                                    "justifyContent": "flex-start",
-                                    "marginBottom": 4,
-                                    "marginTop": 4,
+                                    "overflow": "hidden",
                                   }
                                 }
                               >
-                                <Text
+                                <TextInput
+                                  accessible={true}
                                   dataSet={{}}
+                                  disabled={false}
+                                  editable={true}
+                                  isRequired={false}
+                                  keyboardType="decimal-pad"
+                                  nativeID="field-6-input"
+                                  onBlur={[Function]}
+                                  onChangeText={[Function]}
+                                  onFocus={[Function]}
+                                  onKeyPress={[Function]}
+                                  placeholderTextColor="#a3a3a3"
+                                  readOnly={false}
+                                  required={false}
+                                  secureTextEntry={false}
                                   style={
                                     {
-                                      "backgroundColor": undefined,
-                                      "color": "#1A202C",
+                                      "backgroundColor": "#00000000",
+                                      "color": "#171717",
+                                      "flex": 1,
                                       "fontFamily": undefined,
                                       "fontSize": 16,
                                       "fontStyle": "normal",
-                                      "fontWeight": "700",
-                                      "letterSpacing": 0.15,
-                                      "lineHeight": 24,
-                                      "textDecorationLine": undefined,
+                                      "fontWeight": "400",
+                                      "height": "100%",
+                                      "paddingBottom": 8,
+                                      "paddingLeft": 12,
+                                      "paddingRight": 12,
+                                      "paddingTop": 8,
+                                      "width": "100%",
                                     }
                                   }
-                                >
-                                  Site Location
-                                </Text>
+                                  value="0"
+                                />
                               </View>
-                              <Text
-                                letterSpacing="0.15px"
-                                lineHeight="24px"
-                                style={
-                                  {
-                                    "color": "#1A202C",
-                                    "fontSize": 16,
-                                    "fontWeight": "400",
-                                  }
+                            </View>
+                            <View
+                              dataSet={{}}
+                              style={
+                                {
+                                  "width": "100%",
                                 }
-                              >
-                                GPS accuracy:  m
-                              </Text>
+                              }
+                            >
                               <View
                                 dataSet={{}}
                                 isFocused={false}
@@ -504,50 +509,8 @@ exports[`renders correctly 1`] = `
                                       "width": "100%",
                                     }
                                   }
-                                  value=""
+                                  value="0"
                                 />
-                              </View>
-                              <View
-                                dataSet={{}}
-                                feedbackId="field-7-feedback"
-                                hasFeedbackText={false}
-                                hasHelpText={false}
-                                helpTextId="field-7-helptext"
-                                isDisabled={false}
-                                isInvalid={false}
-                                isReadOnly={false}
-                                isRequired={false}
-                                labelId="field-7-label"
-                                nativeID="field-7-label"
-                                setHasFeedbackText={[Function]}
-                                setHasHelpText={[Function]}
-                                style={
-                                  {
-                                    "flexDirection": "row",
-                                    "justifyContent": "flex-start",
-                                    "marginBottom": 4,
-                                    "marginTop": 4,
-                                  }
-                                }
-                              >
-                                <Text
-                                  dataSet={{}}
-                                  style={
-                                    {
-                                      "backgroundColor": undefined,
-                                      "color": "#33474F",
-                                      "fontFamily": undefined,
-                                      "fontSize": 12,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "400",
-                                      "letterSpacing": 0.15,
-                                      "lineHeight": 12,
-                                      "textDecorationLine": undefined,
-                                    }
-                                  }
-                                >
-                                  Latitude, Longitude
-                                </Text>
                               </View>
                             </View>
                             <View
@@ -570,426 +533,6 @@ exports[`renders correctly 1`] = `
                                 isRequired={false}
                                 labelId="field-8-label"
                                 nativeID="field-8-label"
-                                setHasFeedbackText={[Function]}
-                                setHasHelpText={[Function]}
-                                style={
-                                  {
-                                    "flexDirection": "row",
-                                    "justifyContent": "flex-start",
-                                    "marginBottom": 4,
-                                    "marginTop": 4,
-                                  }
-                                }
-                              >
-                                <Text
-                                  dataSet={{}}
-                                  style={
-                                    {
-                                      "backgroundColor": undefined,
-                                      "color": "#1A202C",
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "700",
-                                      "letterSpacing": 0.15,
-                                      "lineHeight": 24,
-                                      "textDecorationLine": undefined,
-                                    }
-                                  }
-                                >
-                                  Add to Project
-                                </Text>
-                                <View
-                                  dataSet={{}}
-                                  style={{}}
-                                >
-                                  <View
-                                    accessibilityRole="button"
-                                    accessibilityState={
-                                      {
-                                        "busy": undefined,
-                                        "checked": undefined,
-                                        "disabled": undefined,
-                                        "expanded": undefined,
-                                        "selected": undefined,
-                                      }
-                                    }
-                                    accessibilityValue={
-                                      {
-                                        "max": undefined,
-                                        "min": undefined,
-                                        "now": undefined,
-                                        "text": undefined,
-                                      }
-                                    }
-                                    accessible={true}
-                                    collapsable={false}
-                                    colorScheme="primary"
-                                    dataSet={{}}
-                                    focusable={true}
-                                    onBlur={[Function]}
-                                    onClick={[Function]}
-                                    onFocus={[Function]}
-                                    onResponderGrant={[Function]}
-                                    onResponderMove={[Function]}
-                                    onResponderRelease={[Function]}
-                                    onResponderTerminate={[Function]}
-                                    onResponderTerminationRequest={[Function]}
-                                    onStartShouldSetResponder={[Function]}
-                                    style={
-                                      {
-                                        "alignItems": "center",
-                                        "borderRadius": 4,
-                                        "flexDirection": "row",
-                                        "justifyContent": "center",
-                                        "marginLeft": 6,
-                                        "paddingBottom": 0,
-                                        "paddingLeft": 0,
-                                        "paddingRight": 0,
-                                        "paddingTop": 0,
-                                      }
-                                    }
-                                  >
-                                    <Icon
-                                      color="#1A202CB2"
-                                      name="help"
-                                      size={24}
-                                      style={{}}
-                                    />
-                                  </View>
-                                </View>
-                              </View>
-                              <View
-                                accessibilityState={
-                                  {
-                                    "busy": undefined,
-                                    "checked": undefined,
-                                    "disabled": undefined,
-                                    "expanded": undefined,
-                                    "selected": undefined,
-                                  }
-                                }
-                                accessibilityValue={
-                                  {
-                                    "max": undefined,
-                                    "min": undefined,
-                                    "now": undefined,
-                                    "text": undefined,
-                                  }
-                                }
-                                accessible={true}
-                                collapsable={false}
-                                focusable={true}
-                                onBlur={[Function]}
-                                onClick={[Function]}
-                                onFocus={[Function]}
-                                onResponderGrant={[Function]}
-                                onResponderMove={[Function]}
-                                onResponderRelease={[Function]}
-                                onResponderTerminate={[Function]}
-                                onResponderTerminationRequest={[Function]}
-                                onStartShouldSetResponder={[Function]}
-                              >
-                                <View
-                                  accessibilityState={
-                                    {
-                                      "busy": undefined,
-                                      "checked": undefined,
-                                      "disabled": false,
-                                      "expanded": undefined,
-                                      "selected": undefined,
-                                    }
-                                  }
-                                  accessibilityValue={
-                                    {
-                                      "max": undefined,
-                                      "min": undefined,
-                                      "now": undefined,
-                                      "text": undefined,
-                                    }
-                                  }
-                                  accessible={true}
-                                  collapsable={false}
-                                  focusable={true}
-                                  onBlur={[Function]}
-                                  onClick={[Function]}
-                                  onFocus={[Function]}
-                                  onResponderGrant={[Function]}
-                                  onResponderMove={[Function]}
-                                  onResponderRelease={[Function]}
-                                  onResponderTerminate={[Function]}
-                                  onResponderTerminationRequest={[Function]}
-                                  onStartShouldSetResponder={[Function]}
-                                >
-                                  <View
-                                    style={
-                                      [
-                                        {
-                                          "flexDirection": "row",
-                                        },
-                                        [
-                                          {
-                                            "borderBottomWidth": 0.5,
-                                          },
-                                          {
-                                            "alignItems": "center",
-                                            "backgroundColor": "#0000000F",
-                                            "borderBottomColor": "#0000006B",
-                                            "justifyContent": "space-between",
-                                            "padding": 10,
-                                          },
-                                        ],
-                                      ]
-                                    }
-                                  >
-                                    <View
-                                      style={
-                                        [
-                                          {
-                                            "flexDirection": "column",
-                                          },
-                                          {
-                                            "justifyContent": "center",
-                                          },
-                                        ]
-                                      }
-                                    >
-                                      <Text
-                                        letterSpacing="0.15px"
-                                        lineHeight="24px"
-                                        style={
-                                          {
-                                            "color": "#1A202C",
-                                            "fontSize": 16,
-                                            "fontWeight": "400",
-                                          }
-                                        }
-                                      >
-                                        Project
-                                      </Text>
-                                    </View>
-                                    <Icon
-                                      color="#1A202C"
-                                      name="arrow-drop-down"
-                                      size={24}
-                                      style={{}}
-                                    />
-                                  </View>
-                                </View>
-                              </View>
-                              <RCTScrollView
-                                ListHeaderComponent={
-                                  <Memo(Pressable)
-                                    onPress={[Function]}
-                                  >
-                                    <Row
-                                      alignItems="center"
-                                      backgroundColor="primary.main"
-                                      justifyContent="flex-end"
-                                      padding="md"
-                                    >
-                                      <Text
-                                        color="primary.contrast"
-                                        textTransform="uppercase"
-                                        variant="body1-strong"
-                                      >
-                                        Done
-                                      </Text>
-                                    </Row>
-                                  </Memo(Pressable)>
-                                }
-                                data={
-                                  [
-                                    null,
-                                  ]
-                                }
-                                getItem={[Function]}
-                                getItemCount={[Function]}
-                                keyExtractor={[Function]}
-                                onContentSizeChange={[Function]}
-                                onLayout={[Function]}
-                                onMomentumScrollBegin={[Function]}
-                                onMomentumScrollEnd={[Function]}
-                                onScroll={[Function]}
-                                onScrollBeginDrag={[Function]}
-                                onScrollEndDrag={[Function]}
-                                removeClippedSubviews={false}
-                                renderItem={[Function]}
-                                scrollEventThrottle={0.0001}
-                                stickyHeaderIndices={[]}
-                                viewabilityConfigCallbackPairs={[]}
-                              >
-                                <View>
-                                  <View
-                                    collapsable={false}
-                                    onLayout={[Function]}
-                                  >
-                                    <View
-                                      accessibilityState={
-                                        {
-                                          "busy": undefined,
-                                          "checked": undefined,
-                                          "disabled": undefined,
-                                          "expanded": undefined,
-                                          "selected": undefined,
-                                        }
-                                      }
-                                      accessibilityValue={
-                                        {
-                                          "max": undefined,
-                                          "min": undefined,
-                                          "now": undefined,
-                                          "text": undefined,
-                                        }
-                                      }
-                                      accessible={true}
-                                      collapsable={false}
-                                      focusable={true}
-                                      onBlur={[Function]}
-                                      onClick={[Function]}
-                                      onFocus={[Function]}
-                                      onResponderGrant={[Function]}
-                                      onResponderMove={[Function]}
-                                      onResponderRelease={[Function]}
-                                      onResponderTerminate={[Function]}
-                                      onResponderTerminationRequest={[Function]}
-                                      onStartShouldSetResponder={[Function]}
-                                    >
-                                      <View
-                                        style={
-                                          [
-                                            {
-                                              "flexDirection": "row",
-                                            },
-                                            {
-                                              "alignItems": "center",
-                                              "backgroundColor": "#028843",
-                                              "justifyContent": "flex-end",
-                                              "padding": 16,
-                                            },
-                                          ]
-                                        }
-                                      >
-                                        <Text
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#FFFFFF",
-                                              "fontSize": 16,
-                                              "fontWeight": "700",
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Done
-                                        </Text>
-                                      </View>
-                                    </View>
-                                  </View>
-                                  <View
-                                    onFocusCapture={[Function]}
-                                    onLayout={[Function]}
-                                    style={null}
-                                  >
-                                    <View
-                                      accessibilityState={
-                                        {
-                                          "busy": undefined,
-                                          "checked": undefined,
-                                          "disabled": undefined,
-                                          "expanded": undefined,
-                                          "selected": true,
-                                        }
-                                      }
-                                      accessibilityValue={
-                                        {
-                                          "max": undefined,
-                                          "min": undefined,
-                                          "now": undefined,
-                                          "text": undefined,
-                                        }
-                                      }
-                                      accessible={true}
-                                      collapsable={false}
-                                      focusable={true}
-                                      onBlur={[Function]}
-                                      onClick={[Function]}
-                                      onFocus={[Function]}
-                                      onResponderGrant={[Function]}
-                                      onResponderMove={[Function]}
-                                      onResponderRelease={[Function]}
-                                      onResponderTerminate={[Function]}
-                                      onResponderTerminationRequest={[Function]}
-                                      onStartShouldSetResponder={[Function]}
-                                    >
-                                      <View
-                                        style={
-                                          [
-                                            {
-                                              "flexDirection": "row",
-                                            },
-                                            {
-                                              "alignItems": "center",
-                                              "backgroundColor": "#0000000F",
-                                              "justifyContent": "flex-start",
-                                              "paddingHorizontal": 8,
-                                              "paddingVertical": 8,
-                                            },
-                                          ]
-                                        }
-                                      >
-                                        <Icon
-                                          color="#1A202C"
-                                          name="check"
-                                          size={20}
-                                          style={{}}
-                                        />
-                                        <View
-                                          style={
-                                            {
-                                              "width": 8,
-                                            }
-                                          }
-                                        />
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#1A202C",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                            }
-                                          }
-                                        >
-                                          None
-                                        </Text>
-                                      </View>
-                                    </View>
-                                  </View>
-                                </View>
-                              </RCTScrollView>
-                            </View>
-                            <View
-                              dataSet={{}}
-                              style={
-                                {
-                                  "width": "100%",
-                                }
-                              }
-                            >
-                              <View
-                                dataSet={{}}
-                                feedbackId="field-10-feedback"
-                                hasFeedbackText={false}
-                                hasHelpText={false}
-                                helpTextId="field-10-helptext"
-                                isDisabled={false}
-                                isInvalid={false}
-                                isReadOnly={false}
-                                isRequired={false}
-                                labelId="field-10-label"
-                                nativeID="field-10-label"
                                 setHasFeedbackText={[Function]}
                                 setHasHelpText={[Function]}
                                 style={
@@ -1112,32 +655,32 @@ exports[`renders correctly 1`] = `
                                   checked={true}
                                   collapsable={false}
                                   dataSet={{}}
-                                  feedbackId="field-5-feedback"
+                                  feedbackId="field-4-feedback"
                                   focusable={true}
                                   formControlContext={
                                     {
-                                      "feedbackId": "field-5-feedback",
+                                      "feedbackId": "field-4-feedback",
                                       "hasFeedbackText": false,
                                       "hasHelpText": false,
-                                      "helpTextId": "field-5-helptext",
+                                      "helpTextId": "field-4-helptext",
                                       "isDisabled": false,
                                       "isInvalid": false,
                                       "isReadOnly": false,
                                       "isRequired": false,
-                                      "labelId": "field-5-label",
-                                      "nativeID": "field-5",
+                                      "labelId": "field-4-label",
+                                      "nativeID": "field-4",
                                       "setHasFeedbackText": [Function],
                                       "setHasHelpText": [Function],
                                     }
                                   }
                                   hasFeedbackText={false}
                                   hasHelpText={false}
-                                  helpTextId="field-5-helptext"
+                                  helpTextId="field-4-helptext"
                                   isInvalid={false}
                                   isReadOnly={false}
                                   isRequired={false}
-                                  labelId="field-5-label"
-                                  nativeID="field-5"
+                                  labelId="field-4-label"
+                                  nativeID="field-4"
                                   onBlur={[Function]}
                                   onClick={[Function]}
                                   onFocus={[Function]}
@@ -1189,32 +732,32 @@ exports[`renders correctly 1`] = `
                                         colorScheme="primary"
                                         dataSet={{}}
                                         defaultIsChecked={false}
-                                        feedbackId="field-10-feedback"
+                                        feedbackId="field-8-feedback"
                                         formControlContext={
                                           {
-                                            "feedbackId": "field-10-feedback",
+                                            "feedbackId": "field-8-feedback",
                                             "hasFeedbackText": false,
                                             "hasHelpText": false,
-                                            "helpTextId": "field-10-helptext",
+                                            "helpTextId": "field-8-helptext",
                                             "isDisabled": false,
                                             "isInvalid": false,
                                             "isReadOnly": false,
                                             "isRequired": false,
-                                            "labelId": "field-10-label",
-                                            "nativeID": "field-10",
+                                            "labelId": "field-8-label",
+                                            "nativeID": "field-8",
                                             "setHasFeedbackText": [Function],
                                             "setHasHelpText": [Function],
                                           }
                                         }
                                         hasFeedbackText={false}
                                         hasHelpText={false}
-                                        helpTextId="field-10-helptext"
+                                        helpTextId="field-8-helptext"
                                         isDisabled={false}
                                         isInvalid={false}
                                         isReadOnly={false}
                                         isRequired={false}
-                                        labelId="field-10-label"
-                                        nativeID="field-10"
+                                        labelId="field-8-label"
+                                        nativeID="field-8"
                                         setHasFeedbackText={[Function]}
                                         setHasHelpText={[Function]}
                                         state={
@@ -1387,32 +930,32 @@ exports[`renders correctly 1`] = `
                                   checked={false}
                                   collapsable={false}
                                   dataSet={{}}
-                                  feedbackId="field-5-feedback"
+                                  feedbackId="field-4-feedback"
                                   focusable={true}
                                   formControlContext={
                                     {
-                                      "feedbackId": "field-5-feedback",
+                                      "feedbackId": "field-4-feedback",
                                       "hasFeedbackText": false,
                                       "hasHelpText": false,
-                                      "helpTextId": "field-5-helptext",
+                                      "helpTextId": "field-4-helptext",
                                       "isDisabled": false,
                                       "isInvalid": false,
                                       "isReadOnly": false,
                                       "isRequired": false,
-                                      "labelId": "field-5-label",
-                                      "nativeID": "field-5",
+                                      "labelId": "field-4-label",
+                                      "nativeID": "field-4",
                                       "setHasFeedbackText": [Function],
                                       "setHasHelpText": [Function],
                                     }
                                   }
                                   hasFeedbackText={false}
                                   hasHelpText={false}
-                                  helpTextId="field-5-helptext"
+                                  helpTextId="field-4-helptext"
                                   isInvalid={false}
                                   isReadOnly={false}
                                   isRequired={false}
-                                  labelId="field-5-label"
-                                  nativeID="field-5"
+                                  labelId="field-4-label"
+                                  nativeID="field-4"
                                   onBlur={[Function]}
                                   onClick={[Function]}
                                   onFocus={[Function]}
@@ -1464,32 +1007,32 @@ exports[`renders correctly 1`] = `
                                         colorScheme="primary"
                                         dataSet={{}}
                                         defaultIsChecked={false}
-                                        feedbackId="field-10-feedback"
+                                        feedbackId="field-8-feedback"
                                         formControlContext={
                                           {
-                                            "feedbackId": "field-10-feedback",
+                                            "feedbackId": "field-8-feedback",
                                             "hasFeedbackText": false,
                                             "hasHelpText": false,
-                                            "helpTextId": "field-10-helptext",
+                                            "helpTextId": "field-8-helptext",
                                             "isDisabled": false,
                                             "isInvalid": false,
                                             "isReadOnly": false,
                                             "isRequired": false,
-                                            "labelId": "field-10-label",
-                                            "nativeID": "field-10",
+                                            "labelId": "field-8-label",
+                                            "nativeID": "field-8",
                                             "setHasFeedbackText": [Function],
                                             "setHasHelpText": [Function],
                                           }
                                         }
                                         hasFeedbackText={false}
                                         hasHelpText={false}
-                                        helpTextId="field-10-helptext"
+                                        helpTextId="field-8-helptext"
                                         isDisabled={false}
                                         isInvalid={false}
                                         isReadOnly={false}
                                         isRequired={false}
-                                        labelId="field-10-label"
-                                        nativeID="field-10"
+                                        labelId="field-8-label"
+                                        nativeID="field-8"
                                         setHasFeedbackText={[Function]}
                                         setHasHelpText={[Function]}
                                         state={
