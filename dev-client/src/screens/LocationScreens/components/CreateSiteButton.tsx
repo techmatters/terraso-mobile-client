@@ -25,15 +25,15 @@ import {Coords} from 'terraso-client-shared/types';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-type Props = {coords: Coords};
+type Props = {coords: Coords; elevation?: number};
 
-export const CreateSiteButton = ({coords}: Props) => {
+export const CreateSiteButton = ({coords, elevation}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
   const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {coords});
-  }, [navigation, coords]);
+    navigation.navigate('CREATE_SITE', {coords, elevation});
+  }, [navigation, coords, elevation]);
 
   return (
     <Button

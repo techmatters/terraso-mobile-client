@@ -176,7 +176,7 @@ export const LocationDashboardContent = ({
         {!site && (
           <Box>
             <Box paddingVertical="20px">
-              <CreateSiteButton coords={coords} />
+              <CreateSiteButton coords={coords} elevation={elevation} />
             </Box>
             <Text variant="body1">{t('site.create.description')}</Text>
           </Box>
