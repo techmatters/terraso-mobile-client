@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useState, useCallback} from 'react';
+import {useCallback, useState} from 'react';
+
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 

@@ -15,10 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Link} from 'native-base';
-import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
 import {useCallback} from 'react';
 import {Linking} from 'react-native';
+
+import {Link} from 'native-base';
+import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
 
 type InternalLinkProps = {
   label: string;

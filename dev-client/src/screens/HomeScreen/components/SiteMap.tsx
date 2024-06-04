@@ -15,37 +15,40 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {
+  forwardRef,
+  memo,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from 'react';
+import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
+
 import Mapbox, {Camera, Location} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
-import {
-  memo,
-  useMemo,
-  useCallback,
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-} from 'react';
 import {useTheme} from 'native-base';
-import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
+
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {
-  CalloutState,
-  noneCallout,
-  siteCallout,
-  locationCallout,
-  siteClusterCallout,
-  getCalloutSite,
-} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
+import {Coords} from 'terraso-client-shared/types';
+
+import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {
   coordsToPosition,
   positionToCoords,
 } from 'terraso-mobile-client/components/StaticMapView';
-import {siteFeatureCollection} from 'terraso-mobile-client/screens/HomeScreen/utils/siteFeatureCollection';
-import {repositionCamera} from 'terraso-mobile-client/screens/HomeScreen/utils/repositionCamera';
-import {SiteMapCallout} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMapCallout';
 import {CustomUserLocation} from 'terraso-mobile-client/screens/HomeScreen/components/CustomUserLocation';
-import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
-import {Coords} from 'terraso-client-shared/types';
+import {SiteMapCallout} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMapCallout';
+import {
+  CalloutState,
+  getCalloutSite,
+  locationCallout,
+  noneCallout,
+  siteCallout,
+  siteClusterCallout,
+} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
+import {repositionCamera} from 'terraso-mobile-client/screens/HomeScreen/utils/repositionCamera';
+import {siteFeatureCollection} from 'terraso-mobile-client/screens/HomeScreen/utils/siteFeatureCollection';
 
 const DEFAULT_LOCATION = [-98.0, 38.5];
 const MAX_EXPANSION_ZOOM = 15;

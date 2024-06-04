@@ -15,10 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useSelector} from 'terraso-mobile-client/store';
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   projectId: string | null;

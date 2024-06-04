@@ -25,16 +25,17 @@
 
 import {
   ColorChroma,
+  colorChromas,
   ColorHueSubstep,
+  colorHueSubsteps,
   ColorValue,
+  colorValues,
   DepthDependentSoilData,
   SoilColorHue,
-  colorChromas,
-  colorHueSubsteps,
-  colorValues,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
+
 import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
 
 export type ColorProperties = {
   hue: SoilColorHue | null;

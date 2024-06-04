@@ -15,41 +15,44 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, ScrollView} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, ImageSourcePropType} from 'react-native';
+
+import {Button, ScrollView} from 'native-base';
+
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {
-  updateDepthDependentSoilData,
   RockFragmentVolume,
   SoilTexture,
   textures,
+  updateDepthDependentSoilData,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {fromEntries, entries} from 'terraso-client-shared/utils';
+import {entries, fromEntries} from 'terraso-client-shared/utils';
+
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
   radioImage,
 } from 'terraso-mobile-client/components/ImageRadio';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {
+  Box,
+  Column,
+  Heading,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
 import {
   SoilPitInputScreenProps,
   SoilPitInputScreenScaffold,
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {
-  Box,
-  Column,
-  Row,
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/TextureInfoContent';
-import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),

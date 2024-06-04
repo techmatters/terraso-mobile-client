@@ -16,21 +16,24 @@
  */
 
 import {useCallback, useMemo, useState} from 'react';
-import {Button, Divider, Spinner} from 'native-base';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useTranslation} from 'react-i18next';
-import {Card} from 'terraso-mobile-client/components/Card';
+
+import {Button, Divider, Spinner} from 'native-base';
+
+import {Coords} from 'terraso-client-shared/types';
+
 import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
-import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
-import {getElevation} from 'terraso-mobile-client/services';
+import {Card} from 'terraso-mobile-client/components/Card';
 import {
+  Box,
   Column,
   Row,
-  Box,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
-import {Coords} from 'terraso-client-shared/types';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
 import {LatLngDetail} from 'terraso-mobile-client/screens/HomeScreen/components/LatLngDetail';
+import {getElevation} from 'terraso-mobile-client/services';
 
 const TEMP_SOIL_ID_VALUE = 'Clifton';
 const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';

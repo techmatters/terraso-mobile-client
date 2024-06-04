@@ -15,47 +15,49 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useDispatch} from 'terraso-mobile-client/store';
+import {FormEvent, useCallback, useMemo, useRef} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {Formik} from 'formik';
+import {Button} from 'native-base';
+import * as yup from 'yup';
+
+import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {useSiteSoilIntervals} from 'terraso-client-shared/selectors';
 import {
+  deleteSoilDataDepthInterval,
   DepthInterval,
-  sameDepth,
-  updateSoilDataDepthInterval,
-  soilPitMethods,
   methodEnabled,
+  sameDepth,
   SoilDataDepthInterval,
   SoilPitMethod,
-  deleteSoilDataDepthInterval,
+  soilPitMethods,
+  updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
-import {useMemo, useCallback, FormEvent, useRef} from 'react';
+
+import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
+import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
+import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
+import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   IntervalForm,
   IntervalFormInput,
 } from 'terraso-mobile-client/components/IntervalForm';
-import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
-import * as yup from 'yup';
-import {useTranslation} from 'react-i18next';
-import {Button} from 'native-base';
-import {Formik} from 'formik';
-import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
-import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
-import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
-
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {useSiteSoilIntervals} from 'terraso-client-shared/selectors';
-import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
-  Row,
   Box,
-  Heading,
   Column,
+  Heading,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
+import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {

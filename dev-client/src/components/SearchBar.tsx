@@ -15,16 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Input, Modal, Button, useDisclose} from 'native-base';
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+
+import {Button, Input, Modal, useDisclose} from 'native-base';
+
 import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
-  Row,
-  Box,
   Badge,
+  Box,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {

@@ -16,9 +16,10 @@
  */
 
 import {useCallback} from 'react';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
+
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {icon?: IconName};
 

@@ -17,13 +17,14 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {VStack} from 'native-base';
+
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 import {
   LocationBasedSoilMatch,
   SOIL_PROPERTIES_TABLE_ROWS,
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
-import {VStack} from 'native-base';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 
 type PropertiesDisplayProps = {
   match: LocationBasedSoilMatch;

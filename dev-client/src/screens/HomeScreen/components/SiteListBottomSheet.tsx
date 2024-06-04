@@ -16,26 +16,29 @@
  */
 
 import {forwardRef, memo, useCallback, useMemo} from 'react';
-import {useTheme, Spinner} from 'native-base';
 import {useTranslation} from 'react-i18next';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
-import {useSelector} from 'terraso-mobile-client/store';
+import {Spinner, useTheme} from 'native-base';
+
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
-import {EmptySiteMessage} from 'terraso-mobile-client/screens/HomeScreen/components/EmptySiteMessage';
-import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {SiteFilterModal} from 'terraso-mobile-client/screens/HomeScreen/components/SiteFilterModal';
-import {getStartingSnapValue} from 'terraso-mobile-client/screens/HomeScreen/utils/getStartingSnapValue';
+
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {
   Box,
-  Row,
   Column,
   Heading,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {EmptySiteMessage} from 'terraso-mobile-client/screens/HomeScreen/components/EmptySiteMessage';
+import {SiteFilterModal} from 'terraso-mobile-client/screens/HomeScreen/components/SiteFilterModal';
+import {getStartingSnapValue} from 'terraso-mobile-client/screens/HomeScreen/utils/getStartingSnapValue';
+import {useSelector} from 'terraso-mobile-client/store';
 
 const WINDOW_SIZE = 3;
 const MAX_TO_RENDER_PER_BATCH = 3;

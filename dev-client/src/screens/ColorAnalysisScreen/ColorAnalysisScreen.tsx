@@ -16,17 +16,18 @@
  */
 
 import {useMemo, useState} from 'react';
-import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+
 import {Photo} from 'terraso-mobile-client/components/ImagePicker';
-import {
-  Stack,
-  screens,
-} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/screenDefinitions';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 import {
   ColorAnalysisContext,
   ColorAnalysisContextState,
 } from 'terraso-mobile-client/screens/ColorAnalysisScreen//context/colorAnalysisContext';
+import {
+  screens,
+  Stack,
+} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/screenDefinitions';
+import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
 export type ColorAnalysisProps = {
   photo: Photo;

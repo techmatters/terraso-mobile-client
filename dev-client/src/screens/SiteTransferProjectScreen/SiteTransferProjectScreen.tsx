@@ -15,21 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Fab, FlatList} from 'native-base';
-import {Accordion} from 'terraso-mobile-client/components/Accordion';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
-import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
-import {useTranslation} from 'react-i18next';
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {CheckboxGroup} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/CheckboxGroup';
+import {useTranslation} from 'react-i18next';
+
+import {Fab, FlatList} from 'native-base';
+
+import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/selectors';
 import {transferSites} from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {removeKeys} from 'terraso-mobile-client/util';
-import {ListHeader} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/ListHeader';
+
+import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {CheckboxGroup} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/CheckboxGroup';
+import {ListHeader} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/ListHeader';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {removeKeys} from 'terraso-mobile-client/util';
 
 const UNAFFILIATED = {
   projectId: Symbol('unaffiliated'),

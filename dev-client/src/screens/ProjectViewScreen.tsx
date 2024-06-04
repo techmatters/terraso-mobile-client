@@ -16,14 +16,16 @@
  */
 
 import {useCallback, useRef} from 'react';
+
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {useSelector} from 'terraso-mobile-client/store';
+
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {projectId: string};
 

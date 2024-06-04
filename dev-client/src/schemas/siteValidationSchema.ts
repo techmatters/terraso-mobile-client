@@ -15,20 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import * as yup from 'yup';
-import {
-  LATITUDE_MAX,
-  LATITUDE_MIN,
-  LONGITUDE_MIN,
-  LONGITUDE_MAX,
-  SITE_NAME_MAX,
-  SITE_NAME_MIN,
-} from 'terraso-mobile-client/constants';
 import {TFunction} from 'i18next';
+import * as yup from 'yup';
+
 import {
   CoordsParseError,
   parseCoords,
 } from 'terraso-mobile-client/components/StaticMapView';
+import {
+  LATITUDE_MAX,
+  LATITUDE_MIN,
+  LONGITUDE_MAX,
+  LONGITUDE_MIN,
+  SITE_NAME_MAX,
+  SITE_NAME_MIN,
+} from 'terraso-mobile-client/constants';
 
 export const siteValidationSchema = (t: TFunction) =>
   yup.object({

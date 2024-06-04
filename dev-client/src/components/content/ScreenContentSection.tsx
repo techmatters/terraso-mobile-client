@@ -16,9 +16,10 @@
  */
 
 import {ReactNode} from 'react';
+
 import {
-  Heading,
   Box,
+  Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {

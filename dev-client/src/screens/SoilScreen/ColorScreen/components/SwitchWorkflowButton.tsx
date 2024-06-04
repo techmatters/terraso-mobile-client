@@ -15,16 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {updatePreferences} from 'terraso-mobile-client/model/preferences/preferencesSlice';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+
+import {Button} from 'native-base';
+
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
+import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
+import {updatePreferences} from 'terraso-mobile-client/model/preferences/preferencesSlice';
 import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const SwitchWorkflowButton = ({
   siteId,

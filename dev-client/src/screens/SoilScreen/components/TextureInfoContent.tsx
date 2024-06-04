@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Trans, useTranslation} from 'react-i18next';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const TextureInfoContent = () => {
   const {t} = useTranslation();

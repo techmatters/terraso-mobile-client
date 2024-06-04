@@ -15,9 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 
 type Props = {
   Header: React.ReactNode;

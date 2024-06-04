@@ -15,17 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
-import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {Button} from 'native-base';
+
 import {Project} from 'terraso-client-shared/project/projectSlice';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
-  HStack,
   Box,
+  HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
   project: Project;

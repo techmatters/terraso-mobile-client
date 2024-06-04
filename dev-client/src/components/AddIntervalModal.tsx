@@ -15,21 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
-import {Formik} from 'formik';
 import {useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {Formik} from 'formik';
+import {Button} from 'native-base';
+
 import {
   DepthInterval,
   LabelledDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {useTranslation} from 'react-i18next';
+
 import {
   IntervalForm,
   IntervalFormInput,
 } from 'terraso-mobile-client/components/IntervalForm';
-import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;

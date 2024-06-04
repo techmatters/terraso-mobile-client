@@ -15,15 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ScrollView} from 'native-base';
 import {useTranslation} from 'react-i18next';
+
+import {ScrollView} from 'native-base';
+
 import {
   Box,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {NBDimensionValue} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {SoilPropertiesDataTableRow} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
+import {NBDimensionValue} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 type DataTableHeaderProps = {
   width: NBDimensionValue;

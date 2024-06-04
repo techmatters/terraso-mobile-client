@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Button, FormControl, Input, Radio} from 'native-base';
 import {
   createContext,
   useCallback,
@@ -23,26 +22,29 @@ import {
   useRef,
   useState,
 } from 'react';
+import {useTranslation} from 'react-i18next';
+import {TextInput} from 'react-native';
+
+import {Button, FormControl, Input, Radio} from 'native-base';
+
 import BadgedIcon from 'terraso-mobile-client/components/BadgedIcon';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {useTranslation} from 'react-i18next';
-import {
-  Modal,
-  ModalHandle,
-} from 'terraso-mobile-client/components/modals/Modal';
-import {sortCompare} from 'terraso-mobile-client/util';
 import {
   Select,
   SelectProps,
 } from 'terraso-mobile-client/components/inputs/Select';
 import {
+  Modal,
+  ModalHandle,
+} from 'terraso-mobile-client/components/modals/Modal';
+import {
   Column,
   HStack,
-  VStack,
   Text,
+  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {TextInput} from 'react-native';
+import {sortCompare} from 'terraso-mobile-client/util';
 
 type Lookup<Item, RecordValue = string> = {
   record?: Record<string, RecordValue | undefined>;

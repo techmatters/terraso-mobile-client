@@ -15,21 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import React, {useCallback} from 'react';
-import {Site} from 'terraso-client-shared/site/siteSlice';
-import {useSelector} from 'terraso-mobile-client/store';
 import {StyleSheet} from 'react-native';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
+
+import {Site} from 'terraso-client-shared/site/siteSlice';
+
 import {Card} from 'terraso-mobile-client/components/Card';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Box,
-  Row,
   Heading,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
+import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   site: Site;

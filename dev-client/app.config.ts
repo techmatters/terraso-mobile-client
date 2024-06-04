@@ -16,8 +16,10 @@
  */
 
 import 'ts-node/register';
-import {ExpoConfig, ConfigContext} from 'expo/config';
+
+import {ConfigContext, ExpoConfig} from 'expo/config';
 import {withAppBuildGradle} from 'expo/config-plugins';
+
 import {fromEntries} from 'terraso-client-shared/utils';
 
 const VERSION_REGEX = /^v[0-9]+$/g;

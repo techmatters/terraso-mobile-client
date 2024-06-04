@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Trans} from 'react-i18next';
+
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const SlopeMeterInfoContent = () => {

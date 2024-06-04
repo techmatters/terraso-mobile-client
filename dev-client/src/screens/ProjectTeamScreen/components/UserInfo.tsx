@@ -15,18 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Image} from 'native-base';
-import {User} from 'terraso-client-shared/account/accountSlice';
-import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {Image} from 'native-base';
+
+import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
-import {formatName} from 'terraso-mobile-client/util';
+
 import {
+  Badge,
   Box,
   HStack,
-  Badge,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {formatName} from 'terraso-mobile-client/util';
 
 type InfoProps = {
   membership: ProjectMembership;

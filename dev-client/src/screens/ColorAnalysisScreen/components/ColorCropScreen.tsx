@@ -15,13 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  ActionCrop,
-  ActionResize,
-  SaveFormat,
-  manipulateAsync,
-} from 'expo-image-manipulator';
-import {Fab} from 'native-base';
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {LayoutChangeEvent} from 'react-native';
@@ -31,6 +24,16 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+
+import {
+  ActionCrop,
+  ActionResize,
+  manipulateAsync,
+  SaveFormat,
+} from 'expo-image-manipulator';
+
+import {Fab} from 'native-base';
+
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Photo,
@@ -38,8 +41,8 @@ import {
 } from 'terraso-mobile-client/components/ImagePicker';
 import {
   Box,
-  Text,
   Column,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';

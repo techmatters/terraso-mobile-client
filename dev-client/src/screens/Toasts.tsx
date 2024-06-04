@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useToast} from 'native-base';
 import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
+
+import {useToast} from 'native-base';
+
 import {setSoilIdStatus} from 'terraso-client-shared/soilId/soilIdSlice';
+
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const Toasts = () => {

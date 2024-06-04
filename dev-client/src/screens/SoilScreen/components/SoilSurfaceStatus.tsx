@@ -16,18 +16,20 @@
  */
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+
+import {
+  selectSoilData,
+  useSiteProjectSoilSettings,
+} from 'terraso-client-shared/selectors';
+
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   Column,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useSelector} from 'terraso-mobile-client/store';
-import {
-  selectSoilData,
-  useSiteProjectSoilSettings,
-} from 'terraso-client-shared/selectors';
 
 type Props = {siteId: string};
 

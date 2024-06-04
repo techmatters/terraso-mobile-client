@@ -15,22 +15,25 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Image} from 'native-base';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {formatName} from 'terraso-mobile-client/util';
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+
+import {Image} from 'native-base';
+
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {
-  HStack,
-  VStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   PROJECT_ROLES,
   ProjectRole,
 } from 'terraso-client-shared/project/projectSlice';
-import {useCallback} from 'react';
+
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {
+  HStack,
+  Text,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {formatName} from 'terraso-mobile-client/util';
 
 export type UserFields = Omit<User, 'preferences'>;
 

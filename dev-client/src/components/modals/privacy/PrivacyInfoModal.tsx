@@ -15,12 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {forwardRef} from 'react';
+
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {PrivacyInfoContent} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoContent';
-import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
-import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
+
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
+import {PrivacyInfoContent} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoContent';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 type Props = {onClose: () => void};
 

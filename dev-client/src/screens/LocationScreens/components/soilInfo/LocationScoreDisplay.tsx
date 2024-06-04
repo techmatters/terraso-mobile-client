@@ -15,8 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {Coords} from 'terraso-client-shared/types';
+
+import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
   Column,
   Heading,
@@ -28,11 +33,7 @@ import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/In
 import {LocationBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {LocationScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
-import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
-import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
-import {useMemo} from 'react';
 import {getSoilWebUrl} from 'terraso-mobile-client/util';
-import {Coords} from 'terraso-client-shared/types';
 
 type LocationScoreDisplayProps = {
   isSite: boolean;

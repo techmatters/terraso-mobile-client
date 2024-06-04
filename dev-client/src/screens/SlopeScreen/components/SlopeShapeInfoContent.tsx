@@ -16,6 +16,7 @@
  */
 import {Trans, useTranslation} from 'react-i18next';
 import {Image, ImageSourcePropType, StyleSheet, View} from 'react-native';
+
 import {
   Box,
   Column,

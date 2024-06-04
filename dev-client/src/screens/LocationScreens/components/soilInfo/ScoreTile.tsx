@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Text, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {formatPercent} from 'terraso-mobile-client/util';
 
 type ScoreTileProps = {

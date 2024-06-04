@@ -15,15 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {IconButton as NativeIconButton} from 'native-base';
 import React from 'react';
 import {Linking, Pressable, StyleSheet, View} from 'react-native';
+
+import {IconButton as NativeIconButton} from 'native-base';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
   HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
 export type ExternalLinkProps = {
   label: string;

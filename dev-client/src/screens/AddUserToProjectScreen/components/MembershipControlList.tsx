@@ -16,6 +16,7 @@
  */
 
 import {Divider, FlatList} from 'native-base';
+
 import {ProjectRole} from 'terraso-client-shared/project/projectSlice';
 
 import {

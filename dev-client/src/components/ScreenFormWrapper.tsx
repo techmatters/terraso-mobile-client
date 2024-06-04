@@ -15,17 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, useRef, useImperativeHandle} from 'react';
-import {Formik, FormikProps} from 'formik';
-import {Spacer, Button} from 'native-base';
-import * as yup from 'yup';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
-import {KeyboardAvoidingView, Platform} from 'react-native';
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/HorizontalIconButton';
+import {forwardRef, useImperativeHandle, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {HStack, Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {KeyboardAvoidingView, Platform} from 'react-native';
+
+import {Formik, FormikProps} from 'formik';
+import {Button, Spacer} from 'native-base';
+import * as yup from 'yup';
+
+import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/HorizontalIconButton';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
+import {Box, HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 type Props = {
   initialValues: {

@@ -15,10 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import * as yup from 'yup';
-import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
-import {DepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
 import {TFunction} from 'i18next';
+import * as yup from 'yup';
+
+import {DepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
+
+import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
 
 type Args = {
   t: TFunction;

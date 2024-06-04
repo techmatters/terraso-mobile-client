@@ -15,10 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  SoilPitInputScreenProps,
-  SoilPitInputScreenScaffold,
-} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useCallback, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {selectDepthDependentData} from 'terraso-client-shared/selectors';
+import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+
+import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {
   Box,
   Column,
@@ -27,21 +31,19 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useTranslation} from 'react-i18next';
-import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
-import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
-import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
-import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {useCallback, useMemo} from 'react';
-import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
-import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
-import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
-import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
+import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
+import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
+import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
+import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
+import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+import {
+  SoilPitInputScreenProps,
+  SoilPitInputScreenScaffold,
+} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 

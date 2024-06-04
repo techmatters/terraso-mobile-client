@@ -16,6 +16,7 @@
  */
 
 import {FormControl, IRadioGroupProps, Radio} from 'native-base';
+
 import {entries} from 'terraso-client-shared/utils';
 
 type RadioOption = {

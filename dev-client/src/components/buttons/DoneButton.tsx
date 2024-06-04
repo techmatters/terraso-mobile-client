@@ -15,11 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Fab} from 'native-base';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useTranslation} from 'react-i18next';
+
+import {Fab} from 'native-base';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type DoneButtonProps = {
   isDisabled?: boolean;

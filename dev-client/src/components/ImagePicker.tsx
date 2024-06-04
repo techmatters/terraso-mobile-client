@@ -16,24 +16,27 @@
  */
 
 import {useCallback, useRef} from 'react';
+import {useTranslation} from 'react-i18next';
+
 import {
   CameraType,
   launchCameraAsync,
   launchImageLibraryAsync,
   MediaTypeOptions,
 } from 'expo-image-picker';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {createAssetAsync} from 'expo-media-library';
+
+import {Buffer} from '@craftzdog/react-native-buffer';
+import {decode} from 'jpeg-js';
+import {Button} from 'native-base';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Button} from 'native-base';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useTranslation} from 'react-i18next';
-import {Buffer} from '@craftzdog/react-native-buffer';
-import {decode} from 'jpeg-js';
-import {createAssetAsync} from 'expo-media-library';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 
 export type Photo = {
   width: number;

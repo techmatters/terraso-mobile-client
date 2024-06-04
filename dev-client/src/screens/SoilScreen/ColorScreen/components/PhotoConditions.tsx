@@ -17,9 +17,11 @@
 
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+
 import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
+
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';

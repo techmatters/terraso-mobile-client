@@ -15,14 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, ScrollView} from 'native-base';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
-import {Modal} from 'terraso-mobile-client/components/modals/Modal';
-import {useMemo, useCallback} from 'react';
+
+import {Button, ScrollView} from 'native-base';
+
+import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  selectSoilData,
+  useSiteProjectSoilSettings,
+  useSiteSoilIntervals,
+} from 'terraso-client-shared/selectors';
 import {
   LabelledDepthInterval,
   methodRequired,
@@ -30,22 +33,22 @@ import {
   updateSoilData,
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
-import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
-import {
-  selectSoilData,
-  useSiteProjectSoilSettings,
-  useSiteSoilIntervals,
-} from 'terraso-client-shared/selectors';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
-import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
-import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+
+import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
-  Row,
   Heading,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
+import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
+import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const SoilScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();

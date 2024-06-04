@@ -16,12 +16,14 @@
  */
 
 import {useCallback, useMemo} from 'react';
-import {useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useTranslation} from 'react-i18next';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+
 import {Spinner} from 'native-base';
+
+import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
+import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
+import {normalizeText} from 'terraso-client-shared/utils';
+
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {
   ListFilterModal,
@@ -29,16 +31,17 @@ import {
   SelectFilter,
   TextInputFilter,
 } from 'terraso-mobile-client/components/ListFilter';
-import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
-import {normalizeText} from 'terraso-client-shared/utils';
-import {equals, searchText} from 'terraso-mobile-client/util';
-import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
 import {
   Box,
-  VStack,
   Text,
+  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useSelector} from 'terraso-mobile-client/store';
+import {equals, searchText} from 'terraso-mobile-client/util';
 
 const SORT_OPTIONS = ['nameAsc', 'nameDesc'];
 

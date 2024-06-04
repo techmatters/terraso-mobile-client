@@ -14,26 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Image} from 'react-native';
+
+import {selectSite, selectSoilData} from 'terraso-client-shared/selectors';
+import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {
+  SurfaceCracks,
+  surfaceCracks,
+} from 'terraso-client-shared/soilId/soilIdTypes';
+
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   Box,
   Column,
   Heading,
   Paragraph,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Select} from 'terraso-mobile-client/components/inputs/Select';
-import {useTranslation} from 'react-i18next';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectSite, selectSoilData} from 'terraso-client-shared/selectors';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {Image} from 'react-native';
-import {
-  SurfaceCracks,
-  surfaceCracks,
-} from 'terraso-client-shared/soilId/soilIdTypes';
-import {useCallback} from 'react';
-import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {siteId: string};
 

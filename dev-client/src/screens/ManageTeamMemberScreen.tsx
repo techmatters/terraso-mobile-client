@@ -15,28 +15,31 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Divider} from 'native-base';
 import {useCallback, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {Button, Divider} from 'native-base';
+
 import {
-  ProjectRole,
   deleteUserFromProject,
+  ProjectRole,
   updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {formatName} from 'terraso-mobile-client/util';
-import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {useTranslation} from 'react-i18next';
+
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   Box,
-  VStack,
   Text,
+  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {formatName} from 'terraso-mobile-client/util';
 
 type Props = {
   projectId: string;

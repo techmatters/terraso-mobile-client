@@ -15,27 +15,30 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
-import {useTranslation} from 'react-i18next';
-import {useModal} from 'terraso-mobile-client/components/modals/Modal';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import * as yup from 'yup';
 import {useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+
 import {Formik} from 'formik';
+import {Button} from 'native-base';
+import * as yup from 'yup';
+
+import {selectSoilData} from 'terraso-client-shared/selectors';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+
+import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {useModal} from 'terraso-mobile-client/components/modals/Modal';
+import {
+  Box,
+  Column,
+  Heading,
+  Row,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   degreeToPercent,
   percentToDegree,
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {
-  Box,
-  Column,
-  Row,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {selectSoilData} from 'terraso-client-shared/selectors';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   siteId: string;

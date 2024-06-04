@@ -16,12 +16,15 @@
  */
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ParamList} from 'terraso-mobile-client/navigation/types';
+
+import {
+  ParamList,
+  ScreenDefinitions,
+} from 'terraso-mobile-client/navigation/types';
+import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
+import {ColorAnalysisHomeScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen//ColorAnalysisHomeScreen';
 import {ColorCropReferenceScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorCropReferenceScreen';
 import {ColorCropSoilScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorCropSoilScreen';
-import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
-import {ScreenDefinitions} from 'terraso-mobile-client/navigation/types';
-import {ColorAnalysisHomeScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen//ColorAnalysisHomeScreen';
 
 const screenDefinitions = {
   COLOR_ANALYSIS_HOME: ColorAnalysisHomeScreen,

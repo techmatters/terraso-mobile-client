@@ -15,28 +15,31 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
-import {FreeformTextInput} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/FreeformTextInput';
-import {useTranslation} from 'react-i18next';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useCallback, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {Button} from 'native-base';
+
 import {checkUserInProject} from 'terraso-client-shared/account/accountService';
-import MembershipControlList, {
-  UserWithRole,
-} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MembershipControlList';
 import {
-  ProjectRole,
   addUserToProject,
+  ProjectRole,
 } from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {useKeyboardOpen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/hooks/useKeyboardOpen';
+
 import {
   Box,
   HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {FreeformTextInput} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/FreeformTextInput';
+import MembershipControlList, {
+  UserWithRole,
+} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MembershipControlList';
+import {useKeyboardOpen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/hooks/useKeyboardOpen';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   projectId: string;

@@ -15,13 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TypedNavigator} from '@react-navigation/native';
-import {ScreenDefinitions} from 'terraso-mobile-client/navigation/types';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {
   ParamListBase,
+  TypedNavigator,
   useNavigation as useNavigationNative,
 } from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+import {ScreenDefinitions} from 'terraso-mobile-client/navigation/types';
 
 export const generateScreens = <
   T extends TypedNavigator<any, any, any, any, any>,

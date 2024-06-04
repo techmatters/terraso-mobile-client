@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {IPopoverProps, Popover} from 'native-base';
 import {memo} from 'react';
+
+import {IPopoverProps, Popover} from 'native-base';
 
 type TooltipProps = React.PropsWithChildren<{
   trigger: IPopoverProps['trigger'];

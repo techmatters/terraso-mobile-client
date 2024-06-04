@@ -15,41 +15,44 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, ScrollView} from 'native-base';
+import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {Image, StyleSheet} from 'react-native';
+
+import {Button, ScrollView} from 'native-base';
+
+import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+import {selectSoilData} from 'terraso-client-shared/selectors';
+import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {
-  renderSlopeSteepnessSelectInline,
-  renderSteepness,
-} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {
   ImageRadio,
   radioImage,
 } from 'terraso-mobile-client/components/ImageRadio';
-import {useCallback, useMemo, useRef, useState} from 'react';
-import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Modal,
   ModalHandle,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
-import {Image, StyleSheet} from 'react-native';
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   Box,
   Column,
-  Row,
   Heading,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {selectSoilData} from 'terraso-client-shared/selectors';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
+import {
+  renderSlopeSteepnessSelectInline,
+  renderSteepness,
+} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   siteId: string;

@@ -15,13 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Divider, FlatList} from 'native-base';
 import {useMemo} from 'react';
+
+import {Divider, FlatList} from 'native-base';
+
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   ProjectMembership,
   ProjectRole,
 } from 'terraso-client-shared/project/projectSlice';
+
 import {UserItem} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserItem';
 
 type ListProps = {

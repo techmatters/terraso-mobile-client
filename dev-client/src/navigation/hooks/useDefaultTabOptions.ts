@@ -15,9 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
+
 import {MaterialTopTabNavigationOptions} from '@react-navigation/material-top-tabs';
 import {useTheme} from 'native-base';
-import {useMemo} from 'react';
 
 export const useDefaultTabOptions = (): MaterialTopTabNavigationOptions => {
   const {colors} = useTheme();

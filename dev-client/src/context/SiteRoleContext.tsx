@@ -16,10 +16,12 @@
  */
 
 import {createContext, useContext} from 'react';
+
 import {
-  SiteUserRole,
   selectUserRoleSite,
+  SiteUserRole,
 } from 'terraso-client-shared/selectors';
+
 import {useSelector} from 'terraso-mobile-client/store';
 
 const SiteRoleContext = createContext<SiteUserRole | null>(null);

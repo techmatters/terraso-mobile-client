@@ -16,13 +16,14 @@
  */
 
 import {useCallback, useRef} from 'react';
+
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {CreateProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/CreateProjectForm';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
+import {CreateProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/CreateProjectForm';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 export const CreateProjectScreen = () => {
   const infoModalRef = useRef<BottomSheetModal>(null);

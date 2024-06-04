@@ -17,23 +17,25 @@
 
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+
 import {Formik} from 'formik';
 
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
-import {useSelector} from 'terraso-mobile-client/store';
 import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Coords} from 'terraso-client-shared/types';
+
 import {
   coordsToString,
   parseCoords,
 } from 'terraso-mobile-client/components/StaticMapView';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {
   CreateSiteForm,
   FormState,
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
 import {useHomeScreenContext} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
-import {Coords} from 'terraso-client-shared/types';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   defaultProjectId?: string;

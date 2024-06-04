@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {v4 as uuidv4} from 'uuid';
+
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 
 interface SuggestionResponse {
   suggestions: Suggestion[];

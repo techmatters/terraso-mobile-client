@@ -15,20 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import Mapbox from '@rnmapbox/maps';
-import {StyleProp, ViewStyle} from 'react-native';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {Position} from '@rnmapbox/maps/lib/typescript/src/types/Position';
 import {useMemo} from 'react';
+import {StyleProp, ViewStyle} from 'react-native';
+
+import Mapbox from '@rnmapbox/maps';
+import {Position} from '@rnmapbox/maps/lib/typescript/src/types/Position';
+
+import {Coords} from 'terraso-client-shared/types';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   LATITUDE_MAX,
   LATITUDE_MIN,
-  LONGITUDE_MIN,
   LONGITUDE_MAX,
+  LONGITUDE_MIN,
 } from 'terraso-mobile-client/constants';
-import {Coords} from 'terraso-client-shared/types';
-import {formatCoordinate} from 'terraso-mobile-client/util';
 import i18n from 'terraso-mobile-client/translations';
+import {formatCoordinate} from 'terraso-mobile-client/util';
 
 const coordsRegex = /^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/;
 export type CoordsParseErrorReason =

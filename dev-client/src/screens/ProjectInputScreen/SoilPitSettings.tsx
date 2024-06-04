@@ -15,9 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+
+import {Button} from 'native-base';
+
+import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
 import {
   DEPTH_PRESETS,
   LabelledDepthInterval,
@@ -25,22 +28,22 @@ import {
   updateProjectDepthInterval,
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
-import {useDispatch} from 'terraso-mobile-client/store';
-import {DepthIntervalTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthIntervalTable';
+
 import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Modal,
   ModalHandle,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
-import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {DepthIntervalTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthIntervalTable';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 export const SoilPitSettings = ({projectId}: {projectId: string}) => {
   const {t} = useTranslation();

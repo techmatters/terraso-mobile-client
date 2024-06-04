@@ -15,9 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
 import {useMemo} from 'react';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
+
+import {Button} from 'native-base';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 

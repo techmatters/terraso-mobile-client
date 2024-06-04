@@ -17,6 +17,8 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
+
 import {
   Heading,
   HStack,
@@ -24,14 +26,13 @@ import {
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 import {
   DataBasedSoilMatch,
   SOIL_PROPERTIES_TABLE_ROWS,
 } from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
-import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
-import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
+import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 
 type PropertiesScoreDisplayProps = {
   data: SoilData;

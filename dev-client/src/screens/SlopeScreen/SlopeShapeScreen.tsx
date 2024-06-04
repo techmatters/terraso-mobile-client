@@ -15,22 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+import {StyleSheet} from 'react-native';
+
 import {ScrollView} from 'native-base';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+
 import {
   SoilIdSoilDataCrossSlopeChoices,
   SoilIdSoilDataDownSlopeChoices,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {useTranslation} from 'react-i18next';
-import {
-  ImageRadio,
-  ImageRadioOption,
-} from 'terraso-mobile-client/components/ImageRadio';
-import {useCallback, useMemo} from 'react';
+import {selectSoilData} from 'terraso-client-shared/selectors';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {StyleSheet} from 'react-native';
+
 import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';
 import ConcaveConvex from 'terraso-mobile-client/assets/slope/shape/concave-convex.svg';
 import ConcaveLinear from 'terraso-mobile-client/assets/slope/shape/concave-linear.svg';
@@ -40,16 +37,22 @@ import ConvexLinear from 'terraso-mobile-client/assets/slope/shape/convex-linear
 import LinearConcave from 'terraso-mobile-client/assets/slope/shape/linear-concave.svg';
 import LinearConvex from 'terraso-mobile-client/assets/slope/shape/linear-convex.svg';
 import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear.svg';
-import {renderShape} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {
+  ImageRadio,
+  ImageRadioOption,
+} from 'terraso-mobile-client/components/ImageRadio';
 import {
   Column,
-  Row,
   Heading,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {selectSoilData} from 'terraso-client-shared/selectors';
-import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
+import {renderShape} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   siteId: string;

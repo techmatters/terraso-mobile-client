@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {Pressable} from 'native-base';
+
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';

@@ -15,19 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback, useMemo, useRef} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Pressable, ViewStyle} from 'react-native';
+import {TextInput} from 'react-native-paper';
+
+import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useCallback, useMemo, useRef} from 'react';
-import {Pressable, ViewStyle} from 'react-native';
-import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
-import {useTranslation} from 'react-i18next';
-import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
-import {TextInput} from 'react-native-paper';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {theme} from 'terraso-mobile-client/theme';
 
 // utility type so we can strictly validate the types of inputs/callbacks

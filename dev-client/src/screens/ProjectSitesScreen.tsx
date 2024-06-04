@@ -15,31 +15,27 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, FlatList, Menu, Pressable} from 'native-base';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {
-  TabRoutes,
-  TabStackParamList,
-} from 'terraso-mobile-client/navigation/constants';
+
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
-import {useCallback, useMemo} from 'react';
 import {createSelector} from '@reduxjs/toolkit';
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
-import {
-  Site,
-  deleteSite,
-  updateSite,
-} from 'terraso-client-shared/site/siteSlice';
-import {useDispatch, useSelector, AppState} from 'terraso-mobile-client/store';
+import {Button, FlatList, Menu, Pressable} from 'native-base';
+
 import {
   Project,
   removeSiteFromAllProjects,
 } from 'terraso-client-shared/project/projectSlice';
-import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
+import {
+  deleteSite,
+  Site,
+  updateSite,
+} from 'terraso-client-shared/site/siteSlice';
+import {normalizeText} from 'terraso-client-shared/utils';
+
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   ListFilterModal,
   ListFilterProvider,
@@ -48,17 +44,24 @@ import {
   TextInputFilter,
   useListFilter,
 } from 'terraso-mobile-client/components/ListFilter';
-import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {searchText} from 'terraso-mobile-client/util';
-import {normalizeText} from 'terraso-client-shared/utils';
-import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,
   HStack,
-  VStack,
   Text,
+  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/navigation/constants';
+import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
+import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {searchText} from 'terraso-mobile-client/util';
 
 type SiteMenuProps = {
   iconName: IconName;

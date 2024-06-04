@@ -16,6 +16,7 @@
  */
 
 import {Link} from 'native-base';
+
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {ThemeColor} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 

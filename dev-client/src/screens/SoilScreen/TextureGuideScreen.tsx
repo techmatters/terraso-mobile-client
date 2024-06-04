@@ -15,27 +15,31 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ScrollView, Button} from 'native-base';
-import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {useTranslation} from 'react-i18next';
-import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Image, StyleSheet, View} from 'react-native';
+
+import {ResizeMode, Video} from 'expo-av';
+
+import {Button, ScrollView} from 'native-base';
+
 import {
   SoilTexture,
   updateDepthDependentSoilData,
 } from 'terraso-client-shared/soilId/soilIdSlice';
+
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useDispatch} from 'terraso-mobile-client/store';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {ResizeMode, Video} from 'expo-av';
-import {Image, StyleSheet, View} from 'react-native';
 import {
-  Column,
   Box,
+  Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 const LENGTH_IMAGE = require('terraso-mobile-client/assets/texture/guide/length.png');
 

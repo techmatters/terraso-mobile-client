@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import React from 'react';
+
 import {
-  NativeStackScreenProps,
   createNativeStackNavigator,
+  NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import React from 'react';
 import {
   bottomTabScreensDefinitions,
   combinedScreenDefinitions,

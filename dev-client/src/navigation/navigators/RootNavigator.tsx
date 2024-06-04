@@ -15,22 +15,25 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {useEffect} from 'react';
-import {
-  setHasAccessTokenAsync,
-  fetchUser,
-} from 'terraso-client-shared/account/accountSlice';
+
+import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
 import {Location, locationManager} from '@rnmapbox/maps';
-import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
-import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
-import {RootStack} from 'terraso-mobile-client/navigation/types';
+
 import {
-  screens,
-  modalScreens,
-} from 'terraso-mobile-client/navigation/screenDefinitions';
+  fetchUser,
+  setHasAccessTokenAsync,
+} from 'terraso-client-shared/account/accountSlice';
+
+import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
+import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
+import {
+  modalScreens,
+  screens,
+} from 'terraso-mobile-client/navigation/screenDefinitions';
+import {RootStack} from 'terraso-mobile-client/navigation/types';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 const modalScreenOptions: NativeStackNavigationOptions = {
   ...DEFAULT_STACK_NAVIGATOR_OPTIONS,

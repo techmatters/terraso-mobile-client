@@ -16,26 +16,28 @@
  */
 
 import {useCallback, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+
 import {
+  Button,
   Fab,
   Input,
-  Button,
   // useTheme,
   // Row,
   // Text,
   // Spacer,
   // Pressable,
 } from 'native-base';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useTranslation} from 'react-i18next';
-import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 
+import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   siteId: string;

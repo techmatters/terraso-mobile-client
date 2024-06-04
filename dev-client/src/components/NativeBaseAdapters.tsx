@@ -23,13 +23,14 @@ import {
   useContext,
 } from 'react';
 import * as RN from 'react-native';
+
+import {IconProps} from 'terraso-mobile-client/components/icons/Icon';
 import {
+  convertNBStyles,
   NativeBaseProps,
   NativeBaseTextProps,
-  convertNBStyles,
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
-import {IconProps} from 'terraso-mobile-client/components/icons/Icon';
 
 const withProps = (node: React.ReactNode, props: object | undefined) =>
   !isValidElement(node) || props === undefined

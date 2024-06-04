@@ -16,10 +16,12 @@
  */
 
 import {memo} from 'react';
-import {FormField} from 'terraso-mobile-client/components/form/FormField';
-import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
+
 import {ErrorMessage as FormikErrorMessage, useFormikContext} from 'formik';
 import {FormControl} from 'native-base';
+
+import {FormField} from 'terraso-mobile-client/components/form/FormField';
+import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 
 const FormHelperText = memo(

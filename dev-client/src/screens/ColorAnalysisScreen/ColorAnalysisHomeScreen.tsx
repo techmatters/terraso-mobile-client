@@ -18,8 +18,22 @@
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
+
+import {Fab} from 'native-base';
+
+import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {
+  decodeBase64Jpg,
+  PhotoWithBase64,
+} from 'terraso-mobile-client/components/ImagePicker';
+import {
+  ActionButton,
+  ActionsModal,
+} from 'terraso-mobile-client/components/modals/ActionsModal';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
   Column,
@@ -27,30 +41,19 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
+import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
-import {Fab} from 'native-base';
-import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {
+  getColor,
   InvalidColorResult,
   MunsellColor,
   REFERENCES,
   RGBA,
-  getColor,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {
-  PhotoWithBase64,
-  decodeBase64Jpg,
-} from 'terraso-mobile-client/components/ImagePicker';
-import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
-import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
-import {
-  ActionButton,
-  ActionsModal,
-} from 'terraso-mobile-client/components/modals/ActionsModal';
-import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
-import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 const analyzeImage = async ({
   reference,

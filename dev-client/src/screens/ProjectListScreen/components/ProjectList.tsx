@@ -15,14 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FlatList} from 'native-base';
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {FlatList} from 'native-base';
+
 import {Project} from 'terraso-client-shared/project/projectSlice';
+
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
-import {ProjectPreviewCard} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectPreviewCard';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ProjectPreviewCard} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectPreviewCard';
 
 const WINDOW_SIZE = 6; // Default is 21, bringing it down as the items in this FlatList are very costly to render
 const MAX_TO_RENDER_PER_BATCH = 5; // Similar as above, default is 10

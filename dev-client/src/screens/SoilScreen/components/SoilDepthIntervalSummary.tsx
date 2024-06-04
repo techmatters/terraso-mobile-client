@@ -14,31 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import {useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {
+  AggregatedInterval,
+  selectDepthDependentData,
+  useSiteProjectSoilSettings,
+} from 'terraso-client-shared/selectors';
 import {
   methodEnabled,
   methodRequired,
   soilPitMethods,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {
-  selectDepthDependentData,
-  useSiteProjectSoilSettings,
-} from 'terraso-client-shared/selectors';
-import {EditIntervalModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModal';
+
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
-import {useTranslation} from 'react-i18next';
-import {AggregatedInterval} from 'terraso-client-shared/selectors';
-import {useMemo} from 'react';
-import {useSelector} from 'terraso-mobile-client/store';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {
-  pitMethodSummary,
-  renderDepthInterval,
-} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {
   Column,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {EditIntervalModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModal';
+import {
+  pitMethodSummary,
+  renderDepthInterval,
+} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type DepthIntervalEditorProps = {
   siteId: string;

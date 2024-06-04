@@ -17,12 +17,13 @@
 
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
-import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
+
 import {
   ColorCropScreen,
   CropResult,
 } from 'terraso-mobile-client/screens/ColorAnalysisScreen/components/ColorCropScreen';
+import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
+import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
 
 export const ColorCropSoilScreen = () => {
   const {t} = useTranslation();

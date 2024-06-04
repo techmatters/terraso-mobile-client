@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   count: number;

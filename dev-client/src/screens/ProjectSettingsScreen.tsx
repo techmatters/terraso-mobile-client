@@ -15,30 +15,33 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'native-base';
-import {
-  TabRoutes,
-  TabStackParamList,
-} from 'terraso-mobile-client/navigation/constants';
-import {useTranslation} from 'react-i18next';
-import IconLink from 'terraso-mobile-client/components/icons/IconLink';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+
+import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   deleteProject,
   updateProject,
 } from 'terraso-client-shared/project/projectSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
-import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {selectProject} from 'terraso-client-shared/selectors';
+
+import IconLink from 'terraso-mobile-client/components/icons/IconLink';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
+import {
+  Text,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
-  VStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {selectProject} from 'terraso-client-shared/selectors';
+  TabRoutes,
+  TabStackParamList,
+} from 'terraso-mobile-client/navigation/constants';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 

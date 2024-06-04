@@ -16,6 +16,7 @@
  */
 
 import {memo} from 'react';
+
 import {HelpButton} from 'terraso-mobile-client/components/buttons/HelpButton';
 import {Tooltip} from 'terraso-mobile-client/components/tooltips/Tooltip';
 
