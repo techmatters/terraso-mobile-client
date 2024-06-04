@@ -28,18 +28,24 @@ export const getTopMatch = (
   const dataBased = results.dataBasedMatches;
 
   if (dataBased.length > 0) {
-    return dataBased.reduce(
-      (prev, current) =>
-        current.combinedMatch.rank > prev.combinedMatch.rank ? current : prev,
-      dataBased[0],
-    );
+    return dataBased.reduce(getBetterDataMatch);
   } else if (locationBased.length > 0) {
-    return locationBased.reduce(
-      (prev, current) =>
-        current.match.rank > prev.match.rank ? current : prev,
-      locationBased[0],
-    );
+    return locationBased.reduce(getBetterLocationMatch);
   } else {
     return undefined;
   }
+};
+
+export const getBetterDataMatch = (
+  a: DataBasedSoilMatch,
+  b: DataBasedSoilMatch,
+): DataBasedSoilMatch => {
+  return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
+};
+
+export const getBetterLocationMatch = (
+  a: LocationBasedSoilMatch,
+  b: LocationBasedSoilMatch,
+): LocationBasedSoilMatch => {
+  return a.match.rank < b.match.rank ? a : b;
 };
