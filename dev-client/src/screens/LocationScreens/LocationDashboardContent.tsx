@@ -15,13 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView, StyleSheet} from 'react-native';
 
 import {Button} from 'native-base';
 
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
+import {selectSoilIdData} from 'terraso-client-shared/soilId/soilIdSelectors';
 import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
@@ -39,6 +40,7 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
+import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';

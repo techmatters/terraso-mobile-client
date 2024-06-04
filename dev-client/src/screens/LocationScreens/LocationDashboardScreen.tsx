@@ -26,6 +26,7 @@ import {Coords} from 'terraso-client-shared/types';
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';

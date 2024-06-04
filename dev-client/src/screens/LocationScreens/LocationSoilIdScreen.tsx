@@ -29,10 +29,8 @@ import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
-import {
-  SoilIdDescriptionSection,
-  SoilIdMatchesSection,
-} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdSections';
+import {SoilIdDescriptionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdDescriptionSection';
+import {SoilIdMatchesSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdMatchesSection';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 
