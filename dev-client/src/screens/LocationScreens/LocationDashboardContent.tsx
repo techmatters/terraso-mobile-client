@@ -62,7 +62,7 @@ const LocationDetail = ({label, value}: {label: string; value: string}) => (
 type LocationPredictionProps = {
   label: string;
   soilName: string;
-  ecologicalSiteName: string;
+  ecologicalSiteName?: string;
   onExploreDataPress: () => void;
 };
 
@@ -100,7 +100,9 @@ const LocationPrediction = ({
       </Text>
       <Text variant="body1" color="primary.contrast" mb="25px">
         <Text bold>{t('soil.ecological_site_name')}: </Text>
-        <Text>{ecologicalSiteName}</Text>
+        <Text>
+          {ecologicalSiteName ?? t('site.soil_id.soil_info.eco_name_none')}
+        </Text>
       </Text>
 
       <Button
@@ -234,9 +236,7 @@ export const LocationDashboardContent = ({
           <LocationPrediction
             label={t('soil.soil_id')}
             soilName={topSoilMatch.soilInfo.soilSeries.name}
-            ecologicalSiteName={
-              topSoilMatch.soilInfo.ecologicalSite?.name ?? ''
-            }
+            ecologicalSiteName={topSoilMatch.soilInfo.ecologicalSite?.name}
             onExploreDataPress={onExploreDataPress}
           />
         )}
