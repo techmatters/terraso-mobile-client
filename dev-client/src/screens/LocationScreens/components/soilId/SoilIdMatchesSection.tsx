@@ -19,7 +19,6 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
-import {selectSoilIdData} from 'terraso-client-shared/soilId/soilIdSelectors';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
@@ -29,10 +28,10 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
-import {useSelector} from 'terraso-mobile-client/store';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
 
@@ -42,7 +41,7 @@ export const SoilIdMatchesSection = ({
 }: SoilIdMatchesSectionProps) => {
   const {t} = useTranslation();
   const isSite = !!siteId;
-  const soilIdData = useSelector(selectSoilIdData());
+  const soilIdData = useSoilIdData(coords, siteId);
 
   return (
     <ScreenContentSection backgroundColor="grey.200">

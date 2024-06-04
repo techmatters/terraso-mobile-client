@@ -22,7 +22,6 @@ import {ScrollView, StyleSheet} from 'react-native';
 import {Button} from 'native-base';
 
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
-import {selectSoilIdData} from 'terraso-client-shared/soilId/soilIdSelectors';
 import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
@@ -39,6 +38,7 @@ import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
+import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -141,7 +141,7 @@ export const LocationDashboardContent = ({
       : state.project.projects[site.projectId],
   );
 
-  const soilIdData = useSelector(selectSoilIdData());
+  const soilIdData = useSoilIdData(coords, siteId);
   const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
 
   const onExploreDataPress = useCallback(() => {
