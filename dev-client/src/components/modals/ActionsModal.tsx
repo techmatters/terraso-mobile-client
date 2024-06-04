@@ -15,18 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
+
+import {Button} from 'native-base';
+
 import {
   Modal,
   ModalHandle,
   ModalProps,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
 import {
   Box,
-  HStack,
   Heading,
+  HStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Button} from 'native-base';
 
 type ActionButtonProps = {
   onPress: () => void;

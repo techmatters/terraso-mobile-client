@@ -16,29 +16,33 @@
  */
 
 import {useCallback, useEffect, useState} from 'react';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import * as ScreenOrientation from 'expo-screen-orientation';
-import {CameraView, useCameraPermissions} from 'expo-camera';
-import {DeviceMotion} from 'expo-sensors';
-import {Button, Link} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
 import {Linking} from 'react-native';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useDispatch} from 'terraso-mobile-client/store';
+
+import {CameraView, useCameraPermissions} from 'expo-camera';
+import * as ScreenOrientation from 'expo-screen-orientation';
+import {DeviceMotion} from 'expo-sensors';
+
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {Button, Link} from 'native-base';
+
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
   Column,
-  Row,
   Heading,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
+import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 

@@ -16,9 +16,8 @@
  */
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
-
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export function SoilPropertiesScoreInfoContent() {
   return (

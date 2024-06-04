@@ -15,16 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useCallback} from 'react';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Card} from 'terraso-mobile-client/components/Card';
+
 import {Project} from 'terraso-client-shared/project/projectSlice';
+
+import {Card} from 'terraso-mobile-client/components/Card';
 import {
-  HStack,
   Heading,
+  HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 import {SiteBadge} from 'terraso-mobile-client/components/SiteBadge';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
   project: Project;

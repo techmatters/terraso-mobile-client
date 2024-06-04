@@ -16,6 +16,7 @@
  */
 
 import {render} from '@testing/utils';
+
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
 
 test('renders correctly', () => {

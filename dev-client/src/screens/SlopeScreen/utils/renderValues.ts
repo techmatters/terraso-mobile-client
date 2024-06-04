@@ -16,7 +16,9 @@
  */
 
 import {TFunction} from 'i18next';
+
 import {SoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+
 import {formatPercent} from 'terraso-mobile-client/util';
 
 export const renderSteepness = (

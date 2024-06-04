@@ -15,11 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {normalizeText} from 'terraso-client-shared/utils';
-import {equals, searchText} from 'terraso-mobile-client/util';
-import {SortingOption} from 'terraso-mobile-client/components/ListFilter';
-import {Site} from 'terraso-client-shared/site/siteSlice';
 import {ProjectMembershipProjectRoleChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+import {Site} from 'terraso-client-shared/site/siteSlice';
+import {normalizeText} from 'terraso-client-shared/utils';
+
+import {SortingOption} from 'terraso-mobile-client/components/ListFilter';
+import {equals, searchText} from 'terraso-mobile-client/util';
 
 export const getHomeScreenFilters = (
   siteDistances: Record<string, number> | null,

@@ -16,6 +16,7 @@
  */
 
 import {ErrorMessage as FormikErrorMessage} from 'formik';
+
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {

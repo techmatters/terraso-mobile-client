@@ -16,6 +16,7 @@
  */
 import {testState} from '@testing/data';
 import {render} from '@testing/utils';
+
 import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
 
 test('renders correctly', () => {

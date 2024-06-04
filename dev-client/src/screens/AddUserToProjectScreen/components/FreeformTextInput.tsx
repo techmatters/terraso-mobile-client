@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FormControl, IInputProps, Input} from 'native-base';
 import {useCallback, useState} from 'react';
+
+import {FormControl, IInputProps, Input} from 'native-base';
 
 type Props = {
   validationFunc: (input: string) => Promise<null | string>;

@@ -15,7 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useCallback, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {StyleSheet} from 'react-native';
+import Animated, {LinearTransition} from 'react-native-reanimated';
+
+import {selectDepthDependentData} from 'terraso-client-shared/selectors';
+import {
+  ColorChroma,
+  ColorHueSubstep,
+  ColorValue,
+  SoilColorHue,
+  soilColorHues,
+  updateDepthDependentSoilData,
+} from 'terraso-client-shared/soilId/soilIdSlice';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   Box,
   Column,
@@ -23,34 +39,20 @@ import {
   Paragraph,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useTranslation} from 'react-i18next';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
-import {
-  updateDepthDependentSoilData,
-  SoilColorHue,
-  ColorHueSubstep,
-  soilColorHues,
-  ColorValue,
-  ColorChroma,
-} from 'terraso-client-shared/soilId/soilIdSlice';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useCallback, useMemo, useState} from 'react';
-import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   parseMunsellHue,
   renderMunsellHue,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import Animated, {LinearTransition} from 'react-native-reanimated';
-import {StyleSheet} from 'react-native';
 import {
-  ColorPropertyUpdate,
   ColorProperties,
+  ColorPropertyUpdate,
+  isColorComplete,
   updateColorSelections,
   validProperties,
-  isColorComplete,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();

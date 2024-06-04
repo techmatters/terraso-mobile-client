@@ -16,7 +16,9 @@
  */
 
 import {ColorValue, DimensionValue, TextStyle, ViewStyle} from 'react-native';
+
 import {entries, fromEntries} from 'terraso-client-shared/utils';
+
 import {theme} from 'terraso-mobile-client/theme';
 
 type PathOf<O extends Record<string, any>> = string &

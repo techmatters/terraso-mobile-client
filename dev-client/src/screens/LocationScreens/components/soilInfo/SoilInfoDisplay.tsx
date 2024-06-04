@@ -17,14 +17,14 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {
-  Heading,
-  Text,
-  Column,
-  Box,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
 import InternalLink from 'terraso-mobile-client/components/links/InternalLink';
+import {
+  Box,
+  Column,
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SoilInfo} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 
 type SoilInfoDisplayProps = {

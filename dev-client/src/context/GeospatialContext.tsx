@@ -15,10 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {createContext, useContext, useEffect, useMemo, useState} from 'react';
+
 import haversine from 'haversine';
+
+import {Coords} from 'terraso-client-shared/types';
+
 import {GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE} from 'terraso-mobile-client/constants';
 import {AppState, useSelector} from 'terraso-mobile-client/store';
-import {Coords} from 'terraso-client-shared/types';
 
 type GeospatialInfo = {
   /* list of site IDs, sorted with respect to user's current location */

@@ -15,14 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {ButtonList} from 'terraso-mobile-client/components/buttons/list/ButtonList';
 import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {VersionIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/VersionIndicatorComponent';
-import {UserIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/UserIndicatorComponent';
-import {LogOutButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/LogOutButton';
 import {DeleteAccountButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/DeleteAccountButton';
-import {ButtonList} from 'terraso-mobile-client/components/buttons/list/ButtonList';
+import {LogOutButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/LogOutButton';
+import {UserIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/UserIndicatorComponent';
+import {VersionIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/VersionIndicatorComponent';
 
 export function SettingsScreen() {
   return (

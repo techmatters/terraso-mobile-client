@@ -16,20 +16,22 @@
  */
 
 import {useCallback, useRef} from 'react';
+
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
-import {useDispatch} from 'terraso-mobile-client/store';
-import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
+import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   addSite,
   fetchSitesForProject,
 } from 'terraso-client-shared/site/siteSlice';
-import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {Coords} from 'terraso-client-shared/types';
+
+import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
+import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 type Props =
   | {

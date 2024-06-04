@@ -15,18 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import createStoreFactory, {
-  StateFromStoreFactory,
-  DispatchFromStoreFactory,
-} from 'terraso-client-shared/store/store';
 import {
   useDispatch as reduxUseDispatch,
   useSelector as reduxUseSelector,
   TypedUseSelectorHook,
 } from 'react-redux';
+
+import {StateFromReducersMapObject} from '@reduxjs/toolkit';
+
+import createStoreFactory, {
+  DispatchFromStoreFactory,
+  StateFromStoreFactory,
+} from 'terraso-client-shared/store/store';
+
 import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
 import {reducer as preferencesReducer} from 'terraso-mobile-client/model/preferences/preferencesSlice';
-import {StateFromReducersMapObject} from '@reduxjs/toolkit';
 
 const reducers = {map: mapReducer, preferences: preferencesReducer};
 

@@ -15,20 +15,22 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useState, useRef} from 'react';
-import {useDispatch} from 'terraso-mobile-client/store';
-import {SiteNoteForm} from 'terraso-mobile-client/components/SiteNoteForm';
-import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
+import {useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Keyboard} from 'react-native';
+
 import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {addSiteNote} from 'terraso-client-shared/site/siteSlice';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Keyboard} from 'react-native';
+
 import {
   Box,
-  VStack,
   Heading,
+  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
+import {SiteNoteForm} from 'terraso-mobile-client/components/SiteNoteForm';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 type Props = {
   siteId: string;

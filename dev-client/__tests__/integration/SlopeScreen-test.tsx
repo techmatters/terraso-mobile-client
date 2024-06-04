@@ -17,9 +17,11 @@
 
 import {testState} from '@testing/data';
 import {render} from '@testing/utils';
+
 import {methodRequired} from 'terraso-client-shared/soilId/soilIdSlice';
 import {collectionMethods} from 'terraso-client-shared/soilId/soilIdTypes';
 import {fromEntries} from 'terraso-client-shared/utils';
+
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 
 test('renders correctly', () => {

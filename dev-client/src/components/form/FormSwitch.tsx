@@ -16,9 +16,10 @@
  */
 import {memo} from 'react';
 import {Switch} from 'react-native';
+
 import {
-  Props as FormFieldWrapperProps,
   FormFieldWrapper,
+  Props as FormFieldWrapperProps,
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';

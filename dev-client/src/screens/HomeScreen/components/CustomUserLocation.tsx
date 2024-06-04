@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {UserLocation, CircleLayer, Location} from '@rnmapbox/maps';
+import {CircleLayer, Location, UserLocation} from '@rnmapbox/maps';
+
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
 
 const mapboxBlue = 'rgba(51, 181, 229, 100)';

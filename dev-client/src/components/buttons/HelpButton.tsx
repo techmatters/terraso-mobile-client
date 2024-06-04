@@ -16,8 +16,9 @@
  */
 
 import {forwardRef} from 'react';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
+
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 
 type HelpButtonProps = {
   onPress?: PressableProps['onPress'];

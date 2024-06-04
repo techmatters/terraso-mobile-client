@@ -15,7 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useTranslation} from 'react-i18next';
+
 import {Coords} from 'terraso-client-shared/types';
+
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSelector} from 'terraso-mobile-client/store';
 import {formatCoordinate} from 'terraso-mobile-client/util';

@@ -17,17 +17,19 @@
 
 import {useCallback} from 'react';
 import {Pressable} from 'react-native';
+
 import {Site} from 'terraso-client-shared/site/siteSlice';
-import {
-  CalloutState,
-  siteCallout,
-} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
-import {useSelector} from 'terraso-mobile-client/store';
+
 import {
   Column,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  CalloutState,
+  siteCallout,
+} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type SiteClusterCalloutListItemProps = {
   site: Site;

@@ -16,6 +16,7 @@
  */
 import {testState} from '@testing/data';
 import {render} from '@testing/utils';
+
 import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 
 test('renders correctly', () => {

@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+
 import {Coords} from 'terraso-client-shared/types';
 
 export type UserLocation = {

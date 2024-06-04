@@ -15,11 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Radio} from 'native-base';
 import {memo} from 'react';
+
+import {Radio} from 'native-base';
+
 import {
-  Props as FormFieldWrapperProps,
   FormFieldWrapper,
+  Props as FormFieldWrapperProps,
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 

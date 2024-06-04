@@ -15,33 +15,36 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button, Fab} from 'native-base';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ScrollView} from 'react-native';
+
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {Button, Fab} from 'native-base';
+
+import {updateProject} from 'terraso-client-shared/project/projectSlice';
+
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {
+  Box,
+  HStack,
+  Text,
+  VStack,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {
   TabRoutes,
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
-import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {updateProject} from 'terraso-client-shared/project/projectSlice';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {useCallback, useMemo} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScrollView} from 'react-native';
-import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SoilPitSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/SoilPitSettings';
 import {RequiredDataSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/RequiredDataSettings';
-import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
-import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {
-  Box,
-  HStack,
-  VStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SoilPitSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/SoilPitSettings';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 

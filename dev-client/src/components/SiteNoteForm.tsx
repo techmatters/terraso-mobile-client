@@ -15,10 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useEffect, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {TextInput} from 'react-native';
-import {useRef, useEffect} from 'react';
+
+import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 
 type Props = {
   content: string;

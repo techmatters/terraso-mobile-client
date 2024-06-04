@@ -15,13 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useTranslation} from 'react-i18next';
+
 import {useRoute} from '@react-navigation/native';
-import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
+
 import {
-  Row,
   Column,
   Heading,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
 
 type Props = {
   LeftButton?: React.ReactNode;

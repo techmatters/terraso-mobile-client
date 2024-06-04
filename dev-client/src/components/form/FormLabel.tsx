@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FormControl} from 'native-base';
 import {memo} from 'react';
+
+import {FormControl} from 'native-base';
 
 export const FormLabel = memo(
   (props: React.ComponentProps<typeof FormControl.Label>) => (

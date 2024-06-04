@@ -15,19 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  Text,
-  Column,
-  Box,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTranslation} from 'react-i18next';
+
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
+import {
+  Box,
+  Column,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   MunsellColor,
   munsellToRGB,
   munsellToString,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 
 type Props = {
   color: MunsellColor;

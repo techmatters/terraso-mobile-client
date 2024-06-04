@@ -17,22 +17,24 @@
 
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+
 import {Button} from 'native-base';
 
-import {
-  Box,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {rowsFromSiteSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {
   selectSoilData,
   useSiteSoilIntervals,
 } from 'terraso-client-shared/selectors';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {
+  Box,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {rowsFromSiteSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
+import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {siteId: string};

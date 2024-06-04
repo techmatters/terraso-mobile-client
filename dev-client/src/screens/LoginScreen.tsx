@@ -15,30 +15,34 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {useEffect, useCallback} from 'react';
-import {AuthProvider, auth} from 'terraso-mobile-client/auth';
-import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
+import {useCallback, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Platform, StyleSheet} from 'react-native';
+
 import {
   AppleAuthenticationButton,
   AppleAuthenticationButtonStyle,
   AppleAuthenticationButtonType,
 } from 'expo-apple-authentication';
-import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
+import Constants from 'expo-constants';
+
+import {Button} from 'native-base';
+
+import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
+
+import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
+import {auth, AuthProvider} from 'terraso-mobile-client/auth';
 import {
   Box,
   Column,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Platform, StyleSheet} from 'react-native';
-import Constants from 'expo-constants';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();

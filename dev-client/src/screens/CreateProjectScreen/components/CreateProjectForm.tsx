@@ -15,18 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import React, {useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {Formik, FormikProps} from 'formik';
 import {Button, KeyboardAvoidingView, ScrollView} from 'native-base';
+
+import {addProject} from 'terraso-client-shared/project/projectSlice';
+
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import ProjectForm, {
   ProjectFormValues,
   projectValidationSchema,
 } from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
-import {addProject} from 'terraso-client-shared/project/projectSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {Formik, FormikProps} from 'formik';
-import {useTranslation} from 'react-i18next';
-import React, {useMemo} from 'react';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   onInfoPress: () => void;

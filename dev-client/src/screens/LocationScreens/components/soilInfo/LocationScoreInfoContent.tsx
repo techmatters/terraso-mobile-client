@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type LocationScoreInfoContentProps = {
   isSite: boolean;

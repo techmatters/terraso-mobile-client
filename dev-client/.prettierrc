@@ -1,7 +1,25 @@
 {
   "arrowParens": "avoid",
+  "singleQuote": true,
+  "semi": true,
+  "importOrder": [
+    "^react$",
+    "^react-(.*)$",
+    "",
+    "^@?expo(.*)$",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^terraso-client-shared/(.*)$",
+    "",
+    "^terraso-mobile-client/(.*)$",
+    "",
+    "^terraso-mobile-client/config$",
+    "^terraso-mobile-client/assets/(.*)$",
+    "^terraso-mobile-client/theme$"
+  ],
   "bracketSameLine": true,
   "bracketSpacing": false,
-  "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"]
 }

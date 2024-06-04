@@ -15,45 +15,45 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
-import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
-import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
-import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
-import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
-import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
-import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
-import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/AddSiteNoteScreen';
-import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/EditSiteNoteScreen';
-import {ReadNoteScreen} from 'terraso-mobile-client/screens/ReadNoteScreen';
-import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
-import {LocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationSoilIdScreen';
-import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
-import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
-import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
-import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
 import {
   RootStack,
   ScreenDefinitions,
 } from 'terraso-mobile-client/navigation/types';
+import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
+import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/AddSiteNoteScreen';
+import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
+import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
+import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
+import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
+import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
+import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
+import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/EditSiteNoteScreen';
+import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
+import {LocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationSoilIdScreen';
+import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
+import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
+import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
+import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
+import {ReadNoteScreen} from 'terraso-mobile-client/screens/ReadNoteScreen';
+import {SettingsScreen} from 'terraso-mobile-client/screens/SettingsScreen/SettingsScreen';
+import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
+import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
+import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
+import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
 import {SlopeShapeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeShapeScreen';
 import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
-import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
-import {SoilSurfaceScreen} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceScreen';
-import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
+import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/CarbonatesScreen';
+import {ColorGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorGuideScreen';
 import {ColorScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreen';
+import {SoilSurfaceScreen} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceScreen';
+import {ConductivityScreen} from 'terraso-mobile-client/screens/SoilScreen/ConductivityScreen';
+import {PhScreen} from 'terraso-mobile-client/screens/SoilScreen/PhScreen';
 import {SARScreen} from 'terraso-mobile-client/screens/SoilScreen/SARScreen';
 import {SOCSOMScreen} from 'terraso-mobile-client/screens/SoilScreen/SOCSOMScreen';
 import {StructureScreen} from 'terraso-mobile-client/screens/SoilScreen/StructureScreen';
-import {ConductivityScreen} from 'terraso-mobile-client/screens/SoilScreen/ConductivityScreen';
-import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/CarbonatesScreen';
-import {PhScreen} from 'terraso-mobile-client/screens/SoilScreen/PhScreen';
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
-import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
-import {ColorGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorGuideScreen';
-import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
-import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
-import {SettingsScreen} from 'terraso-mobile-client/screens/SettingsScreen/SettingsScreen';
+import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
 
 export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,

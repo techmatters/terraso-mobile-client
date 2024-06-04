@@ -15,11 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import CheckBox from '@react-native-community/checkbox';
 import {memo} from 'react';
+
+import CheckBox from '@react-native-community/checkbox';
+
 import {
-  Props as FormFieldWrapperProps,
   FormFieldWrapper,
+  Props as FormFieldWrapperProps,
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 

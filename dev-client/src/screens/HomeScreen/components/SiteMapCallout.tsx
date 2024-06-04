@@ -16,23 +16,26 @@
  */
 
 import React, {useCallback} from 'react';
+
 import Mapbox from '@rnmapbox/maps';
 import {Divider, FlatList} from 'native-base';
+
 import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Coords} from 'terraso-client-shared/types';
+
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
+import {Card} from 'terraso-mobile-client/components/Card';
+import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
+import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
+import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/HomeScreen/components/SiteClusterCalloutListItem';
+import {TemporaryLocationCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporaryLocationCallout';
 import {
   CalloutState,
-  noneCallout,
   getCalloutCoords,
   getCalloutSite,
   getCalloutSites,
+  noneCallout,
 } from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
-import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
-import {Card} from 'terraso-mobile-client/components/Card';
-import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
-import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
-import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/HomeScreen/components/SiteClusterCalloutListItem';
-import {TemporaryLocationCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporaryLocationCallout';
-import {Coords} from 'terraso-client-shared/types';
 
 type Props = {
   sites: Record<string, Site>;

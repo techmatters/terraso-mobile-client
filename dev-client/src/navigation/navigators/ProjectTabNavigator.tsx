@@ -16,17 +16,18 @@
  */
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {ProjectInputScreen} from 'terraso-mobile-client/screens/ProjectInputScreen/ProjectInputScreen';
-import {ProjectTeamScreen} from 'terraso-mobile-client/screens/ProjectTeamScreen/ProjectTeamScreen';
+
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
   TabRoutes,
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
+import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
+import {ProjectInputScreen} from 'terraso-mobile-client/screens/ProjectInputScreen/ProjectInputScreen';
 import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettingsScreen';
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
-import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
-import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {ProjectTeamScreen} from 'terraso-mobile-client/screens/ProjectTeamScreen/ProjectTeamScreen';
 
 // TODO: replace with real link
 const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';

@@ -14,13 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {Linking} from 'react-native';
 import {Trans, useTranslation} from 'react-i18next';
+import {Linking} from 'react-native';
+
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+
 import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/HorizontalIconButton';
 import {
-  Column,
   Box,
+  Column,
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';

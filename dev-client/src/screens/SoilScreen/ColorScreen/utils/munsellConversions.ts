@@ -41,16 +41,18 @@
  * the only number left is the value.
  */
 
-import {LAB, getDeltaE00} from 'delta-e';
+import {getDeltaE00, LAB} from 'delta-e';
 import {labToMhvc, mhvcToLab, mhvcToRgb255, rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
+
 import {
-  nonNeutralColorHues,
-  colorValues,
-  ColorHueSubstep,
   ColorHue,
+  ColorHueSubstep,
+  colorValues,
+  nonNeutralColorHues,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {entries} from 'terraso-client-shared/utils';
+
 import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
 
 const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;

@@ -15,12 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Input} from 'native-base';
-import {memo, useRef, useImperativeHandle, forwardRef} from 'react';
+import {forwardRef, memo, useImperativeHandle, useRef} from 'react';
 import {TextInput} from 'react-native';
+
+import {Input} from 'native-base';
+
 import {
-  Props as FormFieldWrapperProps,
   FormFieldWrapper,
+  Props as FormFieldWrapperProps,
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 

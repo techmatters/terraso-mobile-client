@@ -15,26 +15,29 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import Autocomplete from 'react-native-autocomplete-input';
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Keyboard} from 'react-native';
+import Autocomplete from 'react-native-autocomplete-input';
+
 import {Input, Pressable} from 'native-base';
-import {
-  Suggestion,
-  initMapSearch,
-} from 'terraso-mobile-client/screens/HomeScreen/utils/mapSearchTools';
+
+import {Coords} from 'terraso-client-shared/types';
+
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {Keyboard} from 'react-native';
-import {isValidCoordinates} from 'terraso-mobile-client/util';
 import {
   Box,
   HStack,
+  Text,
   View,
   VStack,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {Coords} from 'terraso-client-shared/types';
+import {
+  initMapSearch,
+  Suggestion,
+} from 'terraso-mobile-client/screens/HomeScreen/utils/mapSearchTools';
+import {isValidCoordinates} from 'terraso-mobile-client/util';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
 

@@ -16,12 +16,14 @@
  */
 
 import {forwardRef} from 'react';
+
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
-import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
-import {LandPKSInfo} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfo';
+
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
+import {LandPKSInfo} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfo';
 
 type Props = {
   onClose: () => void;

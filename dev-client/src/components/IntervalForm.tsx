@@ -15,12 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
 import {useTranslation} from 'react-i18next';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
+
 import {FormControl} from 'native-base';
+
+import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
 
 export type IntervalFormInput = {
   label: string;

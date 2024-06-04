@@ -15,21 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTheme} from 'native-base';
 import {useTranslation} from 'react-i18next';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {Switch} from 'react-native';
+
+import {useTheme} from 'native-base';
+
+import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
 import {
   collectionMethods,
   methodRequired,
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
-import {Switch} from 'react-native';
+
 import {
-  Row,
   Box,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 export const RequiredDataSettings = ({
   projectId,

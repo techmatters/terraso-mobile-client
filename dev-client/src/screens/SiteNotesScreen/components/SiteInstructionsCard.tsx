@@ -17,13 +17,14 @@
 
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   HStack,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
   siteInstructions: string;

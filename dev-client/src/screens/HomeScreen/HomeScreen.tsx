@@ -16,44 +16,47 @@
  */
 
 import {
+  createContext,
+  memo,
+  RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+
+import BottomSheet, {BottomSheetModal} from '@gorhom/bottom-sheet';
+import Mapbox from '@rnmapbox/maps';
+
+import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
+import {Site} from 'terraso-client-shared/site/siteSlice';
+import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
+import {Coords} from 'terraso-client-shared/types';
+
+import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
+import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
+import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
+import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';
+import {
   MapRef,
   SiteMap,
 } from 'terraso-mobile-client/screens/HomeScreen/components/SiteMap';
 import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  RefObject,
-  createContext,
-  memo,
-  useContext,
-  useImperativeHandle,
-} from 'react';
-import Mapbox from '@rnmapbox/maps';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {Site} from 'terraso-client-shared/site/siteSlice';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import BottomSheet, {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';
-import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
-import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
-import {getHomeScreenFilters} from 'terraso-mobile-client/screens/HomeScreen/utils/homeScreenFilters';
-import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
-import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
-import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
-import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {
   CalloutState,
+  locationCallout,
   noneCallout,
   siteCallout,
-  locationCallout,
 } from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
-import {Coords} from 'terraso-client-shared/types';
+import {getHomeScreenFilters} from 'terraso-mobile-client/screens/HomeScreen/utils/homeScreenFilters';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type HomeScreenRef = {
   showSiteOnMap: (site: Site) => void;

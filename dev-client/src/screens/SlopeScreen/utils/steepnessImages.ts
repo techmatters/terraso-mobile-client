@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {ImageSourcePropType} from 'react-native';
+
+import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
 export const STEEPNESS_IMAGES = {
   FLAT: require('terraso-mobile-client/assets/slope/steepness/flat.png'),

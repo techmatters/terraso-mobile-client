@@ -16,6 +16,7 @@
  */
 
 import {useTranslation} from 'react-i18next';
+
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {

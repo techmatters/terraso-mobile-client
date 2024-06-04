@@ -15,13 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {LabelledDepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
+
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useSelector} from 'terraso-mobile-client/store';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useTranslation} from 'react-i18next';
+import {useSelector} from 'terraso-mobile-client/store';
 
 export type SoilPitInputScreenProps = {
   siteId: string;

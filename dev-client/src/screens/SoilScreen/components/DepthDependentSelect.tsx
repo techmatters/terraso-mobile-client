@@ -15,16 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
+
+import {selectDepthDependentData} from 'terraso-client-shared/selectors';
+import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {DepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdTypes';
-import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+
 import {
   Select,
   SelectProps,
 } from 'terraso-mobile-client/components/inputs/Select';
+import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
-import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
-import {useCallback} from 'react';
 
 type Props<K extends keyof DepthDependentSoilData> = SoilPitInputScreenProps &
   Omit<
