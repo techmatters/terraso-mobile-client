@@ -60,6 +60,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type HomeScreenRef = {
   showSiteOnMap: (site: Site) => void;
+  collapseBottomSheet: () => void;
 };
 
 const HomeScreenContext = createContext<RefObject<HomeScreenRef> | null>(null);
@@ -99,12 +100,17 @@ export const HomeScreen = memo(() => {
     [setCalloutState],
   );
 
+  const collapseBottomSheet = useCallback(() => {
+    siteListBottomSheetRef.current?.collapse();
+  }, []);
+
   useImperativeHandle(
     homeScreenContext,
     () => ({
       showSiteOnMap,
+      collapseBottomSheet,
     }),
-    [showSiteOnMap],
+    [showSiteOnMap, collapseBottomSheet],
   );
 
   useEffect(() => {
