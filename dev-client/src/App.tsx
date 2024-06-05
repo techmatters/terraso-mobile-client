@@ -80,8 +80,8 @@ function App(): React.JSX.Element {
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
         <NativeBaseProvider theme={theme}>
-          <BottomSheetModalProvider>
-            <Portal.Host>
+          <Portal.Host>
+            <BottomSheetModalProvider>
               <NavigationContainer>
                 <GeospatialProvider>
                   <Toasts />
@@ -90,8 +90,8 @@ function App(): React.JSX.Element {
                   </HomeScreenContextProvider>
                 </GeospatialProvider>
               </NavigationContainer>
-            </Portal.Host>
-          </BottomSheetModalProvider>
+            </BottomSheetModalProvider>
+          </Portal.Host>
         </NativeBaseProvider>
       </Provider>
     </GestureHandlerRootView>

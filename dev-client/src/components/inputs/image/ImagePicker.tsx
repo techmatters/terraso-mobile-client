@@ -23,6 +23,8 @@ import {
   launchCameraAsync,
   launchImageLibraryAsync,
   MediaTypeOptions,
+  useCameraPermissions,
+  useMediaLibraryPermissions,
 } from 'expo-image-picker';
 import {createAssetAsync} from 'expo-media-library';
 
@@ -35,6 +37,7 @@ import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
+import {PermissionsRequestModal} from 'terraso-mobile-client/components/modals/PermissionsRequestModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 
@@ -56,10 +59,16 @@ export const decodeBase64Jpg = (base64: string) =>
 
 type Props = {
   onPick: (result: Photo) => void;
+  featureName: string;
   children: ModalTrigger;
 };
 
-export const ImagePicker = ({onPick, children, ...modalProps}: Props) => {
+export const ImagePicker = ({
+  onPick,
+  children,
+  featureName,
+  ...modalProps
+}: Props) => {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
 
@@ -74,9 +83,9 @@ export const ImagePicker = ({onPick, children, ...modalProps}: Props) => {
       onPick(response.assets[0]);
     }
     ref.current?.onClose();
-  }, [onPick, ref]);
+  }, [onPick]);
 
-  const onUseGallery = useCallback(async () => {
+  const onUseMediaLibrary = useCallback(async () => {
     const response = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
     });
@@ -84,25 +93,41 @@ export const ImagePicker = ({onPick, children, ...modalProps}: Props) => {
       onPick(response.assets[0]);
     }
     ref.current?.onClose();
-  }, [onPick, ref]);
+  }, [onPick]);
 
-  const onCancel = useCallback(() => ref.current?.onClose(), [ref]);
+  const onCancel = useCallback(() => ref.current?.onClose(), []);
 
   return (
     <OverlaySheet ref={ref} trigger={children} Closer={null} {...modalProps}>
       <Column padding="lg" space="md">
-        <Button
-          _text={{textTransform: 'uppercase'}}
-          onPress={onUseCamera}
-          rightIcon={<Icon name="photo-camera" />}>
-          {t('image.use_camera')}
-        </Button>
-        <Button
-          _text={{textTransform: 'uppercase'}}
-          onPress={onUseGallery}
-          rightIcon={<Icon name="photo-library" />}>
-          {t('image.choose_from_gallery')}
-        </Button>
+        <PermissionsRequestModal
+          title={t('permissions.camera_title')}
+          body={t('permissions.camera_body', {feature: featureName})}
+          usePermissions={useCameraPermissions}
+          permissionedAction={onUseCamera}>
+          {onRequestAction => (
+            <Button
+              _text={{textTransform: 'uppercase'}}
+              onPress={onRequestAction}
+              rightIcon={<Icon name="photo-camera" />}>
+              {t('image.use_camera')}
+            </Button>
+          )}
+        </PermissionsRequestModal>
+        <PermissionsRequestModal
+          title={t('permissions.gallery_title')}
+          body={t('permissions.gallery_body', {feature: featureName})}
+          usePermissions={useMediaLibraryPermissions}
+          permissionedAction={onUseMediaLibrary}>
+          {onRequestAction => (
+            <Button
+              _text={{textTransform: 'uppercase'}}
+              onPress={onRequestAction}
+              rightIcon={<Icon name="photo-library" />}>
+              {t('image.choose_from_gallery')}
+            </Button>
+          )}
+        </PermissionsRequestModal>
         <Button
           _text={{textTransform: 'uppercase'}}
           variant="outline"
