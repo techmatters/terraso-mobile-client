@@ -23,7 +23,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import {DeviceMotion} from 'expo-sensors';
 
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {Button, Link} from 'native-base';
+import {Button} from 'native-base';
 
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
