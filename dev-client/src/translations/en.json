@@ -49,7 +49,7 @@
       "coords_help": "Enter decimal degrees, with latitude and longitude separated by a comma.",
       "name_placeholder": "Site name",
       "add_to_project_label": "Add to Project",
-      "add_to_project_caption": "Choose Project",
+      "add_to_project_caption": "Project",
       "add_to_project_tooltip": "The site will inherit the settings of the project, including data collection requirements and team members. Create new projects using the Projects tab in the bottom navigation.",
       "privacy_tooltip": "Public projects will sync data to public data portals. ",
       "privacy_tooltip_link": "Learn more"
