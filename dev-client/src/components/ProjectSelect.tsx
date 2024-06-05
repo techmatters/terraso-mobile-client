@@ -39,6 +39,7 @@ export const ProjectSelect = ({projectId, setProjectId}: Props) => {
     <Select
       nullable
       options={projectList}
+      label={t('site.create.add_to_project_caption')}
       value={projectId}
       onValueChange={setProjectId}
       unselectedLabel={t('general.nullable_option')}
