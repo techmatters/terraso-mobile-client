@@ -107,7 +107,7 @@
         "title": "Site Data",
         "description": "Improve Soil ID results by entering some data for this site using the helpful guides along the way.",
         "slope": {
-          "title": "Slope",
+          "title": "Slope Steepness",
           "add_data": "Add slope"
         },
         "soil_properties": {

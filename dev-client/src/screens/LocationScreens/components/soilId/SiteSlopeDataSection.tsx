@@ -32,7 +32,6 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {
   renderSlopeSteepnessDegree,
   renderSlopeSteepnessPercent,
@@ -47,10 +46,7 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
   const soilData = useSelector(selectSoilData(siteId));
 
   const onAddSoilDataPress = useCallback(() => {
-    navigation.push('LOCATION_DASHBOARD', {
-      siteId: siteId,
-      initialTab: 'SLOPE' as SiteTabName,
-    });
+    navigation.push('SLOPE_STEEPNESS', {siteId});
   }, [navigation, siteId]);
 
   const imageSrc = getSlopeSteepnessImageSource(soilData);
