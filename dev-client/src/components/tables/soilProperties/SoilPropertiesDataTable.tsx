@@ -92,6 +92,15 @@ export const SoilPropertiesDataTable = ({rows}: Props) => {
     );
   };
 
+  const emptyRow = (
+    <Row justifyContent="flex-start">
+      <DataTableCell text="" width={columnWidthDepth} />
+      <DataTableCell text="" width={columnWidthTexture} />
+      <DataTableCell text="" width={columnWidthRockFragment} />
+      <DataTableCell text="" width={columnWidthColor} />
+    </Row>
+  );
+
   return (
     <ScrollView horizontal={true}>
       <Box>
@@ -117,6 +126,7 @@ export const SoilPropertiesDataTable = ({rows}: Props) => {
         </Row>
 
         <Box borderTopWidth="1px" borderLeftWidth="1px">
+          {rows.length === 0 && emptyRow}
           {rows.map((row: (typeof rows)[number], i: number) => (
             <Row justifyContent="flex-start" key={uniqueKeyForRow(row, i)}>
               <DataTableCell
