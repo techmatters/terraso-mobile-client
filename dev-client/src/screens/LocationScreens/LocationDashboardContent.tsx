@@ -96,12 +96,12 @@ const LocationPrediction = ({
       <Box h="15px" />
       <Text variant="body1" color="primary.contrast" mb="5px">
         <Text bold>{t('soil.top_match')}: </Text>
-        <Text>{soilName}</Text>
+        <Text>{soilName ?? t('site.soil_id.soil_info.no_matches')}</Text>
       </Text>
       <Text variant="body1" color="primary.contrast" mb="25px">
         <Text bold>{t('soil.ecological_site_name')}: </Text>
         <Text>
-          {ecologicalSiteName ?? t('site.soil_id.soil_info.eco_name_none')}
+          {ecologicalSiteName ?? t('site.soil_id.soil_info.no_matches')}
         </Text>
       </Text>
 
