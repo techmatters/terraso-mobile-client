@@ -191,7 +191,6 @@ export const SiteMap = memo(
               cameraRef: cameraRef,
             });
             setCalloutState(siteCallout(feature.id as string));
-            console.warn({homeScreen});
             homeScreen?.collapseBottomSheet();
           }
         },
