@@ -73,12 +73,8 @@ export const SiteListBottomSheet = memo(
       );
 
       const snapPoints = useMemo(
-        () => [
-          `${getStartingSnapValue(deviceBottomInsets)}%`,
-          sites.length === 0 ? '50%' : '75%',
-          '100%',
-        ],
-        [sites.length, deviceBottomInsets],
+        () => [`${getStartingSnapValue(deviceBottomInsets)}%`, '50%', '75%'],
+        [deviceBottomInsets],
       );
 
       const {colors} = useTheme();
