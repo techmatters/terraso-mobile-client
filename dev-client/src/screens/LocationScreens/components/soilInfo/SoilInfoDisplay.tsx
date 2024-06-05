@@ -17,6 +17,8 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {SoilInfo} from 'terraso-client-shared/graphqlSchema/graphql';
+
 import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
 import InternalLink from 'terraso-mobile-client/components/links/InternalLink';
 import {
@@ -25,7 +27,6 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SoilInfo} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 
 type SoilInfoDisplayProps = {
   dataSource: string;

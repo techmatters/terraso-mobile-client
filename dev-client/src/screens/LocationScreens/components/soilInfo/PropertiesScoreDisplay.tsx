@@ -15,9 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
+import {
+  DataBasedSoilMatch,
+  SoilMatchInfo,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
   Heading,
@@ -26,21 +30,25 @@ import {
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {
-  DataBasedSoilMatch,
-  SOIL_PROPERTIES_TABLE_ROWS,
-} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 
 type PropertiesScoreDisplayProps = {
-  data: SoilData;
   match: DataBasedSoilMatch;
+  matchInfo: SoilMatchInfo;
 };
 
-export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
+export function PropertiesScoreDisplay({
+  match,
+  matchInfo,
+}: PropertiesScoreDisplayProps) {
   const {t} = useTranslation();
+  const rows = useMemo(
+    () => rowsFromSoilIdData(match.soilInfo.soilData),
+    [match.soilInfo.soilData],
+  );
   return (
     <VStack space="16px">
       <HStack justifyContent="space-between" alignItems="center">
@@ -53,9 +61,9 @@ export function PropertiesScoreDisplay({match}: PropertiesScoreDisplayProps) {
             <SoilPropertiesScoreInfoContent />
           </InfoOverlaySheetButton>
         </Row>
-        <ScoreTile score={match.combinedMatch.score} />
+        <ScoreTile score={matchInfo.score} />
       </HStack>
-      <SoilPropertiesDataTable rows={SOIL_PROPERTIES_TABLE_ROWS} />
+      <SoilPropertiesDataTable rows={rows} />
     </VStack>
   );
 }

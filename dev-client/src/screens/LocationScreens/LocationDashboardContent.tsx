@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView, StyleSheet} from 'react-native';
 
@@ -38,14 +38,13 @@ import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
+import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
+import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-
-const TEMP_SOIL_ID_VALUE = 'Clifton';
-const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
 
 type Props = {
   siteId?: string;
@@ -63,7 +62,7 @@ const LocationDetail = ({label, value}: {label: string; value: string}) => (
 type LocationPredictionProps = {
   label: string;
   soilName: string;
-  ecologicalSiteName: string;
+  ecologicalSiteName?: string;
   onExploreDataPress: () => void;
 };
 
@@ -97,11 +96,13 @@ const LocationPrediction = ({
       <Box h="15px" />
       <Text variant="body1" color="primary.contrast" mb="5px">
         <Text bold>{t('soil.top_match')}: </Text>
-        <Text>{soilName}</Text>
+        <Text>{soilName ?? t('site.soil_id.soil_info.no_matches')}</Text>
       </Text>
       <Text variant="body1" color="primary.contrast" mb="25px">
         <Text bold>{t('soil.ecological_site_name')}: </Text>
-        <Text>{ecologicalSiteName}</Text>
+        <Text>
+          {ecologicalSiteName ?? t('site.soil_id.soil_info.no_matches')}
+        </Text>
       </Text>
 
       <Button
@@ -139,6 +140,9 @@ export const LocationDashboardContent = ({
       ? undefined
       : state.project.projects[site.projectId],
   );
+
+  const soilIdData = useSoilIdData(coords, siteId);
+  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
 
   const onExploreDataPress = useCallback(() => {
     navigation.navigate('LOCATION_SOIL_ID', {siteId, coords});
@@ -228,12 +232,14 @@ export const LocationDashboardContent = ({
         )}
       </Box>
       <Column space="20px" padding="16px">
-        <LocationPrediction
-          label={t('soil.soil_id')}
-          soilName={TEMP_SOIL_ID_VALUE}
-          ecologicalSiteName={TEMP_ECO_SITE_PREDICTION}
-          onExploreDataPress={onExploreDataPress}
-        />
+        {topSoilMatch && (
+          <LocationPrediction
+            label={t('soil.soil_id')}
+            soilName={topSoilMatch.soilInfo.soilSeries.name}
+            ecologicalSiteName={topSoilMatch.soilInfo.ecologicalSite?.name}
+            onExploreDataPress={onExploreDataPress}
+          />
+        )}
       </Column>
     </ScrollView>
   );

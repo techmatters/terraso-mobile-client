@@ -18,6 +18,11 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {
+  DataBasedSoilMatch,
+  LocationBasedSoilMatch,
+  SoilMatchInfo,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
@@ -30,20 +35,21 @@ import {
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {LocationBasedSoilMatch} from 'terraso-mobile-client/model/soilId/soilIdPlaceholders';
 import {LocationScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {getSoilWebUrl} from 'terraso-mobile-client/util';
 
 type LocationScoreDisplayProps = {
   isSite: boolean;
-  match: LocationBasedSoilMatch;
+  match: LocationBasedSoilMatch | DataBasedSoilMatch;
+  matchInfo: SoilMatchInfo;
   coords: Coords;
 };
 
 export function LocationScoreDisplay({
   isSite,
   match,
+  matchInfo,
   coords,
 }: LocationScoreDisplayProps) {
   const {t} = useTranslation();
@@ -74,7 +80,7 @@ export function LocationScoreDisplay({
             }}
           />
         </Column>
-        <ScoreTile score={match.match.score} />
+        <ScoreTile score={matchInfo.score} />
       </HStack>
       <ExternalLink
         label={t('site.soil_id.soil_info.location_url')}
