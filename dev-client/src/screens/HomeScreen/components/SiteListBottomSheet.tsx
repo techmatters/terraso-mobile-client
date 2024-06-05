@@ -76,7 +76,7 @@ export const SiteListBottomSheet = memo(
         () => [
           `${getStartingSnapValue(deviceBottomInsets)}%`,
           sites.length === 0 ? '50%' : '75%',
-          '100%',
+          '75%',
         ],
         [sites.length, deviceBottomInsets],
       );
