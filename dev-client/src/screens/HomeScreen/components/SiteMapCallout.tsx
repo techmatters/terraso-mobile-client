@@ -27,9 +27,9 @@ import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton'
 import {Card} from 'terraso-mobile-client/components/Card';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
+import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/HomeScreen/components/SiteClusterCalloutListItem';
 import {TemporaryLocationCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporaryLocationCallout';
-import {useHomeScreenContext} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {
   CalloutState,
   getCalloutCoords,

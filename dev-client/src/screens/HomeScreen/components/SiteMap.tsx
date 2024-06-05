@@ -37,9 +37,9 @@ import {
   coordsToPosition,
   positionToCoords,
 } from 'terraso-mobile-client/components/StaticMapView';
+import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {CustomUserLocation} from 'terraso-mobile-client/screens/HomeScreen/components/CustomUserLocation';
 import {SiteMapCallout} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMapCallout';
-import {useHomeScreenContext} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {
   CalloutState,
   getCalloutSite,

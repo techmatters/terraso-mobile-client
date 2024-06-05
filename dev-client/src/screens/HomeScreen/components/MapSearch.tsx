@@ -34,7 +34,7 @@ import {
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
-import {useHomeScreenContext} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
+import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {
   initMapSearch,
   Suggestion,
