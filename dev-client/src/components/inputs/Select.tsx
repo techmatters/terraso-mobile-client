@@ -17,7 +17,7 @@
 
 import {useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Pressable, ViewStyle} from 'react-native';
+import {Pressable, StyleSheet, ViewStyle} from 'react-native';
 
 import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 
@@ -31,7 +31,6 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {theme} from 'terraso-mobile-client/theme';
-import {StyleSheet} from 'react-native';
 
 // utility type so we can strictly validate the types of inputs/callbacks
 // based on whether the select is nullable
