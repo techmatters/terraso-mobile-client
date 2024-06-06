@@ -75,9 +75,9 @@ const LocationPrediction = ({
   const {t} = useTranslation();
 
   return (
-    <Column
-      backgroundColor="background.secondary"
-      borderRadius="4px"
+    <Box
+      variant="tile"
+      flexDirection="column"
       alignItems="flex-start"
       py="18px"
       pl="16px">
@@ -112,7 +112,7 @@ const LocationPrediction = ({
         onPress={onExploreDataPress}>
         {t('soil.explore_data')}
       </Button>
-    </Column>
+    </Box>
   );
 };
 

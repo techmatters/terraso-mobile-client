@@ -31,8 +31,7 @@ export const SoilMatchTile = ({soil_name, score, onPress}: Props) => {
   return (
     <Pressable onPress={onPress}>
       <Box
-        backgroundColor="background.secondary"
-        borderRadius="4px"
+        variant="tile"
         alignItems="center"
         flexDirection="row"
         justifyContent="space-between"

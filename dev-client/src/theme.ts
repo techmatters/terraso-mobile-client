@@ -95,6 +95,10 @@ export const theme = extendTheme({
           padding: '16px',
           shadow: 1,
         },
+        tile: {
+          borderRadius: '4px',
+          backgroundColor: 'background.secondary',
+        },
       },
     },
     Badge: {
