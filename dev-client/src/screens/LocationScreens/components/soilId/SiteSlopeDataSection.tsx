@@ -50,6 +50,10 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
   }, [navigation, siteId]);
 
   const imageSrc = getSlopeSteepnessImageSource(soilData);
+  const shouldShowNumberInBox =
+    imageSrc === undefined &&
+    (soilData.slopeSteepnessDegree !== undefined ||
+      soilData.slopeSteepnessPercent !== undefined);
 
   return (
     <>
@@ -58,12 +62,21 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
       </Heading>
 
       <Box flexDirection="row">
-        <Box borderWidth="2px" width="85px" height="85px" mr="md">
+        <Box
+          borderWidth="2px"
+          width="85px"
+          height="85px"
+          mr="md"
+          justifyContent="center"
+          alignItems="center">
           {imageSrc && <Image style={styles.image} source={imageSrc} />}
+          {shouldShowNumberInBox && <SlopeSteepnessTextSection {...soilData} />}
         </Box>
 
         <Box flex={1}>
-          <SlopeSteepnessTextSection {...soilData} />
+          {!shouldShowNumberInBox && (
+            <SlopeSteepnessTextSection {...soilData} />
+          )}
         </Box>
 
         <RestrictBySiteRole
