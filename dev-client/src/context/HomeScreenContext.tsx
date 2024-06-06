@@ -24,7 +24,9 @@ type HomeScreenRef = {
   collapseBottomSheet: () => void;
 };
 
-const HomeScreenContext = createContext<RefObject<HomeScreenRef> | null>(null);
+export const HomeScreenContext = createContext<RefObject<HomeScreenRef> | null>(
+  null,
+);
 
 export const HomeScreenContextProvider = memo(
   ({children}: React.PropsWithChildren<{}>) => (
