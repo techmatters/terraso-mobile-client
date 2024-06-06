@@ -349,7 +349,7 @@
   },
   "settings": {
     "unknown_user": "Unknown user",
-    "log_out": "Log Out",
+    "log_out": "Sign Out",
     "delete_account": "Delete Account",
     "unknown_version": "Untagged application version",
     "version": "Version {{version}}"
@@ -436,8 +436,8 @@
     "description": "LandPKS is a Terraso soil science tool."
   },
   "logout": {
-    "confirm_body": "Are you sure you want to log out?",
-    "confirm_action": "Log out"
+    "confirm_body": "Are you sure you want to sign out?",
+    "confirm_action": "Sign out"
   },
   "account": {
     "google_login": "Sign in with Google",
