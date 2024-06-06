@@ -37,7 +37,7 @@ import {Coords} from 'terraso-client-shared/types';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {HomeScreenContextProvider} from 'terraso-mobile-client/context/HomeScreenContext';
+import {HomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
@@ -70,7 +70,7 @@ export const HomeScreen = memo(() => {
   const dispatch = useDispatch();
   const mapRef = useRef<MapRef>(null);
   const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
-  const homeScreenContext = useContext(HomeScreenContextProvider);
+  const homeScreenContext = useContext(HomeScreenContext);
 
   const showSiteOnMap = useCallback(
     (targetSite: Site) => {
