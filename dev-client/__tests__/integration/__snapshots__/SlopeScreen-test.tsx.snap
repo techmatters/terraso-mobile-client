@@ -223,7 +223,9 @@ exports[`renders correctly 1`] = `
                       />
                     </View>
                   </View>
-                  <RCTScrollView>
+                  <RCTScrollView
+                    focusHook={[Function]}
+                  >
                     <View>
                       <View
                         style={

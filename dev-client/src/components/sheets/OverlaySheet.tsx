@@ -22,6 +22,7 @@ import {
   BottomSheetScrollView,
   BottomSheetModal as GorhomBottomSheetModal,
 } from '@gorhom/bottom-sheet';
+import {useFocusEffect} from '@react-navigation/native';
 
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
@@ -105,7 +106,9 @@ export const OverlaySheet = forwardRef<
           maxDynamicContentSize={fullHeight ? undefined : maxHeight}>
           <ModalContext.Provider value={methods}>
             {scrollable ? (
-              <BottomSheetScrollView>{contents}</BottomSheetScrollView>
+              <BottomSheetScrollView focusHook={useFocusEffect}>
+                {contents}
+              </BottomSheetScrollView>
             ) : (
               contents
             )}
