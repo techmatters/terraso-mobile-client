@@ -16,8 +16,7 @@
  */
 
 import {useTranslation} from 'react-i18next';
-
-import {ScrollView} from 'native-base';
+import {ScrollView} from 'react-native-gesture-handler';
 
 import {
   Box,
