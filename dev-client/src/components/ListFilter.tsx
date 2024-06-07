@@ -336,20 +336,6 @@ type TextInputProps = {
   name: string;
 };
 
-export const searchFilterStyles = StyleSheet.create({
-  search: {
-    width: '85%',
-    padding: 0,
-    borderWidth: StyleSheet.hairlineWidth,
-    backgroundColor: theme.colors.background.default,
-    height: 40,
-    justifyContent: 'center',
-  },
-  input: {
-    minHeight: 40,
-  },
-});
-
 export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
   const ref = useRef<TextInput>(null);
   const {value, setValue} = useListFilter<any>(name);
@@ -486,3 +472,17 @@ export const ListFilterModal = ({searchInput, children}: ModalProps) => {
     </Modal>
   );
 };
+
+export const searchFilterStyles = StyleSheet.create({
+  search: {
+    width: '85%',
+    padding: 0,
+    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: theme.colors.background.default,
+    height: 40,
+    justifyContent: 'center',
+  },
+  input: {
+    minHeight: 40,
+  },
+});
