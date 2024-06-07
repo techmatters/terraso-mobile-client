@@ -15,26 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
-import {useTranslation} from 'react-i18next';
+import {Text} from 'react-native-paper';
 
-import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
-export function DeleteAccountButton() {
-  const {t} = useTranslation();
-  const navigation = useNavigation();
-  const onDeleteAccount = useCallback(
-    () => navigation.navigate('DELETE_ACCOUNT'),
-    [navigation],
-  );
-
+export function DeleteAccountScreen() {
   return (
-    <ListButton
-      type="error"
-      iconName="delete"
-      labelText={t('settings.delete_account')}
-      onPress={onDeleteAccount}
-    />
+    <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenBackButton />} />}>
+      <VStack height="full" margin="12px">
+        <Text>Hello, world!</Text>
+      </VStack>
+    </ScreenScaffold>
   );
 }

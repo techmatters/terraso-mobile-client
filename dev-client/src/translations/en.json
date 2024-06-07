@@ -425,7 +425,8 @@
     "CREATE_SITE": "Create Site",
     "COLOR_GUIDE": "Soil Color Guide",
     "COLOR_ANALYSIS_HOME": "Photo Analysis",
-    "SETTINGS": "Settings"
+    "SETTINGS": "Settings",
+    "DELETE_ACCOUNT": "Settings"
   },
   "login": {
     "title": "LandPKS",
