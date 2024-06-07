@@ -17,8 +17,7 @@
 
 import {useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Pressable, ViewStyle} from 'react-native';
-import {TextInput} from 'react-native-paper';
+import {Pressable, StyleSheet, ViewStyle} from 'react-native';
 
 import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 
@@ -26,6 +25,7 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
+  Column,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -131,27 +131,25 @@ export const Select = <T, Nullable extends boolean>({
         <Pressable
           accessibilityState={{disabled}}
           onPress={disabled ? null : onOpen}>
-          <TextInput
-            editable={false}
-            value={value === null ? '' : renderValue(value)}
-            label={label}
-            theme={{
-              colors: {
-                surfaceVariant: theme.colors.input.filled.enabledFill,
-              },
-            }}
-            underlineColor={theme.colors.input.standard.enabledBorder}
-            right={
-              <TextInput.Icon
-                disabled={true}
-                icon={() => (
-                  <Icon color="action.active" name="arrow-drop-down" />
-                )}
-              />
-            }
-            disabled={disabled}
-            style={style}
-          />
+          <Row
+            justifyContent="space-between"
+            alignItems="center"
+            backgroundColor={theme.colors.input.filled.enabledFill}
+            borderBottomColor={theme.colors.input.standard.enabledBorder}
+            style={{...style, borderBottomWidth: StyleSheet.hairlineWidth}}
+            padding="10px">
+            <Column justifyContent="center">
+              {value !== null && label ? (
+                <Text variant="caption">{label}</Text>
+              ) : (
+                <></>
+              )}
+              <Text variant="input-text">
+                {value === null ? label : renderValue(value)}
+              </Text>
+            </Column>
+            <Icon color="action.active" name="arrow-drop-down" />
+          </Row>
         </Pressable>
       )}>
       <BottomSheetFlatList
