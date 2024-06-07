@@ -17,8 +17,7 @@
 
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-
-import {Spinner} from 'native-base';
+import {ActivityIndicator} from 'react-native-paper';
 
 import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
 import {selectProjectUserRolesMap} from 'terraso-client-shared/selectors';
@@ -82,7 +81,7 @@ export const ProjectListScreen = () => {
         flexBasis="70%"
         space="10px">
         {isLoadingData ? (
-          <Spinner size="lg" />
+          <ActivityIndicator size="large" />
         ) : (
           activeProjects.length === 0 && (
             <Box mb="md">
