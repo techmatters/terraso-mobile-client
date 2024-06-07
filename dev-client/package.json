@@ -69,10 +69,10 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.6",
-    "@babel/preset-env": "^7.24.6",
-    "@babel/preset-typescript": "^7.24.6",
-    "@babel/runtime": "^7.24.6",
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@babel/runtime": "^7.24.7",
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
     "@react-native-community/cli-doctor": "^13.6.8",
     "@react-native/babel-preset": "^0.74.84",
