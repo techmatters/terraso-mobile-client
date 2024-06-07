@@ -559,7 +559,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Texture (required)
+                                    Soil Texture (required)
                                   </Text>
                                 </View>
                                 <View
@@ -602,7 +602,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Color (required)
+                                    Soil Color (required)
                                   </Text>
                                 </View>
                                 <View
@@ -1157,7 +1157,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Texture
+                          Soil Texture
                         </Text>
                         <View
                           style={
@@ -1325,7 +1325,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Color
+                          Soil Color
                         </Text>
                         <View
                           style={
@@ -1714,7 +1714,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Texture (required)
+                                    Soil Texture (required)
                                   </Text>
                                 </View>
                                 <View
@@ -1757,7 +1757,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Color (required)
+                                    Soil Color (required)
                                   </Text>
                                 </View>
                                 <View
@@ -2312,7 +2312,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Texture
+                          Soil Texture
                         </Text>
                         <View
                           style={
@@ -2480,7 +2480,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Color
+                          Soil Color
                         </Text>
                         <View
                           style={
@@ -2869,7 +2869,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Texture (required)
+                                    Soil Texture (required)
                                   </Text>
                                 </View>
                                 <View
@@ -2912,7 +2912,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Color (required)
+                                    Soil Color (required)
                                   </Text>
                                 </View>
                                 <View
@@ -3467,7 +3467,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Texture
+                          Soil Texture
                         </Text>
                         <View
                           style={
@@ -3635,7 +3635,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Color
+                          Soil Color
                         </Text>
                         <View
                           style={
@@ -4024,7 +4024,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Texture (required)
+                                    Soil Texture (required)
                                   </Text>
                                 </View>
                                 <View
@@ -4067,7 +4067,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Color (required)
+                                    Soil Color (required)
                                   </Text>
                                 </View>
                                 <View
@@ -4622,7 +4622,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Texture
+                          Soil Texture
                         </Text>
                         <View
                           style={
@@ -4790,7 +4790,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Color
+                          Soil Color
                         </Text>
                         <View
                           style={
@@ -5179,7 +5179,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Texture (required)
+                                    Soil Texture (required)
                                   </Text>
                                 </View>
                                 <View
@@ -5222,7 +5222,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Color (required)
+                                    Soil Color (required)
                                   </Text>
                                 </View>
                                 <View
@@ -5777,7 +5777,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Texture
+                          Soil Texture
                         </Text>
                         <View
                           style={
@@ -5945,7 +5945,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Color
+                          Soil Color
                         </Text>
                         <View
                           style={
@@ -6334,7 +6334,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Texture (required)
+                                    Soil Texture (required)
                                   </Text>
                                 </View>
                                 <View
@@ -6377,7 +6377,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Color (required)
+                                    Soil Color (required)
                                   </Text>
                                 </View>
                                 <View
@@ -6932,7 +6932,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Texture
+                          Soil Texture
                         </Text>
                         <View
                           style={
@@ -7100,7 +7100,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Color
+                          Soil Color
                         </Text>
                         <View
                           style={
