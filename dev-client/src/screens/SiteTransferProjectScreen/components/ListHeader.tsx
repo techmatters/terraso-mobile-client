@@ -32,7 +32,7 @@ type Props = {query: string; setQuery: (query: string) => void};
 export const ListHeader = memo(({query, setQuery}: Props) => {
   const {t} = useTranslation();
   return (
-    <VStack space="10px" px="12px" pt={5} pb={5}>
+    <VStack space="10px" px="12px" pt="10px" pb="10px">
       <HStack>
         <Heading>{t('projects.transfer_sites.heading')}</Heading>
         <HelpTooltipButton>
