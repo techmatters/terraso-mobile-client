@@ -48,7 +48,7 @@ export const IntervalForm = () => {
           })}
         </FormControl.HelperText>
       </FormControl>
-      <Row justifyContent="space-between" space={10} pt={5}>
+      <Row justifyContent="space-between" space="20px" pt="10px">
         <Box flex={1}>
           <FormInput
             name="start"
