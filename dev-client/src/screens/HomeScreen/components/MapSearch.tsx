@@ -126,7 +126,6 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
     if (zoomTo) {
       lookupFeature(mapboxId);
     }
-    // close keyboard
     Keyboard.dismiss();
   };
 
