@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import React from 'react';
 import {useTranslation} from 'react-i18next';
 import {Switch} from 'react-native';
 
@@ -48,35 +49,47 @@ export const RequiredDataSettings = ({
 
   return (
     <Box p={4}>
-      {collectionMethods.map(method => (
-        <Row
-          key={method}
-          pt={2}
-          pb={5}
-          justifyContent="flex-start"
-          alignItems="center">
-          <Switch
-            disabled={!enabled}
-            value={settings[methodRequired(method)]}
-            thumbColor={
-              settings[methodRequired(method)]
-                ? colors.primary.main
-                : colors.primary.contrast
-            }
-            onValueChange={value => {
-              dispatch(
-                updateProjectSoilSettings({
-                  projectId,
-                  [methodRequired(method)]: value,
-                }),
-              );
-            }}
-          />
-          <Text bold pl={2} fontSize="md">
-            {t(`soil.collection_method.${method}`)}
-          </Text>
-        </Row>
-      ))}
+      {collectionMethods.map(method => {
+        const description = t(
+          `soil.collection_method_description.${method}`,
+          '',
+        );
+        return (
+          <React.Fragment key={method}>
+            <Row
+              pt={2}
+              mb={description ? 2 : 5}
+              justifyContent="flex-start"
+              alignItems="center">
+              <Switch
+                disabled={!enabled}
+                value={settings[methodRequired(method)]}
+                thumbColor={
+                  settings[methodRequired(method)]
+                    ? colors.primary.main
+                    : colors.primary.contrast
+                }
+                onValueChange={value => {
+                  dispatch(
+                    updateProjectSoilSettings({
+                      projectId,
+                      [methodRequired(method)]: value,
+                    }),
+                  );
+                }}
+              />
+              <Text variant="body1" bold pl={2}>
+                {t(`soil.collection_method.${method}`)}
+              </Text>
+            </Row>
+            {description && (
+              <Row mb={4}>
+                <Text variant="body2">{description}</Text>
+              </Row>
+            )}
+          </React.Fragment>
+        );
+      })}
     </Box>
   );
 };
