@@ -53,6 +53,7 @@ export const SiteNoteForm = ({content}: Props) => {
       value={content}
       multiline={true}
       activeUnderlineColor="transparent"
+      underlineColor="transparent"
       style={styles.box}
       contentStyle={styles.content}
     />
