@@ -302,52 +302,6 @@ exports[`renders correctly 1`] = `
                               }
                             >
                               <View
-<<<<<<< HEAD
-                                dataSet={{}}
-                                isFocused={false}
-                                style={
-                                  {
-                                    "alignItems": "center",
-                                    "borderColor": "#d4d4d4",
-                                    "borderRadius": 4,
-                                    "borderWidth": 1,
-                                    "flexDirection": "row",
-                                    "overflow": "hidden",
-                                  }
-                                }
-                              >
-                                <TextInput
-                                  accessible={true}
-                                  dataSet={{}}
-                                  disabled={false}
-                                  editable={true}
-                                  isRequired={false}
-                                  nativeID="field-5-input"
-                                  onBlur={[Function]}
-                                  onChangeText={[Function]}
-                                  onFocus={[Function]}
-                                  onKeyPress={[Function]}
-                                  placeholder="Site name"
-                                  placeholderTextColor="#a3a3a3"
-                                  readOnly={false}
-                                  required={false}
-                                  secureTextEntry={false}
-                                  style={
-                                    {
-                                      "backgroundColor": "#00000000",
-                                      "color": "#171717",
-                                      "flex": 1,
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "400",
-                                      "height": "100%",
-                                      "paddingBottom": 8,
-                                      "paddingLeft": 12,
-                                      "paddingRight": 12,
-                                      "paddingTop": 8,
-                                      "width": "100%",
-=======
                                 style={
                                   [
                                     {
@@ -416,7 +370,6 @@ exports[`renders correctly 1`] = `
                                         "width": 750,
                                         "zIndex": 3,
                                       }
->>>>>>> a4aa8fe (test: update test snapshots)
                                     }
                                   >
                                     <Text
@@ -499,7 +452,7 @@ exports[`renders correctly 1`] = `
                                     </Text>
                                   </View>
                                   <TextInput
-                                    cursorColor="#8B8B8B"
+                                    cursorColor="#028843"
                                     editable={true}
                                     maxFontSizeMultiplier={1.5}
                                     multiline={false}
@@ -601,54 +554,103 @@ exports[`renders correctly 1`] = `
                               }
                             >
                               <View
-                                dataSet={{}}
-                                isFocused={false}
                                 style={
-                                  {
-                                    "alignItems": "center",
-                                    "borderColor": "#d4d4d4",
-                                    "borderRadius": 4,
-                                    "borderWidth": 1,
-                                    "flexDirection": "row",
-                                    "overflow": "hidden",
-                                  }
+                                  [
+                                    {
+                                      "backgroundColor": "rgba(231, 224, 236, 1)",
+                                      "borderTopLeftRadius": 4,
+                                      "borderTopRightRadius": 4,
+                                    },
+                                    {
+                                      "backgroundColor": "#e4e4e4",
+                                      "minHeight": undefined,
+                                      "width": "100%",
+                                    },
+                                  ]
                                 }
                               >
-                                <TextInput
-                                  accessible={true}
-                                  dataSet={{}}
-                                  disabled={false}
-                                  editable={true}
-                                  isRequired={false}
-                                  keyboardType="decimal-pad"
-                                  nativeID="field-6-input"
-                                  onBlur={[Function]}
-                                  onChangeText={[Function]}
-                                  onFocus={[Function]}
-                                  onKeyPress={[Function]}
-                                  placeholderTextColor="#a3a3a3"
-                                  readOnly={false}
-                                  required={false}
-                                  secureTextEntry={false}
+                                <View
+                                  collapsable={false}
                                   style={
                                     {
-                                      "backgroundColor": "#00000000",
-                                      "color": "#171717",
-                                      "flex": 1,
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "400",
-                                      "height": "100%",
-                                      "paddingBottom": 8,
-                                      "paddingLeft": 12,
-                                      "paddingRight": 12,
-                                      "paddingTop": 8,
-                                      "width": "100%",
+                                      "backgroundColor": "rgba(73, 69, 79, 1)",
+                                      "bottom": 0,
+                                      "height": 1,
+                                      "left": 0,
+                                      "position": "absolute",
+                                      "right": 0,
+                                      "transform": [
+                                        {
+                                          "scaleY": 0.5,
+                                        },
+                                      ],
+                                      "zIndex": 1,
                                     }
                                   }
-                                  value="0"
+                                  testID="text-input-underline"
                                 />
+                                <View
+                                  onLayout={[Function]}
+                                  style={
+                                    [
+                                      {
+                                        "paddingBottom": 0,
+                                        "paddingTop": 0,
+                                      },
+                                      {
+                                        "minHeight": 56,
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <TextInput
+                                    cursorColor="#028843"
+                                    editable={true}
+                                    keyboardType="decimal-pad"
+                                    maxFontSizeMultiplier={1.5}
+                                    multiline={false}
+                                    onBlur={[Function]}
+                                    onChangeText={[Function]}
+                                    onFocus={[Function]}
+                                    placeholderTextColor="rgba(73, 69, 79, 1)"
+                                    selectionColor="#8B8B8B"
+                                    style={
+                                      [
+                                        {
+                                          "margin": 0,
+                                        },
+                                        {
+                                          "height": 56,
+                                        },
+                                        {
+                                          "paddingBottom": 0,
+                                          "paddingTop": 0,
+                                        },
+                                        {
+                                          "color": "rgba(28, 27, 31, 1)",
+                                          "fontFamily": "System",
+                                          "fontSize": 16,
+                                          "fontWeight": undefined,
+                                          "letterSpacing": 0.15,
+                                          "lineHeight": undefined,
+                                          "minWidth": 65,
+                                          "paddingLeft": 16,
+                                          "paddingRight": 16,
+                                          "textAlign": "left",
+                                          "textAlignVertical": "center",
+                                        },
+                                        false,
+                                        [
+                                          {},
+                                        ],
+                                        undefined,
+                                      ]
+                                    }
+                                    testID="text-input-flat"
+                                    underlineColorAndroid="transparent"
+                                    value="0"
+                                  />
+                                </View>
                               </View>
                             </View>
                             <View
@@ -693,11 +695,7 @@ exports[`renders correctly 1`] = `
                                       "zIndex": 1,
                                     }
                                   }
-<<<<<<< HEAD
-                                  value="0"
-=======
                                   testID="text-input-underline"
->>>>>>> a4aa8fe (test: update test snapshots)
                                 />
                                 <View
                                   onLayout={[Function]}
@@ -714,7 +712,7 @@ exports[`renders correctly 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    cursorColor="#8B8B8B"
+                                    cursorColor="#028843"
                                     editable={true}
                                     keyboardType="decimal-pad"
                                     maxFontSizeMultiplier={1.5}
@@ -758,7 +756,7 @@ exports[`renders correctly 1`] = `
                                     }
                                     testID="text-input-flat"
                                     underlineColorAndroid="transparent"
-                                    value=""
+                                    value="0"
                                   />
                                 </View>
                               </View>
@@ -810,427 +808,6 @@ exports[`renders correctly 1`] = `
                                     }
                                   }
                                 >
-<<<<<<< HEAD
-=======
-                                  Add to Project
-                                </Text>
-                                <View
-                                  dataSet={{}}
-                                  style={{}}
-                                >
-                                  <View
-                                    accessibilityRole="button"
-                                    accessibilityState={
-                                      {
-                                        "busy": undefined,
-                                        "checked": undefined,
-                                        "disabled": undefined,
-                                        "expanded": undefined,
-                                        "selected": undefined,
-                                      }
-                                    }
-                                    accessibilityValue={
-                                      {
-                                        "max": undefined,
-                                        "min": undefined,
-                                        "now": undefined,
-                                        "text": undefined,
-                                      }
-                                    }
-                                    accessible={true}
-                                    collapsable={false}
-                                    colorScheme="primary"
-                                    dataSet={{}}
-                                    focusable={true}
-                                    onBlur={[Function]}
-                                    onClick={[Function]}
-                                    onFocus={[Function]}
-                                    onResponderGrant={[Function]}
-                                    onResponderMove={[Function]}
-                                    onResponderRelease={[Function]}
-                                    onResponderTerminate={[Function]}
-                                    onResponderTerminationRequest={[Function]}
-                                    onStartShouldSetResponder={[Function]}
-                                    style={
-                                      {
-                                        "alignItems": "center",
-                                        "borderRadius": 4,
-                                        "flexDirection": "row",
-                                        "justifyContent": "center",
-                                        "marginLeft": 6,
-                                        "paddingBottom": 0,
-                                        "paddingLeft": 0,
-                                        "paddingRight": 0,
-                                        "paddingTop": 0,
-                                      }
-                                    }
-                                  >
-                                    <Icon
-                                      color="#1A202CB2"
-                                      name="help"
-                                      size={24}
-                                      style={{}}
-                                    />
-                                  </View>
-                                </View>
-                              </View>
-                              <View
-                                accessibilityState={
-                                  {
-                                    "busy": undefined,
-                                    "checked": undefined,
-                                    "disabled": undefined,
-                                    "expanded": undefined,
-                                    "selected": undefined,
-                                  }
-                                }
-                                accessibilityValue={
-                                  {
-                                    "max": undefined,
-                                    "min": undefined,
-                                    "now": undefined,
-                                    "text": undefined,
-                                  }
-                                }
-                                accessible={true}
-                                collapsable={false}
-                                focusable={true}
-                                onBlur={[Function]}
-                                onClick={[Function]}
-                                onFocus={[Function]}
-                                onResponderGrant={[Function]}
-                                onResponderMove={[Function]}
-                                onResponderRelease={[Function]}
-                                onResponderTerminate={[Function]}
-                                onResponderTerminationRequest={[Function]}
-                                onStartShouldSetResponder={[Function]}
-                              >
-                                <View
-                                  accessibilityState={
-                                    {
-                                      "busy": undefined,
-                                      "checked": undefined,
-                                      "disabled": false,
-                                      "expanded": undefined,
-                                      "selected": undefined,
-                                    }
-                                  }
-                                  accessibilityValue={
-                                    {
-                                      "max": undefined,
-                                      "min": undefined,
-                                      "now": undefined,
-                                      "text": undefined,
-                                    }
-                                  }
-                                  accessible={true}
-                                  collapsable={false}
-                                  focusable={true}
-                                  onBlur={[Function]}
-                                  onClick={[Function]}
-                                  onFocus={[Function]}
-                                  onResponderGrant={[Function]}
-                                  onResponderMove={[Function]}
-                                  onResponderRelease={[Function]}
-                                  onResponderTerminate={[Function]}
-                                  onResponderTerminationRequest={[Function]}
-                                  onStartShouldSetResponder={[Function]}
-                                >
-                                  <View
-                                    style={
-                                      [
-                                        {
-                                          "flexDirection": "row",
-                                        },
-                                        [
-                                          {
-                                            "borderBottomWidth": 0.5,
-                                          },
-                                          {
-                                            "alignItems": "center",
-                                            "backgroundColor": "#e4e4e4",
-                                            "borderBottomColor": "#8B8B8B",
-                                            "justifyContent": "space-between",
-                                            "padding": 10,
-                                          },
-                                        ],
-                                      ]
-                                    }
-                                  >
-                                    <View
-                                      style={
-                                        [
-                                          {
-                                            "flexDirection": "column",
-                                          },
-                                          {
-                                            "justifyContent": "center",
-                                          },
-                                        ]
-                                      }
-                                    >
-                                      <Text
-                                        letterSpacing="0.15px"
-                                        lineHeight="24px"
-                                        style={
-                                          {
-                                            "color": "#1A202C",
-                                            "fontSize": 16,
-                                            "fontWeight": "400",
-                                          }
-                                        }
-                                      />
-                                    </View>
-                                    <Icon
-                                      color="#1A202C"
-                                      name="arrow-drop-down"
-                                      size={24}
-                                      style={{}}
-                                    />
-                                  </View>
-                                </View>
-                              </View>
-                              <RCTScrollView
-                                ListHeaderComponent={
-                                  <Memo(Pressable)
-                                    onPress={[Function]}
-                                  >
-                                    <Row
-                                      alignItems="center"
-                                      backgroundColor="primary.main"
-                                      justifyContent="flex-end"
-                                      padding="md"
-                                    >
-                                      <Text
-                                        color="primary.contrast"
-                                        textTransform="uppercase"
-                                        variant="body1-strong"
-                                      >
-                                        Done
-                                      </Text>
-                                    </Row>
-                                  </Memo(Pressable)>
-                                }
-                                data={
-                                  [
-                                    null,
-                                  ]
-                                }
-                                getItem={[Function]}
-                                getItemCount={[Function]}
-                                keyExtractor={[Function]}
-                                onContentSizeChange={[Function]}
-                                onLayout={[Function]}
-                                onMomentumScrollBegin={[Function]}
-                                onMomentumScrollEnd={[Function]}
-                                onScroll={[Function]}
-                                onScrollBeginDrag={[Function]}
-                                onScrollEndDrag={[Function]}
-                                removeClippedSubviews={false}
-                                renderItem={[Function]}
-                                scrollEventThrottle={0.0001}
-                                stickyHeaderIndices={[]}
-                                viewabilityConfigCallbackPairs={[]}
-                              >
-                                <View>
-                                  <View
-                                    collapsable={false}
-                                    onLayout={[Function]}
-                                  >
-                                    <View
-                                      accessibilityState={
-                                        {
-                                          "busy": undefined,
-                                          "checked": undefined,
-                                          "disabled": undefined,
-                                          "expanded": undefined,
-                                          "selected": undefined,
-                                        }
-                                      }
-                                      accessibilityValue={
-                                        {
-                                          "max": undefined,
-                                          "min": undefined,
-                                          "now": undefined,
-                                          "text": undefined,
-                                        }
-                                      }
-                                      accessible={true}
-                                      collapsable={false}
-                                      focusable={true}
-                                      onBlur={[Function]}
-                                      onClick={[Function]}
-                                      onFocus={[Function]}
-                                      onResponderGrant={[Function]}
-                                      onResponderMove={[Function]}
-                                      onResponderRelease={[Function]}
-                                      onResponderTerminate={[Function]}
-                                      onResponderTerminationRequest={[Function]}
-                                      onStartShouldSetResponder={[Function]}
-                                    >
-                                      <View
-                                        style={
-                                          [
-                                            {
-                                              "flexDirection": "row",
-                                            },
-                                            {
-                                              "alignItems": "center",
-                                              "backgroundColor": "#028843",
-                                              "justifyContent": "flex-end",
-                                              "padding": 16,
-                                            },
-                                          ]
-                                        }
-                                      >
-                                        <Text
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#FFFFFF",
-                                              "fontSize": 16,
-                                              "fontWeight": "700",
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Done
-                                        </Text>
-                                      </View>
-                                    </View>
-                                  </View>
-                                  <View
-                                    onFocusCapture={[Function]}
-                                    onLayout={[Function]}
-                                    style={null}
-                                  >
-                                    <View
-                                      accessibilityState={
-                                        {
-                                          "busy": undefined,
-                                          "checked": undefined,
-                                          "disabled": undefined,
-                                          "expanded": undefined,
-                                          "selected": true,
-                                        }
-                                      }
-                                      accessibilityValue={
-                                        {
-                                          "max": undefined,
-                                          "min": undefined,
-                                          "now": undefined,
-                                          "text": undefined,
-                                        }
-                                      }
-                                      accessible={true}
-                                      collapsable={false}
-                                      focusable={true}
-                                      onBlur={[Function]}
-                                      onClick={[Function]}
-                                      onFocus={[Function]}
-                                      onResponderGrant={[Function]}
-                                      onResponderMove={[Function]}
-                                      onResponderRelease={[Function]}
-                                      onResponderTerminate={[Function]}
-                                      onResponderTerminationRequest={[Function]}
-                                      onStartShouldSetResponder={[Function]}
-                                    >
-                                      <View
-                                        style={
-                                          [
-                                            {
-                                              "flexDirection": "row",
-                                            },
-                                            {
-                                              "alignItems": "center",
-                                              "backgroundColor": "#e4e4e4",
-                                              "justifyContent": "flex-start",
-                                              "paddingHorizontal": 8,
-                                              "paddingVertical": 8,
-                                            },
-                                          ]
-                                        }
-                                      >
-                                        <Icon
-                                          color="#1A202C"
-                                          name="check"
-                                          size={20}
-                                          style={{}}
-                                        />
-                                        <View
-                                          style={
-                                            {
-                                              "width": 8,
-                                            }
-                                          }
-                                        />
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#1A202C",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                            }
-                                          }
-                                        >
-                                          None
-                                        </Text>
-                                      </View>
-                                    </View>
-                                  </View>
-                                </View>
-                              </RCTScrollView>
-                            </View>
-                            <View
-                              dataSet={{}}
-                              style={
-                                {
-                                  "width": "100%",
-                                }
-                              }
-                            >
-                              <View
-                                dataSet={{}}
-                                feedbackId="field-10-feedback"
-                                hasFeedbackText={false}
-                                hasHelpText={false}
-                                helpTextId="field-10-helptext"
-                                isDisabled={false}
-                                isInvalid={false}
-                                isReadOnly={false}
-                                isRequired={false}
-                                labelId="field-10-label"
-                                nativeID="field-10-label"
-                                setHasFeedbackText={[Function]}
-                                setHasHelpText={[Function]}
-                                style={
-                                  {
-                                    "flexDirection": "row",
-                                    "justifyContent": "flex-start",
-                                    "marginBottom": 4,
-                                    "marginTop": 4,
-                                  }
-                                }
-                              >
-                                <Text
-                                  dataSet={{}}
-                                  style={
-                                    {
-                                      "backgroundColor": undefined,
-                                      "color": "#1A202C",
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "700",
-                                      "letterSpacing": 0.15,
-                                      "lineHeight": 24,
-                                      "textDecorationLine": undefined,
-                                    }
-                                  }
-                                >
->>>>>>> a4aa8fe (test: update test snapshots)
                                   Data Privacy
                                 </Text>
                                 <View
