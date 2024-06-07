@@ -26,7 +26,9 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {

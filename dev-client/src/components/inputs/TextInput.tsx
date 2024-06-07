@@ -15,13 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet, TextInput as RNTextInput} from 'react-native';
-import {
-  TextInputProps as RNPTextInputProps,
-  TextInput as RNPTextInput,
-} from 'react-native-paper';
-import {theme} from 'terraso-mobile-client/theme';
 import {forwardRef} from 'react';
+import {TextInput as RNTextInput, StyleSheet} from 'react-native';
+import {
+  TextInput as RNPTextInput,
+  TextInputProps as RNPTextInputProps,
+} from 'react-native-paper';
+
+import {theme} from 'terraso-mobile-client/theme';
 
 export type TextInputProps = RNPTextInputProps;
 
