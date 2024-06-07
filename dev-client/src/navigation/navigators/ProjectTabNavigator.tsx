@@ -32,9 +32,6 @@ import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettin
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
 import {ProjectTeamScreen} from 'terraso-mobile-client/screens/ProjectTeamScreen/ProjectTeamScreen';
 
-// TODO: replace with real link
-const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
-
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 
 type ScreenOptions = React.ComponentProps<
@@ -104,10 +101,7 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
         <Tab.Screen
           name={TabRoutes.SETTINGS}
           component={ProjectSettingsScreen}
-          initialParams={{
-            projectId,
-            downloadLink: TEMP_DOWNLOAD_LINK,
-          }}
+          initialParams={{projectId}}
         />,
       )}
     </Tab.Navigator>

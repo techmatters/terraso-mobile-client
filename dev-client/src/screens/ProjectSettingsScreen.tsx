@@ -48,7 +48,7 @@ type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
 export function ProjectSettingsScreen({
   route: {
-    params: {downloadLink, projectId},
+    params: {projectId},
   },
 }: Props) {
   const {t} = useTranslation();
@@ -81,10 +81,7 @@ export function ProjectSettingsScreen({
           userRole={userRole}
         />
         <VStack space={1}>
-          <IconLink
-            iconName="content-copy"
-            isUnderlined={false}
-            href={downloadLink}>
+          <IconLink iconName="content-copy" isUnderlined={false}>
             {t('projects.settings.copy_download_link')}
           </IconLink>
           <Text ml={10}>
