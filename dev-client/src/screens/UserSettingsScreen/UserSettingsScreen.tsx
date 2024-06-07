@@ -19,12 +19,12 @@ import {ButtonList} from 'terraso-mobile-client/components/buttons/list/ButtonLi
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {DeleteAccountButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/DeleteAccountButton';
-import {LogOutButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/LogOutButton';
-import {UserIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/UserIndicatorComponent';
-import {VersionIndicator} from 'terraso-mobile-client/screens/SettingsScreen/components/VersionIndicatorComponent';
+import {DeleteAccountButton} from 'terraso-mobile-client/screens/UserSettingsScreen/components/actions/DeleteAccountButton';
+import {LogOutButton} from 'terraso-mobile-client/screens/UserSettingsScreen/components/actions/LogOutButton';
+import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/UserIndicatorComponent';
+import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
 
-export function SettingsScreen() {
+export function UserSettingsScreen() {
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} RightButton={null} />}>
       <Column height="full" margin="12px">

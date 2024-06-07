@@ -36,7 +36,6 @@ import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMe
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
 import {ReadNoteScreen} from 'terraso-mobile-client/screens/ReadNoteScreen';
-import {SettingsScreen} from 'terraso-mobile-client/screens/SettingsScreen/SettingsScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
@@ -54,11 +53,12 @@ import {SOCSOMScreen} from 'terraso-mobile-client/screens/SoilScreen/SOCSOMScree
 import {StructureScreen} from 'terraso-mobile-client/screens/SoilScreen/StructureScreen';
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
 import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
+import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 
 export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,
   HOME: HomeScreen,
-  SETTINGS: SettingsScreen,
+  SETTINGS: UserSettingsScreen,
 } satisfies ScreenDefinitions;
 
 export const screenDefinitions = {
