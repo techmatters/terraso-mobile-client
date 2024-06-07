@@ -764,7 +764,9 @@ exports[`renders correctly 1`] = `
                                             "fontWeight": "400",
                                           }
                                         }
-                                      />
+                                      >
+                                        Project
+                                      </Text>
                                     </View>
                                     <Icon
                                       color="#1A202C"
