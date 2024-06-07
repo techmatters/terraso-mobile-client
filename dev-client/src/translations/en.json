@@ -492,9 +492,9 @@
     "required_method": "{{method}} (required)",
     "collection_method": {
       "slope": "Slope and Landscape",
-      "soilTexture": "Texture",
+      "soilTexture": "Soil Texture",
       "rockFragmentVolume": "Rock Fragment",
-      "soilColor": "Color",
+      "soilColor": "Soil Color",
       "verticalCracking": "Vertical Cracks",
       "carbonates": "Carbonates",
       "ph": "pH",
@@ -506,6 +506,10 @@
       "soilLimitations": "Limitations",
       "photos": "Photos",
       "notes": "Notes"
+    },
+    "collection_method_description": {
+      "slope": "Includes slope steepness, shape, aspect, and landscape position",
+      "soilTexture": "Includes texture class, percent clay, and rock fragments"
     },
     "vertical_cracking": {
       "description": "Vertical cracks may appear on the soil surface when some soils experience changes in moisture or temperature. The cracks may be permanent, or they may disappear after some time.\n\nVertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks.",
