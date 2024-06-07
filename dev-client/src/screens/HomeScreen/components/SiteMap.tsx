@@ -199,6 +199,7 @@ export const SiteMap = memo(
           feature: GeoJSON.Feature,
           isCurrentLocation: boolean = false,
         ) => {
+          Keyboard.dismiss();
           if (
             calloutState.kind === 'none' &&
             feature.geometry?.type === 'Point'
@@ -223,7 +224,6 @@ export const SiteMap = memo(
               ),
             );
           } else {
-            Keyboard.dismiss();
             setCalloutState(noneCallout());
           }
         },
