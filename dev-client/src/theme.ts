@@ -34,6 +34,7 @@ export const theme = extendTheme({
     background: {
       default: '#FFFFFF',
       secondary: '#00344D',
+      tertiary: '#E0E0E0',
     },
     secondary: {
       main: '#C05621',
