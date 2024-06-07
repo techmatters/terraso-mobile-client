@@ -15,9 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
   TabRoutes,
@@ -42,6 +45,7 @@ type Props = {projectId: string};
 
 export const ProjectTabNavigator = ({projectId}: Props) => {
   const defaultTabOptions = useDefaultTabOptions();
+  const {t} = useTranslation();
 
   const tabIconNames: Record<keyof TabStackParamList, IconName> = {
     Inputs: 'tune',
@@ -57,6 +61,13 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
       ...defaultTabOptions,
       tabBarIcon: ({color}) => {
         return <Icon name={iconName} color={color} />;
+      },
+      tabBarLabel: ({color}) => {
+        return (
+          <Text color={color} textTransform="uppercase">
+            {t(`projects.tabs.${route.name.toLowerCase()}`)}
+          </Text>
+        );
       },
     };
   };
