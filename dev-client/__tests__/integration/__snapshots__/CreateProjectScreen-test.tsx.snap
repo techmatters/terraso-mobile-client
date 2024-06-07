@@ -282,7 +282,7 @@ exports[`renders correctly 1`] = `
                             style={
                               {
                                 "marginHorizontal": 20,
-                                "paddingTop": "20%",
+                                "paddingTop": 16,
                               }
                             }
                           >

@@ -15,18 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Platform} from 'react-native';
 
 import {FormikProps} from 'formik';
-import {
-  Button,
-  FormControl,
-  KeyboardAvoidingView,
-  ScrollView,
-  Spacer,
-} from 'native-base';
+import {Button, KeyboardAvoidingView, ScrollView, Spacer} from 'native-base';
 import {InferType} from 'yup';
 
 import {Coords} from 'terraso-client-shared/types';
@@ -43,25 +36,17 @@ import {
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
-import {coordsToString} from 'terraso-mobile-client/components/StaticMapView';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
 
-export type FormState = Omit<
-  InferType<ReturnType<typeof siteValidationSchema>>,
-  'coords'
-> & {
-  coords: string;
-};
+export type FormState = InferType<ReturnType<typeof siteValidationSchema>>;
 
 export const CreateSiteForm = ({
   isSubmitting,
   handleSubmit,
-  handleChange,
   setValues,
   values,
-  sitePin,
   onInfoPress,
   isValid,
 }: FormikProps<FormState> & {
@@ -70,18 +55,15 @@ export const CreateSiteForm = ({
 }) => {
   const {t} = useTranslation();
   const {accuracyM} = useSelector(state => state.map.userLocation);
-  const currentCoords = useMemo(() => sitePin, [sitePin]);
-
-  useEffect(() => {
-    if (currentCoords && values.coords !== coordsToString(currentCoords)) {
-      handleChange('coords')(coordsToString(currentCoords));
-    }
-  }, [currentCoords, values.coords, handleChange]);
 
   const projectPrivacy = useSelector(state =>
     values.projectId
       ? state.project.projects[values.projectId].privacy
       : undefined,
+  );
+
+  const hasProjects = useSelector(state =>
+    Boolean(Object.keys(state.project.projects).length),
   );
 
   return (
@@ -92,40 +74,48 @@ export const CreateSiteForm = ({
       <ScrollView>
         <VStack p="16px" pt="30px" space="18px">
           <FormField name="name">
-            <FormLabel>{t('site.create.name_label')}</FormLabel>
             <FormInput placeholder={t('site.create.name_placeholder')} />
           </FormField>
-          <FormField name="coords">
-            <FormLabel>{t('site.create.location_label')}</FormLabel>
-            <Text>
-              {t('site.create.location_accuracy', {
-                accuracyM: accuracyM?.toFixed(0),
-              })}
-            </Text>
-            <FormInput keyboardType="decimal-pad" />
-            <FormControl.Label variant="subtle">
-              {t('site.create.coords_label')}
-            </FormControl.Label>
-          </FormField>
-          <FormField name="projectId">
-            <FormLabel>
-              {t('site.create.add_to_project_label')}
-              <HelpTooltipButton>
-                <Text color="primary.contrast" variant="body1">
-                  {t('site.create.add_to_project_tooltip')}
-                </Text>
-              </HelpTooltipButton>
-            </FormLabel>
-            <ProjectSelect
-              projectId={values.projectId ?? null}
-              setProjectId={projectId =>
-                setValues(current => ({
-                  ...current,
-                  projectId: projectId ?? undefined,
-                }))
-              }
+
+          <FormLabel>{t('site.create.location_label')}</FormLabel>
+          <Text>
+            {t('site.create.location_accuracy', {
+              accuracyM: accuracyM?.toFixed(0),
+            })}
+          </Text>
+          <FormField name="latitude">
+            <FormInput
+              value={values.latitude.toString()}
+              keyboardType="decimal-pad"
             />
           </FormField>
+          <FormField name="longitude">
+            <FormInput
+              value={values.longitude.toString()}
+              keyboardType="decimal-pad"
+            />
+          </FormField>
+          {hasProjects && (
+            <FormField name="projectId">
+              <FormLabel>
+                {t('site.create.add_to_project_label')}
+                <HelpTooltipButton>
+                  <Text color="primary.contrast" variant="body1">
+                    {t('site.create.add_to_project_tooltip')}
+                  </Text>
+                </HelpTooltipButton>
+              </FormLabel>
+              <ProjectSelect
+                projectId={values.projectId ?? null}
+                setProjectId={projectId =>
+                  setValues(current => ({
+                    ...current,
+                    projectId: projectId ?? undefined,
+                  }))
+                }
+              />
+            </FormField>
+          )}
           <FormField name="privacy">
             <FormLabel>
               {t('privacy.label')}

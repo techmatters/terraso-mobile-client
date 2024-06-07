@@ -26,7 +26,11 @@ type Props = {
 export default function ErrorMessage({fieldName}: Props) {
   return (
     <FormikErrorMessage name={fieldName}>
-      {msg => <Text color="error.main">{msg}</Text>}
+      {msg => (
+        <Text variant="caption" color="error.main">
+          {msg}
+        </Text>
+      )}
     </FormikErrorMessage>
   );
 }
