@@ -24,6 +24,7 @@ import {
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
+import {theme} from 'terraso-mobile-client/theme';
 
 export type FormInputProps = {
   textInputLabel?: string;
@@ -54,6 +55,7 @@ export const FormInput = memo(
           onChangeText={onChange}
           onBlur={onBlur}
           label={props?.textInputLabel}
+          cursorColor={theme.colors.primary.main}
           {...props}
         />
       </FormFieldWrapper>
