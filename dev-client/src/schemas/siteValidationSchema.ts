@@ -19,10 +19,6 @@ import {TFunction} from 'i18next';
 import * as yup from 'yup';
 
 import {
-  CoordsParseError,
-  parseCoords,
-} from 'terraso-mobile-client/components/StaticMapView';
-import {
   LATITUDE_MAX,
   LATITUDE_MIN,
   LONGITUDE_MAX,
@@ -49,27 +45,36 @@ export const siteValidationSchema = (t: TFunction) =>
         }),
       )
       .required(t('general.required')),
-    coords: yup
-      .string()
-      .required(t('site.form.coords_parse_error.COORDS_PARSE'))
-      .test((coords, {createError}) => {
-        try {
-          parseCoords(coords);
-        } catch (e) {
-          if (e instanceof CoordsParseError) {
-            return createError({
-              message: t(`site.form.coords_parse_error.${e.message}`, {
-                LATITUDE_MIN,
-                LATITUDE_MAX,
-                LONGITUDE_MIN,
-                LONGITUDE_MAX,
-              }),
-            });
-          }
-          throw e;
-        }
-        return true;
-      }),
+    latitude: yup
+      .number()
+      .min(
+        LATITUDE_MIN,
+        t('site.form.min_latitude_error', {
+          min: LATITUDE_MIN,
+        }),
+      )
+      .max(
+        LATITUDE_MAX,
+        t('site.form.max_latitude_error', {
+          max: LATITUDE_MAX,
+        }),
+      )
+      .required(t('general.required')),
+    longitude: yup
+      .number()
+      .min(
+        LONGITUDE_MIN,
+        t('site.form.min_longitude_error', {
+          min: LONGITUDE_MIN,
+        }),
+      )
+      .max(
+        LONGITUDE_MAX,
+        t('site.form.max_longitude_error', {
+          max: LONGITUDE_MAX,
+        }),
+      )
+      .required(t('general.required')),
     projectId: yup.string(),
     privacy: yup.string().oneOf(['PUBLIC', 'PRIVATE'] as const),
   });
