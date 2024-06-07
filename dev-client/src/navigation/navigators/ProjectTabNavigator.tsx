@@ -88,16 +88,12 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
       <Tab.Screen
         name={TabRoutes.INPUTS}
         component={ProjectInputScreen}
-        initialParams={{
-          projectId,
-        }}
+        initialParams={{projectId}}
       />
       <Tab.Screen
         name={TabRoutes.SITES}
         component={ProjectSitesScreen}
-        initialParams={{
-          projectId,
-        }}
+        initialParams={{projectId}}
       />
       <Tab.Screen
         name={TabRoutes.TEAM}
