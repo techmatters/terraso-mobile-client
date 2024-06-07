@@ -17,11 +17,12 @@
 
 import {forwardRef, memo, useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ActivityIndicator} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
-import {Spinner, useTheme} from 'native-base';
+import {useTheme} from 'native-base';
 
 import {Site} from 'terraso-client-shared/site/siteSlice';
 
@@ -109,7 +110,7 @@ export const SiteListBottomSheet = memo(
             {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
           </Column>
           {isLoadingData ? (
-            <Spinner size="lg" />
+            <ActivityIndicator size="large" />
           ) : sites.length === 0 ? (
             <EmptySiteMessage />
           ) : (

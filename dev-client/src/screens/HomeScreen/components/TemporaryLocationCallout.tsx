@@ -17,8 +17,9 @@
 
 import {useCallback, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ActivityIndicator} from 'react-native-paper';
 
-import {Button, Divider, Spinner} from 'native-base';
+import {Button, Divider} from 'native-base';
 
 import {Coords} from 'terraso-client-shared/types';
 
@@ -91,7 +92,7 @@ export const TemporaryLocationCallout = ({
             value={siteElevationString}
           />
         ) : (
-          <Spinner size="sm" />
+          <ActivityIndicator size="small" />
         )}
         <Divider />
         <Row justifyContent="flex-end">
