@@ -32,7 +32,6 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {
   renderSlopeSteepnessDegree,
   renderSlopeSteepnessPercent,
@@ -47,13 +46,14 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
   const soilData = useSelector(selectSoilData(siteId));
 
   const onAddSoilDataPress = useCallback(() => {
-    navigation.push('LOCATION_DASHBOARD', {
-      siteId: siteId,
-      initialTab: 'SLOPE' as SiteTabName,
-    });
+    navigation.push('SLOPE_STEEPNESS', {siteId});
   }, [navigation, siteId]);
 
   const imageSrc = getSlopeSteepnessImageSource(soilData);
+  const shouldShowNumberInBox =
+    imageSrc === undefined &&
+    (soilData.slopeSteepnessDegree !== undefined ||
+      soilData.slopeSteepnessPercent !== undefined);
 
   return (
     <>
@@ -62,12 +62,21 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
       </Heading>
 
       <Box flexDirection="row">
-        <Box borderWidth="2px" width="85px" height="85px" mr="md">
+        <Box
+          borderWidth="2px"
+          width="85px"
+          height="85px"
+          mr="md"
+          justifyContent="center"
+          alignItems="center">
           {imageSrc && <Image style={styles.image} source={imageSrc} />}
+          {shouldShowNumberInBox && <SlopeSteepnessTextSection {...soilData} />}
         </Box>
 
         <Box flex={1}>
-          <SlopeSteepnessTextSection {...soilData} />
+          {!shouldShowNumberInBox && (
+            <SlopeSteepnessTextSection {...soilData} />
+          )}
         </Box>
 
         <RestrictBySiteRole
