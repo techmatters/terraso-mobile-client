@@ -17,8 +17,6 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
