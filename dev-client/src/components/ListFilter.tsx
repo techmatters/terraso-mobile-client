@@ -352,8 +352,8 @@ export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
       onChangeText={onChangeText}
       placeholder={placeholder}
       searchAccessibilityLabel={label}
-      style={searchFilterStyles.search}
-      inputStyle={searchFilterStyles.input}
+      style={searchBarStyles.search}
+      inputStyle={searchBarStyles.input}
     />
   );
 };
@@ -473,7 +473,7 @@ export const ListFilterModal = ({searchInput, children}: ModalProps) => {
   );
 };
 
-export const searchFilterStyles = StyleSheet.create({
+export const searchBarStyles = StyleSheet.create({
   search: {
     width: '85%',
     padding: 0,

@@ -26,7 +26,7 @@ import {Pressable} from 'native-base';
 import {Coords} from 'terraso-client-shared/types';
 
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {searchFilterStyles} from 'terraso-mobile-client/components/ListFilter';
+import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
 import {
   Box,
   HStack,
@@ -192,8 +192,8 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
                 }}
                 value={query}
                 placeholder={t('search.placeholder')}
-                style={searchFilterStyles.search}
-                inputStyle={searchFilterStyles.input}
+                style={searchBarStyles.search}
+                inputStyle={searchBarStyles.input}
               />
             )}
           />

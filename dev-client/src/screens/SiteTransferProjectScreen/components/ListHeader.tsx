@@ -18,7 +18,7 @@ import {memo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Searchbar} from 'react-native-paper';
 
-import {searchFilterStyles} from 'terraso-mobile-client/components/ListFilter';
+import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
 import {
   Heading,
   HStack,
@@ -44,8 +44,8 @@ export const ListHeader = memo(({query, setQuery}: Props) => {
         value={query !== undefined ? query : ''}
         onChangeText={setQuery}
         placeholder={t('site.search.placeholder')}
-        style={searchFilterStyles.search}
-        inputStyle={searchFilterStyles.input}
+        style={searchBarStyles.search}
+        inputStyle={searchBarStyles.input}
       />
     </VStack>
   );
