@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
@@ -33,6 +33,8 @@ import {
   View,
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
+import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {
   initMapSearch,
   Suggestion,
@@ -76,6 +78,13 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [, setAbortController] = useState<AbortController | null>(null);
   const [hideResults, setHideResults] = useState(false);
+  const homeScreen = useHomeScreenContext();
+
+  useEffect(() => {
+    if (query.length >= MAP_QUERY_MIN_LENGTH) {
+      homeScreen?.collapseBottomSheet();
+    }
+  }, [homeScreen, query]);
 
   async function makeSuggestionsApiCall(queryText: string) {
     const newAbortController = new AbortController();
@@ -98,7 +107,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       const [latitude, longitude] = queryText.split(',').map(Number);
       zoomTo && zoomTo({latitude, longitude});
     } else {
-      if (queryText.length >= 2) {
+      if (queryText.length >= MAP_QUERY_MIN_LENGTH) {
         try {
           const {suggestions: newSuggestions} =
             await makeSuggestionsApiCall(queryText);

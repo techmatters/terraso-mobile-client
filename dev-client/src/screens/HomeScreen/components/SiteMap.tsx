@@ -37,6 +37,7 @@ import {
   coordsToPosition,
   positionToCoords,
 } from 'terraso-mobile-client/components/StaticMapView';
+import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {CustomUserLocation} from 'terraso-mobile-client/screens/HomeScreen/components/CustomUserLocation';
 import {SiteMapCallout} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMapCallout';
 import {
@@ -90,6 +91,7 @@ export const SiteMap = memo(
           });
         },
       }));
+      const homeScreen = useHomeScreenContext();
 
       const {filteredItems: filteredSites} = useListFilter<Site>();
       const sites = Object.fromEntries(
@@ -189,9 +191,10 @@ export const SiteMap = memo(
               cameraRef: cameraRef,
             });
             setCalloutState(siteCallout(feature.id as string));
+            homeScreen?.collapseBottomSheet();
           }
         },
-        [setCalloutState, handleClusterPress],
+        [setCalloutState, handleClusterPress, homeScreen],
       );
 
       const onPress = useCallback(

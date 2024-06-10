@@ -24,13 +24,13 @@ import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql'
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
+import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {
   CreateSiteForm,
   FormState,
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
-import {useHomeScreenContext} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
