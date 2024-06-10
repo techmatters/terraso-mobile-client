@@ -102,7 +102,7 @@ const FormContainer = React.memo(
     return (
       <KeyboardAvoidingView flex={1}>
         <ScrollView bg="background.default">
-          <Box pt={4} mx={5}>
+          <Box pt="16px" mx="20px">
             <ProjectForm
               onInfoPress={onInfoPress}
               handleChange={handleChange}
