@@ -19,6 +19,8 @@ import {useCallback, useState} from 'react';
 import {LayoutChangeEvent, StatusBar, StyleSheet, View} from 'react-native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -55,12 +57,15 @@ export const ScreenScaffold = ({
         translucent
         backgroundColor={theme.colors.transparent}
       />
-      <Column backgroundColor="primary.contrast" flex={1}>
-        <View onLayout={onLayout}>{PropsAppBar}</View>
-        <HeaderHeightContext.Provider value={safeAreaTop + (headerHeight ?? 0)}>
-          <Box flex={1}>{children}</Box>
-        </HeaderHeightContext.Provider>
-      </Column>
+      <BottomSheetModalProvider>
+        <Column backgroundColor="primary.contrast" flex={1}>
+          <View onLayout={onLayout}>{PropsAppBar}</View>
+          <HeaderHeightContext.Provider
+            value={safeAreaTop + (headerHeight ?? 0)}>
+            <Box flex={1}>{children}</Box>
+          </HeaderHeightContext.Provider>
+        </Column>
+      </BottomSheetModalProvider>
     </SafeAreaView>
   );
 };
