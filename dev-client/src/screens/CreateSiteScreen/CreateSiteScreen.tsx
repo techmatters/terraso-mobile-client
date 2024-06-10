@@ -17,7 +17,7 @@
 
 import {useCallback, useRef} from 'react';
 
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
@@ -73,18 +73,16 @@ export const CreateSiteScreen = (props: Props = {}) => {
   );
 
   return (
-    <BottomSheetModalProvider>
-      <ScreenScaffold
-        BottomNavigation={null}
-        AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
-        <CreateSiteView
-          createSiteCallback={createSiteCallback}
-          defaultProjectId={'projectId' in props ? props.projectId : undefined}
-          sitePin={'coords' in props ? props.coords : undefined}
-          onInfoPress={onInfo}
-        />
-      </ScreenScaffold>
+    <ScreenScaffold
+      BottomNavigation={null}
+      AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
+      <CreateSiteView
+        createSiteCallback={createSiteCallback}
+        defaultProjectId={'projectId' in props ? props.projectId : undefined}
+        sitePin={'coords' in props ? props.coords : undefined}
+        onInfoPress={onInfo}
+      />
       <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
-    </BottomSheetModalProvider>
+    </ScreenScaffold>
   );
 };

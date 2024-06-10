@@ -17,7 +17,7 @@
 
 import {useCallback, useRef} from 'react';
 
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
@@ -45,14 +45,12 @@ export const ProjectViewScreen = ({projectId}: Props) => {
   return (
     <ProjectRoleContextProvider projectId={projectId}>
       <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
-        <BottomSheetModalProvider>
-          <ScreenScaffold
-            AppBar={<AppBar title={project?.name} />}
-            BottomNavigation={null}>
-            <ProjectTabNavigator projectId={projectId} />
-          </ScreenScaffold>
+        <ScreenScaffold
+          AppBar={<AppBar title={project?.name} />}
+          BottomNavigation={null}>
+          <ProjectTabNavigator projectId={projectId} />
           <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
-        </BottomSheetModalProvider>
+        </ScreenScaffold>
       </BottomSheetPrivacyModalContext.Provider>
     </ProjectRoleContextProvider>
   );

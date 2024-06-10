@@ -18,7 +18,6 @@
 import {memo, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
@@ -66,10 +65,6 @@ export const SiteLocationDashboardTabNavigator = memo(
       [siteId, t, defaultOptions],
     );
 
-    return (
-      <BottomSheetModalProvider>
-        <Tab.Navigator initialRouteName={initialTab}>{tabs}</Tab.Navigator>
-      </BottomSheetModalProvider>
-    );
+    return <Tab.Navigator initialRouteName={initialTab}>{tabs}</Tab.Navigator>;
   },
 );

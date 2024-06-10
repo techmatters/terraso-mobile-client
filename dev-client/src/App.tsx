@@ -40,7 +40,6 @@ import 'terraso-mobile-client/config';
 import {Portal} from 'react-native-paper';
 import {enableFreeze} from 'react-native-screens';
 
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
 
 import {APP_CONFIG} from 'terraso-mobile-client/config';
@@ -80,18 +79,16 @@ function App(): React.JSX.Element {
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
         <NativeBaseProvider theme={theme}>
-          <BottomSheetModalProvider>
-            <Portal.Host>
-              <NavigationContainer>
-                <GeospatialProvider>
-                  <Toasts />
-                  <HomeScreenContextProvider>
-                    <RootNavigator />
-                  </HomeScreenContextProvider>
-                </GeospatialProvider>
-              </NavigationContainer>
-            </Portal.Host>
-          </BottomSheetModalProvider>
+          <Portal.Host>
+            <NavigationContainer>
+              <GeospatialProvider>
+                <Toasts />
+                <HomeScreenContextProvider>
+                  <RootNavigator />
+                </HomeScreenContextProvider>
+              </GeospatialProvider>
+            </NavigationContainer>
+          </Portal.Host>
         </NativeBaseProvider>
       </Provider>
     </GestureHandlerRootView>
