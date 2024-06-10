@@ -58,7 +58,7 @@ export const Card = ({
     <Box variant="card" marginTop="0px" shadow={undefined} {...boxProps}>
       {isPopover && <CardTriangle />}
       {(Header || buttons) && (
-        <Row space="md" alignItems="center" justifyContent="space-between">
+        <Row space="md" alignItems="flex-start" justifyContent="space-between">
           {Header}
           {buttons}
         </Row>
