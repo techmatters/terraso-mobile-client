@@ -25,7 +25,7 @@ export const CalloutDetail = ({
 }) => {
   return (
     <Box>
-      <Text textTransform="uppercase">{label}</Text>
+      <Text>{label}</Text>
       <Text bold textTransform="uppercase">
         {value}
       </Text>

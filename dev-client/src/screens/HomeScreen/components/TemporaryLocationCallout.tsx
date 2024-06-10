@@ -88,7 +88,7 @@ export const TemporaryLocationCallout = ({
         <Divider />
         {siteElevationString ? (
           <CalloutDetail
-            label={t('site.elevation_label').toUpperCase()}
+            label={t('site.elevation_label')}
             value={siteElevationString}
           />
         ) : (
