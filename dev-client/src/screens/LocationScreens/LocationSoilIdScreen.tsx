@@ -18,8 +18,6 @@
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native-gesture-handler';
 
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-
 import {selectSite} from 'terraso-client-shared/selectors';
 import {Coords} from 'terraso-client-shared/types';
 
@@ -47,27 +45,25 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
   const {status} = useSoilIdData(coords, siteId);
 
   return (
-    <BottomSheetModalProvider>
-      <ScreenScaffold
-        AppBar={
-          <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
-        }>
-        <ScrollView>
-          <SoilIdDescriptionSection siteId={siteId} coords={coords} />
-          {status === 'ready' && (
-            <SoilIdMatchesSection siteId={siteId} coords={coords} />
-          )}
-          {siteId ? (
-            <SiteRoleContextProvider siteId={siteId}>
-              <SiteDataSection siteId={siteId} />
-            </SiteRoleContextProvider>
-          ) : (
-            <Box paddingVertical="md">
-              <CreateSiteButton coords={coords} />
-            </Box>
-          )}
-        </ScrollView>
-      </ScreenScaffold>
-    </BottomSheetModalProvider>
+    <ScreenScaffold
+      AppBar={
+        <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
+      }>
+      <ScrollView>
+        <SoilIdDescriptionSection siteId={siteId} coords={coords} />
+        {status === 'ready' && (
+          <SoilIdMatchesSection siteId={siteId} coords={coords} />
+        )}
+        {siteId ? (
+          <SiteRoleContextProvider siteId={siteId}>
+            <SiteDataSection siteId={siteId} />
+          </SiteRoleContextProvider>
+        ) : (
+          <Box paddingVertical="md">
+            <CreateSiteButton coords={coords} />
+          </Box>
+        )}
+      </ScrollView>
+    </ScreenScaffold>
   );
 };
