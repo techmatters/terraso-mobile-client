@@ -42,12 +42,13 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {theme} from 'terraso-mobile-client/theme';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
 export function ProjectSettingsScreen({
   route: {
-    params: {downloadLink, projectId},
+    params: {projectId},
   },
 }: Props) {
   const {t} = useTranslation();
@@ -68,7 +69,7 @@ export function ProjectSettingsScreen({
   const userRole = useProjectRoleContext();
 
   return (
-    <ScrollView>
+    <ScrollView backgroundColor={theme.colors.background.default}>
       <VStack px={2} py={4} space={2} m={3} pb="50px">
         <EditProjectForm
           onSubmit={onSubmit}
@@ -77,10 +78,7 @@ export function ProjectSettingsScreen({
           userRole={userRole}
         />
         <VStack space={1}>
-          <IconLink
-            iconName="content-copy"
-            isUnderlined={false}
-            href={downloadLink}>
+          <IconLink iconName="content-copy" isUnderlined={false}>
             {t('projects.settings.copy_download_link')}
           </IconLink>
           <Text ml={10}>

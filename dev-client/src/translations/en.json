@@ -209,6 +209,12 @@
       "description_label": "Project Description",
       "privacy_label": "Data Privacy"
     },
+    "tabs": {
+      "inputs": "Inputs",
+      "team": "Team",
+      "sites": "Sites",
+      "settings": "Settings"
+    },
     "inputs": {
       "units": {
         "heading": "Units of Measurement",

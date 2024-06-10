@@ -38,7 +38,6 @@ export type TabStackParamList = {
   };
   [TabRoutes.SETTINGS]: {
     projectId: string;
-    downloadLink: string;
   };
   [TabRoutes.SITES]: {
     projectId: string;

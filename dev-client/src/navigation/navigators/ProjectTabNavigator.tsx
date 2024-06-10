@@ -15,9 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
   TabRoutes,
@@ -29,9 +32,6 @@ import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettin
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
 import {ProjectTeamScreen} from 'terraso-mobile-client/screens/ProjectTeamScreen/ProjectTeamScreen';
 
-// TODO: replace with real link
-const TEMP_DOWNLOAD_LINK = 'https://s3.amazon.com/mydownload';
-
 const Tab = createMaterialTopTabNavigator<TabStackParamList>();
 
 type ScreenOptions = React.ComponentProps<
@@ -42,6 +42,7 @@ type Props = {projectId: string};
 
 export const ProjectTabNavigator = ({projectId}: Props) => {
   const defaultTabOptions = useDefaultTabOptions();
+  const {t} = useTranslation();
 
   const tabIconNames: Record<keyof TabStackParamList, IconName> = {
     Inputs: 'tune',
@@ -57,6 +58,13 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
       ...defaultTabOptions,
       tabBarIcon: ({color}) => {
         return <Icon name={iconName} color={color} />;
+      },
+      tabBarLabel: ({color}) => {
+        return (
+          <Text color={color} textTransform="uppercase">
+            {t(`projects.tabs.${route.name.toLowerCase()}`)}
+          </Text>
+        );
       },
     };
   };
@@ -77,16 +85,12 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
       <Tab.Screen
         name={TabRoutes.INPUTS}
         component={ProjectInputScreen}
-        initialParams={{
-          projectId,
-        }}
+        initialParams={{projectId}}
       />
       <Tab.Screen
         name={TabRoutes.SITES}
         component={ProjectSitesScreen}
-        initialParams={{
-          projectId,
-        }}
+        initialParams={{projectId}}
       />
       <Tab.Screen
         name={TabRoutes.TEAM}
@@ -97,10 +101,7 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
         <Tab.Screen
           name={TabRoutes.SETTINGS}
           component={ProjectSettingsScreen}
-          initialParams={{
-            projectId,
-            downloadLink: TEMP_DOWNLOAD_LINK,
-          }}
+          initialParams={{projectId}}
         />,
       )}
     </Tab.Navigator>

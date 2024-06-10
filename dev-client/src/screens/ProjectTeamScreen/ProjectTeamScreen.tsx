@@ -36,6 +36,7 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {UserList} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserList';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {theme} from 'terraso-mobile-client/theme';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 
@@ -86,7 +87,11 @@ export const ProjectTeamScreen = ({route}: Props) => {
   );
 
   return (
-    <VStack alignItems="flex-start" p={4} space={3}>
+    <VStack
+      alignItems="flex-start"
+      p={4}
+      space={3}
+      backgroundColor={theme.colors.background.default}>
       <RestrictByProjectRole role="MANAGER">
         <AddButton
           text={t('projects.team.add')}
