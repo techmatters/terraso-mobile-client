@@ -569,25 +569,15 @@ exports[`renders correctly 1`] = `
                                         }
                                       >
                                         <Text
+                                          letterSpacing="0.15px"
+                                          lineHeight="24px"
                                           style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#C05621",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
+                                            {
+                                              "color": "#C05621",
+                                              "fontSize": 16,
+                                              "fontWeight": "400",
+                                              "textTransform": "uppercase",
+                                            }
                                           }
                                         >
                                           Inputs
@@ -607,25 +597,15 @@ exports[`renders correctly 1`] = `
                                         }
                                       >
                                         <Text
+                                          letterSpacing="0.15px"
+                                          lineHeight="24px"
                                           style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#FFFFFF",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
+                                            {
+                                              "color": "#FFFFFF",
+                                              "fontSize": 16,
+                                              "fontWeight": "400",
+                                              "textTransform": "uppercase",
+                                            }
                                           }
                                         >
                                           Inputs
@@ -793,25 +773,15 @@ exports[`renders correctly 1`] = `
                                         }
                                       >
                                         <Text
+                                          letterSpacing="0.15px"
+                                          lineHeight="24px"
                                           style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#C05621",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
+                                            {
+                                              "color": "#C05621",
+                                              "fontSize": 16,
+                                              "fontWeight": "400",
+                                              "textTransform": "uppercase",
+                                            }
                                           }
                                         >
                                           Sites
@@ -831,25 +801,15 @@ exports[`renders correctly 1`] = `
                                         }
                                       >
                                         <Text
+                                          letterSpacing="0.15px"
+                                          lineHeight="24px"
                                           style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#FFFFFF",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
+                                            {
+                                              "color": "#FFFFFF",
+                                              "fontSize": 16,
+                                              "fontWeight": "400",
+                                              "textTransform": "uppercase",
+                                            }
                                           }
                                         >
                                           Sites
@@ -1017,25 +977,15 @@ exports[`renders correctly 1`] = `
                                         }
                                       >
                                         <Text
+                                          letterSpacing="0.15px"
+                                          lineHeight="24px"
                                           style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#C05621",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
+                                            {
+                                              "color": "#C05621",
+                                              "fontSize": 16,
+                                              "fontWeight": "400",
+                                              "textTransform": "uppercase",
+                                            }
                                           }
                                         >
                                           Team
@@ -1055,25 +1005,15 @@ exports[`renders correctly 1`] = `
                                         }
                                       >
                                         <Text
+                                          letterSpacing="0.15px"
+                                          lineHeight="24px"
                                           style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#FFFFFF",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
+                                            {
+                                              "color": "#FFFFFF",
+                                              "fontSize": 16,
+                                              "fontWeight": "400",
+                                              "textTransform": "uppercase",
+                                            }
                                           }
                                         >
                                           Team
@@ -1163,6 +1103,7 @@ exports[`renders correctly 1`] = `
                                     "flexDirection": "column",
                                   },
                                   {
+                                    "backgroundColor": "#FFFFFF",
                                     "height": "100%",
                                   },
                                 ]
