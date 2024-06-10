@@ -52,9 +52,7 @@ export function ProjectSettingsScreen({
 }: Props) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const {name, description, privacy, measurementUnits} = useSelector(
-    selectProject(projectId),
-  );
+  const {name, description, privacy} = useSelector(selectProject(projectId));
 
   const onSubmit = async (values: Omit<ProjectUpdateMutationInput, 'id'>) => {
     await dispatch(updateProject({...values, id: projectId, privacy}));
@@ -76,7 +74,6 @@ export function ProjectSettingsScreen({
           onSubmit={onSubmit}
           name={name}
           description={description}
-          measurementUnits={measurementUnits}
           userRole={userRole}
         />
         <VStack space={1}>
