@@ -37,8 +37,9 @@ export const SoilMatchTile = ({soil_name, score, onPress}: Props) => {
         justifyContent="space-between"
         my="4px"
         py="4px">
-        <Box marginHorizontal="16px" width="74px" justifyContent="center">
+        <Box marginHorizontal="16px" width="78px" justifyContent="center">
           <Text
+            variant="score-tile"
             size="30px"
             fontWeight={400}
             color="primary.lighter"
