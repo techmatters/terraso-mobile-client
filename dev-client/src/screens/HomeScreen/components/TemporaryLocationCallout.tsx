@@ -52,16 +52,14 @@ export const TemporaryLocationCallout = ({
 }: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const [siteElevationString, setSiteElevationString] = useState('');
   const [siteElevationValue, setSiteElevationValue] = useState(0);
 
   useMemo(async () => {
     const elevation = await getElevation(coords.latitude, coords.longitude);
-    setSiteElevationString(renderElevation(t, elevation));
     if (elevation !== undefined) {
       setSiteElevationValue(elevation);
     }
-  }, [coords, t]);
+  }, [coords]);
 
   const onCreate = useCallback(() => {
     navigation.navigate('CREATE_SITE', {
@@ -93,10 +91,10 @@ export const TemporaryLocationCallout = ({
           value={TEMP_ECO_SITE_PREDICTION}
         />
         <Divider />
-        {siteElevationString ? (
+        {siteElevationValue ? (
           <CalloutDetail
             label={t('site.elevation_label')}
-            value={siteElevationString}
+            value={renderElevation(t, siteElevationValue)}
           />
         ) : (
           <ActivityIndicator size="small" />
