@@ -17,7 +17,7 @@
 
 import {useCallback, useRef} from 'react';
 
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -38,11 +38,9 @@ export const CreateProjectScreen = () => {
   );
 
   return (
-    <BottomSheetModalProvider>
-      <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
-        <CreateProjectForm onInfoPress={onInfoPress} />
-      </ScreenScaffold>
+    <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
+      <CreateProjectForm onInfoPress={onInfoPress} />
       <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
-    </BottomSheetModalProvider>
+    </ScreenScaffold>
   );
 };
