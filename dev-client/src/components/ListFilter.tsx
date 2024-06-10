@@ -23,7 +23,7 @@ import {
   useState,
 } from 'react';
 import {useTranslation} from 'react-i18next';
-import {TextInput} from 'react-native';
+import {Keyboard, TextInput} from 'react-native';
 
 import {Button, FormControl, Input, Radio} from 'native-base';
 
@@ -445,7 +445,10 @@ export const FilterModalTrigger = ({
     <HStack space="20px" mb="15px">
       <BadgedIcon
         iconName="filter-list"
-        onPress={onOpen}
+        onPress={() => {
+          Keyboard.dismiss();
+          onOpen();
+        }}
         badgeNum={numFilters}
         accessibilityLabel={t('listfilter.open_modal_label')}
         _badge={{
