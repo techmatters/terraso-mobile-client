@@ -27,6 +27,7 @@ import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton'
 import {Card} from 'terraso-mobile-client/components/Card';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
+import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/HomeScreen/components/SiteClusterCalloutListItem';
 import {TemporaryLocationCallout} from 'terraso-mobile-client/screens/HomeScreen/components/TemporaryLocationCallout';
 import {
@@ -66,6 +67,7 @@ export const SiteMapCallout = ({sites, state, setState}: Props) => {
 
 const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
   const closeCallout = useCallback(() => setState(noneCallout()), [setState]);
+  const homeScreen = useHomeScreenContext();
 
   switch (state.kind) {
     case 'site':
@@ -108,6 +110,7 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
     default:
       const isCurrentLocation =
         state.kind === 'location' ? state.isCurrentLocation : false;
+      homeScreen?.collapseBottomSheet();
       return (
         <TemporaryLocationCallout
           coords={coords}

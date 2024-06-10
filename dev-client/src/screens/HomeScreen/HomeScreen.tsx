@@ -16,9 +16,7 @@
  */
 
 import {
-  createContext,
   memo,
-  RefObject,
   useCallback,
   useContext,
   useEffect,
@@ -39,6 +37,7 @@ import {Coords} from 'terraso-client-shared/types';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {HomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
@@ -57,23 +56,6 @@ import {
 import {getHomeScreenFilters} from 'terraso-mobile-client/screens/HomeScreen/utils/homeScreenFilters';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-
-type HomeScreenRef = {
-  showSiteOnMap: (site: Site) => void;
-};
-
-const HomeScreenContext = createContext<RefObject<HomeScreenRef> | null>(null);
-
-export const HomeScreenContextProvider = memo(
-  ({children}: React.PropsWithChildren<{}>) => (
-    <HomeScreenContext.Provider value={useRef<HomeScreenRef>(null)}>
-      {children}
-    </HomeScreenContext.Provider>
-  ),
-);
-
-export const useHomeScreenContext = () =>
-  useContext(HomeScreenContext)?.current ?? undefined;
 
 export const HomeScreen = memo(() => {
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
@@ -99,12 +81,17 @@ export const HomeScreen = memo(() => {
     [setCalloutState],
   );
 
+  const collapseBottomSheet = useCallback(() => {
+    siteListBottomSheetRef.current?.collapse();
+  }, []);
+
   useImperativeHandle(
     homeScreenContext,
     () => ({
       showSiteOnMap,
+      collapseBottomSheet,
     }),
-    [showSiteOnMap],
+    [showSiteOnMap, collapseBottomSheet],
   );
 
   useEffect(() => {
