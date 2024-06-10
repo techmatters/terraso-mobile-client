@@ -19,13 +19,14 @@ import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikProps} from 'formik';
 import {TFunction} from 'i18next';
-import {Button} from 'native-base';
+import {Button, Radio} from 'native-base';
 import * as yup from 'yup';
 
 import {
   ProjectMembershipProjectRoleChoices,
   ProjectUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
+import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
