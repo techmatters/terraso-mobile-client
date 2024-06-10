@@ -27,8 +27,7 @@ export function ScoreTile({score}: ScoreTileProps) {
     <Box
       width="94px"
       height="54px"
-      borderRadius="4px"
-      backgroundColor="background.secondary"
+      variant="tile"
       justifyContent="center"
       alignItems="center">
       <Text variant="score-tile" color="primary.lighter">

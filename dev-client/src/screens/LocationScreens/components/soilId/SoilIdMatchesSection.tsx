@@ -17,8 +17,6 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
@@ -29,6 +27,11 @@ import {
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {
+  getSortedDataBasedMatches,
+  getSortedLocationBasedMatches,
+} from 'terraso-mobile-client/model/soilId/soilIdRanking';
+import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
@@ -45,33 +48,37 @@ export const SoilIdMatchesSection = ({
 
   return (
     <ScreenContentSection backgroundColor="grey.200">
-      <Row alignItems="center">
+      <Row alignItems="center" pb="12px">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
         <InfoOverlaySheetButton Header={t('site.soil_id.matches.info.title')}>
           <TopSoilMatchesInfoContent isSite={isSite} />
         </InfoOverlaySheetButton>
       </Row>
       {isSite
-        ? soilIdData.dataBasedMatches.map(dataMatch => (
+        ? getSortedDataBasedMatches(soilIdData).map(dataMatch => (
             <InfoOverlaySheet
               key={dataMatch.soilInfo.soilSeries.name}
               Header={dataMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
-                <Button backgroundColor="background.secondary" onPress={onOpen}>
-                  {dataMatch.soilInfo.soilSeries.name}
-                </Button>
+                <SoilMatchTile
+                  soil_name={dataMatch.soilInfo.soilSeries.name}
+                  score={dataMatch.combinedMatch.score}
+                  onPress={onOpen}
+                />
               )}>
               <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
             </InfoOverlaySheet>
           ))
-        : soilIdData.locationBasedMatches.map(locationMatch => (
+        : getSortedLocationBasedMatches(soilIdData).map(locationMatch => (
             <InfoOverlaySheet
               key={locationMatch.soilInfo.soilSeries.name}
               Header={locationMatch.soilInfo.soilSeries.name}
               trigger={onOpen => (
-                <Button backgroundColor="background.secondary" onPress={onOpen}>
-                  {locationMatch.soilInfo.soilSeries.name}
-                </Button>
+                <SoilMatchTile
+                  soil_name={locationMatch.soilInfo.soilSeries.name}
+                  score={locationMatch.match.score}
+                  onPress={onOpen}
+                />
               )}>
               <TempScoreInfoContent
                 locationMatch={locationMatch}

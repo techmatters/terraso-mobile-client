@@ -95,6 +95,10 @@ export const theme = extendTheme({
           padding: '16px',
           shadow: 1,
         },
+        tile: {
+          borderRadius: '4px',
+          backgroundColor: 'background.secondary',
+        },
       },
     },
     Badge: {
@@ -392,6 +396,12 @@ export const theme = extendTheme({
           fontWeight: 400,
           fontSize: '30px',
           lineHeight: '48px',
+        },
+        'match-tile-name': {
+          fontWeight: 700,
+          fontSize: '18px',
+          lineHeight: '27px',
+          letterSpacing: '0.15px',
         },
       },
     },
