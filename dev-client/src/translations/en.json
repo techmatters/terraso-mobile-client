@@ -267,8 +267,9 @@
       "archive_description": "The project will be moved to Archived Projects, making it read-only. Team members can access the data, and project managers can restore it at any time. Public projects that are archived will remain viewable on data portals.",
       "delete": "Delete this project",
       "delete_button": "Delete",
-      "delete_button_prompt": "Delete Project?",
-      "delete_description": "This will permanently delete the project’s data, as well as all of its sites and site data. This cannot be undone.\n\nAlternatively, project managers can transfer the sites out of this project to retain their data."
+      "delete_button_prompt": "Delete project?",
+      "delete_description": "This will permanently delete the project and its sites’ data. This can’t be undone.\n\nProject managers have the option to transfer sites from this project to keep site data.",
+      "measurement_units": "Units of Measurement"
     },
     "sites": {
       "empty_viewer": "This project has no sites yet.",
