@@ -17,7 +17,7 @@
 
 import {useCallback, useState} from 'react';
 import {LayoutChangeEvent, StatusBar, StyleSheet, View} from 'react-native';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
@@ -39,7 +39,6 @@ export const ScreenScaffold = ({
   const [headerHeight, setHeaderHeight] = useState<number | undefined>(
     undefined,
   );
-  const safeAreaTop = useSafeAreaInsets().top;
 
   const onLayout = useCallback(
     (e: LayoutChangeEvent) => setHeaderHeight(e.nativeEvent.layout.height),
@@ -57,15 +56,14 @@ export const ScreenScaffold = ({
         translucent
         backgroundColor={theme.colors.transparent}
       />
-      <BottomSheetModalProvider>
-        <Column backgroundColor="primary.contrast" flex={1}>
-          <View onLayout={onLayout}>{PropsAppBar}</View>
-          <HeaderHeightContext.Provider
-            value={safeAreaTop + (headerHeight ?? 0)}>
+      <Column backgroundColor="primary.contrast" flex={1}>
+        <View onLayout={onLayout}>{PropsAppBar}</View>
+        <HeaderHeightContext.Provider value={headerHeight ?? 0}>
+          <BottomSheetModalProvider>
             <Box flex={1}>{children}</Box>
-          </HeaderHeightContext.Provider>
-        </Column>
-      </BottomSheetModalProvider>
+          </BottomSheetModalProvider>
+        </HeaderHeightContext.Provider>
+      </Column>
     </SafeAreaView>
   );
 };
