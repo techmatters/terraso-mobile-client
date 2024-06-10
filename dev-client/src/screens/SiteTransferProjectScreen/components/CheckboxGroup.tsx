@@ -29,7 +29,7 @@ import {
 import {
   SWITCH_PADDING,
   SWITCH_VERTICAL_PADDING,
-} from 'terraso-mobile-client/constants';
+} from 'terraso-mobile-client/theme';
 
 type CheckboxProps = {
   label: string;

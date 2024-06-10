@@ -17,6 +17,9 @@
 
 import {extendTheme} from 'native-base';
 
+export const SWITCH_PADDING = 2;
+export const SWITCH_VERTICAL_PADDING = 1;
+
 export const theme = extendTheme({
   colors: {
     primary: {

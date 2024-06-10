@@ -26,8 +26,8 @@ import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   SWITCH_PADDING,
   SWITCH_VERTICAL_PADDING,
-} from 'terraso-mobile-client/constants';
-import {theme} from 'terraso-mobile-client/theme';
+  theme,
+} from 'terraso-mobile-client/theme';
 
 type Props = FormFieldWrapperProps &
   Omit<React.ComponentProps<typeof Switch>, 'onChange' | 'onValueChange'> & {

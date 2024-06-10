@@ -33,8 +33,8 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SWITCH_PADDING} from 'terraso-mobile-client/constants';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
 
 export const RequiredDataSettings = ({
   projectId,

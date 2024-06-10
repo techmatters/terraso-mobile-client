@@ -55,10 +55,10 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
-import {SWITCH_PADDING} from 'terraso-mobile-client/constants';
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
 import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
 
 type EditIntervalFormInput = IntervalFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
