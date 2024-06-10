@@ -25,7 +25,7 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
-import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
   Column,
@@ -66,7 +66,7 @@ export function LocationScoreDisplay({
               <LocationScoreInfoContent isSite={isSite} />
             </InfoOverlaySheetButton>
           </Row>
-          <TranslatedBody
+          <TranslatedParagraph
             i18nKey={
               isInMap
                 ? 'site.soil_id.soil_info.inside_map_label'

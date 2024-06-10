@@ -19,17 +19,17 @@ import {Trans} from 'react-i18next';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type TranslatedBodyProps = {
+type TranslatedParagraphProps = {
   i18nKey: string;
   variant?: 'body1' | 'body2';
   values?: {};
 };
 
-export function TranslatedBody({
+export function TranslatedParagraph({
   i18nKey,
   variant = 'body1',
   values,
-}: TranslatedBodyProps) {
+}: TranslatedParagraphProps) {
   return (
     <Text variant={variant}>
       <Trans

@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type LocationScoreInfoContentProps = {
@@ -28,10 +28,10 @@ export function LocationScoreInfoContent({
   return (
     <Column space={3}>
       {isSite && (
-        <TranslatedBody i18nKey="site.soil_id.location_score_info.p1" />
+        <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p1" />
       )}
-      <TranslatedBody i18nKey="site.soil_id.location_score_info.p2" />
-      <TranslatedBody i18nKey="site.soil_id.location_score_info.p3" />
+      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p2" />
+      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p3" />
     </Column>
   );
 }
