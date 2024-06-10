@@ -36,6 +36,7 @@ import {useSelector} from 'terraso-mobile-client/store';
 type Props = {
   defaultProjectId?: string;
   sitePin?: Coords;
+  elevation?: number;
   createSiteCallback: (
     input: SiteAddMutationInput,
   ) => Promise<Site | undefined>;
@@ -46,6 +47,7 @@ export const CreateSiteView = ({
   defaultProjectId,
   createSiteCallback,
   sitePin,
+  elevation,
   onInfoPress,
 }: Props) => {
   const {t} = useTranslation();
@@ -63,13 +65,13 @@ export const CreateSiteView = ({
   const onSave = useCallback(
     async ({...form}: FormState) => {
       const {...site} = validationSchema.cast(form);
-      const createdSite = await createSiteCallback(site);
+      const createdSite = await createSiteCallback({...site, elevation});
       if (createdSite !== undefined) {
         homeScreen?.showSiteOnMap(createdSite);
         navigation.pop();
       }
     },
-    [createSiteCallback, navigation, validationSchema, homeScreen],
+    [createSiteCallback, navigation, validationSchema, homeScreen, elevation],
   );
 
   return (

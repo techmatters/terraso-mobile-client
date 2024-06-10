@@ -40,6 +40,9 @@ type Props =
   | {
       projectId: string;
     }
+  | {
+      elevation: number;
+    }
   | {}
   | undefined;
 
@@ -80,6 +83,7 @@ export const CreateSiteScreen = (props: Props = {}) => {
         createSiteCallback={createSiteCallback}
         defaultProjectId={'projectId' in props ? props.projectId : undefined}
         sitePin={'coords' in props ? props.coords : undefined}
+        elevation={'elevation' in props ? props.elevation : undefined}
         onInfoPress={onInfo}
       />
       <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
