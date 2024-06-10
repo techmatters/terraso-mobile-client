@@ -15,24 +15,25 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  TranslatedContent,
-  TranslatedContentProps,
-} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
+import {Trans} from 'react-i18next';
+
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type TranslatedParagraphProps = {
-  variant?: 'body1' | 'body2';
-} & TranslatedContentProps;
+export type TranslatedContentProps = {
+  i18nKey: string;
+  values?: {};
+};
 
-export function TranslatedParagraph({
-  variant = 'body1',
-  i18nKey,
-  values,
-}: TranslatedParagraphProps) {
+export function TranslatedContent({i18nKey, values}: TranslatedContentProps) {
   return (
-    <Text variant={variant}>
-      <TranslatedContent i18nKey={i18nKey} values={values} />
-    </Text>
+    <Trans
+      i18nKey={i18nKey}
+      values={values}
+      components={{
+        bold: <Text bold />,
+        italic: <Text italic />,
+        underline: <Text underline />,
+      }}
+    />
   );
 }

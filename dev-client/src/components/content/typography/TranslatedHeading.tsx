@@ -19,20 +19,14 @@ import {
   TranslatedContent,
   TranslatedContentProps,
 } from 'terraso-mobile-client/components/content/typography/TranslatedContent';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type TranslatedParagraphProps = {
-  variant?: 'body1' | 'body2';
-} & TranslatedContentProps;
+type TranslatedHeadingProps = TranslatedContentProps;
 
-export function TranslatedParagraph({
-  variant = 'body1',
-  i18nKey,
-  values,
-}: TranslatedParagraphProps) {
+export function TranslatedHeading({i18nKey, values}: TranslatedHeadingProps) {
   return (
-    <Text variant={variant}>
+    <Heading variant="h1">
       <TranslatedContent i18nKey={i18nKey} values={values} />
-    </Text>
+    </Heading>
   );
 }
