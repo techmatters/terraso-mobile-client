@@ -102,7 +102,7 @@ exports[`renders correctly 1`] = `
               <RNCSafeAreaView
                 edges={
                   {
-                    "bottom": "additive",
+                    "bottom": "off",
                     "left": "additive",
                     "right": "additive",
                     "top": "additive",
