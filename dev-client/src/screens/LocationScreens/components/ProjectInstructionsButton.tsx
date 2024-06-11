@@ -25,7 +25,7 @@ import {Project} from 'terraso-client-shared/project/projectSlice';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
-  HStack,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -56,12 +56,12 @@ export const ProjectInstructionsButton = ({project}: Props) => {
         backgroundColor="primary.main"
         shadow={5}
         onPress={onShowNote()}>
-        <HStack>
+        <Row>
           <Icon color="primary.contrast" size="sm" mr={2} name="push-pin" />
           <Text color="primary.contrast" textTransform="uppercase">
             {t('projects.inputs.instructions.add_label')}
           </Text>
-        </HStack>
+        </Row>
       </Button>
     </Box>
   );

@@ -20,10 +20,10 @@ import {useTranslation} from 'react-i18next';
 import {Button, ScrollView, Spacer} from 'native-base';
 
 import {
+  Column,
   Heading,
-  HStack,
+  Row,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -43,7 +43,7 @@ export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
 
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
-      <VStack pt={10} pl={5} pr={5} pb={10} flexGrow={1}>
+      <Column pt={10} pl={5} pr={5} pb={10} flexGrow={1}>
         <Heading variant="h6" pb={7}>
           {isSiteInstructions
             ? t('projects.inputs.instructions.screen_title')
@@ -52,7 +52,7 @@ export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
         <ScrollView flex={1}>
           <Text>{content}</Text>
         </ScrollView>
-        <HStack>
+        <Row>
           <Spacer />
           <Button
             onPress={handleClose}
@@ -61,8 +61,8 @@ export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
             _text={{textTransform: 'uppercase'}}>
             {t('general.close_fab')}
           </Button>
-        </HStack>
-      </VStack>
+        </Row>
+      </Column>
     </ScreenScaffold>
   );
 };

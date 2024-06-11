@@ -40,9 +40,8 @@ import {
 } from 'terraso-mobile-client/components/modals/Modal';
 import {
   Column,
-  HStack,
+  Row,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
 import {sortCompare} from 'terraso-mobile-client/util';
@@ -398,7 +397,7 @@ export const FilterModalBody = ({onClose, children}: FilterModalBodyProps) => {
   }, [applyFilters, onClose]);
 
   return (
-    <VStack space="25px" width="100%" testID="MODAL">
+    <Column space="25px" width="100%" testID="MODAL">
       {children}
       <Button
         size="lg"
@@ -407,7 +406,7 @@ export const FilterModalBody = ({onClose, children}: FilterModalBodyProps) => {
         onPress={onPress}>
         {t('general.apply')}
       </Button>
-    </VStack>
+    </Column>
   );
 };
 
@@ -423,7 +422,7 @@ export const FilterModalTrigger = ({
   const {numFilters} = useListFilter<any>();
 
   return (
-    <HStack space="20px" mb="15px" alignItems="center">
+    <Row space="20px" mb="15px" alignItems="center">
       <BadgedIcon
         iconName="filter-list"
         onPress={() => {
@@ -440,7 +439,7 @@ export const FilterModalTrigger = ({
         }}
       />
       {children}
-    </HStack>
+    </Row>
   );
 };
 

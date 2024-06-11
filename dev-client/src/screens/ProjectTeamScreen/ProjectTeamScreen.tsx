@@ -26,7 +26,7 @@ import {
 import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
-import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
@@ -87,7 +87,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
   );
 
   return (
-    <VStack
+    <Column
       alignItems="flex-start"
       p={4}
       space={3}
@@ -110,6 +110,6 @@ export const ProjectTeamScreen = ({route}: Props) => {
         memberAction={manageMember}
         currentUserRole={currentUserRole}
       />
-    </VStack>
+    </Column>
   );
 };

@@ -32,8 +32,8 @@ import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGro
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Box,
+  Column,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
@@ -72,7 +72,7 @@ export const CreateSiteForm = ({
       flex={1}
       keyboardVerticalOffset={40}>
       <ScrollView>
-        <VStack p="16px" pt="30px" space="18px">
+        <Column p="16px" pt="30px" space="18px">
           <FormField name="name">
             <FormInput
               placeholder={t('site.create.name_label')}
@@ -147,7 +147,7 @@ export const CreateSiteForm = ({
             />
           </FormField>
           <Spacer />
-        </VStack>
+        </Column>
       </ScrollView>
       <Box position="absolute" bottom={10} right={3} p={3}>
         <Button

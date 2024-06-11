@@ -20,10 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {
-  HStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
@@ -49,12 +46,12 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
       ml={4}
       mr={4}
       onPress={onShowNote}>
-      <HStack>
+      <Row>
         <Icon name="place" color="primary.dark" size="sm" mr={1} />
         <Text bold fontSize="md">
           {t('site.notes.project_instructions')}
         </Text>
-      </HStack>
+      </Row>
       <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">
         {siteInstructions}
       </Text>

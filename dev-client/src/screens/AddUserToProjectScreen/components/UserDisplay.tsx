@@ -29,9 +29,9 @@ import {
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
-  HStack,
+  Column,
+  Row,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {formatName} from 'terraso-mobile-client/util';
 
@@ -56,23 +56,23 @@ export const UserDisplay = ({
     [t],
   );
   return (
-    <VStack space="5px">
-      <HStack mt="15px">
+    <Column space="5px">
+      <Row mt="15px">
         <Image
           variant="profilePic"
           source={{uri: profileImage}}
           alt={t('general.profile_image_alt')}
         />
-        <VStack flexGrow={2} ml="15px">
+        <Column flexGrow={2} ml="15px">
           <Text fontWeight={700} fontSize="16px">
             {formatName(firstName, lastName)}
           </Text>
           <Text fontWeight={400} fontSize="14px">
             {email}
           </Text>
-        </VStack>
+        </Column>
         <IconButton name="delete" onPress={removeUser} />
-      </HStack>
+      </Row>
       <Select
         nullable={false}
         value={role}
@@ -80,6 +80,6 @@ export const UserDisplay = ({
         options={PROJECT_ROLES}
         renderValue={renderRole}
       />
-    </VStack>
+    </Column>
   );
 };

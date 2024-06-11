@@ -21,7 +21,7 @@ import {Project} from 'terraso-client-shared/project/projectSlice';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {
   Heading,
-  HStack,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
@@ -41,16 +41,16 @@ export const ProjectPreviewCard = ({project}: Props) => {
 
   return (
     <Card onPress={goToProject}>
-      <HStack mb="8px">
+      <Row mb="8px">
         <Heading variant="h6" color="primary.main">
           {project.name}
         </Heading>
-      </HStack>
+      </Row>
       {project.description.length > 0 && <Text>{project.description}</Text>}
-      <HStack space={2} pt={4} alignItems="center">
+      <Row space={2} pt={4} alignItems="center">
         <SiteBadge count={Object.keys(project.sites).length} />
         <PeopleBadge count={Object.keys(project.memberships).length} />
-      </HStack>
+      </Row>
     </Card>
   );
 };
