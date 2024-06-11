@@ -449,8 +449,8 @@ export const theme = extendTheme({
     Image: {
       variants: {
         profilePic: {
-          size: '50px',
-          borderRadius: 100,
+          size: '40px',
+          borderRadius: 80,
         },
       },
     },

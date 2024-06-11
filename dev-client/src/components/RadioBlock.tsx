@@ -26,7 +26,7 @@ type RadioOption = {
 };
 
 type Props<Keys extends string> = {
-  label: string | React.ReactNode;
+  label?: string | React.ReactNode;
   options: Record<Keys, RadioOption>;
   allDisabled?: boolean;
   groupProps: Omit<IRadioGroupProps, 'onChange'> & {
@@ -64,8 +64,9 @@ export const RadioBlock = <T extends string>({
             helpText ? (
               <FormControl.HelperText
                 key={helpText + value}
-                ml="15px"
-                mt="-5px">
+                ml="40px"
+                mt="-4px"
+                mb="4px">
                 {helpText}
               </FormControl.HelperText>
             ) : undefined,
