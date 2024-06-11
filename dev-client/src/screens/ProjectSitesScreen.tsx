@@ -173,7 +173,7 @@ const selectProjectSites = createSelector(
     projectId: string,
   ) => {
     let project = projects[projectId];
-    return Object.keys(project.sites)
+    return Object.keys(project?.sites)
       .map(id => sites[id])
       .filter(site => site);
   },

@@ -131,7 +131,7 @@ export const ProjectListScreen = () => {
                 <TextInputFilter
                   name="search"
                   label={t('projects.search_label')}
-                  placeholder={t('projects.search_placeholder')}
+                  placeholder={t('projects.search.placeholder')}
                 />
               }>
               <SelectFilter

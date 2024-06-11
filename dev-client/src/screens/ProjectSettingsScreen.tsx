@@ -29,10 +29,7 @@ import {selectProject} from 'terraso-client-shared/selectors';
 
 import IconLink from 'terraso-mobile-client/components/icons/IconLink';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {
-  Text,
-  VStack,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
@@ -78,13 +75,6 @@ export function ProjectSettingsScreen({
           userRole={userRole}
         />
         <VStack space={1}>
-          <IconLink iconName="content-copy" isUnderlined={false}>
-            {t('projects.settings.copy_download_link')}
-          </IconLink>
-          <Text ml={10}>
-            {t('projects.settings.download_link_description')}
-          </Text>
-
           <RestrictByProjectRole role="MANAGER">
             <ConfirmModal
               title={t('projects.settings.delete_button_prompt')}

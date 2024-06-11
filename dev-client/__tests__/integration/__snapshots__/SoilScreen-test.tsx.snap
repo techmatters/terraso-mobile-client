@@ -554,8 +554,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -597,8 +597,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -640,8 +640,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -683,8 +683,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -726,8 +726,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -769,8 +769,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -812,8 +812,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -855,8 +855,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -916,7 +916,7 @@ exports[`renders correctly 1`] = `
                                       "flexDirection": "row",
                                       "justifyContent": "flex-start",
                                       "marginBottom": 4,
-                                      "marginLeft": 10,
+                                      "marginLeft": 8,
                                       "marginTop": 4,
                                     }
                                   }
@@ -1709,8 +1709,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -1752,8 +1752,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -1795,8 +1795,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -1838,8 +1838,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -1881,8 +1881,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -1924,8 +1924,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -1967,8 +1967,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -2010,8 +2010,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -2071,7 +2071,7 @@ exports[`renders correctly 1`] = `
                                       "flexDirection": "row",
                                       "justifyContent": "flex-start",
                                       "marginBottom": 4,
-                                      "marginLeft": 10,
+                                      "marginLeft": 8,
                                       "marginTop": 4,
                                     }
                                   }
@@ -2864,8 +2864,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -2907,8 +2907,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -2950,8 +2950,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -2993,8 +2993,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -3036,8 +3036,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -3079,8 +3079,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -3122,8 +3122,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -3165,8 +3165,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -3226,7 +3226,7 @@ exports[`renders correctly 1`] = `
                                       "flexDirection": "row",
                                       "justifyContent": "flex-start",
                                       "marginBottom": 4,
-                                      "marginLeft": 10,
+                                      "marginLeft": 8,
                                       "marginTop": 4,
                                     }
                                   }
@@ -4019,8 +4019,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -4062,8 +4062,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -4105,8 +4105,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -4148,8 +4148,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -4191,8 +4191,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -4234,8 +4234,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -4277,8 +4277,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -4320,8 +4320,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -4381,7 +4381,7 @@ exports[`renders correctly 1`] = `
                                       "flexDirection": "row",
                                       "justifyContent": "flex-start",
                                       "marginBottom": 4,
-                                      "marginLeft": 10,
+                                      "marginLeft": 8,
                                       "marginTop": 4,
                                     }
                                   }
@@ -5174,8 +5174,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -5217,8 +5217,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -5260,8 +5260,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -5303,8 +5303,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -5346,8 +5346,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -5389,8 +5389,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -5432,8 +5432,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -5475,8 +5475,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -5536,7 +5536,7 @@ exports[`renders correctly 1`] = `
                                       "flexDirection": "row",
                                       "justifyContent": "flex-start",
                                       "marginBottom": 4,
-                                      "marginLeft": 10,
+                                      "marginLeft": 8,
                                       "marginTop": 4,
                                     }
                                   }
@@ -6329,8 +6329,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -6372,8 +6372,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -6415,8 +6415,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#9EA8AB",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -6458,8 +6458,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -6501,8 +6501,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -6544,8 +6544,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -6587,8 +6587,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -6630,8 +6630,8 @@ exports[`renders correctly 1`] = `
                                         "color": "#1A202C",
                                         "fontSize": 16,
                                         "fontWeight": "400",
-                                        "marginLeft": 10,
-                                        "marginTop": 5,
+                                        "marginLeft": 8,
+                                        "marginTop": 4,
                                       }
                                     }
                                   >
@@ -6691,7 +6691,7 @@ exports[`renders correctly 1`] = `
                                       "flexDirection": "row",
                                       "justifyContent": "flex-start",
                                       "marginBottom": 4,
-                                      "marginLeft": 10,
+                                      "marginLeft": 8,
                                       "marginTop": 4,
                                     }
                                   }

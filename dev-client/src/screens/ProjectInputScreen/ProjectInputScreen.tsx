@@ -108,7 +108,7 @@ export const ProjectInputScreen = ({
               groupProps={{
                 name: 'project-privacy',
                 onChange: onProjectPrivacyChanged,
-                value: project.privacy,
+                value: project?.privacy,
                 ml: '0',
               }}
               allDisabled={!allowEditing}

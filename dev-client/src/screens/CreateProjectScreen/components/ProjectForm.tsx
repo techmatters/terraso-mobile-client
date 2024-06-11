@@ -19,18 +19,19 @@ import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikProps} from 'formik';
 import {TFunction} from 'i18next';
-import {Button, Input, TextArea} from 'native-base';
+import {Button, Radio} from 'native-base';
 import * as yup from 'yup';
 
 import {
   ProjectMembershipProjectRoleChoices,
   ProjectUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
+import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
-import {FormTextArea} from 'terraso-mobile-client/components/form/FormTextArea';
+import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
   Box,
   Heading,
@@ -89,29 +90,6 @@ type Props = {
   onInfoPress: () => void;
 };
 
-const SharedFormComponents = (showPlaceholders: boolean, t: TFunction) => {
-  return [
-    <FormInput
-      key="name"
-      name="name"
-      placeholder={showPlaceholders ? t('projects.add.name') : undefined}
-      variant="outline"
-      id="project-form-name"
-      label={t('projects.add.name')}
-    />,
-    <FormTextArea
-      key="description"
-      name="description"
-      placeholder={showPlaceholders ? t('projects.add.description') : undefined}
-      variant="outline"
-      fontSize={16}
-      numberOfLines={3}
-      autoCompleteType="off"
-      label={t('projects.add.description')}
-    />,
-  ];
-};
-
 type FormValues = Omit<ProjectUpdateMutationInput, 'id'>;
 
 type FormProps = FormValues & {
@@ -127,6 +105,11 @@ export const EditProjectForm = ({
 }: Omit<FormProps, 'privacy'>) => {
   const {t} = useTranslation();
 
+  // We are using a special textInputLabel prop instead of label. This is passed
+  // from FormInput to TextInput.
+  //
+  // If label is present, Formik adds a label above the text field.
+  // If label is absent, then TextInput doesn't get a needed label.
   return (
     <Formik<FormValues>
       validationSchema={editProjectValidationSchema(t)}
@@ -135,7 +118,32 @@ export const EditProjectForm = ({
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
         <>
-          {SharedFormComponents(false, t)}
+          <FormInput
+            key="name"
+            name="name"
+            placeholder={t('projects.create.name_label')}
+            id="project-form-name"
+            textInputLabel={t('projects.create.name_label')}
+          />
+          <FormInput
+            key="description"
+            name="description"
+            placeholder={t('projects.create.description_label')}
+            numberOfLines={3}
+            multiline={true}
+            autoComplete="off"
+            textInputLabel={t('projects.create.description_label')}
+          />
+          <FormRadioGroup
+            label={t('projects.settings.measurement_units')}
+            name="measurementUnits"
+            values={MEASUREMENT_UNITS}
+            renderRadio={value => (
+              <Radio value={value} key={value}>
+                {t(`general.measurement_units.${value}`)}
+              </Radio>
+            )}
+          />
           {userRole === 'MANAGER' && (
             <Box position="absolute" bottom={0} right={0}>
               <Button
@@ -156,7 +164,6 @@ export const EditProjectForm = ({
 };
 
 export default function ProjectForm({
-  editForm = false,
   onInfoPress,
   handleChange,
   handleBlur,
@@ -171,39 +178,28 @@ export default function ProjectForm({
     onBlur: handleBlur(field),
   });
 
-  const EditHeader = editForm ? (
-    <Heading size="sm">{t('projects.edit.input_header')}</Heading>
-  ) : (
-    <></>
-  );
-
   return (
-    <VStack space={3}>
-      {EditHeader}
-      <FormLabel>{t('projects.create.name_label')}</FormLabel>
-      <Input
-        placeholder={t('projects.add.name')}
-        defaultValue=""
-        autoCorrect={false}
-        scrollEnabled={false}
+    <VStack space={5}>
+      <TextInput
+        placeholder={t('projects.create.name_label')}
+        label={t('projects.create.name_label')}
         {...inputParams('name')}
       />
       <ErrorMessage fieldName="name" />
 
-      <FormLabel>{t('projects.create.description_label')}</FormLabel>
-      <TextArea
-        placeholder={t('projects.add.description')}
-        numberOfLines={3}
-        fontSize={16}
-        autoCompleteType="off"
-        autoCorrect={false}
+      <TextInput
+        placeholder={t('projects.create.description_label')}
+        label={t('projects.create.description_label')}
+        multiline={true}
         {...inputParams('description')}
       />
       <ErrorMessage fieldName="description" />
       <RadioBlock
         label={
           <HStack alignItems="center">
-            <Heading size="sm">{t('projects.create.privacy_label')}</Heading>
+            <Heading bold size="md">
+              {t('projects.create.privacy_label')}
+            </Heading>
             <IconButton
               name="info"
               onPress={onInfoPress}
