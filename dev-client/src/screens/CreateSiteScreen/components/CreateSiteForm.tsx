@@ -89,12 +89,14 @@ export const CreateSiteForm = ({
           <FormField name="latitude">
             <FormInput
               value={values.latitude.toString()}
+              textInputLabel={t('site.create.latitude')}
               keyboardType="decimal-pad"
             />
           </FormField>
           <FormField name="longitude">
             <FormInput
               value={values.longitude.toString()}
+              textInputLabel={t('site.create.longitude')}
               keyboardType="decimal-pad"
             />
           </FormField>
