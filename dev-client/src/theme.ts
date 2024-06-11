@@ -17,6 +17,9 @@
 
 import {extendTheme} from 'native-base';
 
+export const SWITCH_PADDING = 2;
+export const SWITCH_VERTICAL_PADDING = 1;
+
 export const theme = extendTheme({
   colors: {
     primary: {
@@ -70,10 +73,10 @@ export const theme = extendTheme({
     },
     input: {
       standard: {
-        enabledBorder: '#0000006B',
+        enabledBorder: '#8B8B8B',
       },
       filled: {
-        enabledFill: '#0000000F',
+        enabledFill: '#e4e4e4',
       },
     },
     transparent: '#00000000',

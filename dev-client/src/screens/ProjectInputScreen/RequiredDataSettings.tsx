@@ -34,6 +34,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
 
 export const RequiredDataSettings = ({
   projectId,
@@ -78,7 +79,7 @@ export const RequiredDataSettings = ({
                   );
                 }}
               />
-              <Text variant="body1" bold pl={2}>
+              <Text variant="body1" bold pl={SWITCH_PADDING}>
                 {t(`soil.collection_method.${method}`)}
               </Text>
             </Row>

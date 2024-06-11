@@ -293,166 +293,428 @@ exports[`renders correctly 1`] = `
                                     "flexDirection": "column",
                                   },
                                   {
-                                    "rowGap": 12,
+                                    "rowGap": 20,
                                   },
                                 ]
                               }
                             >
                               <View
-                                dataSet={{}}
                                 style={
-                                  {
-                                    "flexDirection": "row",
-                                    "justifyContent": "flex-start",
-                                    "marginBottom": 4,
-                                    "marginTop": 4,
-                                  }
+                                  [
+                                    {
+                                      "backgroundColor": "rgba(231, 224, 236, 1)",
+                                      "borderTopLeftRadius": 4,
+                                      "borderTopRightRadius": 4,
+                                    },
+                                    {
+                                      "backgroundColor": "#e4e4e4",
+                                      "minHeight": undefined,
+                                      "width": "100%",
+                                    },
+                                  ]
                                 }
                               >
-                                <Text
-                                  dataSet={{}}
+                                <View
+                                  collapsable={false}
                                   style={
                                     {
-                                      "backgroundColor": undefined,
-                                      "color": "#1A202C",
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "700",
-                                      "letterSpacing": 0.15,
-                                      "lineHeight": 24,
-                                      "textDecorationLine": undefined,
+                                      "backgroundColor": "rgba(73, 69, 79, 1)",
+                                      "bottom": 0,
+                                      "height": 1,
+                                      "left": 0,
+                                      "position": "absolute",
+                                      "right": 0,
+                                      "transform": [
+                                        {
+                                          "scaleY": 0.5,
+                                        },
+                                      ],
+                                      "zIndex": 1,
                                     }
+                                  }
+                                  testID="text-input-underline"
+                                />
+                                <View
+                                  onLayout={[Function]}
+                                  style={
+                                    [
+                                      {
+                                        "paddingBottom": 0,
+                                        "paddingTop": 0,
+                                      },
+                                      {
+                                        "minHeight": 56,
+                                      },
+                                    ]
                                   }
                                 >
-                                  Project Name
-                                </Text>
+                                  <View
+                                    collapsable={false}
+                                    pointerEvents="none"
+                                    style={
+                                      {
+                                        "bottom": 0,
+                                        "left": 0,
+                                        "opacity": 1,
+                                        "position": "absolute",
+                                        "right": 0,
+                                        "top": 0,
+                                        "transform": [
+                                          {
+                                            "translateX": 0,
+                                          },
+                                        ],
+                                        "width": 750,
+                                        "zIndex": 3,
+                                      }
+                                    }
+                                  >
+                                    <Text
+                                      collapsable={false}
+                                      maxFontSizeMultiplier={1.5}
+                                      numberOfLines={1}
+                                      onLayout={[Function]}
+                                      onTextLayout={[Function]}
+                                      style={
+                                        {
+                                          "color": "#8B8B8B",
+                                          "fontFamily": "System",
+                                          "fontSize": 16,
+                                          "fontWeight": undefined,
+                                          "left": 0,
+                                          "letterSpacing": 0.15,
+                                          "lineHeight": undefined,
+                                          "maxWidth": 73,
+                                          "opacity": 0,
+                                          "paddingLeft": 16,
+                                          "paddingRight": 16,
+                                          "position": "absolute",
+                                          "textAlign": "left",
+                                          "top": 30,
+                                          "transform": [
+                                            {
+                                              "translateX": 0,
+                                            },
+                                            {
+                                              "translateY": 0,
+                                            },
+                                            {
+                                              "scale": 1,
+                                            },
+                                          ],
+                                          "writingDirection": "ltr",
+                                        }
+                                      }
+                                      testID="text-input-flat-label-active"
+                                    >
+                                      Project Name
+                                    </Text>
+                                    <Text
+                                      collapsable={false}
+                                      maxFontSizeMultiplier={1.5}
+                                      numberOfLines={1}
+                                      style={
+                                        {
+                                          "color": "rgba(73, 69, 79, 1)",
+                                          "fontFamily": "System",
+                                          "fontSize": 16,
+                                          "fontWeight": undefined,
+                                          "left": 0,
+                                          "letterSpacing": 0.15,
+                                          "lineHeight": undefined,
+                                          "maxWidth": 73,
+                                          "opacity": 0,
+                                          "paddingLeft": 16,
+                                          "paddingRight": 16,
+                                          "position": "absolute",
+                                          "textAlign": "left",
+                                          "top": 30,
+                                          "transform": [
+                                            {
+                                              "translateX": 0,
+                                            },
+                                            {
+                                              "translateY": 0,
+                                            },
+                                            {
+                                              "scale": 1,
+                                            },
+                                          ],
+                                          "writingDirection": "ltr",
+                                        }
+                                      }
+                                      testID="text-input-flat-label-inactive"
+                                    >
+                                      Project Name
+                                    </Text>
+                                  </View>
+                                  <TextInput
+                                    cursorColor="#8B8B8B"
+                                    editable={true}
+                                    maxFontSizeMultiplier={1.5}
+                                    multiline={false}
+                                    onBlur={[Function]}
+                                    onChangeText={[Function]}
+                                    onFocus={[Function]}
+                                    placeholder=" "
+                                    placeholderTextColor="rgba(73, 69, 79, 1)"
+                                    selectionColor="#8B8B8B"
+                                    style={
+                                      [
+                                        {
+                                          "margin": 0,
+                                        },
+                                        {
+                                          "height": 56,
+                                        },
+                                        {
+                                          "paddingBottom": 4,
+                                          "paddingTop": 24,
+                                        },
+                                        {
+                                          "color": "rgba(28, 27, 31, 1)",
+                                          "fontFamily": "System",
+                                          "fontSize": 16,
+                                          "fontWeight": undefined,
+                                          "letterSpacing": 0.15,
+                                          "lineHeight": undefined,
+                                          "minWidth": 65,
+                                          "paddingLeft": 16,
+                                          "paddingRight": 16,
+                                          "textAlign": "left",
+                                          "textAlignVertical": "center",
+                                        },
+                                        false,
+                                        [
+                                          {},
+                                        ],
+                                        undefined,
+                                      ]
+                                    }
+                                    testID="text-input-flat"
+                                    underlineColorAndroid="transparent"
+                                  />
+                                </View>
                               </View>
                               <View
-                                dataSet={{}}
-                                isFocused={false}
                                 style={
-                                  {
-                                    "alignItems": "center",
-                                    "borderColor": "#d4d4d4",
-                                    "borderRadius": 4,
-                                    "borderWidth": 1,
-                                    "flexDirection": "row",
-                                    "overflow": "hidden",
-                                  }
-                                }
-                              >
-                                <TextInput
-                                  accessible={true}
-                                  autoCorrect={false}
-                                  dataSet={{}}
-                                  defaultValue=""
-                                  editable={true}
-                                  onBlur={[Function]}
-                                  onChangeText={[Function]}
-                                  onFocus={[Function]}
-                                  onKeyPress={[Function]}
-                                  placeholder="Project Name"
-                                  placeholderTextColor="#a3a3a3"
-                                  scrollEnabled={false}
-                                  secureTextEntry={false}
-                                  style={
+                                  [
                                     {
-                                      "backgroundColor": "#00000000",
-                                      "color": "#171717",
-                                      "flex": 1,
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "400",
-                                      "height": "100%",
-                                      "paddingBottom": 8,
-                                      "paddingLeft": 12,
-                                      "paddingRight": 12,
-                                      "paddingTop": 8,
+                                      "backgroundColor": "rgba(231, 224, 236, 1)",
+                                      "borderTopLeftRadius": 4,
+                                      "borderTopRightRadius": 4,
+                                    },
+                                    {
+                                      "backgroundColor": "#e4e4e4",
+                                      "minHeight": 100,
                                       "width": "100%",
-                                    }
-                                  }
-                                />
-                              </View>
-                              <View
-                                dataSet={{}}
-                                style={
-                                  {
-                                    "flexDirection": "row",
-                                    "justifyContent": "flex-start",
-                                    "marginBottom": 4,
-                                    "marginTop": 4,
-                                  }
+                                    },
+                                  ]
                                 }
                               >
-                                <Text
-                                  dataSet={{}}
+                                <View
+                                  collapsable={false}
                                   style={
                                     {
-                                      "backgroundColor": undefined,
-                                      "color": "#1A202C",
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "700",
-                                      "letterSpacing": 0.15,
-                                      "lineHeight": 24,
-                                      "textDecorationLine": undefined,
+                                      "backgroundColor": "rgba(73, 69, 79, 1)",
+                                      "bottom": 0,
+                                      "height": 1,
+                                      "left": 0,
+                                      "position": "absolute",
+                                      "right": 0,
+                                      "transform": [
+                                        {
+                                          "scaleY": 0.5,
+                                        },
+                                      ],
+                                      "zIndex": 1,
                                     }
+                                  }
+                                  testID="text-input-underline"
+                                />
+                                <View
+                                  onLayout={[Function]}
+                                  style={
+                                    [
+                                      {
+                                        "paddingBottom": 0,
+                                        "paddingTop": 0,
+                                      },
+                                      {
+                                        "minHeight": 56,
+                                      },
+                                    ]
                                   }
                                 >
-                                  Project Description
-                                </Text>
-                              </View>
-                              <View
-                                dataSet={{}}
-                                isFocused={false}
-                                style={
-                                  {
-                                    "alignItems": "center",
-                                    "borderColor": "#d4d4d4",
-                                    "borderRadius": 4,
-                                    "borderWidth": 1,
-                                    "flexDirection": "row",
-                                    "height": 80,
-                                    "overflow": "hidden",
-                                  }
-                                }
-                              >
-                                <TextInput
-                                  accessible={true}
-                                  autoCompleteType="off"
-                                  autoCorrect={false}
-                                  dataSet={{}}
-                                  editable={true}
-                                  multiline={true}
-                                  onBlur={[Function]}
-                                  onChangeText={[Function]}
-                                  onFocus={[Function]}
-                                  onKeyPress={[Function]}
-                                  placeholder="Project Description"
-                                  placeholderTextColor="#a3a3a3"
-                                  secureTextEntry={false}
-                                  style={
-                                    {
-                                      "backgroundColor": "#00000000",
-                                      "color": "#171717",
-                                      "flex": 1,
-                                      "fontFamily": undefined,
-                                      "fontSize": 16,
-                                      "fontStyle": "normal",
-                                      "fontWeight": "400",
-                                      "height": "100%",
-                                      "paddingBottom": 8,
-                                      "paddingLeft": 12,
-                                      "paddingRight": 12,
-                                      "paddingTop": 8,
-                                      "width": "100%",
+                                  <View
+                                    pointerEvents="none"
+                                    style={
+                                      [
+                                        {
+                                          "bottom": 0,
+                                          "left": 0,
+                                          "position": "absolute",
+                                          "right": 0,
+                                          "top": 0,
+                                        },
+                                        {
+                                          "height": 24,
+                                          "zIndex": 2,
+                                        },
+                                        {
+                                          "backgroundColor": "#e4e4e4",
+                                          "left": 16,
+                                          "right": 16,
+                                        },
+                                      ]
                                     }
-                                  }
-                                  textAlignVertical="top"
-                                />
+                                    testID="patch-container"
+                                  />
+                                  <View
+                                    collapsable={false}
+                                    pointerEvents="none"
+                                    style={
+                                      {
+                                        "bottom": 0,
+                                        "left": 0,
+                                        "opacity": 1,
+                                        "position": "absolute",
+                                        "right": 0,
+                                        "top": 0,
+                                        "transform": [
+                                          {
+                                            "translateX": 0,
+                                          },
+                                        ],
+                                        "width": 750,
+                                        "zIndex": 3,
+                                      }
+                                    }
+                                  >
+                                    <Text
+                                      collapsable={false}
+                                      maxFontSizeMultiplier={1.5}
+                                      numberOfLines={1}
+                                      onLayout={[Function]}
+                                      onTextLayout={[Function]}
+                                      style={
+                                        {
+                                          "color": "#8B8B8B",
+                                          "fontFamily": "System",
+                                          "fontSize": 16,
+                                          "fontWeight": undefined,
+                                          "left": 0,
+                                          "letterSpacing": 0.15,
+                                          "lineHeight": undefined,
+                                          "maxWidth": 73,
+                                          "opacity": 0,
+                                          "paddingLeft": 16,
+                                          "paddingRight": 16,
+                                          "position": "absolute",
+                                          "textAlign": "left",
+                                          "top": 30,
+                                          "transform": [
+                                            {
+                                              "translateX": 0,
+                                            },
+                                            {
+                                              "translateY": 0,
+                                            },
+                                            {
+                                              "scale": 1,
+                                            },
+                                          ],
+                                          "writingDirection": "ltr",
+                                        }
+                                      }
+                                      testID="text-input-flat-label-active"
+                                    >
+                                      Project Description
+                                    </Text>
+                                    <Text
+                                      collapsable={false}
+                                      maxFontSizeMultiplier={1.5}
+                                      numberOfLines={1}
+                                      style={
+                                        {
+                                          "color": "rgba(73, 69, 79, 1)",
+                                          "fontFamily": "System",
+                                          "fontSize": 16,
+                                          "fontWeight": undefined,
+                                          "left": 0,
+                                          "letterSpacing": 0.15,
+                                          "lineHeight": undefined,
+                                          "maxWidth": 73,
+                                          "opacity": 0,
+                                          "paddingLeft": 16,
+                                          "paddingRight": 16,
+                                          "position": "absolute",
+                                          "textAlign": "left",
+                                          "top": 30,
+                                          "transform": [
+                                            {
+                                              "translateX": 0,
+                                            },
+                                            {
+                                              "translateY": 0,
+                                            },
+                                            {
+                                              "scale": 1,
+                                            },
+                                          ],
+                                          "writingDirection": "ltr",
+                                        }
+                                      }
+                                      testID="text-input-flat-label-inactive"
+                                    >
+                                      Project Description
+                                    </Text>
+                                  </View>
+                                  <TextInput
+                                    cursorColor="#8B8B8B"
+                                    editable={true}
+                                    maxFontSizeMultiplier={1.5}
+                                    multiline={true}
+                                    onBlur={[Function]}
+                                    onChangeText={[Function]}
+                                    onFocus={[Function]}
+                                    placeholder=" "
+                                    placeholderTextColor="rgba(73, 69, 79, 1)"
+                                    selectionColor="#8B8B8B"
+                                    style={
+                                      [
+                                        {
+                                          "margin": 0,
+                                        },
+                                        {},
+                                        {
+                                          "paddingBottom": 4,
+                                          "paddingTop": 31,
+                                        },
+                                        {
+                                          "color": "rgba(28, 27, 31, 1)",
+                                          "fontFamily": "System",
+                                          "fontSize": 16,
+                                          "fontWeight": undefined,
+                                          "letterSpacing": 0.15,
+                                          "lineHeight": undefined,
+                                          "minWidth": 65,
+                                          "paddingLeft": 16,
+                                          "paddingRight": 16,
+                                          "textAlign": "left",
+                                          "textAlignVertical": "top",
+                                        },
+                                        false,
+                                        [
+                                          {},
+                                        ],
+                                        undefined,
+                                      ]
+                                    }
+                                    testID="text-input-flat"
+                                    underlineColorAndroid="transparent"
+                                  />
+                                </View>
                               </View>
                               <View
                                 dataSet={{}}
@@ -502,8 +764,8 @@ exports[`renders correctly 1`] = `
                                       style={
                                         {
                                           "color": "#1A202C",
-                                          "fontSize": 14,
-                                          "fontWeight": "500",
+                                          "fontSize": 16,
+                                          "fontWeight": "bold",
                                         }
                                       }
                                     >

@@ -47,7 +47,6 @@
       "location_accuracy": "GPS accuracy: {{accuracyM}} m",
       "coords_label": "Latitude, Longitude",
       "coords_help": "Enter decimal degrees, with latitude and longitude separated by a comma.",
-      "name_placeholder": "Site name",
       "add_to_project_label": "Add to Project",
       "add_to_project_caption": "Project",
       "add_to_project_tooltip": "The site will inherit the settings of the project, including data collection requirements and team members. Create new projects using the Projects tab in the bottom navigation.",
@@ -199,7 +198,6 @@
     "learn_more": "Learn more about using projects",
     "create_button": "Create project",
     "go_to": "Go to Project",
-    "search_placeholder": "Search",
     "search_label": "Enter text to filter projects by name",
     "role_filter_label": "Filter projects by role",
     "create": {
@@ -307,10 +305,6 @@
         "updatedAtAsc": "Date modified (most recent)",
         "distanceAsc": "Distance (nearest to me)"
       }
-    },
-    "add": {
-      "name": "Project Name",
-      "description": "Project Description"
     },
     "add_user": {
       "heading": "Add Team Members",

@@ -74,7 +74,10 @@ export const CreateSiteForm = ({
       <ScrollView>
         <VStack p="16px" pt="30px" space="18px">
           <FormField name="name">
-            <FormInput placeholder={t('site.create.name_placeholder')} />
+            <FormInput
+              placeholder={t('site.create.name_label')}
+              textInputLabel={t('site.create.name_label')}
+            />
           </FormField>
 
           <FormLabel>{t('site.create.location_label')}</FormLabel>
