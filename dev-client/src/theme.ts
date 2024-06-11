@@ -371,7 +371,12 @@ export const theme = extendTheme({
           lineHeight: '20px',
           letterSpacing: '0.17px',
         },
-        subtitle1: {},
+        subtitle1: {
+          fontSize: '18px',
+          fontWeight: 700,
+          lineHeight: '24px',
+          letterSpacing: '0.15px',
+        },
         subtitle2: {
           fontSize: '14px',
           fontWeight: 500,
