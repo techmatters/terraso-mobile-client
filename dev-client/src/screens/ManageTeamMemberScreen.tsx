@@ -26,10 +26,12 @@ import {
   updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
 
+import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,
+  Heading,
   Text,
   VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -37,9 +39,9 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {MinimalUserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {formatName} from 'terraso-mobile-client/util';
 
 type Props = {
   projectId: string;
@@ -84,42 +86,39 @@ export const ManageTeamMemberScreen = ({
       AppBar={
         <AppBar title={project?.name} LeftButton={<ScreenCloseButton />} />
       }>
-      <VStack mx="14px">
-        <VStack mt="22px" mb="15px">
-          <Text variant="body1" fontWeight={700}>
-            {formatName(user.firstName, user.lastName)}
-          </Text>
-          <Text numberOfLines={1} variant="body1">
-            {user.email}
-          </Text>
-        </VStack>
-        <RadioBlock<ProjectRole>
-          labelProps={{variant: 'secondary'}}
-          label={t('projects.manage_member.project_role')}
-          options={{
-            MANAGER: {
-              text: t('general.role.MANAGER'),
-              helpText: t('projects.manage_member.manager_help'),
-            },
-            CONTRIBUTOR: {
-              text: t('general.role.CONTRIBUTOR'),
-              helpText: t('projects.manage_member.contributor_help'),
-            },
-            VIEWER: {
-              text: t('general.role.VIEWER'),
-              helpText: t('projects.manage_member.viewer_help'),
-            },
-          }}
-          groupProps={{
-            onChange: setSelectedRole,
-            value: selectedRole,
-            name: 'selected-role',
-          }}
-        />
-
-        <Divider my="20px" width="90%" alignSelf="center" />
-
+      <ScreenContentSection title={t('projects.manage_member.title')}>
         <VStack>
+          <Box ml="md" my="lg">
+            <MinimalUserDisplay user={user} />
+          </Box>
+          <Heading variant="h6">
+            {t('projects.manage_member.project_role')}
+          </Heading>
+
+          <RadioBlock<ProjectRole>
+            labelProps={{variant: 'secondary'}}
+            options={{
+              VIEWER: {
+                text: t('general.role.VIEWER'),
+                helpText: t('projects.manage_member.viewer_help'),
+              },
+              CONTRIBUTOR: {
+                text: t('general.role.CONTRIBUTOR'),
+                helpText: t('projects.manage_member.contributor_help'),
+              },
+              MANAGER: {
+                text: t('general.role.MANAGER'),
+                helpText: t('projects.manage_member.manager_help'),
+              },
+            }}
+            groupProps={{
+              onChange: setSelectedRole,
+              value: selectedRole,
+              name: 'selected-role',
+            }}
+          />
+          <Divider my="20px" alignSelf="center" />
+
           <ConfirmModal
             trigger={onOpen => (
               <Button
@@ -143,14 +142,14 @@ export const ManageTeamMemberScreen = ({
           <Text ml="20px" variant="caption">
             {t('projects.manage_member.remove_help')}
           </Text>
-        </VStack>
 
-        <Box flex={0} height="15%" justifyContent="flex-end">
-          <Button onPress={updateUser} alignSelf="flex-end">
-            {t('general.save_fab')}
-          </Button>
-        </Box>
-      </VStack>
+          <Box flex={0} height="15%" justifyContent="flex-end">
+            <Button onPress={updateUser} alignSelf="flex-end">
+              {t('general.save_fab')}
+            </Button>
+          </Box>
+        </VStack>
+      </ScreenContentSection>
     </ScreenScaffold>
   );
 };

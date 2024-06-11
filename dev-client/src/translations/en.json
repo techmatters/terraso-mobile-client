@@ -321,6 +321,7 @@
       "empty_email": "Please enter an email"
     },
     "manage_member": {
+      "title": "Manage Team Member",
       "project_role": "Project Role",
       "manager_help": "Can view and edit all aspects of the projects and its affiliated sites.",
       "contributor_help": "Can view, add, and edit site data.",
