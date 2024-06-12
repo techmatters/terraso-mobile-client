@@ -130,6 +130,11 @@ export const theme = extendTheme({
       },
     },
     Button: {
+      defaultProps: {
+        _pressed: {
+          bg: 'primary.dark',
+        },
+      },
       baseStyle: {
         _disabled: {
           opacity: '100',
