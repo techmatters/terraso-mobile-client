@@ -46,6 +46,7 @@ export const ScreenScaffold = ({
 
   return (
     <SafeAreaView
+      edges={['top', 'left', 'right']}
       style={[
         styles.safeAreaContainer,
         {backgroundColor: theme.colors.primary.dark},
