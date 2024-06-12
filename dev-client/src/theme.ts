@@ -41,6 +41,7 @@ export const theme = extendTheme({
     },
     secondary: {
       main: '#C05621',
+      dark: '#9C4221',
     },
     error: {
       main: '#D32F2F',
