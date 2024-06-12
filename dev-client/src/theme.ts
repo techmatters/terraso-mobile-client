@@ -308,6 +308,9 @@ export const theme = extendTheme({
         },
       },
       defaultProps: {
+        _pressed: {
+          bg: 'secondary.dark',
+        },
         size: 'sm',
         _icon: {
           size: 'md',
