@@ -272,8 +272,7 @@
       "delete": "Delete this project",
       "delete_button": "Delete",
       "delete_button_prompt": "Delete project?",
-      "delete_description": "This will permanently delete the project and its sites’ data. This can’t be undone.\n\nProject managers have the option to transfer sites from this project to keep site data.",
-      "measurement_units": "Units of Measurement"
+      "delete_description": "This will permanently delete the project and its sites’ data. This can’t be undone.\n\nProject managers have the option to transfer sites from this project to keep site data."
     },
     "sites": {
       "empty_viewer": "This project has no sites yet.",

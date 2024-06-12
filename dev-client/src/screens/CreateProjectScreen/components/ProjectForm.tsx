@@ -19,17 +19,15 @@ import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikProps} from 'formik';
 import {TFunction} from 'i18next';
-import {Button, Radio} from 'native-base';
+import {Button} from 'native-base';
 import * as yup from 'yup';
 
 import {
   ProjectMembershipProjectRoleChoices,
   ProjectUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {MEASUREMENT_UNITS} from 'terraso-client-shared/project/projectSlice';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
@@ -133,16 +131,6 @@ export const EditProjectForm = ({
             multiline={true}
             autoComplete="off"
             textInputLabel={t('projects.create.description_label')}
-          />
-          <FormRadioGroup
-            label={t('projects.settings.measurement_units')}
-            name="measurementUnits"
-            values={MEASUREMENT_UNITS}
-            renderRadio={value => (
-              <Radio value={value} key={value}>
-                {t(`general.measurement_units.${value}`)}
-              </Radio>
-            )}
           />
           {userRole === 'MANAGER' && (
             <Box position="absolute" bottom={0} right={0}>
