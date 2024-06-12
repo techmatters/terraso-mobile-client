@@ -307,12 +307,13 @@
       }
     },
     "add_user": {
-      "heading": "Add Team Members",
-      "help_text": "Enter a Terraso email address",
+      "heading": "Add Team Member",
+      "help_text": "Enter the email address associated with the person’s Terraso account. A Terraso account can be created by installing the LandPKS Soil ID app and signing in.",
       "user_does_not_exist": "User {{email}} is not a Terraso user, unable to add to project.",
       "user_in_project": "User {{email}} is already a member of this project.",
       "already_added": "User {{email}} already added to user list.",
-      "empty_email": "Enter an email address"
+      "empty_email": "Please enter an email",
+      "invalid_email": "Not a valid email"
     },
     "manage_member": {
       "title": "Manage Team Member",
