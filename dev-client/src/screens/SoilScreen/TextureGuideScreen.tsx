@@ -16,7 +16,7 @@
  */
 
 import {useMemo, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 import {Image, StyleSheet, View} from 'react-native';
 
 import {ResizeMode, Video} from 'expo-av';
@@ -28,6 +28,7 @@ import {
   updateDepthDependentSoilData,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
+import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -102,6 +103,33 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
       <ScrollView bg="grey.300">
         <Column space="16px">
           <Column p="15px" bg="primary.contrast">
+            <Text variant="subtitle1">{t('soil.texture.guide.prepare')}</Text>
+            <BulletList
+              data={[1, 2, 3]}
+              renderItem={i => (
+                <Text variant="body1" color="text.primary">
+                  <Trans i18nKey={`soil.texture.guide.prepare_details_${i}`} />
+                </Text>
+              )}
+            />
+            <Text variant="subtitle1">{t('soil.texture.guide.wet')}</Text>
+            <BulletList
+              data={[1, 2, 3, 4, 5]}
+              renderItem={i => (
+                <Text variant="body1" color="text.primary">
+                  <Trans i18nKey={`soil.texture.guide.wet_details_${i}`} />
+                </Text>
+              )}
+            />
+            <Text variant="subtitle1">{t('soil.texture.guide.ball')}</Text>
+            <BulletList
+              data={[1, 2]}
+              renderItem={i => (
+                <Text variant="body1" color="text.primary">
+                  <Trans i18nKey={`soil.texture.guide.ball_details_${i}`} />
+                </Text>
+              )}
+            />
             <RadioBlock
               label={t('soil.texture.guide.ball_help')}
               options={{
@@ -121,6 +149,19 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
           {ball === 'YES' && (
             <>
               <Column p="15px" bg="primary.contrast">
+                <Text variant="subtitle1">
+                  {t('soil.texture.guide.ribbon')}
+                </Text>
+                <BulletList
+                  data={[1, 2, 3, 4, 5]}
+                  renderItem={i => (
+                    <Text variant="body1" color="text.primary">
+                      <Trans
+                        i18nKey={`soil.texture.guide.ribbon_details_${i}`}
+                      />
+                    </Text>
+                  )}
+                />
                 <RadioBlock
                   label={t('soil.texture.guide.ribbon_help')}
                   options={{
@@ -163,17 +204,38 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                   </Column>
                   {ribbonLength !== undefined && (
                     <Column p="15px" bg="primary.contrast">
+                      <Text variant="subtitle1">
+                        {t('soil.texture.guide.grittyness')}
+                      </Text>
+                      <BulletList
+                        data={[1, 2, 3]}
+                        renderItem={i => (
+                          <Text variant="body1" color="text.primary">
+                            <Trans
+                              i18nKey={`soil.texture.guide.grittyness_details_${i}`}>
+                              <Text bold>first</Text>
+                              <Text>second</Text>
+                            </Trans>
+                          </Text>
+                        )}
+                      />
                       <RadioBlock
                         label={t('soil.texture.guide.grittyness_help')}
                         options={{
                           GRITTY: {
-                            text: t('soil.texture.guide.grittyness.GRITTY'),
+                            text: t(
+                              'soil.texture.guide.grittyness_type.GRITTY',
+                            ),
                           },
                           NEITHER: {
-                            text: t('soil.texture.guide.grittyness.NEITHER'),
+                            text: t(
+                              'soil.texture.guide.grittyness_type.NEITHER',
+                            ),
                           },
                           SMOOTH: {
-                            text: t('soil.texture.guide.grittyness.SMOOTH'),
+                            text: t(
+                              'soil.texture.guide.grittyness_type.SMOOTH',
+                            ),
                           },
                         }}
                         groupProps={{
