@@ -71,7 +71,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
               pl={0}
               variant="link"
               _text={{textTransform: 'uppercase', color: 'error.main'}}
-              startIcon={<Icon color="error.main" name="delete-forever" />}
+              startIcon={<Icon color="error.main" name="delete" />}
               onPress={onOpen}>
               {t('site.dashboard.delete_button')}
             </Button>
