@@ -186,7 +186,6 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
           <Box height="25px" />
           <Button
             leftIcon={<Icon name="check" />}
-            _text={{textTransform: 'uppercase'}}
             size="lg"
             isDisabled={!isValid || isSubmitting}
             onPress={() => handleSubmit()}>

@@ -101,18 +101,11 @@ export const TemporaryLocationCallout = ({
         )}
         <Divider />
         <Row justifyContent="flex-end">
-          <Button
-            onPress={onCreate}
-            _text={{textTransform: 'uppercase'}}
-            size="sm"
-            variant="outline">
+          <Button onPress={onCreate} size="sm" variant="outline">
             {t('site.create.title')}
           </Button>
           <Box w="24px" />
-          <Button
-            onPress={onLearnMore}
-            _text={{textTransform: 'uppercase'}}
-            size="sm">
+          <Button onPress={onLearnMore} size="sm">
             {t('site.more_info')}
           </Button>
         </Row>

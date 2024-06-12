@@ -72,7 +72,7 @@ export const SwitchWorkflowButton = ({
   }, [dispatch, siteId, depthInterval.depthInterval, workflow, data]);
 
   const button = (onPress: () => void) => (
-    <Button _text={{textTransform: 'uppercase'}} onPress={onPress} {...props}>
+    <Button onPress={onPress} {...props}>
       {workflow === 'MANUAL'
         ? t('soil.color.workflow.CAMERA')
         : t('soil.color.workflow.MANUAL')}

@@ -158,8 +158,7 @@ export const CreateSiteForm = ({
           onPress={() => handleSubmit()}
           isDisabled={isSubmitting || !isValid}
           shadow={5}
-          size="lg"
-          _text={{textTransform: 'uppercase'}}>
+          size="lg">
           {t('general.save_fab')}
         </Button>
       </Box>

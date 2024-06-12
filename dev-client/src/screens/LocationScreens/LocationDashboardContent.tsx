@@ -106,7 +106,6 @@ const LocationPrediction = ({
 
       <Button
         w="95%"
-        _text={{textTransform: 'uppercase'}}
         rightIcon={<Icon name="chevron-right" />}
         onPress={onExploreDataPress}>
         {t('soil.explore_data')}

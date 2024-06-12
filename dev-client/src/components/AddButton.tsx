@@ -26,10 +26,7 @@ type Props = {
 
 export const AddButton = ({text, buttonProps}: Props) => {
   return (
-    <Button
-      {...buttonProps}
-      _text={{textTransform: 'uppercase'}}
-      leftIcon={<Icon name="add" />}>
+    <Button {...buttonProps} leftIcon={<Icon name="add" />}>
       {text}
     </Button>
   );

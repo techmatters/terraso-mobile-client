@@ -283,10 +283,7 @@ export function ProjectSitesScreen({
         </>
       )}
       <RestrictByProjectRole role={['MANAGER', 'CONTRIBUTOR']}>
-        <Button
-          onPress={transferCallback}
-          alignSelf="flex-start"
-          _text={{textTransform: 'uppercase'}}>
+        <Button onPress={transferCallback} alignSelf="flex-start">
           {t('projects.sites.transfer')}
         </Button>
       </RestrictByProjectRole>

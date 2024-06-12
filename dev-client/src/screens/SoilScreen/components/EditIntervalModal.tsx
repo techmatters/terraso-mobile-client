@@ -313,8 +313,7 @@ const SaveButton = ({action, isDisabled}: AddButtonProps) => {
       size="lg"
       mx="auto"
       onPress={action}
-      isDisabled={isDisabled}
-      _text={{textTransform: 'uppercase'}}>
+      isDisabled={isDisabled}>
       {t('general.save')}
     </Button>
   );

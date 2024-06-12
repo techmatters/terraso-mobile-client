@@ -399,11 +399,7 @@ export const FilterModalBody = ({onClose, children}: FilterModalBodyProps) => {
   return (
     <Column space="25px" width="100%" testID="MODAL">
       {children}
-      <Button
-        size="lg"
-        alignSelf="center"
-        _text={{textTransform: 'uppercase'}}
-        onPress={onPress}>
+      <Button size="lg" alignSelf="center" onPress={onPress}>
         {t('general.apply')}
       </Button>
     </Column>

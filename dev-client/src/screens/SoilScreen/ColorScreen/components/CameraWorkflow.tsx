@@ -61,10 +61,7 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
         paddingVertical="lg"
         alignItems="flex-start">
         <Paragraph>{t('soil.color.photo_need_help')}</Paragraph>
-        <Button
-          _text={{textTransform: 'uppercase'}}
-          onPress={onUseGuide}
-          rightIcon={<Icon name="chevron-right" />}>
+        <Button onPress={onUseGuide} rightIcon={<Icon name="chevron-right" />}>
           {t('soil.color.use_guide_label')}
         </Button>
       </Column>

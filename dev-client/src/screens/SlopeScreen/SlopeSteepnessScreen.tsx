@@ -139,17 +139,13 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
               trigger={onOpen => (
                 <Button
                   onPress={onOpen}
-                  _text={{textTransform: 'uppercase'}}
                   rightIcon={<Icon name="chevron-right" />}>
                   {t('slope.steepness.manual_label')}
                 </Button>
               )}>
               <ManualSteepnessModal siteId={siteId} />
             </Modal>
-            <Button
-              _text={{textTransform: 'uppercase'}}
-              rightIcon={<Icon name="chevron-right" />}
-              onPress={onMeter}>
+            <Button rightIcon={<Icon name="chevron-right" />} onPress={onMeter}>
               {t('slope.steepness.slope_meter')}
             </Button>
           </Row>

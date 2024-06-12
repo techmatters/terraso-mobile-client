@@ -87,7 +87,6 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
           ]}>
           <Box paddingVertical="lg">
             <Button
-              _text={{textTransform: 'uppercase'}}
               alignSelf="flex-end"
               rightIcon={<Icon name="chevron-right" />}
               onPress={onAddSoilDataPress}>

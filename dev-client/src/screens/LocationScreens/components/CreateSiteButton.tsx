@@ -39,8 +39,7 @@ export const CreateSiteButton = ({coords, elevation}: Props) => {
     <Button
       alignSelf="center"
       onPress={onCreate}
-      leftIcon={<Icon name="add" />}
-      _text={{textTransform: 'uppercase'}}>
+      leftIcon={<Icon name="add" />}>
       {t('site.create.button_label')}
     </Button>
   );
