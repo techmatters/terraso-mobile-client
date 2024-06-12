@@ -131,6 +131,9 @@ export const theme = extendTheme({
     },
     Button: {
       defaultProps: {
+        _text: {
+          textTransform: 'uppercase',
+        },
         _pressed: {
           bg: 'primary.dark',
         },
