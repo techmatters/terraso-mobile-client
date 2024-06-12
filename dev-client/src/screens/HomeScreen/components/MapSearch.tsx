@@ -29,10 +29,10 @@ import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
 import {
   Box,
-  HStack,
+  Column,
+  Row,
   Text,
   View,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
@@ -59,10 +59,10 @@ function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
 
   return (
     <Pressable w="100%" py={1} px={3} onPress={selectSuggestion}>
-      <VStack>
+      <Column>
         <Text>{name}</Text>
         <Text>{address}</Text>
-      </VStack>
+      </Column>
     </Pressable>
   );
 }
@@ -159,7 +159,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       px={3}
       py={3}
       pointerEvents="box-none">
-      <HStack space={3} pointerEvents="box-none">
+      <Row space={3} pointerEvents="box-none">
         <View flex={1} pointerEvents="box-none">
           <Autocomplete
             data={suggestions}
@@ -198,7 +198,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
             )}
           />
         </View>
-        <VStack space={3}>
+        <Column space={3}>
           <IconButton
             name="layers"
             _icon={{
@@ -216,8 +216,8 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
             borderRadius={15}
             onPress={zoomToUser}
           />
-        </VStack>
-      </HStack>
+        </Column>
+      </Row>
     </Box>
   );
 }

@@ -23,8 +23,8 @@ import {FormControl} from 'native-base';
 
 import {
   Box,
-  HStack,
-  VStack,
+  Column,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   SWITCH_PADDING,
@@ -67,7 +67,7 @@ export const CheckboxGroup = ({
 
   return (
     <Box>
-      <HStack>
+      <Row>
         <CheckBox
           id={`select-all-${groupName}`}
           onValueChange={onSelectAll}
@@ -79,10 +79,10 @@ export const CheckboxGroup = ({
           pl={SWITCH_PADDING}>
           {t('general.select_all')}
         </FormControl.Label>
-      </HStack>
-      <VStack px="20px">
+      </Row>
+      <Column px="20px">
         {checkboxes.map(({label, id, checked}) => (
-          <HStack
+          <Row
             key={id}
             mt={SWITCH_VERTICAL_PADDING}
             mb={SWITCH_VERTICAL_PADDING}>
@@ -97,9 +97,9 @@ export const CheckboxGroup = ({
               pl={SWITCH_PADDING}>
               {label}
             </FormControl.Label>
-          </HStack>
+          </Row>
         ))}
-      </VStack>
+      </Column>
     </Box>
   );
 };

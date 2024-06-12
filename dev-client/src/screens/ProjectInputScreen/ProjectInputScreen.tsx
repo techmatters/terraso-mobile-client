@@ -29,9 +29,9 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Box,
-  HStack,
+  Column,
+  Row,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
@@ -80,13 +80,13 @@ export const ProjectInputScreen = ({
   const allowEditing = useMemo(() => userRole === 'MANAGER', [userRole]);
 
   return (
-    <VStack height="full" backgroundColor={theme.colors.background.default}>
+    <Column height="full" backgroundColor={theme.colors.background.default}>
       <ScrollView>
         <Box p={4} alignItems="flex-start">
-          <HStack pb={4}>
+          <Row pb={4}>
             <RadioBlock
               label={
-                <HStack>
+                <Row>
                   <Text variant="body1" bold>
                     {t('site.dashboard.privacy')}
                   </Text>
@@ -99,7 +99,7 @@ export const ProjectInputScreen = ({
                     onPress={onInfoPress}
                     _icon={{color: 'action.active'}}
                   />
-                </HStack>
+                </Row>
               }
               options={{
                 PUBLIC: {text: t('privacy.public.title')},
@@ -113,7 +113,7 @@ export const ProjectInputScreen = ({
               }}
               allDisabled={!allowEditing}
             />
-          </HStack>
+          </Row>
           <RestrictByProjectRole role="MANAGER">
             <Text bold fontSize="md">
               {t('projects.inputs.instructions.title')}
@@ -129,12 +129,12 @@ export const ProjectInputScreen = ({
               backgroundColor="primary.main"
               shadow={5}
               onPress={onEditInstructions}>
-              <HStack>
+              <Row>
                 <Icon color="primary.contrast" size="sm" mr={2} name="edit" />
                 <Text color="primary.contrast" textTransform="uppercase">
                   {t('projects.inputs.instructions.add_label')}
                 </Text>
-              </HStack>
+              </Row>
             </Button>
           </RestrictByProjectRole>
         </Box>
@@ -164,6 +164,6 @@ export const ProjectInputScreen = ({
           renderInPortal={false}
         />
       </RestrictByProjectRole>
-    </VStack>
+    </Column>
   );
 };

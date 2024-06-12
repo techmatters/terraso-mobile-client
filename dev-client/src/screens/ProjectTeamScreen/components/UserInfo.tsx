@@ -26,7 +26,7 @@ import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 import {
   Badge,
   Box,
-  HStack,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {formatName} from 'terraso-mobile-client/util';
@@ -49,7 +49,7 @@ export const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
   }, [user, isCurrentUser, t]);
 
   return (
-    <HStack space={3} justifyContent="space-between" alignItems="center">
+    <Row space={3} justifyContent="space-between" alignItems="center">
       <Box>
         <Image
           variant="profilePic"
@@ -68,6 +68,6 @@ export const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
           {t(`general.role.${membership.userRole}`)}
         </Badge>
       </Box>
-    </HStack>
+    </Row>
   );
 };

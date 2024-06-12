@@ -47,9 +47,9 @@ import {
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,
-  HStack,
+  Column,
+  Row,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
@@ -74,10 +74,10 @@ const SiteMenuItem = ({iconName, text, onPress}: SiteMenuProps) => {
   return (
     <Menu.Item>
       <Pressable onPress={onPress}>
-        <HStack flexDirection="row" space={2} alignItems="center">
+        <Row flexDirection="row" space={2} alignItems="center">
           <Icon name={iconName} size="xs" />
           <Text>{text}</Text>
-        </HStack>
+        </Row>
       </Pressable>
     </Menu.Item>
   );
@@ -268,7 +268,7 @@ export function ProjectSitesScreen({
   );
 
   return (
-    <VStack
+    <Column
       p={3}
       pb={5}
       space={3}
@@ -291,6 +291,6 @@ export function ProjectSitesScreen({
         </Button>
       </RestrictByProjectRole>
       {!isEmpty && full}
-    </VStack>
+    </Column>
   );
 }

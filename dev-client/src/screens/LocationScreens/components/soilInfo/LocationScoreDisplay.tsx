@@ -30,9 +30,7 @@ import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink'
 import {
   Column,
   Heading,
-  HStack,
   Row,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {LocationScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreInfoContent';
@@ -56,8 +54,8 @@ export function LocationScoreDisplay({
   const isInMap = match.distanceToNearestMapUnitM <= 0;
   const soilWebUrl = useMemo(() => getSoilWebUrl(coords), [coords]);
   return (
-    <VStack space="16px">
-      <HStack justifyContent="space-between" alignItems="center">
+    <Column space="16px">
+      <Row justifyContent="space-between" alignItems="center">
         <Column space="12px" maxWidth="75%">
           <Row alignItems="stretch">
             <Heading variant="h6">
@@ -81,11 +79,11 @@ export function LocationScoreDisplay({
           />
         </Column>
         <ScoreTile score={matchInfo.score} />
-      </HStack>
+      </Row>
       <ExternalLink
         label={t('site.soil_id.soil_info.location_url')}
         url={soilWebUrl}
       />
-    </VStack>
+    </Column>
   );
 }

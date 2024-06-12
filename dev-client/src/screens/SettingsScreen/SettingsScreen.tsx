@@ -16,7 +16,7 @@
  */
 
 import {ButtonList} from 'terraso-mobile-client/components/buttons/list/ButtonList';
-import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {DeleteAccountButton} from 'terraso-mobile-client/screens/SettingsScreen/components/actions/DeleteAccountButton';
@@ -27,14 +27,14 @@ import {VersionIndicator} from 'terraso-mobile-client/screens/SettingsScreen/com
 export function SettingsScreen() {
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} RightButton={null} />}>
-      <VStack height="full" margin="12px">
+      <Column height="full" margin="12px">
         <UserIndicator />
         <ButtonList>
           <LogOutButton />
           <DeleteAccountButton />
         </ButtonList>
         <VersionIndicator />
-      </VStack>
+      </Column>
     </ScreenScaffold>
   );
 }

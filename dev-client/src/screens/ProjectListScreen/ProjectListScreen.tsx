@@ -32,8 +32,8 @@ import {
 } from 'terraso-mobile-client/components/ListFilter';
 import {
   Box,
+  Column,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -73,7 +73,7 @@ export const ProjectListScreen = () => {
 
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} />}>
-      <VStack
+      <Column
         bg="grey.200"
         p={5}
         flexGrow={1}
@@ -152,7 +152,7 @@ export const ProjectListScreen = () => {
             <ProjectList />
           </ListFilterProvider>
         )}
-      </VStack>
+      </Column>
     </ScreenScaffold>
   );
 };

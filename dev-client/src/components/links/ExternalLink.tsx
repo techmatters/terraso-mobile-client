@@ -23,7 +23,7 @@ import {IconButton as NativeIconButton} from 'native-base';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
-  HStack,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -42,7 +42,7 @@ export const ExternalLink = React.forwardRef(
       <View style={styles.container}>
         <Pressable onPress={() => Linking.openURL(url)}>
           <Box>
-            <HStack>
+            <Row>
               <Text
                 color="primary.main"
                 fontSize="md"
@@ -51,7 +51,7 @@ export const ExternalLink = React.forwardRef(
                 {label}
               </Text>
               {icon}
-            </HStack>
+            </Row>
           </Box>
         </Pressable>
       </View>

@@ -24,10 +24,9 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
+  Column,
   Heading,
-  HStack,
   Row,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
@@ -50,8 +49,8 @@ export function PropertiesScoreDisplay({
     [match.soilInfo.soilData],
   );
   return (
-    <VStack space="16px">
-      <HStack justifyContent="space-between" alignItems="center">
+    <Column space="16px">
+      <Row justifyContent="space-between" alignItems="center">
         <Row alignItems="stretch" maxWidth="75%">
           <Heading variant="h6">
             {t('site.soil_id.soil_properties_score_info.header')}
@@ -62,8 +61,8 @@ export function PropertiesScoreDisplay({
           </InfoOverlaySheetButton>
         </Row>
         <ScoreTile score={matchInfo.score} />
-      </HStack>
+      </Row>
       <SoilPropertiesDataTable rows={rows} />
-    </VStack>
+    </Column>
   );
 }

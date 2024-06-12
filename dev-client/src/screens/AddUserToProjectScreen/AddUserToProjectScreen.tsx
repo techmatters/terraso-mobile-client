@@ -28,7 +28,7 @@ import {
 
 import {
   Box,
-  HStack,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -150,7 +150,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
         updateUserRole={updateUserRole}
         removeUser={removeUser}
       />
-      <HStack
+      <Row
         flexDirection="row-reverse"
         my="20px"
         ml="20px"
@@ -162,7 +162,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
           w="100px">
           {t('general.save_fab')}
         </Button>
-      </HStack>
+      </Row>
     </ScreenScaffold>
   );
 };

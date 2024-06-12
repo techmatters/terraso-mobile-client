@@ -23,7 +23,7 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {Box, VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {UserInfo} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserInfo';
 
 type TriggerProps = {
@@ -77,7 +77,7 @@ export const UserItem = ({
 
   return (
     <Box borderBottomWidth="1" width={275} py={2}>
-      <VStack>
+      <Column>
         {!isForCurrentUser && isInManagerView ? (
           <Pressable onPress={memberAction}>
             <UserInfo
@@ -107,7 +107,7 @@ export const UserItem = ({
             handleConfirm={removeUser}
           />
         )}
-      </VStack>
+      </Column>
     </Box>
   );
 };

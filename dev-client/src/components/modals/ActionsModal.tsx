@@ -27,7 +27,7 @@ import {
 import {
   Box,
   Heading,
-  HStack,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type ActionButtonProps = {
@@ -103,9 +103,9 @@ export const ActionsModal = forwardRef<
 
   const Footer = useMemo(
     () => (
-      <HStack space="8px" alignSelf="flex-end">
+      <Row space="8px" alignSelf="flex-end">
         {actions}
-      </HStack>
+      </Row>
     ),
     [actions],
   );

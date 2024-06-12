@@ -23,7 +23,7 @@ import {IconButton as NativeIconButton} from 'native-base';
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
-  HStack,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -59,7 +59,7 @@ export const HorizontalIconButton = React.forwardRef(
     return (
       <Pressable onPress={props.onPress}>
         <Box>
-          <HStack>
+          <Row>
             {icon}
             <Text
               color={colorScheme}
@@ -68,7 +68,7 @@ export const HorizontalIconButton = React.forwardRef(
               textTransform={isUppercase ? 'uppercase' : 'none'}>
               {label}
             </Text>
-          </HStack>
+          </Row>
         </Box>
       </Pressable>
     );
