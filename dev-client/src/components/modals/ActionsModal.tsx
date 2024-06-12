@@ -49,6 +49,7 @@ const ACTION_BUTTON_VARIANTS = {
     _text: {
       ...ACTION_BUTTON_DEFAULTS._text,
       color: 'primary.contrast',
+      textTransform: 'none',
     },
   },
   subtle: {
@@ -57,6 +58,7 @@ const ACTION_BUTTON_VARIANTS = {
     borderColor: 'm3.sys.light.outline',
     _text: {
       ...ACTION_BUTTON_DEFAULTS._text,
+      textTransform: 'none',
       color: 'text.primary',
     },
   },
