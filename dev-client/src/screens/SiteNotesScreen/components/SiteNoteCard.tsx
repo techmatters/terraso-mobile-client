@@ -24,10 +24,7 @@ import {SiteNote} from 'terraso-client-shared/site/siteSlice';
 
 import {Card} from 'terraso-mobile-client/components/Card';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {
-  HStack,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 
@@ -56,7 +53,7 @@ export const SiteNoteCard = ({note}: Props) => {
       ml={4}
       mr={4}
       onPress={onShowNote}>
-      <HStack>
+      <Row>
         <Text italic>
           {t('site.notes.note_attribution', {
             createdAt: formatDate(note.createdAt),
@@ -73,7 +70,7 @@ export const SiteNoteCard = ({note}: Props) => {
           }}
           onPress={onEditNote}
         />
-      </HStack>
+      </Row>
       <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">
         {note.content}
       </Text>

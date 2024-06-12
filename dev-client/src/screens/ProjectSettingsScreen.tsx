@@ -29,7 +29,7 @@ import {selectProject} from 'terraso-client-shared/selectors';
 
 import IconLink from 'terraso-mobile-client/components/icons/IconLink';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
@@ -67,14 +67,14 @@ export function ProjectSettingsScreen({
 
   return (
     <ScrollView backgroundColor={theme.colors.background.default}>
-      <VStack px={2} py={4} space={2} m={3} pb="50px">
+      <Column px={2} py={4} space={2} m={3} pb="50px">
         <EditProjectForm
           onSubmit={onSubmit}
           name={name}
           description={description}
           userRole={userRole}
         />
-        <VStack space={1}>
+        <Column space={1}>
           <RestrictByProjectRole role="MANAGER">
             <ConfirmModal
               title={t('projects.settings.delete_button_prompt')}
@@ -93,8 +93,8 @@ export function ProjectSettingsScreen({
               )}
             />
           </RestrictByProjectRole>
-        </VStack>
-      </VStack>
+        </Column>
+      </Column>
     </ScrollView>
   );
 }

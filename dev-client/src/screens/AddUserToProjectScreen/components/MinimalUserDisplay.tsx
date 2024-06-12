@@ -22,9 +22,9 @@ import {Image} from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 
 import {
-  HStack,
+  Column,
+  Row,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {formatName} from 'terraso-mobile-client/util';
 
@@ -40,19 +40,19 @@ export const MinimalUserDisplay = ({
   const {t} = useTranslation();
 
   return (
-    <VStack>
-      <HStack>
+    <Column>
+      <Row>
         <Image
           variant="profilePic"
           source={{uri: profileImage}}
           alt={t('general.profile_image_alt')}
         />
 
-        <VStack ml="32px">
+        <Column ml="32px">
           <Text variant="body1-strong">{formatName(firstName, lastName)}</Text>
           <Text variant="body1">{email}</Text>
-        </VStack>
-      </HStack>
-    </VStack>
+        </Column>
+      </Row>
+    </Column>
   );
 };

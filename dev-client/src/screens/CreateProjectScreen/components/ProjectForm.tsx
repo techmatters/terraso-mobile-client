@@ -34,9 +34,9 @@ import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
   Box,
+  Column,
   Heading,
-  HStack,
-  VStack,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
@@ -179,7 +179,7 @@ export default function ProjectForm({
   });
 
   return (
-    <VStack space={5}>
+    <Column space={5}>
       <TextInput
         placeholder={t('projects.create.name_label')}
         label={t('projects.create.name_label')}
@@ -196,7 +196,7 @@ export default function ProjectForm({
       <ErrorMessage fieldName="description" />
       <RadioBlock
         label={
-          <HStack alignItems="center">
+          <Row alignItems="center">
             <Heading bold size="md">
               {t('projects.create.privacy_label')}
             </Heading>
@@ -205,7 +205,7 @@ export default function ProjectForm({
               onPress={onInfoPress}
               _icon={{color: 'action.active'}}
             />
-          </HStack>
+          </Row>
         }
         options={{
           PUBLIC: {text: t('projects.create.public')},
@@ -219,6 +219,6 @@ export default function ProjectForm({
         }}
       />
       <ErrorMessage fieldName="privacy" />
-    </VStack>
+    </Column>
   );
 }

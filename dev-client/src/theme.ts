@@ -470,7 +470,7 @@ export const theme = extendTheme({
         },
       },
     },
-    HStack: {
+    Row: {
       variants: {
         tablerow: {
           justifyContent: 'left',

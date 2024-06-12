@@ -26,7 +26,7 @@ import {
   Box,
   Column,
   Heading,
-  HStack,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -52,7 +52,7 @@ export const LandPKSInfo = () => {
         </Text>
         <Column>
           {[1, 2, 3].map(index => (
-            <HStack key={index}>
+            <Row key={index}>
               <Text variant="body1" mr={numberedListMargin}>
                 {index}.
               </Text>
@@ -62,7 +62,7 @@ export const LandPKSInfo = () => {
                   components={{icon: <LocationIcon />}}
                 />
               </Text>
-            </HStack>
+            </Row>
           ))}
         </Column>
         <Text variant="body1">

@@ -53,7 +53,7 @@ export const Box = (props: React.PropsWithChildren<BoxProps>) => (
 );
 type RowProps = NativeBaseProps &
   RN.ViewProps & {
-    variant?: keyof (typeof theme.components)['HStack']['variants'];
+    variant?: keyof (typeof theme.components)['Row']['variants'];
   };
 export const Row = (props: React.PropsWithChildren<RowProps>) => {
   const memoizedProps = convertNBStyles(props, 'HStack');
@@ -61,20 +61,8 @@ export const Row = (props: React.PropsWithChildren<RowProps>) => {
     <RN.View {...memoizedProps} style={[styles.row, memoizedProps?.style]} />
   );
 };
-export const HStack = (props: React.PropsWithChildren<RowProps>) => {
-  const memoizedProps = convertNBStyles(props, 'HStack');
-  return (
-    <RN.View {...memoizedProps} style={[styles.row, memoizedProps?.style]} />
-  );
-};
 type ColumnProps = NativeBaseProps & RN.ViewProps;
 export const Column = (props: React.PropsWithChildren<ColumnProps>) => {
-  const memoizedProps = convertNBStyles(props, 'VStack');
-  return (
-    <RN.View {...memoizedProps} style={[styles.column, memoizedProps?.style]} />
-  );
-};
-export const VStack = (props: React.PropsWithChildren<ColumnProps>) => {
   const memoizedProps = convertNBStyles(props, 'VStack');
   return (
     <RN.View {...memoizedProps} style={[styles.column, memoizedProps?.style]} />

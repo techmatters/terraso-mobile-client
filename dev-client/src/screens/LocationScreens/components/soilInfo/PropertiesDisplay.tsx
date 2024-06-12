@@ -18,11 +18,12 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {VStack} from 'native-base';
-
 import {LocationBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Column,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 
@@ -37,11 +38,11 @@ export function PropertiesDisplay({match}: PropertiesDisplayProps) {
     [match.soilInfo.soilData],
   );
   return (
-    <VStack space="16px">
+    <Column space="16px">
       <Heading variant="h6">
         {t('site.soil_id.soil_info.properties_header')}
       </Heading>
       <SoilPropertiesDataTable rows={rows} />
-    </VStack>
+    </Column>
   );
 }

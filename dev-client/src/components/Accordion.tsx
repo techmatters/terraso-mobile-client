@@ -17,7 +17,7 @@
 import {ReactNode, useCallback, useState} from 'react';
 
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {Box, HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   Head: ReactNode;
@@ -40,7 +40,7 @@ export const Accordion = ({
   const name = open ? 'expand-less' : 'expand-more';
   return (
     <Box>
-      <HStack
+      <Row
         backgroundColor="primary.dark"
         alignItems="center"
         justifyContent="space-between"
@@ -53,7 +53,7 @@ export const Accordion = ({
             _icon={{color: 'primary.contrast'}}
           />
         )}
-      </HStack>
+      </Row>
       {open && children}
     </Box>
   );

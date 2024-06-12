@@ -20,10 +20,10 @@ import {Searchbar} from 'react-native-paper';
 
 import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
 import {
+  Column,
   Heading,
-  HStack,
+  Row,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 
@@ -32,13 +32,13 @@ type Props = {query: string; setQuery: (query: string) => void};
 export const ListHeader = memo(({query, setQuery}: Props) => {
   const {t} = useTranslation();
   return (
-    <VStack space="10px" px="12px" pt="10px" pb="10px">
-      <HStack>
+    <Column space="10px" px="12px" pt="10px" pb="10px">
+      <Row>
         <Heading>{t('projects.transfer_sites.heading')}</Heading>
         <HelpTooltipButton>
           {t('projects.transfer_sites.tooltip')}
         </HelpTooltipButton>
-      </HStack>
+      </Row>
       <Text>{t('projects.transfer_sites.description')}</Text>
       <Searchbar
         value={query !== undefined ? query : ''}
@@ -47,6 +47,6 @@ export const ListHeader = memo(({query, setQuery}: Props) => {
         style={searchBarStyles.search}
         inputStyle={searchBarStyles.input}
       />
-    </VStack>
+    </Column>
   );
 });

@@ -25,7 +25,7 @@ import * as yup from 'yup';
 
 import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/HorizontalIconButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {Box, HStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
@@ -78,7 +78,7 @@ export const ScreenFormWrapper = forwardRef(
             onSubmit={onSubmit}>
             {children}
           </Formik>
-          <HStack pr={5} pb={10}>
+          <Row pr={5} pb={10}>
             <Spacer />
             <ConfirmModal
               trigger={onOpen => (
@@ -111,7 +111,7 @@ export const ScreenFormWrapper = forwardRef(
               _text={{textTransform: 'uppercase'}}>
               {t('general.done')}
             </Button>
-          </HStack>
+          </Row>
         </KeyboardAvoidingView>
       </ScreenScaffold>
     );

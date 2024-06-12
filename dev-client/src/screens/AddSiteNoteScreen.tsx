@@ -24,8 +24,8 @@ import {addSiteNote} from 'terraso-client-shared/site/siteSlice';
 
 import {
   Box,
+  Column,
   Heading,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {SiteNoteForm} from 'terraso-mobile-client/components/SiteNoteForm';
@@ -75,14 +75,14 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
       onDelete={handleDelete}
       isSubmitting={isSubmitting}>
       {formikProps => (
-        <VStack pt={10} pl={5} pr={5} pb={10} flex={1}>
+        <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
           <Heading variant="h6" pb={7}>
             {t('site.notes.add_title')}
           </Heading>
           <Box flexGrow={1}>
             <SiteNoteForm content={formikProps.values.content || ''} />
           </Box>
-        </VStack>
+        </Column>
       )}
     </ScreenFormWrapper>
   );

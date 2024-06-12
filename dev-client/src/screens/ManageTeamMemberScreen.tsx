@@ -31,9 +31,9 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,
+  Column,
   Heading,
   Text,
-  VStack,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -87,7 +87,7 @@ export const ManageTeamMemberScreen = ({
         <AppBar title={project?.name} LeftButton={<ScreenCloseButton />} />
       }>
       <ScreenContentSection title={t('projects.manage_member.title')}>
-        <VStack>
+        <Column>
           <Box ml="md" my="lg">
             <MinimalUserDisplay user={user} />
           </Box>
@@ -148,7 +148,7 @@ export const ManageTeamMemberScreen = ({
               {t('general.save_fab')}
             </Button>
           </Box>
-        </VStack>
+        </Column>
       </ScreenContentSection>
     </ScreenScaffold>
   );

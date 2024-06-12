@@ -30,7 +30,6 @@ import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Box,
   Column,
-  HStack,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -191,10 +190,10 @@ export const LocationDashboardContent = ({
           />
         )}
         {site && !project && (
-          <HStack>
+          <Row>
             <RadioBlock
               label={
-                <HStack>
+                <Row>
                   <Text variant="body1" bold>
                     {t('site.dashboard.privacy')}
                   </Text>
@@ -207,7 +206,7 @@ export const LocationDashboardContent = ({
                     onPress={onInfoPress}
                     _icon={{color: 'primary'}}
                   />
-                </HStack>
+                </Row>
               }
               options={{
                 PUBLIC: {text: t('privacy.public.title')},
@@ -220,15 +219,15 @@ export const LocationDashboardContent = ({
                 ml: '0',
               }}
             />
-          </HStack>
+          </Row>
         )}
         {project && (
-          <HStack space={4} alignItems="baseline">
+          <Row space={4} alignItems="baseline">
             <PeopleBadge count={Object.keys(project.memberships).length} />
             {project?.siteInstructions && (
               <ProjectInstructionsButton project={project} />
             )}
-          </HStack>
+          </Row>
         )}
       </Box>
       <Column space="20px" padding="16px">
