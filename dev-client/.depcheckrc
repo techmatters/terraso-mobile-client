@@ -7,6 +7,7 @@
     "@ianvs/prettier-plugin-sort-imports",
     "@react-native-community/cli-doctor",
     "@reduxjs/toolkit",
+    "@sentry/integrations",
     "@testing/*",
     "@tsconfig/react-native",
     "@types/jest",
