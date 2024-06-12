@@ -227,7 +227,7 @@ export const EditIntervalModal = ({
                     <Button
                       px="11px"
                       leftIcon={<Icon name="delete" color="error.main" />}
-                      _text={{textTransform: 'uppercase', color: 'error.main'}}
+                      _text={{color: 'error.main'}}
                       variant="link"
                       size="lg"
                       onPress={onOpen}>

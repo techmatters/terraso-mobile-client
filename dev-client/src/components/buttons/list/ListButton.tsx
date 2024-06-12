@@ -51,7 +51,7 @@ export function ListButton({
       size="md"
       variant="ghost"
       alignSelf="flex-start"
-      _text={{color: color, textTransform: 'uppercase'}}
+      _text={{color: color}}
       leftIcon={iconName ? <Icon name={iconName} color={color} /> : undefined}
       _pressed={{backgroundColor: pressedColor}}
       onPress={onPress}>
