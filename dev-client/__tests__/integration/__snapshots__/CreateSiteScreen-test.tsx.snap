@@ -540,6 +540,7 @@ exports[`renders correctly 1`] = `
                                   "color": "#1A202C",
                                   "fontSize": 16,
                                   "fontWeight": "400",
+                                  "marginTop": -20,
                                 }
                               }
                             >
