@@ -27,6 +27,7 @@ import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/Horiz
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 type Props = {
@@ -43,6 +44,7 @@ export const ScreenFormWrapper = forwardRef(
   ({initialValues, onSubmit, onDelete, children, isSubmitting}: Props, ref) => {
     const formikRef = useRef<FormikProps<{content: string}>>(null);
     const {t} = useTranslation();
+    const navigation = useNavigation();
     const notesFormSchema = yup.object().shape({
       content: yup
         .string()
@@ -94,7 +96,16 @@ export const ScreenFormWrapper = forwardRef(
                       size: '5',
                     }}
                     isDisabled={isSubmitting}
-                    onPress={onOpen}
+                    onPress={() => {
+                      if (
+                        formikRef?.current?.dirty === true ||
+                        formikRef?.current?.values?.content?.length
+                      ) {
+                        onOpen();
+                      } else {
+                        navigation.pop();
+                      }
+                    }}
                   />
                 </Box>
               )}
