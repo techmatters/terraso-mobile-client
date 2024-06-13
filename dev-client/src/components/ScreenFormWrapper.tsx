@@ -100,14 +100,13 @@ export const ScreenFormWrapper = forwardRef(
               trigger={onOpen => (
                 <Box pt={2} pr={5}>
                   <HorizontalIconButton
-                    p={0}
                     name="delete"
                     isUppercase={true}
                     label={t('general.delete_fab')}
                     colorScheme="error.main"
                     _icon={{
                       color: 'error.main',
-                      size: '5',
+                      size: 'md',
                     }}
                     isDisabled={isSubmitting}
                     onPress={() => conditionallyConfirmDelete(onOpen)}
