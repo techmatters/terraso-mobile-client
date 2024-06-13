@@ -213,7 +213,7 @@ const AddTeamMemberForm = ({projectId}: FormProps) => {
               alignSelf="flex-end"
               rightIcon={<Icon name="chevron-right" />}
               onPress={handleSubmit}
-              disabled={!isValid || isValidating || isSubmitting}
+              isDisabled={!isValid || isValidating || isSubmitting}
               _text={{textTransform: 'uppercase'}}>
               {t('general.next')}
             </Button>
