@@ -126,7 +126,6 @@ export const ProjectInputScreen = ({
               pl={4}
               pr={4}
               size="lg"
-              backgroundColor="primary.main"
               shadow={5}
               onPress={onEditInstructions}>
               <Row>
