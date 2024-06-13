@@ -123,13 +123,9 @@ export const ProjectInputScreen = ({
               pr={4}
               size="lg"
               shadow={5}
-              onPress={onEditInstructions}>
-              <Row>
-                <Icon color="primary.contrast" size="sm" mr={2} name="edit" />
-                <Text color="primary.contrast" textTransform="uppercase">
-                  {t('projects.inputs.instructions.add_label')}
-                </Text>
-              </Row>
+              onPress={onEditInstructions}
+              leftIcon={<Icon name="push-pin" />}>
+              {t('projects.inputs.instructions.add_label')}
             </Button>
           </RestrictByProjectRole>
         </Box>
