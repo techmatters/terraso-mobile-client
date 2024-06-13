@@ -39,6 +39,7 @@ export const IntervalForm = () => {
         <FormInput
           name="label"
           placeholder={t('soil.depth_interval.label_placeholder')}
+          textInputLabel={t('soil.depth_interval.label_placeholder')}
           maxLength={FORM_LABEL_MAX}
         />
         <FormControl.HelperText>
@@ -55,12 +56,18 @@ export const IntervalForm = () => {
             placeholder={t('soil.depth_interval.start_label', {
               units: 'cm',
             })}
+            textInputLabel={t('soil.depth_interval.start_label', {
+              units: 'cm',
+            })}
           />
         </Box>
         <Box flex={1}>
           <FormInput
             name="end"
             placeholder={t('soil.depth_interval.end_label', {
+              units: 'cm',
+            })}
+            textInputLabel={t('soil.depth_interval.end_label', {
               units: 'cm',
             })}
           />
