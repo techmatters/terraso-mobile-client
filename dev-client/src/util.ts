@@ -45,9 +45,17 @@ const shortDateFormatters: Record<string, Intl.DateTimeFormat> = {};
 export const formatDate = (dateString: string) => {
   const locale = getSystemLocale();
   shortDateFormatters[locale] ??= new Intl.DateTimeFormat(locale, {
-    dateStyle: 'short',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
   });
-  return shortDateFormatters[locale].format(new Date(dateString));
+  return shortDateFormatters[locale]
+    .format(new Date(dateString))
+    .split(', ')
+    .join(' ');
 };
 
 export const formatPercent = (value: number) => {
