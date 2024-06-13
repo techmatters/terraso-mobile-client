@@ -39,6 +39,7 @@ import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
+import {formatCoordinate} from 'terraso-mobile-client/util';
 
 export type FormState = InferType<ReturnType<typeof siteValidationSchema>>;
 
@@ -88,14 +89,14 @@ export const CreateSiteForm = ({
           </Text>
           <FormField name="latitude">
             <FormInput
-              value={values.latitude.toString()}
+              value={formatCoordinate(values.latitude)}
               textInputLabel={t('site.create.latitude')}
               keyboardType="decimal-pad"
             />
           </FormField>
           <FormField name="longitude">
             <FormInput
-              value={values.longitude.toString()}
+              value={formatCoordinate(values.longitude)}
               textInputLabel={t('site.create.longitude')}
               keyboardType="decimal-pad"
             />
