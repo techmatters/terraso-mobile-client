@@ -81,7 +81,7 @@ export const CreateSiteForm = ({
           </FormField>
 
           <FormLabel>{t('site.create.location_label')}</FormLabel>
-          <Text>
+          <Text mt="-20px">
             {t('site.create.location_accuracy', {
               accuracyM: accuracyM?.toFixed(0),
             })}
