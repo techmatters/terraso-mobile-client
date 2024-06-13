@@ -115,12 +115,8 @@ export const ProjectInputScreen = ({
             />
           </Row>
           <RestrictByProjectRole role="MANAGER">
-            <Text bold fontSize="md">
-              {t('projects.inputs.instructions.title')}
-            </Text>
-            <Text fontSize="md">
-              {t('projects.inputs.instructions.description')}
-            </Text>
+            <Text bold>{t('projects.inputs.instructions.title')}</Text>
+            <Text>{t('projects.inputs.instructions.description')}</Text>
             <Button
               mt={2}
               pl={4}
