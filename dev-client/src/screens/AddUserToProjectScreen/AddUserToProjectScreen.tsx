@@ -17,7 +17,7 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {Formik} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import {Button} from 'native-base';
 import * as yup from 'yup';
 
@@ -143,10 +143,20 @@ type FormProps = {
 const AddTeamMemberForm = ({projectId}: FormProps) => {
   const {t} = useTranslation();
 
-  const onNext = async (values: FormValues) => {
-    // TODO-cknipe: Do the right thing on Next button
-    const validationErrors = await backendValidate(values.email);
-    console.log('Validation errors: ', validationErrors);
+  const onNext = async (
+    values: FormValues,
+    formikHelpers: FormikHelpers<FormValues>,
+  ) => {
+    const validationResult = await backendValidate(values.email);
+    // Backend returned errors
+    if (typeof validationResult === 'string') {
+      const errors = {email: validationResult};
+      formikHelpers.setErrors(errors);
+    }
+    // Success
+    else {
+      // TODO-cknipe
+    }
   };
 
   const backendValidate = async (email: string) => {
@@ -173,21 +183,11 @@ const AddTeamMemberForm = ({projectId}: FormProps) => {
     return true;
   };
 
-  // TODO-cknipe: Don't do the backend call every time
-  // Debounce or only do the backend validation when "Next" is pressed
   const validationSchema = yup.object().shape({
     email: yup
       .string()
       .required(t('projects.add_user.empty_email'))
-      .email(t('projects.add_user.invalid_email'))
-      .test(async (value, {createError}) => {
-        const validationResult = await backendValidate(value);
-        return validationResult === true
-          ? true
-          : createError({
-              message: validationResult,
-            });
-      }),
+      .email(t('projects.add_user.invalid_email')),
   });
 
   return (
@@ -198,8 +198,8 @@ const AddTeamMemberForm = ({projectId}: FormProps) => {
       initialTouched={{
         email: true,
       }}
-      onSubmit={onNext}>
-      {({handleSubmit, isValid, isValidating, isSubmitting}) => {
+      onSubmit={(values, formikHelpers) => onNext(values, formikHelpers)}>
+      {({handleSubmit, isValid, isSubmitting}) => {
         return (
           <>
             <FormInput
@@ -213,7 +213,7 @@ const AddTeamMemberForm = ({projectId}: FormProps) => {
               alignSelf="flex-end"
               rightIcon={<Icon name="chevron-right" />}
               onPress={handleSubmit}
-              isDisabled={!isValid || isValidating || isSubmitting}
+              isDisabled={!isValid || isSubmitting}
               _text={{textTransform: 'uppercase'}}>
               {t('general.next')}
             </Button>
