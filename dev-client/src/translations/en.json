@@ -548,6 +548,9 @@
       "apply_to_all_label": "Apply to all intervals",
       "start_label": "From ({{units}})",
       "end_label": "To ({{units}})",
+      "number_required": "$t(soil.depth_interval.interval, {\"context\": \"{{item}}\"}) must be a number",
+      "interval_start": "interval start",
+      "interval_end": "interval end",
       "update_modal": {
         "title": "Change depth?",
         "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",

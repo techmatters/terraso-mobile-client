@@ -44,6 +44,7 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       .min(0)
       .max(DEPTH_INTERVAL_MAX)
       .required(t('general.required'))
+      .typeError(t('soil.depth_interval.number_required', {item: 'start'}))
       .test((start, {createError}) => {
         if (
           existingIntervals.some(
@@ -63,6 +64,7 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       .min(0)
       .max(DEPTH_INTERVAL_MAX)
       .required(t('general.required'))
+      .typeError(t('soil.depth_interval.number_required', {item: 'end'}))
       .test((end, {createError, parent}) => {
         if (
           existingIntervals.some(
