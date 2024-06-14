@@ -21,7 +21,11 @@ import {Formik, FormikHelpers} from 'formik';
 import {Button} from 'native-base';
 import * as yup from 'yup';
 
-import {checkUserInProject} from 'terraso-client-shared/account/accountService';
+import {
+  checkUserInProject,
+  UserInProjectError,
+} from 'terraso-client-shared/account/accountService';
+import {SimpleUserInfo} from 'terraso-client-shared/account/accountSlice';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
@@ -37,87 +41,17 @@ type Props = {
 
 export const AddUserToProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
-  // TODO-cknipe: Remove this or put it in the appropriate place
-  // const [userRecord, setUserRecord] = useState<Record<string, UserWithRole>>(
-  //   {},
-  // );
-  // const keyboardOpen = useKeyboardOpen();
 
-  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  // FYI: There was previously a mechanism to enter emails individually, but set roles at the same time.
+  // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
+  // wanting to add multiple users at the same time.
+
+  // const keyboardOpen = useKeyboardOpen();
   // const navigation = useNavigation();
   // const dispatch = useDispatch();
-
   const projectName = useSelector(
     state => state.project.projects[projectId]?.name,
   );
-
-  // TODO-cknipe: Remove this or put it in the appropriate place
-  // const userList = useMemo(() => Object.values(userRecord), [userRecord]);
-  // const disableSubmit = useMemo(
-  //   () => isSubmitting || Object.keys(userRecord).length === 0,
-  //   [userRecord, isSubmitting],
-  // );
-
-  // // TODO-cknipe: Remove this
-  // const validationFunc = async (email: string) => {
-  //   if (email === '') {
-  //     // TODO: current bug means empty string for email is considered existing :(
-  //     // Easier just to explicitly reject it here
-  //     return t('projects.add_user.empty_email');
-  //   }
-  //   const userExists = await checkUserInProject(projectId, email);
-  //   if ('type' in userExists) {
-  //     switch (userExists.type) {
-  //       case 'NoUser':
-  //         return t('projects.add_user.user_does_not_exist', {email: email});
-  //       case 'InProject':
-  //         return t('projects.add_user.user_in_project', {email: email});
-  //     }
-  //   }
-  //   if (userExists.id in userRecord) {
-  //     return t('projects.add_user.already_added', {email: email});
-  //   }
-
-  //   setUserRecord(users => {
-  //     return {
-  //       ...users,
-  //       [userExists.id]: {user: userExists, role: 'VIEWER'},
-  //     };
-  //   });
-  //   return null;
-  // };
-
-  // const updateUserRole = useCallback((role: ProjectRole, userId: string) => {
-  //   setUserRecord(users => {
-  //     const newUsers = {...users};
-  //     newUsers[userId].role = role;
-  //     return newUsers;
-  //   });
-  // }, []);
-
-  // const removeUser = useCallback((userId: string) => {
-  //   setUserRecord(users => {
-  //     let newUsers = {...users};
-  //     delete newUsers[userId];
-  //     return newUsers;
-  //   });
-  // }, []);
-
-  // const submitUsers = async () => {
-  //   setIsSubmitting(true);
-  //   for (const {
-  //     user: {id: userId},
-  //     role,
-  //   } of Object.values(userRecord)) {
-  //     try {
-  //       dispatch(addUserToProject({userId, role, projectId}));
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }
-  //   navigation.pop();
-  //   setIsSubmitting(false);
-  // };
 
   return (
     <ScreenScaffold AppBar={<AppBar title={projectName} />}>
@@ -140,6 +74,8 @@ type FormProps = {
   projectId: string;
 };
 
+type UserOrError = SimpleUserInfo | {type: UserInProjectError};
+
 const AddTeamMemberForm = ({projectId}: FormProps) => {
   const {t} = useTranslation();
 
@@ -147,40 +83,53 @@ const AddTeamMemberForm = ({projectId}: FormProps) => {
     values: FormValues,
     formikHelpers: FormikHelpers<FormValues>,
   ) => {
-    const validationResult = await backendValidate(values.email);
+    const userOrError = await checkUserInProject(projectId, values.email);
+    const validationResult = createBackendValidationErrorMessage(
+      values.email,
+      userOrError,
+    );
     // Backend returned errors
-    if (typeof validationResult === 'string') {
+    if (validationResult !== undefined) {
       const errors = {email: validationResult};
       formikHelpers.setErrors(errors);
     }
     // Success
     else {
-      // TODO-cknipe
+      // TODO-cknipe: Go to the next screen, pass it the SimpleUserInfo
+      // Do this on the next screen:
+      // const submitUsers = async () => {
+      //   setIsSubmitting(true);
+      //   for (const {
+      //     user: {id: userId},
+      //     role,
+      //   } of Object.values(userRecord)) {
+      //     try {
+      //       dispatch(addUserToProject({userId, role, projectId}));
+      //     } catch (e) {
+      //       console.error(e);
+      //     }
+      //   }
+      //   navigation.pop();
+      //   setIsSubmitting(false);
+      // };
     }
   };
 
-  const backendValidate = async (email: string) => {
-    if (email === '') {
-      return t('general.required');
-    }
-
-    const userOrError = await checkUserInProject(projectId, email);
+  const createBackendValidationErrorMessage = (
+    email: string,
+    userOrError: UserOrError,
+  ) => {
     if ('type' in userOrError) {
       switch (userOrError.type) {
         case 'NoUser':
-          return t('projects.add_user.user_does_not_exist', {email: email});
+          return t('projects.add_user.user_does_not_exist', {
+            email: email,
+          });
         case 'InProject':
           return t('projects.add_user.user_in_project', {email: email});
       }
     }
-
-    // TODO-cknipe: What's userRecord? Remove this or use the real one.
-    const userRecord = ['TODO-cknipe'];
-    if (userOrError.id in userRecord) {
-      return t('projects.add_user.already_added', {email: email});
-    }
-
-    return true;
+    return undefined;
   };
 
   const validationSchema = yup.object().shape({
