@@ -44,7 +44,7 @@ export function DeleteAccountConfirmForm({
   const isDisabled = email !== value;
 
   return (
-    <Column space="24px" paddingVertical="16px">
+    <Column space="24px">
       <TextInput value={value} onChangeText={setValue} />
       <Row space="8px" marginHorizontal="24px" alignSelf="flex-end">
         <Button onPress={goBack} {...ACTION_BUTTON_VARIANTS.cancel}>

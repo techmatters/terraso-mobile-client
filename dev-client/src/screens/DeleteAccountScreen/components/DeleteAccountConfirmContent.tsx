@@ -31,7 +31,7 @@ export function DeleteAccountConfirmContent({
   const email = user.email;
 
   return (
-    <Column space={4}>
+    <Column space="16px">
       <TranslatedParagraph
         i18nKey="delete_account.confirm.p0"
         values={{email}}

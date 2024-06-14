@@ -18,6 +18,7 @@
 import {useTranslation} from 'react-i18next';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest.ts';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
@@ -37,13 +38,13 @@ export function DeleteAccountScreen() {
           (isPending ? (
             <DeleteAccountPendingContent user={user} />
           ) : (
-            <>
+            <Column space="16px">
               <DeleteAccountConfirmContent user={user} />
               <DeleteAccountConfirmForm
                 user={user}
                 onConfirm={requestDeletion}
               />
-            </>
+            </Column>
           ))}
       </ScreenContentSection>
     </ScreenScaffold>
