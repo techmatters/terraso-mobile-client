@@ -22,7 +22,7 @@ import {FormControl} from 'native-base';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
+import {DEPTH_INTERVAL_LABEL_MAX_LENGTH} from 'terraso-mobile-client/constants';
 
 export type IntervalFormInput = {
   label: string;
@@ -40,12 +40,12 @@ export const IntervalForm = () => {
           name="label"
           placeholder={t('soil.depth_interval.label_placeholder')}
           textInputLabel={t('soil.depth_interval.label_placeholder')}
-          maxLength={FORM_LABEL_MAX}
+          maxLength={DEPTH_INTERVAL_LABEL_MAX_LENGTH}
         />
         <FormControl.HelperText>
           {t('general.character_limit', {
             current: label?.length ?? 0,
-            limit: FORM_LABEL_MAX,
+            limit: DEPTH_INTERVAL_LABEL_MAX_LENGTH,
           })}
         </FormControl.HelperText>
       </FormControl>

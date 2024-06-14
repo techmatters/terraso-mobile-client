@@ -20,7 +20,7 @@ import * as yup from 'yup';
 
 import {DepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
 
-import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
+import {DEPTH_INTERVAL_LABEL_MAX_LENGTH} from 'terraso-mobile-client/constants';
 
 type Args = {
   t: TFunction;
@@ -29,12 +29,12 @@ type Args = {
 
 export const intervalSchema = ({t, existingIntervals}: Args) =>
   yup.object({
-    label: yup
-      .string()
-      .max(
-        FORM_LABEL_MAX,
-        t('soil.depth_interval.label_help', {max: FORM_LABEL_MAX}),
-      ),
+    label: yup.string().max(
+      DEPTH_INTERVAL_LABEL_MAX_LENGTH,
+      t('soil.depth_interval.label_help', {
+        max: DEPTH_INTERVAL_LABEL_MAX_LENGTH,
+      }),
+    ),
     start: yup
       .number()
       .integer()
