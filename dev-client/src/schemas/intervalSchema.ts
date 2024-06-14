@@ -37,6 +37,7 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       ),
     start: yup
       .number()
+      .integer()
       .min(0)
       .max(200)
       .required(t('general.required'))
@@ -55,6 +56,7 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       }),
     end: yup
       .number()
+      .integer()
       .min(0)
       .max(200)
       .required(t('general.required'))
