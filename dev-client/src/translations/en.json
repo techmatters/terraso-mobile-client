@@ -433,6 +433,30 @@
     "subtitle": "Discover the potential of your land",
     "description": "LandPKS is a Terraso soil science tool."
   },
+  "delete_account": {
+    "title": "Delete Account",
+    "confirm": {
+      "p0": "<bold>{{email}}</bold>",
+      "p1": "The LandPKS account associated with this email address will be deleted. This removes:",
+      "p2": {
+        "b0": "your unaffiliated sites",
+        "b1": "projects for which you are the only manager, and their affiliated sites"
+      },
+      "p3": "The following won’t be deleted:",
+      "p4": {
+        "b0": "data you contributed to a project for which you aren’t the only manager",
+        "b1": "your Terraso account (including groups, landscapes, and story maps"
+      },
+      "p5": "<bold>Type your email address to confirm deletion:</bold>",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "pending": {
+      "p0": "<bold>{{email}}</bold>",
+      "p1": "Your account deletion request has been sent. Account for {{email}} will be deleted within five business days.",
+      "p2": "You will receive an email confirmation when your account has been deleted."
+    }
+  },
   "logout": {
     "confirm_body": "Are you sure you want to sign out?",
     "confirm_action": "Sign out"

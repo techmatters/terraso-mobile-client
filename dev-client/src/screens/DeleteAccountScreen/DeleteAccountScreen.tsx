@@ -15,19 +15,37 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Text} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
 
-import {VStack} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
+import {DeleteAccountConfirmContent} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountConfirmContent';
+import {DeleteAccountConfirmForm} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountConfirmForm';
+import {DeleteAccountPendingContent} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountPendingContent';
+import {useUserDeletionRequests} from 'terraso-mobile-client/screens/DeleteAccountScreen/services/UserDeletionService';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 export function DeleteAccountScreen() {
+  const {t} = useTranslation();
+  const {user, isPending, requestDeletion} = useUserDeletionRequests();
+
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenBackButton />} />}>
-      <VStack height="full" margin="12px">
-        <Text>Hello, world!</Text>
-      </VStack>
+      <ScreenContentSection title={t('delete_account.title')}>
+        {user &&
+          (isPending ? (
+            <DeleteAccountPendingContent user={user} />
+          ) : (
+            <>
+              <DeleteAccountConfirmContent user={user} />
+              <DeleteAccountConfirmForm
+                user={user}
+                onConfirm={requestDeletion}
+              />
+            </>
+          ))}
+      </ScreenContentSection>
     </ScreenScaffold>
   );
 }
