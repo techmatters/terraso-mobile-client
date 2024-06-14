@@ -53,6 +53,7 @@ export const IntervalForm = () => {
         <Box flex={1}>
           <FormInput
             name="start"
+            keyboardType="decimal-pad"
             placeholder={t('soil.depth_interval.start_label', {
               units: 'cm',
             })}
@@ -64,6 +65,7 @@ export const IntervalForm = () => {
         <Box flex={1}>
           <FormInput
             name="end"
+            keyboardType="decimal-pad"
             placeholder={t('soil.depth_interval.end_label', {
               units: 'cm',
             })}
