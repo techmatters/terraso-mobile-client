@@ -18,12 +18,12 @@
 import {useTranslation} from 'react-i18next';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest.ts';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
 import {DeleteAccountConfirmContent} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountConfirmContent';
 import {DeleteAccountConfirmForm} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountConfirmForm';
 import {DeleteAccountPendingContent} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountPendingContent';
-import {useUserDeletionRequests} from 'terraso-mobile-client/screens/DeleteAccountScreen/services/UserDeletionService';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 export function DeleteAccountScreen() {
