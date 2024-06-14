@@ -24,6 +24,7 @@ export const LATITUDE_MIN = -90;
 export const LATITUDE_MAX = 90;
 export const LONGITUDE_MIN = -180;
 export const LONGITUDE_MAX = 180;
+export const DEPTH_INTERVAL_MAX = 200;
 
 export const SITE_NAME_MIN_LENGTH = 3;
 export const SITE_NAME_MAX_LENGTH = 50;
