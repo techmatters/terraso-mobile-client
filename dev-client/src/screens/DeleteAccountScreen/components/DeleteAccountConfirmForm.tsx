@@ -47,32 +47,38 @@ export function DeleteAccountConfirmForm({
     <Column space="24px" paddingVertical="16px">
       <TextInput value={value} onChangeText={setValue} />
       <Row space="8px" marginHorizontal="24px" alignSelf="flex-end">
-        <Button
-          onPress={goBack}
-          variant="outline"
-          size="lg"
-          background="grey.200"
-          _text={{
-            color: 'text.primary',
-          }}>
+        <Button onPress={goBack} {...ACTION_BUTTON_VARIANTS.cancel}>
           {t('delete_account.confirm.cancel')}
         </Button>
         <Button
           onPress={onConfirm}
           isDisabled={isDisabled}
-          variant="solid"
-          size="lg"
-          background="error.main"
-          _disabled={{
-            background: 'action.disabledBackground',
-            _text: {
-              color: 'action.disabled',
-            },
-          }}
-          _text={{color: 'error.contrast'}}>
+          {...ACTION_BUTTON_VARIANTS.confirm}>
           {t('delete_account.confirm.delete')}
         </Button>
       </Row>
     </Column>
   );
 }
+
+const ACTION_BUTTON_VARIANTS = {
+  cancel: {
+    variant: 'outline',
+    size: 'lg',
+    _text: {
+      color: 'text.primary',
+    },
+  },
+  confirm: {
+    variant: 'solid',
+    size: 'lg',
+    background: 'error.main',
+    _disabled: {
+      background: 'action.disabledBackground',
+      _text: {
+        color: 'action.disabled',
+      },
+    },
+    _text: {color: 'error.contrast'},
+  },
+};
