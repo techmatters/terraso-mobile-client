@@ -37,6 +37,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
+import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
 
@@ -75,6 +76,7 @@ export const CreateSiteForm = ({
         <Column p="16px" pt="30px" space="18px">
           <FormField name="name">
             <FormInput
+              maxLength={SITE_NAME_MAX_LENGTH}
               placeholder={t('site.create.name_label')}
               textInputLabel={t('site.create.name_label')}
             />
