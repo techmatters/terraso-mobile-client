@@ -45,7 +45,13 @@ export function DeleteAccountConfirmForm({
 
   return (
     <Column space="24px">
-      <TextInput value={value} onChangeText={setValue} />
+      <TextInput
+        value={value}
+        onChangeText={setValue}
+        autoComplete="email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />```
       <Row space="8px" marginHorizontal="24px" alignSelf="flex-end">
         <Button onPress={goBack} {...ACTION_BUTTON_VARIANTS.cancel}>
           {t('delete_account.confirm.cancel')}
