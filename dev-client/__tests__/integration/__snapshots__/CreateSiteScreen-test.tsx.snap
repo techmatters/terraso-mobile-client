@@ -455,6 +455,7 @@ exports[`renders correctly 1`] = `
                                     cursorColor="#028843"
                                     editable={true}
                                     maxFontSizeMultiplier={1.5}
+                                    maxLength={50}
                                     multiline={false}
                                     onBlur={[Function]}
                                     onChangeText={[Function]}
