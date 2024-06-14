@@ -18,10 +18,11 @@
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button, Input} from 'native-base';
+import {Button} from 'native-base';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
 
+import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
@@ -44,7 +45,7 @@ export function DeleteAccountConfirmForm({
 
   return (
     <Column space={4} paddingVertical={4}>
-      <Input value={value} onChangeText={setValue} />
+      <TextInput value={value} onChangeText={setValue} />
       <Row>
         <Button onPress={goBack} variant="outline">
           {t('delete_account.confirm.cancel')}
