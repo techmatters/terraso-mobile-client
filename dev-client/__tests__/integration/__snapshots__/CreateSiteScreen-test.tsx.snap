@@ -707,7 +707,7 @@ exports[`renders correctly 1`] = `
                                   <TextInput
                                     cursorColor="#028843"
                                     editable={true}
-                                    keyboardType="decimal-pad"
+                                    keyboardType="numeric"
                                     maxFontSizeMultiplier={1.5}
                                     multiline={false}
                                     onBlur={[Function]}
@@ -917,7 +917,7 @@ exports[`renders correctly 1`] = `
                                   <TextInput
                                     cursorColor="#028843"
                                     editable={true}
-                                    keyboardType="decimal-pad"
+                                    keyboardType="numeric"
                                     maxFontSizeMultiplier={1.5}
                                     multiline={false}
                                     onBlur={[Function]}
