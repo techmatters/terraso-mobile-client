@@ -334,6 +334,7 @@
     "form": {
       "name_min_length_error": "Project name must be at least {{min}} characters",
       "name_max_length_error": "Project name must be at most {{max}} characters",
+      "description_min_length_error": "Project description must be at least {{min}} characters",
       "description_max_length_error": "Project description must be at most {{max}} characters"
     },
     "sort_label": "Sort projects by:",
