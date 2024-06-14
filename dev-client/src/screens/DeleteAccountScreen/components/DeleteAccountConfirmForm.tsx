@@ -44,13 +44,32 @@ export function DeleteAccountConfirmForm({
   const isDisabled = email !== value;
 
   return (
-    <Column space={4} paddingVertical={4}>
+    <Column space="24px" paddingVertical="16px">
       <TextInput value={value} onChangeText={setValue} />
-      <Row>
-        <Button onPress={goBack} variant="outline">
+      <Row space="8px" marginHorizontal="24px" alignSelf="flex-end">
+        <Button
+          onPress={goBack}
+          variant="outline"
+          size="lg"
+          background="grey.200"
+          _text={{
+            color: 'text.primary',
+          }}>
           {t('delete_account.confirm.cancel')}
         </Button>
-        <Button onPress={onConfirm} isDisabled={isDisabled} variant="solid">
+        <Button
+          onPress={onConfirm}
+          isDisabled={isDisabled}
+          variant="solid"
+          size="lg"
+          background="error.main"
+          _disabled={{
+            background: 'action.disabledBackground',
+            _text: {
+              color: 'action.disabled',
+            },
+          }}
+          _text={{color: 'error.contrast'}}>
           {t('delete_account.confirm.delete')}
         </Button>
       </Row>
