@@ -18,6 +18,7 @@
 import {User} from 'terraso-client-shared/account/accountSlice';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type DeleteAccountPendingContentProps = {
   user: User;
@@ -29,7 +30,7 @@ export function DeleteAccountPendingContent({
   const email = user.email;
 
   return (
-    <>
+    <Column space={4}>
       <TranslatedParagraph
         i18nKey="delete_account.pending.p0"
         values={{email}}
@@ -39,6 +40,6 @@ export function DeleteAccountPendingContent({
         values={{email}}
       />
       <TranslatedParagraph i18nKey="delete_account.pending.p2" />
-    </>
+    </Column>
   );
 }
