@@ -24,15 +24,18 @@ export const LATITUDE_MIN = -90;
 export const LATITUDE_MAX = 90;
 export const LONGITUDE_MIN = -180;
 export const LONGITUDE_MAX = 180;
-export const SITE_NAME_MIN = 3;
-export const SITE_NAME_MAX = 50;
-export const PROJECT_NAME_MAX_LENGTH = 50;
+
+export const SITE_NAME_MIN_LENGTH = 3;
+export const SITE_NAME_MAX_LENGTH = 50;
 export const PROJECT_NAME_MIN_LENGTH = 3;
+export const PROJECT_NAME_MAX_LENGTH = 50;
+export const PROJECT_DESCRIPTION_MIN_LENGTH = 3;
 export const PROJECT_DESCRIPTION_MAX_LENGTH = 72;
+export const DEPTH_INTERVAL_LABEL_MAX_LENGTH = 10;
+export const SITE_NOTE_MIN_LENGTH = 3;
+
 export const BOTTOM_BAR_SIZE = '10%';
-export const FORM_LABEL_MAX = 10;
 export const PROJECT_DEFAULT_MEASUREMENT_UNITS: MeasurementUnit = 'METRIC';
 export const GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE = 5;
-export const SITE_NOTE_MIN_LENGTH = 3;
 export const LOCALE = 'en-US';
 export const MAP_QUERY_MIN_LENGTH = 2;
