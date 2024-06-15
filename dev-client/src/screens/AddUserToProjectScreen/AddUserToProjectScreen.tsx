@@ -32,6 +32,7 @@ import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 
@@ -47,7 +48,6 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   // wanting to add multiple users at the same time.
 
   // const keyboardOpen = useKeyboardOpen();
-  // const navigation = useNavigation();
   // const dispatch = useDispatch();
   const projectName = useSelector(
     state => state.project.projects[projectId]?.name,
@@ -78,6 +78,7 @@ type UserOrError = SimpleUserInfo | {type: UserInProjectError};
 
 const AddTeamMemberForm = ({projectId}: FormProps) => {
   const {t} = useTranslation();
+  const navigation = useNavigation();
 
   const onNext = async (
     values: FormValues,
@@ -90,28 +91,14 @@ const AddTeamMemberForm = ({projectId}: FormProps) => {
     );
     // Backend returned errors
     if (validationResult !== undefined) {
-      const errors = {email: validationResult};
-      formikHelpers.setErrors(errors);
+      const error = {email: validationResult};
+      formikHelpers.setErrors(error);
     }
     // Success
     else {
+      const user = userOrError as SimpleUserInfo;
+      navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, user});
       // TODO-cknipe: Go to the next screen, pass it the SimpleUserInfo
-      // Do this on the next screen:
-      // const submitUsers = async () => {
-      //   setIsSubmitting(true);
-      //   for (const {
-      //     user: {id: userId},
-      //     role,
-      //   } of Object.values(userRecord)) {
-      //     try {
-      //       dispatch(addUserToProject({userId, role, projectId}));
-      //     } catch (e) {
-      //       console.error(e);
-      //     }
-      //   }
-      //   navigation.pop();
-      //   setIsSubmitting(false);
-      // };
     }
   };
 

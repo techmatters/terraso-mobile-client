@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -18,21 +18,19 @@
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button, Divider} from 'native-base';
+import {Button} from 'native-base';
 
+import {SimpleUserInfo} from 'terraso-client-shared/account/accountSlice';
 import {
-  deleteUserFromProject,
+  addUserToProject,
   ProjectRole,
-  updateUserRole,
 } from 'terraso-client-shared/project/projectSlice';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,
   Column,
-  Text,
+  Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
@@ -44,48 +42,39 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   projectId: string;
-  userId: string;
-  membershipId: string;
+  // TODO-cknipe: Consolidate UserFields and SimpleUserInfo
+  user: SimpleUserInfo;
 };
 
-export const ManageTeamMemberScreen = ({
-  projectId,
-  userId,
-  membershipId,
-}: Props) => {
+export const AddUserToProjectRoleScreen = ({projectId, user}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const project = useSelector(state => state.project.projects[projectId]);
-  const user = useSelector(state => state.account.users[userId]);
-  const membership = project?.memberships[membershipId];
 
-  const [selectedRole, setSelectedRole] = useState<ProjectRole>(
-    membership ? membership.userRole : 'MANAGER',
-  );
+  const [selectedRole, setSelectedRole] = useState<ProjectRole>('VIEWER');
 
-  const removeMembership = useCallback(async () => {
-    await dispatch(
-      deleteUserFromProject({
-        userId,
-        projectId,
-      }),
-    );
+  const addUser = useCallback(async () => {
+    try {
+      // TODO-cknipe: Why can't you use the values directly in addUserToProject?
+      // TODO-cknipe: To await or not?
+      const userId = user.id;
+      const role = selectedRole;
+      dispatch(addUserToProject({userId, role, projectId}));
+    } catch (e) {
+      console.error(e);
+    }
     navigation.pop();
-  }, [dispatch, projectId, userId, navigation]);
-
-  const updateUser = useCallback(async () => {
-    await dispatch(updateUserRole({projectId, userId, newRole: selectedRole}));
     navigation.pop();
-  }, [dispatch, projectId, userId, selectedRole, navigation]);
+  }, [dispatch, projectId, user, selectedRole, navigation]);
 
   return (
     <ScreenScaffold
       AppBar={
         <AppBar title={project?.name} LeftButton={<ScreenCloseButton />} />
       }>
-      <ScreenContentSection title={t('projects.manage_member.title')}>
+      <ScreenContentSection title={t('projects.add_user.heading')}>
         <Column>
           <Box ml="md" my="lg">
             <MinimalUserDisplay user={user} />
@@ -96,37 +85,33 @@ export const ManageTeamMemberScreen = ({
             selectedRole={selectedRole}
           />
 
-          <Divider my="20px" alignSelf="center" />
-
-          <ConfirmModal
-            trigger={onOpen => (
-              <Button
-                size="sm"
-                variant="ghost"
-                alignSelf="start"
-                width="70%"
-                onPress={onOpen}
-                _text={{color: 'error.main'}}
-                _pressed={{backgroundColor: 'red.100'}}
-                textTransform="uppercase"
-                leftIcon={<Icon name="delete" color="error.main" />}>
-                {t('projects.manage_member.remove')}
-              </Button>
-            )}
-            title={t('projects.manage_member.confirm_removal_title')}
-            body={t('projects.manage_member.confirm_removal_body')}
-            actionName={t('projects.manage_member.confirm_removal_action')}
-            handleConfirm={removeMembership}
-          />
-          <Text ml="20px" variant="caption">
-            {t('projects.manage_member.remove_help')}
-          </Text>
-
-          <Box flex={0} height="15%" justifyContent="flex-end">
-            <Button onPress={updateUser} alignSelf="flex-end">
-              {t('general.save_fab')}
+          <Row
+            flex={0}
+            justifyContent="flex-end"
+            alignItems="center"
+            space="12px"
+            pt="md">
+            <Button
+              onPress={addUser}
+              size="lg"
+              variant="outline"
+              borderColor="action.active"
+              _text={{textTransform: 'uppercase', color: 'action.active'}}>
+              {t('general.cancel')}
             </Button>
-          </Box>
+            {/* FYI: The 1px border is to visually match the size of the outline
+            variant, which appears to be 1px bigger than the solid variant due
+            to its border. */}
+            <Button
+              borderWidth="1px"
+              borderColor="primary.main"
+              onPress={addUser}
+              size="lg"
+              variant="solid"
+              _text={{textTransform: 'uppercase'}}>
+              {t('general.add')}
+            </Button>
+          </Row>
         </Column>
       </ScreenContentSection>
     </ScreenScaffold>
