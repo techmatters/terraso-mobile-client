@@ -22,15 +22,15 @@ import {FormControl} from 'native-base';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {DEPTH_INTERVAL_LABEL_MAX_LENGTH} from 'terraso-mobile-client/constants';
+import {DEPTH_LABEL_MAX_LENGTH} from 'terraso-mobile-client/constants';
 
-export type IntervalFormInput = {
+export type DepthFormInput = {
   label: string;
   start: string;
   end: string;
 };
 
-export const IntervalForm = () => {
+export const DepthForm = () => {
   const {t} = useTranslation();
   const {value: label} = useFieldContext('label');
   return (
@@ -38,14 +38,14 @@ export const IntervalForm = () => {
       <FormControl>
         <FormInput
           name="label"
-          placeholder={t('soil.depth_interval.label_placeholder')}
-          textInputLabel={t('soil.depth_interval.label_placeholder')}
-          maxLength={DEPTH_INTERVAL_LABEL_MAX_LENGTH}
+          placeholder={t('soil.depth.label_placeholder')}
+          textInputLabel={t('soil.depth.label_placeholder')}
+          maxLength={DEPTH_LABEL_MAX_LENGTH}
         />
         <FormControl.HelperText>
           {t('general.character_limit', {
             current: label?.length ?? 0,
-            limit: DEPTH_INTERVAL_LABEL_MAX_LENGTH,
+            limit: DEPTH_LABEL_MAX_LENGTH,
           })}
         </FormControl.HelperText>
       </FormControl>
@@ -54,10 +54,10 @@ export const IntervalForm = () => {
           <FormInput
             name="start"
             keyboardType="numeric"
-            placeholder={t('soil.depth_interval.start_label', {
+            placeholder={t('soil.depth.start_label', {
               units: 'cm',
             })}
-            textInputLabel={t('soil.depth_interval.start_label', {
+            textInputLabel={t('soil.depth.start_label', {
               units: 'cm',
             })}
           />
@@ -66,10 +66,10 @@ export const IntervalForm = () => {
           <FormInput
             name="end"
             keyboardType="numeric"
-            placeholder={t('soil.depth_interval.end_label', {
+            placeholder={t('soil.depth.end_label', {
               units: 'cm',
             })}
-            textInputLabel={t('soil.depth_interval.end_label', {
+            textInputLabel={t('soil.depth.end_label', {
               units: 'cm',
             })}
           />

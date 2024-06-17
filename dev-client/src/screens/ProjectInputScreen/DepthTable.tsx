@@ -33,13 +33,13 @@ type TableProps = {
   depthIntervals: ProjectDepthInterval[];
   projectId: string;
   includeLabel: boolean;
-  canDeleteInterval: boolean;
+  canDeleteDepth: boolean;
 } & Omit<React.ComponentProps<typeof DataGridTable>, 'rows' | 'headers'>;
 
-export const DepthIntervalTable = ({
+export const DepthTable = ({
   depthIntervals,
   projectId,
-  canDeleteInterval,
+  canDeleteDepth,
   includeLabel,
   ...extraProps
 }: TableProps) => {
@@ -47,14 +47,14 @@ export const DepthIntervalTable = ({
   const dispatch = useDispatch();
   const headers = [];
   if (includeLabel) {
-    headers.push(t('projects.inputs.depth_intervals.label'));
+    headers.push(t('projects.inputs.depths.label'));
   }
-  headers.push(t('projects.inputs.depth_intervals.depth', {units: 'cm'}));
-  if (canDeleteInterval) {
+  headers.push(t('projects.inputs.depths.depth', {units: 'cm'}));
+  if (canDeleteDepth) {
     headers.push('');
   }
 
-  const deleteDepthInterval = useCallback(
+  const deleteDepth = useCallback(
     (depthInterval: DepthInterval) => () => {
       return dispatch(deleteProjectDepthInterval({projectId, depthInterval}));
     },
@@ -67,13 +67,13 @@ export const DepthIntervalTable = ({
       if (includeLabel) {
         result.push(label || '');
       }
-      result.push(t('soil.depth_interval.bounds_unitless', depthInterval));
-      if (canDeleteInterval) {
+      result.push(t('soil.depth.bounds_unitless', depthInterval));
+      if (canDeleteDepth) {
         result.push(
           <Box flex={1} flexDirection="row" justifyContent="flex-end">
             <IconButton
               name="close"
-              onPress={deleteDepthInterval(depthInterval)}
+              onPress={deleteDepth(depthInterval)}
               _icon={{
                 size: 'sm',
                 color: 'action.active',
@@ -84,7 +84,7 @@ export const DepthIntervalTable = ({
       }
       return result;
     });
-  }, [depthIntervals, canDeleteInterval, includeLabel, deleteDepthInterval, t]);
+  }, [depthIntervals, canDeleteDepth, includeLabel, deleteDepth, t]);
 
   return <DataGridTable headers={headers} rows={rows} {...extraProps} />;
 };

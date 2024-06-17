@@ -36,16 +36,16 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 
+import {
+  DepthForm,
+  DepthFormInput,
+} from 'terraso-mobile-client/components/DepthForm';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {
-  IntervalForm,
-  IntervalFormInput,
-} from 'terraso-mobile-client/components/IntervalForm';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -55,12 +55,12 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
-import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
-import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
+import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
+import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
 
-type EditIntervalFormInput = IntervalFormInput &
+type EditDepthFormInput = DepthFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
     applyToAll: boolean;
   };
@@ -72,7 +72,7 @@ type Props = {
   requiredInputs: SoilPitMethod[];
 };
 
-export const EditIntervalModal = ({
+export const EditDepthModal = ({
   siteId,
   depthInterval,
   requiredInputs,
@@ -83,22 +83,22 @@ export const EditIntervalModal = ({
   const modalRef = useRef<ModalHandle>(null);
   const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
 
-  const allIntervals = useSiteSoilIntervals(siteId);
-  const thisInterval = allIntervals
+  const allDepths = useSiteSoilIntervals(siteId);
+  const thisDepth = allDepths
     .map(({interval}) => interval)
     .find(sameDepth({depthInterval}))!;
 
-  const existingIntervals = useMemo(
+  const existingDepths = useMemo(
     () =>
-      allIntervals
+      allDepths
         .map(({interval}) => interval)
-        .filter(interval => !sameDepth(thisInterval)(interval)),
-    [allIntervals, thisInterval],
+        .filter(interval => !sameDepth(thisDepth)(interval)),
+    [allDepths, thisDepth],
   );
 
   const schema = useMemo(
     () =>
-      intervalSchema({t, existingIntervals}).shape({
+      depthSchema({t, existingDepths}).shape({
         applyToAll: yup.boolean().required(),
         ...fromEntries(
           soilPitMethods
@@ -106,7 +106,7 @@ export const EditIntervalModal = ({
             .map(method => [method, yup.boolean().required()]),
         ),
       }),
-    [t, existingIntervals],
+    [t, existingDepths],
   );
 
   const updateSwitch = useCallback(
@@ -123,7 +123,7 @@ export const EditIntervalModal = ({
   );
 
   const onSubmit = useCallback(
-    async (values: EditIntervalFormInput) => {
+    async (values: EditDepthFormInput) => {
       const {start, end} = depthInterval;
       const {
         start: newStart,
@@ -135,7 +135,7 @@ export const EditIntervalModal = ({
       const input: SoilDataUpdateDepthIntervalMutationInput = {
         siteId,
         applyToIntervals: applyToAll
-          ? existingIntervals.map(interval => interval.depthInterval)
+          ? existingDepths.map(depth => depth.depthInterval)
           : undefined,
         ...enabledInputs,
         depthInterval: {start: newStart, end: newEnd},
@@ -151,10 +151,10 @@ export const EditIntervalModal = ({
       await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
-    [schema, dispatch, onClose, siteId, depthInterval, existingIntervals],
+    [schema, dispatch, onClose, siteId, depthInterval, existingDepths],
   );
 
-  const deleteInterval = useCallback(() => {
+  const deleteDepth = useCallback(() => {
     dispatch(
       deleteSoilDataDepthInterval({
         siteId,
@@ -176,15 +176,13 @@ export const EditIntervalModal = ({
       )}
       Header={
         <Heading variant="h6">
-          {mutable
-            ? t('soil.depth_interval.edit_title')
-            : renderDepthInterval(t, thisInterval)}
+          {mutable ? t('soil.depth.edit_title') : renderDepth(t, thisDepth)}
         </Heading>
       }>
       <Formik
         validationSchema={schema}
         initialValues={{
-          ...thisInterval,
+          ...thisDepth,
           start: String(depthInterval.start),
           end: String(depthInterval.end),
           applyToAll: false,
@@ -195,10 +193,10 @@ export const EditIntervalModal = ({
             {mutable && (
               <>
                 <Box pl="2px" mb="11px">
-                  <IntervalForm />
+                  <DepthForm />
                 </Box>
                 <Heading variant="h6" mt="11px" mb="11px">
-                  {t('soil.depth_interval.data_inputs_title')}
+                  {t('soil.depth.data_inputs_title')}
                 </Heading>
               </>
             )}
@@ -216,7 +214,7 @@ export const EditIntervalModal = ({
             <Row mb="12px">
               <FormCheckbox name="applyToAll" />
               <FormLabel variant="body1" ml={SWITCH_PADDING}>
-                {t('soil.depth_interval.apply_to_all_label')}
+                {t('soil.depth.apply_to_all_label')}
               </FormLabel>
             </Row>
 
@@ -231,13 +229,13 @@ export const EditIntervalModal = ({
                       variant="link"
                       size="lg"
                       onPress={onOpen}>
-                      {t('soil.depth_interval.delete_depth')}
+                      {t('soil.depth.delete_depth')}
                     </Button>
                   )}
-                  title={t('soil.depth_interval.delete_modal.title')}
-                  body={t('soil.depth_interval.delete_modal.body')}
-                  actionName={t('soil.depth_interval.delete_modal.action')}
-                  handleConfirm={deleteInterval}
+                  title={t('soil.depth.delete_modal.title')}
+                  body={t('soil.depth.delete_modal.body')}
+                  actionName={t('soil.depth.delete_modal.action')}
+                  handleConfirm={deleteDepth}
                 />
               )}
               <Box flex={1} />
@@ -291,9 +289,9 @@ const ConfirmEditingModal = ({
       trigger={onOpen => (
         <SaveButton action={buttonAction(onOpen)} isDisabled={formNotReady} />
       )}
-      title={t('soil.depth_interval.update_modal.title')}
-      body={t('soil.depth_interval.update_modal.body')}
-      actionName={t('soil.depth_interval.update_modal.action')}
+      title={t('soil.depth.update_modal.title')}
+      body={t('soil.depth.update_modal.body')}
+      actionName={t('soil.depth.update_modal.action')}
       handleConfirm={() => handleSubmit()}
     />
   );

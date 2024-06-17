@@ -80,9 +80,9 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
           </Button>
         )}
         handleConfirm={onConfirm}
-        title={t('projects.inputs.depth_intervals.confirm_preset.title')}
-        body={t('projects.inputs.depth_intervals.confirm_preset.body')}
-        actionName={t('projects.inputs.depth_intervals.confirm_preset.confirm')}
+        title={t('projects.inputs.depths.confirm_preset.title')}
+        body={t('projects.inputs.depths.confirm_preset.body')}
+        actionName={t('projects.inputs.depths.confirm_preset.confirm')}
       />
     </Column>
   );
