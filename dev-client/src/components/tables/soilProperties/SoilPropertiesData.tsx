@@ -52,19 +52,19 @@ export const rowFromSoilData = (
   data: SoilData,
   interval: SoilDataDepthInterval,
 ): SoilPropertiesDataTableRow => {
-  const dataForInterval = data.depthDependentData.find(sameDepth(interval));
+  const dataForDepth = data.depthDependentData.find(sameDepth(interval));
 
   const color =
-    dataForInterval &&
+    dataForDepth &&
     fullMunsellColor({
-      colorHue: dataForInterval.colorHue,
-      colorChroma: dataForInterval.colorChroma,
-      colorValue: dataForInterval.colorValue,
+      colorHue: dataForDepth.colorHue,
+      colorChroma: dataForDepth.colorChroma,
+      colorValue: dataForDepth.colorValue,
     });
   return {
     depth: interval.depthInterval,
-    texture: dataForInterval?.texture ?? undefined,
-    rockFragment: dataForInterval?.rockFragmentVolume ?? undefined,
+    texture: dataForDepth?.texture ?? undefined,
+    rockFragment: dataForDepth?.rockFragmentVolume ?? undefined,
     munsellColor: color ? munsellToString(color) : undefined,
   };
 };

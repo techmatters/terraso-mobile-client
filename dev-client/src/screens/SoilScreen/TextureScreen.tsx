@@ -68,7 +68,7 @@ const FRAGMENT_IMAGES = {
 export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const {siteId, depthInterval} = props;
   const {t} = useTranslation();
-  const intervalData = useSelector(selectDepthDependentData(props));
+  const depthData = useSelector(selectDepthDependentData(props));
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -153,7 +153,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             nullable
             label={t('soil.texture.label')}
             options={textures}
-            value={intervalData?.texture ?? null}
+            value={depthData?.texture ?? null}
             onValueChange={onTextureChange}
             renderValue={renderTexture}
           />
@@ -180,7 +180,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
           </Row>
           <Box height="10px" />
           <ImageRadio
-            value={intervalData?.rockFragmentVolume}
+            value={depthData?.rockFragmentVolume}
             options={fragmentOptions}
             minimumPerRow={2}
             onChange={onFragmentChange}

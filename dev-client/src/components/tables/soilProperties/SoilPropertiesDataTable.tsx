@@ -129,7 +129,7 @@ export const SoilPropertiesDataTable = ({rows}: Props) => {
           {rows.map((row: (typeof rows)[number], i: number) => (
             <Row justifyContent="flex-start" key={uniqueKeyForRow(row, i)}>
               <DataTableCell
-                text={t('soil.depth_interval.bounds_unitless', row.depth)}
+                text={t('soil.depth.bounds_unitless', row.depth)}
                 width={columnWidthDepth}
               />
               <DataTableCell

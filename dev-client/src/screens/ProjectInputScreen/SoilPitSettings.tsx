@@ -29,7 +29,7 @@ import {
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
-import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
+import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
@@ -42,7 +42,7 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
-import {DepthIntervalTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthIntervalTable';
+import {DepthTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthTable';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 export const SoilPitSettings = ({projectId}: {projectId: string}) => {
@@ -54,14 +54,14 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
 
   const projectRole = useProjectRoleContext();
 
-  const userCanUpdateIntervals = useMemo(
+  const userCanUpdateDepths = useMemo(
     () => projectRole === 'MANAGER',
     [projectRole],
   );
 
   const isCustom = settings.depthIntervalPreset === 'CUSTOM';
 
-  const onAddDepthInterval = useCallback(
+  const onAddDepth = useCallback(
     async (interval: LabelledDepthInterval) => {
       await dispatch(updateProjectDepthInterval({projectId, ...interval}));
     },
@@ -90,7 +90,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
 
   const renderPreset = useCallback(
     (preset: ProjectDepthIntervalPreset) =>
-      t(`projects.inputs.depth_intervals.preset.${preset}`),
+      t(`projects.inputs.depths.preset.${preset}`),
     [t],
   );
 
@@ -105,20 +105,20 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
             value={settings.depthIntervalPreset}
             onValueChange={onSelectUpdated}
             renderValue={renderPreset}
-            label={t('projects.inputs.depth_intervals.title')}
-            disabled={!userCanUpdateIntervals}
+            label={t('projects.inputs.depths.title')}
+            disabled={!userCanUpdateDepths}
           />
         )}
-        title={t('projects.inputs.depth_intervals.confirm_preset.title')}
-        body={t('projects.inputs.depth_intervals.confirm_preset.body')}
-        actionName={t('projects.inputs.depth_intervals.confirm_preset.confirm')}
+        title={t('projects.inputs.depths.confirm_preset.title')}
+        body={t('projects.inputs.depths.confirm_preset.body')}
+        actionName={t('projects.inputs.depths.confirm_preset.confirm')}
         handleConfirm={onChangeDepthPreset}
       />
       {settings.depthIntervalPreset !== 'NONE' && (
-        <DepthIntervalTable
+        <DepthTable
           depthIntervals={settings.depthIntervals}
           projectId={projectId}
-          canDeleteInterval={isCustom && userCanUpdateIntervals}
+          canDeleteDepth={isCustom && userCanUpdateDepths}
           includeLabel={isCustom}
           pb="15px"
         />
@@ -135,12 +135,10 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
               {t('soil.add_depth_label')}
             </Button>
           )}
-          Header={
-            <Heading variant="h6">{t('soil.depth_interval.add_title')}</Heading>
-          }>
-          <AddIntervalModalBody
-            onSubmit={onAddDepthInterval}
-            existingIntervals={settings.depthIntervals}
+          Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
+          <AddDepthModalBody
+            onSubmit={onAddDepth}
+            existingDepths={settings.depthIntervals}
           />
         </Modal>
       )}

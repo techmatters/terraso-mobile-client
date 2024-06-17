@@ -35,24 +35,24 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {EditIntervalModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModal';
+import {EditDepthModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthModal';
 import {
   pitMethodSummary,
-  renderDepthInterval,
+  renderDepth,
 } from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useSelector} from 'terraso-mobile-client/store';
 
-type DepthIntervalEditorProps = {
+type DepthEditorProps = {
   siteId: string;
   aggregatedInterval: AggregatedInterval;
   requiredInputs: (typeof soilPitMethods)[number][];
 };
 
-const DepthIntervalEditor = ({
+const DepthEditor = ({
   siteId,
   aggregatedInterval: {isFromPreset, interval},
   requiredInputs,
-}: DepthIntervalEditorProps) => {
+}: DepthEditorProps) => {
   const {t} = useTranslation();
 
   return (
@@ -62,9 +62,9 @@ const DepthIntervalEditor = ({
       px="12px"
       py="8px">
       <Heading variant="h6" color="primary.contrast">
-        {renderDepthInterval(t, interval)}
+        {renderDepth(t, interval)}
       </Heading>
-      <EditIntervalModal
+      <EditDepthModal
         siteId={siteId}
         depthInterval={interval.depthInterval}
         requiredInputs={requiredInputs}
@@ -80,11 +80,7 @@ type Props = {
   interval: AggregatedInterval;
 };
 
-export const SoilDepthIntervalSummary = ({
-  siteId,
-  interval,
-  requiredInputs,
-}: Props) => {
+export const SoilDepthSummary = ({siteId, interval, requiredInputs}: Props) => {
   const {interval: depthInterval} = interval;
   const {t} = useTranslation();
 
@@ -130,7 +126,7 @@ export const SoilDepthIntervalSummary = ({
 
   return (
     <Column space="1px">
-      <DepthIntervalEditor
+      <DepthEditor
         siteId={siteId}
         aggregatedInterval={interval}
         requiredInputs={requiredInputs}

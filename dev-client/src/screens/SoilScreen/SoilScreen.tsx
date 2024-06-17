@@ -34,7 +34,7 @@ import {
   updateSoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
-import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
+import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
@@ -46,7 +46,7 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
-import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
+import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -59,15 +59,15 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     return soilPitMethods.filter(m => projectSettings?.[methodRequired(m)]);
   }, [projectSettings]);
 
-  const allIntervals = useSiteSoilIntervals(siteId);
-  const existingIntervals = useMemo(
-    () => allIntervals.map(({interval}) => interval),
-    [allIntervals],
+  const allDepths = useSiteSoilIntervals(siteId);
+  const existingDepths = useMemo(
+    () => allDepths.map(({interval}) => interval),
+    [allDepths],
   );
 
   const dispatch = useDispatch();
 
-  const onAddDepthInterval = useCallback(
+  const onAddDepth = useCallback(
     async (interval: LabelledDepthInterval) => {
       await dispatch(updateSoilDataDepthInterval({siteId, ...interval}));
     },
@@ -110,8 +110,8 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           </OverlaySheet>
         )}
       </Row>
-      {allIntervals.map(interval => (
-        <SoilDepthIntervalSummary
+      {allDepths.map(interval => (
+        <SoilDepthSummary
           key={`${interval.interval.depthInterval.start}:${interval.interval.depthInterval.end}`}
           siteId={siteId}
           interval={interval}
@@ -144,12 +144,10 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               {t('soil.add_depth_label')}
             </Button>
           )}
-          Header={
-            <Heading variant="h6">{t('soil.depth_interval.add_title')}</Heading>
-          }>
-          <AddIntervalModalBody
-            onSubmit={onAddDepthInterval}
-            existingIntervals={existingIntervals}
+          Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
+          <AddDepthModalBody
+            onSubmit={onAddDepth}
+            existingDepths={existingDepths}
           />
         </Modal>
       </RestrictBySiteRole>

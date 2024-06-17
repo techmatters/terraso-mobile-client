@@ -24,7 +24,7 @@ export const LATITUDE_MIN = -90;
 export const LATITUDE_MAX = 90;
 export const LONGITUDE_MIN = -180;
 export const LONGITUDE_MAX = 180;
-export const DEPTH_INTERVAL_MAX = 200;
+export const DEPTH_MAX = 200;
 
 export const SITE_NAME_MIN_LENGTH = 3;
 export const SITE_NAME_MAX_LENGTH = 50;
@@ -32,7 +32,7 @@ export const PROJECT_NAME_MIN_LENGTH = 3;
 export const PROJECT_NAME_MAX_LENGTH = 50;
 export const PROJECT_DESCRIPTION_MIN_LENGTH = 3;
 export const PROJECT_DESCRIPTION_MAX_LENGTH = 72;
-export const DEPTH_INTERVAL_LABEL_MAX_LENGTH = 10;
+export const DEPTH_LABEL_MAX_LENGTH = 10;
 export const SITE_NOTE_MIN_LENGTH = 3;
 
 export const BOTTOM_BAR_SIZE = '10%';
