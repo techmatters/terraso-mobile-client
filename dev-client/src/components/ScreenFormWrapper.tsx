@@ -67,6 +67,18 @@ export const ScreenFormWrapper = forwardRef(
       }
     };
 
+    // Only show a delete confirmation message if the note is a new, blank note.
+    const conditionallyConfirmDelete = (onOpen: () => void) => {
+      if (
+        formikRef?.current?.dirty === true ||
+        formikRef?.current?.values?.content?.length
+      ) {
+        onOpen();
+      } else {
+        navigation.pop();
+      }
+    };
+
     return (
       <ScreenScaffold BottomNavigation={null} AppBar={null}>
         <KeyboardAvoidingView
@@ -96,16 +108,7 @@ export const ScreenFormWrapper = forwardRef(
                       size: '5',
                     }}
                     isDisabled={isSubmitting}
-                    onPress={() => {
-                      if (
-                        formikRef?.current?.dirty === true ||
-                        formikRef?.current?.values?.content?.length
-                      ) {
-                        onOpen();
-                      } else {
-                        navigation.pop();
-                      }
-                    }}
+                    onPress={() => conditionallyConfirmDelete(onOpen)}
                   />
                 </Box>
               )}
