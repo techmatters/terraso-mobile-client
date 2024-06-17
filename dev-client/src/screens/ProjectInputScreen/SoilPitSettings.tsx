@@ -54,7 +54,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
 
   const projectRole = useProjectRoleContext();
 
-  const userCanUpdateIntervals = useMemo(
+  const userCanUpdateDepths = useMemo(
     () => projectRole === 'MANAGER',
     [projectRole],
   );
@@ -106,7 +106,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
             onValueChange={onSelectUpdated}
             renderValue={renderPreset}
             label={t('projects.inputs.depths.title')}
-            disabled={!userCanUpdateIntervals}
+            disabled={!userCanUpdateDepths}
           />
         )}
         title={t('projects.inputs.depths.confirm_preset.title')}
@@ -118,7 +118,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
         <DepthTable
           depthIntervals={settings.depthIntervals}
           projectId={projectId}
-          canDeleteDepth={isCustom && userCanUpdateIntervals}
+          canDeleteDepth={isCustom && userCanUpdateDepths}
           includeLabel={isCustom}
           pb="15px"
         />
