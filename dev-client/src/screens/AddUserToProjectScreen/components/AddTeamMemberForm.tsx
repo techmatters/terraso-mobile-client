@@ -25,12 +25,12 @@ import {
   checkUserInProject,
   UserInProjectError,
 } from 'terraso-client-shared/account/accountService';
-import {SimpleUserInfo} from 'terraso-client-shared/account/accountSlice';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/UserDisplay';
 
 type FormValues = {
   email: string;
@@ -40,7 +40,7 @@ type FormProps = {
   projectId: string;
 };
 
-type UserOrError = SimpleUserInfo | {type: UserInProjectError};
+type UserOrError = UserFields | {type: UserInProjectError};
 
 export const AddTeamMemberForm = ({projectId}: FormProps) => {
   const {t} = useTranslation();
@@ -62,7 +62,7 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
     }
     // Success
     else {
-      const user = userOrError as SimpleUserInfo;
+      const user = userOrError as UserFields;
       navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, user});
     }
   };

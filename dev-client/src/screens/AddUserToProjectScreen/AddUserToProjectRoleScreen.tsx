@@ -20,7 +20,6 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
-import {SimpleUserInfo} from 'terraso-client-shared/account/accountSlice';
 import {
   addUserToProject,
   ProjectRole,
@@ -36,13 +35,13 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {MinimalUserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
 import {ProjectRoleRadioBlock} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/ProjectRoleRadioBlock';
+import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/UserDisplay';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   projectId: string;
-  // TODO-cknipe: Consolidate UserFields and SimpleUserInfo
-  user: SimpleUserInfo;
+  user: UserFields;
 };
 
 export const AddUserToProjectRoleScreen = ({projectId, user}: Props) => {
@@ -60,11 +59,9 @@ export const AddUserToProjectRoleScreen = ({projectId, user}: Props) => {
 
   const addUser = useCallback(async () => {
     try {
-      // TODO-cknipe: Why can't you use the values directly in addUserToProject?
-      // TODO-cknipe: To await or not?
-      const userId = user.id;
-      const role = selectedRole;
-      dispatch(addUserToProject({userId, role, projectId}));
+      dispatch(
+        addUserToProject({userId: user.id, role: selectedRole, projectId}),
+      );
     } catch (e) {
       console.error(e);
     }
