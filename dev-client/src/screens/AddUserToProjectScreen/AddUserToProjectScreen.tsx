@@ -17,22 +17,10 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {Formik, FormikHelpers} from 'formik';
-import {Button} from 'native-base';
-import * as yup from 'yup';
-
-import {
-  checkUserInProject,
-  UserInProjectError,
-} from 'terraso-client-shared/account/accountService';
-import {SimpleUserInfo} from 'terraso-client-shared/account/accountSlice';
-
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {AddTeamMemberForm} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/AddTeamMemberForm';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 
@@ -60,103 +48,5 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
         </Box>
       </ScreenContentSection>
     </ScreenScaffold>
-  );
-};
-
-// TODO-cknipe: Move this to new file?
-type FormValues = {
-  email: string;
-};
-
-type FormProps = {
-  projectId: string;
-};
-
-type UserOrError = SimpleUserInfo | {type: UserInProjectError};
-
-const AddTeamMemberForm = ({projectId}: FormProps) => {
-  const {t} = useTranslation();
-  const navigation = useNavigation();
-
-  const onNext = async (
-    values: FormValues,
-    formikHelpers: FormikHelpers<FormValues>,
-  ) => {
-    const userOrError = await checkUserInProject(projectId, values.email);
-    const validationResult = createBackendValidationErrorMessage(
-      values.email,
-      userOrError,
-    );
-    // Backend returned errors
-    if (validationResult !== undefined) {
-      const error = {email: validationResult};
-      formikHelpers.setErrors(error);
-    }
-    // Success
-    else {
-      const user = userOrError as SimpleUserInfo;
-      navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, user});
-    }
-  };
-
-  const createBackendValidationErrorMessage = (
-    email: string,
-    userOrError: UserOrError,
-  ) => {
-    if ('type' in userOrError) {
-      switch (userOrError.type) {
-        case 'NoUser':
-          return t('projects.add_user.user_does_not_exist', {
-            email: email,
-          });
-        case 'InProject':
-          return t('projects.add_user.user_in_project', {email: email});
-      }
-    }
-    return undefined;
-  };
-
-  const validationSchema = yup.object().shape({
-    email: yup
-      .string()
-      .required(t('projects.add_user.empty_email'))
-      .email(t('projects.add_user.invalid_email')),
-  });
-
-  return (
-    <Formik
-      initialValues={{email: ''}}
-      validationSchema={validationSchema}
-      validateOnMount={true}
-      initialTouched={{
-        email: true,
-      }}
-      onSubmit={(values, formikHelpers) => onNext(values, formikHelpers)}>
-      {({handleSubmit, isValid, isSubmitting}) => {
-        return (
-          <>
-            <Box minHeight="84px">
-              <FormInput
-                key="email"
-                name="email"
-                textInputLabel={t('general.email_label')}
-                placeholder={t('general.email_placeholder')}
-                autoComplete="email"
-                keyboardType="email-address"
-              />
-            </Box>
-            <Button
-              mt="sm"
-              alignSelf="flex-end"
-              rightIcon={<Icon name="chevron-right" />}
-              onPress={handleSubmit}
-              isDisabled={!isValid || isSubmitting}
-              _text={{textTransform: 'uppercase'}}>
-              {t('general.next')}
-            </Button>
-          </>
-        );
-      }}
-    </Formik>
   );
 };
