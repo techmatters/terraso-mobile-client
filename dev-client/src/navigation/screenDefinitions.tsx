@@ -26,6 +26,7 @@ import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
 import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
 import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
+import {DeleteAccountScreen} from 'terraso-mobile-client/screens/DeleteAccountScreen/DeleteAccountScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/EditSiteNoteScreen';
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
@@ -36,7 +37,6 @@ import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMe
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
 import {ReadNoteScreen} from 'terraso-mobile-client/screens/ReadNoteScreen';
-import {SettingsScreen} from 'terraso-mobile-client/screens/SettingsScreen/SettingsScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
@@ -54,11 +54,12 @@ import {SOCSOMScreen} from 'terraso-mobile-client/screens/SoilScreen/SOCSOMScree
 import {StructureScreen} from 'terraso-mobile-client/screens/SoilScreen/StructureScreen';
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
 import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
+import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 
 export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,
   HOME: HomeScreen,
-  SETTINGS: SettingsScreen,
+  SETTINGS: UserSettingsScreen,
 } satisfies ScreenDefinitions;
 
 export const screenDefinitions = {
@@ -89,6 +90,7 @@ export const screenDefinitions = {
   TEXTURE_GUIDE: TextureGuideScreen,
   COLOR_GUIDE: ColorGuideScreen,
   COLOR_ANALYSIS: ColorAnalysisScreen,
+  DELETE_ACCOUNT: DeleteAccountScreen,
 } satisfies ScreenDefinitions;
 
 export const modalScreenDefinitions = {

@@ -15,23 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  TranslatedContent,
+  TranslatedContentProps,
+} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type LocationScoreInfoContentProps = {
-  isSite: boolean;
-};
+type TranslatedParagraphProps = {
+  variant?: 'body1' | 'body2';
+} & TranslatedContentProps;
 
-export function LocationScoreInfoContent({
-  isSite,
-}: LocationScoreInfoContentProps) {
+export function TranslatedParagraph({
+  variant = 'body1',
+  i18nKey,
+  values,
+}: TranslatedParagraphProps) {
   return (
-    <Column space={3}>
-      {isSite && (
-        <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p1" />
-      )}
-      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p2" />
-      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p3" />
-    </Column>
+    <Text variant={variant}>
+      <TranslatedContent i18nKey={i18nKey} values={values} />
+    </Text>
   );
 }
