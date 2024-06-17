@@ -23,8 +23,8 @@ import {
   LATITUDE_MIN,
   LONGITUDE_MAX,
   LONGITUDE_MIN,
-  SITE_NAME_MAX,
-  SITE_NAME_MIN,
+  SITE_NAME_MAX_LENGTH,
+  SITE_NAME_MIN_LENGTH,
 } from 'terraso-mobile-client/constants';
 
 export const siteValidationSchema = (t: TFunction) =>
@@ -33,15 +33,15 @@ export const siteValidationSchema = (t: TFunction) =>
       .string()
       .trim()
       .min(
-        SITE_NAME_MIN,
+        SITE_NAME_MIN_LENGTH,
         t('site.form.name_min_length_error', {
-          min: SITE_NAME_MIN,
+          min: SITE_NAME_MIN_LENGTH,
         }),
       )
       .max(
-        SITE_NAME_MAX,
+        SITE_NAME_MAX_LENGTH,
         t('site.form.name_max_length_error', {
-          max: SITE_NAME_MAX,
+          max: SITE_NAME_MAX_LENGTH,
         }),
       )
       .required(t('general.required')),

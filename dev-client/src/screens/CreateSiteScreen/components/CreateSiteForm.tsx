@@ -37,6 +37,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
+import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
 
@@ -75,13 +76,14 @@ export const CreateSiteForm = ({
         <Column p="16px" pt="30px" space="18px">
           <FormField name="name">
             <FormInput
+              maxLength={SITE_NAME_MAX_LENGTH}
               placeholder={t('site.create.name_label')}
               textInputLabel={t('site.create.name_label')}
             />
           </FormField>
 
           <FormLabel>{t('site.create.location_label')}</FormLabel>
-          <Text>
+          <Text mt="-20px">
             {t('site.create.location_accuracy', {
               accuracyM: accuracyM?.toFixed(0),
             })}
@@ -90,14 +92,14 @@ export const CreateSiteForm = ({
             <FormInput
               value={values.latitude.toString()}
               textInputLabel={t('site.create.latitude')}
-              keyboardType="decimal-pad"
+              keyboardType="numeric"
             />
           </FormField>
           <FormField name="longitude">
             <FormInput
               value={values.longitude.toString()}
               textInputLabel={t('site.create.longitude')}
-              keyboardType="decimal-pad"
+              keyboardType="numeric"
             />
           </FormField>
           {hasProjects && (

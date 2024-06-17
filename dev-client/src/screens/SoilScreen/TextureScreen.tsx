@@ -169,18 +169,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
           </Button>
         </Column>
         <Column p="15px" bg="primary.contrast">
-          {/*<Row alignItems="center">
-            <Text variant="body1-strong">{t('soil.texture.clay_title')}</Text>
-            <FormTooltip icon="info">Unimplemented tooltip</FormTooltip>
-          </Row>
-          <Box height="10px" />
-           <FormInput
-            onChangeText={onClayChange}
-            keyboardType="numeric"
-            placeholder={t('soil.texture.clay_label')}
-            helpText={t('soil.texture.clay_help')}
-          />
-          <Box height="20px" /> */}
           <Row alignItems="center">
             <Text variant="body1-strong">
               {t('soil.texture.fragment_title')}

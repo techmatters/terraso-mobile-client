@@ -117,7 +117,9 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
           {workflow === 'CAMERA' && <PhotoConditions {...props} />}
         </>
       )}
-      <DoneButton isDisabled={!color} />
+      <Box position="absolute" right="0" bottom="0">
+        <DoneButton isDisabled={!color} />
+      </Box>
     </SoilPitInputScreenScaffold>
   );
 };

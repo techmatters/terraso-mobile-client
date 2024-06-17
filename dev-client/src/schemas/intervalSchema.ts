@@ -20,7 +20,10 @@ import * as yup from 'yup';
 
 import {DepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
 
-import {FORM_LABEL_MAX} from 'terraso-mobile-client/constants';
+import {
+  DEPTH_INTERVAL_LABEL_MAX_LENGTH,
+  DEPTH_INTERVAL_MAX,
+} from 'terraso-mobile-client/constants';
 
 type Args = {
   t: TFunction;
@@ -29,16 +32,19 @@ type Args = {
 
 export const intervalSchema = ({t, existingIntervals}: Args) =>
   yup.object({
-    label: yup
-      .string()
-      .max(
-        FORM_LABEL_MAX,
-        t('soil.depth_interval.label_help', {max: FORM_LABEL_MAX}),
-      ),
+    label: yup.string().max(
+      DEPTH_INTERVAL_LABEL_MAX_LENGTH,
+      t('soil.depth_interval.label_help', {
+        max: DEPTH_INTERVAL_LABEL_MAX_LENGTH,
+      }),
+    ),
     start: yup
       .number()
+      .integer()
       .min(0)
+      .max(DEPTH_INTERVAL_MAX)
       .required(t('general.required'))
+      .typeError(t('soil.depth_interval.number_required', {item: 'start'}))
       .test((start, {createError}) => {
         if (
           existingIntervals.some(
@@ -54,8 +60,11 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       }),
     end: yup
       .number()
-      .max(200)
+      .integer()
+      .min(0)
+      .max(DEPTH_INTERVAL_MAX)
       .required(t('general.required'))
+      .typeError(t('soil.depth_interval.number_required', {item: 'end'}))
       .test((end, {createError, parent}) => {
         if (
           existingIntervals.some(

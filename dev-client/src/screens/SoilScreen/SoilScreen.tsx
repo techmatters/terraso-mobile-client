@@ -143,7 +143,10 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               onPress={onOpen}>
               {t('soil.add_depth_label')}
             </Button>
-          )}>
+          )}
+          Header={
+            <Heading variant="h6">{t('soil.depth_interval.add_title')}</Heading>
+          }>
           <AddIntervalModalBody
             onSubmit={onAddDepthInterval}
             existingIntervals={existingIntervals}

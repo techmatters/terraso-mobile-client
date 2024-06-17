@@ -13,7 +13,7 @@
     }
   },
   "search": {
-    "placeholder": "Search"
+    "placeholder": "Search map"
   },
   "site": {
     "list_title": "Sites List",
@@ -311,7 +311,7 @@
       "user_does_not_exist": "User {{email}} is not a Terraso user, unable to add to project.",
       "user_in_project": "User {{email}} is already a member of this project.",
       "already_added": "User {{email}} already added to user list.",
-      "empty_email": "Please enter an email"
+      "empty_email": "Enter an email address"
     },
     "manage_member": {
       "title": "Manage Team Member",
@@ -334,6 +334,7 @@
     "form": {
       "name_min_length_error": "Project name must be at least {{min}} characters",
       "name_max_length_error": "Project name must be at most {{max}} characters",
+      "description_min_length_error": "Project description must be at least {{min}} characters",
       "description_max_length_error": "Project description must be at most {{max}} characters"
     },
     "sort_label": "Sort projects by:",
@@ -366,7 +367,8 @@
     "you_name": "{{name}} (you)",
     "details": "Details",
     "apply": "Apply",
-    "example_email": "name@domain.com",
+    "email_placeholder": "name@domain.com",
+    "email_label": "Email address",
     "profile_image_alt": "Profile image",
     "role": {
       "MANAGER": "Manager",
@@ -571,6 +573,9 @@
       "apply_to_all_label": "Apply to all intervals",
       "start_label": "From ({{units}})",
       "end_label": "To ({{units}})",
+      "number_required": "$t(soil.depth_interval.interval, {\"context\": \"{{item}}\"}) must be a number",
+      "interval_start": "interval start",
+      "interval_end": "interval end",
       "update_modal": {
         "title": "Change depth?",
         "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",

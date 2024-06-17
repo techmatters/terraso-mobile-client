@@ -191,13 +191,13 @@ export const EditIntervalModal = ({
         }}
         onSubmit={onSubmit}>
         {({handleSubmit, isValid, isSubmitting}) => (
-          <Column mb="23px" mx="15px">
+          <Column mb="23px">
             {mutable && (
               <>
                 <Box pl="2px" mb="11px">
                   <IntervalForm />
                 </Box>
-                <Heading variant="h6">
+                <Heading variant="h6" mt="11px" mb="11px">
                   {t('soil.depth_interval.data_inputs_title')}
                 </Heading>
               </>

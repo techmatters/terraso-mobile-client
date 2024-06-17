@@ -68,7 +68,6 @@ export const AddIntervalModalBody = ({
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
         <>
-          <Box height="20px" />
           <IntervalForm />
           <Box height="50px" />
           <Button

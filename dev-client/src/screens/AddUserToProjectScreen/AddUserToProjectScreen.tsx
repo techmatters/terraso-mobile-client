@@ -137,11 +137,12 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
       <Box mx="5%" mb="15px">
         <FreeformTextInput
           validationFunc={validationFunc}
-          placeholder={t('general.example_email')}
+          placeholder={t('general.email_placeholder')}
           inputProps={{
             autoComplete: 'email',
             autoCapitalize: 'none',
             keyboardType: 'email-address',
+            label: t('general.email_label'),
           }}
         />
       </Box>

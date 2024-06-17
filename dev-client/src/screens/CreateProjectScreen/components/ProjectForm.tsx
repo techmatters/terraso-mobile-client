@@ -39,6 +39,7 @@ import {
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   PROJECT_DESCRIPTION_MAX_LENGTH,
+  PROJECT_DESCRIPTION_MIN_LENGTH,
   PROJECT_NAME_MAX_LENGTH,
   PROJECT_NAME_MIN_LENGTH,
 } from 'terraso-mobile-client/constants';
@@ -60,12 +61,20 @@ export const projectValidationFields = (t: TFunction) => ({
       }),
     )
     .required(t('general.required')),
-  description: yup.string().max(
-    PROJECT_DESCRIPTION_MAX_LENGTH,
-    t('projects.form.description_max_length_error', {
-      max: PROJECT_DESCRIPTION_MAX_LENGTH,
-    }),
-  ),
+  description: yup
+    .string()
+    .min(
+      PROJECT_DESCRIPTION_MIN_LENGTH,
+      t('projects.form.description_min_length_error', {
+        max: PROJECT_DESCRIPTION_MIN_LENGTH,
+      }),
+    )
+    .max(
+      PROJECT_DESCRIPTION_MAX_LENGTH,
+      t('projects.form.description_max_length_error', {
+        max: PROJECT_DESCRIPTION_MAX_LENGTH,
+      }),
+    ),
   privacy: yup.string().oneOf(['PRIVATE', 'PUBLIC']).required(),
 });
 
@@ -119,6 +128,7 @@ export const EditProjectForm = ({
           <FormInput
             key="name"
             name="name"
+            maxLength={PROJECT_NAME_MAX_LENGTH}
             placeholder={t('projects.create.name_label')}
             id="project-form-name"
             textInputLabel={t('projects.create.name_label')}
@@ -126,6 +136,7 @@ export const EditProjectForm = ({
           <FormInput
             key="description"
             name="description"
+            maxLength={PROJECT_DESCRIPTION_MAX_LENGTH}
             placeholder={t('projects.create.description_label')}
             numberOfLines={3}
             multiline={true}
@@ -169,6 +180,7 @@ export default function ProjectForm({
   return (
     <Column space={5}>
       <TextInput
+        maxLength={PROJECT_NAME_MAX_LENGTH}
         placeholder={t('projects.create.name_label')}
         label={t('projects.create.name_label')}
         {...inputParams('name')}
@@ -176,8 +188,11 @@ export default function ProjectForm({
       <ErrorMessage fieldName="name" />
 
       <TextInput
+        maxLength={PROJECT_DESCRIPTION_MAX_LENGTH}
         placeholder={t('projects.create.description_label')}
         label={t('projects.create.description_label')}
+        numberOfLines={3}
+        autoComplete="off"
         multiline={true}
         {...inputParams('description')}
       />

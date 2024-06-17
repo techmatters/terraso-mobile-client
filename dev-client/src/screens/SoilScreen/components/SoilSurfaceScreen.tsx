@@ -78,7 +78,9 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
           />
         </Box>
       </Column>
-      <DoneButton isDisabled={!cracking} />
+      <Box position="absolute" bottom="0" right="0">
+        <DoneButton isDisabled={!cracking} />
+      </Box>
     </ScreenScaffold>
   );
 };
