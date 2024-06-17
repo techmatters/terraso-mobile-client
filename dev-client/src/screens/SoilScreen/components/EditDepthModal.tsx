@@ -154,7 +154,7 @@ export const EditDepthModal = ({
     [schema, dispatch, onClose, siteId, depthInterval, existingDepths],
   );
 
-  const deleteInterval = useCallback(() => {
+  const deleteDepth = useCallback(() => {
     dispatch(
       deleteSoilDataDepthInterval({
         siteId,
@@ -235,7 +235,7 @@ export const EditDepthModal = ({
                   title={t('soil.depth.delete_modal.title')}
                   body={t('soil.depth.delete_modal.body')}
                   actionName={t('soil.depth.delete_modal.action')}
-                  handleConfirm={deleteInterval}
+                  handleConfirm={deleteDepth}
                 />
               )}
               <Box flex={1} />
