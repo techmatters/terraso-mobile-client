@@ -50,20 +50,24 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
     values: FormValues,
     formikHelpers: FormikHelpers<FormValues>,
   ) => {
-    const userOrError = await checkUserInProject(projectId, values.email);
-    const validationResult = createBackendValidationErrorMessage(
-      values.email,
-      userOrError,
-    );
-    // Backend returned errors
-    if (validationResult !== undefined) {
-      const error = {email: validationResult};
-      formikHelpers.setErrors(error);
-    }
-    // Success
-    else {
-      const user = userOrError as UserFields;
-      navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, user});
+    try {
+      const userOrError = await checkUserInProject(projectId, values.email);
+      const validationResult = createBackendValidationErrorMessage(
+        values.email,
+        userOrError,
+      );
+      // Backend returned errors
+      if (validationResult !== undefined) {
+        const error = {email: validationResult};
+        formikHelpers.setErrors(error);
+      }
+      // Success
+      else {
+        const user = userOrError as UserFields;
+        navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, user});
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -109,8 +113,9 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
                 name="email"
                 textInputLabel={t('general.email_label')}
                 placeholder={t('general.email_placeholder')}
-                autoComplete="email"
                 keyboardType="email-address"
+                autoComplete="email"
+                autoCapitalize="none"
               />
             </Box>
             <Button

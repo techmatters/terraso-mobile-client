@@ -18,6 +18,7 @@
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {TabActions} from '@react-navigation/native';
 import {Button} from 'native-base';
 
 import {
@@ -32,6 +33,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {TabRoutes} from 'terraso-mobile-client/navigation/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {MinimalUserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
 import {ProjectRoleRadioBlock} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/ProjectRoleRadioBlock';
@@ -65,8 +67,8 @@ export const AddUserToProjectRoleScreen = ({projectId, user}: Props) => {
     } catch (e) {
       console.error(e);
     }
-    navigation.pop();
-    navigation.pop();
+    navigation.navigate('PROJECT_VIEW', {projectId: projectId});
+    TabActions.jumpTo(TabRoutes.TEAM);
   }, [dispatch, projectId, user, selectedRole, navigation]);
 
   return (
