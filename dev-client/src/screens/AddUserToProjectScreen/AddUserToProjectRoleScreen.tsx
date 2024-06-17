@@ -33,7 +33,6 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {MinimalUserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
 import {ProjectRoleRadioBlock} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/ProjectRoleRadioBlock';
@@ -55,6 +54,10 @@ export const AddUserToProjectRoleScreen = ({projectId, user}: Props) => {
 
   const [selectedRole, setSelectedRole] = useState<ProjectRole>('VIEWER');
 
+  const onCancel = useCallback(() => {
+    navigation.pop();
+  }, [navigation]);
+
   const addUser = useCallback(async () => {
     try {
       // TODO-cknipe: Why can't you use the values directly in addUserToProject?
@@ -70,10 +73,7 @@ export const AddUserToProjectRoleScreen = ({projectId, user}: Props) => {
   }, [dispatch, projectId, user, selectedRole, navigation]);
 
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar title={project?.name} LeftButton={<ScreenCloseButton />} />
-      }>
+    <ScreenScaffold AppBar={<AppBar title={project?.name} />}>
       <ScreenContentSection title={t('projects.add_user.heading')}>
         <Column>
           <Box ml="md" my="lg">
@@ -92,7 +92,7 @@ export const AddUserToProjectRoleScreen = ({projectId, user}: Props) => {
             space="12px"
             pt="md">
             <Button
-              onPress={addUser}
+              onPress={onCancel}
               size="lg"
               variant="outline"
               borderColor="action.active"
