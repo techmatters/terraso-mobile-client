@@ -42,7 +42,7 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
-import {DepthIntervalTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthIntervalTable';
+import {DepthTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthTable';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 export const SoilPitSettings = ({projectId}: {projectId: string}) => {
@@ -115,7 +115,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
         handleConfirm={onChangeDepthPreset}
       />
       {settings.depthIntervalPreset !== 'NONE' && (
-        <DepthIntervalTable
+        <DepthTable
           depthIntervals={settings.depthIntervals}
           projectId={projectId}
           canDeleteInterval={isCustom && userCanUpdateIntervals}

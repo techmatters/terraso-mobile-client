@@ -36,7 +36,7 @@ type TableProps = {
   canDeleteInterval: boolean;
 } & Omit<React.ComponentProps<typeof DataGridTable>, 'rows' | 'headers'>;
 
-export const DepthIntervalTable = ({
+export const DepthTable = ({
   depthIntervals,
   projectId,
   canDeleteInterval,
