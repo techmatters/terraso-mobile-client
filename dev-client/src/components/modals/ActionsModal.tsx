@@ -66,6 +66,7 @@ const ACTION_BUTTON_VARIANTS = {
     backgroundColor: 'error.main',
     _text: {
       ...ACTION_BUTTON_DEFAULTS._text,
+      textTransform: 'none',
       color: 'error.contrast',
     },
   },
