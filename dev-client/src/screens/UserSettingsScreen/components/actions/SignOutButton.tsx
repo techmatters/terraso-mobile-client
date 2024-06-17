@@ -15,31 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {signOut} from 'terraso-client-shared/account/accountSlice';
+import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
+import {SignOutModal} from 'terraso-mobile-client/components/modals/SignOutModal';
 
-import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {ModalProps} from 'terraso-mobile-client/components/modals/Modal';
-import {useDispatch} from 'terraso-mobile-client/store';
-
-export type LogoutModalProps = Pick<ModalProps, 'trigger'>;
-
-export function LogoutModal({trigger}: LogoutModalProps) {
+export function SignOutButton() {
   const {t} = useTranslation();
-  const dispatch = useDispatch();
-  const onLogout = useCallback(() => {
-    dispatch(signOut());
-  }, [dispatch]);
 
   return (
-    <ConfirmModal
-      trigger={trigger}
-      body={t('logout.confirm_body')}
-      actionName={t('logout.confirm_action')}
-      isConfirmError={false}
-      handleConfirm={onLogout}
+    <SignOutModal
+      trigger={onOpen => (
+        <ListButton
+          type="default"
+          iconName="logout"
+          labelText={t('settings.sign_out')}
+          onPress={onOpen}
+        />
+      )}
     />
   );
 }

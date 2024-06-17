@@ -346,7 +346,7 @@
   },
   "settings": {
     "unknown_user": "Unknown user",
-    "log_out": "Sign Out",
+    "sign_out": "Sign Out",
     "delete_account": "Delete Account",
     "unknown_version": "Untagged application version",
     "version": "Version {{version}}"
@@ -457,7 +457,7 @@
       "p2": "You will receive an email confirmation when your account has been deleted."
     }
   },
-  "logout": {
+  "sign_out": {
     "confirm_body": "Are you sure you want to sign out?",
     "confirm_action": "Sign out"
   },
