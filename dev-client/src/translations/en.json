@@ -348,6 +348,7 @@
     "unknown_user": "Unknown user",
     "sign_out": "Sign Out",
     "delete_account": "Delete Account",
+    "delete_account_pending": "Pending",
     "unknown_version": "Untagged application version",
     "version": "Version {{version}}"
   },
