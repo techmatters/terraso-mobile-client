@@ -22,7 +22,7 @@ import {LabelledDepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
+import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useSelector} from 'terraso-mobile-client/store';
 
 export type SoilPitInputScreenProps = {
@@ -45,7 +45,7 @@ export const SoilPitInputScreenScaffold = ({
           title={name}
           Content={
             <Heading px="10px" pb="8px" variant="h6" color="primary.contrast">
-              {renderDepthInterval(t, depthInterval)}
+              {renderDepth(t, depthInterval)}
             </Heading>
           }
         />

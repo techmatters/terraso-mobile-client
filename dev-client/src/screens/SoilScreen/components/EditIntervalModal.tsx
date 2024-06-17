@@ -56,7 +56,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
-import {renderDepthInterval} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
+import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
 
@@ -176,9 +176,7 @@ export const EditIntervalModal = ({
       )}
       Header={
         <Heading variant="h6">
-          {mutable
-            ? t('soil.depth.edit_title')
-            : renderDepthInterval(t, thisInterval)}
+          {mutable ? t('soil.depth.edit_title') : renderDepth(t, thisInterval)}
         </Heading>
       }>
       <Formik

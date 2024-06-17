@@ -28,7 +28,7 @@ import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen
 import {munsellToString} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
 import {isColorComplete} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
 
-export const renderDepthInterval = (
+export const renderDepth = (
   t: TFunction,
   {label, depthInterval: {start, end}}: LabelledDepthInterval,
 ) => {

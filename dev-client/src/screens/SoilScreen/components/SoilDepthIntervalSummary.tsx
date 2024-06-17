@@ -38,7 +38,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {EditIntervalModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditIntervalModal';
 import {
   pitMethodSummary,
-  renderDepthInterval,
+  renderDepth,
 } from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useSelector} from 'terraso-mobile-client/store';
 
@@ -62,7 +62,7 @@ const DepthIntervalEditor = ({
       px="12px"
       py="8px">
       <Heading variant="h6" color="primary.contrast">
-        {renderDepthInterval(t, interval)}
+        {renderDepth(t, interval)}
       </Heading>
       <EditIntervalModal
         siteId={siteId}
