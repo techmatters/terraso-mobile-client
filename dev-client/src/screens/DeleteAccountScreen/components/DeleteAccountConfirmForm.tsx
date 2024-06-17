@@ -28,11 +28,13 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 
 export type DeleteAccountConfirmFormProps = {
   user: User;
+  isSaving: boolean;
   onConfirm: () => void;
 };
 
 export function DeleteAccountConfirmForm({
   user,
+  isSaving,
   onConfirm,
 }: DeleteAccountConfirmFormProps) {
   const {t} = useTranslation();
@@ -41,7 +43,7 @@ export function DeleteAccountConfirmForm({
 
   const email = user.email;
   const [value, setValue] = useState('');
-  const isDisabled = email !== value;
+  const isEmailConfirmed = email !== value;
 
   return (
     <Column space="24px">
@@ -58,7 +60,7 @@ export function DeleteAccountConfirmForm({
         </Button>
         <Button
           onPress={onConfirm}
-          isDisabled={isDisabled}
+          isDisabled={isEmailConfirmed || isSaving}
           {...ACTION_BUTTON_VARIANTS.confirm}>
           {t('delete_account.confirm.delete')}
         </Button>

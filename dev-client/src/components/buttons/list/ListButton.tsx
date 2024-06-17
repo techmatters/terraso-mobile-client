@@ -16,6 +16,7 @@
  */
 
 import {useMemo} from 'react';
+import {Text} from 'react-native';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
 import {Button} from 'native-base';
@@ -27,7 +28,9 @@ export type ListButtonType = 'default' | 'error';
 export type ListButtonProps = {
   type: ListButtonType;
   labelText: string;
+  subLabelText?: string;
   iconName: IconName;
+  disabled?: boolean;
   onPress?: PressableProps['onPress'];
 };
 
@@ -35,16 +38,19 @@ export function ListButton({
   type = 'default',
   iconName,
   labelText,
+  subLabelText,
+  disabled,
   onPress,
 }: ListButtonProps) {
   const {color, pressedColor} = useMemo(() => {
-    switch (type) {
-      case 'error':
-        return {color: 'error.main', pressedColor: 'red.100'};
-      default:
-        return {color: 'text.primary', pressedColor: undefined};
+    if (disabled) {
+      return COLORS.disabled;
+    } else if (type === 'error') {
+      return COLORS.error;
+    } else {
+      return COLORS.default;
     }
-  }, [type]);
+  }, [disabled, type]);
 
   return (
     <Button
@@ -54,8 +60,25 @@ export function ListButton({
       _text={{color: color, textTransform: 'uppercase'}}
       leftIcon={iconName ? <Icon name={iconName} color={color} /> : undefined}
       _pressed={{backgroundColor: pressedColor}}
+      disabled={disabled}
       onPress={onPress}>
       {labelText}
+      {subLabelText && <Text>{subLabelText}</Text>}
     </Button>
   );
 }
+
+const COLORS = {
+  disabled: {
+    color: 'text.disabled',
+    pressedColor: undefined,
+  },
+  default: {
+    color: 'text.primary',
+    pressedColor: undefined,
+  },
+  error: {
+    color: 'error.main',
+    pressedColor: 'red.100',
+  },
+};
