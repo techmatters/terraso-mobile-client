@@ -27,9 +27,9 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {
-  IntervalForm,
-  IntervalFormInput,
-} from 'terraso-mobile-client/components/IntervalForm';
+  DepthForm,
+  DepthFormInput,
+} from 'terraso-mobile-client/components/DepthForm';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
@@ -51,14 +51,14 @@ export const AddDepthModalBody = ({
     [t, existingIntervals],
   );
 
-  const onSubmit = async (values: IntervalFormInput) => {
+  const onSubmit = async (values: DepthFormInput) => {
     const {label, ...depthInterval} = schema.cast(values);
     await parentOnSubmit({label: label ?? '', depthInterval});
     onClose();
   };
 
   return (
-    <Formik<IntervalFormInput>
+    <Formik<DepthFormInput>
       validationSchema={schema}
       initialValues={{
         label: '',
@@ -68,7 +68,7 @@ export const AddDepthModalBody = ({
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting}) => (
         <>
-          <IntervalForm />
+          <DepthForm />
           <Box height="50px" />
           <Button
             size="lg"

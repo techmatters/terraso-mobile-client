@@ -36,16 +36,16 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 
+import {
+  DepthForm,
+  DepthFormInput,
+} from 'terraso-mobile-client/components/DepthForm';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {
-  IntervalForm,
-  IntervalFormInput,
-} from 'terraso-mobile-client/components/IntervalForm';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -60,7 +60,7 @@ import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/R
 import {useDispatch} from 'terraso-mobile-client/store';
 import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
 
-type EditIntervalFormInput = IntervalFormInput &
+type EditDepthFormInput = DepthFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
     applyToAll: boolean;
   };
@@ -72,7 +72,7 @@ type Props = {
   requiredInputs: SoilPitMethod[];
 };
 
-export const EditIntervalModal = ({
+export const EditDepthModal = ({
   siteId,
   depthInterval,
   requiredInputs,
@@ -123,7 +123,7 @@ export const EditIntervalModal = ({
   );
 
   const onSubmit = useCallback(
-    async (values: EditIntervalFormInput) => {
+    async (values: EditDepthFormInput) => {
       const {start, end} = depthInterval;
       const {
         start: newStart,
@@ -193,7 +193,7 @@ export const EditIntervalModal = ({
             {mutable && (
               <>
                 <Box pl="2px" mb="11px">
-                  <IntervalForm />
+                  <DepthForm />
                 </Box>
                 <Heading variant="h6" mt="11px" mb="11px">
                   {t('soil.depth.data_inputs_title')}

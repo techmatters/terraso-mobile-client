@@ -24,13 +24,13 @@ import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFi
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {DEPTH_LABEL_MAX_LENGTH} from 'terraso-mobile-client/constants';
 
-export type IntervalFormInput = {
+export type DepthFormInput = {
   label: string;
   start: string;
   end: string;
 };
 
-export const IntervalForm = () => {
+export const DepthForm = () => {
   const {t} = useTranslation();
   const {value: label} = useFieldContext('label');
   return (

@@ -46,7 +46,7 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
-import {SoilDepthIntervalSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthIntervalSummary';
+import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -111,7 +111,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         )}
       </Row>
       {allIntervals.map(interval => (
-        <SoilDepthIntervalSummary
+        <SoilDepthSummary
           key={`${interval.interval.depthInterval.start}:${interval.interval.depthInterval.end}`}
           siteId={siteId}
           interval={interval}
