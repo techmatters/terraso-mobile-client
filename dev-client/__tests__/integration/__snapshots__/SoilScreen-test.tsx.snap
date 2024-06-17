@@ -936,7 +936,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Apply to all intervals
+                                    Apply to all depths
                                   </Text>
                                 </View>
                               </View>
@@ -2090,7 +2090,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Apply to all intervals
+                                    Apply to all depths
                                   </Text>
                                 </View>
                               </View>
@@ -3244,7 +3244,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Apply to all intervals
+                                    Apply to all depths
                                   </Text>
                                 </View>
                               </View>
@@ -4398,7 +4398,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Apply to all intervals
+                                    Apply to all depths
                                   </Text>
                                 </View>
                               </View>
@@ -5552,7 +5552,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Apply to all intervals
+                                    Apply to all depths
                                   </Text>
                                 </View>
                               </View>
@@ -6706,7 +6706,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     }
                                   >
-                                    Apply to all intervals
+                                    Apply to all depths
                                   </Text>
                                 </View>
                               </View>
