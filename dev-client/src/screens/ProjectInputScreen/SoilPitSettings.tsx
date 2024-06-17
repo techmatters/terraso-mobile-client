@@ -29,7 +29,7 @@ import {
   updateProjectSoilSettings,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
-import {AddIntervalModalBody} from 'terraso-mobile-client/components/AddIntervalModal';
+import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
@@ -136,7 +136,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
             </Button>
           )}
           Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
-          <AddIntervalModalBody
+          <AddDepthModalBody
             onSubmit={onAddDepthInterval}
             existingIntervals={settings.depthIntervals}
           />

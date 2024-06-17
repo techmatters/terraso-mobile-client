@@ -39,7 +39,7 @@ type Props = {
   existingIntervals: {depthInterval: DepthInterval}[];
 };
 
-export const AddIntervalModalBody = ({
+export const AddDepthModalBody = ({
   onSubmit: parentOnSubmit,
   existingIntervals,
 }: Props) => {
