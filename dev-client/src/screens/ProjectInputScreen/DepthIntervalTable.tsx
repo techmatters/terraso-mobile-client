@@ -47,9 +47,9 @@ export const DepthIntervalTable = ({
   const dispatch = useDispatch();
   const headers = [];
   if (includeLabel) {
-    headers.push(t('projects.inputs.depth_intervals.label'));
+    headers.push(t('projects.inputs.depths.label'));
   }
-  headers.push(t('projects.inputs.depth_intervals.depth', {units: 'cm'}));
+  headers.push(t('projects.inputs.depths.depth', {units: 'cm'}));
   if (canDeleteInterval) {
     headers.push('');
   }
@@ -67,7 +67,7 @@ export const DepthIntervalTable = ({
       if (includeLabel) {
         result.push(label || '');
       }
-      result.push(t('soil.depth_interval.bounds_unitless', depthInterval));
+      result.push(t('soil.depth.bounds_unitless', depthInterval));
       if (canDeleteInterval) {
         result.push(
           <Box flex={1} flexDirection="row" justifyContent="flex-end">

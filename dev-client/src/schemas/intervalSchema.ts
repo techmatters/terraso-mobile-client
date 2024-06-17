@@ -21,8 +21,8 @@ import * as yup from 'yup';
 import {DepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {
-  DEPTH_INTERVAL_LABEL_MAX_LENGTH,
-  DEPTH_INTERVAL_MAX,
+  DEPTH_LABEL_MAX_LENGTH,
+  DEPTH_MAX,
 } from 'terraso-mobile-client/constants';
 
 type Args = {
@@ -33,18 +33,18 @@ type Args = {
 export const intervalSchema = ({t, existingIntervals}: Args) =>
   yup.object({
     label: yup.string().max(
-      DEPTH_INTERVAL_LABEL_MAX_LENGTH,
-      t('soil.depth_interval.label_help', {
-        max: DEPTH_INTERVAL_LABEL_MAX_LENGTH,
+      DEPTH_LABEL_MAX_LENGTH,
+      t('soil.depth.label_help', {
+        max: DEPTH_LABEL_MAX_LENGTH,
       }),
     ),
     start: yup
       .number()
       .integer()
       .min(0)
-      .max(DEPTH_INTERVAL_MAX)
+      .max(DEPTH_MAX)
       .required(t('general.required'))
-      .typeError(t('soil.depth_interval.number_required', {item: 'start'}))
+      .typeError(t('soil.depth.number_required', {item: 'start'}))
       .test((start, {createError}) => {
         if (
           existingIntervals.some(
@@ -53,7 +53,7 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
           )
         ) {
           return createError({
-            message: t('soil.depth_interval.error.overlaps'),
+            message: t('soil.depth.error.overlaps'),
           });
         }
         return true;
@@ -62,9 +62,9 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
       .number()
       .integer()
       .min(0)
-      .max(DEPTH_INTERVAL_MAX)
+      .max(DEPTH_MAX)
       .required(t('general.required'))
-      .typeError(t('soil.depth_interval.number_required', {item: 'end'}))
+      .typeError(t('soil.depth.number_required', {item: 'end'}))
       .test((end, {createError, parent}) => {
         if (
           existingIntervals.some(
@@ -73,11 +73,11 @@ export const intervalSchema = ({t, existingIntervals}: Args) =>
           )
         ) {
           return createError({
-            message: t('soil.depth_interval.error.overlaps'),
+            message: t('soil.depth.error.overlaps'),
           });
         } else if (parent.start >= end) {
           return createError({
-            message: t('soil.depth_interval.error.ordering'),
+            message: t('soil.depth.error.ordering'),
           });
         }
         return true;

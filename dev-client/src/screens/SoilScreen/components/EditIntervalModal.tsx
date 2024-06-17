@@ -177,7 +177,7 @@ export const EditIntervalModal = ({
       Header={
         <Heading variant="h6">
           {mutable
-            ? t('soil.depth_interval.edit_title')
+            ? t('soil.depth.edit_title')
             : renderDepthInterval(t, thisInterval)}
         </Heading>
       }>
@@ -198,7 +198,7 @@ export const EditIntervalModal = ({
                   <IntervalForm />
                 </Box>
                 <Heading variant="h6" mt="11px" mb="11px">
-                  {t('soil.depth_interval.data_inputs_title')}
+                  {t('soil.depth.data_inputs_title')}
                 </Heading>
               </>
             )}
@@ -216,7 +216,7 @@ export const EditIntervalModal = ({
             <Row mb="12px">
               <FormCheckbox name="applyToAll" />
               <FormLabel variant="body1" ml={SWITCH_PADDING}>
-                {t('soil.depth_interval.apply_to_all_label')}
+                {t('soil.depth.apply_to_all_label')}
               </FormLabel>
             </Row>
 
@@ -231,12 +231,12 @@ export const EditIntervalModal = ({
                       variant="link"
                       size="lg"
                       onPress={onOpen}>
-                      {t('soil.depth_interval.delete_depth')}
+                      {t('soil.depth.delete_depth')}
                     </Button>
                   )}
-                  title={t('soil.depth_interval.delete_modal.title')}
-                  body={t('soil.depth_interval.delete_modal.body')}
-                  actionName={t('soil.depth_interval.delete_modal.action')}
+                  title={t('soil.depth.delete_modal.title')}
+                  body={t('soil.depth.delete_modal.body')}
+                  actionName={t('soil.depth.delete_modal.action')}
                   handleConfirm={deleteInterval}
                 />
               )}
@@ -291,9 +291,9 @@ const ConfirmEditingModal = ({
       trigger={onOpen => (
         <SaveButton action={buttonAction(onOpen)} isDisabled={formNotReady} />
       )}
-      title={t('soil.depth_interval.update_modal.title')}
-      body={t('soil.depth_interval.update_modal.body')}
-      actionName={t('soil.depth_interval.update_modal.action')}
+      title={t('soil.depth.update_modal.title')}
+      body={t('soil.depth.update_modal.body')}
+      actionName={t('soil.depth.update_modal.action')}
       handleConfirm={() => handleSubmit()}
     />
   );

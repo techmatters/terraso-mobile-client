@@ -90,7 +90,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
 
   const renderPreset = useCallback(
     (preset: ProjectDepthIntervalPreset) =>
-      t(`projects.inputs.depth_intervals.preset.${preset}`),
+      t(`projects.inputs.depths.preset.${preset}`),
     [t],
   );
 
@@ -105,13 +105,13 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
             value={settings.depthIntervalPreset}
             onValueChange={onSelectUpdated}
             renderValue={renderPreset}
-            label={t('projects.inputs.depth_intervals.title')}
+            label={t('projects.inputs.depths.title')}
             disabled={!userCanUpdateIntervals}
           />
         )}
-        title={t('projects.inputs.depth_intervals.confirm_preset.title')}
-        body={t('projects.inputs.depth_intervals.confirm_preset.body')}
-        actionName={t('projects.inputs.depth_intervals.confirm_preset.confirm')}
+        title={t('projects.inputs.depths.confirm_preset.title')}
+        body={t('projects.inputs.depths.confirm_preset.body')}
+        actionName={t('projects.inputs.depths.confirm_preset.confirm')}
         handleConfirm={onChangeDepthPreset}
       />
       {settings.depthIntervalPreset !== 'NONE' && (
@@ -135,9 +135,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
               {t('soil.add_depth_label')}
             </Button>
           )}
-          Header={
-            <Heading variant="h6">{t('soil.depth_interval.add_title')}</Heading>
-          }>
+          Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
           <AddIntervalModalBody
             onSubmit={onAddDepthInterval}
             existingIntervals={settings.depthIntervals}

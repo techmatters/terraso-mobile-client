@@ -39,8 +39,8 @@ export const renderDepthInterval = (
   };
 
   return label
-    ? t('soil.depth_interval.bounds_labelled', {label, ...params})
-    : t('soil.depth_interval.bounds', params);
+    ? t('soil.depth.bounds_labelled', {label, ...params})
+    : t('soil.depth.bounds', params);
 };
 
 // TODO: finish this method for other inputs

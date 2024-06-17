@@ -232,8 +232,8 @@
         "description": "This content will display at the top of the Notes section of each site in this project.",
         "add_label": "Note"
       },
-      "depth_intervals": {
-        "title": "Soil Pit Depth Intervals",
+      "depths": {
+        "title": "Soil Pit Depths",
         "preset": {
           "LANDPKS": "LandPKS",
           "NRCS": "NRCS",
@@ -558,24 +558,24 @@
     },
     "soil_preset": {
       "header": "Change soil pit depths",
-      "info": "Data already entered for a depth will be deleted when the depth interval is changed.",
-      "label": "Depth Intervals",
+      "info": "Data already entered for a depth will be deleted when the depth is changed.",
+      "label": "Depths",
       "LANDPKS": "LandPKS (default)",
       "NRCS": "NRCS",
       "CUSTOM": "Custom"
     },
-    "depth_interval": {
-      "add_title": "Add depth interval",
-      "edit_title": "Depth Interval",
+    "depth": {
+      "add_title": "Add depth",
+      "edit_title": "Depth",
       "data_inputs_title": "Soil Data Inputs",
       "label_help": "{{max}} characters max",
       "label_placeholder": "Label",
-      "apply_to_all_label": "Apply to all intervals",
+      "apply_to_all_label": "Apply to all depths",
       "start_label": "From ({{units}})",
       "end_label": "To ({{units}})",
-      "number_required": "$t(soil.depth_interval.interval, {\"context\": \"{{item}}\"}) must be a number",
-      "interval_start": "interval start",
-      "interval_end": "interval end",
+      "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) must be a number",
+      "depth_start": "depth start",
+      "depth_end": "depth end",
       "update_modal": {
         "title": "Change depth?",
         "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
@@ -588,7 +588,7 @@
       },
       "error": {
         "overlaps": "Overlaps existing",
-        "ordering": "Interval bounds error"
+        "ordering": "Depth bounds error"
       },
       "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
       "bounds_unitless": "{{start}}–{{end}}",
@@ -698,7 +698,7 @@
       },
       "confirm_delete": {
         "title": "Delete data?",
-        "body": "This will delete the soil color data associated with this depth interval.",
+        "body": "This will delete the soil color data associated with this depth.",
         "action_name": "Delete"
       },
       "unexpected_color": {
