@@ -84,7 +84,7 @@ export const EditDepthModal = ({
   const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
 
   const allDepths = useSiteSoilIntervals(siteId);
-  const thisInterval = allDepths
+  const thisDepth = allDepths
     .map(({interval}) => interval)
     .find(sameDepth({depthInterval}))!;
 
@@ -92,8 +92,8 @@ export const EditDepthModal = ({
     () =>
       allDepths
         .map(({interval}) => interval)
-        .filter(interval => !sameDepth(thisInterval)(interval)),
-    [allDepths, thisInterval],
+        .filter(interval => !sameDepth(thisDepth)(interval)),
+    [allDepths, thisDepth],
   );
 
   const schema = useMemo(
@@ -176,13 +176,13 @@ export const EditDepthModal = ({
       )}
       Header={
         <Heading variant="h6">
-          {mutable ? t('soil.depth.edit_title') : renderDepth(t, thisInterval)}
+          {mutable ? t('soil.depth.edit_title') : renderDepth(t, thisDepth)}
         </Heading>
       }>
       <Formik
         validationSchema={schema}
         initialValues={{
-          ...thisInterval,
+          ...thisDepth,
           start: String(depthInterval.start),
           end: String(depthInterval.end),
           applyToAll: false,
