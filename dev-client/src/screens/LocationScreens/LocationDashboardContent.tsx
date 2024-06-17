@@ -44,6 +44,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {formatCoordinate} from 'terraso-mobile-client/util';
 
 type Props = {
   siteId?: string;
@@ -162,11 +163,11 @@ export const LocationDashboardContent = ({
       <Box px="16px" py="16px">
         <LocationDetail
           label={t('geo.latitude.title')}
-          value={coords?.latitude.toFixed(6)}
+          value={formatCoordinate(coords?.latitude)}
         />
         <LocationDetail
           label={t('geo.longitude.title')}
-          value={coords?.longitude.toFixed(6)}
+          value={formatCoordinate(coords?.longitude)}
         />
         <LocationDetail
           label={t('geo.elevation.title')}
