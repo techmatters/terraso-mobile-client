@@ -43,15 +43,13 @@ type Props = {
 export const AddUserToProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
 
-  // FYI: There was previously a mechanism to enter emails individually, but set roles at the same time.
-  // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
-  // wanting to add multiple users at the same time.
-
-  // const keyboardOpen = useKeyboardOpen();
-  // const dispatch = useDispatch();
   const projectName = useSelector(
     state => state.project.projects[projectId]?.name,
   );
+
+  // FYI: There was previously a mechanism to enter emails individually, but set roles at the same time.
+  // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
+  // wanting to add multiple users at the same time.
 
   return (
     <ScreenScaffold AppBar={<AppBar title={projectName} />}>
@@ -98,7 +96,6 @@ const AddTeamMemberForm = ({projectId}: FormProps) => {
     else {
       const user = userOrError as SimpleUserInfo;
       navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, user});
-      // TODO-cknipe: Go to the next screen, pass it the SimpleUserInfo
     }
   };
 
@@ -138,12 +135,16 @@ const AddTeamMemberForm = ({projectId}: FormProps) => {
       {({handleSubmit, isValid, isSubmitting}) => {
         return (
           <>
-            <FormInput
-              key="email"
-              name="email"
-              textInputLabel={t('general.email_label')}
-              placeholder={t('general.email_placeholder')}
-            />
+            <Box minHeight="84px">
+              <FormInput
+                key="email"
+                name="email"
+                textInputLabel={t('general.email_label')}
+                placeholder={t('general.email_placeholder')}
+                autoComplete="email"
+                keyboardType="email-address"
+              />
+            </Box>
             <Button
               mt="sm"
               alignSelf="flex-end"
