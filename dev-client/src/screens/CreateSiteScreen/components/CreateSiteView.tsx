@@ -52,13 +52,10 @@ export const CreateSiteView = ({
 }: Props) => {
   const {t} = useTranslation();
   const validationSchema = useMemo(() => siteValidationSchema(t), [t]);
-  const userLocation = useSelector(state => state.map.userLocation);
   const defaultProject = useSelector(state =>
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
   const homeScreen = useHomeScreenContext();
-
-  const defaultCoords = userLocation.coords;
 
   const navigation = useNavigation();
 
@@ -80,10 +77,8 @@ export const CreateSiteView = ({
       validationSchema={validationSchema}
       initialValues={{
         name: '',
-        latitude:
-          defaultCoords?.latitude !== undefined ? defaultCoords?.latitude : 0,
-        longitude:
-          defaultCoords?.longitude !== undefined ? defaultCoords?.longitude : 0,
+        latitude: sitePin?.latitude !== undefined ? sitePin?.latitude : 0,
+        longitude: sitePin?.longitude !== undefined ? sitePin?.longitude : 0,
         projectId: defaultProject?.id,
         privacy: defaultProject?.privacy ?? 'PUBLIC',
       }}

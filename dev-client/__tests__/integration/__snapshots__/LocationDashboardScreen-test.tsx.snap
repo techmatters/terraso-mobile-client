@@ -1162,7 +1162,7 @@ exports[`renders correctly 1`] = `
                                     <Text
                                       style={{}}
                                     >
-                                      1.000000
+                                      1
                                     </Text>
                                   </Text>
                                   <Text
@@ -1190,7 +1190,7 @@ exports[`renders correctly 1`] = `
                                     <Text
                                       style={{}}
                                     >
-                                      1.000000
+                                      1
                                     </Text>
                                   </Text>
                                   <Text
