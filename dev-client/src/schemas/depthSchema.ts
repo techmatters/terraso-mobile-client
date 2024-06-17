@@ -30,7 +30,7 @@ type Args = {
   existingIntervals: {depthInterval: DepthInterval}[];
 };
 
-export const intervalSchema = ({t, existingIntervals}: Args) =>
+export const depthSchema = ({t, existingIntervals}: Args) =>
   yup.object({
     label: yup.string().max(
       DEPTH_LABEL_MAX_LENGTH,

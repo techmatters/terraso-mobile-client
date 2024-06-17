@@ -55,7 +55,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
-import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
+import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
@@ -98,7 +98,7 @@ export const EditDepthModal = ({
 
   const schema = useMemo(
     () =>
-      intervalSchema({t, existingIntervals}).shape({
+      depthSchema({t, existingIntervals}).shape({
         applyToAll: yup.boolean().required(),
         ...fromEntries(
           soilPitMethods

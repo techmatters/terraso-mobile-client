@@ -32,7 +32,7 @@ import {
 } from 'terraso-mobile-client/components/DepthForm';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {intervalSchema} from 'terraso-mobile-client/schemas/intervalSchema';
+import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;
@@ -47,7 +47,7 @@ export const AddDepthModalBody = ({
   const onClose = useModal()!.onClose;
 
   const schema = useMemo(
-    () => intervalSchema({t, existingIntervals}),
+    () => depthSchema({t, existingIntervals}),
     [t, existingIntervals],
   );
 
