@@ -15,18 +15,30 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
+import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 
-import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
+type TranslatedBulletListProps = {
+  variant?: 'body1' | 'body2';
+  i18nKeys: string[];
+  values?: {};
+};
 
-export function DeleteAccountButton() {
-  const {t} = useTranslation();
-
+export function TranslatedBulletList({
+  variant = 'body1',
+  i18nKeys,
+  values,
+}: TranslatedBulletListProps) {
   return (
-    <ListButton
-      type="error"
-      iconName="delete"
-      labelText={t('settings.delete_account')}
+    <BulletList
+      data={i18nKeys}
+      renderItem={i18nKey => (
+        <TranslatedParagraph
+          i18nKey={i18nKey}
+          values={values}
+          variant={variant}
+        />
+      )}
     />
   );
 }

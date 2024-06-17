@@ -15,23 +15,26 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
 
-type LocationScoreInfoContentProps = {
-  isSite: boolean;
-};
+import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-export function LocationScoreInfoContent({
-  isSite,
-}: LocationScoreInfoContentProps) {
+export function DeleteAccountButton() {
+  const {t} = useTranslation();
+  const navigation = useNavigation();
+  const onDeleteAccount = useCallback(
+    () => navigation.navigate('DELETE_ACCOUNT'),
+    [navigation],
+  );
+
   return (
-    <Column space={3}>
-      {isSite && (
-        <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p1" />
-      )}
-      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p2" />
-      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p3" />
-    </Column>
+    <ListButton
+      type="error"
+      iconName="delete"
+      labelText={t('settings.delete_account')}
+      onPress={onDeleteAccount}
+    />
   );
 }

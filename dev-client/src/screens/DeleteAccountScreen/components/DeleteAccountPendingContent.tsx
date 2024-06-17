@@ -15,23 +15,31 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {User} from 'terraso-client-shared/account/accountSlice';
+
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type LocationScoreInfoContentProps = {
-  isSite: boolean;
+export type DeleteAccountPendingContentProps = {
+  user: User;
 };
 
-export function LocationScoreInfoContent({
-  isSite,
-}: LocationScoreInfoContentProps) {
+export function DeleteAccountPendingContent({
+  user,
+}: DeleteAccountPendingContentProps) {
+  const email = user.email;
+
   return (
-    <Column space={3}>
-      {isSite && (
-        <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p1" />
-      )}
-      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p2" />
-      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p3" />
+    <Column space="16px">
+      <TranslatedParagraph
+        i18nKey="delete_account.pending.p0"
+        values={{email}}
+      />
+      <TranslatedParagraph
+        i18nKey="delete_account.pending.p1"
+        values={{email}}
+      />
+      <TranslatedParagraph i18nKey="delete_account.pending.p2" />
     </Column>
   );
 }

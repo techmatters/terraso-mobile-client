@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 
 import {SoilInfo} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {TranslatedBody} from 'terraso-mobile-client/components/content/text/TranslatedBody';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import InternalLink from 'terraso-mobile-client/components/links/InternalLink';
 import {
   Box,
@@ -48,13 +48,13 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
       {soilInfo.ecologicalSite && (
         <>
           <Box>
-            <TranslatedBody
+            <TranslatedParagraph
               i18nKey="site.soil_id.soil_info.eco_name_label"
               values={{
                 name: soilInfo.ecologicalSite.name,
               }}
             />
-            <TranslatedBody
+            <TranslatedParagraph
               i18nKey="site.soil_id.soil_info.eco_id_label"
               values={{
                 id: soilInfo.ecologicalSite.id,
@@ -68,13 +68,13 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
         </>
       )}
       <Box>
-        <TranslatedBody
+        <TranslatedParagraph
           i18nKey="site.soil_id.soil_info.land_class_label"
           values={{
             land: soilInfo.landCapabilityClass.capabilityClass,
           }}
         />
-        <TranslatedBody
+        <TranslatedParagraph
           i18nKey="site.soil_id.soil_info.data_source_label"
           values={{
             source: dataSource,
