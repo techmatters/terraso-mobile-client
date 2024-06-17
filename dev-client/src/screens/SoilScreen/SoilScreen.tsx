@@ -67,7 +67,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
 
   const dispatch = useDispatch();
 
-  const onAddDepthInterval = useCallback(
+  const onAddDepth = useCallback(
     async (interval: LabelledDepthInterval) => {
       await dispatch(updateSoilDataDepthInterval({siteId, ...interval}));
     },
@@ -146,7 +146,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           )}
           Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
           <AddDepthModalBody
-            onSubmit={onAddDepthInterval}
+            onSubmit={onAddDepth}
             existingDepths={existingDepths}
           />
         </Modal>
