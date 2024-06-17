@@ -42,17 +42,17 @@ import {
 } from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useSelector} from 'terraso-mobile-client/store';
 
-type DepthIntervalEditorProps = {
+type DepthEditorProps = {
   siteId: string;
   aggregatedInterval: AggregatedInterval;
   requiredInputs: (typeof soilPitMethods)[number][];
 };
 
-const DepthIntervalEditor = ({
+const DepthEditor = ({
   siteId,
   aggregatedInterval: {isFromPreset, interval},
   requiredInputs,
-}: DepthIntervalEditorProps) => {
+}: DepthEditorProps) => {
   const {t} = useTranslation();
 
   return (
@@ -126,7 +126,7 @@ export const SoilDepthSummary = ({siteId, interval, requiredInputs}: Props) => {
 
   return (
     <Column space="1px">
-      <DepthIntervalEditor
+      <DepthEditor
         siteId={siteId}
         aggregatedInterval={interval}
         requiredInputs={requiredInputs}
