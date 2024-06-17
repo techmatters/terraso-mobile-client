@@ -91,22 +91,15 @@ export const ImagePicker = ({onPick, children, ...modalProps}: Props) => {
   return (
     <OverlaySheet ref={ref} trigger={children} Closer={null} {...modalProps}>
       <Column padding="lg" space="md">
-        <Button
-          _text={{textTransform: 'uppercase'}}
-          onPress={onUseCamera}
-          rightIcon={<Icon name="photo-camera" />}>
+        <Button onPress={onUseCamera} rightIcon={<Icon name="photo-camera" />}>
           {t('image.use_camera')}
         </Button>
         <Button
-          _text={{textTransform: 'uppercase'}}
           onPress={onUseGallery}
           rightIcon={<Icon name="photo-library" />}>
           {t('image.choose_from_gallery')}
         </Button>
-        <Button
-          _text={{textTransform: 'uppercase'}}
-          variant="outline"
-          onPress={onCancel}>
+        <Button variant="outline" onPress={onCancel}>
           {t('general.cancel')}
         </Button>
       </Column>

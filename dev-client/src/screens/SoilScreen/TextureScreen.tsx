@@ -161,10 +161,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
         <Column p="15px" alignItems="flex-start">
           <Text variant="body1">{t('soil.texture.guide_intro')}</Text>
           <Box height="10px" />
-          <Button
-            onPress={onGuide}
-            rightIcon={<Icon name="chevron-right" />}
-            _text={{textTransform: 'uppercase'}}>
+          <Button onPress={onGuide} rightIcon={<Icon name="chevron-right" />}>
             {t('soil.texture.use_guide_label')}
           </Button>
         </Column>

@@ -72,12 +72,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
           {kind: 'project', role: 'CONTRIBUTOR'},
         ]}>
         <Box pl={4} pb={4} alignItems="flex-start">
-          <Button
-            size="lg"
-            backgroundColor="primary.dark"
-            shadow={5}
-            onPress={onAddNote}
-            _text={{textTransform: 'uppercase'}}>
+          <Button size="lg" shadow={5} onPress={onAddNote}>
             {t('site.notes.add_note_label')}
           </Button>
         </Box>

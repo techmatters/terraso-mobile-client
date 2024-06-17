@@ -54,11 +54,7 @@ export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
         </ScrollView>
         <Row>
           <Spacer />
-          <Button
-            onPress={handleClose}
-            shadow={1}
-            size="lg"
-            _text={{textTransform: 'uppercase'}}>
+          <Button onPress={handleClose} shadow={1} size="lg">
             {t('general.close_fab')}
           </Button>
         </Row>

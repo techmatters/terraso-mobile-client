@@ -97,7 +97,7 @@ export const LoginScreen = () => {
         <Button.Group direction="column" space={5}>
           <Button
             bgColor="primary.contrast"
-            _text={{color: 'text.primary'}}
+            _text={{color: 'text.primary', textTransform: 'none'}}
             size="lg"
             onPress={onPress('google')}
             startIcon={<GoogleLogo />}>
@@ -105,7 +105,7 @@ export const LoginScreen = () => {
           </Button>
           <Button
             bgColor="primary.contrast"
-            _text={{color: 'text.primary'}}
+            _text={{color: 'text.primary', textTransform: 'none'}}
             size="lg"
             onPress={onPress('microsoft')}
             startIcon={<MicrosoftLogo />}>

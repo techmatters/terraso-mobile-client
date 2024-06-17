@@ -165,7 +165,6 @@ const styles = {
     alignSelf: 'flex-end',
   },
   useButton: {
-    _text: {textTransform: 'uppercase'},
     leftIcon: <Icon name="check" />,
   },
 } as const;

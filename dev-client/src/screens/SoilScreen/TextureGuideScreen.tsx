@@ -266,10 +266,7 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
               </Text>
               <Box height="10px" />
               {onUseResult !== undefined && (
-                <Button
-                  leftIcon={<Icon name="check" />}
-                  _text={{textTransform: 'uppercase'}}
-                  onPress={onUseResult}>
+                <Button leftIcon={<Icon name="check" />} onPress={onUseResult}>
                   {t('soil.texture.guide.use_label')}
                 </Button>
               )}

@@ -74,7 +74,6 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
                 onOpen();
               }
             }}
-            _text={{textTransform: 'uppercase'}}
             alignSelf="flex-end">
             {t('general.save')}
           </Button>

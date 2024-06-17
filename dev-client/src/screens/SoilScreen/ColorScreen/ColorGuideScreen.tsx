@@ -127,10 +127,7 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
         </Button>
         <ImagePicker onPick={onTakePhoto}>
           {onOpen => (
-            <Button
-              _text={{textTransform: 'uppercase'}}
-              leftIcon={<Icon name="camera" />}
-              onPress={onOpen}>
+            <Button leftIcon={<Icon name="camera" />} onPress={onOpen}>
               {t('soil.color.guide.take_photo')}
             </Button>
           )}

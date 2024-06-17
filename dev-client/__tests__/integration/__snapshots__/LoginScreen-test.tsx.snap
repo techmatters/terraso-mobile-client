@@ -190,6 +190,7 @@ exports[`renders correctly 1`] = `
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
+                      "textTransform": "none",
                     }
                   }
                 >
@@ -292,6 +293,7 @@ exports[`renders correctly 1`] = `
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
+                      "textTransform": "none",
                     }
                   }
                 >
