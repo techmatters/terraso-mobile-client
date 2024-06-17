@@ -27,10 +27,10 @@ import {
 
 type Args = {
   t: TFunction;
-  existingIntervals: {depthInterval: DepthInterval}[];
+  existingDepths: {depthInterval: DepthInterval}[];
 };
 
-export const depthSchema = ({t, existingIntervals}: Args) =>
+export const depthSchema = ({t, existingDepths}: Args) =>
   yup.object({
     label: yup.string().max(
       DEPTH_LABEL_MAX_LENGTH,
@@ -47,7 +47,7 @@ export const depthSchema = ({t, existingIntervals}: Args) =>
       .typeError(t('soil.depth.number_required', {item: 'start'}))
       .test((start, {createError}) => {
         if (
-          existingIntervals.some(
+          existingDepths.some(
             ({depthInterval}) =>
               start >= depthInterval.start && start < depthInterval.end,
           )
@@ -67,7 +67,7 @@ export const depthSchema = ({t, existingIntervals}: Args) =>
       .typeError(t('soil.depth.number_required', {item: 'end'}))
       .test((end, {createError, parent}) => {
         if (
-          existingIntervals.some(
+          existingDepths.some(
             ({depthInterval}) =>
               end > depthInterval.start && end <= depthInterval.end,
           )

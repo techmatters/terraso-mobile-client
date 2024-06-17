@@ -36,19 +36,19 @@ import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 
 type Props = {
   onSubmit: (_: LabelledDepthInterval) => Promise<void>;
-  existingIntervals: {depthInterval: DepthInterval}[];
+  existingDepths: {depthInterval: DepthInterval}[];
 };
 
 export const AddDepthModalBody = ({
   onSubmit: parentOnSubmit,
-  existingIntervals,
+  existingDepths,
 }: Props) => {
   const {t} = useTranslation();
   const onClose = useModal()!.onClose;
 
   const schema = useMemo(
-    () => depthSchema({t, existingIntervals}),
-    [t, existingIntervals],
+    () => depthSchema({t, existingDepths}),
+    [t, existingDepths],
   );
 
   const onSubmit = async (values: DepthFormInput) => {

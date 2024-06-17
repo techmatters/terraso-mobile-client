@@ -33,13 +33,13 @@ type TableProps = {
   depthIntervals: ProjectDepthInterval[];
   projectId: string;
   includeLabel: boolean;
-  canDeleteInterval: boolean;
+  canDeleteDepth: boolean;
 } & Omit<React.ComponentProps<typeof DataGridTable>, 'rows' | 'headers'>;
 
 export const DepthTable = ({
   depthIntervals,
   projectId,
-  canDeleteInterval,
+  canDeleteDepth,
   includeLabel,
   ...extraProps
 }: TableProps) => {
@@ -50,11 +50,11 @@ export const DepthTable = ({
     headers.push(t('projects.inputs.depths.label'));
   }
   headers.push(t('projects.inputs.depths.depth', {units: 'cm'}));
-  if (canDeleteInterval) {
+  if (canDeleteDepth) {
     headers.push('');
   }
 
-  const deleteDepthInterval = useCallback(
+  const deleteDepth = useCallback(
     (depthInterval: DepthInterval) => () => {
       return dispatch(deleteProjectDepthInterval({projectId, depthInterval}));
     },
@@ -68,12 +68,12 @@ export const DepthTable = ({
         result.push(label || '');
       }
       result.push(t('soil.depth.bounds_unitless', depthInterval));
-      if (canDeleteInterval) {
+      if (canDeleteDepth) {
         result.push(
           <Box flex={1} flexDirection="row" justifyContent="flex-end">
             <IconButton
               name="close"
-              onPress={deleteDepthInterval(depthInterval)}
+              onPress={deleteDepth(depthInterval)}
               _icon={{
                 size: 'sm',
                 color: 'action.active',
@@ -84,7 +84,7 @@ export const DepthTable = ({
       }
       return result;
     });
-  }, [depthIntervals, canDeleteInterval, includeLabel, deleteDepthInterval, t]);
+  }, [depthIntervals, canDeleteDepth, includeLabel, deleteDepth, t]);
 
   return <DataGridTable headers={headers} rows={rows} {...extraProps} />;
 };

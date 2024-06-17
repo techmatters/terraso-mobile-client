@@ -88,7 +88,7 @@ export const EditDepthModal = ({
     .map(({interval}) => interval)
     .find(sameDepth({depthInterval}))!;
 
-  const existingIntervals = useMemo(
+  const existingDepths = useMemo(
     () =>
       allIntervals
         .map(({interval}) => interval)
@@ -98,7 +98,7 @@ export const EditDepthModal = ({
 
   const schema = useMemo(
     () =>
-      depthSchema({t, existingIntervals}).shape({
+      depthSchema({t, existingDepths}).shape({
         applyToAll: yup.boolean().required(),
         ...fromEntries(
           soilPitMethods
@@ -106,7 +106,7 @@ export const EditDepthModal = ({
             .map(method => [method, yup.boolean().required()]),
         ),
       }),
-    [t, existingIntervals],
+    [t, existingDepths],
   );
 
   const updateSwitch = useCallback(
@@ -135,7 +135,7 @@ export const EditDepthModal = ({
       const input: SoilDataUpdateDepthIntervalMutationInput = {
         siteId,
         applyToIntervals: applyToAll
-          ? existingIntervals.map(interval => interval.depthInterval)
+          ? existingDepths.map(depth => depth.depthInterval)
           : undefined,
         ...enabledInputs,
         depthInterval: {start: newStart, end: newEnd},
@@ -151,7 +151,7 @@ export const EditDepthModal = ({
       await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
-    [schema, dispatch, onClose, siteId, depthInterval, existingIntervals],
+    [schema, dispatch, onClose, siteId, depthInterval, existingDepths],
   );
 
   const deleteInterval = useCallback(() => {

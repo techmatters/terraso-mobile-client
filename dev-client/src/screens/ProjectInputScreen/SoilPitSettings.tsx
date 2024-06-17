@@ -118,7 +118,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
         <DepthTable
           depthIntervals={settings.depthIntervals}
           projectId={projectId}
-          canDeleteInterval={isCustom && userCanUpdateIntervals}
+          canDeleteDepth={isCustom && userCanUpdateIntervals}
           includeLabel={isCustom}
           pb="15px"
         />
@@ -138,7 +138,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
           Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
           <AddDepthModalBody
             onSubmit={onAddDepthInterval}
-            existingIntervals={settings.depthIntervals}
+            existingDepths={settings.depthIntervals}
           />
         </Modal>
       )}

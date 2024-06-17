@@ -60,7 +60,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   }, [projectSettings]);
 
   const allIntervals = useSiteSoilIntervals(siteId);
-  const existingIntervals = useMemo(
+  const existingDepths = useMemo(
     () => allIntervals.map(({interval}) => interval),
     [allIntervals],
   );
@@ -147,7 +147,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
           <AddDepthModalBody
             onSubmit={onAddDepthInterval}
-            existingIntervals={existingIntervals}
+            existingDepths={existingDepths}
           />
         </Modal>
       </RestrictBySiteRole>
