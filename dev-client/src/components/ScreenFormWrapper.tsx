@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, useImperativeHandle, useRef} from 'react';
+import {forwardRef, useCallback, useImperativeHandle, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 
@@ -68,16 +68,19 @@ export const ScreenFormWrapper = forwardRef(
     };
 
     // Only show a delete confirmation message if the note is a new, blank note.
-    const conditionallyConfirmDelete = (onOpen: () => void) => {
-      if (
-        formikRef?.current?.dirty === true ||
-        formikRef?.current?.values?.content?.length
-      ) {
-        onOpen();
-      } else {
-        navigation.pop();
-      }
-    };
+    const conditionallyConfirmDelete = useCallback(
+      (onOpen: () => void) => {
+        if (
+          formikRef?.current?.dirty === true ||
+          formikRef?.current?.values?.content?.length
+        ) {
+          onOpen();
+        } else {
+          navigation.pop();
+        }
+      },
+      [navigation],
+    );
 
     return (
       <ScreenScaffold BottomNavigation={null} AppBar={null}>
