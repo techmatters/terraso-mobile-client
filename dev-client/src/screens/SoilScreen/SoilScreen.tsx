@@ -59,10 +59,10 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     return soilPitMethods.filter(m => projectSettings?.[methodRequired(m)]);
   }, [projectSettings]);
 
-  const allIntervals = useSiteSoilIntervals(siteId);
+  const allDepths = useSiteSoilIntervals(siteId);
   const existingDepths = useMemo(
-    () => allIntervals.map(({interval}) => interval),
-    [allIntervals],
+    () => allDepths.map(({interval}) => interval),
+    [allDepths],
   );
 
   const dispatch = useDispatch();
@@ -110,7 +110,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           </OverlaySheet>
         )}
       </Row>
-      {allIntervals.map(interval => (
+      {allDepths.map(interval => (
         <SoilDepthSummary
           key={`${interval.interval.depthInterval.start}:${interval.interval.depthInterval.end}`}
           siteId={siteId}

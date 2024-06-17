@@ -43,9 +43,9 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
-  const allIntervals = useSiteSoilIntervals(siteId);
+  const allDepths = useSiteSoilIntervals(siteId);
   const soilData = useSelector(selectSoilData(siteId));
-  const dataTableRows = rowsFromSiteSoilData(soilData, allIntervals);
+  const dataTableRows = rowsFromSiteSoilData(soilData, allDepths);
 
   const onAddSoilDataPress = useCallback(() => {
     navigation.push('LOCATION_DASHBOARD', {
