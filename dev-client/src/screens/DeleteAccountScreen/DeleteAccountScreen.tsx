@@ -16,6 +16,7 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {ScrollView} from 'react-native-gesture-handler';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -33,20 +34,22 @@ export function DeleteAccountScreen() {
 
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenBackButton />} />}>
-      <ScreenContentSection title={t('delete_account.title')}>
-        {user &&
-          (isPending ? (
-            <DeleteAccountPendingContent user={user} />
-          ) : (
-            <Column space="16px">
-              <DeleteAccountConfirmContent user={user} />
-              <DeleteAccountConfirmForm
-                user={user}
-                onConfirm={requestDeletion}
-              />
-            </Column>
-          ))}
-      </ScreenContentSection>
+      <ScrollView>
+        <ScreenContentSection title={t('delete_account.title')}>
+          {user &&
+            (isPending ? (
+              <DeleteAccountPendingContent user={user} />
+            ) : (
+              <Column space="16px">
+                <DeleteAccountConfirmContent user={user} />
+                <DeleteAccountConfirmForm
+                  user={user}
+                  onConfirm={requestDeletion}
+                />
+              </Column>
+            ))}
+        </ScreenContentSection>
+      </ScrollView>
     </ScreenScaffold>
   );
 }
