@@ -83,17 +83,17 @@ export const EditDepthModal = ({
   const modalRef = useRef<ModalHandle>(null);
   const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
 
-  const allIntervals = useSiteSoilIntervals(siteId);
-  const thisInterval = allIntervals
+  const allDepths = useSiteSoilIntervals(siteId);
+  const thisInterval = allDepths
     .map(({interval}) => interval)
     .find(sameDepth({depthInterval}))!;
 
   const existingDepths = useMemo(
     () =>
-      allIntervals
+      allDepths
         .map(({interval}) => interval)
         .filter(interval => !sameDepth(thisInterval)(interval)),
-    [allIntervals, thisInterval],
+    [allDepths, thisInterval],
   );
 
   const schema = useMemo(
