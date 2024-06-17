@@ -452,6 +452,7 @@ exports[`renders correctly 1`] = `
                                     cursorColor="#8B8B8B"
                                     editable={true}
                                     maxFontSizeMultiplier={1.5}
+                                    maxLength={50}
                                     multiline={false}
                                     onBlur={[Function]}
                                     onChangeText={[Function]}
@@ -671,10 +672,13 @@ exports[`renders correctly 1`] = `
                                     </Text>
                                   </View>
                                   <TextInput
+                                    autoComplete="off"
                                     cursorColor="#8B8B8B"
                                     editable={true}
                                     maxFontSizeMultiplier={1.5}
+                                    maxLength={72}
                                     multiline={true}
+                                    numberOfLines={3}
                                     onBlur={[Function]}
                                     onChangeText={[Function]}
                                     onFocus={[Function]}

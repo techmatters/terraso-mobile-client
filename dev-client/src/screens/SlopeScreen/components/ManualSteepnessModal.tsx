@@ -138,6 +138,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 name="slopeSteepnessPercent"
                 helpText={t('slope.steepness.percentage_help')}
                 placeholder={t('slope.steepness.percentage_placeholder')}
+                textInputLabel={t('slope.steepness.percentage_placeholder')}
                 onChangeText={text => {
                   handleChange('slopeSteepnessPercent')(text);
                   setLastTouched('slopeSteepnessPercent');
@@ -162,6 +163,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 name="slopeSteepnessDegree"
                 helpText={t('slope.steepness.degree_help')}
                 placeholder={t('slope.steepness.degree_placeholder')}
+                textInputLabel={t('slope.steepness.degree_placeholder')}
                 onChangeText={text => {
                   handleChange('slopeSteepnessDegree')(text);
                   setLastTouched('slopeSteepnessDegree');

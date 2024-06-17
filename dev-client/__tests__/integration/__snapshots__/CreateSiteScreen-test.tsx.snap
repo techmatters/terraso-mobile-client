@@ -455,6 +455,7 @@ exports[`renders correctly 1`] = `
                                     cursorColor="#028843"
                                     editable={true}
                                     maxFontSizeMultiplier={1.5}
+                                    maxLength={50}
                                     multiline={false}
                                     onBlur={[Function]}
                                     onChangeText={[Function]}
@@ -540,6 +541,7 @@ exports[`renders correctly 1`] = `
                                   "color": "#1A202C",
                                   "fontSize": 16,
                                   "fontWeight": "400",
+                                  "marginTop": -20,
                                 }
                               }
                             >
@@ -706,7 +708,7 @@ exports[`renders correctly 1`] = `
                                   <TextInput
                                     cursorColor="#028843"
                                     editable={true}
-                                    keyboardType="decimal-pad"
+                                    keyboardType="numeric"
                                     maxFontSizeMultiplier={1.5}
                                     multiline={false}
                                     onBlur={[Function]}
@@ -916,7 +918,7 @@ exports[`renders correctly 1`] = `
                                   <TextInput
                                     cursorColor="#028843"
                                     editable={true}
-                                    keyboardType="decimal-pad"
+                                    keyboardType="numeric"
                                     maxFontSizeMultiplier={1.5}
                                     multiline={false}
                                     onBlur={[Function]}

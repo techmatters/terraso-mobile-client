@@ -501,7 +501,6 @@ exports[`renders correctly 1`] = `
                                   },
                                   {
                                     "marginBottom": 23,
-                                    "marginHorizontal": 15,
                                   },
                                 ]
                               }
@@ -1656,7 +1655,6 @@ exports[`renders correctly 1`] = `
                                   },
                                   {
                                     "marginBottom": 23,
-                                    "marginHorizontal": 15,
                                   },
                                 ]
                               }
@@ -2811,7 +2809,6 @@ exports[`renders correctly 1`] = `
                                   },
                                   {
                                     "marginBottom": 23,
-                                    "marginHorizontal": 15,
                                   },
                                 ]
                               }
@@ -3966,7 +3963,6 @@ exports[`renders correctly 1`] = `
                                   },
                                   {
                                     "marginBottom": 23,
-                                    "marginHorizontal": 15,
                                   },
                                 ]
                               }
@@ -5121,7 +5117,6 @@ exports[`renders correctly 1`] = `
                                   },
                                   {
                                     "marginBottom": 23,
-                                    "marginHorizontal": 15,
                                   },
                                 ]
                               }
@@ -6276,7 +6271,6 @@ exports[`renders correctly 1`] = `
                                   },
                                   {
                                     "marginBottom": 23,
-                                    "marginHorizontal": 15,
                                   },
                                 ]
                               }
