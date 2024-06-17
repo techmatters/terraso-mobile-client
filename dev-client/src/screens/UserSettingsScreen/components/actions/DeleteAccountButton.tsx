@@ -19,10 +19,12 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
+import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 export function DeleteAccountButton() {
   const {t} = useTranslation();
+  const {isPending} = useUserDeletionRequests();
   const navigation = useNavigation();
   const onDeleteAccount = useCallback(
     () => navigation.navigate('DELETE_ACCOUNT'),
@@ -34,6 +36,10 @@ export function DeleteAccountButton() {
       type="error"
       iconName="delete"
       labelText={t('settings.delete_account')}
+      disabled={isPending}
+      subLabelText={
+        isPending ? t('settings.delete_account_pending') : undefined
+      }
       onPress={onDeleteAccount}
     />
   );

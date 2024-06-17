@@ -20,7 +20,7 @@ import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {DeleteAccountButton} from 'terraso-mobile-client/screens/UserSettingsScreen/components/actions/DeleteAccountButton';
-import {LogOutButton} from 'terraso-mobile-client/screens/UserSettingsScreen/components/actions/LogOutButton';
+import {SignOutButton} from 'terraso-mobile-client/screens/UserSettingsScreen/components/actions/SignOutButton';
 import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/UserIndicatorComponent';
 import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
 
@@ -30,7 +30,7 @@ export function UserSettingsScreen() {
       <Column height="full" margin="12px">
         <UserIndicator />
         <ButtonList>
-          <LogOutButton />
+          <SignOutButton />
           <DeleteAccountButton />
         </ButtonList>
         <VersionIndicator />

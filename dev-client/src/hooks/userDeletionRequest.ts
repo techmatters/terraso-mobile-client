@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback} from 'react';
 
 import {savePreference} from 'terraso-client-shared/account/accountSlice';
 
@@ -27,13 +27,12 @@ const PREFERENCES_VALUE = 'true';
 export const useUserDeletionRequests = () => {
   const dispatch = useDispatch();
   const {data: user} = useSelector(state => state.account.currentUser);
-  const [isPending, setIsPending] = useState(
-    user!.preferences[PREFERENCES_KEY] === PREFERENCES_VALUE,
-  );
+  const isSaving = useSelector(state => state.account.preferences.saving);
+  const isPending = user!.preferences[PREFERENCES_KEY] === PREFERENCES_VALUE;
+
   const requestDeletion = useCallback(() => {
-    setIsPending(true);
     dispatch(savePreference({key: PREFERENCES_KEY, value: PREFERENCES_VALUE}));
   }, [dispatch]);
 
-  return {user, isPending, requestDeletion};
+  return {user, isPending, requestDeletion, isSaving};
 };
