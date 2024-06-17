@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {View} from 'react-native';
+
 import {User} from 'terraso-client-shared/account/accountSlice';
 
 import {TranslatedBulletList} from 'terraso-mobile-client/components/content/typography/TranslatedBulletList';
@@ -36,21 +38,25 @@ export function DeleteAccountConfirmContent({
         i18nKey="delete_account.confirm.p0"
         values={{email}}
       />
-      <TranslatedParagraph i18nKey="delete_account.confirm.p1" />
-      <TranslatedBulletList
-        i18nKeys={[
-          'delete_account.confirm.p2.b0',
-          'delete_account.confirm.p2.b1',
-        ]}
-      />
-      <TranslatedParagraph i18nKey="delete_account.confirm.p3" />
-      <TranslatedBulletList
-        i18nKeys={[
-          'delete_account.confirm.p4.b0',
-          'delete_account.confirm.p4.b1',
-        ]}
-      />
-      <TranslatedParagraph i18nKey="delete_account.confirm.p5" />
+      <View>
+        <TranslatedParagraph i18nKey="delete_account.confirm.p1" />
+        <TranslatedBulletList
+          i18nKeys={[
+            'delete_account.confirm.p2.b0',
+            'delete_account.confirm.p2.b1',
+          ]}
+        />
+      </View>
+      <View>
+        <TranslatedParagraph i18nKey="delete_account.confirm.p3" />
+        <TranslatedBulletList
+          i18nKeys={[
+            'delete_account.confirm.p4.b0',
+            'delete_account.confirm.p4.b1',
+          ]}
+        />
+        <TranslatedParagraph i18nKey="delete_account.confirm.p5" />
+      </View>
     </Column>
   );
 }
