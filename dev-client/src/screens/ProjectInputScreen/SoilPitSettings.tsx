@@ -61,7 +61,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
 
   const isCustom = settings.depthIntervalPreset === 'CUSTOM';
 
-  const onAddDepthInterval = useCallback(
+  const onAddDepth = useCallback(
     async (interval: LabelledDepthInterval) => {
       await dispatch(updateProjectDepthInterval({projectId, ...interval}));
     },
@@ -137,7 +137,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
           )}
           Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
           <AddDepthModalBody
-            onSubmit={onAddDepthInterval}
+            onSubmit={onAddDepth}
             existingDepths={settings.depthIntervals}
           />
         </Modal>
