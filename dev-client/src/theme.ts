@@ -130,14 +130,6 @@ export const theme = extendTheme({
       },
     },
     Button: {
-      defaultProps: {
-        _text: {
-          textTransform: 'uppercase',
-        },
-        _pressed: {
-          bg: 'primary.dark',
-        },
-      },
       baseStyle: {
         _disabled: {
           opacity: '100',
@@ -179,7 +171,18 @@ export const theme = extendTheme({
         },
       },
       variants: {
+        outline: {
+          _text: {
+            textTransform: 'uppercase',
+          },
+        },
         solid: {
+          _text: {
+            textTransform: 'uppercase',
+          },
+          _pressed: {
+            bg: 'primary.dark',
+          },
           _disabled: {
             bg: 'action.disabledBackground',
             _text: {
@@ -209,7 +212,10 @@ export const theme = extendTheme({
           justifyContent: 'flex-start',
         },
         link: {
-          _text: {textDecorationLine: 'underline'},
+          _text: {textDecorationLine: 'underline', textTransform: 'uppercase'},
+        },
+        ghost: {
+          _text: {textTransform: 'uppercase'},
         },
       },
     },
