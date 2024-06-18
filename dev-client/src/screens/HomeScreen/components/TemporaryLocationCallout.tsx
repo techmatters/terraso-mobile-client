@@ -68,9 +68,9 @@ export const TemporaryLocationCallout = ({
   const onLearnMore = useCallback(() => {
     navigation.navigate('LOCATION_DASHBOARD', {
       coords,
-      elevation: siteElevationValue,
+      elevation: elevation,
     });
-  }, [navigation, coords, siteElevationValue]);
+  }, [navigation, coords, elevation]);
 
   return (
     <Card
