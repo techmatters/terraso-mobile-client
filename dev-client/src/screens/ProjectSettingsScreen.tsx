@@ -16,6 +16,7 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {StyleSheet} from 'react-native';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'native-base';
@@ -66,35 +67,45 @@ export function ProjectSettingsScreen({
   const userRole = useProjectRoleContext();
 
   return (
-    <ScrollView backgroundColor={theme.colors.background.default}>
-      <Column px={2} py={4} space={2} m={3} pb="50px">
+    <ScrollView
+      backgroundColor={theme.colors.primary.contrast}
+      contentContainerStyle={styles.scrollview}>
+      <Column space={4} m={3} mb="50px" style={styles.column}>
         <EditProjectForm
           onSubmit={onSubmit}
           name={name}
           description={description}
           userRole={userRole}
         />
-        <Column space={1}>
-          <RestrictByProjectRole role="MANAGER">
-            <ConfirmModal
-              title={t('projects.settings.delete_button_prompt')}
-              actionName={t('projects.settings.delete_button')}
-              body={t('projects.settings.delete_description')}
-              handleConfirm={triggerDeleteProject}
-              trigger={onOpen => (
-                <IconLink
-                  iconName="delete"
-                  underlined={false}
-                  onPress={onOpen}
-                  color="error.main"
-                  textTransform="uppercase">
-                  {t('projects.settings.delete')}
-                </IconLink>
-              )}
-            />
-          </RestrictByProjectRole>
-        </Column>
+        <RestrictByProjectRole role="MANAGER">
+          <ConfirmModal
+            title={t('projects.settings.delete_button_prompt')}
+            actionName={t('projects.settings.delete_button')}
+            body={t('projects.settings.delete_description')}
+            handleConfirm={triggerDeleteProject}
+            trigger={onOpen => (
+              <IconLink
+                iconName="delete"
+                underlined={false}
+                onPress={onOpen}
+                pt="20px"
+                color="error.main"
+                textTransform="uppercase">
+                {t('projects.settings.delete')}
+              </IconLink>
+            )}
+          />
+        </RestrictByProjectRole>
       </Column>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollview: {
+    flexGrow: 1,
+  },
+  column: {
+    flex: 1,
+  },
+});

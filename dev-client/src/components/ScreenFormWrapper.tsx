@@ -17,7 +17,7 @@
 
 import {forwardRef, useCallback, useImperativeHandle, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {KeyboardAvoidingView, Platform} from 'react-native';
+import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 
 import {Formik, FormikProps} from 'formik';
 import {Button, Spacer} from 'native-base';
@@ -86,8 +86,7 @@ export const ScreenFormWrapper = forwardRef(
       <ScreenScaffold BottomNavigation={null} AppBar={null}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Handle platform-specific keyboard avoidance
-          // eslint-disable-next-line react-native/no-inline-styles
-          style={{flex: 1}}>
+          style={styles.view}>
           <Formik
             innerRef={formikRef}
             initialValues={initialValues}
@@ -101,14 +100,13 @@ export const ScreenFormWrapper = forwardRef(
               trigger={onOpen => (
                 <Box pt={2} pr={5}>
                   <HorizontalIconButton
-                    p={0}
                     name="delete"
                     isUppercase={true}
                     label={t('general.delete_fab')}
                     colorScheme="error.main"
                     _icon={{
                       color: 'error.main',
-                      size: '5',
+                      size: 'md',
                     }}
                     isDisabled={isSubmitting}
                     onPress={() => conditionallyConfirmDelete(onOpen)}
@@ -134,3 +132,7 @@ export const ScreenFormWrapper = forwardRef(
     );
   },
 );
+
+const styles = StyleSheet.create({
+  view: {flex: 1},
+});

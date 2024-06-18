@@ -1686,6 +1686,7 @@ exports[`renders correctly 1`] = `
                                         "fontSize": 16,
                                         "fontWeight": "400",
                                         "paddingLeft": 4,
+                                        "paddingTop": 4,
                                         "textTransform": "uppercase",
                                       }
                                     }
@@ -1889,6 +1890,7 @@ exports[`renders correctly 1`] = `
                                         "fontSize": 16,
                                         "fontWeight": "400",
                                         "paddingLeft": 4,
+                                        "paddingTop": 4,
                                         "textTransform": "uppercase",
                                       }
                                     }

@@ -65,6 +65,7 @@ export const HorizontalIconButton = React.forwardRef(
               color={colorScheme}
               fontSize="md"
               pl={1}
+              pt="4px"
               textTransform={isUppercase ? 'uppercase' : 'none'}>
               {label}
             </Text>
