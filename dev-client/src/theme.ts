@@ -41,6 +41,7 @@ export const theme = extendTheme({
     },
     secondary: {
       main: '#C05621',
+      dark: '#9C4221',
     },
     error: {
       main: '#D32F2F',
@@ -130,6 +131,11 @@ export const theme = extendTheme({
       },
     },
     Button: {
+      defaultProps: {
+        _pressed: {
+          bg: 'primary.dark',
+        },
+      },
       baseStyle: {
         _disabled: {
           opacity: '100',
@@ -302,6 +308,9 @@ export const theme = extendTheme({
         },
       },
       defaultProps: {
+        _pressed: {
+          bg: 'secondary.dark',
+        },
         size: 'sm',
         _icon: {
           size: 'md',
