@@ -25,7 +25,10 @@ import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Column,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -60,6 +63,8 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   return (
     <ScreenScaffold BottomNavigation={null} AppBar={<AppBar title={name} />}>
       <Column px="16px" py="22px" space="20px" alignItems="flex-start">
+        <Heading variant="h6">{t('site.dashboard.settings_title')}</Heading>
+
         <TextInput
           maxLength={SITE_NAME_MAX_LENGTH}
           value={name}
