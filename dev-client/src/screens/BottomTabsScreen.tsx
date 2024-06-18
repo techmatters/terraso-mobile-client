@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {memo} from 'react';
+import {memo, useLayoutEffect, useState} from 'react';
+import {Keyboard} from 'react-native';
 
 import {NavigationHelpers} from '@react-navigation/native';
 
@@ -29,16 +30,36 @@ import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 
 export const BottomTabsScreen = memo(() => {
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+
+  useLayoutEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
     <BottomTabs.Navigator
-      tabBar={props => (
-        <BottomNavigator
-          navigation={
-            props.navigation as NavigationHelpers<BottomTabsParamList>
-          }
-        />
-      )}
-      screenOptions={{headerShown: false}}>
+      tabBar={props =>
+        keyboardStatus ? (
+          <></>
+        ) : (
+          <BottomNavigator
+            navigation={
+              props.navigation as NavigationHelpers<BottomTabsParamList>
+            }
+          />
+        )
+      }
+      screenOptions={{headerShown: false, tabBarHideOnKeyboard: true}}>
       <BottomTabs.Screen name="HOME" component={HomeScreen} />
       <BottomTabs.Screen name="PROJECT_LIST" component={ProjectListScreen} />
       <BottomTabs.Screen name="SETTINGS" component={UserSettingsScreen} />
