@@ -15,31 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-export const SOIL_DATA: any = {
-  depthDependentData: [
-    {
-      depthInterval: {start: 0, end: 10},
-      texture: 'CLAY',
-      colorChroma: 0.5,
-      colorHue: 0.5,
-      colorValue: 0.5,
-      rockFragment: 'VOLUME_60',
-    },
-    {
-      depthInterval: {start: 11, end: 20},
-      texture: 'SANDY_CLAY_LOAM',
-      colorChroma: 0.4,
-      colorHue: 0.4,
-      colorValue: 0.4,
-      rockFragment: 'VOLUME_1_15',
-    },
-    {
-      depthInterval: {start: 100, end: 120},
-      texture: undefined,
-      colorChroma: undefined,
-      colorHue: undefined,
-      colorValue: undefined,
-      rockFragment: undefined,
-    },
-  ],
+import {useMemo, useState} from 'react';
+
+import {Coords} from 'terraso-client-shared/types';
+
+import {getElevation} from 'terraso-mobile-client/services';
+
+export const useElevationData = (coords: Coords): number => {
+  const [siteElevationValue, setSiteElevationValue] = useState(0);
+
+  useMemo(async () => {
+    const elevation = await getElevation(coords.latitude, coords.longitude);
+    if (elevation !== undefined) {
+      setSiteElevationValue(elevation);
+    }
+  }, [coords]);
+
+  return siteElevationValue;
 };

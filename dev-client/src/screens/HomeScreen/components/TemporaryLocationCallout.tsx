@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
@@ -31,13 +31,12 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
+import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {useElevationData} from 'terraso-mobile-client/hooks/useElevationData';
+import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
 import {LatLngDetail} from 'terraso-mobile-client/screens/HomeScreen/components/LatLngDetail';
-import {getElevation} from 'terraso-mobile-client/services';
-
-const TEMP_SOIL_ID_VALUE = 'Clifton';
-const TEMP_ECO_SITE_PREDICTION = 'Loamy Upland';
 
 type Props = {
   coords: Coords;
@@ -52,22 +51,19 @@ export const TemporaryLocationCallout = ({
 }: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const [siteElevationValue, setSiteElevationValue] = useState(0);
 
-  useMemo(async () => {
-    const elevation = await getElevation(coords.latitude, coords.longitude);
-    if (elevation !== undefined) {
-      setSiteElevationValue(elevation);
-    }
-  }, [coords]);
+  const elevation = useElevationData(coords);
+  const soilIdData = useSoilIdData(coords);
+  const isSoilIdReady = soilIdData.status === 'ready';
+  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
 
   const onCreate = useCallback(() => {
     navigation.navigate('CREATE_SITE', {
       coords,
-      elevation: siteElevationValue,
+      elevation: elevation,
     });
     closeCallout();
-  }, [closeCallout, navigation, coords, siteElevationValue]);
+  }, [closeCallout, navigation, coords, elevation]);
 
   const onLearnMore = useCallback(() => {
     navigation.navigate('LOCATION_DASHBOARD', {coords});
@@ -81,20 +77,28 @@ export const TemporaryLocationCallout = ({
       buttons={<CloseButton onPress={closeCallout} />}
       isPopover={true}>
       <Column mt="12px" space="12px">
-        <CalloutDetail
-          label={t('site.soil_id_prediction')}
-          value={TEMP_SOIL_ID_VALUE}
-        />
-        <Divider />
-        <CalloutDetail
-          label={t('site.ecological_site_prediction')}
-          value={TEMP_ECO_SITE_PREDICTION}
-        />
-        <Divider />
-        {siteElevationValue ? (
+        {!isSoilIdReady && <ActivityIndicator size="small" />}
+        {topSoilMatch && (
+          <>
+            <CalloutDetail
+              label={t('site.soil_id_prediction')}
+              value={topSoilMatch.soilInfo.soilSeries.name}
+            />
+            <Divider />
+            <CalloutDetail
+              label={t('site.ecological_site_prediction')}
+              value={
+                topSoilMatch.soilInfo.ecologicalSite?.name ??
+                t('site.soil_id.soil_info.no_matches')
+              }
+            />
+            <Divider />
+          </>
+        )}
+        {elevation ? (
           <CalloutDetail
             label={t('site.elevation_label')}
-            value={renderElevation(t, siteElevationValue)}
+            value={renderElevation(t, elevation)}
           />
         ) : (
           <ActivityIndicator size="small" />
