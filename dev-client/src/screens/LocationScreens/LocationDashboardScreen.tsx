@@ -39,7 +39,9 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 import {isSiteManager} from 'terraso-mobile-client/util';
 
-type Props = ({siteId: string} | {coords: Coords}) & {initialTab?: SiteTabName};
+type Props = ({siteId: string} | {coords: Coords} | {elevation: number}) & {
+  initialTab?: SiteTabName;
+};
 
 // A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with only coords)
 export const LocationDashboardScreen = (props: Props) => {
@@ -53,6 +55,8 @@ export const LocationDashboardScreen = (props: Props) => {
     siteId === undefined ? undefined : selectSite(siteId)(state),
   );
   const coords = 'coords' in props ? props.coords : site!;
+
+  const elevation = 'elevation' in props ? props.elevation : undefined;
 
   const userRole = useSelector(state =>
     siteId === undefined ? null : selectUserRoleSite(state, siteId),
@@ -103,7 +107,11 @@ export const LocationDashboardScreen = (props: Props) => {
             />
           </SiteRoleContextProvider>
         ) : (
-          <LocationDashboardContent siteId={siteId} coords={coords} />
+          <LocationDashboardContent
+            siteId={siteId}
+            coords={coords}
+            elevation={elevation}
+          />
         )}
         <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
       </ScreenScaffold>
