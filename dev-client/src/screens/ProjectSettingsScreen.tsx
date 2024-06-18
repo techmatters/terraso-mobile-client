@@ -83,7 +83,7 @@ export function ProjectSettingsScreen({
               handleConfirm={triggerDeleteProject}
               trigger={onOpen => (
                 <IconLink
-                  iconName="delete-forever"
+                  iconName="delete"
                   underlined={false}
                   onPress={onOpen}
                   color="error.main"
