@@ -54,7 +54,7 @@ export const SiteNoteCard = ({note}: Props) => {
       mr={4}
       onPress={onShowNote}>
       <Row>
-        <Text italic>
+        <Text variant="body2" italic>
           {t('site.notes.note_attribution', {
             createdAt: formatDate(note.createdAt),
             name: formatFullName(note.authorFirstName, note.authorLastName),
@@ -71,7 +71,7 @@ export const SiteNoteCard = ({note}: Props) => {
           onPress={onEditNote}
         />
       </Row>
-      <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">
+      <Text pt={2} numberOfLines={3} ellipsizeMode="tail">
         {note.content}
       </Text>
     </Card>

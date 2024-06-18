@@ -38,9 +38,12 @@ export default function IconLink({
 }: Props) {
   return (
     <Link
-      _text={{color, fontSize: 'xs', textTransform: 'uppercase'}}
-      alignItems="center"
-      alignContent="flex-start"
+      _text={{
+        color,
+        fontWeight: 500,
+        fontSize: 'md',
+        textTransform: 'uppercase',
+      }}
       isUnderlined={underlined}
       {...props}>
       <Icon name={iconName} color={color} size="md" mr={3} />

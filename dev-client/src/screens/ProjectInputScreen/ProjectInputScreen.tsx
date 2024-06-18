@@ -115,26 +115,17 @@ export const ProjectInputScreen = ({
             />
           </Row>
           <RestrictByProjectRole role="MANAGER">
-            <Text bold fontSize="md">
-              {t('projects.inputs.instructions.title')}
-            </Text>
-            <Text fontSize="md">
-              {t('projects.inputs.instructions.description')}
-            </Text>
+            <Text bold>{t('projects.inputs.instructions.title')}</Text>
+            <Text>{t('projects.inputs.instructions.description')}</Text>
             <Button
               mt={2}
               pl={4}
               pr={4}
               size="lg"
-              backgroundColor="primary.main"
               shadow={5}
-              onPress={onEditInstructions}>
-              <Row>
-                <Icon color="primary.contrast" size="sm" mr={2} name="edit" />
-                <Text color="primary.contrast" textTransform="uppercase">
-                  {t('projects.inputs.instructions.add_label')}
-                </Text>
-              </Row>
+              onPress={onEditInstructions}
+              leftIcon={<Icon name="push-pin" />}>
+              {t('projects.inputs.instructions.add_label')}
             </Button>
           </RestrictByProjectRole>
         </Box>

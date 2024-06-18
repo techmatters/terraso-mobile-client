@@ -74,7 +74,6 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
         <Box pl={4} pb={4} alignItems="flex-start">
           <Button
             size="lg"
-            backgroundColor="primary.dark"
             shadow={5}
             onPress={onAddNote}
             _text={{textTransform: 'uppercase'}}>

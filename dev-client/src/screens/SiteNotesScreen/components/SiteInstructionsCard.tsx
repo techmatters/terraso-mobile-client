@@ -47,7 +47,7 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
       mr={4}
       onPress={onShowNote}>
       <Row>
-        <Icon name="place" color="primary.dark" size="sm" mr={1} />
+        <Icon name="push-pin" color="primary.dark" size="sm" mr={1} />
         <Text bold fontSize="md">
           {t('site.notes.project_instructions')}
         </Text>
