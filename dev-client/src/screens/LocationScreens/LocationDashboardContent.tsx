@@ -236,7 +236,10 @@ export const LocationDashboardContent = ({
           <LocationPrediction
             label={t('soil.soil_id')}
             soilName={topSoilMatch.soilInfo.soilSeries.name}
-            ecologicalSiteName={topSoilMatch.soilInfo.ecologicalSite?.name}
+            ecologicalSiteName={
+              topSoilMatch.soilInfo.ecologicalSite?.name ??
+              t('site.soil_id.soil_info.no_matches')
+            }
             onExploreDataPress={onExploreDataPress}
           />
         )}
