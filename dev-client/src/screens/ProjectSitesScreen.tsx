@@ -34,7 +34,6 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {normalizeText} from 'terraso-client-shared/utils';
 
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   ListFilterModal,
@@ -65,17 +64,15 @@ import {theme} from 'terraso-mobile-client/theme';
 import {searchText} from 'terraso-mobile-client/util';
 
 type SiteMenuProps = {
-  iconName: IconName;
   text: string;
   onPress?: () => void;
 };
 
-const SiteMenuItem = ({iconName, text, onPress}: SiteMenuProps) => {
+const SiteMenuItem = ({text, onPress}: SiteMenuProps) => {
   return (
     <Menu.Item>
       <Pressable onPress={onPress}>
         <Row flexDirection="row" space={2} alignItems="center">
-          <Icon name={iconName} size="xs" />
           <Text>{text}</Text>
         </Row>
       </Pressable>
@@ -110,7 +107,6 @@ const SiteMenu = ({site}: SiteProps) => {
       <ConfirmModal
         trigger={onOpen => (
           <SiteMenuItem
-            iconName="remove"
             text={t('projects.sites.remove_site')}
             onPress={onOpen}
           />
@@ -124,7 +120,6 @@ const SiteMenu = ({site}: SiteProps) => {
       <ConfirmModal
         trigger={onOpen => (
           <SiteMenuItem
-            iconName="delete"
             onPress={onOpen}
             text={t('projects.sites.delete_site')}
           />
