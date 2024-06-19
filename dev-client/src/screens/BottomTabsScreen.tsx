@@ -15,11 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {memo, useLayoutEffect, useState} from 'react';
-import {Keyboard} from 'react-native';
+import {memo} from 'react';
 
 import {NavigationHelpers} from '@react-navigation/native';
 
+import {useKeyboardStatus} from 'terraso-mobile-client/hooks/useKeyboardStatus';
 import {
   BottomNavigator,
   BottomTabs,
@@ -30,21 +30,7 @@ import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 
 export const BottomTabsScreen = memo(() => {
-  const [keyboardStatus, setKeyboardStatus] = useState(false);
-
-  useLayoutEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardStatus(true);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardStatus(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
+  const {keyboardStatus} = useKeyboardStatus();
 
   return (
     <BottomTabs.Navigator
