@@ -99,44 +99,260 @@ exports[`renders correctly 1`] = `
                 ]
               }
             >
-              <View
-                style={
+              <RCTScrollView
+                contentContainerStyle={
                   [
+                    {},
                     {
-                      "flexDirection": "column",
+                      "dataSet": {},
                     },
-                    {
-                      "rowGap": 1,
-                    },
+                    {},
                   ]
                 }
-              >
-                <View
-                  style={
-                    [
-                      {
-                        "flexDirection": "row",
-                      },
-                      {
-                        "alignItems": "center",
-                        "backgroundColor": "#FFFFFF",
-                        "padding": 15,
-                      },
-                    ]
+                dataSet={{}}
+                style={
+                  {
+                    "backgroundColor": "#E0E0E0",
                   }
-                >
-                  <Text
-                    lineHeight="32px"
+                }
+              >
+                <View>
+                  <View
                     style={
-                      {
-                        "color": "#1A202C",
-                        "fontSize": 20,
-                        "fontWeight": "500",
-                      }
+                      [
+                        {
+                          "flexDirection": "row",
+                        },
+                        {
+                          "alignItems": "center",
+                          "backgroundColor": "#FFFFFF",
+                          "padding": 15,
+                        },
+                      ]
                     }
                   >
-                    Slope
-                  </Text>
+                    <Text
+                      lineHeight="32px"
+                      style={
+                        {
+                          "color": "#1A202C",
+                          "fontSize": 20,
+                          "fontWeight": "500",
+                        }
+                      }
+                    >
+                      Slope
+                    </Text>
+                    <View
+                      accessibilityState={
+                        {
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
+                        {
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                    >
+                      <View
+                        accessibilityRole="button"
+                        accessibilityState={
+                          {
+                            "busy": undefined,
+                            "checked": undefined,
+                            "disabled": undefined,
+                            "expanded": undefined,
+                            "selected": undefined,
+                          }
+                        }
+                        accessibilityValue={
+                          {
+                            "max": undefined,
+                            "min": undefined,
+                            "now": undefined,
+                            "text": undefined,
+                          }
+                        }
+                        accessible={true}
+                        collapsable={false}
+                        colorScheme="primary"
+                        dataSet={{}}
+                        focusable={true}
+                        onBlur={[Function]}
+                        onClick={[Function]}
+                        onFocus={[Function]}
+                        onResponderGrant={[Function]}
+                        onResponderMove={[Function]}
+                        onResponderRelease={[Function]}
+                        onResponderTerminate={[Function]}
+                        onResponderTerminationRequest={[Function]}
+                        onStartShouldSetResponder={[Function]}
+                        style={
+                          {
+                            "alignItems": "center",
+                            "borderRadius": 4,
+                            "flexDirection": "row",
+                            "justifyContent": "center",
+                            "marginLeft": 6,
+                            "paddingBottom": 0,
+                            "paddingLeft": 0,
+                            "paddingRight": 0,
+                            "paddingTop": 0,
+                          }
+                        }
+                      >
+                        <Icon
+                          color="#1A202CB2"
+                          name="info"
+                          size={24}
+                          style={{}}
+                        />
+                      </View>
+                    </View>
+                    <RCTScrollView
+                      focusHook={[Function]}
+                    >
+                      <View>
+                        <View
+                          style={
+                            [
+                              {
+                                "flexDirection": "column",
+                              },
+                              {
+                                "padding": 16,
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              [
+                                {
+                                  "flexDirection": "row",
+                                },
+                                {
+                                  "alignItems": "center",
+                                  "marginBottom": 16,
+                                },
+                              ]
+                            }
+                          >
+                            <Text
+                              lineHeight="32px"
+                              style={
+                                {
+                                  "color": "#1A202C",
+                                  "fontSize": 24,
+                                  "fontWeight": "700",
+                                }
+                              }
+                            >
+                              Slope
+                            </Text>
+                            <View
+                              style={
+                                {
+                                  "flex": 1,
+                                }
+                              }
+                            />
+                            <View
+                              accessibilityRole="button"
+                              accessibilityState={
+                                {
+                                  "busy": undefined,
+                                  "checked": undefined,
+                                  "disabled": undefined,
+                                  "expanded": undefined,
+                                  "selected": undefined,
+                                }
+                              }
+                              accessibilityValue={
+                                {
+                                  "max": undefined,
+                                  "min": undefined,
+                                  "now": undefined,
+                                  "text": undefined,
+                                }
+                              }
+                              accessible={true}
+                              collapsable={false}
+                              colorScheme="primary"
+                              dataSet={{}}
+                              focusable={true}
+                              onBlur={[Function]}
+                              onClick={[Function]}
+                              onFocus={[Function]}
+                              onResponderGrant={[Function]}
+                              onResponderMove={[Function]}
+                              onResponderRelease={[Function]}
+                              onResponderTerminate={[Function]}
+                              onResponderTerminationRequest={[Function]}
+                              onStartShouldSetResponder={[Function]}
+                              style={
+                                {
+                                  "alignItems": "center",
+                                  "backgroundColor": "#EEEEEE",
+                                  "borderRadius": 9999,
+                                  "flexDirection": "row",
+                                  "justifyContent": "center",
+                                  "paddingBottom": 16,
+                                  "paddingLeft": 16,
+                                  "paddingRight": 16,
+                                  "paddingTop": 16,
+                                }
+                              }
+                            >
+                              <Icon
+                                color="#1A202C"
+                                name="close"
+                                size={24}
+                                style={{}}
+                              />
+                            </View>
+                          </View>
+                          <Text
+                            letterSpacing="0.15px"
+                            lineHeight="24px"
+                            style={
+                              {
+                                "color": "#1A202C",
+                                "fontSize": 16,
+                                "fontWeight": "400",
+                              }
+                            }
+                          >
+                            Describe the characteristics of the slope of the land on which the site is located.
+
+Instructions on how to collect each data input are available by tapping on the input name.
+
+Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more.
+                          </Text>
+                        </View>
+                      </View>
+                    </RCTScrollView>
+                  </View>
                   <View
                     accessibilityState={
                       {
@@ -169,367 +385,158 @@ exports[`renders correctly 1`] = `
                     onStartShouldSetResponder={[Function]}
                   >
                     <View
-                      accessibilityRole="button"
-                      accessibilityState={
-                        {
-                          "busy": undefined,
-                          "checked": undefined,
-                          "disabled": undefined,
-                          "expanded": undefined,
-                          "selected": undefined,
-                        }
-                      }
-                      accessibilityValue={
-                        {
-                          "max": undefined,
-                          "min": undefined,
-                          "now": undefined,
-                          "text": undefined,
-                        }
-                      }
-                      accessible={true}
-                      collapsable={false}
-                      colorScheme="primary"
-                      dataSet={{}}
-                      focusable={true}
-                      onBlur={[Function]}
-                      onClick={[Function]}
-                      onFocus={[Function]}
-                      onResponderGrant={[Function]}
-                      onResponderMove={[Function]}
-                      onResponderRelease={[Function]}
-                      onResponderTerminate={[Function]}
-                      onResponderTerminationRequest={[Function]}
-                      onStartShouldSetResponder={[Function]}
                       style={
-                        {
-                          "alignItems": "center",
-                          "borderRadius": 4,
-                          "flexDirection": "row",
-                          "justifyContent": "center",
-                          "marginLeft": 6,
-                          "paddingBottom": 0,
-                          "paddingLeft": 0,
-                          "paddingRight": 0,
-                          "paddingTop": 0,
-                        }
+                        [
+                          {
+                            "flexDirection": "row",
+                          },
+                          {
+                            "backgroundColor": "#E2FFE5",
+                            "padding": 15,
+                          },
+                        ]
                       }
                     >
-                      <Icon
-                        color="#1A202CB2"
-                        name="info"
-                        size={24}
-                        style={{}}
-                      />
-                    </View>
-                  </View>
-                  <RCTScrollView
-                    focusHook={[Function]}
-                  >
-                    <View>
                       <View
                         style={
-                          [
-                            {
-                              "flexDirection": "column",
-                            },
-                            {
-                              "padding": 16,
-                            },
-                          ]
+                          {
+                            "width": 37,
+                          }
                         }
                       >
-                        <View
-                          style={
-                            [
-                              {
-                                "flexDirection": "row",
-                              },
-                              {
-                                "alignItems": "center",
-                                "marginBottom": 16,
-                              },
-                            ]
-                          }
-                        >
-                          <Text
-                            lineHeight="32px"
-                            style={
-                              {
-                                "color": "#1A202C",
-                                "fontSize": 24,
-                                "fontWeight": "700",
-                              }
-                            }
-                          >
-                            Slope
-                          </Text>
-                          <View
-                            style={
-                              {
-                                "flex": 1,
-                              }
-                            }
-                          />
-                          <View
-                            accessibilityRole="button"
-                            accessibilityState={
-                              {
-                                "busy": undefined,
-                                "checked": undefined,
-                                "disabled": undefined,
-                                "expanded": undefined,
-                                "selected": undefined,
-                              }
-                            }
-                            accessibilityValue={
-                              {
-                                "max": undefined,
-                                "min": undefined,
-                                "now": undefined,
-                                "text": undefined,
-                              }
-                            }
-                            accessible={true}
-                            collapsable={false}
-                            colorScheme="primary"
-                            dataSet={{}}
-                            focusable={true}
-                            onBlur={[Function]}
-                            onClick={[Function]}
-                            onFocus={[Function]}
-                            onResponderGrant={[Function]}
-                            onResponderMove={[Function]}
-                            onResponderRelease={[Function]}
-                            onResponderTerminate={[Function]}
-                            onResponderTerminationRequest={[Function]}
-                            onStartShouldSetResponder={[Function]}
-                            style={
-                              {
-                                "alignItems": "center",
-                                "backgroundColor": "#EEEEEE",
-                                "borderRadius": 9999,
-                                "flexDirection": "row",
-                                "justifyContent": "center",
-                                "paddingBottom": 16,
-                                "paddingLeft": 16,
-                                "paddingRight": 16,
-                                "paddingTop": 16,
-                              }
-                            }
-                          >
-                            <Icon
-                              color="#1A202C"
-                              name="close"
-                              size={24}
-                              style={{}}
-                            />
-                          </View>
-                        </View>
-                        <Text
-                          letterSpacing="0.15px"
-                          lineHeight="24px"
+                        <Icon
+                          color="#00582B"
+                          name="check-circle"
+                          size={24}
                           style={
                             {
-                              "color": "#1A202C",
-                              "fontSize": 16,
-                              "fontWeight": "400",
+                              "marginTop": -3,
                             }
                           }
-                        >
-                          Describe the characteristics of the slope of the land on which the site is located.
-
-Instructions on how to collect each data input are available by tapping on the input name.
-
-Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more.
-                        </Text>
+                        />
                       </View>
+                      <Text
+                        letterSpacing="0.17px"
+                        lineHeight="20px"
+                        style={
+                          {
+                            "color": "#1A202C",
+                            "fontSize": 14,
+                            "fontWeight": "700",
+                            "textTransform": "uppercase",
+                          }
+                        }
+                      >
+                        STEEPNESS
+                      </Text>
+                      <View
+                        style={
+                          {
+                            "flex": 1,
+                          }
+                        }
+                      />
+                      <Text
+                        letterSpacing="0.17px"
+                        lineHeight="20px"
+                        style={
+                          {
+                            "color": "#1A202C",
+                            "fontSize": 14,
+                            "fontWeight": "400",
+                          }
+                        }
+                      >
+                        Flat 0–2%
+                      </Text>
                     </View>
-                  </RCTScrollView>
-                </View>
-                <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
-                >
+                  </View>
                   <View
-                    style={
-                      [
-                        {
-                          "flexDirection": "row",
-                        },
-                        {
-                          "backgroundColor": "#E2FFE5",
-                          "padding": 15,
-                        },
-                      ]
+                    accessibilityState={
+                      {
+                        "busy": undefined,
+                        "checked": undefined,
+                        "disabled": undefined,
+                        "expanded": undefined,
+                        "selected": undefined,
+                      }
                     }
+                    accessibilityValue={
+                      {
+                        "max": undefined,
+                        "min": undefined,
+                        "now": undefined,
+                        "text": undefined,
+                      }
+                    }
+                    accessible={true}
+                    collapsable={false}
+                    focusable={true}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onFocus={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
                   >
                     <View
                       style={
-                        {
-                          "width": 37,
-                        }
+                        [
+                          {
+                            "flexDirection": "row",
+                          },
+                          {
+                            "backgroundColor": "#FFFFFF",
+                            "padding": 15,
+                          },
+                        ]
                       }
                     >
-                      <Icon
-                        color="#00582B"
-                        name="check-circle"
-                        size={24}
+                      <View
                         style={
                           {
-                            "marginTop": -3,
+                            "width": 37,
+                          }
+                        }
+                      >
+                        <Icon
+                          name="radio-button-unchecked"
+                          size={24}
+                          style={
+                            {
+                              "marginTop": -3,
+                            }
+                          }
+                        />
+                      </View>
+                      <Text
+                        letterSpacing="0.17px"
+                        lineHeight="20px"
+                        style={
+                          {
+                            "color": "#1A202C",
+                            "fontSize": 14,
+                            "fontWeight": "700",
+                            "textTransform": "uppercase",
+                          }
+                        }
+                      >
+                        SHAPE
+                      </Text>
+                      <View
+                        style={
+                          {
+                            "flex": 1,
                           }
                         }
                       />
                     </View>
-                    <Text
-                      letterSpacing="0.17px"
-                      lineHeight="20px"
-                      style={
-                        {
-                          "color": "#1A202C",
-                          "fontSize": 14,
-                          "fontWeight": "700",
-                          "textTransform": "uppercase",
-                        }
-                      }
-                    >
-                      STEEPNESS
-                    </Text>
-                    <View
-                      style={
-                        {
-                          "flex": 1,
-                        }
-                      }
-                    />
-                    <Text
-                      letterSpacing="0.17px"
-                      lineHeight="20px"
-                      style={
-                        {
-                          "color": "#1A202C",
-                          "fontSize": 14,
-                          "fontWeight": "400",
-                        }
-                      }
-                    >
-                      Flat 0–2%
-                    </Text>
                   </View>
                 </View>
-                <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
-                >
-                  <View
-                    style={
-                      [
-                        {
-                          "flexDirection": "row",
-                        },
-                        {
-                          "backgroundColor": "#FFFFFF",
-                          "padding": 15,
-                        },
-                      ]
-                    }
-                  >
-                    <View
-                      style={
-                        {
-                          "width": 37,
-                        }
-                      }
-                    >
-                      <Icon
-                        name="radio-button-unchecked"
-                        size={24}
-                        style={
-                          {
-                            "marginTop": -3,
-                          }
-                        }
-                      />
-                    </View>
-                    <Text
-                      letterSpacing="0.17px"
-                      lineHeight="20px"
-                      style={
-                        {
-                          "color": "#1A202C",
-                          "fontSize": 14,
-                          "fontWeight": "700",
-                          "textTransform": "uppercase",
-                        }
-                      }
-                    >
-                      SHAPE
-                    </Text>
-                    <View
-                      style={
-                        {
-                          "flex": 1,
-                        }
-                      }
-                    />
-                  </View>
-                </View>
-              </View>
+              </RCTScrollView>
             </View>
           </View>
           <RNSScreenStackHeaderConfig
