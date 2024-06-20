@@ -19,16 +19,13 @@ import {useTranslation} from 'react-i18next';
 
 import {Image} from 'native-base';
 
-import {User} from 'terraso-client-shared/account/accountSlice';
-
 import {
   Column,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/UserDisplay';
 import {formatName} from 'terraso-mobile-client/util';
-
-export type UserFields = Omit<User, 'preferences'>;
 
 type DisplayProps = {
   user: UserFields;

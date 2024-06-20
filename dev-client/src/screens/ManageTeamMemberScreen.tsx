@@ -32,14 +32,13 @@ import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal
 import {
   Box,
   Column,
-  Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {MinimalUserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
+import {ProjectRoleRadioBlock} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/ProjectRoleRadioBlock';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -91,32 +90,12 @@ export const ManageTeamMemberScreen = ({
           <Box ml="md" my="lg">
             <MinimalUserDisplay user={user} />
           </Box>
-          <Heading variant="h6">
-            {t('projects.manage_member.project_role')}
-          </Heading>
 
-          <RadioBlock<ProjectRole>
-            labelProps={{variant: 'secondary'}}
-            options={{
-              VIEWER: {
-                text: t('general.role.VIEWER'),
-                helpText: t('projects.manage_member.viewer_help'),
-              },
-              CONTRIBUTOR: {
-                text: t('general.role.CONTRIBUTOR'),
-                helpText: t('projects.manage_member.contributor_help'),
-              },
-              MANAGER: {
-                text: t('general.role.MANAGER'),
-                helpText: t('projects.manage_member.manager_help'),
-              },
-            }}
-            groupProps={{
-              onChange: setSelectedRole,
-              value: selectedRole,
-              name: 'selected-role',
-            }}
+          <ProjectRoleRadioBlock
+            onChange={setSelectedRole}
+            selectedRole={selectedRole}
           />
+
           <Divider my="20px" alignSelf="center" />
 
           <ConfirmModal
