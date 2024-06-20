@@ -101,14 +101,12 @@ export const ManageTeamMemberScreen = ({
           <ConfirmModal
             trigger={onOpen => (
               <Button
-                size="sm"
+                size="lg"
                 variant="ghost"
-                alignSelf="start"
-                width="70%"
+                alignSelf="flex-start"
                 onPress={onOpen}
-                _text={{color: 'error.main'}}
+                _text={{color: 'error.main', textTransform: 'uppercase'}}
                 _pressed={{backgroundColor: 'red.100'}}
-                textTransform="uppercase"
                 leftIcon={<Icon name="delete" color="error.main" />}>
                 {t('projects.manage_member.remove')}
               </Button>
