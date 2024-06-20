@@ -18,7 +18,7 @@ body:
   id: platform
   attributes:
     label: Platforms
-    description: If the problem is limited to a specific platorm, indicate which one.
+    description: If the problem is limited to a specific platform, indicate which one.
     options:
       - label: "iOS"
       - label: "Android"
