@@ -309,18 +309,16 @@
     "add_user": {
       "heading": "Add Team Member",
       "help_text": "Enter the email address of the person’s Terraso account. A Terraso account can be created by installing the LandPKS Soil ID app and signing in.",
-      "user_does_not_exist": "User {{email}} is not a Terraso user, unable to add to project.",
-      "user_in_project": "User {{email}} is already a member of this project.",
-      "already_added": "User {{email}} already added to user list.",
-      "empty_email": "Please enter an email",
-      "invalid_email": "Not a valid email"
+      "user_does_not_exist": "No Terraso account found",
+      "user_in_project": "Already a team member",
+      "invalid_email": "Enter a valid email address"
     },
     "manage_member": {
       "title": "Manage Team Member",
       "project_role": "Project Role",
-      "manager_help": "Can view and edit all aspects of the projects and its affiliated sites.",
-      "contributor_help": "Can view, add, and edit site data.",
-      "viewer_help": "Can view site data.",
+      "manager_help": "Can view and edit all aspects of the project and its affiliated sites",
+      "contributor_help": "Can view, add, and edit site data",
+      "viewer_help": "Can view site data",
       "remove": "Remove from project",
       "remove_help": "Remove the team member's access to this project, retaining any data contributed to sites",
       "confirm_removal_title": "Remove from Project?",

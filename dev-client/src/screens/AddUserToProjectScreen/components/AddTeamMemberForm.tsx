@@ -91,7 +91,7 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
   const validationSchema = yup.object().shape({
     email: yup
       .string()
-      .required(t('projects.add_user.empty_email'))
+      .required(t('projects.add_user.invalid_email'))
       .email(t('projects.add_user.invalid_email')),
   });
 
