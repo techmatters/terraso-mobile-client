@@ -21,6 +21,7 @@ import {
 } from 'terraso-mobile-client/navigation/types';
 import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
 import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/AddSiteNoteScreen';
+import {AddUserToProjectRoleScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectRoleScreen';
 import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
 import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
 import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
@@ -74,6 +75,7 @@ export const screenDefinitions = {
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,
+  ADD_USER_PROJECT_ROLE: AddUserToProjectRoleScreen,
   MANAGE_TEAM_MEMBER: ManageTeamMemberScreen,
   SLOPE_STEEPNESS: SlopeSteepnessScreen,
   SLOPE_SHAPE: SlopeShapeScreen,

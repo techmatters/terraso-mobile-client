@@ -15,31 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
-import {checkUserInProject} from 'terraso-client-shared/account/accountService';
-import {
-  addUserToProject,
-  ProjectRole,
-} from 'terraso-client-shared/project/projectSlice';
-
-import {
-  Box,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {FreeformTextInput} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/FreeformTextInput';
-import MembershipControlList, {
-  UserWithRole,
-} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MembershipControlList';
-import {useKeyboardOpen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/hooks/useKeyboardOpen';
+import {AddTeamMemberForm} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/AddTeamMemberForm';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   projectId: string;
@@ -47,123 +30,23 @@ type Props = {
 
 export const AddUserToProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
-  const [userRecord, setUserRecord] = useState<Record<string, UserWithRole>>(
-    {},
-  );
-  const keyboardOpen = useKeyboardOpen();
-
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   const projectName = useSelector(
     state => state.project.projects[projectId]?.name,
   );
 
-  const userList = useMemo(() => Object.values(userRecord), [userRecord]);
-  const disableSubmit = useMemo(
-    () => isSubmitting || Object.keys(userRecord).length === 0,
-    [userRecord, isSubmitting],
-  );
-
-  const validationFunc = async (email: string) => {
-    if (email === '') {
-      // TODO: current bug means empty string for email is considered existing :(
-      // Easier just to explicitly reject it here
-      return t('projects.add_user.empty_email');
-    }
-    const userExists = await checkUserInProject(projectId, email);
-    if ('type' in userExists) {
-      switch (userExists.type) {
-        case 'NoUser':
-          return t('projects.add_user.user_does_not_exist', {email: email});
-        case 'InProject':
-          return t('projects.add_user.user_in_project', {email: email});
-      }
-    }
-    if (userExists.id in userRecord) {
-      return t('projects.add_user.already_added', {email: email});
-    }
-
-    setUserRecord(users => {
-      return {
-        ...users,
-        [userExists.id]: {user: userExists, role: 'VIEWER'},
-      };
-    });
-    return null;
-  };
-
-  const updateUserRole = useCallback((role: ProjectRole, userId: string) => {
-    setUserRecord(users => {
-      const newUsers = {...users};
-      newUsers[userId].role = role;
-      return newUsers;
-    });
-  }, []);
-
-  const removeUser = useCallback((userId: string) => {
-    setUserRecord(users => {
-      let newUsers = {...users};
-      delete newUsers[userId];
-      return newUsers;
-    });
-  }, []);
-
-  const submitUsers = async () => {
-    setIsSubmitting(true);
-    for (const {
-      user: {id: userId},
-      role,
-    } of Object.values(userRecord)) {
-      try {
-        dispatch(addUserToProject({userId, role, projectId}));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    navigation.pop();
-    setIsSubmitting(false);
-  };
+  // FYI: There was previously a mechanism to enter emails individually, but set roles at the same time.
+  // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
+  // wanting to add multiple users at the same time.
 
   return (
     <ScreenScaffold AppBar={<AppBar title={projectName} />}>
-      <Box mx="5%" mb="15px" mt="22px">
-        <Text variant="body1" fontWeight="bold">
-          {t('projects.add_user.heading')}
-        </Text>
+      <ScreenContentSection title={t('projects.add_user.heading')}>
         <Text variant="body1">{t('projects.add_user.help_text')}</Text>
-      </Box>
-      <Box mx="5%" mb="15px">
-        <FreeformTextInput
-          validationFunc={validationFunc}
-          placeholder={t('general.email_placeholder')}
-          inputProps={{
-            autoComplete: 'email',
-            autoCapitalize: 'none',
-            keyboardType: 'email-address',
-            label: t('general.email_label'),
-          }}
-        />
-      </Box>
-      <MembershipControlList
-        users={userList}
-        updateUserRole={updateUserRole}
-        removeUser={removeUser}
-      />
-      <Row
-        flexDirection="row-reverse"
-        my="20px"
-        ml="20px"
-        display={keyboardOpen ? 'none' : undefined}>
-        <Button
-          onPress={submitUsers}
-          isDisabled={disableSubmit}
-          isLoading={isSubmitting}
-          w="100px">
-          {t('general.save_fab')}
-        </Button>
-      </Row>
+        <Box mt="md">
+          <AddTeamMemberForm projectId={projectId} />
+        </Box>
+      </ScreenContentSection>
     </ScreenScaffold>
   );
 };
