@@ -17,6 +17,8 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {ScrollView} from 'native-base';
+
 import {
   selectSoilData,
   useSiteProjectSoilSettings,
@@ -24,7 +26,6 @@ import {
 
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {
-  Column,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -57,7 +58,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
   );
 
   return (
-    <Column space="1px">
+    <ScrollView backgroundColor="grey.300">
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
         <Heading variant="h6">{t('slope.title')}</Heading>
         <InfoOverlaySheetButton Header={t('slope.info.title')}>
@@ -78,6 +79,6 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
         value={shapeValue}
         onPress={onShape}
       />
-    </Column>
+    </ScrollView>
   );
 };
