@@ -133,6 +133,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               justifyContent="start"
               _text={{
                 color: 'primary.contrast',
+                textTransform: 'uppercase',
               }}
               _icon={{
                 color: 'primary.contrast',
