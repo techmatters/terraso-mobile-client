@@ -19,6 +19,7 @@ import {memo} from 'react';
 
 import {NavigationHelpers} from '@react-navigation/native';
 
+import {useKeyboardStatus} from 'terraso-mobile-client/hooks/useKeyboardStatus';
 import {
   BottomNavigator,
   BottomTabs,
@@ -29,16 +30,22 @@ import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 
 export const BottomTabsScreen = memo(() => {
+  const {keyboardStatus} = useKeyboardStatus();
+
   return (
     <BottomTabs.Navigator
-      tabBar={props => (
-        <BottomNavigator
-          navigation={
-            props.navigation as NavigationHelpers<BottomTabsParamList>
-          }
-        />
-      )}
-      screenOptions={{headerShown: false}}>
+      tabBar={props =>
+        keyboardStatus ? (
+          <></>
+        ) : (
+          <BottomNavigator
+            navigation={
+              props.navigation as NavigationHelpers<BottomTabsParamList>
+            }
+          />
+        )
+      }
+      screenOptions={{headerShown: false, tabBarHideOnKeyboard: true}}>
       <BottomTabs.Screen name="HOME" component={HomeScreen} />
       <BottomTabs.Screen name="PROJECT_LIST" component={ProjectListScreen} />
       <BottomTabs.Screen name="SETTINGS" component={UserSettingsScreen} />
