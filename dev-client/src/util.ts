@@ -63,7 +63,7 @@ export const formatPercent = (value: number) => {
 };
 
 export const formatCoordinate = (value: number) => {
-  return value.toLocaleString(undefined, {
+  return value?.toLocaleString(undefined, {
     maximumFractionDigits: COORDINATE_PRECISION,
   });
 };
