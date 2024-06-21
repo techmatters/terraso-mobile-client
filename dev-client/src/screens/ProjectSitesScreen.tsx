@@ -91,7 +91,13 @@ const SiteMenu = ({site}: SiteProps) => {
       }}
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<IconButton onPress={openMenu} name="more-vert" />}>
+      anchor={
+        <IconButton
+          onPress={openMenu}
+          _pressed={{backgroundColor: 'primary.lighter'}}
+          name="more-vert"
+        />
+      }>
       <ConfirmModal
         trigger={onOpen => {
           return (
