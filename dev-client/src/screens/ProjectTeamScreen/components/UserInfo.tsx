@@ -55,7 +55,14 @@ export const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
       </Box>
       <Text flex={3}>{userLabel}</Text>
       <Box>
-        <Badge variant="chip" bg="primary.lighter" py="5px" px="10px">
+        <Badge
+          _text={{
+            fontSize: '14px',
+          }}
+          variant="chip"
+          bg="primary.lighter"
+          py="10px"
+          px="15px">
           {t(`general.role.${membership.userRole}`)}
         </Badge>
       </Box>
