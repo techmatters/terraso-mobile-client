@@ -24,6 +24,7 @@ import {selectProjectsWithTransferrableSites} from 'terraso-client-shared/select
 import {transferSites} from 'terraso-client-shared/site/siteSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
+import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -231,10 +232,18 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           </Accordion>
         )}
       />
-      <Fab
-        label={t('projects.sites.transfer')}
-        onPress={onSubmit}
-        isDisabled={disabled}
+      <ConfirmModal
+        trigger={onOpen => (
+          <Fab
+            label={t('projects.sites.transfer')}
+            onPress={onOpen}
+            isDisabled={disabled}
+          />
+        )}
+        title={t('projects.sites.transfer_site_modal.title')}
+        body={t('projects.sites.transfer_site_modal.body')}
+        actionName={t('projects.sites.transfer_site_modal.action_name')}
+        handleConfirm={onSubmit}
       />
     </ScreenScaffold>
   );
