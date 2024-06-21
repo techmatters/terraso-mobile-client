@@ -295,6 +295,11 @@
         "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
         "action_name": "Remove Site"
       },
+      "transfer_site_modal": {
+        "title": "Transfer sites?",
+        "body": "Transferred sites will use the data settings and team member roles from this project.\n\nIf sites have data entered at different depths than what is specified in this project, that data will be deleted. This can’t be undone.",
+        "action_name": "Transfer"
+      },
       "search": {
         "placeholder": "Search",
         "accessility_label": "Search for sites"
@@ -326,8 +331,8 @@
       "confirm_removal_action": "Remove"
     },
     "transfer_sites": {
-      "heading": "Transfer existing sites",
-      "description": "Choose existing LandPKS sites you manage to transfer to this project. Note that only those who have access to the project will be able to access the sites in the project.",
+      "heading": "Transfer Sites to this Project",
+      "description": "Transfer LandPKS sites you manage to this project. When you transfer sites, they will use the data settings and team member roles from this project.",
       "unaffiliated": "Unaffiliated",
       "tooltip": "Sites you transfer to this project will inherit this project’s data settings, input requirements, and team members."
     },
