@@ -52,6 +52,11 @@ export const BottomNavigator = memo(
     );
 
     useEffect(() => {
+      // TODO-cknipe: Move this and use correct logic
+      const isFirstAppOpen = true;
+      if (isFirstAppOpen) {
+        stackNavigation.navigate('WELCOME');
+      }
       if (!loggedIn) {
         stackNavigation.navigate('LOGIN');
       }

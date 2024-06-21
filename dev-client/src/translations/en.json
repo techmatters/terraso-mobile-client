@@ -1,4 +1,26 @@
 {
+  "welcome": {
+    "title": "Welcome to LandPKS Soil ID",
+    "version_includes": {
+      "title": "This version includes:",
+      "bullet_1": "Soil identification for US locations",
+      "bullet_2": "Slope and soil data collection",
+      "bullet_3": "Site notes",
+      "bullet_4": "Project management"
+    },
+    "next": {
+      "title": "What's next?",
+      "subtitle": "Future versions will include:",
+      "bullet_1": "Offline capabilities",
+      "bullet_2": "Data visualization enhancements",
+      "bullet_3": "Additional soil properties, such as soil structure and soil organic carbon",
+      "bullet_4": "Site photos"
+    },
+    "learn_more": "Learn more and stay updated:",
+    "link_text": "LandPKS from Terraso",
+    "link_url": "https://landpks.terraso.org/",
+    "get_started": "Get started"
+  },
   "home": {
     "info": {
       "title": "Soil Science in Your Hands",

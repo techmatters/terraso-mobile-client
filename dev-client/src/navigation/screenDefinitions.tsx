@@ -56,6 +56,7 @@ import {StructureScreen} from 'terraso-mobile-client/screens/SoilScreen/Structur
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
 import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
+import {WelcomeScreen} from 'terraso-mobile-client/screens/WelcomeScreen';
 
 export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,
@@ -64,6 +65,7 @@ export const bottomTabScreensDefinitions = {
 } satisfies ScreenDefinitions;
 
 export const screenDefinitions = {
+  WELCOME: WelcomeScreen,
   BOTTOM_TABS: BottomTabsScreen,
   LOGIN: LoginScreen,
   PROJECT_VIEW: ProjectViewScreen,
