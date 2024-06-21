@@ -61,7 +61,6 @@ import {
 } from 'terraso-mobile-client/navigation/constants';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {theme} from 'terraso-mobile-client/theme';
 import {searchText} from 'terraso-mobile-client/util';
 
 type SiteMenuProps = {
@@ -273,7 +272,7 @@ export function ProjectSitesScreen({
       pb={5}
       space={3}
       h="100%"
-      backgroundColor={theme.colors.background.tertiary}>
+      backgroundColor="background.tertiary">
       {isEmpty && (
         <>
           <Text>{t('projects.sites.empty_viewer')}</Text>

@@ -1119,7 +1119,23 @@ exports[`renders correctly 1`] = `
                               ]
                             }
                           >
-                            <RCTScrollView>
+                            <RCTScrollView
+                              contentContainerStyle={
+                                [
+                                  {},
+                                  {
+                                    "dataSet": {},
+                                  },
+                                  {},
+                                ]
+                              }
+                              dataSet={{}}
+                              style={
+                                {
+                                  "backgroundColor": "#FFFFFF",
+                                }
+                              }
+                            >
                               <View>
                                 <View
                                   onLayout={[Function]}

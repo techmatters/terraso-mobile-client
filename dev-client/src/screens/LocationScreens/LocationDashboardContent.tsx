@@ -17,9 +17,9 @@
 
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ScrollView, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
-import {Button} from 'native-base';
+import {Button, ScrollView} from 'native-base';
 
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
@@ -154,7 +154,7 @@ export const LocationDashboardContent = ({
   );
 
   return (
-    <ScrollView>
+    <ScrollView backgroundColor="background.default">
       <StaticMapView
         coords={coords}
         style={styles.mapView}
