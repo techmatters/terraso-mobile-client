@@ -26,6 +26,7 @@ import {
 } from 'terraso-client-shared/account/accountSlice';
 
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
+import {useStorage} from 'terraso-mobile-client/hooks/useStorage';
 import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 import {
@@ -46,6 +47,11 @@ export const RootNavigator = () => {
   const currentUser = useSelector(state => state.account.currentUser.data);
   const isLoggedIn = useSelector(
     state => state.account.currentUser.data !== null,
+  );
+
+  const [welcomeScreenAlreadySeen] = useStorage(
+    'welcomeScreenAlreadySeen',
+    false,
   );
 
   useEffect(() => {
@@ -82,9 +88,20 @@ export const RootNavigator = () => {
     return () => locationManager.removeListener(listener);
   }, [dispatch]);
 
+  // TODO-cknipe: REMOVE THIS
+  console.log(
+    `ROOT NAVIGATOR: MMVK ${welcomeScreenAlreadySeen} && isLoggedIn? ${isLoggedIn} && hasToken? ${hasToken}`,
+  );
+
   return (
     <RootStack.Navigator
-      initialRouteName={isLoggedIn ? 'BOTTOM_TABS' : 'LOGIN'}>
+      initialRouteName={
+        !welcomeScreenAlreadySeen
+          ? 'WELCOME'
+          : isLoggedIn
+            ? 'BOTTOM_TABS'
+            : 'LOGIN'
+      }>
       <RootStack.Group screenOptions={DEFAULT_STACK_NAVIGATOR_OPTIONS}>
         {screens}
       </RootStack.Group>

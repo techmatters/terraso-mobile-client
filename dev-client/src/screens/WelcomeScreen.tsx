@@ -27,70 +27,75 @@ import {TranslatedBulletList} from 'terraso-mobile-client/components/content/typ
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useStorage} from 'terraso-mobile-client/hooks/useStorage';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 export const WelcomeScreen = () => {
   const {t} = useTranslation();
+  // TODO-cknipe: Convention for this?
+  const [deleteThis, setWelcomeScreenAlreadySeen] = useStorage(
+    'welcomeScreenAlreadySeen',
+    false,
+  );
   const navigation = useNavigation();
 
-  // TODO-cknipe: Go to the home page
-  const onGetStarted = useCallback(
-    () => navigation.navigate('BOTTOM_TABS'),
-    [navigation],
-  );
+  // Welcome screen will only show on first time app is opened, so we expect user needs to log in next
+  const onGetStarted = useCallback(() => {
+    setWelcomeScreenAlreadySeen(true);
+    navigation.navigate('LOGIN');
+    // TODO-cknipe: Is it expected that this is false here? Probably, if it's like setState
+    console.log(`MMKV after GetStarted: ${deleteThis}`);
+  }, [navigation, deleteThis, setWelcomeScreenAlreadySeen]);
 
   return (
-    <ScreenScaffold>
-      <ScrollView>
-        <Box backgroundColor="background.secondary" height="175px">
-          <Box alignSelf="center" pt="68px">
-            <LandPksSVG />
-          </Box>
+    <ScrollView>
+      <Box backgroundColor="background.secondary" height="175px">
+        <Box alignSelf="center" pt="68px">
+          <LandPksSVG />
         </Box>
+      </Box>
 
-        <ScreenContentSection title={t('welcome.title')}>
-          <Text variant="body1-strong" mb="sm">
-            {t('welcome.version_includes.title')}
-          </Text>
-          <TranslatedBulletList
-            i18nKeys={[
-              'welcome.version_includes.bullet_1',
-              'welcome.version_includes.bullet_2',
-              'welcome.version_includes.bullet_3',
-              'welcome.version_includes.bullet_4',
-            ]}
-          />
+      <ScreenContentSection title={t('welcome.title')}>
+        <Text variant="body1-strong" mb="sm">
+          {t('welcome.version_includes.title')}
+        </Text>
+        <TranslatedBulletList
+          i18nKeys={[
+            'welcome.version_includes.bullet_1',
+            'welcome.version_includes.bullet_2',
+            'welcome.version_includes.bullet_3',
+            'welcome.version_includes.bullet_4',
+          ]}
+        />
 
-          <Text variant="body1-strong">{t('welcome.next.title')}</Text>
-          <Text variant="body1" mb="sm">
-            {t('welcome.next.subtitle')}
-          </Text>
-          <TranslatedBulletList
-            i18nKeys={[
-              'welcome.next.bullet_1',
-              'welcome.next.bullet_2',
-              'welcome.next.bullet_3',
-              'welcome.next.bullet_4',
-            ]}
-          />
+        <Text variant="body1-strong">{t('welcome.next.title')}</Text>
+        <Text variant="body1" mb="sm">
+          {t('welcome.next.subtitle')}
+        </Text>
+        <TranslatedBulletList
+          i18nKeys={[
+            'welcome.next.bullet_1',
+            'welcome.next.bullet_2',
+            'welcome.next.bullet_3',
+            'welcome.next.bullet_4',
+          ]}
+        />
 
-          <TranslatedParagraph i18nKey="welcome.learn_more" />
+        <TranslatedParagraph i18nKey="welcome.learn_more" />
 
-          <ExternalLink
-            label={t('welcome.link_text')}
-            url={t('welcome.link_url')}
-          />
+        <ExternalLink
+          label={t('welcome.link_text')}
+          url={t('welcome.link_url')}
+        />
 
-          <Button
-            size="lg"
-            alignSelf="flex-end"
-            onPress={onGetStarted}
-            _text={{textTransform: 'uppercase'}}>
-            {t('welcome.get_started')}
-          </Button>
-        </ScreenContentSection>
-      </ScrollView>
-    </ScreenScaffold>
+        <Button
+          size="lg"
+          alignSelf="flex-end"
+          onPress={onGetStarted}
+          _text={{textTransform: 'uppercase'}}>
+          {t('welcome.get_started')}
+        </Button>
+      </ScreenContentSection>
+    </ScrollView>
   );
 };
