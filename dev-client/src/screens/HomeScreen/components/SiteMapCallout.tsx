@@ -16,9 +16,10 @@
  */
 
 import React, {useCallback} from 'react';
+import {Divider} from 'react-native-paper';
 
 import Mapbox from '@rnmapbox/maps';
-import {Divider, FlatList} from 'native-base';
+import {FlatList} from 'native-base';
 
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
@@ -103,7 +104,7 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
                 setState={setState}
               />
             )}
-            ItemSeparatorComponent={() => <Divider my="10px" />}
+            ItemSeparatorComponent={() => <Divider />}
           />
         </Card>
       );

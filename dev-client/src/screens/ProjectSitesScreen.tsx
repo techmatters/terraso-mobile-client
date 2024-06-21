@@ -60,6 +60,7 @@ import {
 } from 'terraso-mobile-client/navigation/constants';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {theme} from 'terraso-mobile-client/theme';
 import {searchText} from 'terraso-mobile-client/util';
 
 type SiteProps = {

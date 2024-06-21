@@ -17,8 +17,9 @@
 
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Divider} from 'react-native-paper';
 
-import {Button, Divider} from 'native-base';
+import {Button} from 'native-base';
 
 import {
   deleteUserFromProject,
@@ -95,8 +96,7 @@ export const ManageTeamMemberScreen = ({
             onChange={setSelectedRole}
             selectedRole={selectedRole}
           />
-
-          <Divider my="20px" alignSelf="center" />
+          <Divider style={DIVIDER_STYLE} />
 
           <ConfirmModal
             trigger={onOpen => (
@@ -130,3 +130,5 @@ export const ManageTeamMemberScreen = ({
     </ScreenScaffold>
   );
 };
+
+const DIVIDER_STYLE = {marginTop: 20, marginBottom: 20};

@@ -51,7 +51,7 @@ export const SiteClusterCalloutListItem = ({
 
   return (
     <Pressable onPress={onPress}>
-      <Column>
+      <Column my="10px">
         <Heading variant="h6" color="primary.main">
           {site.name}
         </Heading>

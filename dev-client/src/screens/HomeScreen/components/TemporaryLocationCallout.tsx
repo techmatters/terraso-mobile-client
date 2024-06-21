@@ -17,9 +17,9 @@
 
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ActivityIndicator} from 'react-native-paper';
+import {ActivityIndicator, Divider} from 'react-native-paper';
 
-import {Button, Divider} from 'native-base';
+import {Button} from 'native-base';
 
 import {Coords} from 'terraso-client-shared/types';
 

@@ -16,8 +16,7 @@
  */
 
 import {Children} from 'react';
-
-import {Divider} from 'native-base';
+import {Divider} from 'react-native-paper';
 
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 

@@ -37,7 +37,7 @@ import {NativeBaseProvider} from 'native-base';
 import 'terraso-mobile-client/translations';
 import 'terraso-mobile-client/config';
 
-import {Portal} from 'react-native-paper';
+import {PaperProvider, Portal} from 'react-native-paper';
 import {enableFreeze} from 'react-native-screens';
 
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
@@ -51,7 +51,7 @@ import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroid
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
-import {theme} from 'terraso-mobile-client/theme';
+import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
 
@@ -82,20 +82,22 @@ function App(): React.JSX.Element {
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
         <BottomSheetModalProvider>
-          <NativeBaseProvider theme={theme}>
-            <Portal.Host>
-              <NavigationContainer>
-                <BottomSheetModalProvider>
-                  <GeospatialProvider>
-                    <Toasts />
-                    <HomeScreenContextProvider>
-                      <RootNavigator />
-                    </HomeScreenContextProvider>
-                  </GeospatialProvider>
-                </BottomSheetModalProvider>
-              </NavigationContainer>
-            </Portal.Host>
-          </NativeBaseProvider>
+          <PaperProvider theme={paperTheme}>
+            <NativeBaseProvider theme={theme}>
+              <Portal.Host>
+                <NavigationContainer>
+                  <BottomSheetModalProvider>
+                    <GeospatialProvider>
+                      <Toasts />
+                      <HomeScreenContextProvider>
+                        <RootNavigator />
+                      </HomeScreenContextProvider>
+                    </GeospatialProvider>
+                  </BottomSheetModalProvider>
+                </NavigationContainer>
+              </Portal.Host>
+            </NativeBaseProvider>
+          </PaperProvider>
         </BottomSheetModalProvider>
       </Provider>
     </GestureHandlerRootView>

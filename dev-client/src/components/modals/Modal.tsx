@@ -26,9 +26,7 @@ import {
   useState,
 } from 'react';
 import {KeyboardAvoidingView, Pressable, StyleSheet} from 'react-native';
-import {Modal as PaperModal, Portal} from 'react-native-paper';
-
-import {Divider} from 'native-base';
+import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
 
 import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
 import {

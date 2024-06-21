@@ -15,10 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {MD3LightTheme as DefaultTheme} from 'react-native-paper';
+
 import {extendTheme} from 'native-base';
 
 export const SWITCH_PADDING = 2;
 export const SWITCH_VERTICAL_PADDING = 1;
+
+export const paperTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    outlineVariant: '#616161',
+  },
+};
 
 export const theme = extendTheme({
   colors: {
@@ -33,7 +43,6 @@ export const theme = extendTheme({
       // map our current variables to 100, 200 values etc.
       600: '#028843',
     },
-    divider: '#0000001F',
     background: {
       default: '#FFFFFF',
       secondary: '#00344D',

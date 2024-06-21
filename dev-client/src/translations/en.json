@@ -252,6 +252,7 @@
     },
     "team": {
       "add": "Add team members",
+      "manage_team": "Manage Team",
       "leave_project_modal": {
         "trigger": "LEAVE PROJECT",
         "title": "Leave Project?",
