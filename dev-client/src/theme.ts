@@ -399,9 +399,9 @@ export const theme = extendTheme({
           letterSpacing: '0.4px',
         },
         'table-header': {
-          fontSize: '14px',
+          fontSize: '16px',
           lineHeight: '24px',
-          fontWeight: 500,
+          fontWeight: 600,
           letterSpacing: '0.17px',
         },
         'input-text': {

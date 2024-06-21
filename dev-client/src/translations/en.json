@@ -518,7 +518,7 @@
     "soil_id": "Soil ID",
     "surface": "Soil Surface",
     "pit": "Soil Pit",
-    "add_depth_label": "ADD DEPTH",
+    "add_depth_label": "Add Depth",
     "project_settings": {
       "pit_required_label": "Soil pit required",
       "required_data_title": "Data Collection Requirements"

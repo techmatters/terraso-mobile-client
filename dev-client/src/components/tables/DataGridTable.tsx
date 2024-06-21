@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useMemo} from 'react';
+import {StyleSheet} from 'react-native';
+import {Divider} from 'react-native-paper';
 
 import {
   Box,
@@ -36,13 +38,13 @@ export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
   const displayCol = (col: string | React.ReactElement, index: number) => {
     if (typeof col === 'string') {
       return (
-        <Text flex={1} key={index} {...textAlign}>
-          {col}
-        </Text>
+        <Box flex={1} key={index} style={styles.row}>
+          <Text {...textAlign}>{col}</Text>
+        </Box>
       );
     }
     return (
-      <Box flex={1} key={index}>
+      <Box flex={1} key={index} style={styles.row}>
         {col}
       </Box>
     );
@@ -52,16 +54,31 @@ export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
     <Box {...containerProps}>
       <Row justifyContent="flex-start" variant="tablerow">
         {headers.map((header: (typeof headers)[number], i: number) => (
-          <Text variant="table-header" key={i} flex={1} {...textAlign}>
+          <Text
+            variant="table-header"
+            key={i}
+            flex={1}
+            py="10px"
+            {...textAlign}>
             {header}
           </Text>
         ))}
       </Row>
+      <Divider />
       {rows.map((row: (typeof rows)[number], i: number) => (
-        <Row justifyContent="flex-start" key={i} variant="tablerow">
-          {row.map(displayCol)}
-        </Row>
+        <>
+          <Row justifyContent="flex-start" key={i} variant="tablerow" py="10px">
+            {row.map(displayCol)}
+          </Row>
+          <Divider />
+        </>
       ))}
     </Box>
   );
 };
+
+const styles = StyleSheet.create({
+  row: {
+    alignSelf: 'center',
+  },
+});
