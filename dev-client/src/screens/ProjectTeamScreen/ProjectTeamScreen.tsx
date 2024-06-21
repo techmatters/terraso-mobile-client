@@ -102,6 +102,9 @@ export const ProjectTeamScreen = ({route}: Props) => {
           }}
         />
       </RestrictByProjectRole>
+      <Heading variant="h6" py="20px">
+        {t('projects.team.manage_team')}
+      </Heading>
       <UserList
         memberships={members}
         currentUserId={currentUser.data?.id}
