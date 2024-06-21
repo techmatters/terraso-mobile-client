@@ -51,20 +51,11 @@ export const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
   return (
     <Row space={3} justifyContent="space-between" alignItems="center">
       <Box>
-        <Image
-          variant="profilePic"
-          source={{uri: user.profileImage}}
-          alt="profile pic"
-        />
+        <Image variant="profilePic" source={{uri: user.profileImage}} />
       </Box>
       <Text flex={3}>{userLabel}</Text>
       <Box>
-        <Badge
-          variant="chip"
-          bg="primary.lighter"
-          py="5px"
-          px="10px"
-          _text={{color: 'text.primary'}}>
+        <Badge variant="chip" bg="primary.lighter" py="5px" px="10px">
           {t(`general.role.${membership.userRole}`)}
         </Badge>
       </Box>
