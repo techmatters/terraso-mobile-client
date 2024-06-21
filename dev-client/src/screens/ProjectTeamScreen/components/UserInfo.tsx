@@ -51,7 +51,7 @@ export const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
   return (
     <Row space={3} justifyContent="space-between" alignItems="center">
       <Box>
-        <Image variant="profilePic" source={{uri: user.profileImage}} />
+        <Image variant="profilePic" alt="" source={{uri: user.profileImage}} />
       </Box>
       <Text flex={3}>{userLabel}</Text>
       <Box>
