@@ -74,6 +74,7 @@ export const AddDepthModalBody = ({
             size="lg"
             mx="auto"
             onPress={() => handleSubmit()}
+            _text={{textTransform: 'uppercase'}}
             isDisabled={!isValid || isSubmitting}>
             {t('general.add')}
           </Button>

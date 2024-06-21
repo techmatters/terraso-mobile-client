@@ -131,6 +131,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
               alignSelf="flex-start"
               backgroundColor="primary.main"
               shadow={5}
+              _text={{textTransform: 'uppercase'}}
               leftIcon={<Icon name="add" />}>
               {t('soil.add_depth_label')}
             </Button>
