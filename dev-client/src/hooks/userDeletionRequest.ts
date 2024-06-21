@@ -28,7 +28,7 @@ export const useUserDeletionRequests = () => {
   const dispatch = useDispatch();
   const {data: user} = useSelector(state => state.account.currentUser);
   const isSaving = useSelector(state => state.account.preferences.saving);
-  const isPending = user!.preferences[PREFERENCES_KEY] === PREFERENCES_VALUE;
+  const isPending = user?.preferences[PREFERENCES_KEY] === PREFERENCES_VALUE;
 
   const requestDeletion = useCallback(() => {
     dispatch(savePreference({key: PREFERENCES_KEY, value: PREFERENCES_VALUE}));
