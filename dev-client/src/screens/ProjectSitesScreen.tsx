@@ -94,7 +94,10 @@ const SiteMenu = ({site}: SiteProps) => {
       anchor={
         <IconButton
           onPress={openMenu}
-          _pressed={{backgroundColor: 'primary.lighter'}}
+          _pressed={{
+            backgroundColor: 'background.default',
+            color: 'primary.dark',
+          }}
           name="more-vert"
         />
       }>
