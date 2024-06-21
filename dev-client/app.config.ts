@@ -41,8 +41,6 @@ const validateEnvConfig = <K extends string>(
   );
 
 const BUILD_CONFIG = validateEnvConfig(process.env, [
-  'SENTRY_ORG',
-  'SENTRY_PROJECT',
   'MAPBOX_DOWNLOADS_TOKEN',
 ] as const);
 
@@ -53,6 +51,8 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
   'PUBLIC_MAPBOX_TOKEN',
   'SENTRY_DSN',
   'SENTRY_ENABLED',
+  'SENTRY_ORG',
+  'SENTRY_PROJECT',
   'TERRASO_BACKEND',
   'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
   'GOOGLE_OAUTH_IOS_CLIENT_ID',
@@ -130,8 +130,8 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     [
       '@sentry/react-native/expo',
       {
-        organization: BUILD_CONFIG.SENTRY_ORG,
-        project: BUILD_CONFIG.SENTRY_PROJECT,
+        organization: ENV_CONFIG.SENTRY_ORG,
+        project: ENV_CONFIG.SENTRY_PROJECT,
       },
     ],
     [
