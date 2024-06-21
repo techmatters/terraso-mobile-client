@@ -45,7 +45,6 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {RequiredDataSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/RequiredDataSettings';
 import {SoilPitSettings} from 'terraso-mobile-client/screens/ProjectInputScreen/SoilPitSettings';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {theme} from 'terraso-mobile-client/theme';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.INPUTS>;
 
@@ -80,7 +79,7 @@ export const ProjectInputScreen = ({
   const allowEditing = useMemo(() => userRole === 'MANAGER', [userRole]);
 
   return (
-    <Column height="full" backgroundColor={theme.colors.background.default}>
+    <Column height="full" backgroundColor="background.default">
       <ScrollView>
         <Box p={4} alignItems="flex-start">
           <Row pb={4}>
