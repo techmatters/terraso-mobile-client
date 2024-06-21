@@ -26,7 +26,10 @@ import {
 import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Column,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {
@@ -102,6 +105,9 @@ export const ProjectTeamScreen = ({route}: Props) => {
           }}
         />
       </RestrictByProjectRole>
+      <Heading variant="h6" py="20px">
+        {t('projects.team.manage_team')}
+      </Heading>
       <UserList
         memberships={members}
         currentUserId={currentUser.data?.id}
