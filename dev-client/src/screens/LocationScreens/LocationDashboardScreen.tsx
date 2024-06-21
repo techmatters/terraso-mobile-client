@@ -75,6 +75,7 @@ export const LocationDashboardScreen = (props: Props) => {
     return (
       <AppBarIconButton
         name="settings"
+        _pressed={{backgroundColor: 'primary.main'}}
         onPress={() => navigation.navigate('SITE_SETTINGS', {siteId})}
       />
     );
