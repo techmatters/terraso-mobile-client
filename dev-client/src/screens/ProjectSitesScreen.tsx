@@ -15,13 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Menu} from 'react-native-paper';
 
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import {createSelector} from '@reduxjs/toolkit';
-import {Button, FlatList, Menu, Pressable} from 'native-base';
+import {Button, FlatList} from 'native-base';
 
 import {
   Project,
@@ -34,7 +35,6 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {normalizeText} from 'terraso-client-shared/utils';
 
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   ListFilterModal,
@@ -48,7 +48,6 @@ import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal
 import {
   Box,
   Column,
-  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
@@ -63,25 +62,6 @@ import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {searchText} from 'terraso-mobile-client/util';
 
-type SiteMenuProps = {
-  iconName: IconName;
-  text: string;
-  onPress?: () => void;
-};
-
-const SiteMenuItem = ({iconName, text, onPress}: SiteMenuProps) => {
-  return (
-    <Menu.Item>
-      <Pressable onPress={onPress}>
-        <Row flexDirection="row" space={2} alignItems="center">
-          <Icon name={iconName} size="xs" />
-          <Text>{text}</Text>
-        </Row>
-      </Pressable>
-    </Menu.Item>
-  );
-};
-
 type SiteProps = {
   site: Site;
 };
@@ -89,6 +69,9 @@ type SiteProps = {
 const SiteMenu = ({site}: SiteProps) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const [visible, setVisible] = useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   const deleteSiteCallback = async () => {
     await dispatch(deleteSite(site));
@@ -102,34 +85,53 @@ const SiteMenu = ({site}: SiteProps) => {
 
   return (
     <Menu
-      closeOnSelect={true}
-      trigger={triggerProps => (
-        <IconButton name="more-vert" {...triggerProps} />
-      )}>
+      contentStyle={{
+        backgroundColor: theme.colors.background.default,
+      }}
+      visible={visible}
+      onDismiss={closeMenu}
+      anchor={
+        <IconButton
+          onPress={openMenu}
+          _pressed={{
+            backgroundColor: 'background.default',
+            color: 'primary.dark',
+          }}
+          name="more-vert"
+        />
+      }>
       <ConfirmModal
-        trigger={onOpen => (
-          <SiteMenuItem
-            iconName="remove"
-            text={t('projects.sites.remove_site')}
-            onPress={onOpen}
-          />
-        )}
+        trigger={onOpen => {
+          return (
+            <Menu.Item
+              title={t('projects.sites.remove_site')}
+              leadingIcon="minus"
+              onPress={onOpen}
+              titleStyle={MENU_ITEM_STYLE}
+            />
+          );
+        }}
         title={t('projects.sites.remove_site_modal.title')}
-        body={t('projects.sites.remove_site_modal.body', {siteName: site.name})}
+        body={t('projects.sites.remove_site_modal.body', {
+          siteName: site.name,
+        })}
         actionName={t('projects.sites.remove_site_modal.action_name')}
         handleConfirm={removeSiteFromProjectCallback}
       />
 
       <ConfirmModal
         trigger={onOpen => (
-          <SiteMenuItem
-            iconName="delete"
+          <Menu.Item
+            title={t('projects.sites.delete_site')}
+            leadingIcon="delete"
             onPress={onOpen}
-            text={t('projects.sites.delete_site')}
+            titleStyle={MENU_ITEM_STYLE}
           />
         )}
         title={t('projects.sites.delete_site_modal.title')}
-        body={t('projects.sites.delete_site_modal.body', {siteName: site.name})}
+        body={t('projects.sites.delete_site_modal.body', {
+          siteName: site.name,
+        })}
         actionName={t('projects.sites.delete_site_modal.action_name')}
         handleConfirm={deleteSiteCallback}
       />
@@ -293,3 +295,7 @@ export function ProjectSitesScreen({
     </Column>
   );
 }
+
+const MENU_ITEM_STYLE = {
+  fontSize: 18,
+};
