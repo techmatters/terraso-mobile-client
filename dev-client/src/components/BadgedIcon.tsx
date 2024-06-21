@@ -52,6 +52,9 @@ const BadgedIcon = ({
         {..._iconButton}
         onPress={onPress}
         accessibilityLabel={accessibilityLabel}
+        _pressed={{
+          bg: 'background.default',
+        }}
       />
     </Pressable>
   );
