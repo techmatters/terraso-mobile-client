@@ -38,10 +38,8 @@ export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
   const displayCol = (col: string | React.ReactElement, index: number) => {
     if (typeof col === 'string') {
       return (
-        <Box flex={1} style={styles.row}>
-          <Text key={index} {...textAlign}>
-            {col}
-          </Text>
+        <Box flex={1} key={index} style={styles.row}>
+          <Text {...textAlign}>{col}</Text>
         </Box>
       );
     }
