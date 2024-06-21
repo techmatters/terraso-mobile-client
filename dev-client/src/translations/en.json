@@ -295,6 +295,11 @@
         "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
         "action_name": "Remove Site"
       },
+      "transfer_site_modal": {
+        "title": "Transfer sites?",
+        "body": "Transferred sites will use the data settings and team member roles from this project.\n\nIf sites have data entered at different depths than what is specified in this project, that data will be deleted. This can’t be undone.",
+        "action_name": "Transfer"
+      },
       "search": {
         "placeholder": "Search",
         "accessility_label": "Search for sites"
