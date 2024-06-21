@@ -16,8 +16,9 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {StyleSheet} from 'react-native';
 
-import {Button, Center, Pressable} from 'native-base';
+import {Button, Pressable} from 'native-base';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
@@ -33,17 +34,17 @@ type TriggerProps = {
 
 function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
   return (
-    <Center>
-      <Button
-        size="sm"
-        my={2}
-        w="50%"
-        _text={{color: 'error.main'}}
-        bgColor="grey.200"
-        onPress={onOpen}>
-        {message}
-      </Button>
-    </Center>
+    <Button
+      size="md"
+      mt="10px"
+      ml="50px"
+      style={styles.button}
+      _text={{color: 'error.main'}}
+      _pressed={{backgroundColor: '#ff0000'}}
+      bgColor="grey.200"
+      onPress={onOpen}>
+      {message}
+    </Button>
   );
 }
 
@@ -111,3 +112,5 @@ export const UserItem = ({
     </Box>
   );
 };
+
+const styles = StyleSheet.create({button: {alignSelf: 'flex-start'}});
