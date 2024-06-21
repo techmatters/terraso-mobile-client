@@ -64,6 +64,8 @@ export const UserList = ({
       )}
       keyExtractor={([membership, _]) => membership.id}
       ItemSeparatorComponent={Divider}
+      ListFooterComponent={Divider}
+      width="100%"
     />
   );
 };

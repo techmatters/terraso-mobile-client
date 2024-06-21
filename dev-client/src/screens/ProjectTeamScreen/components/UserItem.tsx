@@ -76,7 +76,7 @@ export const UserItem = ({
     isForCurrentUser && !(isInManagerView && isForSingleManagerProject);
 
   return (
-    <Box borderBottomWidth="1" width={275} py={2}>
+    <Box width="100%" py={5}>
       <Column>
         {!isForCurrentUser && isInManagerView ? (
           <Pressable onPress={memberAction}>
