@@ -103,7 +103,7 @@ const SiteMenu = ({site}: SiteProps) => {
           return (
             <Menu.Item
               title={t('projects.sites.remove_site')}
-              leadingIcon="remove"
+              leadingIcon="minus"
               onPress={onOpen}
               titleStyle={MENU_ITEM_STYLE}
             />
