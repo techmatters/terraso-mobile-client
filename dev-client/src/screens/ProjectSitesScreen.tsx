@@ -97,6 +97,7 @@ const SiteMenu = ({site}: SiteProps) => {
           return (
             <Menu.Item
               title={t('projects.sites.remove_site')}
+              leadingIcon="remove"
               onPress={onOpen}
               titleStyle={MENU_ITEM_STYLE}
             />
@@ -114,6 +115,7 @@ const SiteMenu = ({site}: SiteProps) => {
         trigger={onOpen => (
           <Menu.Item
             title={t('projects.sites.delete_site')}
+            leadingIcon="delete"
             onPress={onOpen}
             titleStyle={MENU_ITEM_STYLE}
           />
