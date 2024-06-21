@@ -43,7 +43,7 @@ export const RequiredDataSettings = ({
   projectId: string;
   enabled: boolean;
 }) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const settings = useProjectSoilSettings(projectId);
   const dispatch = useDispatch();
   const {colors} = useTheme();
@@ -51,10 +51,12 @@ export const RequiredDataSettings = ({
   return (
     <Box p={4}>
       {collectionMethods.map(method => {
-        const description = t(
+        const descriptionExists = i18n.exists(
           `soil.collection_method_description.${method}`,
-          '',
         );
+        const description = descriptionExists
+          ? t(`soil.collection_method_description.${method}`)
+          : '';
         return (
           <React.Fragment key={method}>
             <Row
