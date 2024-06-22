@@ -32,8 +32,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 
 export const WelcomeScreen = () => {
   const {t} = useTranslation();
-  // TODO-cknipe: Convention for this?
-  const [deleteThis, setWelcomeScreenAlreadySeen] = useStorage(
+  const [, setWelcomeScreenAlreadySeen] = useStorage(
     'welcomeScreenAlreadySeen',
     false,
   );
@@ -43,9 +42,7 @@ export const WelcomeScreen = () => {
   const onGetStarted = useCallback(() => {
     setWelcomeScreenAlreadySeen(true);
     navigation.navigate('LOGIN');
-    // TODO-cknipe: Is it expected that this is false here? Probably, if it's like setState
-    console.log(`MMKV after GetStarted: ${deleteThis}`);
-  }, [navigation, deleteThis, setWelcomeScreenAlreadySeen]);
+  }, [navigation, setWelcomeScreenAlreadySeen]);
 
   return (
     <ScrollView>

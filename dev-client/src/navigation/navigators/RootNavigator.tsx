@@ -88,11 +88,6 @@ export const RootNavigator = () => {
     return () => locationManager.removeListener(listener);
   }, [dispatch]);
 
-  // TODO-cknipe: REMOVE THIS
-  console.log(
-    `ROOT NAVIGATOR: MMVK ${welcomeScreenAlreadySeen} && isLoggedIn? ${isLoggedIn} && hasToken? ${hasToken}`,
-  );
-
   return (
     <RootStack.Navigator
       initialRouteName={

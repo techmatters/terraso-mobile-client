@@ -17,10 +17,6 @@
 
 import {MMKVLoader, useMMKVStorage} from 'react-native-mmkv-storage';
 
-// TODO-cknipe:
-// - Should we consolidate this with the MMKV object for tokenStorage?
-//   - Consider: If so, is it fine to use the encrypted storage for this?
-// - Hmm regardless where should this file live?
 const MMKV = new MMKVLoader().initialize();
 
 if (!MMKV.indexer.hasKey('welcomeScreenAlreadySeen')) {
