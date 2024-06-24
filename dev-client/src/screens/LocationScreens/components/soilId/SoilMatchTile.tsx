@@ -26,7 +26,6 @@ type Props = {soil_name: string; score: number; onPress: () => void};
 
 export const SoilMatchTile = ({soil_name, score, onPress}: Props) => {
   const {t} = useTranslation();
-  // TODO-cknipe: dp versus px?
 
   return (
     <Pressable onPress={onPress}>
