@@ -21,7 +21,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 import {Fab} from 'native-base';
 
-import LandPksSVG from 'terraso-mobile-client/assets/LandPKS-from-Terraso-logo.svg';
+import LandPKSTerrasoLogo from 'terraso-mobile-client/assets/LandPKS-from-Terraso-logo.svg';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {TranslatedBulletList} from 'terraso-mobile-client/components/content/typography/TranslatedBulletList';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -49,7 +49,7 @@ export const WelcomeScreen = () => {
       <ScrollView>
         <Box backgroundColor="background.secondary" height="175px">
           <Box alignSelf="center" pt="68px">
-            <LandPksSVG />
+            <LandPKSTerrasoLogo />
           </Box>
         </Box>
 
