@@ -25,7 +25,7 @@ type TranslatedHeadingProps = TranslatedContentProps;
 
 export function TranslatedHeading({i18nKey, values}: TranslatedHeadingProps) {
   return (
-    <Heading variant="h1">
+    <Heading variant="h4">
       <TranslatedContent i18nKey={i18nKey} values={values} />
     </Heading>
   );
