@@ -15,9 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef} from 'react';
-
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {useCallback} from 'react';
 
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
@@ -26,7 +24,6 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
-import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
@@ -48,7 +45,6 @@ type Props =
 
 export const CreateSiteScreen = (props: Props = {}) => {
   const dispatch = useDispatch();
-  const infoModalRef = useRef<BottomSheetModal>(null);
 
   const createSiteCallback = useCallback(
     async (input: SiteAddMutationInput) => {
@@ -66,15 +62,6 @@ export const CreateSiteScreen = (props: Props = {}) => {
     [dispatch],
   );
 
-  const onInfo = useCallback(
-    () => infoModalRef.current?.present(),
-    [infoModalRef],
-  );
-  const onInfoClose = useCallback(
-    () => infoModalRef.current?.dismiss(),
-    [infoModalRef],
-  );
-
   return (
     <ScreenScaffold
       BottomNavigation={null}
@@ -84,9 +71,7 @@ export const CreateSiteScreen = (props: Props = {}) => {
         defaultProjectId={'projectId' in props ? props.projectId : undefined}
         sitePin={'coords' in props ? props.coords : undefined}
         elevation={'elevation' in props ? props.elevation : undefined}
-        onInfoPress={onInfo}
       />
-      <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
     </ScreenScaffold>
   );
 };

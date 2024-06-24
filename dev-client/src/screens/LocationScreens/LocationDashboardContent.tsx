@@ -26,7 +26,6 @@ import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Box,
   Column,
@@ -35,10 +34,10 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
-import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
@@ -123,7 +122,6 @@ export const LocationDashboardContent = ({
 }: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const onInfoPress = useInfoPress();
   const navigation = useNavigation();
 
   const site = useSelector(state =>
@@ -198,15 +196,7 @@ export const LocationDashboardContent = ({
                   <Text variant="body1" bold>
                     {t('site.dashboard.privacy')}
                   </Text>
-                  <IconButton
-                    pt={0}
-                    pb={0}
-                    pl={2}
-                    size="md"
-                    name="info"
-                    onPress={onInfoPress}
-                    _icon={{color: 'primary'}}
-                  />
+                  <DataPrivacyInfoSheetButton />
                 </Row>
               }
               options={{
