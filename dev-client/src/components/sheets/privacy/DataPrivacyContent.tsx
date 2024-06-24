@@ -14,79 +14,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Trans, useTranslation} from 'react-i18next';
-import {Linking} from 'react-native';
 
-import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/HorizontalIconButton';
-import {
-  Box,
-  Column,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useTranslation} from 'react-i18next';
+
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
+import InternalLink from 'terraso-mobile-client/components/links/InternalLink';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const DataPrivacyContent = () => {
   const {t} = useTranslation();
 
   return (
     <Column space="12px">
-      <Text variant="body1">
-        <Trans i18nKey="general.info.privacy_item1">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Text>
-      <Text variant="body1">
-        <Trans i18nKey="general.info.privacy_item2">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Text>
-      <Box pt={1} pb={1}>
-        <HorizontalIconButton
-          name="open-in-new"
-          label={t('general.info.data_portal_link_text')}
-          colorScheme="primary.main"
-          isUppercase={true}
-          onPress={() =>
-            Linking.openURL(t('general.info.data_portal_link_url'))
-          }
-        />
-      </Box>
-      <Text variant="body1">
-        <Trans i18nKey="general.info.privacy_item3">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Text>
-      <Text variant="body1">
-        <Trans i18nKey="general.info.privacy_item4">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Text>
-      <Text variant="body1">
-        <Trans i18nKey="general.info.privacy_item5">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Text>
-      <Text variant="body1">
-        <Trans i18nKey="general.info.privacy_item6">
-          <Text bold>first</Text>
-          <Text>second</Text>
-        </Trans>
-      </Text>
-      <Box pt={1} pb={1}>
-        <HorizontalIconButton
-          name="open-in-new"
-          label={t('general.info.privacy_policy_link_text')}
-          colorScheme="primary.main"
-          isUppercase={true}
-          onPress={() =>
-            Linking.openURL(t('general.info.privacy_policy_link_url'))
-          }
-        />
-      </Box>
+      <TranslatedParagraph i18nKey="general.info.privacy_item1" />
+      <ExternalLink
+        label={t('general.info.data_portal_link_text')}
+        url={t('general.info.data_portal_link_url')}
+      />
+      <TranslatedParagraph i18nKey="general.info.privacy_item2" />
+      <TranslatedParagraph i18nKey="general.info.privacy_item3" />
+      <TranslatedParagraph i18nKey="general.info.privacy_item4" />
+      <InternalLink
+        label={t('general.info.privacy_policy_link_text')}
+        url={t('general.info.privacy_policy_link_url')}
+      />
     </Column>
   );
 };
