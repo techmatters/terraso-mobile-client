@@ -15,12 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef} from 'react';
-
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-
-import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
-import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
@@ -31,27 +25,14 @@ type Props = {projectId: string};
 
 export const ProjectViewScreen = ({projectId}: Props) => {
   const project = useSelector(state => state.project.projects[projectId]);
-  const infoModalRef = useRef<BottomSheetModal>(null);
-
-  const onInfoPress = useCallback(
-    () => infoModalRef.current?.present(),
-    [infoModalRef],
-  );
-  const onInfoClose = useCallback(
-    () => infoModalRef.current?.dismiss(),
-    [infoModalRef],
-  );
 
   return (
     <ProjectRoleContextProvider projectId={projectId}>
-      <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
-        <ScreenScaffold
-          AppBar={<AppBar title={project?.name} />}
-          BottomNavigation={null}>
-          <ProjectTabNavigator projectId={projectId} />
-          <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
-        </ScreenScaffold>
-      </BottomSheetPrivacyModalContext.Provider>
+      <ScreenScaffold
+        AppBar={<AppBar title={project?.name} />}
+        BottomNavigation={null}>
+        <ProjectTabNavigator projectId={projectId} />
+      </ScreenScaffold>
     </ProjectRoleContextProvider>
   );
 };
