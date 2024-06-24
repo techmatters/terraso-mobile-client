@@ -19,7 +19,7 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native-gesture-handler';
 
-import {Button} from 'native-base';
+import {Fab} from 'native-base';
 
 import LandPksSVG from 'terraso-mobile-client/assets/LandPKS-from-Terraso-logo.svg';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
@@ -45,54 +45,53 @@ export const WelcomeScreen = () => {
   }, [navigation, setWelcomeScreenAlreadySeen]);
 
   return (
-    <ScrollView>
-      <Box backgroundColor="background.secondary" height="175px">
-        <Box alignSelf="center" pt="68px">
-          <LandPksSVG />
+    <>
+      <ScrollView>
+        <Box backgroundColor="background.secondary" height="175px">
+          <Box alignSelf="center" pt="68px">
+            <LandPksSVG />
+          </Box>
         </Box>
-      </Box>
 
-      <ScreenContentSection title={t('welcome.title')}>
-        <Text variant="body1-strong" mb="sm">
-          {t('welcome.version_includes.title')}
-        </Text>
-        <TranslatedBulletList
-          i18nKeys={[
-            'welcome.version_includes.bullet_1',
-            'welcome.version_includes.bullet_2',
-            'welcome.version_includes.bullet_3',
-            'welcome.version_includes.bullet_4',
-          ]}
-        />
+        <ScreenContentSection title={t('welcome.title')}>
+          <Text variant="body1-strong" mb="sm">
+            {t('welcome.version_includes.title')}
+          </Text>
+          <TranslatedBulletList
+            i18nKeys={[
+              'welcome.version_includes.bullet_1',
+              'welcome.version_includes.bullet_2',
+              'welcome.version_includes.bullet_3',
+              'welcome.version_includes.bullet_4',
+            ]}
+          />
 
-        <Text variant="body1-strong">{t('welcome.next.title')}</Text>
-        <Text variant="body1" mb="sm">
-          {t('welcome.next.subtitle')}
-        </Text>
-        <TranslatedBulletList
-          i18nKeys={[
-            'welcome.next.bullet_1',
-            'welcome.next.bullet_2',
-            'welcome.next.bullet_3',
-            'welcome.next.bullet_4',
-          ]}
-        />
+          <Text variant="body1-strong">{t('welcome.next.title')}</Text>
+          <Text variant="body1" mb="sm">
+            {t('welcome.next.subtitle')}
+          </Text>
+          <TranslatedBulletList
+            i18nKeys={[
+              'welcome.next.bullet_1',
+              'welcome.next.bullet_2',
+              'welcome.next.bullet_3',
+              'welcome.next.bullet_4',
+            ]}
+          />
 
-        <TranslatedParagraph i18nKey="welcome.learn_more" />
+          <TranslatedParagraph i18nKey="welcome.learn_more" />
 
-        <ExternalLink
-          label={t('welcome.link_text')}
-          url={t('welcome.link_url')}
-        />
+          <ExternalLink
+            label={t('welcome.link_text')}
+            url={t('welcome.link_url')}
+          />
 
-        <Button
-          size="lg"
-          alignSelf="flex-end"
-          onPress={onGetStarted}
-          _text={{textTransform: 'uppercase'}}>
-          {t('welcome.get_started')}
-        </Button>
-      </ScreenContentSection>
-    </ScrollView>
+          {/* To leave room for the FAB */}
+          <Box height="70px" />
+        </ScreenContentSection>
+      </ScrollView>
+
+      <Fab onPress={onGetStarted} label={t('welcome.get_started')} />
+    </>
   );
 };
