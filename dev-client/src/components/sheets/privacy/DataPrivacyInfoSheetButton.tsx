@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,6 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createContext} from 'react';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/InfoButton';
+import {DataPrivacyInfoSheet} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheet';
 
-export const BottomSheetPrivacyModalContext = createContext(() => {});
+export const DataPrivacyInfoSheetButton = () => {
+  return (
+    <DataPrivacyInfoSheet trigger={onOpen => <InfoButton onPress={onOpen} />} />
+  );
+};
