@@ -15,10 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
-import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 import {DataPrivacyContent} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyContent';
 
 type Props = {
@@ -28,13 +27,12 @@ type Props = {
 export const DataPrivacyInfoSheet = ({
   trigger,
 }: React.PropsWithChildren<Props>) => {
-  const {t} = useTranslation();
-
   return (
-    <InfoOverlaySheet
+    <OverlaySheet
+      fullHeight
       trigger={trigger}
-      Header={t('general.info.privacy_title')}>
+      Header={<TranslatedHeading i18nKey="general.info.privacy_title" />}>
       <DataPrivacyContent />
-    </InfoOverlaySheet>
+    </OverlaySheet>
   );
 };
