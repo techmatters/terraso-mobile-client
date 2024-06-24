@@ -18,8 +18,8 @@
 import {useTranslation} from 'react-i18next';
 
 import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
-import {PrivacyInfoContent} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoContent';
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
+import {DataPrivacyContent} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyContent';
 
 type Props = {
   trigger?: ModalTrigger;
@@ -34,7 +34,7 @@ export const DataPrivacyInfoSheet = ({
     <InfoOverlaySheet
       trigger={trigger}
       Header={t('general.info.privacy_title')}>
-      <PrivacyInfoContent />
+      <DataPrivacyContent />
     </InfoOverlaySheet>
   );
 };
