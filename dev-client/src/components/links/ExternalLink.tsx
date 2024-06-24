@@ -42,7 +42,7 @@ export const ExternalLink = React.forwardRef(
       <View style={styles.container}>
         <Pressable onPress={() => Linking.openURL(url)}>
           <Box>
-            <Row>
+            <Row alignItems="center">
               <Text
                 color="primary.main"
                 fontSize="md"
