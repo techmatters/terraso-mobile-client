@@ -430,7 +430,7 @@
       "privacy_item4": "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. ",
       "data_portal_link_url": "https://landpotential.org/",
       "data_portal_link_text": "LandPKS Data Portal",
-      "privacy_policy_link_url": "https://landpotential.org/privacy",
+      "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
       "privacy_policy_link_text": "Read more about our data privacy policy."
     },
     "required": "Required",
