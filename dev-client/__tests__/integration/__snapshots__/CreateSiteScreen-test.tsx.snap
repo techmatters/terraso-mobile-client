@@ -1298,7 +1298,9 @@ exports[`renders correctly 1`] = `
                                                     {
                                                       "flexDirection": "row",
                                                     },
-                                                    {},
+                                                    {
+                                                      "alignItems": "center",
+                                                    },
                                                   ]
                                                 }
                                               >
