@@ -1141,7 +1141,18 @@ exports[`renders correctly 1`] = `
                                             }
                                           }
                                         >
-                                          LandPKS Data Privacy
+                                          <Text
+                                            lineHeight="32px"
+                                            style={
+                                              {
+                                                "color": "#1A202C",
+                                                "fontSize": 24,
+                                                "fontWeight": "700",
+                                              }
+                                            }
+                                          >
+                                            LandPKS Data Privacy
+                                          </Text>
                                         </Text>
                                         <View
                                           style={
