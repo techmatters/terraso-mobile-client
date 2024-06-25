@@ -31,8 +31,7 @@ import ProjectForm, {
 } from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
 import {useDispatch} from 'terraso-mobile-client/store';
 
-type Props = {};
-export const CreateProjectForm = ({}: Props) => {
+export const CreateProjectForm = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
