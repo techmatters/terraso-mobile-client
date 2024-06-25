@@ -424,16 +424,14 @@
     "nullable_option": "None",
     "info": {
       "privacy_title": "LandPKS Data Privacy",
-      "privacy_item1": "<0>The data visible in public sites</0> includes all data entered into the LandPKS mobile app except for personally identifiable information (PII).",
-      "privacy_item2": "<0>Public sites</0> are visible to anyone on the LandPKS data portal. This means anyone can view information about this site.",
-      "privacy_item3": "<0>Unaffiliated private sites</0> are only visible to you. You can change the privacy of the site at any time.",
-      "privacy_item4": "<0>A project’s privacy setting determines the privacy of its affiliated sites.</0> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time.",
-      "privacy_item5": "<0>When a site is transferred to a project,</0> the project will determine the site’s privacy setting.",
-      "privacy_item6": "Read more about our data privacy policy:",
+      "privacy_item1": "<bold>Public sites</bold> are visible to anyone on the LandPKS data portal.",
+      "privacy_item2": "All data entered into the LandPKS mobile app is included, except for personally identifiable information (PII).",
+      "privacy_item3": "<bold>A private site</bold> not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. ",
+      "privacy_item4": "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. ",
       "data_portal_link_url": "https://landpotential.org/",
       "data_portal_link_text": "LandPKS Data Portal",
-      "privacy_policy_link_url": "https://landpotential.org/",
-      "privacy_policy_link_text": "LandPKS Privacy Policy"
+      "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+      "privacy_policy_link_text": "Read more about our data privacy policy."
     },
     "required": "Required",
     "character_limit": "{{current}} / {{limit}} characters",

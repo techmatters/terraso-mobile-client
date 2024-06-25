@@ -28,7 +28,7 @@ export function TranslatedSubHeading({
   values,
 }: TranslatedSubHeadingProps) {
   return (
-    <Heading variant="h2">
+    <Heading variant="h5">
       <TranslatedContent i18nKey={i18nKey} values={values} />
     </Heading>
   );

@@ -40,7 +40,6 @@ type Props = {
   createSiteCallback: (
     input: SiteAddMutationInput,
   ) => Promise<Site | undefined>;
-  onInfoPress: () => void;
 };
 
 export const CreateSiteView = ({
@@ -48,7 +47,6 @@ export const CreateSiteView = ({
   createSiteCallback,
   sitePin,
   elevation,
-  onInfoPress,
 }: Props) => {
   const {t} = useTranslation();
   const validationSchema = useMemo(() => siteValidationSchema(t), [t]);
@@ -87,12 +85,7 @@ export const CreateSiteView = ({
         name: true,
       }}>
       {({isValid, ...props}) => (
-        <CreateSiteForm
-          {...props}
-          sitePin={sitePin}
-          onInfoPress={onInfoPress}
-          isValid={isValid}
-        />
+        <CreateSiteForm {...props} sitePin={sitePin} isValid={isValid} />
       )}
     </Formik>
   );

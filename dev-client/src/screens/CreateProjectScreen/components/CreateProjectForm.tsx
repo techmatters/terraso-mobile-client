@@ -31,11 +31,7 @@ import ProjectForm, {
 } from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
 import {useDispatch} from 'terraso-mobile-client/store';
 
-type Props = {
-  onInfoPress: () => void;
-};
-
-export const CreateProjectForm = ({onInfoPress}: Props) => {
+export const CreateProjectForm = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -73,7 +69,6 @@ export const CreateProjectForm = ({onInfoPress}: Props) => {
           handleSubmit={handleSubmit}
           handleChange={handleChange}
           handleBlur={handleBlur}
-          onInfoPress={onInfoPress}
           isValid={isValid}
           privacy={values.privacy}
         />
@@ -88,14 +83,12 @@ const FormContainer = React.memo(
     handleSubmit,
     handleChange,
     handleBlur,
-    onInfoPress,
     privacy,
     isValid,
   }: Pick<
     FormikProps<ProjectFormValues>,
     'isSubmitting' | 'handleSubmit' | 'handleChange' | 'handleBlur' | 'isValid'
   > &
-    Props &
     Pick<ProjectFormValues, 'privacy'>) => {
     const {t} = useTranslation();
 
@@ -104,7 +97,6 @@ const FormContainer = React.memo(
         <ScrollView bg="background.default">
           <Box pt="16px" mx="20px">
             <ProjectForm
-              onInfoPress={onInfoPress}
               handleChange={handleChange}
               handleBlur={handleBlur}
               privacy={privacy}
