@@ -16,6 +16,7 @@
  */
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Divider} from 'react-native-paper';
 
 import {ScrollView} from 'native-base';
 
@@ -72,6 +73,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
         value={steepnessValue}
         onPress={onSteepness}
       />
+      <Divider />
       <DataInputSummary
         required={required}
         complete={shapeValue !== undefined}
