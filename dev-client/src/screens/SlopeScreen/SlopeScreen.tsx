@@ -69,7 +69,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
       <DataInputSummary
         required={required}
         complete={steepnessValue !== undefined}
-        label={t('slope.steepness.short_title').toLocaleUpperCase()}
+        label={t('slope.steepness.short_title')}
         value={steepnessValue}
         onPress={onSteepness}
       />
@@ -77,7 +77,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
       <DataInputSummary
         required={required}
         complete={shapeValue !== undefined}
-        label={t('slope.shape.title').toLocaleUpperCase()}
+        label={t('slope.shape.title')}
         value={shapeValue}
         onPress={onShape}
       />
