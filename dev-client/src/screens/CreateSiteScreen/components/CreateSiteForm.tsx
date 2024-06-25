@@ -29,13 +29,13 @@ import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Box,
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
+import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
@@ -49,11 +49,9 @@ export const CreateSiteForm = ({
   handleSubmit,
   setValues,
   values,
-  onInfoPress,
   isValid,
 }: FormikProps<FormState> & {
   sitePin: Coords | undefined;
-  onInfoPress: () => void;
 }) => {
   const {t} = useTranslation();
   const {accuracyM} = useSelector(state => state.map.userLocation);
@@ -127,15 +125,7 @@ export const CreateSiteForm = ({
           <FormField name="privacy">
             <FormLabel>
               {t('privacy.label')}
-              <IconButton
-                pt={0}
-                pb={0}
-                pl={2}
-                size="md"
-                name="info"
-                onPress={onInfoPress}
-                _icon={{color: 'action.active_subtle'}}
-              />
+              <DataPrivacyInfoSheetButton />
             </FormLabel>
             <FormRadioGroup
               values={['PUBLIC', 'PRIVATE']}

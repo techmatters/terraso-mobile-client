@@ -28,7 +28,6 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
   Box,
@@ -37,6 +36,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {
   PROJECT_DESCRIPTION_MAX_LENGTH,
   PROJECT_DESCRIPTION_MIN_LENGTH,
@@ -94,7 +94,6 @@ export type ProjectFormValues = {
 
 type Props = {
   editForm?: boolean;
-  onInfoPress: () => void;
 };
 
 type FormValues = Omit<ProjectUpdateMutationInput, 'id'>;
@@ -163,7 +162,6 @@ export const EditProjectForm = ({
 };
 
 export default function ProjectForm({
-  onInfoPress,
   handleChange,
   handleBlur,
   privacy,
@@ -203,11 +201,7 @@ export default function ProjectForm({
             <Heading bold size="md">
               {t('projects.create.privacy_label')}
             </Heading>
-            <IconButton
-              name="info"
-              onPress={onInfoPress}
-              _icon={{color: 'action.active'}}
-            />
+            <DataPrivacyInfoSheetButton />
           </Row>
         }
         options={{

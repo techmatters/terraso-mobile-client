@@ -26,7 +26,6 @@ import {updateProject} from 'terraso-client-shared/project/projectSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   Box,
   Column,
@@ -35,8 +34,8 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
-import {useInfoPress} from 'terraso-mobile-client/hooks/useInfoPress';
 import {
   TabRoutes,
   TabStackParamList,
@@ -57,7 +56,6 @@ export const ProjectInputScreen = ({
   const navigation = useNavigation();
   const project = useSelector(state => state.project.projects[projectId]);
   const dispatch = useDispatch();
-  const onInfoPress = useInfoPress();
 
   const onEditInstructions = useCallback(() => {
     return navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {project: project});
@@ -89,15 +87,7 @@ export const ProjectInputScreen = ({
                   <Text variant="body1" bold>
                     {t('site.dashboard.privacy')}
                   </Text>
-                  <IconButton
-                    pt={0}
-                    pb={0}
-                    pl={2}
-                    size="md"
-                    name="info"
-                    onPress={onInfoPress}
-                    _icon={{color: 'action.active'}}
-                  />
+                  <DataPrivacyInfoSheetButton />
                 </Row>
               }
               options={{

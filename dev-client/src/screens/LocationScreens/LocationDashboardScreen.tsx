@@ -15,16 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo, useRef} from 'react';
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
 import {Coords} from 'terraso-client-shared/types';
 
-import {PrivacyInfoModal} from 'terraso-mobile-client/components/modals/privacy/PrivacyInfoModal';
-import {BottomSheetPrivacyModalContext} from 'terraso-mobile-client/context/BottomSheetPrivacyModalContext';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -47,7 +43,6 @@ type Props = ({siteId: string} | {coords: Coords} | {elevation: number}) & {
 export const LocationDashboardScreen = (props: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const infoModalRef = useRef<BottomSheetModal>(null);
   const initialTab = props.initialTab === undefined ? 'SITE' : props.initialTab;
 
   const siteId = 'siteId' in props ? props.siteId : undefined;
@@ -81,40 +76,28 @@ export const LocationDashboardScreen = (props: Props) => {
     );
   }, [siteId, navigation, userRole]);
 
-  const onInfoPress = useCallback(
-    () => infoModalRef.current?.present(),
-    [infoModalRef],
-  );
-  const onInfoClose = useCallback(
-    () => infoModalRef.current?.dismiss(),
-    [infoModalRef],
-  );
-
   return (
-    <BottomSheetPrivacyModalContext.Provider value={onInfoPress}>
-      <ScreenScaffold
-        AppBar={
-          <AppBar
-            RightButton={appBarRightButton}
-            title={site?.name ?? t('site.dashboard.default_title')}
-          />
-        }>
-        {siteId ? (
-          <SiteRoleContextProvider siteId={siteId}>
-            <SiteLocationDashboardTabNavigator
-              siteId={siteId}
-              initialTab={initialTab}
-            />
-          </SiteRoleContextProvider>
-        ) : (
-          <LocationDashboardContent
+    <ScreenScaffold
+      AppBar={
+        <AppBar
+          RightButton={appBarRightButton}
+          title={site?.name ?? t('site.dashboard.default_title')}
+        />
+      }>
+      {siteId ? (
+        <SiteRoleContextProvider siteId={siteId}>
+          <SiteLocationDashboardTabNavigator
             siteId={siteId}
-            coords={coords}
-            elevation={elevation}
+            initialTab={initialTab}
           />
-        )}
-        <PrivacyInfoModal ref={infoModalRef} onClose={onInfoClose} />
-      </ScreenScaffold>
-    </BottomSheetPrivacyModalContext.Provider>
+        </SiteRoleContextProvider>
+      ) : (
+        <LocationDashboardContent
+          siteId={siteId}
+          coords={coords}
+          elevation={elevation}
+        />
+      )}
+    </ScreenScaffold>
   );
 };
