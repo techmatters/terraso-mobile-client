@@ -259,9 +259,9 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
           )}
           {result !== undefined && (
             <Column p="15px" bg="primary.contrast" alignItems="flex-start">
-              <Text variant="body1-strong">
+              <Text variant="body1-strong" textTransform="uppercase">
                 {t('soil.texture.guide.result', {
-                  result: t(`soil.texture.class.${result}`).toLocaleUpperCase(),
+                  result: t(`soil.texture.class.${result}`),
                 })}
               </Text>
               <Box height="10px" />
