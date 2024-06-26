@@ -37,57 +37,46 @@ exports[`renders correctly 1`] = `
     >
       <View
         style={
-          {
-            "flexGrow": 2,
-          }
-        }
-      />
-      <View
-        style={
           [
             {
               "flexDirection": "column",
             },
             {
               "alignItems": "center",
-              "justifyContent": "flex-end",
+              "marginTop": 135,
             },
           ]
         }
       >
+        <
+          height="144px"
+          width="144px"
+        />
         <Text
           lineHeight="56px"
           style={
             {
               "color": "#FFFFFF",
-              "fontSize": 40,
-              "fontWeight": "400",
+              "fontSize": 30,
+              "fontWeight": "bold",
+              "marginTop": 34,
             }
           }
         >
-          LandPKS
+          LandPKS Soil ID
         </Text>
-        <View
-          style={
-            {
-              "height": 28,
-            }
-          }
-        />
         <Text
           lineHeight="32px"
           style={
             {
               "color": "#FFFFFF",
-              "fontSize": 24,
+              "fontSize": 22,
               "fontWeight": "400",
-              "paddingLeft": 40,
-              "paddingRight": 40,
-              "textAlign": "center",
+              "marginTop": 14,
             }
           }
         >
-          Discover the potential of your land
+          Soil science in your hands
         </Text>
         <View
           style={
@@ -138,17 +127,23 @@ exports[`renders correctly 1`] = `
             onResponderTerminationRequest={[Function]}
             onStartShouldSetResponder={[Function]}
             style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "#FFFFFF",
-                "borderRadius": 4,
-                "flexDirection": "row",
-                "justifyContent": "center",
-                "paddingBottom": 8,
-                "paddingLeft": 22,
-                "paddingRight": 22,
-                "paddingTop": 8,
-              }
+              [
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#028843",
+                  "borderRadius": 4,
+                  "flexDirection": "row",
+                  "justifyContent": "center",
+                  "paddingBottom": 8,
+                  "paddingLeft": 22,
+                  "paddingRight": 22,
+                  "paddingTop": 8,
+                },
+                {
+                  "backgroundColor": "white",
+                  "justifyContent": "center",
+                },
+              ]
             }
           >
             <View
@@ -190,6 +185,7 @@ exports[`renders correctly 1`] = `
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
+                      "textTransform": "none",
                     }
                   }
                 >
@@ -240,17 +236,23 @@ exports[`renders correctly 1`] = `
             onResponderTerminationRequest={[Function]}
             onStartShouldSetResponder={[Function]}
             style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "#FFFFFF",
-                "borderRadius": 4,
-                "flexDirection": "row",
-                "justifyContent": "center",
-                "paddingBottom": 8,
-                "paddingLeft": 22,
-                "paddingRight": 22,
-                "paddingTop": 8,
-              }
+              [
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#028843",
+                  "borderRadius": 4,
+                  "flexDirection": "row",
+                  "justifyContent": "center",
+                  "paddingBottom": 8,
+                  "paddingLeft": 22,
+                  "paddingRight": 22,
+                  "paddingTop": 8,
+                },
+                {
+                  "backgroundColor": "white",
+                  "justifyContent": "center",
+                },
+              ]
             }
           >
             <View
@@ -292,6 +294,7 @@ exports[`renders correctly 1`] = `
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
+                      "textTransform": "none",
                     }
                   }
                 >
@@ -342,30 +345,38 @@ exports[`renders correctly 1`] = `
           ]
         }
       >
-        <
-          height="39px"
-          width="122px"
-        />
         <View
           style={
-            {
-              "height": 12,
-            }
-          }
-        />
-        <Text
-          letterSpacing="0.4px"
-          lineHeight="20px"
-          style={
-            {
-              "color": "#FFFFFF",
-              "fontSize": 12,
-              "fontWeight": "400",
-            }
+            [
+              {
+                "flexDirection": "row",
+              },
+              {
+                "alignItems": "flex-end",
+              },
+            ]
           }
         >
-          LandPKS is a Terraso soil science tool.
-        </Text>
+          <Text
+            letterSpacing="0.15px"
+            lineHeight="24px"
+            style={
+              {
+                "color": "#FFFFFF",
+                "fontSize": 16,
+                "fontWeight": "400",
+                "marginBottom": 6,
+                "marginRight": 5,
+              }
+            }
+          >
+            from
+          </Text>
+          <
+            height="39px"
+            width="122px"
+          />
+        </View>
       </View>
     </View>
   </View>
