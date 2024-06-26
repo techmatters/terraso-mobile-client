@@ -43,6 +43,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {theme} from 'terraso-mobile-client/theme';
 
 const showAppleAuth = Platform.OS === 'ios';
 
@@ -141,7 +142,7 @@ export const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   loginButton: {
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background.default,
     justifyContent: showAppleAuth ? 'center' : 'flex-start',
   },
   loginButtonText: {
