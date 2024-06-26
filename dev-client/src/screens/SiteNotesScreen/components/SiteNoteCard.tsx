@@ -41,9 +41,10 @@ export const SiteNoteCard = ({note}: Props) => {
   const currentUser = useSelector(state => state.account.currentUser.data);
   const currentUserIsAuthor = note.authorId === currentUser?.id;
   const siteRole = useSiteRoleContext();
-  const currentUserIsManager =
-    siteRole?.role === 'OWNER' || siteRole?.role === 'MANAGER';
-  const canViewEditScreen = currentUserIsAuthor || currentUserIsManager;
+  const currentUserIsOwner = siteRole?.role === 'OWNER';
+  const currentUserIsManager = siteRole?.role === 'MANAGER';
+  const canViewEditScreen =
+    currentUserIsAuthor || currentUserIsOwner || currentUserIsManager;
 
   const onEditNote = useCallback(() => {
     navigation.navigate('EDIT_SITE_NOTE', {note: note});
