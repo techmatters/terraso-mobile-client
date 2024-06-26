@@ -103,7 +103,9 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
       <ScrollView bg="grey.300">
         <Column space="16px">
           <Column p="15px" bg="primary.contrast">
-            <Text variant="subtitle1">{t('soil.texture.guide.prepare')}</Text>
+            <Text variant="body1-strong">
+              {t('soil.texture.guide.prepare')}
+            </Text>
             <BulletList
               data={[1, 2, 3]}
               renderItem={i => (
@@ -112,7 +114,7 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                 </Text>
               )}
             />
-            <Text variant="subtitle1">{t('soil.texture.guide.wet')}</Text>
+            <Text variant="body1-strong">{t('soil.texture.guide.wet')}</Text>
             <BulletList
               data={[1, 2, 3, 4, 5]}
               renderItem={i => (
@@ -121,7 +123,7 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                 </Text>
               )}
             />
-            <Text variant="subtitle1">{t('soil.texture.guide.ball')}</Text>
+            <Text variant="body1-strong">{t('soil.texture.guide.ball')}</Text>
             <BulletList
               data={[1, 2]}
               renderItem={i => (
@@ -129,6 +131,13 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                   <Trans i18nKey={`soil.texture.guide.ball_details_${i}`} />
                 </Text>
               )}
+            />
+            <Video
+              isLooping
+              shouldPlay
+              source={require('terraso-mobile-client/assets/texture/guide/ball.mp4')}
+              resizeMode={ResizeMode.COVER}
+              style={styles.ballVideo}
             />
             <RadioBlock
               label={t('soil.texture.guide.ball_help')}
@@ -138,18 +147,11 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
               }}
               groupProps={{name: 'ball', onChange: setBall, value: ball}}
             />
-            <Video
-              isLooping
-              shouldPlay
-              source={require('terraso-mobile-client/assets/texture/guide/ball.mp4')}
-              resizeMode={ResizeMode.COVER}
-              style={styles.ballVideo}
-            />
           </Column>
           {ball === 'YES' && (
             <>
               <Column p="15px" bg="primary.contrast">
-                <Text variant="subtitle1">
+                <Text variant="body1-strong">
                   {t('soil.texture.guide.ribbon')}
                 </Text>
                 <BulletList
@@ -161,6 +163,13 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                       />
                     </Text>
                   )}
+                />
+                <Video
+                  isLooping
+                  shouldPlay
+                  source={require('terraso-mobile-client/assets/texture/guide/ribbon.mp4')}
+                  resizeMode={ResizeMode.COVER}
+                  style={styles.ribbonVideo}
                 />
                 <RadioBlock
                   label={t('soil.texture.guide.ribbon_help')}
@@ -174,17 +183,13 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                     value: ribbon,
                   }}
                 />
-                <Video
-                  isLooping
-                  shouldPlay
-                  source={require('terraso-mobile-client/assets/texture/guide/ribbon.mp4')}
-                  resizeMode={ResizeMode.COVER}
-                  style={styles.ribbonVideo}
-                />
               </Column>
               {ribbon === 'YES' && (
                 <>
                   <Column p="15px" bg="primary.contrast">
+                    <View style={styles.lengthImageContainer}>
+                      <Image style={styles.lengthImage} source={LENGTH_IMAGE} />
+                    </View>
                     <RadioBlock
                       label={t('soil.texture.guide.ribbon_length_help')}
                       options={{
@@ -198,13 +203,10 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                         value: ribbonLength,
                       }}
                     />
-                    <View style={styles.lengthImageContainer}>
-                      <Image style={styles.lengthImage} source={LENGTH_IMAGE} />
-                    </View>
                   </Column>
                   {ribbonLength !== undefined && (
                     <Column p="15px" bg="primary.contrast">
-                      <Text variant="subtitle1">
+                      <Text variant="body1-strong">
                         {t('soil.texture.guide.grittyness')}
                       </Text>
                       <BulletList
@@ -218,6 +220,13 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                             </Trans>
                           </Text>
                         )}
+                      />
+                      <Video
+                        isLooping
+                        shouldPlay
+                        source={require('terraso-mobile-client/assets/texture/guide/grittyness.mp4')}
+                        resizeMode={ResizeMode.COVER}
+                        style={styles.grittynessVideo}
                       />
                       <RadioBlock
                         label={t('soil.texture.guide.grittyness_help')}
@@ -243,13 +252,6 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
                           onChange: setGrit,
                           value: grit,
                         }}
-                      />
-                      <Video
-                        isLooping
-                        shouldPlay
-                        source={require('terraso-mobile-client/assets/texture/guide/grittyness.mp4')}
-                        resizeMode={ResizeMode.COVER}
-                        style={styles.grittynessVideo}
                       />
                     </Column>
                   )}
@@ -282,11 +284,12 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
 };
 
 const styles = StyleSheet.create({
-  ballVideo: {width: '100%', aspectRatio: 550 / 400},
-  ribbonVideo: {width: '100%', aspectRatio: 480 / 348},
-  grittynessVideo: {width: '100%', aspectRatio: 474 / 392},
+  ballVideo: {width: '100%', aspectRatio: 550 / 400, marginBottom: 10},
+  ribbonVideo: {width: '100%', aspectRatio: 480 / 348, marginBottom: 10},
+  grittynessVideo: {width: '100%', aspectRatio: 474 / 392, marginBottom: 10},
   lengthImageContainer: {
     width: '100%',
+    marginBottom: 10,
     aspectRatio:
       Image.resolveAssetSource(LENGTH_IMAGE).width /
       Image.resolveAssetSource(LENGTH_IMAGE).height,
