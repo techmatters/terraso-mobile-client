@@ -24,7 +24,6 @@ import {
   AppleAuthenticationButtonStyle,
   AppleAuthenticationButtonType,
 } from 'expo-apple-authentication';
-import Constants from 'expo-constants';
 
 import {Button} from 'native-base';
 
@@ -32,17 +31,20 @@ import {setHasAccessTokenAsync} from 'terraso-client-shared/account/accountSlice
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
 
+import LandPKSLogo from 'terraso-mobile-client/assets/landpks-logo.svg';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import {auth, AuthProvider} from 'terraso-mobile-client/auth';
 import {
   Box,
   Column,
   Heading,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+
+const showAppleAuth = Platform.OS === 'ios';
 
 export const LoginScreen = () => {
   const {t} = useTranslation();
@@ -50,8 +52,6 @@ export const LoginScreen = () => {
   const loggedIn = useSelector(
     state => state.account.currentUser.data !== null,
   );
-  const showAppleAuth = Platform.OS === 'ios';
-  const isDevelopmentMode = Constants.expoConfig!.extra?.ENV === 'development';
 
   // note: we intentionally run this on every render,
   // so we can't accidentally get stuck on this view because
@@ -79,33 +79,36 @@ export const LoginScreen = () => {
 
   return (
     <Column bgColor="primary.main" alignItems="center" h="100%">
-      <Box flexGrow={2} />
-      <Column justifyContent="flex-end" alignItems="center">
-        <Heading variant="h3" fontSize="40px" color="primary.contrast">
+      <Column marginTop={135} alignItems="center">
+        <LandPKSLogo width="144px" height="144px" />
+        <Heading
+          variant="h3"
+          fontWeight="bold"
+          fontSize="30px"
+          marginTop="34px"
+          color="primary.contrast">
           {t('login.title')}
         </Heading>
-        <Box h="28px" />
         <Heading
           variant="h5"
           color="primary.contrast"
-          textAlign="center"
-          pl={10}
-          pr={10}>
+          fontSize="22px"
+          marginTop="14px">
           {t('login.subtitle')}
         </Heading>
         <Box h="72px" />
         <Button.Group direction="column" space={5}>
           <Button
-            bgColor="primary.contrast"
-            _text={{color: 'text.primary'}}
+            style={styles.loginButton}
+            _text={styles.loginButtonText}
             size="lg"
             onPress={onPress('google')}
             startIcon={<GoogleLogo />}>
             {t('account.google_login')}
           </Button>
           <Button
-            bgColor="primary.contrast"
-            _text={{color: 'text.primary'}}
+            style={styles.loginButton}
+            _text={styles.loginButtonText}
             size="lg"
             onPress={onPress('microsoft')}
             startIcon={<MicrosoftLogo />}>
@@ -125,22 +128,26 @@ export const LoginScreen = () => {
       </Column>
       <Box flexGrow={3} />
       <Column pb="60px" alignItems="center" justifyContent="flex-end">
-        <TerrasoLogo width="122px" height="39px" />
-        <Box h="12px" />
-        <Text variant="caption" color="primary.contrast">
-          {t('login.description')}
-        </Text>
-        {isDevelopmentMode && (
-          <Text variant="caption" color="primary.contrast">
-            {APP_CONFIG.appleClientId}
+        <Row alignItems="flex-end">
+          <Text variant="body1" color="primary.contrast" mr="5px" mb="6px">
+            {t('login.from')}
           </Text>
-        )}
+          <TerrasoLogo width="122px" height="39px" />
+        </Row>
       </Column>
     </Column>
   );
 };
 
 const styles = StyleSheet.create({
+  loginButton: {
+    backgroundColor: 'white',
+    justifyContent: showAppleAuth ? 'center' : 'flex-start',
+  },
+  loginButtonText: {
+    color: showAppleAuth ? 'text.primary' : 'primary.main',
+    textTransform: showAppleAuth ? 'none' : 'uppercase',
+  },
   appleloginButton: {
     width: 275,
     height: 44,
