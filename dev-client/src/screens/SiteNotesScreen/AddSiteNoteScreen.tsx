@@ -28,8 +28,8 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
-import {SiteNoteForm} from 'terraso-mobile-client/components/SiteNoteForm';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 type Props = {
