@@ -51,7 +51,10 @@ export const EditSiteNoteScreen = ({note}: Props) => {
   const currentUserIsAuthor = note.authorId === currentUser?.id;
 
   const handleUpdateNote = async ({content}: {content: string}) => {
-    if (!content.trim()) {
+    if (!currentUserIsAuthor) {
+      navigation.pop();
+      return;
+    } else if (!content.trim()) {
       return;
     }
     Keyboard.dismiss();
@@ -82,7 +85,6 @@ export const EditSiteNoteScreen = ({note}: Props) => {
       initialValues={{content: note.content}}
       onSubmit={handleUpdateNote}
       onDelete={handleDelete}
-      submitDisabled={!currentUserIsAuthor}
       isSubmitting={isSubmitting}>
       {formikProps => (
         <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
