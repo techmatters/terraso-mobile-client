@@ -23,9 +23,10 @@ import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 
 type Props = {
   content: string;
+  editDisabled?: boolean;
 };
 
-export const SiteNoteForm = ({content}: Props) => {
+export const SiteNoteForm = ({content, editDisabled}: Props) => {
   const {t} = useTranslation();
   const formInputRef = useRef<TextInput>(null);
 
@@ -55,6 +56,7 @@ export const SiteNoteForm = ({content}: Props) => {
       activeUnderlineColor="transparent"
       underlineColor="transparent"
       style={styles.box}
+      editable={!editDisabled}
       contentStyle={styles.content}
     />
   );

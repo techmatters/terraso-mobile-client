@@ -37,11 +37,22 @@ type Props = {
   onSubmit: (values: {content: string}) => void | Promise<void>;
   onDelete: () => void;
   children: (formikProps: FormikProps<{content: string}>) => React.JSX.Element;
+  submitDisabled?: boolean;
   isSubmitting: boolean;
 };
 
 export const ScreenFormWrapper = forwardRef(
-  ({initialValues, onSubmit, onDelete, children, isSubmitting}: Props, ref) => {
+  (
+    {
+      initialValues,
+      onSubmit,
+      onDelete,
+      children,
+      submitDisabled,
+      isSubmitting,
+    }: Props,
+    ref,
+  ) => {
     const formikRef = useRef<FormikProps<{content: string}>>(null);
     const {t} = useTranslation();
     const navigation = useNavigation();
@@ -120,7 +131,7 @@ export const ScreenFormWrapper = forwardRef(
             />
             <Button
               onPress={handlePressSubmit}
-              isDisabled={isSubmitting}
+              isDisabled={submitDisabled || isSubmitting}
               shadow={1}
               size="lg"
               _text={{textTransform: 'uppercase'}}>

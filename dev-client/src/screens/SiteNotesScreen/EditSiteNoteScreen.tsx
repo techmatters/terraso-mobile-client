@@ -34,7 +34,7 @@ import {
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   note: SiteNote;
@@ -46,6 +46,9 @@ export const EditSiteNoteScreen = ({note}: Props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const currentUser = useSelector(state => state.account.currentUser.data);
+  const currentUserIsAuthor = note.authorId === currentUser?.id;
 
   const handleUpdateNote = async ({content}: {content: string}) => {
     if (!content.trim()) {
@@ -79,6 +82,7 @@ export const EditSiteNoteScreen = ({note}: Props) => {
       initialValues={{content: note.content}}
       onSubmit={handleUpdateNote}
       onDelete={handleDelete}
+      submitDisabled={!currentUserIsAuthor}
       isSubmitting={isSubmitting}>
       {formikProps => (
         <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
@@ -86,7 +90,10 @@ export const EditSiteNoteScreen = ({note}: Props) => {
             {t('site.notes.edit_title')}
           </Heading>
           <Box flexGrow={1}>
-            <SiteNoteForm content={formikProps.values.content} />
+            <SiteNoteForm
+              content={formikProps.values.content}
+              editDisabled={!currentUserIsAuthor}
+            />
           </Box>
         </Column>
       )}
