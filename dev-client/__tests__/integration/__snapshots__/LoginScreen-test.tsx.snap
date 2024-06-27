@@ -141,7 +141,7 @@ exports[`renders correctly 1`] = `
                 },
                 {
                   "backgroundColor": "#FFFFFF",
-                  "justifyContent": "center",
+                  "borderRadius": 0,
                 },
               ]
             }
@@ -177,15 +177,14 @@ exports[`renders correctly 1`] = `
                   style={
                     {
                       "backgroundColor": undefined,
-                      "color": "#1A202C",
+                      "color": "#000",
                       "fontFamily": undefined,
-                      "fontSize": 15,
+                      "fontSize": 16,
                       "fontStyle": "normal",
-                      "fontWeight": "500",
-                      "letterSpacing": 0.46,
+                      "fontWeight": "600",
+                      "letterSpacing": -0.1,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
-                      "textTransform": "none",
                     }
                   }
                 >
@@ -250,7 +249,7 @@ exports[`renders correctly 1`] = `
                 },
                 {
                   "backgroundColor": "#FFFFFF",
-                  "justifyContent": "center",
+                  "borderRadius": 0,
                 },
               ]
             }
@@ -286,15 +285,14 @@ exports[`renders correctly 1`] = `
                   style={
                     {
                       "backgroundColor": undefined,
-                      "color": "#1A202C",
+                      "color": "#000",
                       "fontFamily": undefined,
-                      "fontSize": 15,
+                      "fontSize": 16,
                       "fontStyle": "normal",
-                      "fontWeight": "500",
-                      "letterSpacing": 0.46,
+                      "fontWeight": "600",
+                      "letterSpacing": -0.1,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
-                      "textTransform": "none",
                     }
                   }
                 >
