@@ -140,7 +140,7 @@ exports[`renders correctly 1`] = `
                   "paddingTop": 8,
                 },
                 {
-                  "backgroundColor": "white",
+                  "backgroundColor": "#FFFFFF",
                   "justifyContent": "center",
                 },
               ]
@@ -179,9 +179,9 @@ exports[`renders correctly 1`] = `
                       "backgroundColor": undefined,
                       "color": "#1A202C",
                       "fontFamily": undefined,
-                      "fontSize": 15,
+                      "fontSize": 16,
                       "fontStyle": "normal",
-                      "fontWeight": "500",
+                      "fontWeight": "700",
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
@@ -249,7 +249,7 @@ exports[`renders correctly 1`] = `
                   "paddingTop": 8,
                 },
                 {
-                  "backgroundColor": "white",
+                  "backgroundColor": "#FFFFFF",
                   "justifyContent": "center",
                 },
               ]
@@ -288,9 +288,9 @@ exports[`renders correctly 1`] = `
                       "backgroundColor": undefined,
                       "color": "#1A202C",
                       "fontFamily": undefined,
-                      "fontSize": 15,
+                      "fontSize": 16,
                       "fontStyle": "normal",
-                      "fontWeight": "500",
+                      "fontWeight": "700",
                       "letterSpacing": 0.46,
                       "lineHeight": 26,
                       "textDecorationLine": undefined,
