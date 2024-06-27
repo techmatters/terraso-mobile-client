@@ -113,6 +113,7 @@ export const CreateSiteForm = ({
               </FormLabel>
               <ProjectSelect
                 projectId={values.projectId ?? null}
+                userRoles={['MANAGER', 'CONTRIBUTOR']}
                 setProjectId={projectId =>
                   setValues(current => ({
                     ...current,

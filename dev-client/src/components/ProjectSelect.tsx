@@ -18,18 +18,27 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {ProjectRole} from 'terraso-client-shared/project/projectSlice';
+
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {useProjectUserRolesFilter} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   projectId: string | null;
+  userRoles?: ProjectRole[];
   setProjectId: (projectId: string | null) => void;
 };
 
-export const ProjectSelect = ({projectId, setProjectId}: Props) => {
+export const ProjectSelect = ({projectId, userRoles, setProjectId}: Props) => {
   const {t} = useTranslation();
   const projects = useSelector(state => state.project.projects);
-  const projectList = useMemo(() => Object.keys(projects), [projects]);
+  const rolesFilter = useProjectUserRolesFilter(userRoles);
+  const projectIdList = useMemo(
+    () => Object.values(projects).filter(project => rolesFilter(project)),
+    [projects, rolesFilter],
+  ).map(project => project.id);
+
   const renderProject = useCallback(
     (id: string) => projects[id].name,
     [projects],
@@ -38,7 +47,7 @@ export const ProjectSelect = ({projectId, setProjectId}: Props) => {
   return (
     <Select
       nullable
-      options={projectList}
+      options={projectIdList}
       label={t('site.create.add_to_project_caption')}
       value={projectId}
       onValueChange={setProjectId}
