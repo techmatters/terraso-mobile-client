@@ -31,10 +31,12 @@ export const useProjectUserRolesFilter = (
        * Filter returns whether we can find a membership for the project
        * that matches the current user and has a role in the accepted list
        */
-      Boolean(Object.values(project.memberships).find(
-        membership =>
-          currentUser?.id === membership.userId &&
-          userRoles.includes(membership.userRole),
+      Boolean(
+        Object.values(project.memberships).find(
+          membership =>
+            currentUser?.id === membership.userId &&
+            userRoles.includes(membership.userRole),
+        ),
       );
   } else {
     return _ => true;
