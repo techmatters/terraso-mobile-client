@@ -21,16 +21,22 @@ exports[`renders correctly 1`] = `
       }
     }
   >
-    <View
+    <RNCSafeAreaView
+      edges={
+        {
+          "bottom": "additive",
+          "left": "additive",
+          "right": "additive",
+          "top": "additive",
+        }
+      }
       style={
         [
           {
-            "flexDirection": "column",
+            "flex": 1,
           },
           {
-            "alignItems": "center",
             "backgroundColor": "#028843",
-            "height": "100%",
           },
         ]
       }
@@ -42,303 +48,8 @@ exports[`renders correctly 1`] = `
               "flexDirection": "column",
             },
             {
-              "alignItems": "center",
-              "marginTop": 135,
-            },
-          ]
-        }
-      >
-        <
-          height="144px"
-          width="144px"
-        />
-        <Text
-          lineHeight="56px"
-          style={
-            {
-              "color": "#FFFFFF",
-              "fontSize": 30,
-              "fontWeight": "bold",
-              "marginTop": 34,
-            }
-          }
-        >
-          LandPKS Soil ID
-        </Text>
-        <Text
-          lineHeight="32px"
-          style={
-            {
-              "color": "#FFFFFF",
-              "fontSize": 22,
-              "fontWeight": "400",
-              "marginTop": 14,
-            }
-          }
-        >
-          Soil science in your hands
-        </Text>
-        <View
-          style={
-            {
-              "height": 72,
-            }
-          }
-        />
-        <View
-          dataSet={{}}
-          style={
-            {
-              "flexDirection": "column",
-            }
-          }
-        >
-          <View
-            accessibilityRole="button"
-            accessibilityState={
-              {
-                "busy": undefined,
-                "checked": undefined,
-                "disabled": undefined,
-                "expanded": undefined,
-                "selected": undefined,
-              }
-            }
-            accessibilityValue={
-              {
-                "max": undefined,
-                "min": undefined,
-                "now": undefined,
-                "text": undefined,
-              }
-            }
-            accessible={true}
-            collapsable={false}
-            colorScheme="primary"
-            dataSet={{}}
-            focusable={true}
-            onBlur={[Function]}
-            onClick={[Function]}
-            onFocus={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              [
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "#028843",
-                  "borderRadius": 4,
-                  "flexDirection": "row",
-                  "justifyContent": "center",
-                  "paddingBottom": 8,
-                  "paddingLeft": 22,
-                  "paddingRight": 22,
-                  "paddingTop": 8,
-                },
-                {
-                  "backgroundColor": "#FFFFFF",
-                  "borderRadius": 0,
-                },
-              ]
-            }
-          >
-            <View
-              dataSet={{}}
-              style={
-                {
-                  "alignItems": "center",
-                  "flexDirection": "row",
-                }
-              }
-              test={true}
-            >
-              <
-                color="text.50"
-                size="md"
-              />
-              <View
-                dataSet={{}}
-                style={
-                  {
-                    "width": 6,
-                  }
-                }
-              />
-              <View
-                dataSet={{}}
-                style={{}}
-              >
-                <Text
-                  dataSet={{}}
-                  style={
-                    {
-                      "backgroundColor": undefined,
-                      "color": "#000",
-                      "fontFamily": undefined,
-                      "fontSize": 16,
-                      "fontStyle": "normal",
-                      "fontWeight": "600",
-                      "letterSpacing": -0.1,
-                      "lineHeight": 26,
-                      "textDecorationLine": undefined,
-                    }
-                  }
-                >
-                  Sign in with Google
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View
-            dataSet={{}}
-            style={
-              {
-                "height": 20,
-              }
-            }
-          />
-          <View
-            accessibilityRole="button"
-            accessibilityState={
-              {
-                "busy": undefined,
-                "checked": undefined,
-                "disabled": undefined,
-                "expanded": undefined,
-                "selected": undefined,
-              }
-            }
-            accessibilityValue={
-              {
-                "max": undefined,
-                "min": undefined,
-                "now": undefined,
-                "text": undefined,
-              }
-            }
-            accessible={true}
-            collapsable={false}
-            colorScheme="primary"
-            dataSet={{}}
-            focusable={true}
-            onBlur={[Function]}
-            onClick={[Function]}
-            onFocus={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              [
-                {
-                  "alignItems": "center",
-                  "backgroundColor": "#028843",
-                  "borderRadius": 4,
-                  "flexDirection": "row",
-                  "justifyContent": "center",
-                  "paddingBottom": 8,
-                  "paddingLeft": 22,
-                  "paddingRight": 22,
-                  "paddingTop": 8,
-                },
-                {
-                  "backgroundColor": "#FFFFFF",
-                  "borderRadius": 0,
-                },
-              ]
-            }
-          >
-            <View
-              dataSet={{}}
-              style={
-                {
-                  "alignItems": "center",
-                  "flexDirection": "row",
-                }
-              }
-              test={true}
-            >
-              <
-                color="text.50"
-                size="md"
-              />
-              <View
-                dataSet={{}}
-                style={
-                  {
-                    "width": 6,
-                  }
-                }
-              />
-              <View
-                dataSet={{}}
-                style={{}}
-              >
-                <Text
-                  dataSet={{}}
-                  style={
-                    {
-                      "backgroundColor": undefined,
-                      "color": "#000",
-                      "fontFamily": undefined,
-                      "fontSize": 16,
-                      "fontStyle": "normal",
-                      "fontWeight": "600",
-                      "letterSpacing": -0.1,
-                      "lineHeight": 26,
-                      "textDecorationLine": undefined,
-                    }
-                  }
-                >
-                  Sign in with Microsoft
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View
-            dataSet={{}}
-            style={
-              {
-                "height": 20,
-              }
-            }
-          />
-          <ViewManagerAdapter_ExpoAppleAuthentication
-            buttonStyle={0}
-            buttonType={0}
-            onButtonPress={[Function]}
-            style={
-              {
-                "height": 44,
-                "width": 275,
-              }
-            }
-          />
-        </View>
-      </View>
-      <View
-        style={
-          {
-            "flexGrow": 3,
-          }
-        }
-      />
-      <View
-        style={
-          [
-            {
-              "flexDirection": "column",
-            },
-            {
-              "alignItems": "center",
-              "justifyContent": "flex-end",
-              "paddingBottom": 60,
+              "height": "100%",
+              "justifyContent": "space-between",
             },
           ]
         }
@@ -347,36 +58,345 @@ exports[`renders correctly 1`] = `
           style={
             [
               {
-                "flexDirection": "row",
+                "flexDirection": "column",
               },
               {
-                "alignItems": "flex-end",
+                "alignItems": "center",
+                "flexGrow": 1,
+                "justifyContent": "center",
               },
             ]
           }
         >
+          <
+            height="144px"
+            width="144px"
+          />
           <Text
-            letterSpacing="0.15px"
-            lineHeight="24px"
+            lineHeight="56px"
             style={
               {
                 "color": "#FFFFFF",
-                "fontSize": 16,
-                "fontWeight": "400",
-                "marginBottom": 6,
-                "marginRight": 5,
+                "fontSize": 30,
+                "fontWeight": "bold",
+                "marginTop": 34,
               }
             }
           >
-            from
+            LandPKS Soil ID
           </Text>
-          <
-            height="39px"
-            width="122px"
-          />
+          <Text
+            lineHeight="32px"
+            style={
+              {
+                "color": "#FFFFFF",
+                "fontSize": 22,
+                "fontWeight": "400",
+                "marginTop": 14,
+              }
+            }
+          >
+            Soil science in your hands
+          </Text>
+        </View>
+        <View
+          style={
+            [
+              {
+                "flexDirection": "column",
+              },
+              {
+                "alignItems": "center",
+                "flexGrow": 1,
+              },
+            ]
+          }
+        >
+          <View
+            dataSet={{}}
+            style={
+              {
+                "flexDirection": "column",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              colorScheme="primary"
+              dataSet={{}}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                [
+                  {
+                    "alignItems": "center",
+                    "backgroundColor": "#028843",
+                    "borderRadius": 4,
+                    "flexDirection": "row",
+                    "justifyContent": "center",
+                    "paddingBottom": 8,
+                    "paddingLeft": 22,
+                    "paddingRight": 22,
+                    "paddingTop": 8,
+                  },
+                  {
+                    "backgroundColor": "#FFFFFF",
+                    "borderRadius": 0,
+                  },
+                ]
+              }
+            >
+              <View
+                dataSet={{}}
+                style={
+                  {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                  }
+                }
+                test={true}
+              >
+                <
+                  color="text.50"
+                  size="md"
+                />
+                <View
+                  dataSet={{}}
+                  style={
+                    {
+                      "width": 6,
+                    }
+                  }
+                />
+                <View
+                  dataSet={{}}
+                  style={{}}
+                >
+                  <Text
+                    dataSet={{}}
+                    style={
+                      {
+                        "backgroundColor": undefined,
+                        "color": "#000",
+                        "fontFamily": undefined,
+                        "fontSize": 16,
+                        "fontStyle": "normal",
+                        "fontWeight": "600",
+                        "letterSpacing": -0.1,
+                        "lineHeight": 26,
+                        "textDecorationLine": undefined,
+                      }
+                    }
+                  >
+                    Sign in with Google
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View
+              dataSet={{}}
+              style={
+                {
+                  "height": 20,
+                }
+              }
+            />
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              colorScheme="primary"
+              dataSet={{}}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                [
+                  {
+                    "alignItems": "center",
+                    "backgroundColor": "#028843",
+                    "borderRadius": 4,
+                    "flexDirection": "row",
+                    "justifyContent": "center",
+                    "paddingBottom": 8,
+                    "paddingLeft": 22,
+                    "paddingRight": 22,
+                    "paddingTop": 8,
+                  },
+                  {
+                    "backgroundColor": "#FFFFFF",
+                    "borderRadius": 0,
+                  },
+                ]
+              }
+            >
+              <View
+                dataSet={{}}
+                style={
+                  {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                  }
+                }
+                test={true}
+              >
+                <
+                  color="text.50"
+                  size="md"
+                />
+                <View
+                  dataSet={{}}
+                  style={
+                    {
+                      "width": 6,
+                    }
+                  }
+                />
+                <View
+                  dataSet={{}}
+                  style={{}}
+                >
+                  <Text
+                    dataSet={{}}
+                    style={
+                      {
+                        "backgroundColor": undefined,
+                        "color": "#000",
+                        "fontFamily": undefined,
+                        "fontSize": 16,
+                        "fontStyle": "normal",
+                        "fontWeight": "600",
+                        "letterSpacing": -0.1,
+                        "lineHeight": 26,
+                        "textDecorationLine": undefined,
+                      }
+                    }
+                  >
+                    Sign in with Microsoft
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View
+              dataSet={{}}
+              style={
+                {
+                  "height": 20,
+                }
+              }
+            />
+            <ViewManagerAdapter_ExpoAppleAuthentication
+              buttonStyle={0}
+              buttonType={0}
+              onButtonPress={[Function]}
+              style={
+                {
+                  "height": 44,
+                  "width": 275,
+                }
+              }
+            />
+          </View>
+        </View>
+        <View
+          style={
+            [
+              {
+                "flexDirection": "column",
+              },
+              {
+                "alignItems": "center",
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              [
+                {
+                  "flexDirection": "row",
+                },
+                {
+                  "alignItems": "flex-end",
+                  "marginBottom": 6,
+                },
+              ]
+            }
+          >
+            <Text
+              letterSpacing="0.15px"
+              lineHeight="24px"
+              style={
+                {
+                  "color": "#FFFFFF",
+                  "fontSize": 16,
+                  "fontWeight": "400",
+                  "marginBottom": 6,
+                  "marginRight": 5,
+                }
+              }
+            >
+              from
+            </Text>
+            <
+              height="39px"
+              width="122px"
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </RNCSafeAreaView>
   </View>
 </RNCSafeAreaProvider>
 `;

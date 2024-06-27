@@ -354,6 +354,20 @@ Slope is important in identifying the soil. It also helps determine the soil’s
                     </RCTScrollView>
                   </View>
                   <View
+                    style={
+                      [
+                        {
+                          "backgroundColor": "rgba(202, 196, 208, 1)",
+                          "height": 0.5,
+                        },
+                        undefined,
+                        false,
+                        false,
+                        undefined,
+                      ]
+                    }
+                  />
+                  <View
                     accessibilityState={
                       {
                         "busy": undefined,
