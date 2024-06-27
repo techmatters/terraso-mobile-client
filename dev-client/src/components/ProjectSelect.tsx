@@ -35,9 +35,12 @@ export const ProjectSelect = ({projectId, userRoles, setProjectId}: Props) => {
   const projects = useSelector(state => state.project.projects);
   const rolesFilter = useProjectUserRolesFilter(userRoles);
   const projectIdList = useMemo(
-    () => Object.values(projects).filter(project => rolesFilter(project)),
+    () =>
+      Object.values(projects)
+        .filter(project => rolesFilter(project))
+        .map(project => project.id),
     [projects, rolesFilter],
-  ).map(project => project.id);
+  );
 
   const renderProject = useCallback(
     (id: string) => projects[id].name,
