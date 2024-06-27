@@ -18,6 +18,7 @@
 import {useCallback, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Platform, StyleSheet} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {
   AppleAuthenticationButton,
@@ -35,7 +36,6 @@ import LandPKSLogo from 'terraso-mobile-client/assets/landpks-logo.svg';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import {auth, AuthProvider} from 'terraso-mobile-client/auth';
 import {
-  Box,
   Column,
   Heading,
   Row,
@@ -79,64 +79,71 @@ export const LoginScreen = () => {
   }, [loggedIn, navigation]);
 
   return (
-    <Column bgColor="primary.main" alignItems="center" h="100%">
-      <Column marginTop={135} alignItems="center">
-        <LandPKSLogo width="144px" height="144px" />
-        <Heading
-          variant="h3"
-          fontWeight="bold"
-          fontSize="30px"
-          marginTop="34px"
-          color="primary.contrast">
-          {t('login.title')}
-        </Heading>
-        <Heading
-          variant="h5"
-          color="primary.contrast"
-          fontSize="22px"
-          marginTop="14px">
-          {t('login.subtitle')}
-        </Heading>
-        <Box h="72px" />
-        <Button.Group direction="column" space={5}>
-          <Button
-            style={styles.loginButton}
-            _text={styles.loginButtonText}
-            size="lg"
-            onPress={onPress('google')}
-            startIcon={<GoogleLogo />}>
-            {t('account.google_login')}
-          </Button>
-          <Button
-            style={styles.loginButton}
-            _text={styles.loginButtonText}
-            size="lg"
-            onPress={onPress('microsoft')}
-            startIcon={<MicrosoftLogo />}>
-            {t('account.microsoft_login')}
-          </Button>
-          {showAppleAuth ? (
-            <AppleAuthenticationButton
-              buttonType={AppleAuthenticationButtonType.SIGN_IN}
-              buttonStyle={AppleAuthenticationButtonStyle.WHITE}
-              style={styles.appleloginButton}
-              onPress={onPress('apple')}
-            />
-          ) : (
-            <></>
-          )}
-        </Button.Group>
+    <SafeAreaView
+      edges={['top', 'left', 'right', 'bottom']}
+      style={[
+        styles.safeAreaContainer,
+        {backgroundColor: theme.colors.primary.main},
+      ]}>
+      <Column height="full" justifyContent="space-between">
+        <Column alignItems="center" flexGrow={1} justifyContent="center">
+          <LandPKSLogo width="144px" height="144px" />
+          <Heading
+            variant="h3"
+            fontWeight="bold"
+            fontSize="30px"
+            marginTop="34px"
+            color="primary.contrast">
+            {t('login.title')}
+          </Heading>
+          <Heading
+            variant="h5"
+            color="primary.contrast"
+            fontSize="22px"
+            marginTop="14px">
+            {t('login.subtitle')}
+          </Heading>
+        </Column>
+        <Column alignItems="center" flexGrow={1}>
+          <Button.Group direction="column" space={5}>
+            <Button
+              style={styles.loginButton}
+              _text={styles.loginButtonText}
+              size="lg"
+              onPress={onPress('google')}
+              startIcon={<GoogleLogo />}>
+              {t('account.google_login')}
+            </Button>
+            <Button
+              style={styles.loginButton}
+              _text={styles.loginButtonText}
+              size="lg"
+              onPress={onPress('microsoft')}
+              startIcon={<MicrosoftLogo />}>
+              {t('account.microsoft_login')}
+            </Button>
+            {showAppleAuth ? (
+              <AppleAuthenticationButton
+                buttonType={AppleAuthenticationButtonType.SIGN_IN}
+                buttonStyle={AppleAuthenticationButtonStyle.WHITE}
+                style={styles.appleloginButton}
+                onPress={onPress('apple')}
+              />
+            ) : (
+              <></>
+            )}
+          </Button.Group>
+        </Column>
+        <Column alignItems="center">
+          <Row alignItems="flex-end" mb="6px">
+            <Text variant="body1" color="primary.contrast" mr="5px" mb="6px">
+              {t('login.from')}
+            </Text>
+            <TerrasoLogo width="122px" height="39px" />
+          </Row>
+        </Column>
       </Column>
-      <Box flexGrow={3} />
-      <Column pb="60px" alignItems="center" justifyContent="flex-end">
-        <Row alignItems="flex-end">
-          <Text variant="body1" color="primary.contrast" mr="5px" mb="6px">
-            {t('login.from')}
-          </Text>
-          <TerrasoLogo width="122px" height="39px" />
-        </Row>
-      </Column>
-    </Column>
+    </SafeAreaView>
   );
 };
 
@@ -145,6 +152,9 @@ export const LoginScreen = () => {
 //
 // Otherwise, show the all-caps green text on the buttons per the design.
 const styles = StyleSheet.create({
+  safeAreaContainer: {
+    flex: 1,
+  },
   loginButton: showAppleAuth
     ? {
         backgroundColor: theme.colors.background.default,
