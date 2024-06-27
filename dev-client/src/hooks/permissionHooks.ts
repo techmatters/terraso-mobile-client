@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
+
 import {Project, ProjectRole} from 'terraso-client-shared/project/projectSlice';
 
 import {useSelector} from 'terraso-mobile-client/store';
@@ -25,20 +27,24 @@ export const useProjectUserRolesFilter = (
   userRoles?: ProjectRole[],
 ): ProjectFilter => {
   const currentUser = useSelector(state => state.account.currentUser.data);
-  if (userRoles) {
-    return project =>
+  return useCallback(
+    project => {
+      if (!userRoles) {
+        return true;
+      }
+
       /*
        * Filter returns whether we can find a membership for the project
        * that matches the current user and has a role in the accepted list
        */
-      Boolean(
+      return Boolean(
         Object.values(project.memberships).find(
           membership =>
             currentUser?.id === membership.userId &&
             userRoles.includes(membership.userRole),
         ),
       );
-  } else {
-    return _ => true;
-  }
+    },
+    [currentUser, userRoles],
+  );
 };
