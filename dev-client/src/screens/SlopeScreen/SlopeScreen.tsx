@@ -66,6 +66,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
           <SlopeInfoContent />
         </InfoOverlaySheetButton>
       </Row>
+      <Divider />
       <DataInputSummary
         required={required}
         complete={steepnessValue !== undefined}
