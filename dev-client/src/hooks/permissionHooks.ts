@@ -34,7 +34,7 @@ export const useProjectUserRolesFilter = (
       !!Object.values(project.memberships).find(
         membership =>
           currentUser?.id === membership.userId &&
-          userRoles.indexOf(membership.userRole) >= 0,
+          userRoles.includes(membership.userRole),
       );
   } else {
     return _ => true;
