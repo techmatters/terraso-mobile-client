@@ -20,7 +20,6 @@ import {
   ScreenDefinitions,
 } from 'terraso-mobile-client/navigation/types';
 import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
-import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/AddSiteNoteScreen';
 import {AddUserToProjectRoleScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectRoleScreen';
 import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
 import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
@@ -29,7 +28,6 @@ import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectSc
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
 import {DeleteAccountScreen} from 'terraso-mobile-client/screens/DeleteAccountScreen/DeleteAccountScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
-import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/EditSiteNoteScreen';
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 import {LocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationSoilIdScreen';
@@ -37,7 +35,9 @@ import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
-import {ReadNoteScreen} from 'terraso-mobile-client/screens/ReadNoteScreen';
+import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/AddSiteNoteScreen';
+import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/EditSiteNoteScreen';
+import {ReadNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/ReadNoteScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
