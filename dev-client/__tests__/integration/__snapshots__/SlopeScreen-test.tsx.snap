@@ -354,6 +354,20 @@ Slope is important in identifying the soil. It also helps determine the soil’s
                     </RCTScrollView>
                   </View>
                   <View
+                    style={
+                      [
+                        {
+                          "backgroundColor": "rgba(202, 196, 208, 1)",
+                          "height": 0.5,
+                        },
+                        undefined,
+                        false,
+                        false,
+                        undefined,
+                      ]
+                    }
+                  />
+                  <View
                     accessibilityState={
                       {
                         "busy": undefined,
@@ -427,7 +441,7 @@ Slope is important in identifying the soil. It also helps determine the soil’s
                           }
                         }
                       >
-                        STEEPNESS
+                        Steepness
                       </Text>
                       <View
                         style={
@@ -451,6 +465,20 @@ Slope is important in identifying the soil. It also helps determine the soil’s
                       </Text>
                     </View>
                   </View>
+                  <View
+                    style={
+                      [
+                        {
+                          "backgroundColor": "rgba(202, 196, 208, 1)",
+                          "height": 0.5,
+                        },
+                        undefined,
+                        false,
+                        false,
+                        undefined,
+                      ]
+                    }
+                  />
                   <View
                     accessibilityState={
                       {
@@ -524,7 +552,7 @@ Slope is important in identifying the soil. It also helps determine the soil’s
                           }
                         }
                       >
-                        SHAPE
+                        Shape
                       </Text>
                       <View
                         style={

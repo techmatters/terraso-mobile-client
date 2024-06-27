@@ -18,11 +18,11 @@
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button, Fab} from 'native-base';
+import {Fab} from 'native-base';
 
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
 
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import IconLink from 'terraso-mobile-client/components/icons/IconLink';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
@@ -74,14 +74,15 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
         />
         <ConfirmModal
           trigger={onOpen => (
-            <Button
-              pl={0}
-              variant="link"
-              _text={{textTransform: 'uppercase', color: 'error.main'}}
-              startIcon={<Icon color="error.main" name="delete" />}
-              onPress={onOpen}>
+            <IconLink
+              iconName="delete"
+              underlined={false}
+              onPress={onOpen}
+              pt="20px"
+              color="error.main"
+              textTransform="uppercase">
               {t('site.dashboard.delete_button')}
-            </Button>
+            </IconLink>
           )}
           title={t('site.dashboard.delete_site_modal.title')}
           body={t('site.dashboard.delete_site_modal.body', {

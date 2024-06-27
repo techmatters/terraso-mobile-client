@@ -16,6 +16,7 @@
  */
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Divider} from 'react-native-paper';
 
 import {ScrollView} from 'native-base';
 
@@ -65,17 +66,19 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
           <SlopeInfoContent />
         </InfoOverlaySheetButton>
       </Row>
+      <Divider />
       <DataInputSummary
         required={required}
         complete={steepnessValue !== undefined}
-        label={t('slope.steepness.short_title').toLocaleUpperCase()}
+        label={t('slope.steepness.short_title')}
         value={steepnessValue}
         onPress={onSteepness}
       />
+      <Divider />
       <DataInputSummary
         required={required}
         complete={shapeValue !== undefined}
-        label={t('slope.shape.title').toLocaleUpperCase()}
+        label={t('slope.shape.title')}
         value={shapeValue}
         onPress={onShape}
       />

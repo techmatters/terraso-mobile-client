@@ -458,9 +458,9 @@
     "DELETE_ACCOUNT": "Settings"
   },
   "login": {
-    "title": "LandPKS",
-    "subtitle": "Discover the potential of your land",
-    "description": "LandPKS is a Terraso soil science tool."
+    "title": "LandPKS Soil ID",
+    "subtitle": "Soil science in your hands",
+    "from": "from"
   },
   "delete_account": {
     "title": "Delete Account",
