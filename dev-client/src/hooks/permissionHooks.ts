@@ -27,9 +27,13 @@ export const useProjectUserRolesFilter = (
   const currentUser = useSelector(state => state.account.currentUser.data);
   if (userRoles) {
     return project =>
+      /*
+       * Filter returns whether we can find a membership for the project
+       * that matches the current user and has a role in the accepted list
+       */
       !!Object.values(project.memberships).find(
         membership =>
-          membership.userId === currentUser?.id &&
+          currentUser?.id === membership.userId &&
           userRoles.indexOf(membership.userRole) >= 0,
       );
   } else {
