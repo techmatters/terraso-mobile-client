@@ -90,6 +90,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
 
   return (
     <Column
+      height="full"
       alignItems="flex-start"
       p={4}
       space={3}
