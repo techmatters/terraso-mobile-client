@@ -140,15 +140,31 @@ export const LoginScreen = () => {
   );
 };
 
+// When the native Apple login button (whose appearance we cannot change)
+// is shown, adjust the Microsoft and Google login buttons to match.
+//
+// Otherwise, show the all-caps green text on the buttons per the design.
 const styles = StyleSheet.create({
-  loginButton: {
-    backgroundColor: theme.colors.background.default,
-    justifyContent: showAppleAuth ? 'center' : 'flex-start',
-  },
-  loginButtonText: {
-    color: showAppleAuth ? 'text.primary' : 'primary.main',
-    textTransform: showAppleAuth ? 'none' : 'uppercase',
-  },
+  loginButton: showAppleAuth
+    ? {
+        backgroundColor: theme.colors.background.default,
+        borderRadius: 0,
+      }
+    : {
+        backgroundColor: theme.colors.background.default,
+        justifyContent: 'flex-start',
+      },
+  loginButtonText: showAppleAuth
+    ? {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: 600,
+        letterSpacing: -0.1,
+      }
+    : {
+        color: 'primary.main',
+        textTransform: 'uppercase',
+      },
   appleloginButton: {
     width: 275,
     height: 44,
