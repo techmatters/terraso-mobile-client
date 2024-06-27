@@ -25,7 +25,9 @@ import {SiteNote} from 'terraso-client-shared/site/siteSlice';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useSelector} from 'terraso-mobile-client/store';
 import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 
 type Props = {
@@ -35,6 +37,14 @@ type Props = {
 export const SiteNoteCard = ({note}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+
+  const currentUser = useSelector(state => state.account.currentUser.data);
+  const currentUserIsAuthor = note.authorId === currentUser?.id;
+  const siteRole = useSiteRoleContext();
+  const currentUserIsOwner = siteRole?.role === 'OWNER';
+  const currentUserIsManager = siteRole?.role === 'MANAGER';
+  const canViewEditScreen =
+    currentUserIsAuthor || currentUserIsOwner || currentUserIsManager;
 
   const onEditNote = useCallback(() => {
     navigation.navigate('EDIT_SITE_NOTE', {note: note});
@@ -61,15 +71,17 @@ export const SiteNoteCard = ({note}: Props) => {
           })}
         </Text>
         <Spacer />
-        <IconButton
-          p={0}
-          name="edit"
-          _icon={{
-            color: 'primary.dark',
-            size: '5',
-          }}
-          onPress={onEditNote}
-        />
+        {canViewEditScreen && (
+          <IconButton
+            p={0}
+            name="edit"
+            _icon={{
+              color: 'primary.dark',
+              size: '5',
+            }}
+            onPress={onEditNote}
+          />
+        )}
       </Row>
       <Text pt={2} numberOfLines={3} ellipsizeMode="tail">
         {note.content}

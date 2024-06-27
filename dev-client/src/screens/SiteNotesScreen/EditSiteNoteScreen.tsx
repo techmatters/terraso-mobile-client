@@ -15,12 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useRef, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
-import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {addSiteNote} from 'terraso-client-shared/site/siteSlice';
+import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  deleteSiteNote,
+  SiteNote,
+  updateSiteNote,
+} from 'terraso-client-shared/site/siteSlice';
 
 import {
   Box,
@@ -28,59 +32,70 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
-import {SiteNoteForm} from 'terraso-mobile-client/components/SiteNoteForm';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
-  siteId: string;
+  note: SiteNote;
 };
 
-export const AddSiteNoteScreen = ({siteId}: Props) => {
+export const EditSiteNoteScreen = ({note}: Props) => {
   const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAddNote = async ({content}: {content: string}) => {
-    if (!content.trim()) {
+  const currentUser = useSelector(state => state.account.currentUser.data);
+  const currentUserIsAuthor = note.authorId === currentUser?.id;
+
+  const handleUpdateNote = async ({content}: {content: string}) => {
+    if (!currentUserIsAuthor) {
+      navigation.pop();
+      return;
+    } else if (!content.trim()) {
       return;
     }
     Keyboard.dismiss();
     setIsSubmitting(true);
     try {
-      const siteNoteInput: SiteNoteAddMutationInput = {
-        siteId,
+      const siteNoteInput: SiteNoteUpdateMutationInput = {
+        id: note.id,
         content: content,
       };
-      await dispatch(addSiteNote(siteNoteInput));
+      await dispatch(updateSiteNote(siteNoteInput));
     } catch (error) {
-      console.error('Failed to add note:', error);
+      console.error('Failed to update note:', error);
     } finally {
       setIsSubmitting(false);
       navigation.pop();
     }
   };
 
-  const handleDelete = () => {
-    navigation.pop();
-  };
+  const handleDelete = useCallback(async () => {
+    setIsSubmitting(true);
+    await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
+    setIsSubmitting(false);
+  }, [navigation, dispatch, note]);
 
   return (
     <ScreenFormWrapper
       ref={formWrapperRef}
-      initialValues={{content: ''}}
-      onSubmit={handleAddNote}
+      initialValues={{content: note.content}}
+      onSubmit={handleUpdateNote}
       onDelete={handleDelete}
       isSubmitting={isSubmitting}>
       {formikProps => (
         <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
           <Heading variant="h6" pb={7}>
-            {t('site.notes.add_title')}
+            {t('site.notes.edit_title')}
           </Heading>
           <Box flexGrow={1}>
-            <SiteNoteForm content={formikProps.values.content || ''} />
+            <SiteNoteForm
+              content={formikProps.values.content}
+              editDisabled={!currentUserIsAuthor}
+            />
           </Box>
         </Column>
       )}
