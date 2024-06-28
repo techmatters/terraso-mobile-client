@@ -62,7 +62,7 @@ jobs:
       ENV: ${{ inputs.ENV }}
       TERRASO_BACKEND: ${{ inputs.TERRASO_BACKEND }}
       APP_BUILD: ${{ inputs.APP_BUILD }}
-      APP_VERSION: ${{ inputs.APP_VERSION }}
+      APP_VERSION: ${{ vars.APP_VERSION }}
       GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
       GOOGLE_OAUTH_IOS_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}
       GOOGLE_OAUTH_IOS_URI_SCHEME: ${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}

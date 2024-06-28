@@ -12,7 +12,7 @@ jobs:
     with:
       upload: 'true'
       APP_BUILD: ${{ github.ref_name }}
-      APP_VERSION: ${{ inputs.APP_VERSION }}
+      APP_VERSION: ${{ vars.APP_VERSION }}
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
