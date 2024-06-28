@@ -11,7 +11,8 @@ jobs:
     uses: ./.github/workflows/build-shared-ios.yml
     with:
       upload: 'true'
-      APP_VERSION: ${{ github.ref_name }}
+      APP_BUILD: ${{ github.ref_name }}
+      APP_VERSION: ${{ inputs.APP_VERSION }}
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}

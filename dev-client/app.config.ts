@@ -22,7 +22,7 @@ import {withAppBuildGradle} from 'expo/config-plugins';
 
 import {fromEntries} from 'terraso-client-shared/utils';
 
-const VERSION_REGEX = /^v[0-9]+$/g;
+const BUILD_REGEX = /^v[0-9]+$/g;
 
 const STRICT = process.env.STRICT === 'true';
 
@@ -46,6 +46,7 @@ const BUILD_CONFIG = validateEnvConfig(process.env, [
 
 const ENV_CONFIG = validateEnvConfig(process.env, [
   'APP_VERSION',
+  'APP_BUILD',
   'CI',
   'ENV',
   'PUBLIC_MAPBOX_TOKEN',
@@ -61,24 +62,29 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
   'MICROSOFT_SIGNATURE_HASH',
 ] as const);
 
-let appVersion = 1;
+let buildNumber = 1;
+let versionNumber = '1.0';
 const APP_VERSION = process.env.APP_VERSION;
+const APP_BUILD = process.env.APP_BUILD;
+
+if (typeof APP_BUILD === 'string') {
+  if (!BUILD_REGEX.test(APP_BUILD)) {
+    throw Error(`invalid app build format: ${APP_BUILD}. should be v[0-9]+`);
+  }
+  buildNumber = parseInt(APP_BUILD.slice(1), 10);
+  ENV_CONFIG.APP_BUILD = buildNumber.toString();
+}
 
 if (typeof APP_VERSION === 'string') {
-  if (!VERSION_REGEX.test(APP_VERSION)) {
-    throw Error(
-      `invalid app version format: ${APP_VERSION}. should be v[0-9]+`,
-    );
-  }
-  appVersion = parseInt(APP_VERSION.slice(1), 10);
-  ENV_CONFIG.APP_VERSION = appVersion.toString();
+  versionNumber = APP_VERSION;
+  ENV_CONFIG.APP_VERSION = versionNumber;
 }
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Terraso LandPKS',
   slug: 'landpks',
-  version: `1.0.${appVersion}`,
+  version: versionNumber,
   orientation: 'portrait',
   splash: {
     image: 'src/assets/splash.png',
@@ -87,7 +93,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   scheme: ['org.terraso.landpks', 'msauth.org.terraso.landpks'],
   android: {
     package: 'org.terraso.landpks',
-    versionCode: appVersion,
+    versionCode: buildNumber,
     icon: 'src/assets/landpks-round.png',
     adaptiveIcon: {
       foregroundImage: 'src/assets/landpks-android-adaptive.png',
@@ -105,7 +111,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   },
   ios: {
     bundleIdentifier: 'org.terraso.test.Terraso-LandPKS',
-    buildNumber: '2',
+    buildNumber: buildNumber.toString(),
     icon: 'src/assets/landpks-round.png',
     supportsTablet: true,
     requireFullScreen: true,
