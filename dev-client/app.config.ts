@@ -82,7 +82,7 @@ if (typeof APP_VERSION === 'string') {
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'Terraso LandPKS',
+  name: 'LandPKS Soil ID',
   slug: 'landpks',
   version: versionNumber,
   orientation: 'portrait',
