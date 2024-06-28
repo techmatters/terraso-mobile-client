@@ -74,12 +74,7 @@ const LocationPrediction = ({
   const {t} = useTranslation();
 
   return (
-    <Box
-      variant="tile"
-      flexDirection="column"
-      alignItems="flex-start"
-      py="18px"
-      pl="16px">
+    <Box variant="tile" flexDirection="column" alignItems="flex-start" p="18px">
       <Row alignItems="center">
         <Box mr={15}>
           <StackedBarChart />
@@ -105,7 +100,7 @@ const LocationPrediction = ({
       </Text>
 
       <Button
-        w="95%"
+        w="100%"
         _text={{textTransform: 'uppercase'}}
         rightIcon={<Icon name="chevron-right" />}
         onPress={onExploreDataPress}>
