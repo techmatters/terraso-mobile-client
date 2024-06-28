@@ -23,7 +23,6 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
@@ -42,7 +41,6 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
   const site = useSelector(state =>
     siteId === undefined ? undefined : selectSite(siteId)(state),
   );
-  const {status} = useSoilIdData(coords, siteId);
 
   return (
     <ScreenScaffold
@@ -51,9 +49,7 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
       }>
       <ScrollView>
         <SoilIdDescriptionSection siteId={siteId} coords={coords} />
-        {status === 'ready' && (
-          <SoilIdMatchesSection siteId={siteId} coords={coords} />
-        )}
+        <SoilIdMatchesSection siteId={siteId} coords={coords} />
         {siteId ? (
           <SiteRoleContextProvider siteId={siteId}>
             <SiteDataSection siteId={siteId} />
