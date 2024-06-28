@@ -30,7 +30,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSelectors';
 import {
   fetchSoilIdMatches,
-  LoadingState,
+  SoilIdStatus,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';
 import {isEquivalentCoords} from 'terraso-client-shared/utils';
@@ -48,7 +48,7 @@ export const useSoilIdData = (
 ): {
   locationBasedMatches: LocationBasedSoilMatch[];
   dataBasedMatches: DataBasedSoilMatch[];
-  status: LoadingState;
+  status: SoilIdStatus;
 } => {
   const dispatch = useDispatch();
   const soilIdInput = useSelector(selectSoilIdInput());
