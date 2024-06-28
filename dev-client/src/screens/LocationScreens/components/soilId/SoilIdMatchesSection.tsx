@@ -16,6 +16,7 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {ActivityIndicator} from 'react-native-paper';
 
 import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
@@ -44,7 +45,6 @@ export const SoilIdMatchesSection = ({
 }: SoilIdMatchesSectionProps) => {
   const {t} = useTranslation();
   const isSite = !!siteId;
-  const soilIdData = useSoilIdData(coords, siteId);
 
   return (
     <ScreenContentSection backgroundColor="grey.200">
@@ -54,38 +54,62 @@ export const SoilIdMatchesSection = ({
           <TopSoilMatchesInfoContent isSite={isSite} />
         </InfoOverlaySheetButton>
       </Row>
-      {isSite
-        ? getSortedDataBasedMatches(soilIdData).map(dataMatch => (
-            <InfoOverlaySheet
-              key={dataMatch.soilInfo.soilSeries.name}
-              Header={dataMatch.soilInfo.soilSeries.name}
-              trigger={onOpen => (
-                <SoilMatchTile
-                  soil_name={dataMatch.soilInfo.soilSeries.name}
-                  score={dataMatch.combinedMatch.score}
-                  onPress={onOpen}
-                />
-              )}>
-              <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
-            </InfoOverlaySheet>
-          ))
-        : getSortedLocationBasedMatches(soilIdData).map(locationMatch => (
-            <InfoOverlaySheet
-              key={locationMatch.soilInfo.soilSeries.name}
-              Header={locationMatch.soilInfo.soilSeries.name}
-              trigger={onOpen => (
-                <SoilMatchTile
-                  soil_name={locationMatch.soilInfo.soilSeries.name}
-                  score={locationMatch.match.score}
-                  onPress={onOpen}
-                />
-              )}>
-              <TempScoreInfoContent
-                locationMatch={locationMatch}
-                coords={coords}
-              />
-            </InfoOverlaySheet>
-          ))}
+      <MatchTilesOrMessage siteId={siteId} coords={coords} />
     </ScreenContentSection>
   );
+};
+
+const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
+  const soilIdData = useSoilIdData(coords, siteId);
+  const status = soilIdData.status;
+  const isSite = !!siteId;
+
+  switch (status) {
+    case 'loading':
+      return <ActivityIndicator size="small" />;
+    case 'ready': {
+      if (isSite) {
+        return getSortedDataBasedMatches(soilIdData).map(dataMatch => (
+          <InfoOverlaySheet
+            key={dataMatch.soilInfo.soilSeries.name}
+            Header={dataMatch.soilInfo.soilSeries.name}
+            trigger={onOpen => (
+              <SoilMatchTile
+                soil_name={dataMatch.soilInfo.soilSeries.name}
+                score={dataMatch.combinedMatch.score}
+                onPress={onOpen}
+              />
+            )}>
+            <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
+          </InfoOverlaySheet>
+        ));
+      } else {
+        return getSortedLocationBasedMatches(soilIdData).map(locationMatch => (
+          <InfoOverlaySheet
+            key={locationMatch.soilInfo.soilSeries.name}
+            Header={locationMatch.soilInfo.soilSeries.name}
+            trigger={onOpen => (
+              <SoilMatchTile
+                soil_name={locationMatch.soilInfo.soilSeries.name}
+                score={locationMatch.match.score}
+                onPress={onOpen}
+              />
+            )}>
+            <TempScoreInfoContent
+              locationMatch={locationMatch}
+              coords={coords}
+            />
+          </InfoOverlaySheet>
+        ));
+      }
+    }
+    case 'error':
+      return <></>;
+    case 'ALGORITHM_FAILURE':
+      return <></>;
+    case 'DATA_UNAVAILABLE':
+      return <></>;
+    default:
+      return <></>;
+  }
 };
