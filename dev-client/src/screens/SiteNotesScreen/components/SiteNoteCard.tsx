@@ -23,7 +23,7 @@ import {Spacer} from 'native-base';
 import {SiteNote} from 'terraso-client-shared/site/siteSlice';
 
 import {Card} from 'terraso-mobile-client/components/Card';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -47,12 +47,10 @@ export const SiteNoteCard = ({note}: Props) => {
     currentUserIsAuthor || currentUserIsOwner || currentUserIsManager;
 
   const onEditNote = useCallback(() => {
-    navigation.navigate('EDIT_SITE_NOTE', {note: note});
-  }, [navigation, note]);
-
-  const onShowNote = useCallback(() => {
-    navigation.navigate('READ_NOTE', {content: note.content});
-  }, [navigation, note.content]);
+    if (canViewEditScreen) {
+      navigation.navigate('EDIT_SITE_NOTE', {note: note});
+    }
+  }, [navigation, canViewEditScreen, note]);
 
   return (
     <Card
@@ -62,7 +60,7 @@ export const SiteNoteCard = ({note}: Props) => {
       mb={3}
       ml={4}
       mr={4}
-      onPress={onShowNote}>
+      onPress={onEditNote}>
       <Row>
         <Text variant="body2" italic>
           {t('site.notes.note_attribution', {
@@ -71,21 +69,9 @@ export const SiteNoteCard = ({note}: Props) => {
           })}
         </Text>
         <Spacer />
-        {canViewEditScreen && (
-          <IconButton
-            p={0}
-            name="edit"
-            _icon={{
-              color: 'primary.dark',
-              size: '5',
-            }}
-            onPress={onEditNote}
-          />
-        )}
+        {canViewEditScreen && <Icon name="edit" color="primary.dark" />}
       </Row>
-      <Text pt={2} numberOfLines={3} ellipsizeMode="tail">
-        {note.content}
-      </Text>
+      <Text pt={2}>{note.content}</Text>
     </Card>
   );
 };
