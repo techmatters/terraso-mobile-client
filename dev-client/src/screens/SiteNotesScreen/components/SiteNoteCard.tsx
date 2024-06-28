@@ -71,9 +71,7 @@ export const SiteNoteCard = ({note}: Props) => {
         <Spacer />
         {canViewEditScreen && <Icon name="edit" color="primary.dark" />}
       </Row>
-      <Text pt={2} numberOfLines={3} ellipsizeMode="tail">
-        {note.content}
-      </Text>
+      <Text pt={2}>{note.content}</Text>
     </Card>
   );
 };
