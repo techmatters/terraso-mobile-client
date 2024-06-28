@@ -22,9 +22,14 @@ import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
+  Box,
+  Column,
   Heading,
   Row,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
@@ -36,6 +41,7 @@ import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/compo
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
+import {theme} from 'terraso-mobile-client/theme';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
 
@@ -60,6 +66,8 @@ export const SoilIdMatchesSection = ({
 };
 
 const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
+  const {t} = useTranslation();
+
   const soilIdData = useSoilIdData(coords, siteId);
   const status = soilIdData.status;
   const isSite = !!siteId;
@@ -103,13 +111,92 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
         ));
       }
     }
-    case 'error':
-      return <></>;
-    case 'ALGORITHM_FAILURE':
-      return <></>;
     case 'DATA_UNAVAILABLE':
-      return <></>;
+      return (
+        <AlertMessageBox title={t('site.soil_id.matches.no_map_data_title')}>
+          <NoMapDataAlertMessageContent />
+        </AlertMessageBox>
+      );
+    case 'error':
+    case 'ALGORITHM_FAILURE':
     default:
-      return <></>;
+      return (
+        <ErrorMessageBox title={t('site.soil_id.matches.error_generic_title')}>
+          <Text variant="body1" color={theme.colors.alert.errorContent}>
+            {t('site.soil_id.matches.error_generic_body')}
+          </Text>
+        </ErrorMessageBox>
+      );
   }
+};
+
+type MessageBoxProps = React.PropsWithChildren<{
+  title?: string;
+}>;
+
+const ErrorMessageBox = ({title, children}: MessageBoxProps) => {
+  return (
+    <Box
+      backgroundColor={theme.colors.alert.errorFill}
+      borderColor={theme.colors.error.main}
+      borderWidth="2px"
+      borderRadius="4px"
+      padding="md">
+      <Row>
+        <Icon name="error-outline" color={theme.colors.error.main} mr="md" />
+        <Column flex={1}>
+          <Text
+            variant="body1-strong"
+            color={theme.colors.alert.errorContent}
+            mb="sm">
+            {title}
+          </Text>
+          {children}
+        </Column>
+      </Row>
+    </Box>
+  );
+};
+
+const AlertMessageBox = ({title, children}: MessageBoxProps) => {
+  return (
+    <Box
+      backgroundColor={theme.colors.primary.contrast}
+      borderColor={theme.colors.warning.main}
+      borderWidth="2px"
+      borderRadius="4px"
+      padding="md">
+      <Row>
+        <Icon name="warning-amber" color={theme.colors.warning.main} mr="md" />
+        <Column flex={1}>
+          <Text
+            variant="body1-strong"
+            color={theme.colors.alert.warningContent}
+            mb="sm">
+            {title}
+          </Text>
+          {children}
+        </Column>
+      </Row>
+    </Box>
+  );
+};
+
+const NoMapDataAlertMessageContent = () => {
+  const {t} = useTranslation();
+
+  return (
+    <Box>
+      <Text variant="body1" mb="sm">
+        {t('site.soil_id.matches.no_map_data_body')}
+      </Text>
+      <Text variant="body1">
+        {t('site.soil_id.matches.native_lands_intro')}
+      </Text>
+      <ExternalLink
+        label={t('site.soil_id.matches.native_lands_link')}
+        url={t('site.soil_id.matches.native_lands_url')}
+      />
+    </Box>
+  );
 };
