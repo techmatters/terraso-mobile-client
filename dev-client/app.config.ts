@@ -110,7 +110,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     ],
   },
   ios: {
-    bundleIdentifier: 'org.terraso.test.Terraso-LandPKS',
+    bundleIdentifier: 'org.terraso.landpks',
     buildNumber: buildNumber.toString(),
     icon: 'src/assets/landpks-round.png',
     supportsTablet: true,
