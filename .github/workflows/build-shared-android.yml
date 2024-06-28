@@ -17,10 +17,14 @@ on:
         required: false
         type: string
         default: 'https://api.staging.terraso.net'
-      APP_VERSION:
+      APP_BUILD:
         required: false
         type: string
         default: 'v1'
+      APP_VERSION:
+        required: false
+        type: string
+        default: '1.0'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
@@ -57,6 +61,7 @@ jobs:
       STRICT: ${{ inputs.STRICT }}
       ENV: ${{ inputs.ENV }}
       TERRASO_BACKEND: ${{ inputs.TERRASO_BACKEND }}
+      APP_BUILD: ${{ inputs.APP_BUILD }}
       APP_VERSION: ${{ inputs.APP_VERSION }}
       GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
       GOOGLE_OAUTH_IOS_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}
