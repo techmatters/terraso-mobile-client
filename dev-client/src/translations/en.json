@@ -541,6 +541,8 @@
     "bedrock": "Bedrock",
     "top_match": "Top Match",
     "ecological_site_name": "Ecological Site Name",
+    "loading": "Loading...",
+    "no_matches": "No matches",
     "explore_data": "Explore the data",
     "soil_id": "Soil ID",
     "surface": "Soil Surface",

@@ -60,18 +60,46 @@ const LocationDetail = ({label, value}: {label: string; value: string}) => (
 
 type LocationPredictionProps = {
   label: string;
-  soilName: string;
-  ecologicalSiteName?: string;
+  coords: Coords;
+  siteId?: string;
   onExploreDataPress: () => void;
 };
 
 const LocationPrediction = ({
   label,
-  soilName,
-  ecologicalSiteName,
+  coords,
+  siteId,
   onExploreDataPress,
 }: LocationPredictionProps) => {
   const {t} = useTranslation();
+
+  const soilIdData = useSoilIdData(coords, siteId);
+  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+
+  // TODO-cknipe: I feel like this should be extracted so multiple things can use it
+  let soilIdMatchText: string;
+  let ecologicalSiteText: string;
+  if (soilIdData.status === 'loading') {
+    soilIdMatchText = t('soil.loading');
+    ecologicalSiteText = t('soil.loading');
+  } else if (soilIdData.status === 'error') {
+    soilIdMatchText = t('soil.no_matches');
+    ecologicalSiteText = t('soil.no_matches');
+  } else if (soilIdData.status === 'DATA_UNAVAILABLE') {
+    soilIdMatchText = t('soil.no_matches');
+    ecologicalSiteText = t('soil.no_matches');
+  } else if (soilIdData.status === 'ALGORITHM_FAILURE') {
+    soilIdMatchText = t('soil.no_matches');
+    ecologicalSiteText = t('soil.no_matches');
+  } else if (soilIdData.status === 'ready') {
+    soilIdMatchText =
+      topSoilMatch?.soilInfo.soilSeries.name ?? t('soil.no_matches');
+    ecologicalSiteText =
+      topSoilMatch?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches');
+  } else {
+    soilIdMatchText = t('soil.no_matches');
+    ecologicalSiteText = t('soil.no_matches');
+  }
 
   return (
     <Box variant="tile" flexDirection="column" alignItems="flex-start" p="18px">
@@ -90,13 +118,11 @@ const LocationPrediction = ({
       <Box h="15px" />
       <Text variant="body1" color="primary.contrast" mb="5px">
         <Text bold>{t('soil.top_match')}: </Text>
-        <Text>{soilName ?? t('site.soil_id.soil_info.no_matches')}</Text>
+        <Text>{soilIdMatchText}</Text>
       </Text>
       <Text variant="body1" color="primary.contrast" mb="25px">
         <Text bold>{t('soil.ecological_site_name')}: </Text>
-        <Text>
-          {ecologicalSiteName ?? t('site.soil_id.soil_info.no_matches')}
-        </Text>
+        <Text>{ecologicalSiteText}</Text>
       </Text>
 
       <Button
@@ -133,9 +159,6 @@ export const LocationDashboardContent = ({
       ? undefined
       : state.project.projects[site.projectId],
   );
-
-  const soilIdData = useSoilIdData(coords, siteId);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
 
   const onExploreDataPress = useCallback(() => {
     navigation.navigate('LOCATION_SOIL_ID', {siteId, coords});
@@ -217,17 +240,12 @@ export const LocationDashboardContent = ({
         )}
       </Box>
       <Column space="20px" padding="16px">
-        {topSoilMatch && (
-          <LocationPrediction
-            label={t('soil.soil_id')}
-            soilName={topSoilMatch.soilInfo.soilSeries.name}
-            ecologicalSiteName={
-              topSoilMatch.soilInfo.ecologicalSite?.name ??
-              t('site.soil_id.soil_info.no_matches')
-            }
-            onExploreDataPress={onExploreDataPress}
-          />
-        )}
+        <LocationPrediction
+          label={t('soil.soil_id')}
+          coords={coords}
+          siteId={siteId}
+          onExploreDataPress={onExploreDataPress}
+        />
       </Column>
     </ScrollView>
   );
