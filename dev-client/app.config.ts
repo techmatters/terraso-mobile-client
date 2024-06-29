@@ -120,14 +120,15 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       CFBundleAllowMixedLocalizations: true,
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription:
-        'Terraso LandPKS uses your photo library to analyze soil color.',
+        'LandPKS Soil ID uses your photo library to analyze soil color.',
       NSCameraUsageDescription:
-        'Terraso LandPKS uses your camera to take photos of sites.',
+        'LandPKS Soil ID uses your camera to analyze soil color.',
       NSLocationAlwaysAndWhenInUseUsageDescription:
-        'Terraso LandPKS uses your location to create sites.',
-      NSLocationWhenInUseUsageDescription: 'Show current location on map.',
+        'LandPKS Soil ID uses your location to create sites.',
+      NSLocationWhenInUseUsageDescription:
+        'LandPKS Soil ID uses your location to create sites.',
       NSMotionUsageDescription:
-        'Terraso LandPKS uses motion for the slope meter',
+        'LandPKS Soil ID uses motion to determine slope steepness',
     },
   },
   plugins: [
