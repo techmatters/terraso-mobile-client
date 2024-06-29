@@ -116,6 +116,9 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     requireFullScreen: true,
     usesAppleSignIn: true,
+    entitlements: {
+      'aps-environment': 'development',
+    },
     infoPlist: {
       CFBundleAllowMixedLocalizations: true,
       ITSAppUsesNonExemptEncryption: false,
