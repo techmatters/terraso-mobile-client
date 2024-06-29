@@ -77,6 +77,7 @@ export const APP_CONFIG = {
   sentryEnabled: sentryEnabled === 'true',
   environment: ENV_CONFIG.ENV,
   version: ENV_CONFIG.APP_VERSION,
+  build: ENV_CONFIG.APP_BUILD,
   googleClientId,
   googleRedirectURI,
   microsoftRedirectURI,

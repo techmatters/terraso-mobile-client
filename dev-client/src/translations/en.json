@@ -379,7 +379,7 @@
     "delete_account": "Delete Account",
     "delete_account_pending": "Pending",
     "unknown_version": "Untagged application version",
-    "version": "Version {{version}}"
+    "version": "Version {{version}} ({{build}})"
   },
   "badge": {
     "new": "New"
