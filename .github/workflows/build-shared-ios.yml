@@ -42,16 +42,6 @@ on:
         required: false
       APPLE_APP_STORE_CONNECT_PRIVATE_KEY:
         required: false
-      GOOGLE_OAUTH_ANDROID_CLIENT_ID:
-        required: false
-      GOOGLE_OAUTH_IOS_CLIENT_ID:
-        required: false
-      GOOGLE_OAUTH_IOS_URI_SCHEME:
-        required: false
-      MICROSOFT_OAUTH_CLIENT_ID:
-        required: false
-      MICROSOFT_SIGNATURE_HASH:
-        required: false
       SENTRY_DSN:
         required: false
       SENTRY_AUTH_TOKEN:
@@ -67,11 +57,6 @@ jobs:
       TERRASO_BACKEND: ${{ inputs.TERRASO_BACKEND }}
       APP_BUILD: ${{ inputs.APP_BUILD }}
       APP_VERSION: ${{ vars.APP_VERSION }}
-      GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
-      GOOGLE_OAUTH_IOS_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_IOS_CLIENT_ID }}
-      GOOGLE_OAUTH_IOS_URI_SCHEME: ${{ secrets.GOOGLE_OAUTH_IOS_URI_SCHEME }}
-      MICROSOFT_OAUTH_CLIENT_ID: ${{ secrets.MICROSOFT_OAUTH_CLIENT_ID }}
-      MICROSOFT_SIGNATURE_HASH: ${{ secrets.MICROSOFT_SIGNATURE_HASH }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
