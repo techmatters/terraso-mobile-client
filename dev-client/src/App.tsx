@@ -67,6 +67,7 @@ Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
 LogBox.ignoreLogs([
   'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
+  /^[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet/,
 ]);
 
 const store = createStore();
