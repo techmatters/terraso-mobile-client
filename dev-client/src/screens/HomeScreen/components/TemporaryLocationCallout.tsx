@@ -86,30 +86,29 @@ export const TemporaryLocationCallout = ({
     );
     ecologicalSiteDisplay = (
       <Text bold textTransform="uppercase">
-        {topSoilMatch.soilInfo.ecologicalSite?.name ??
-          t('site.soil_id.soil_info.no_matches')}
+        {topSoilMatch.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
       </Text>
     );
   } else if (soilIdData.status === 'DATA_UNAVAILABLE') {
     soilMatchDisplay = (
       <Text bold textTransform="uppercase">
-        {t('site.soil_id.soil_info.no_matches')}
+        {t('soil.no_matches')}
       </Text>
     );
     ecologicalSiteDisplay = (
       <Text bold textTransform="uppercase">
-        {t('site.soil_id.soil_info.no_matches')}
+        {t('soil.no_matches')}
       </Text>
     );
   } else {
     soilMatchDisplay = (
       <Text bold textTransform="uppercase" color="error.main">
-        {t('site.soil_id.soil_info.error')}
+        {t('soil.error')}
       </Text>
     );
     ecologicalSiteDisplay = (
       <Text bold textTransform="uppercase" color="error.main">
-        {t('site.soil_id.soil_info.error')}
+        {t('soil.error')}
       </Text>
     );
   }
