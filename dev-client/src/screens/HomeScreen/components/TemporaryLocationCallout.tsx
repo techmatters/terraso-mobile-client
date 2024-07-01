@@ -30,6 +30,7 @@ import {
   Box,
   Column,
   Row,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useElevationData} from 'terraso-mobile-client/hooks/useElevationData';
@@ -54,7 +55,6 @@ export const TemporaryLocationCallout = ({
 
   const elevation = useElevationData(coords);
   const soilIdData = useSoilIdData(coords);
-  const isSoilIdReady = soilIdData.status === 'ready';
   const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
 
   const onCreate = useCallback(() => {
@@ -72,6 +72,48 @@ export const TemporaryLocationCallout = ({
     });
   }, [navigation, coords, elevation]);
 
+  // TODO-cknipe: Pull into its own components?
+  let soilMatchDisplay: React.ReactNode;
+  let ecologicalSiteDisplay: React.ReactNode;
+  if (soilIdData.status === 'loading') {
+    soilMatchDisplay = <ActivityIndicator size="small" />;
+    ecologicalSiteDisplay = <ActivityIndicator size="small" />;
+  } else if (topSoilMatch) {
+    soilMatchDisplay = (
+      <Text bold textTransform="uppercase">
+        {topSoilMatch.soilInfo.soilSeries.name}
+      </Text>
+    );
+    ecologicalSiteDisplay = (
+      <Text bold textTransform="uppercase">
+        {topSoilMatch.soilInfo.ecologicalSite?.name ??
+          t('site.soil_id.soil_info.no_matches')}
+      </Text>
+    );
+  } else if (soilIdData.status === 'DATA_UNAVAILABLE') {
+    soilMatchDisplay = (
+      <Text bold textTransform="uppercase">
+        {t('site.soil_id.soil_info.no_matches')}
+      </Text>
+    );
+    ecologicalSiteDisplay = (
+      <Text bold textTransform="uppercase">
+        {t('site.soil_id.soil_info.no_matches')}
+      </Text>
+    );
+  } else {
+    soilMatchDisplay = (
+      <Text bold textTransform="uppercase" color="error.main">
+        {t('site.soil_id.soil_info.error')}
+      </Text>
+    );
+    ecologicalSiteDisplay = (
+      <Text bold textTransform="uppercase" color="error.main">
+        {t('site.soil_id.soil_info.error')}
+      </Text>
+    );
+  }
+
   return (
     <Card
       Header={
@@ -80,32 +122,30 @@ export const TemporaryLocationCallout = ({
       buttons={<CloseButton onPress={closeCallout} />}
       isPopover={true}>
       <Column mt="12px" space="12px">
-        {!isSoilIdReady && <ActivityIndicator size="small" />}
-        {topSoilMatch && (
-          <>
-            <CalloutDetail
-              label={t('site.soil_id_prediction')}
-              value={topSoilMatch.soilInfo.soilSeries.name}
-            />
-            <Divider />
-            <CalloutDetail
-              label={t('site.ecological_site_prediction')}
-              value={
-                topSoilMatch.soilInfo.ecologicalSite?.name ??
-                t('site.soil_id.soil_info.no_matches')
-              }
-            />
-            <Divider />
-          </>
-        )}
-        {elevation ? (
+        <>
           <CalloutDetail
-            label={t('site.elevation_label')}
-            value={renderElevation(t, elevation)}
+            label={t('site.soil_id_prediction')}
+            value={soilMatchDisplay}
           />
-        ) : (
-          <ActivityIndicator size="small" />
-        )}
+          <Divider />
+          <CalloutDetail
+            label={t('site.ecological_site_prediction')}
+            value={ecologicalSiteDisplay}
+          />
+          <Divider />
+        </>
+        <CalloutDetail
+          label={t('site.elevation_label')}
+          value={
+            elevation ? (
+              <Text bold textTransform="uppercase">
+                {renderElevation(t, elevation)}
+              </Text>
+            ) : (
+              <ActivityIndicator size="small" />
+            )
+          }
+        />
         <Divider />
         <Row justifyContent="flex-end">
           <Button

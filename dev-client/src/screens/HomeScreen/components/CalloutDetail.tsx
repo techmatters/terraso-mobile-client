@@ -21,14 +21,12 @@ export const CalloutDetail = ({
   value,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
 }) => {
   return (
-    <Box>
+    <Box alignItems="flex-start">
       <Text>{label}</Text>
-      <Text bold textTransform="uppercase">
-        {value}
-      </Text>
+      {value}
     </Box>
   );
 };
