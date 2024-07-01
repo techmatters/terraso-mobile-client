@@ -13,9 +13,6 @@ jobs:
       upload: 'true'
       APP_BUILD: ${{ github.ref_name }}
       APP_VERSION: ${{ vars.APP_VERSION }}
-      GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
-      MICROSOFT_OAUTH_CLIENT_ID: ${{ vars.MICROSOFT_OAUTH_CLIENT_ID }}
-      MICROSOFT_SIGNATURE_HASH: ${{ vars.MICROSOFT_SIGNATURE_HASH }}
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
