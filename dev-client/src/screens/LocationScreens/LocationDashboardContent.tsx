@@ -82,13 +82,7 @@ const LocationPrediction = ({
   if (soilIdData.status === 'loading') {
     soilIdMatchText = t('soil.loading');
     ecologicalSiteText = t('soil.loading');
-  } else if (soilIdData.status === 'error') {
-    soilIdMatchText = t('soil.no_matches');
-    ecologicalSiteText = t('soil.no_matches');
   } else if (soilIdData.status === 'DATA_UNAVAILABLE') {
-    soilIdMatchText = t('soil.no_matches');
-    ecologicalSiteText = t('soil.no_matches');
-  } else if (soilIdData.status === 'ALGORITHM_FAILURE') {
     soilIdMatchText = t('soil.no_matches');
     ecologicalSiteText = t('soil.no_matches');
   } else if (soilIdData.status === 'ready') {
@@ -97,8 +91,8 @@ const LocationPrediction = ({
     ecologicalSiteText =
       topSoilMatch?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches');
   } else {
-    soilIdMatchText = t('soil.no_matches');
-    ecologicalSiteText = t('soil.no_matches');
+    soilIdMatchText = t('soil.error');
+    ecologicalSiteText = t('soil.error');
   }
 
   return (
