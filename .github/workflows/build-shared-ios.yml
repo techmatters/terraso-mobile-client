@@ -21,10 +21,6 @@ on:
         required: false
         type: string
         default: 'v1'
-      APP_VERSION:
-        required: false
-        type: string
-        default: '1.0'
     secrets:
       MAPBOX_DOWNLOADS_TOKEN:
         required: true
