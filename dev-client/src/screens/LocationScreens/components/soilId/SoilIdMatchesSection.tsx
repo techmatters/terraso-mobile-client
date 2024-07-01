@@ -22,11 +22,11 @@ import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
+import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
+import {ErrorMessageBox} from 'terraso-mobile-client/components/messages/ErrorMessageBox';
 import {
   Box,
-  Column,
   Heading,
   Row,
   Text,
@@ -128,58 +128,6 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
         </ErrorMessageBox>
       );
   }
-};
-
-type MessageBoxProps = React.PropsWithChildren<{
-  title?: string;
-}>;
-
-const ErrorMessageBox = ({title, children}: MessageBoxProps) => {
-  return (
-    <Box
-      backgroundColor={theme.colors.alert.errorFill}
-      borderColor={theme.colors.error.main}
-      borderWidth="2px"
-      borderRadius="4px"
-      padding="md">
-      <Row>
-        <Icon name="error-outline" color={theme.colors.error.main} mr="md" />
-        <Column flex={1}>
-          <Text
-            variant="body1-strong"
-            color={theme.colors.alert.errorContent}
-            mb="sm">
-            {title}
-          </Text>
-          {children}
-        </Column>
-      </Row>
-    </Box>
-  );
-};
-
-const AlertMessageBox = ({title, children}: MessageBoxProps) => {
-  return (
-    <Box
-      backgroundColor={theme.colors.primary.contrast}
-      borderColor={theme.colors.warning.main}
-      borderWidth="2px"
-      borderRadius="4px"
-      padding="md">
-      <Row>
-        <Icon name="warning-amber" color={theme.colors.warning.main} mr="md" />
-        <Column flex={1}>
-          <Text
-            variant="body1-strong"
-            color={theme.colors.alert.warningContent}
-            mb="sm">
-            {title}
-          </Text>
-          {children}
-        </Column>
-      </Row>
-    </Box>
-  );
 };
 
 const NoMapDataAlertMessageContent = () => {
