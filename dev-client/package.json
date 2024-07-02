@@ -1,6 +1,6 @@
 {
-  "name": "Terraso LandPKS",
-  "version": "0.0.1",
+  "name": "LandPKS Soil ID",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "android": "expo run:android",
