@@ -25,8 +25,10 @@ import {
 import {selectSoilData} from 'terraso-client-shared/selectors';
 import {selectSoilIdMatches} from 'terraso-client-shared/soilId/soilIdSelectors';
 import {
+  claimKey,
   fetchDataBasedSoilMatches,
   fetchLocationBasedSoilMatches,
+  releaseKey,
   soilDataToIdInput,
   soilIdKey,
   SoilIdStatus,
@@ -48,31 +50,43 @@ export const useSoilIdData = (
   dataBasedMatches: DataBasedSoilMatch[];
   status: SoilIdStatus;
 } => {
+  const dispatch = useDispatch();
+
   /* We only need to select soil data for data-based matches. */
   const soilDataSelector = siteId
     ? selectSoilData(siteId)
     : () => DEFAULT_SOIL_DATA;
   const soilData = useSelector(soilDataSelector);
 
-  const paramsKey = soilIdKey(coords, siteId);
-  const soilIdSelector = selectSoilIdMatches(paramsKey);
+  const key = soilIdKey(coords, siteId);
+  const soilIdSelector = selectSoilIdMatches(key);
   const entry = useSelector(soilIdSelector);
   const entryPresent = Boolean(entry);
 
-  const dispatch = useDispatch();
+  /* Side effect 1: load data if it's missing */
   useEffect(() => {
-    if (siteId && soilData && !entryPresent) {
-      dispatch(
-        fetchDataBasedSoilMatches({
-          coords,
-          siteId,
-          soilData: soilDataToIdInput(soilData),
-        }),
-      );
-    } else if (!siteId && !entryPresent) {
-      dispatch(fetchLocationBasedSoilMatches(coords));
+    if (!entryPresent) {
+      if (siteId && soilData) {
+        dispatch(
+          fetchDataBasedSoilMatches({
+            coords,
+            siteId,
+            soilData: soilDataToIdInput(soilData),
+          }),
+        );
+      } else if (!siteId) {
+        dispatch(fetchLocationBasedSoilMatches(coords));
+      }
     }
   }, [dispatch, coords, siteId, entryPresent, soilData]);
+
+  /* Side effect 2: record usage of keys in the soil ID cache */
+  useEffect(() => {
+    dispatch(claimKey(key));
+    return () => {
+      dispatch(releaseKey(key));
+    };
+  }, [dispatch, key]);
 
   return {
     locationBasedMatches: entry?.locationBasedMatches ?? [],
