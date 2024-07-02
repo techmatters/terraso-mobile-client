@@ -300,7 +300,7 @@
     },
     "sites": {
       "empty_viewer": "This project has no sites yet.",
-      "empty_contributor": "You can transfer existing LandPKS sites to this project, or use the map on the Home screen to create new sites to add to this project.",
+      "empty_contributor": "You can transfer existing LandPKS sites to this project. You can also create new sites on the Sites tab and add them to this project.",
       "add": "Add sites",
       "transfer": "Transfer Sites",
       "create": "Create Sites",
