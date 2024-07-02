@@ -27,7 +27,7 @@ export const getTopMatch = (
   const locationBased = results.locationBasedMatches;
   const dataBased = results.dataBasedMatches;
 
-  if (dataBased.length > 0) {
+  if (dataBased?.length > 0) {
     return dataBased.reduce(getBetterDataMatch);
   } else if (locationBased.length > 0) {
     return locationBased.reduce(getBetterLocationMatch);
