@@ -22,7 +22,6 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {theme} from 'terraso-mobile-client/theme';
 
 type MessageBoxProps = React.PropsWithChildren<{
   title?: string;
@@ -31,18 +30,15 @@ type MessageBoxProps = React.PropsWithChildren<{
 export const AlertMessageBox = ({title, children}: MessageBoxProps) => {
   return (
     <Box
-      backgroundColor={theme.colors.primary.contrast}
-      borderColor={theme.colors.warning.main}
+      backgroundColor="primary.contrast"
+      borderColor="warning.main"
       borderWidth="2px"
       borderRadius="4px"
       padding="md">
       <Row>
-        <Icon name="warning-amber" color={theme.colors.warning.main} mr="md" />
+        <Icon name="warning-amber" color="warning.main" mr="md" />
         <Column flex={1}>
-          <Text
-            variant="body1-strong"
-            color={theme.colors.alert.warningContent}
-            mb="sm">
+          <Text variant="body1-strong" color="warning.content" mb="sm">
             {title}
           </Text>
           {children}

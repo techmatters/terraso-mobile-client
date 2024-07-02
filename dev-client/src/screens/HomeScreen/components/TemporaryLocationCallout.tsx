@@ -100,9 +100,7 @@ export const TemporaryLocationCallout = ({
           label={t('site.elevation_label')}
           value={
             elevation ? (
-              <Text bold textTransform="uppercase">
-                {renderElevation(t, elevation)}
-              </Text>
+              <Text bold>{renderElevation(t, elevation)}</Text>
             ) : (
               <ActivityIndicator size="small" />
             )

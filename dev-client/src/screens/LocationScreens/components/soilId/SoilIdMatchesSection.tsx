@@ -41,7 +41,6 @@ import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/compo
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
-import {theme} from 'terraso-mobile-client/theme';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
 
@@ -122,7 +121,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
     default:
       return (
         <ErrorMessageBox title={t('site.soil_id.matches.error_generic_title')}>
-          <Text variant="body1" color={theme.colors.alert.errorContent}>
+          <Text variant="body1" color="error.content">
             {t('site.soil_id.matches.error_generic_body')}
           </Text>
         </ErrorMessageBox>

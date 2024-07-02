@@ -79,7 +79,7 @@ export const LocationPrediction = ({
       </Text>
 
       <Button
-        w="95%"
+        w="100%"
         _text={{textTransform: 'uppercase'}}
         rightIcon={<Icon name="chevron-right" />}
         onPress={onExploreDataPress}>
