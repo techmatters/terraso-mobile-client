@@ -19,10 +19,10 @@ import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
+import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';

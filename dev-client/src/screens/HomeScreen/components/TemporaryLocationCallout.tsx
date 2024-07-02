@@ -21,6 +21,7 @@ import {ActivityIndicator, Divider} from 'react-native-paper';
 
 import {Button} from 'native-base';
 
+import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
@@ -31,7 +32,6 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/hooks/useElevationData';
 import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
