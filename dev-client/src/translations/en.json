@@ -9,7 +9,7 @@
       "bullet_4": "Project management"
     },
     "next": {
-      "title": "What's next?",
+      "title": "What’s next?",
       "subtitle": "Future versions will include:",
       "bullet_1": "Offline capabilities",
       "bullet_2": "Data visualization enhancements",
@@ -121,7 +121,7 @@
           }
         },
         "match": "match",
-        "error_generic_title": "Can't fetch soil map",
+        "error_generic_title": "Can’t fetch soil map",
         "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
         "no_map_data_title": "No soil map data",
         "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Data can still be collected for this site, and if soil map data becomes available in the future, soil matches will appear here.",
@@ -354,7 +354,7 @@
       "contributor_help": "Can view, add, and edit site data",
       "viewer_help": "Can view site data",
       "remove": "Remove from project",
-      "remove_help": "Remove the team member's access to this project, retaining any data contributed to sites",
+      "remove_help": "Remove the team member’s access to this project, retaining any data contributed to sites",
       "confirm_removal_title": "Remove from Project?",
       "confirm_removal_body": "This will remove the team member from the project, but will retain their contributed site data.",
       "confirm_removal_action": "Remove"
@@ -547,7 +547,7 @@
     "bedrock": "Bedrock",
     "top_match": "Top Match",
     "ecological_site_name": "Ecological Site Name",
-    "loading": "Loading...",
+    "loading": "Loading…",
     "no_matches": "No matches",
     "error": "Error",
     "explore_data": "Explore the data",
