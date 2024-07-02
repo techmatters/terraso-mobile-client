@@ -16,26 +16,27 @@
  */
 
 import {useEffect} from 'react';
-import {useSelector} from 'react-redux';
 
+import {DEFAULT_SOIL_DATA} from 'terraso-client-shared/constants';
 import {
   DataBasedSoilMatch,
   LocationBasedSoilMatch,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {selectSoilData} from 'terraso-client-shared/selectors';
 import {
-  selectSoilIdData,
-  selectSoilIdInput,
-  selectSoilIdStatus,
+  selectSoilIdDataBasedMatches,
+  selectSoilIdLocationBasedMatches,
 } from 'terraso-client-shared/soilId/soilIdSelectors';
 import {
-  fetchSoilIdMatches,
-  LoadingState,
+  fetchDataBasedSoilMatches,
+  fetchLocationBasedSoilMatches,
+  soilDataToIdInput,
+  soilIdKey,
+  SoilIdStatus,
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';
-import {isEquivalentCoords} from 'terraso-client-shared/utils';
 
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 /*
  * Note that the soilId redux slice only supports a single cached value for soil ID data.
@@ -48,39 +49,47 @@ export const useSoilIdData = (
 ): {
   locationBasedMatches: LocationBasedSoilMatch[];
   dataBasedMatches: DataBasedSoilMatch[];
-  status: LoadingState;
+  status: SoilIdStatus;
 } => {
-  const dispatch = useDispatch();
-  const soilIdInput = useSelector(selectSoilIdInput());
-  const soilIdData = useSelector(selectSoilIdData());
-  const soilIdStatus = useSelector(selectSoilIdStatus());
-
-  /*
-   * Selector handles case of no specified site ID by selecting undefined.
-   * (We have to keep the useSelector call to be sure that hook usage is
-   * consistent across renders.)
-   */
-  const soilDataSelector = siteId ? selectSoilData(siteId) : () => undefined;
+  /* We only need to select soil data for data-based matches. */
+  const soilDataSelector = siteId
+    ? selectSoilData(siteId)
+    : () => DEFAULT_SOIL_DATA;
   const soilData = useSelector(soilDataSelector);
 
+  const paramsKey = soilIdKey(coords, siteId);
+  const dataBasedSelector = selectSoilIdDataBasedMatches(paramsKey);
+  const locationBasedSelector = selectSoilIdLocationBasedMatches(paramsKey);
+  const dataBasedEntry = useSelector(dataBasedSelector);
+  const locationBasedEntry = useSelector(locationBasedSelector);
+  const entryPresent = siteId
+    ? Boolean(dataBasedEntry)
+    : Boolean(locationBasedEntry);
+
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (
-      siteId !== soilIdInput.siteId ||
-      !isEquivalentCoords(coords, soilIdInput.coords)
-    ) {
+    if (siteId && soilData && !entryPresent) {
       dispatch(
-        fetchSoilIdMatches({
+        fetchDataBasedSoilMatches({
           coords,
           siteId,
-          soilData,
+          soilData: soilDataToIdInput(soilData),
         }),
       );
+    } else if (!siteId && !entryPresent) {
+      dispatch(fetchLocationBasedSoilMatches(coords));
     }
-  }, [dispatch, coords, siteId, soilData, soilIdInput]);
+  }, [dispatch, coords, siteId, entryPresent, soilData]);
 
-  return {
-    locationBasedMatches: soilIdData.locationBasedMatches,
-    dataBasedMatches: soilIdData.dataBasedMatches,
-    status: soilIdStatus,
-  };
+  return siteId
+    ? {
+        locationBasedMatches: [],
+        dataBasedMatches: dataBasedEntry?.matches ?? [],
+        status: dataBasedEntry?.status ?? 'loading',
+      }
+    : {
+        locationBasedMatches: locationBasedEntry?.matches ?? [],
+        dataBasedMatches: [],
+        status: locationBasedEntry?.status ?? 'loading',
+      };
 };
