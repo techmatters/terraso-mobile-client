@@ -30,8 +30,6 @@ import {
   LONGITUDE_MAX,
   LONGITUDE_MIN,
 } from 'terraso-mobile-client/constants';
-import i18n from 'terraso-mobile-client/translations';
-import {formatCoordinate} from 'terraso-mobile-client/util';
 
 const coordsRegex = /^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/;
 export type CoordsParseErrorReason =
@@ -75,13 +73,6 @@ export const parseCoords = (coords: string) => {
   } else {
     return {latitude, longitude};
   }
-};
-
-export const coordsToString = ({latitude, longitude}: Coords): string => {
-  return i18n.t('site.coords', {
-    lat: formatCoordinate(latitude),
-    lng: formatCoordinate(longitude),
-  });
 };
 
 export const coordsToPosition = ({latitude, longitude}: Coords): Position => [
