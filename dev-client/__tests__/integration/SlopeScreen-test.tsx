@@ -50,8 +50,8 @@ test('renders correctly', () => {
             slopeRequired: true,
           },
         },
-        dataBasedMatches: {},
-        locationBasedMatches: {},
+        matches: {},
+        usages: {},
       },
     },
   }).toJSON();

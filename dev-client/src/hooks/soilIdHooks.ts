@@ -23,10 +23,7 @@ import {
   LocationBasedSoilMatch,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {selectSoilData} from 'terraso-client-shared/selectors';
-import {
-  selectSoilIdDataBasedMatches,
-  selectSoilIdLocationBasedMatches,
-} from 'terraso-client-shared/soilId/soilIdSelectors';
+import {selectSoilIdMatches} from 'terraso-client-shared/soilId/soilIdSelectors';
 import {
   fetchDataBasedSoilMatches,
   fetchLocationBasedSoilMatches,
@@ -58,13 +55,9 @@ export const useSoilIdData = (
   const soilData = useSelector(soilDataSelector);
 
   const paramsKey = soilIdKey(coords, siteId);
-  const dataBasedSelector = selectSoilIdDataBasedMatches(paramsKey);
-  const locationBasedSelector = selectSoilIdLocationBasedMatches(paramsKey);
-  const dataBasedEntry = useSelector(dataBasedSelector);
-  const locationBasedEntry = useSelector(locationBasedSelector);
-  const entryPresent = siteId
-    ? Boolean(dataBasedEntry)
-    : Boolean(locationBasedEntry);
+  const soilIdSelector = selectSoilIdMatches(paramsKey);
+  const entry = useSelector(soilIdSelector);
+  const entryPresent = Boolean(entry);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -81,15 +74,9 @@ export const useSoilIdData = (
     }
   }, [dispatch, coords, siteId, entryPresent, soilData]);
 
-  return siteId
-    ? {
-        locationBasedMatches: [],
-        dataBasedMatches: dataBasedEntry?.matches ?? [],
-        status: dataBasedEntry?.status ?? 'loading',
-      }
-    : {
-        locationBasedMatches: locationBasedEntry?.matches ?? [],
-        dataBasedMatches: [],
-        status: locationBasedEntry?.status ?? 'loading',
-      };
+  return {
+    locationBasedMatches: entry?.locationBasedMatches ?? [],
+    dataBasedMatches: entry?.dataBasedMatches ?? [],
+    status: entry?.status ?? 'loading',
+  };
 };
