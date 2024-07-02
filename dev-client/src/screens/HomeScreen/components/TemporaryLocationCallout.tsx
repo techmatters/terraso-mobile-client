@@ -19,6 +19,7 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, Divider} from 'react-native-paper';
 
+import {TFunction} from 'i18next';
 import {Button} from 'native-base';
 
 import {Coords} from 'terraso-client-shared/types';
@@ -32,7 +33,10 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {
+  SoilIdData,
+  useSoilIdData,
+} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/hooks/useElevationData';
 import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -55,7 +59,9 @@ export const TemporaryLocationCallout = ({
 
   const elevation = useElevationData(coords);
   const soilIdData = useSoilIdData(coords);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+  const {soilMatchDisplay, ecologicalSiteDisplay} = useMemo(() => {
+    return getSoilIdDetailDisplayValues(soilIdData, t);
+  }, [soilIdData, t]);
 
   const onCreate = useCallback(() => {
     navigation.navigate('CREATE_SITE', {
@@ -71,47 +77,6 @@ export const TemporaryLocationCallout = ({
       elevation: elevation,
     });
   }, [navigation, coords, elevation]);
-
-  // TODO-cknipe: Pull into its own components?
-  let soilMatchDisplay: React.ReactNode;
-  let ecologicalSiteDisplay: React.ReactNode;
-  if (soilIdData.status === 'loading') {
-    soilMatchDisplay = <ActivityIndicator size="small" />;
-    ecologicalSiteDisplay = <ActivityIndicator size="small" />;
-  } else if (topSoilMatch) {
-    soilMatchDisplay = (
-      <Text bold textTransform="uppercase">
-        {topSoilMatch.soilInfo.soilSeries.name}
-      </Text>
-    );
-    ecologicalSiteDisplay = (
-      <Text bold textTransform="uppercase">
-        {topSoilMatch.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
-      </Text>
-    );
-  } else if (soilIdData.status === 'DATA_UNAVAILABLE') {
-    soilMatchDisplay = (
-      <Text bold textTransform="uppercase">
-        {t('soil.no_matches')}
-      </Text>
-    );
-    ecologicalSiteDisplay = (
-      <Text bold textTransform="uppercase">
-        {t('soil.no_matches')}
-      </Text>
-    );
-  } else {
-    soilMatchDisplay = (
-      <Text bold textTransform="uppercase" color="error.main">
-        {t('soil.error')}
-      </Text>
-    );
-    ecologicalSiteDisplay = (
-      <Text bold textTransform="uppercase" color="error.main">
-        {t('soil.error')}
-      </Text>
-    );
-  }
 
   return (
     <Card
@@ -165,4 +130,48 @@ export const TemporaryLocationCallout = ({
       </Column>
     </Card>
   );
+};
+
+const getSoilIdDetailDisplayValues = (soilIdData: SoilIdData, t: TFunction) => {
+  const topSoilMatch = getTopMatch(soilIdData);
+  let soilMatchDisplay: React.ReactNode;
+  let ecologicalSiteDisplay: React.ReactNode;
+  if (soilIdData.status === 'loading') {
+    soilMatchDisplay = <ActivityIndicator size="small" />;
+    ecologicalSiteDisplay = <ActivityIndicator size="small" />;
+  } else if (soilIdData.status === 'ready') {
+    soilMatchDisplay = (
+      <Text bold textTransform="uppercase">
+        {topSoilMatch?.soilInfo.soilSeries.name ?? t('soil.no_matches')}
+      </Text>
+    );
+    ecologicalSiteDisplay = (
+      <Text bold textTransform="uppercase">
+        {topSoilMatch?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
+      </Text>
+    );
+  } else if (soilIdData.status === 'DATA_UNAVAILABLE') {
+    soilMatchDisplay = (
+      <Text bold textTransform="uppercase">
+        {t('soil.no_matches')}
+      </Text>
+    );
+    ecologicalSiteDisplay = (
+      <Text bold textTransform="uppercase">
+        {t('soil.no_matches')}
+      </Text>
+    );
+  } else {
+    soilMatchDisplay = (
+      <Text bold textTransform="uppercase" color="error.main">
+        {t('soil.error')}
+      </Text>
+    );
+    ecologicalSiteDisplay = (
+      <Text bold textTransform="uppercase" color="error.main">
+        {t('soil.error')}
+      </Text>
+    );
+  }
+  return {soilMatchDisplay, ecologicalSiteDisplay};
 };

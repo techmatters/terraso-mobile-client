@@ -42,14 +42,14 @@ import {useDispatch} from 'terraso-mobile-client/store';
  * If multiple components are passing different inputs to this hook simultaneously, it
  * will not function correctly.
  */
-export const useSoilIdData = (
-  coords: Coords,
-  siteId?: string,
-): {
+
+export type SoilIdData = {
   locationBasedMatches: LocationBasedSoilMatch[];
   dataBasedMatches: DataBasedSoilMatch[];
   status: SoilIdStatus;
-} => {
+};
+
+export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
   const dispatch = useDispatch();
   const soilIdInput = useSelector(selectSoilIdInput());
   const soilIdData = useSelector(selectSoilIdData());
