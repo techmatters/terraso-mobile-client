@@ -118,7 +118,7 @@ jobs:
       - name: Set Xcode version
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '^15.2'
+          xcode-version: '^15.4'
 
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.12.0
