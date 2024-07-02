@@ -29,7 +29,7 @@ export const getTopMatch = (
 
   if (dataBased?.length > 0) {
     return dataBased.reduce(getBetterDataMatch);
-  } else if (locationBased.length > 0) {
+  } else if (locationBased?.length > 0) {
     return locationBased.reduce(getBetterLocationMatch);
   } else {
     return undefined;
