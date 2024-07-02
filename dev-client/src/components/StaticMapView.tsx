@@ -111,7 +111,7 @@ export const StaticMapView = ({
   const cameraSettings = useMemo(
     () =>
       ({
-        centerCoordinate: coordsToPosition(coords),
+        centerCoordinate: coords ? coordsToPosition(coords) : undefined,
         zoomLevel: zoomLevel,
         animationMode: 'none',
         animationDuration: 0,
