@@ -15,18 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo} from 'react';
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 
-import {Button, ScrollView} from 'native-base';
+import {ScrollView} from 'native-base';
 
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
-import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
-import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
   Column,
@@ -38,9 +35,9 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
-import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
+import {LocationPrediction} from 'terraso-mobile-client/screens/LocationScreens/components/LocationPrediction';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {formatCoordinate} from 'terraso-mobile-client/util';
@@ -57,78 +54,6 @@ const LocationDetail = ({label, value}: {label: string; value: string}) => (
     <Text>{value}</Text>
   </Text>
 );
-
-type LocationPredictionProps = {
-  label: string;
-  coords: Coords;
-  siteId?: string;
-  onExploreDataPress: () => void;
-};
-
-const LocationPrediction = ({
-  label,
-  coords,
-  siteId,
-  onExploreDataPress,
-}: LocationPredictionProps) => {
-  const {t} = useTranslation();
-
-  const soilIdData = useSoilIdData(coords, siteId);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
-
-  // TODO-cknipe: I feel like this should be extracted so multiple things can use it
-  let soilIdMatchText: string;
-  let ecologicalSiteText: string;
-  if (soilIdData.status === 'loading') {
-    soilIdMatchText = t('soil.loading');
-    ecologicalSiteText = t('soil.loading');
-  } else if (soilIdData.status === 'DATA_UNAVAILABLE') {
-    soilIdMatchText = t('soil.no_matches');
-    ecologicalSiteText = t('soil.no_matches');
-  } else if (soilIdData.status === 'ready') {
-    soilIdMatchText =
-      topSoilMatch?.soilInfo.soilSeries.name ?? t('soil.no_matches');
-    ecologicalSiteText =
-      topSoilMatch?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches');
-  } else {
-    soilIdMatchText = t('soil.error');
-    ecologicalSiteText = t('soil.error');
-  }
-
-  return (
-    <Box variant="tile" flexDirection="column" alignItems="flex-start" p="18px">
-      <Row alignItems="center">
-        <Box mr={15}>
-          <StackedBarChart />
-        </Box>
-        <Text
-          variant="body1"
-          color="primary.lighter"
-          textTransform="uppercase"
-          bold>
-          {label}
-        </Text>
-      </Row>
-      <Box h="15px" />
-      <Text variant="body1" color="primary.contrast" mb="5px">
-        <Text bold>{t('soil.top_match')}: </Text>
-        <Text>{soilIdMatchText}</Text>
-      </Text>
-      <Text variant="body1" color="primary.contrast" mb="25px">
-        <Text bold>{t('soil.ecological_site_name')}: </Text>
-        <Text>{ecologicalSiteText}</Text>
-      </Text>
-
-      <Button
-        w="100%"
-        _text={{textTransform: 'uppercase'}}
-        rightIcon={<Icon name="chevron-right" />}
-        onPress={onExploreDataPress}>
-        {t('soil.explore_data')}
-      </Button>
-    </Box>
-  );
-};
 
 export const LocationDashboardContent = ({
   siteId,
