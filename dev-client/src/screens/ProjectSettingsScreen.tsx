@@ -28,7 +28,7 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {selectProject} from 'terraso-client-shared/selectors';
 
-import DeleteButton from 'terraso-mobile-client/components/icons/DeleteButton';
+import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';

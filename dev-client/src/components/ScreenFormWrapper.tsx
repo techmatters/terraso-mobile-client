@@ -23,7 +23,7 @@ import {Formik, FormikProps} from 'formik';
 import {Button, Spacer} from 'native-base';
 import * as yup from 'yup';
 
-import DeleteButton from 'terraso-mobile-client/components/icons/DeleteButton';
+import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';

@@ -36,6 +36,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 
+import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {
   DepthForm,
   DepthFormInput,
@@ -44,7 +45,6 @@ import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import DeleteButton from 'terraso-mobile-client/components/icons/DeleteButton';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
