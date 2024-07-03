@@ -45,7 +45,6 @@ const BUILD_CONFIG = validateEnvConfig(process.env, [
 ] as const);
 
 const ENV_CONFIG = validateEnvConfig(process.env, [
-  'APP_VERSION',
   'APP_BUILD',
   'CI',
   'ENV',
@@ -63,8 +62,6 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
 ] as const);
 
 let buildNumber = 1;
-let versionNumber = '1.0';
-const APP_VERSION = process.env.APP_VERSION;
 const APP_BUILD = process.env.APP_BUILD;
 
 if (typeof APP_BUILD === 'string') {
@@ -79,16 +76,11 @@ if (typeof APP_BUILD === 'string') {
   ENV_CONFIG.APP_BUILD = buildNumber.toString();
 }
 
-if (typeof APP_VERSION === 'string') {
-  versionNumber = APP_VERSION;
-  ENV_CONFIG.APP_VERSION = versionNumber;
-}
-
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'LandPKS Soil ID',
   slug: 'landpks',
-  version: versionNumber,
+  version: '1.0.0',
   orientation: 'portrait',
   splash: {
     image: 'src/assets/splash.png',

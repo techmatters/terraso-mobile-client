@@ -3,11 +3,6 @@ name: iOS Release
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version number (i.e. 1.0.1)'
-        default: '1.0.0'
-        type: string
-        required: true
       APP_BUILD:
         description: 'Build number (i.e. 153)'
         default: '153'
