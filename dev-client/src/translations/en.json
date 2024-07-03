@@ -435,11 +435,17 @@
     },
     "required": "Required",
     "character_limit": "{{current}} / {{limit}} characters",
-    "open_settings": "Open Settings",
+    "open_settings": "Go to settings",
     "yes": "Yes",
     "no": "No",
     "next": "Next",
     "proceed": "Proceed"
+  },
+  "permissions": {
+    "camera_title": "LandPKS Soil ID needs to access your camera",
+    "camera_body": "To use {{feature}}, grant LandPKS Soil ID access to your camera in device settings.",
+    "gallery_title": "LandPKS Soil ID needs to access your photo gallery",
+    "gallery_body": "To use {{feature}}, grant LandPKS Soil ID access to your photo gallery in device settings."
   },
   "errors": {
     "generic": "Error saving soil ID information."
@@ -715,6 +721,7 @@
     },
     "color": {
       "title": "Soil Color",
+      "featureName": "Soil Color",
       "info": {
         "p1": "Soil color can tell you a lot about soil, including:",
         "bullet1": "Which minerals are present",

@@ -18,16 +18,20 @@
 import {Pressable} from 'react-native';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
+import {
+  ImagePicker,
+  Photo,
+} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
+  featureName: string;
   onPick: (photo: Photo) => void;
 };
 
-export const PickImageButton = ({onPick}: Props) => {
+export const PickImageButton = ({featureName, onPick}: Props) => {
   return (
-    <ImagePicker onPick={onPick}>
+    <ImagePicker featureName={featureName} onPick={onPick}>
       {onOpen => (
         <Pressable onPress={onOpen}>
           <Box

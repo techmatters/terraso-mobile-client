@@ -21,8 +21,8 @@ import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {Photo} from 'terraso-mobile-client/components/ImagePicker';
-import {PickImageButton} from 'terraso-mobile-client/components/inputs/PickImageButton';
+import {Photo} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
+import {PickImageButton} from 'terraso-mobile-client/components/inputs/image/PickImageButton';
 import {
   Box,
   Column,
@@ -53,7 +53,10 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   return (
     <Column>
       <Box alignItems="center" paddingVertical="lg">
-        <PickImageButton onPick={onPickImage} />
+        <PickImageButton
+          featureName={t('soil.color.featureName')}
+          onPick={onPickImage}
+        />
       </Box>
       <Column
         backgroundColor="grey.300"

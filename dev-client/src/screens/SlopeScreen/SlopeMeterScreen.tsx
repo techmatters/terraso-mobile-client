@@ -17,24 +17,23 @@
 
 import {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Linking} from 'react-native';
 
 import {CameraView, useCameraPermissions} from 'expo-camera';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {DeviceMotion} from 'expo-sensors';
 
-import {Button, Link} from 'native-base';
+import {Button} from 'native-base';
 
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {PermissionsRequestModal} from 'terraso-mobile-client/components/modals/PermissionsRequestModal';
 import {
   Box,
   Column,
   Heading,
   Row,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -47,7 +46,7 @@ const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
 export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
-  const [permission, requestPermission] = useCameraPermissions();
+  const [permission] = useCameraPermissions();
   const [deviceTiltDeg, setDeviceTiltDeg] = useState<number | null>(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -100,20 +99,19 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                 <Box flex={1} bg="#00000080" />
               </Column>
             </CameraView>
-          ) : permission?.canAskAgain ? (
-            <Button size="lg" onPress={requestPermission}>
-              {t('slope.steepness.camera_grant')}
-            </Button>
           ) : (
-            <>
-              <Heading variant="h6">{t('slope.steepness.no_camera')}</Heading>
-              <Text variant="body1" textAlign="center">
-                {t('slope.steepness.no_camera_explanation')}
-              </Text>
-              <Link onPress={Linking.openSettings}>
-                {t('general.open_settings')}
-              </Link>
-            </>
+            <PermissionsRequestModal
+              title={t('permissions.camera_title')}
+              body={t('permissions.camera_body', {
+                feature: t('slope.steepness.slope_meter'),
+              })}
+              usePermissions={useCameraPermissions}>
+              {onRequest => (
+                <Button size="lg" onPress={onRequest}>
+                  {t('slope.steepness.camera_grant')}
+                </Button>
+              )}
+            </PermissionsRequestModal>
           )}
         </Box>
         <Column alignItems="center">
