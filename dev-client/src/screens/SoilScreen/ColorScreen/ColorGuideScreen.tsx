@@ -23,7 +23,10 @@ import {Button} from 'native-base';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {ImagePicker, Photo} from 'terraso-mobile-client/components/ImagePicker';
+import {
+  ImagePicker,
+  Photo,
+} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {
   Box,
   Column,
@@ -125,7 +128,9 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
         <Button variant="link" onPress={onGoBack}>
           {t('soil.color.guide.go_back')}
         </Button>
-        <ImagePicker onPick={onTakePhoto}>
+        <ImagePicker
+          featureName={t('soil.color.featureName')}
+          onPick={onTakePhoto}>
           {onOpen => (
             <Button
               _text={{textTransform: 'uppercase'}}

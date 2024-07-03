@@ -16,6 +16,7 @@
     "eslint-plugin-prettier",
     "expo-crypto",
     "expo-dev-client",
+    "expo-modules-core",
     "metro-react-native-babel-preset",
     "react-devtools",
     "react-native-gradle-plugin",

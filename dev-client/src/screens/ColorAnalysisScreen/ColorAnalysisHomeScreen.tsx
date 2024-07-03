@@ -28,7 +28,7 @@ import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   decodeBase64Jpg,
   PhotoWithBase64,
-} from 'terraso-mobile-client/components/ImagePicker';
+} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {
   ActionButton,
   ActionsModal,
