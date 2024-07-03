@@ -123,14 +123,14 @@ jobs:
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.12.0
         with:
-          project-path: dev-client/ios/TerrasoLandPKS.xcodeproj
+          project-path: dev-client/ios/LandPKSSoilID.xcodeproj
           p12-base64: ${{ secrets.APPLE_P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.APPLE_MOBILE_PROVISION_BASE64 }}
           code-signing-identity: 'iPhone Distribution'
           team-id: ${{ vars.APPLE_TEAM_ID }}
           certificate-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          workspace-path: dev-client/ios/TerrasoLandPKS.xcworkspace
-          scheme: TerrasoLandPKS
+          workspace-path: dev-client/ios/LandPKSSoilID.xcworkspace
+          scheme: LandPKSSoilID
 
       - name: Upload app to TestFlight
         uses: apple-actions/upload-testflight-build@v1
