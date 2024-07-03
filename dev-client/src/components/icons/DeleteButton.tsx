@@ -15,39 +15,31 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Link} from 'native-base';
+import {Button} from 'native-base';
 
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ThemeColor} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 type Props = {
   children?: React.ReactNode;
-  iconName: IconName;
-  underlined?: boolean;
   color?: ThemeColor;
-} & React.ComponentProps<typeof Link>;
+} & React.ComponentProps<typeof Button>;
 
-// TODO: There is going to be (at least) two different types of IconLinks
-// Let's use this one for now
-export default function IconLink({
-  children,
-  iconName,
-  underlined,
-  color = 'primary.main',
-  ...props
-}: Props) {
+export default function DeleteButton({children, ...props}: Props) {
   return (
-    <Link
+    <Button
+      background="background.default"
+      p={0}
+      pt="10px"
+      startIcon={<Icon name="delete" color="error.main" size="md" mr={2} />}
       _text={{
-        color,
+        color: 'error.main',
         fontWeight: 500,
         fontSize: 'md',
         textTransform: 'uppercase',
       }}
-      isUnderlined={underlined}
       {...props}>
-      <Icon name={iconName} color={color} size="md" mr={3} />
       {children}
-    </Link>
+    </Button>
   );
 }
