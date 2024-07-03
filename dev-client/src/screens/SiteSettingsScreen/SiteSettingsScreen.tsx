@@ -74,9 +74,10 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
         />
         <ConfirmModal
           trigger={onOpen => (
-            <DeleteButton onPress={onOpen}>
-              {t('site.dashboard.delete_button')}
-            </DeleteButton>
+            <DeleteButton
+              label={t('site.dashboard.delete_button')}
+              onPress={onOpen}
+            />
           )}
           title={t('site.dashboard.delete_site_modal.title')}
           body={t('site.dashboard.delete_site_modal.body', {

@@ -89,9 +89,10 @@ export function ProjectSettingsScreen({
             body={t('projects.settings.delete_description')}
             handleConfirm={triggerDeleteProject}
             trigger={onOpen => (
-              <DeleteButton onPress={onOpen}>
-                {t('projects.settings.delete')}
-              </DeleteButton>
+              <DeleteButton
+                label={t('projects.settings.delete')}
+                onPress={onOpen}
+              />
             )}
           />
         </RestrictByProjectRole>

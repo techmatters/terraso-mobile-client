@@ -15,17 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {Button} from 'native-base';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {ThemeColor} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 type Props = {
-  children?: React.ReactNode;
-  color?: ThemeColor;
+  label?: string;
 } & React.ComponentProps<typeof Button>;
 
-export default function DeleteButton({children, ...props}: Props) {
+export default function DeleteButton({label, ...props}: Props) {
+  const {t} = useTranslation();
+
+  label = label ?? t('general.delete_fab');
+
   return (
     <Button
       background="background.default"
@@ -39,7 +43,7 @@ export default function DeleteButton({children, ...props}: Props) {
         textTransform: 'uppercase',
       }}
       {...props}>
-      {children}
+      {label}
     </Button>
   );
 }

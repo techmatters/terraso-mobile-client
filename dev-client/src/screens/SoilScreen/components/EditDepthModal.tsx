@@ -222,9 +222,11 @@ export const EditDepthModal = ({
               {mutable && (
                 <ConfirmModal
                   trigger={onOpen => (
-                    <DeleteButton onPress={onOpen} mr="20px">
-                      {t('soil.depth.delete_button')}
-                    </DeleteButton>
+                    <DeleteButton
+                      label={t('soil.depth.delete_button')}
+                      onPress={onOpen}
+                      mr="20px"
+                    />
                   )}
                   title={t('soil.depth.delete_modal.title')}
                   body={t('soil.depth.delete_modal.body')}

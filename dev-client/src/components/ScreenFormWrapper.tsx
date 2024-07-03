@@ -101,9 +101,8 @@ export const ScreenFormWrapper = forwardRef(
                 <DeleteButton
                   disabled={isSubmitting}
                   onPress={() => conditionallyConfirmDelete(onOpen)}
-                  mr="20px">
-                  {t('general.delete_fab')}
-                </DeleteButton>
+                  mr="20px"
+                />
               )}
               title={t('site.notes.confirm_removal_title')}
               body={t('site.notes.confirm_removal_body')}
