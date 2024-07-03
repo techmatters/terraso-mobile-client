@@ -442,10 +442,10 @@
     "proceed": "Proceed"
   },
   "permissions": {
-    "camera_title": "LandPKS needs to access your camera",
-    "camera_body": "To use {{feature}}, grant LandPKS access to your camera in device settings.",
-    "gallery_title": "LandPKS needs to access your photo gallery",
-    "gallery_body": "To use {{feature}}, grant LandPKS access to your photo gallery in device settings."
+    "camera_title": "LandPKS Soil ID needs to access your camera",
+    "camera_body": "To use {{feature}}, grant LandPKS Soil ID access to your camera in device settings.",
+    "gallery_title": "LandPKS Soil ID needs to access your photo gallery",
+    "gallery_body": "To use {{feature}}, grant LandPKS Soil ID access to your photo gallery in device settings."
   },
   "errors": {
     "generic": "Error saving soil ID information."
