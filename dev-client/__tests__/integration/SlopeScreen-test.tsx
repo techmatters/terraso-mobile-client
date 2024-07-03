@@ -51,7 +51,6 @@ test('renders correctly', () => {
           },
         },
         matches: {},
-        usages: {},
       },
     },
   }).toJSON();
