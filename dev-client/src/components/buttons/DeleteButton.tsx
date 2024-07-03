@@ -15,39 +15,35 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Link} from 'native-base';
+import {useTranslation} from 'react-i18next';
 
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
-import {ThemeColor} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {Button} from 'native-base';
+
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 
 type Props = {
-  children?: React.ReactNode;
-  iconName: IconName;
-  underlined?: boolean;
-  color?: ThemeColor;
-} & React.ComponentProps<typeof Link>;
+  label?: string;
+} & React.ComponentProps<typeof Button>;
 
-// TODO: There is going to be (at least) two different types of IconLinks
-// Let's use this one for now
-export default function IconLink({
-  children,
-  iconName,
-  underlined,
-  color = 'primary.main',
-  ...props
-}: Props) {
+export default function DeleteButton({label, ...props}: Props) {
+  const {t} = useTranslation();
+
+  label = label ?? t('general.delete_fab');
+
   return (
-    <Link
+    <Button
+      background="background.default"
+      p={0}
+      pt="10px"
+      startIcon={<Icon name="delete" color="error.main" size="md" mr={2} />}
       _text={{
-        color,
+        color: 'error.main',
         fontWeight: 500,
         fontSize: 'md',
         textTransform: 'uppercase',
       }}
-      isUnderlined={underlined}
       {...props}>
-      <Icon name={iconName} color={color} size="md" mr={3} />
-      {children}
-    </Link>
+      {label}
+    </Button>
   );
 }
