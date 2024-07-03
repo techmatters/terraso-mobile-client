@@ -17,6 +17,7 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
@@ -26,7 +27,6 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
   getSortedDataBasedMatches,
   getSortedLocationBasedMatches,

@@ -50,12 +50,7 @@ test('renders correctly', () => {
             slopeRequired: true,
           },
         },
-        soilIdData: {
-          dataBasedMatches: [],
-          locationBasedMatches: [],
-        },
-        soilIdParams: {},
-        soilIdStatus: 'ready',
+        matches: {},
       },
     },
   }).toJSON();
