@@ -697,13 +697,6 @@ exports[`renders correctly 1`] = `
                                 }
                               >
                                 <View
-                                  style={
-                                    {
-                                      "flex": 1,
-                                    }
-                                  }
-                                />
-                                <View
                                   accessibilityState={
                                     {
                                       "busy": undefined,
@@ -1508,13 +1501,6 @@ exports[`renders correctly 1`] = `
                                   ]
                                 }
                               >
-                                <View
-                                  style={
-                                    {
-                                      "flex": 1,
-                                    }
-                                  }
-                                />
                                 <View
                                   accessibilityState={
                                     {
@@ -2321,13 +2307,6 @@ exports[`renders correctly 1`] = `
                                 }
                               >
                                 <View
-                                  style={
-                                    {
-                                      "flex": 1,
-                                    }
-                                  }
-                                />
-                                <View
                                   accessibilityState={
                                     {
                                       "busy": undefined,
@@ -3132,13 +3111,6 @@ exports[`renders correctly 1`] = `
                                   ]
                                 }
                               >
-                                <View
-                                  style={
-                                    {
-                                      "flex": 1,
-                                    }
-                                  }
-                                />
                                 <View
                                   accessibilityState={
                                     {
@@ -3945,13 +3917,6 @@ exports[`renders correctly 1`] = `
                                 }
                               >
                                 <View
-                                  style={
-                                    {
-                                      "flex": 1,
-                                    }
-                                  }
-                                />
-                                <View
                                   accessibilityState={
                                     {
                                       "busy": undefined,
@@ -4756,13 +4721,6 @@ exports[`renders correctly 1`] = `
                                   ]
                                 }
                               >
-                                <View
-                                  style={
-                                    {
-                                      "flex": 1,
-                                    }
-                                  }
-                                />
                                 <View
                                   accessibilityState={
                                     {

@@ -30,6 +30,7 @@ import {
 
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {
+  Box,
   Column,
   Heading,
   Row,
@@ -139,6 +140,7 @@ export const SoilDepthSummary = ({siteId, interval, requiredInputs}: Props) => {
           {...props}
         />
       ))}
+      {methods.length === 0 && <Box height="2px" />}
     </Column>
   );
 };

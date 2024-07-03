@@ -36,6 +36,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 
+import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {
   DepthForm,
   DepthFormInput,
@@ -44,7 +45,6 @@ import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
@@ -222,15 +222,11 @@ export const EditDepthModal = ({
               {mutable && (
                 <ConfirmModal
                   trigger={onOpen => (
-                    <Button
-                      px="11px"
-                      leftIcon={<Icon name="delete" color="error.main" />}
-                      _text={{textTransform: 'uppercase', color: 'error.main'}}
-                      variant="link"
-                      size="lg"
-                      onPress={onOpen}>
-                      {t('soil.depth.delete_depth')}
-                    </Button>
+                    <DeleteButton
+                      label={t('soil.depth.delete_button')}
+                      onPress={onOpen}
+                      mr="20px"
+                    />
                   )}
                   title={t('soil.depth.delete_modal.title')}
                   body={t('soil.depth.delete_modal.body')}
@@ -238,7 +234,6 @@ export const EditDepthModal = ({
                   handleConfirm={deleteDepth}
                 />
               )}
-              <Box flex={1} />
               <ConfirmEditingModal
                 formNotReady={!isValid || isSubmitting}
                 handleSubmit={handleSubmit}

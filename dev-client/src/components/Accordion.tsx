@@ -17,13 +17,18 @@
 import {ReactNode, useCallback, useState} from 'react';
 
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  BoxProps,
+  Row,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
   Head: ReactNode;
   children: ReactNode;
   initiallyOpen?: boolean;
   disableOpen?: boolean;
+  boxProps?: BoxProps;
 };
 
 export const Accordion = ({
@@ -31,6 +36,7 @@ export const Accordion = ({
   children,
   initiallyOpen = false,
   disableOpen = false,
+  boxProps,
 }: Props) => {
   const [open, setOpen] = useState(initiallyOpen);
   const onPress = useCallback(() => {
@@ -39,7 +45,7 @@ export const Accordion = ({
 
   const name = open ? 'expand-less' : 'expand-more';
   return (
-    <Box>
+    <Box {...boxProps}>
       <Row
         backgroundColor="primary.dark"
         alignItems="center"
