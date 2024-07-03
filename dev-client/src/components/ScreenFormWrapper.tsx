@@ -23,9 +23,9 @@ import {Formik, FormikProps} from 'formik';
 import {Button, Spacer} from 'native-base';
 import * as yup from 'yup';
 
-import {HorizontalIconButton} from 'terraso-mobile-client/components/icons/HorizontalIconButton';
+import DeleteButton from 'terraso-mobile-client/components/icons/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -98,20 +98,12 @@ export const ScreenFormWrapper = forwardRef(
             <Spacer />
             <ConfirmModal
               trigger={onOpen => (
-                <Box pt={2} pr={5}>
-                  <HorizontalIconButton
-                    name="delete"
-                    isUppercase={true}
-                    label={t('general.delete_fab')}
-                    colorScheme="error.main"
-                    _icon={{
-                      color: 'error.main',
-                      size: 'md',
-                    }}
-                    isDisabled={isSubmitting}
-                    onPress={() => conditionallyConfirmDelete(onOpen)}
-                  />
-                </Box>
+                <DeleteButton
+                  disabled={isSubmitting}
+                  onPress={() => conditionallyConfirmDelete(onOpen)}
+                  mr="20px">
+                  {t('general.delete_fab')}
+                </DeleteButton>
               )}
               title={t('site.notes.confirm_removal_title')}
               body={t('site.notes.confirm_removal_body')}

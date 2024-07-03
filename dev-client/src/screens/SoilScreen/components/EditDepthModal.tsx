@@ -44,8 +44,8 @@ import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import DeleteButton from 'terraso-mobile-client/components/icons/DeleteButton';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import IconLink from 'terraso-mobile-client/components/icons/IconLink';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -222,15 +222,9 @@ export const EditDepthModal = ({
               {mutable && (
                 <ConfirmModal
                   trigger={onOpen => (
-                    <IconLink
-                      iconName="delete"
-                      underlined={false}
-                      onPress={onOpen}
-                      pt="20px"
-                      color="error.main"
-                      textTransform="uppercase">
+                    <DeleteButton onPress={onOpen} mr="20px">
                       {t('soil.depth.delete_button')}
-                    </IconLink>
+                    </DeleteButton>
                   )}
                   title={t('soil.depth.delete_modal.title')}
                   body={t('soil.depth.delete_modal.body')}
@@ -238,7 +232,6 @@ export const EditDepthModal = ({
                   handleConfirm={deleteDepth}
                 />
               )}
-              <Box flex={1} />
               <ConfirmEditingModal
                 formNotReady={!isValid || isSubmitting}
                 handleSubmit={handleSubmit}

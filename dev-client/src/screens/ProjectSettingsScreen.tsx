@@ -28,7 +28,7 @@ import {
 } from 'terraso-client-shared/project/projectSlice';
 import {selectProject} from 'terraso-client-shared/selectors';
 
-import IconLink from 'terraso-mobile-client/components/icons/IconLink';
+import DeleteButton from 'terraso-mobile-client/components/icons/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
@@ -70,7 +70,12 @@ export function ProjectSettingsScreen({
     <ScrollView
       backgroundColor={theme.colors.primary.contrast}
       contentContainerStyle={styles.scrollview}>
-      <Column space={4} m={3} mb="50px" style={styles.column}>
+      <Column
+        space={4}
+        m={3}
+        mb="50px"
+        style={styles.column}
+        alignItems="flex-start">
         <EditProjectForm
           onSubmit={onSubmit}
           name={name}
@@ -84,15 +89,9 @@ export function ProjectSettingsScreen({
             body={t('projects.settings.delete_description')}
             handleConfirm={triggerDeleteProject}
             trigger={onOpen => (
-              <IconLink
-                iconName="delete"
-                underlined={false}
-                onPress={onOpen}
-                pt="20px"
-                color="error.main"
-                textTransform="uppercase">
+              <DeleteButton onPress={onOpen}>
                 {t('projects.settings.delete')}
-              </IconLink>
+              </DeleteButton>
             )}
           />
         </RestrictByProjectRole>

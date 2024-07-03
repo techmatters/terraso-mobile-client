@@ -22,7 +22,7 @@ import {Fab} from 'native-base';
 
 import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
 
-import IconLink from 'terraso-mobile-client/components/icons/IconLink';
+import DeleteButton from 'terraso-mobile-client/components/icons/DeleteButton';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
@@ -74,15 +74,9 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
         />
         <ConfirmModal
           trigger={onOpen => (
-            <IconLink
-              iconName="delete"
-              underlined={false}
-              onPress={onOpen}
-              pt="20px"
-              color="error.main"
-              textTransform="uppercase">
+            <DeleteButton onPress={onOpen}>
               {t('site.dashboard.delete_button')}
-            </IconLink>
+            </DeleteButton>
           )}
           title={t('site.dashboard.delete_site_modal.title')}
           body={t('site.dashboard.delete_site_modal.body', {
