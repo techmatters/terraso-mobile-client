@@ -47,7 +47,6 @@ import * as Sentry from '@sentry/react-native';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {HomeScreenContextProvider} from 'terraso-mobile-client/context/HomeScreenContext';
-import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
@@ -74,12 +73,6 @@ LogBox.ignoreLogs([
 const store = createStore();
 
 function App(): React.JSX.Element {
-  useEffect(() =>
-    checkAndroidPermissions(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    ),
-  );
-
   return (
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
