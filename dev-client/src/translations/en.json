@@ -157,7 +157,7 @@
       "location_score_info": {
         "header": "Location Score",
         "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account data that has been entered by users at the site.",
-        "p2": "LandPKS bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+        "p2": "LandPKS Soil ID bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
         "p3": "The <bold>location score</bold> for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
       },
       "soil_properties_score_info": {
@@ -165,7 +165,7 @@
         "p1": "Soil Properties Score reflects the similarity between the soil match and the data entered for this site.",
         "p2": "A higher Soil Properties Score means that the user-entered data is similar to the soil match. A low score means the two are less similar, and it is less likely for this match to be the correct soil ID for the site.",
         "p3": "The more data entered for a site, the more reliable the Soil Properties Score will be.",
-        "p4": "LandPKS considers the following properties in calculating Soil Properties Score:",
+        "p4": "LandPKS Soil ID considers the following properties in calculating Soil Properties Score:",
         "bullets": {
           "1": "Soil texture by depth",
           "2": "Rock fragment by depth",
@@ -300,7 +300,7 @@
     },
     "sites": {
       "empty_viewer": "This project has no sites yet.",
-      "empty_contributor": "You can transfer existing LandPKS sites to this project. You can also create new sites on the Sites tab and add them to this project.",
+      "empty_contributor": "You can transfer existing LandPKS Soil ID sites to this project. You can also create new sites on the Sites tab and add them to this project.",
       "add": "Add sites",
       "transfer": "Transfer Sites",
       "create": "Create Sites",
@@ -355,7 +355,7 @@
     },
     "transfer_sites": {
       "heading": "Transfer Sites to this Project",
-      "description": "Transfer LandPKS sites you manage to this project. When you transfer sites, they will use the data settings and team member roles from this project.",
+      "description": "Transfer LandPKS Soil ID sites you manage to this project. When you transfer sites, they will use the data settings and team member roles from this project.",
       "unaffiliated": "Unaffiliated",
       "tooltip": "Sites you transfer to this project will inherit this project’s data settings, input requirements, and team members."
     },
@@ -425,7 +425,7 @@
     "info": {
       "privacy_title": "LandPKS Data Privacy",
       "privacy_item1": "<bold>Public sites</bold> are visible to anyone on the LandPKS data portal.",
-      "privacy_item2": "All data entered into the LandPKS mobile app is included, except for personally identifiable information (PII).",
+      "privacy_item2": "All data entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII).",
       "privacy_item3": "<bold>A private site</bold> not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. ",
       "privacy_item4": "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. ",
       "data_portal_link_url": "https://landpks.terraso.org/portal",
@@ -828,7 +828,7 @@
       "slope_meter": "Slope Meter",
       "camera_grant": "Grant Camera Permission",
       "no_camera": "No Camera Access",
-      "no_camera_explanation": "For best results, allow LandPKS to use your camera in Settings",
+      "no_camera_explanation": "For best results, allow LandPKS Soil ID to use your camera in Settings",
       "info": {
         "title": "How to use Slope Meter",
         "description": "Stand facing the site from at least $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) away.\n\nIdentify the direction of the predominant slope at the site.\n\nStand so that you can see the ridge or silhouette of that predominant slope (although you may need to get close to the ground to see it.)\n\nThe direction you are facing should be perpendicular to the direction of the slope. If you hold your arms out to your sides, the line they make should be parallel to the direction of the slope.\n\nPosition your phone so that the solid white line is lined up with the land’s slope; try to place the white line along the slope’s edge. You may need to crouch down if the silhouette of the slope is not easy to see while standing.\n\n<bold>Alternate Method</bold>: If the land shape is not too curved or bumpy, you can place a yard stick on the ground at the site and then align your phone on the stick to get the angle of the slope.",
