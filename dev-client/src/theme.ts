@@ -430,6 +430,13 @@ export const theme = extendTheme({
           lineHeight: '27px',
           letterSpacing: '0.15px',
         },
+        'match-tile-score': {
+          fontWeight: 400,
+          fontSize: '24px',
+          lineHeight: '36px',
+          adjustsFontSizeToFit: true,
+          numberOfLines: 1,
+        },
       },
     },
     Heading: {

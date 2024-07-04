@@ -35,10 +35,10 @@ export const SoilMatchTile = ({soil_name, score, onPress}: Props) => {
         flexDirection="row"
         justifyContent="space-between"
         my="4px"
-        py="4px">
+        py="6px">
         <Box marginHorizontal="16px" width="84px" justifyContent="center">
           <Text
-            variant="score-tile"
+            variant="match-tile-score"
             color="primary.lighter"
             textAlign="center"
             mb="-6px">
