@@ -64,8 +64,8 @@
     "react-native-screens": "^3.32.0",
     "react-native-svg": "^15.3.0",
     "react-native-tab-view": "^3.5.2",
-    "terraso-client-shared": "github:techmatters/terraso-client-shared#c74b040",
-    "uuid": "^9.0.1",
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#f059d42",
+    "uuid": "^10.0.0",
     "yup": "^1.4.0"
   },
   "devDependencies": {
@@ -87,7 +87,7 @@
     "@types/jest": "^29.5.12",
     "@types/quantize": "^1.0.2",
     "@types/react": "^18.2.79",
-    "@types/uuid": "^9.0.8",
+    "@types/uuid": "^10.0.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-root-import": "^6.6.0",
     "depcheck": "^1.4.7",
