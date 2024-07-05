@@ -19,7 +19,6 @@ import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native-gesture-handler';
 
 import {selectSite} from 'terraso-client-shared/selectors';
-import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
