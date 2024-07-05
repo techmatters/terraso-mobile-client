@@ -15,31 +15,32 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {Linking} from 'react-native';
 
 import {Link} from 'native-base';
 import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
 
+import {validateUrl} from 'terraso-mobile-client/util';
+
 type InternalLinkProps = {
   label: string;
   onPress?: InterfaceLinkProps['onPress'];
-  url?: string;
+  url: string;
 };
 
 export default function InternalLink({label, onPress, url}: InternalLinkProps) {
-  const openUrl = useCallback(() => {
-    if (url !== undefined) {
-      Linking.openURL(url);
-    }
-  }, [url]);
+  const isValidUrl = useMemo(() => validateUrl(url), [url]);
+  const openUrl = useCallback(() => Linking.openURL(url), [url]);
 
   return (
-    <Link
-      _text={{color: 'primary.main'}}
-      isUnderlined={true}
-      onPress={onPress ? onPress : openUrl}>
-      {label}
-    </Link>
+    isValidUrl && (
+      <Link
+        _text={{color: 'primary.main'}}
+        isUnderlined={true}
+        onPress={onPress ? onPress : openUrl}>
+        {label}
+      </Link>
+    )
   );
 }

@@ -164,3 +164,11 @@ export const isSiteManager = matchesRole([
 export const getSoilWebUrl = (coords: Coords) => {
   return `https://casoilresource.lawr.ucdavis.edu/gmap/?loc=${coords.latitude},${coords.longitude}`;
 };
+
+export const validateUrl = (url?: string): URL | false => {
+  try {
+    return url ? new URL(url) : false;
+  } catch {
+    return false;
+  }
+};

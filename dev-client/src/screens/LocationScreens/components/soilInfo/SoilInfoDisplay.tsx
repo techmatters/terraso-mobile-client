@@ -35,6 +35,7 @@ type SoilInfoDisplayProps = {
 
 export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
   const {t} = useTranslation();
+
   return (
     <Column space={3}>
       <Heading variant="h6" fontStyle="italic" pb="10px">
