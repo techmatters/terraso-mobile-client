@@ -25,8 +25,7 @@
 // react-native-get-random-values needed for uuid - https://github.com/uuidjs/uuid#react-native--expo
 import 'react-native-get-random-values';
 
-import {useEffect, useState} from 'react';
-import {LogBox, PermissionsAndroid} from 'react-native';
+import {LogBox} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 
