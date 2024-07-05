@@ -35,6 +35,7 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {EditDepthModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthModal';
 import {
@@ -65,12 +66,19 @@ const DepthEditor = ({
       <Heading variant="h6" color="primary.contrast">
         {renderDepth(t, interval)}
       </Heading>
-      <EditDepthModal
-        siteId={siteId}
-        depthInterval={interval.depthInterval}
-        requiredInputs={requiredInputs}
-        mutable={!isFromPreset}
-      />
+      <RestrictBySiteRole
+        role={[
+          {kind: 'project', role: 'MANAGER'},
+          {kind: 'project', role: 'CONTRIBUTOR'},
+          {kind: 'site', role: 'OWNER'},
+        ]}>
+        <EditDepthModal
+          siteId={siteId}
+          depthInterval={interval.depthInterval}
+          requiredInputs={requiredInputs}
+          mutable={!isFromPreset}
+        />
+      </RestrictBySiteRole>
     </Row>
   );
 };
