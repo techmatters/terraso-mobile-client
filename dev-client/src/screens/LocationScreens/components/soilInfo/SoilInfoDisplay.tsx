@@ -15,7 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {SoilInfo} from 'terraso-client-shared/graphqlSchema/graphql';
@@ -28,7 +27,6 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {validateUrl} from 'terraso-mobile-client/util';
 
 type SoilInfoDisplayProps = {
   dataSource: string;
@@ -38,27 +36,16 @@ type SoilInfoDisplayProps = {
 export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
   const {t} = useTranslation();
 
-  const hasValidUrl = useMemo(
-    () => validateUrl(soilInfo.soilSeries.fullDescriptionUrl),
-    [soilInfo],
-  );
-  const hasValidEsUrl = useMemo(
-    () => validateUrl(soilInfo.ecologicalSite?.url),
-    [soilInfo],
-  );
-
   return (
     <Column space={3}>
       <Heading variant="h6" fontStyle="italic" pb="10px">
         {soilInfo.soilSeries.taxonomySubgroup}
       </Heading>
       <Text variant="body1">{soilInfo.soilSeries.description}</Text>
-      {hasValidUrl && (
-        <InternalLink
-          label={t('site.soil_id.soil_info.series_descr_url')}
-          url={soilInfo.soilSeries.fullDescriptionUrl}
-        />
-      )}
+      <InternalLink
+        label={t('site.soil_id.soil_info.series_descr_url')}
+        url={soilInfo.soilSeries.fullDescriptionUrl}
+      />
       {soilInfo.ecologicalSite && (
         <>
           <Box>
@@ -75,12 +62,10 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
               }}
             />
           </Box>
-          {hasValidEsUrl && (
-            <InternalLink
-              label={t('site.soil_id.soil_info.eco_descr_url')}
-              url={soilInfo.ecologicalSite.url}
-            />
-          )}
+          <InternalLink
+            label={t('site.soil_id.soil_info.eco_descr_url')}
+            url={soilInfo.ecologicalSite.url}
+          />
         </>
       )}
       <Box>

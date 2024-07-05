@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {Linking, Pressable, StyleSheet, View} from 'react-native';
 
 import {IconButton as NativeIconButton} from 'native-base';
@@ -26,6 +26,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {validateUrl} from 'terraso-mobile-client/util';
 
 export type ExternalLinkProps = {
   label: string;
@@ -38,23 +39,28 @@ export const ExternalLink = React.forwardRef(
       <NativeIconButton ref={ref} icon={<Icon name="open-in-new" />} />
     );
 
+    const isValidUrl = useMemo(() => validateUrl(url), [url]);
+    const openUrl = useCallback(() => Linking.openURL(url), [url]);
+
     return (
-      <View style={styles.container}>
-        <Pressable onPress={() => Linking.openURL(url)}>
-          <Box>
-            <Row alignItems="center">
-              <Text
-                color="primary.main"
-                fontSize="md"
-                textTransform="uppercase"
-                style={styles.label}>
-                {label}
-              </Text>
-              {icon}
-            </Row>
-          </Box>
-        </Pressable>
-      </View>
+      isValidUrl && (
+        <View style={styles.container}>
+          <Pressable onPress={openUrl}>
+            <Box>
+              <Row alignItems="center">
+                <Text
+                  color="primary.main"
+                  fontSize="md"
+                  textTransform="uppercase"
+                  style={styles.label}>
+                  {label}
+                </Text>
+                {icon}
+              </Row>
+            </Box>
+          </Pressable>
+        </View>
+      )
     );
   },
 );
