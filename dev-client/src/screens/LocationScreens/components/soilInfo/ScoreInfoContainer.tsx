@@ -20,5 +20,9 @@ import {PropsWithChildren} from 'react';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export function ScoreInfoContainer({children}: PropsWithChildren) {
-  return <Column space={6}>{children}</Column>;
+  return (
+    <Column space={6} mb="lg">
+      {children}
+    </Column>
+  );
 }

@@ -20,7 +20,6 @@ import {Divider} from 'react-native-paper';
 import {LocationBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
-import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
@@ -50,7 +49,6 @@ export function TempScoreInfoContent({
       />
       <Divider />
       <PropertiesDisplay match={locationMatch} />
-      <CreateSiteButton coords={coords} />
     </ScoreInfoContainer>
   );
 }
