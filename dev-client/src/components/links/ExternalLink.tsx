@@ -35,10 +35,6 @@ export type ExternalLinkProps = {
 
 export const ExternalLink = React.forwardRef(
   ({label, url}: ExternalLinkProps, ref: React.Ref<unknown>) => {
-    const icon = (
-      <NativeIconButton ref={ref} icon={<Icon name="open-in-new" />} />
-    );
-
     const isValidUrl = useMemo(() => validateUrl(url), [url]);
     const openUrl = useCallback(() => Linking.openURL(url), [url]);
 
@@ -55,7 +51,10 @@ export const ExternalLink = React.forwardRef(
                   style={styles.label}>
                   {label}
                 </Text>
-                {icon}
+                <NativeIconButton
+                  ref={ref}
+                  icon={<Icon name="open-in-new" />}
+                />
               </Row>
             </Box>
           </Pressable>
