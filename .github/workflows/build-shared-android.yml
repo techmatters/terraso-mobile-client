@@ -9,14 +9,6 @@ on:
         required: false
         type: string
         default: 'false'
-      ENV:
-        required: false
-        type: string
-        default: 'staging'
-      TERRASO_BACKEND:
-        required: false
-        type: string
-        default: 'https://api.staging.terraso.net'
       APP_BUILD:
         required: false
         type: string
@@ -45,8 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       STRICT: ${{ inputs.STRICT }}
-      ENV: ${{ inputs.ENV }}
-      TERRASO_BACKEND: ${{ inputs.TERRASO_BACKEND }}
+      ENV: ${{ vars.ENV }}
+      TERRASO_BACKEND: ${{ vars.TERRASO_BACKEND }}
       APP_BUILD: ${{ inputs.APP_BUILD }}
       GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
       GOOGLE_OAUTH_IOS_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_IOS_CLIENT_ID }}
