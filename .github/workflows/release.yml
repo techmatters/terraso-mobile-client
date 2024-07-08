@@ -1,4 +1,4 @@
-name: iOS Release
+name: Release
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ on:
       - 'v[0-9]+'
 
 jobs:
-  ios-build-sign:
+  ios-build-release:
     name: Build and sign iOS app
     uses: ./.github/workflows/build-shared-ios.yml
     with:
@@ -31,5 +31,21 @@ jobs:
       APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
       APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
       APPLE_APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPLE_APP_STORE_CONNECT_PRIVATE_KEY }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  android-build-release:
+    name: Build and sign Android app
+    uses: ./.github/workflows/build-shared-android.yml
+    with:
+      upload: 'true'
+      APP_BUILD: ${{ github.ref_name }}
+    secrets:
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      PUBLIC_MAPBOX_TOKEN: ${{ secrets.PUBLIC_MAPBOX_TOKEN }}
+      ANDROID_SIGNING_KEY: ${{ secrets.ANDROID_SIGNING_KEY }}
+      ANDROID_KEY_STORE_PASSWORD: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_SERVICE_ACCOUNT_JSON_TEXT: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
