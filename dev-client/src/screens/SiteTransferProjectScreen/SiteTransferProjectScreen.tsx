@@ -208,6 +208,9 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
                 {projectName} ({projectSites.length})
               </Text>
             }
+            boxProps={{
+              mb: projectSites.length === 0 ? '2px' : undefined,
+            }}
             initiallyOpen={projectSites.length > 0}
             disableOpen={projectSites.length === 0}>
             {projectSites.length > 0 ? (
@@ -238,6 +241,9 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
             label={t('projects.sites.transfer')}
             onPress={onOpen}
             isDisabled={disabled}
+            _disabled={{
+              shadow: 0,
+            }}
           />
         )}
         title={t('projects.sites.transfer_site_modal.title')}
