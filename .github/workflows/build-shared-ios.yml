@@ -64,13 +64,6 @@ jobs:
       LDPLUSPLUS: clang++
 
     steps:
-      - name: test
-        run: |
-          echo "environment = ${{ github.event.inputs.environment }}"
-          echo "ENV = ${{ env.ENV }}"
-          echo "TERRASO_BACKEND = ${{ env.TERRASO_BACKEND }}"
-          exit 1
-
       - name: Check out git repository
         uses: actions/checkout@v4
 
