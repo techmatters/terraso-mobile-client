@@ -19,9 +19,15 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, Divider} from 'react-native-paper';
 
+import {TFunction} from 'i18next';
 import {Button} from 'native-base';
 
+import {
+  DataBasedSoilMatch,
+  LocationBasedSoilMatch,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
+import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';
 
 import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
@@ -30,7 +36,9 @@ import {
   Box,
   Column,
   Row,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useElevationData} from 'terraso-mobile-client/hooks/useElevationData';
 import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
@@ -54,7 +62,6 @@ export const TemporaryLocationCallout = ({
 
   const elevation = useElevationData(coords);
   const soilIdData = useSoilIdData(coords);
-  const isSoilIdReady = soilIdData.status === 'ready';
   const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
 
   const onCreate = useCallback(() => {
@@ -80,32 +87,40 @@ export const TemporaryLocationCallout = ({
       buttons={<CloseButton onPress={closeCallout} />}
       isPopover={true}>
       <Column mt="12px" space="12px">
-        {!isSoilIdReady && <ActivityIndicator size="small" />}
-        {topSoilMatch && (
-          <>
-            <CalloutDetail
-              label={t('site.soil_id_prediction')}
-              value={topSoilMatch.soilInfo.soilSeries.name}
-            />
-            <Divider />
-            <CalloutDetail
-              label={t('site.ecological_site_prediction')}
-              value={
-                topSoilMatch.soilInfo.ecologicalSite?.name ??
-                t('site.soil_id.soil_info.no_matches')
-              }
-            />
-            <Divider />
-          </>
-        )}
-        {elevation ? (
+        <>
           <CalloutDetail
-            label={t('site.elevation_label')}
-            value={renderElevation(t, elevation)}
+            label={t('site.soil_id_prediction')}
+            value={
+              <TopSoilMatchDisplay
+                status={soilIdData.status}
+                topSoilMatch={topSoilMatch}
+                t={t}
+              />
+            }
           />
-        ) : (
-          <ActivityIndicator size="small" />
-        )}
+          <Divider />
+          <CalloutDetail
+            label={t('site.ecological_site_prediction')}
+            value={
+              <EcologicalSiteMatchDisplay
+                status={soilIdData.status}
+                topSoilMatch={topSoilMatch}
+                t={t}
+              />
+            }
+          />
+          <Divider />
+        </>
+        <CalloutDetail
+          label={t('site.elevation_label')}
+          value={
+            elevation ? (
+              <Text bold>{renderElevation(t, elevation)}</Text>
+            ) : (
+              <ActivityIndicator size="small" />
+            )
+          }
+        />
         <Divider />
         <Row justifyContent="flex-end">
           <Button
@@ -125,5 +140,67 @@ export const TemporaryLocationCallout = ({
         </Row>
       </Column>
     </Card>
+  );
+};
+
+type SoilIdStatusDisplayTopMatchProps = {
+  status: SoilIdStatus;
+  topSoilMatch: LocationBasedSoilMatch | DataBasedSoilMatch | undefined;
+  t: TFunction;
+};
+
+const TopSoilMatchDisplay = ({
+  status,
+  topSoilMatch,
+  t,
+}: SoilIdStatusDisplayTopMatchProps) => {
+  return (
+    <SoilIdStatusDisplay
+      status={status}
+      loading={<ActivityIndicator size="small" />}
+      error={
+        <Text bold textTransform="uppercase" color="error.main">
+          {t('soil.error')}
+        </Text>
+      }
+      noData={
+        <Text bold textTransform="uppercase">
+          {t('soil.no_matches')}
+        </Text>
+      }
+      data={
+        <Text bold textTransform="uppercase">
+          {topSoilMatch?.soilInfo.soilSeries.name ?? t('soil.no_matches')}
+        </Text>
+      }
+    />
+  );
+};
+
+const EcologicalSiteMatchDisplay = ({
+  status,
+  topSoilMatch,
+  t,
+}: SoilIdStatusDisplayTopMatchProps) => {
+  return (
+    <SoilIdStatusDisplay
+      status={status}
+      loading={<ActivityIndicator size="small" />}
+      error={
+        <Text bold textTransform="uppercase" color="error.main">
+          {t('soil.error')}
+        </Text>
+      }
+      noData={
+        <Text bold textTransform="uppercase">
+          {t('soil.no_matches')}
+        </Text>
+      }
+      data={
+        <Text bold textTransform="uppercase">
+          {topSoilMatch?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
+        </Text>
+      }
+    />
   );
 };
