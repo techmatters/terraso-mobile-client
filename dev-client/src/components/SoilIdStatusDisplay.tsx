@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,19 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const CalloutDetail = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: React.ReactNode;
-}) => {
-  return (
-    <Box alignItems="flex-start">
-      <Text>{label}</Text>
-      {value}
-    </Box>
-  );
+import {ReactNode} from 'react';
+
+import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
+
+export type SoilIdStatusDisplayProps = {
+  status: SoilIdStatus;
+
+  loading: ReactNode;
+  error: ReactNode;
+  noData: ReactNode;
+  data: ReactNode;
+};
+export const SoilIdStatusDisplay = ({
+  status,
+  loading,
+  error,
+  noData,
+  data,
+}: SoilIdStatusDisplayProps) => {
+  if (status === 'loading') {
+    return loading;
+  } else if (status === 'error') {
+    return error;
+  } else if (status === 'DATA_UNAVAILABLE') {
+    return noData;
+  } else {
+    return data;
+  }
 };
