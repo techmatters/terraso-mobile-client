@@ -3,15 +3,14 @@ name: iOS Release
 on:
   workflow_dispatch:
     inputs:
-      APP_BUILD:
-        description: 'Build number (i.e. 153)'
-        default: '153'
-        type: string
-        required: true
       environment:
         description: 'Release environment'
-        type: environment
+        type: choice
         required: true
+        default: staging
+        options:
+          - staging
+          - production
   push:
     tags:
       - 'v[0-9]+'
