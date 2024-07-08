@@ -39,7 +39,7 @@ jobs:
   ios-build:
     name: iOS Build
     runs-on: macos-14
-    environment: ${{ github.event.inputs.environment }}
+    environment: ${{ github.event.inputs.environment || 'staging' }}
     env:
       STRICT: ${{ inputs.STRICT }}
       ENV: ${{ vars.ENV }}
