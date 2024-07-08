@@ -241,6 +241,9 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
             label={t('projects.sites.transfer')}
             onPress={onOpen}
             isDisabled={disabled}
+            _disabled={{
+              shadow: 0,
+            }}
           />
         )}
         title={t('projects.sites.transfer_site_modal.title')}
