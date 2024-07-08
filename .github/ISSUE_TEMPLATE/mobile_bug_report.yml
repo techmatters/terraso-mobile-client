@@ -1,5 +1,6 @@
 name: "Mobile App Bug Report"
 description: Used for reporting bugs and defects in mobile apps.
+labels: "needs triage"
 body:
 - type: input
   id: app-version
