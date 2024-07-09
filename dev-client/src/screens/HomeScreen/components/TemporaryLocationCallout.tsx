@@ -40,7 +40,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
-import {useElevationData} from 'terraso-mobile-client/hooks/useElevationData';
+import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
