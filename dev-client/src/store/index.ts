@@ -28,10 +28,15 @@ import createStoreFactory, {
   StateFromStoreFactory,
 } from 'terraso-client-shared/store/store';
 
+import {reducer as elevationReducer} from 'terraso-mobile-client/model/elevation/elevationSlice';
 import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
 import {reducer as preferencesReducer} from 'terraso-mobile-client/model/preferences/preferencesSlice';
 
-const reducers = {map: mapReducer, preferences: preferencesReducer};
+const reducers = {
+  map: mapReducer,
+  preferences: preferencesReducer,
+  elevation: elevationReducer,
+};
 
 export type AppState = StateFromStoreFactory<typeof createStore> &
   StateFromReducersMapObject<typeof reducers>;

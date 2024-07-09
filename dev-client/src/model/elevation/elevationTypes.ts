@@ -15,21 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo, useState} from 'react';
-
-import {Coords} from 'terraso-client-shared/types';
-
-import {getElevation} from 'terraso-mobile-client/services';
-
-export const useElevationData = (coords: Coords): number => {
-  const [siteElevationValue, setSiteElevationValue] = useState(0);
-
-  useMemo(async () => {
-    const elevation = await getElevation(coords.latitude, coords.longitude);
-    if (elevation !== undefined) {
-      setSiteElevationValue(elevation);
-    }
-  }, [coords]);
-
-  return siteElevationValue;
+export type ElevationKey = `(${number}, ${number})`;
+export type ElevationRecord = {
+  value?: number;
+  fetching: boolean;
 };
