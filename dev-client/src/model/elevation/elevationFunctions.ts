@@ -17,8 +17,9 @@
 
 import {Coords} from 'terraso-client-shared/types';
 
+import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
 import {ElevationKey} from 'terraso-mobile-client/model/elevation/elevationTypes';
 
 export const elevationKey = (coords: Coords): ElevationKey => {
-  return `(${coords.longitude.toFixed(5)}, ${coords.latitude.toFixed(5)})` as ElevationKey;
+  return `(${coords.longitude.toFixed(COORDINATE_PRECISION)}, ${coords.latitude.toFixed(COORDINATE_PRECISION)})` as ElevationKey;
 };
