@@ -87,7 +87,11 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
                 onPress={onOpen}
               />
             )}>
-            <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
+            <SiteScoreInfoContent
+              siteId={siteId}
+              dataMatch={dataMatch}
+              coords={coords}
+            />
           </InfoOverlaySheet>
         ));
       } else {

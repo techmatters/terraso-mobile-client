@@ -179,6 +179,9 @@
           "4": "Site slope",
           "5": "Surface cracking"
         }
+      },
+      "rating": {
+        "match_selector": "This is the correct soil"
       }
     },
     "notes": {

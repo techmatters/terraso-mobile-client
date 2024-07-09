@@ -23,14 +23,17 @@ import {Coords} from 'terraso-client-shared/types';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesScoreDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
+import {SiteSoilMatchSelector} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteSoilMatchSelector';
 import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
 
 type SiteScoreInfoContentProps = {
+  siteId: string;
   dataMatch: DataBasedSoilMatch;
   coords: Coords;
 };
 
 export function SiteScoreInfoContent({
+  siteId,
   dataMatch,
   coords,
 }: SiteScoreInfoContentProps) {
@@ -52,6 +55,7 @@ export function SiteScoreInfoContent({
         match={dataMatch}
         matchInfo={dataMatch.dataMatch}
       />
+      <SiteSoilMatchSelector siteId={siteId} match={dataMatch} />
     </ScoreInfoContainer>
   );
 }
