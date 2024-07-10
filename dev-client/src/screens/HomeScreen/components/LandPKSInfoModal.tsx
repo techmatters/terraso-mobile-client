@@ -31,7 +31,7 @@ type Props = {
 
 export const LandPKSInfoModal = forwardRef<BottomSheetModal, Props>(
   ({onClose}, ref) => {
-    const headerHeight = useHeaderHeight();
+    const {headerHeight} = useHeaderHeight();
 
     return (
       <BottomSheetModal

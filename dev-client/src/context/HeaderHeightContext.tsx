@@ -17,4 +17,7 @@
 
 import {createContext} from 'react';
 
-export const HeaderHeightContext = createContext<number | undefined>(undefined);
+export const HeaderHeightContext = createContext<{
+  headerHeight: number | undefined;
+  setHeaderHeight: (height: number) => void;
+}>({headerHeight: undefined, setHeaderHeight: () => {}});
