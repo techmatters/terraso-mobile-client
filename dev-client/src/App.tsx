@@ -25,7 +25,7 @@
 // react-native-get-random-values needed for uuid - https://github.com/uuidjs/uuid#react-native--expo
 import 'react-native-get-random-values';
 
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {LogBox, PermissionsAndroid} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
@@ -46,6 +46,7 @@ import * as Sentry from '@sentry/react-native';
 
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
+import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {HomeScreenContextProvider} from 'terraso-mobile-client/context/HomeScreenContext';
 import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
@@ -80,27 +81,31 @@ function App(): React.JSX.Element {
     ),
   );
 
+  const [headerHeight, setHeaderHeight] = useState(0);
+
   return (
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
-        <BottomSheetModalProvider>
-          <PaperProvider theme={paperTheme}>
-            <NativeBaseProvider theme={theme}>
-              <Portal.Host>
-                <NavigationContainer>
-                  <BottomSheetModalProvider>
-                    <GeospatialProvider>
-                      <Toasts />
-                      <HomeScreenContextProvider>
-                        <RootNavigator />
-                      </HomeScreenContextProvider>
-                    </GeospatialProvider>
-                  </BottomSheetModalProvider>
-                </NavigationContainer>
-              </Portal.Host>
-            </NativeBaseProvider>
-          </PaperProvider>
-        </BottomSheetModalProvider>
+        <HeaderHeightContext.Provider value={{headerHeight, setHeaderHeight}}>
+          <BottomSheetModalProvider>
+            <PaperProvider theme={paperTheme}>
+              <NativeBaseProvider theme={theme}>
+                <Portal.Host>
+                  <NavigationContainer>
+                    <BottomSheetModalProvider>
+                      <GeospatialProvider>
+                        <Toasts />
+                        <HomeScreenContextProvider>
+                          <RootNavigator />
+                        </HomeScreenContextProvider>
+                      </GeospatialProvider>
+                    </BottomSheetModalProvider>
+                  </NavigationContainer>
+                </Portal.Host>
+              </NativeBaseProvider>
+            </PaperProvider>
+          </BottomSheetModalProvider>
+        </HeaderHeightContext.Provider>
       </Provider>
     </GestureHandlerRootView>
   );
