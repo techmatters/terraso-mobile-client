@@ -66,6 +66,8 @@ export const HomeScreen = memo(() => {
     if (!locationPermission?.granted) {
       requestLocationPermission();
     }
+    // disable depcheck because we only want to run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const infoBottomSheetRef = useRef<BottomSheetModal>(null);
