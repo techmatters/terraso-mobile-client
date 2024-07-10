@@ -1,19 +1,8 @@
 name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Release environment'
-        type: choice
-        required: true
-        default: staging
-        options:
-          - staging
-          - production
-  push:
-    tags:
-      - 'v[0-9]+'
+  release:
+    types: [published]
 
 jobs:
   ios-build-release:

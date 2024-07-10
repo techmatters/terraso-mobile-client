@@ -22,7 +22,7 @@ import {withAppBuildGradle} from 'expo/config-plugins';
 
 import {fromEntries} from 'terraso-client-shared/utils';
 
-const BUILD_REGEX = /^v?[0-9]+$/g;
+const BUILD_REGEX = /^v?(?<build>[0-9]+)(?<tag>beta)?$/;
 
 const STRICT = process.env.STRICT === 'true';
 
@@ -65,14 +65,14 @@ let buildNumber = 1;
 const APP_BUILD = process.env.APP_BUILD;
 
 if (typeof APP_BUILD === 'string') {
-  if (!BUILD_REGEX.test(APP_BUILD)) {
-    throw Error(`invalid app build: ${APP_BUILD}. should be v[0-9]+ or [0-9]+`);
+  const result = BUILD_REGEX.exec(APP_BUILD);
+  if (result === null) {
+    throw Error(
+      `invalid app build: ${APP_BUILD}. should be v[0-9]+ or v[0-9]+beta`,
+    );
   }
-  if (APP_BUILD[0] === 'v') {
-    buildNumber = parseInt(APP_BUILD.slice(1), 10);
-  } else {
-    buildNumber = parseInt(APP_BUILD, 10);
-  }
+  buildNumber = parseInt(result.groups!.build, 10);
+
   ENV_CONFIG.APP_BUILD = buildNumber.toString();
 }
 
