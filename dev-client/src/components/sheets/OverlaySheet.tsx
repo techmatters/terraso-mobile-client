@@ -60,7 +60,8 @@ export const OverlaySheet = forwardRef<
     },
     forwardedRef,
   ) => {
-    const headerHeight = useHeaderHeight();
+    const {headerHeight} = useHeaderHeight();
+
     const ref = useRef<GorhomBottomSheetModal>(null);
     const methods = useMemo(
       () => ({

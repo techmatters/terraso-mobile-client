@@ -15,12 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {LayoutChangeEvent, StatusBar, StyleSheet, View} from 'react-native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
+import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {theme} from 'terraso-mobile-client/theme';
 
@@ -34,14 +34,19 @@ export const ScreenScaffold = ({
   children,
   AppBar: PropsAppBar = <AppBar />,
 }: Props) => {
-  const [headerHeight, setHeaderHeight] = useState<number | undefined>(
+  const [appBarHeight, setAppBarHeight] = useState<number | undefined>(
     undefined,
+  );
+  const onLayout = useCallback(
+    (e: LayoutChangeEvent) => setAppBarHeight(e.nativeEvent.layout.height),
+    [setAppBarHeight],
   );
   const safeAreaTop = useSafeAreaInsets().top;
 
-  const onLayout = useCallback(
-    (e: LayoutChangeEvent) => setHeaderHeight(e.nativeEvent.layout.height),
-    [setHeaderHeight],
+  const {setHeaderHeight} = useHeaderHeight();
+  useEffect(
+    () => setHeaderHeight(safeAreaTop + (appBarHeight ?? 0)),
+    [setHeaderHeight, safeAreaTop, appBarHeight],
   );
 
   return (
@@ -58,9 +63,7 @@ export const ScreenScaffold = ({
       />
       <Column backgroundColor="primary.contrast" flex={1}>
         <View onLayout={onLayout}>{PropsAppBar}</View>
-        <HeaderHeightContext.Provider value={safeAreaTop + (headerHeight ?? 0)}>
-          <Box flex={1}>{children}</Box>
-        </HeaderHeightContext.Provider>
+        <Box flex={1}>{children}</Box>
       </Column>
     </SafeAreaView>
   );
