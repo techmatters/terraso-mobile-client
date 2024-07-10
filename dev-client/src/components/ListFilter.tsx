@@ -481,6 +481,9 @@ export const searchBarStyles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
   },
+  wideSearchOverride: {
+    width: '95%',
+  },
   input: {
     minHeight: 40,
   },
