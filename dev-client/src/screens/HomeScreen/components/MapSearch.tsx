@@ -194,7 +194,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
                 placeholder={t('search.placeholder')}
                 style={{
                   ...searchBarStyles.search,
-                  ...searchBarStyles.wideSearch,
+                  ...searchBarStyles.wideSearchOverride,
                 }}
                 inputStyle={searchBarStyles.input}
               />
