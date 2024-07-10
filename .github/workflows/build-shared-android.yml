@@ -35,7 +35,7 @@ jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'staging' }}
+    environment: ${{ !contains(github.ref_name, 'beta') && 'production' || 'staging' }}
     env:
       STRICT: ${{ inputs.STRICT }}
       ENV: ${{ vars.ENV }}
