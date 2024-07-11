@@ -29,59 +29,11 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
-import {
-  Box,
-  Column,
-  Heading,
-  Row,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {EditDepthModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthModal';
-import {
-  pitMethodSummary,
-  renderDepth,
-} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
+import {DepthEditor} from 'terraso-mobile-client/screens/SoilScreen/components/DepthEditor';
+import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useSelector} from 'terraso-mobile-client/store';
-
-type DepthEditorProps = {
-  siteId: string;
-  aggregatedInterval: AggregatedInterval;
-  requiredInputs: (typeof soilPitMethods)[number][];
-};
-
-const DepthEditor = ({
-  siteId,
-  aggregatedInterval: {isFromPreset, interval},
-  requiredInputs,
-}: DepthEditorProps) => {
-  const {t} = useTranslation();
-
-  return (
-    <Row
-      backgroundColor="primary.dark"
-      justifyContent="space-between"
-      px="12px"
-      py="8px">
-      <Heading variant="h6" color="primary.contrast">
-        {renderDepth(t, interval)}
-      </Heading>
-      <RestrictBySiteRole
-        role={[
-          {kind: 'project', role: 'MANAGER'},
-          {kind: 'project', role: 'CONTRIBUTOR'},
-          {kind: 'site', role: 'OWNER'},
-        ]}>
-        <EditDepthModal
-          siteId={siteId}
-          depthInterval={interval.depthInterval}
-          requiredInputs={requiredInputs}
-          mutable={!isFromPreset}
-        />
-      </RestrictBySiteRole>
-    </Row>
-  );
-};
 
 type Props = {
   siteId: string;
