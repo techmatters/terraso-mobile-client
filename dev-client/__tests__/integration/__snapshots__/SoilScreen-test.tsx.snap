@@ -305,7 +305,7 @@ exports[`renders correctly 1`] = `
                           }
                         }
                       >
-                        0–10cm
+                        0–5cm
                       </Text>
                     </View>
                     <View
@@ -598,7 +598,7 @@ exports[`renders correctly 1`] = `
                           }
                         }
                       >
-                        10–20cm
+                        5–15cm
                       </Text>
                     </View>
                     <View
@@ -891,7 +891,7 @@ exports[`renders correctly 1`] = `
                           }
                         }
                       >
-                        20–50cm
+                        15–30cm
                       </Text>
                     </View>
                     <View
@@ -1184,7 +1184,7 @@ exports[`renders correctly 1`] = `
                           }
                         }
                       >
-                        50–70cm
+                        30–60cm
                       </Text>
                     </View>
                     <View
@@ -1477,7 +1477,7 @@ exports[`renders correctly 1`] = `
                           }
                         }
                       >
-                        70–100cm
+                        60–100cm
                       </Text>
                     </View>
                     <View
