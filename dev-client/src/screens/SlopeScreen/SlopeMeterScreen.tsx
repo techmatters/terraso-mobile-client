@@ -28,7 +28,7 @@ import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestContext';
+import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {
   Box,
   Column,

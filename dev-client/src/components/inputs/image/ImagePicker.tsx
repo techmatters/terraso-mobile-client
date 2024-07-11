@@ -37,7 +37,7 @@ import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestContext';
+import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 
