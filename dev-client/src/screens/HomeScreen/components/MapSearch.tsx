@@ -21,12 +21,15 @@ import {Keyboard} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import {Searchbar} from 'react-native-paper';
 
+import {useForegroundPermissions} from 'expo-location';
+
 import {Pressable} from 'native-base';
 
 import {Coords} from 'terraso-client-shared/types';
 
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
+import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {
   Box,
   Column,
@@ -211,14 +214,22 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
             padding={2}
             onPress={toggleMapLayer}
           />
-          <IconButton
-            name="my-location"
-            _icon={{color: 'action.active'}}
-            bgColor="white"
-            padding={2}
-            borderRadius={15}
-            onPress={zoomToUser}
-          />
+          <PermissionsRequestWrapper
+            requestModalTitle={t('permissions.location_title')}
+            requestModalBody={t('permissions.location_body')}
+            permissionHook={useForegroundPermissions}
+            permissionedAction={zoomToUser}>
+            {onRequest => (
+              <IconButton
+                name="my-location"
+                _icon={{color: 'action.active'}}
+                bgColor="white"
+                padding={2}
+                borderRadius={15}
+                onPress={onRequest}
+              />
+            )}
+          </PermissionsRequestWrapper>
         </Column>
       </Row>
     </Box>

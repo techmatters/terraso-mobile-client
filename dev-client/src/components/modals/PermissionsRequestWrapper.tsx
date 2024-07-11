@@ -27,17 +27,17 @@ import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 type PermissionHook = ReturnType<typeof createPermissionHook>;
 
 type Props = {
-  title: string;
-  body: string;
-  usePermissions: PermissionHook;
+  requestModalTitle: string;
+  requestModalBody: string;
+  permissionHook: PermissionHook;
   permissionedAction?: () => void;
   children: (onOpen: () => void) => React.ReactNode;
 };
 
-export const PermissionsRequestModal = ({
-  title,
-  body,
-  usePermissions,
+export const PermissionsRequestWrapper = ({
+  requestModalTitle,
+  requestModalBody,
+  permissionHook: usePermissions,
   permissionedAction,
   children,
 }: Props) => {
@@ -70,8 +70,8 @@ export const PermissionsRequestModal = ({
         ref={ref}
         isConfirmError={false}
         actionName={t('general.open_settings')}
-        title={title}
-        body={body}
+        title={requestModalTitle}
+        body={requestModalBody}
         handleConfirm={Linking.openSettings}
       />
       {children(onRequestAction)}
