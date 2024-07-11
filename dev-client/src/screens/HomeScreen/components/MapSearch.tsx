@@ -29,7 +29,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
-import {PermissionsRequestModal} from 'terraso-mobile-client/components/modals/PermissionsRequestModal';
+import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestContext';
 import {
   Box,
   Column,
@@ -214,10 +214,10 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
             padding={2}
             onPress={toggleMapLayer}
           />
-          <PermissionsRequestModal
-            title={t('permissions.location_title')}
-            body={t('permissions.location_body')}
-            usePermissions={useForegroundPermissions}
+          <PermissionsRequestWrapper
+            requestModalTitle={t('permissions.location_title')}
+            requestModalBody={t('permissions.location_body')}
+            permissionHook={useForegroundPermissions}
             permissionedAction={zoomToUser}>
             {onRequest => (
               <IconButton
@@ -229,7 +229,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
                 onPress={onRequest}
               />
             )}
-          </PermissionsRequestModal>
+          </PermissionsRequestWrapper>
         </Column>
       </Row>
     </Box>

@@ -37,7 +37,7 @@ import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {PermissionsRequestModal} from 'terraso-mobile-client/components/modals/PermissionsRequestModal';
+import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestContext';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 
@@ -100,10 +100,12 @@ export const ImagePicker = ({
   return (
     <OverlaySheet ref={ref} trigger={children} Closer={null} {...modalProps}>
       <Column padding="lg" space="md">
-        <PermissionsRequestModal
-          title={t('permissions.camera_title')}
-          body={t('permissions.camera_body', {feature: featureName})}
-          usePermissions={useCameraPermissions}
+        <PermissionsRequestWrapper
+          requestModalTitle={t('permissions.camera_title')}
+          requestModalBody={t('permissions.camera_body', {
+            feature: featureName,
+          })}
+          permissionHook={useCameraPermissions}
           permissionedAction={onUseCamera}>
           {onRequestAction => (
             <Button
@@ -113,11 +115,13 @@ export const ImagePicker = ({
               {t('image.use_camera')}
             </Button>
           )}
-        </PermissionsRequestModal>
-        <PermissionsRequestModal
-          title={t('permissions.gallery_title')}
-          body={t('permissions.gallery_body', {feature: featureName})}
-          usePermissions={useMediaLibraryPermissions}
+        </PermissionsRequestWrapper>
+        <PermissionsRequestWrapper
+          requestModalTitle={t('permissions.gallery_title')}
+          requestModalBody={t('permissions.gallery_body', {
+            feature: featureName,
+          })}
+          permissionHook={useMediaLibraryPermissions}
           permissionedAction={onUseMediaLibrary}>
           {onRequestAction => (
             <Button
@@ -127,7 +131,7 @@ export const ImagePicker = ({
               {t('image.choose_from_gallery')}
             </Button>
           )}
-        </PermissionsRequestModal>
+        </PermissionsRequestWrapper>
         <Button
           _text={{textTransform: 'uppercase'}}
           variant="outline"

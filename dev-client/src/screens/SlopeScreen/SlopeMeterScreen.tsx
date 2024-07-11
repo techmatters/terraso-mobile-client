@@ -28,7 +28,7 @@ import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/BigCloseButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {PermissionsRequestModal} from 'terraso-mobile-client/components/modals/PermissionsRequestModal';
+import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestContext';
 import {
   Box,
   Column,
@@ -100,18 +100,18 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
               </Column>
             </CameraView>
           ) : (
-            <PermissionsRequestModal
-              title={t('permissions.camera_title')}
-              body={t('permissions.camera_body', {
+            <PermissionsRequestWrapper
+              requestModalTitle={t('permissions.camera_title')}
+              requestModalBody={t('permissions.camera_body', {
                 feature: t('slope.steepness.slope_meter'),
               })}
-              usePermissions={useCameraPermissions}>
+              permissionHook={useCameraPermissions}>
               {onRequest => (
                 <Button size="lg" onPress={onRequest}>
                   {t('slope.steepness.camera_grant')}
                 </Button>
               )}
-            </PermissionsRequestModal>
+            </PermissionsRequestWrapper>
           )}
         </Box>
         <Column alignItems="center">
