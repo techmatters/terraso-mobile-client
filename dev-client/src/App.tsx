@@ -25,8 +25,7 @@
 // react-native-get-random-values needed for uuid - https://github.com/uuidjs/uuid#react-native--expo
 import 'react-native-get-random-values';
 
-import {useEffect, useState} from 'react';
-import {LogBox, PermissionsAndroid} from 'react-native';
+import {LogBox} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 
@@ -37,6 +36,7 @@ import {NativeBaseProvider} from 'native-base';
 import 'terraso-mobile-client/translations';
 import 'terraso-mobile-client/config';
 
+import {useState} from 'react';
 import {PaperProvider, Portal} from 'react-native-paper';
 import {enableFreeze} from 'react-native-screens';
 
@@ -48,7 +48,6 @@ import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {HomeScreenContextProvider} from 'terraso-mobile-client/context/HomeScreenContext';
-import {checkAndroidPermissions} from 'terraso-mobile-client/native/checkAndroidPermissions';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
@@ -75,12 +74,6 @@ LogBox.ignoreLogs([
 const store = createStore();
 
 function App(): React.JSX.Element {
-  useEffect(() =>
-    checkAndroidPermissions(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    ),
-  );
-
   const [headerHeight, setHeaderHeight] = useState(0);
 
   return (

@@ -451,7 +451,9 @@
     "camera_title": "LandPKS Soil ID needs to access your camera",
     "camera_body": "To use {{feature}}, grant LandPKS Soil ID access to your camera in device settings.",
     "gallery_title": "LandPKS Soil ID needs to access your photo gallery",
-    "gallery_body": "To use {{feature}}, grant LandPKS Soil ID access to your photo gallery in device settings."
+    "gallery_body": "To use {{feature}}, grant LandPKS Soil ID access to your photo gallery in device settings.",
+    "location_title": "LandPKS Soil ID needs to access your location",
+    "location_body": "For the best map experience, grant LandPKS Soil ID access to your location in device settings."
   },
   "errors": {
     "generic": "Error saving soil ID information."
