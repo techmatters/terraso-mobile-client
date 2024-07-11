@@ -36,6 +36,7 @@ import {NativeBaseProvider} from 'native-base';
 import 'terraso-mobile-client/translations';
 import 'terraso-mobile-client/config';
 
+import {useState} from 'react';
 import {PaperProvider, Portal} from 'react-native-paper';
 import {enableFreeze} from 'react-native-screens';
 
@@ -73,6 +74,8 @@ LogBox.ignoreLogs([
 const store = createStore();
 
 function App(): React.JSX.Element {
+  const [headerHeight, setHeaderHeight] = useState(0);
+
   return (
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
