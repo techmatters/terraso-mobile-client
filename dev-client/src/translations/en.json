@@ -459,7 +459,7 @@
     "generic": "Error saving soil ID information."
   },
   "screens": {
-    "HOME": "LandPKS",
+    "HOME": "LandPKS Soil ID",
     "PROJECT_LIST": "Projects",
     "PROJECT_VIEW": "Project #{{id}}",
     "LOGIN": "Login",
