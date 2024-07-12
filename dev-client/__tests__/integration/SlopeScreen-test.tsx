@@ -33,7 +33,7 @@ test('renders correctly', () => {
         status: 'ready',
         soilData: {
           '1': {
-            depthIntervalPreset: 'LANDPKS',
+            depthIntervalPreset: 'NRCS',
             depthIntervals: [],
             depthDependentData: [],
             slopeSteepnessSelect: 'FLAT',
@@ -45,7 +45,7 @@ test('renders correctly', () => {
               collectionMethods.map(method => [methodRequired(method), false]),
             ),
             soilPitRequired: false,
-            depthIntervalPreset: 'LANDPKS',
+            depthIntervalPreset: 'NRCS',
             depthIntervals: [],
             slopeRequired: true,
           },

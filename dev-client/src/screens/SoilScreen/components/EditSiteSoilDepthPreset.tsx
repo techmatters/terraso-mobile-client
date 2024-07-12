@@ -50,8 +50,8 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
         label={t('soil.soil_preset.label')}
         labelProps={{variant: 'body1'}}
         options={{
-          LANDPKS: {text: t('soil.soil_preset.LANDPKS')},
           NRCS: {text: t('soil.soil_preset.NRCS')},
+          BLM: {text: t('soil.soil_preset.BLM')},
           CUSTOM: {text: t('soil.soil_preset.CUSTOM')},
         }}
         groupProps={{
