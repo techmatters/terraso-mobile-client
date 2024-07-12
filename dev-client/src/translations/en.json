@@ -264,8 +264,8 @@
       "depths": {
         "title": "Soil Pit Depths",
         "preset": {
-          "LANDPKS": "LandPKS",
-          "NRCS": "NRCS",
+          "NRCS": "NRCS/GSP",
+          "BLM": "BLM Monitoring Standard",
           "CUSTOM": "Custom…",
           "NONE": "None specified"
         },
@@ -604,8 +604,8 @@
       "header": "Change soil pit depths",
       "info": "Data already entered for a depth will be deleted when the depth is changed.",
       "label": "Depths",
-      "LANDPKS": "LandPKS (default)",
-      "NRCS": "NRCS",
+      "NRCS": "NRCS/GSP (default)",
+      "BLM": "BLM Monitoring Standard",
       "CUSTOM": "Custom"
     },
     "depth": {
