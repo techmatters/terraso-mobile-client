@@ -16,6 +16,7 @@
  */
 
 import {useState} from 'react';
+import {AccessibilityProps} from 'react-native';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
 import {Button} from 'native-base';
@@ -27,6 +28,7 @@ export type TextButtonType = 'default' | 'error';
 export type TextButtonProps = {
   label: string;
   type?: TextButtonType;
+  role: AccessibilityProps['role'];
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
@@ -36,6 +38,7 @@ export type TextButtonProps = {
 export const TextButton = ({
   label,
   type = 'default',
+  role,
   leftIcon,
   rightIcon,
   disabled,
@@ -77,7 +80,8 @@ export const TextButton = ({
       disabled={disabled}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
-      onPress={onPress}>
+      onPress={onPress}
+      role={role}>
       {label}
     </Button>
   );

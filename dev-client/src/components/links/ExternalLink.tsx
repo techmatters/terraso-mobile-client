@@ -32,7 +32,12 @@ export const ExternalLink = ({label, url}: ExternalLinkProps) => {
 
   return (
     isValidUrl && (
-      <TextButton label={label} rightIcon="open-in-new" onPress={openUrl} />
+      <TextButton
+        role="link"
+        label={label}
+        rightIcon="open-in-new"
+        onPress={openUrl}
+      />
     )
   );
 };
