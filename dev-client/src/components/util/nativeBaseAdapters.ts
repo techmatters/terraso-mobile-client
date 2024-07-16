@@ -215,7 +215,7 @@ export const convertDimensionProp = (
 };
 
 export const convertColorProp = (color: ColorValue | ThemeColor | undefined) =>
-  typeof color === 'string' ? getByKey(theme.colors, color) ?? color : color;
+  typeof color === 'string' ? (getByKey(theme.colors, color) ?? color) : color;
 
 const keys = <O extends object>(obj: O) => Object.keys(obj) as (keyof O)[];
 
