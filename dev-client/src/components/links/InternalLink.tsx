@@ -18,7 +18,7 @@
 import {useCallback, useMemo, useState} from 'react';
 import {PressableProps} from 'react-native';
 
-import * as WebBrowser from 'expo-web-browser';
+import {openBrowserAsync} from 'expo-web-browser';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {validateUrl} from 'terraso-mobile-client/util';
@@ -31,14 +31,14 @@ type InternalLinkProps = {
 
 export default function InternalLink({label, onPress, url}: InternalLinkProps) {
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
-  const openUrl = useCallback(() => WebBrowser.openBrowserAsync(url), [url]);
+  const openUrl = useCallback(() => openBrowserAsync(url), [url]);
   const [pressed, setPressed] = useState(false);
 
   return (
     isValidUrl && (
       <Text
         role="link"
-        color={!pressed ? 'primary.main' : 'primary.dark'}
+        color={pressed ? 'primary.dark' : 'primary.main'}
         underline={true}
         fontWeight={700}
         onPressIn={() => setPressed(true)}
