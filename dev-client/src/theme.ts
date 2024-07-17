@@ -471,17 +471,6 @@ export const theme = extendTheme({
         },
       },
     },
-    Link: {
-      baseStyle: {
-        _text: {
-          fontSize: '16px',
-          fontWeight: 800,
-          lineHeight: '24px',
-          letterSpacing: '0.15px',
-          color: 'primary.main',
-        },
-      },
-    },
     Image: {
       variants: {
         profilePic: {

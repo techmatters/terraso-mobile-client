@@ -15,32 +15,37 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo} from 'react';
-import {Linking} from 'react-native';
+import {useCallback, useMemo, useState} from 'react';
+import {PressableProps} from 'react-native';
 
-import {Link} from 'native-base';
-import {InterfaceLinkProps} from 'native-base/lib/typescript/components/primitives/Link/types';
+import {openBrowserAsync} from 'expo-web-browser';
 
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {validateUrl} from 'terraso-mobile-client/util';
 
 type InternalLinkProps = {
   label: string;
-  onPress?: InterfaceLinkProps['onPress'];
+  onPress?: PressableProps['onPress'];
   url: string;
 };
 
 export default function InternalLink({label, onPress, url}: InternalLinkProps) {
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
-  const openUrl = useCallback(() => Linking.openURL(url), [url]);
+  const openUrl = useCallback(() => openBrowserAsync(url), [url]);
+  const [pressed, setPressed] = useState(false);
 
   return (
     isValidUrl && (
-      <Link
-        _text={{color: 'primary.main'}}
-        isUnderlined={true}
+      <Text
+        role="link"
+        color={pressed ? 'primary.dark' : 'primary.main'}
+        underline={true}
+        fontWeight={700}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
         onPress={onPress ? onPress : openUrl}>
         {label}
-      </Link>
+      </Text>
     )
   );
 }
