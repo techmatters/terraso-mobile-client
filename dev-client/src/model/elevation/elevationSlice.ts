@@ -27,11 +27,11 @@ import {
 } from 'terraso-mobile-client/model/elevation/elevationTypes';
 
 export type ElevationState = {
-  elevation: Record<ElevationKey, ElevationRecord>;
+  elevationCache: Record<ElevationKey, ElevationRecord>;
 };
 
 const initialState: ElevationState = {
-  elevation: {},
+  elevationCache: {},
 };
 
 const {reducer} = createSlice({
@@ -41,13 +41,13 @@ const {reducer} = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchElevation.pending, (state, action) => {
-        state.elevation[elevationKey(action.meta.arg)] = {fetching: true};
+        state.elevationCache[elevationKey(action.meta.arg)] = {fetching: true};
       })
       .addCase(fetchElevation.rejected, (state, action) => {
-        state.elevation[elevationKey(action.meta.arg)] = {fetching: false};
+        state.elevationCache[elevationKey(action.meta.arg)] = {fetching: false};
       })
       .addCase(fetchElevation.fulfilled, (state, action) => {
-        state.elevation[elevationKey(action.meta.arg)] = {
+        state.elevationCache[elevationKey(action.meta.arg)] = {
           fetching: false,
           value: action.payload,
         };
