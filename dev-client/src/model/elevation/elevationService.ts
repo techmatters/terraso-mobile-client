@@ -35,7 +35,11 @@ export const getElevation = async (
     const response = await fetch(
       `https://epqs.nationalmap.gov/v1/json/?${queryString}`,
     );
-    const result = await response.json();
+    const textResult = await response.text();
+    if (textResult === 'Invalid or missing input parameters.') {
+      return;
+    }
+    const result = JSON.parse(textResult);
 
     elevation = parseFloat(result.value);
   } catch (error) {
