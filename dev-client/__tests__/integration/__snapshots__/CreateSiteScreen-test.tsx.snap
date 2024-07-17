@@ -1253,134 +1253,102 @@ exports[`renders correctly 1`] = `
                                            are visible to anyone on the LandPKS data portal.
                                         </Text>
                                         <View
+                                          accessibilityRole="button"
+                                          accessibilityState={
+                                            {
+                                              "busy": undefined,
+                                              "checked": undefined,
+                                              "disabled": undefined,
+                                              "expanded": undefined,
+                                              "selected": undefined,
+                                            }
+                                          }
+                                          accessibilityValue={
+                                            {
+                                              "max": undefined,
+                                              "min": undefined,
+                                              "now": undefined,
+                                              "text": undefined,
+                                            }
+                                          }
+                                          accessible={true}
+                                          collapsable={false}
+                                          colorScheme="primary"
+                                          dataSet={{}}
+                                          focusable={true}
+                                          onBlur={[Function]}
+                                          onClick={[Function]}
+                                          onFocus={[Function]}
+                                          onResponderGrant={[Function]}
+                                          onResponderMove={[Function]}
+                                          onResponderRelease={[Function]}
+                                          onResponderTerminate={[Function]}
+                                          onResponderTerminationRequest={[Function]}
+                                          onStartShouldSetResponder={[Function]}
+                                          role="link"
                                           style={
                                             {
-                                              "paddingHorizontal": 11,
-                                              "paddingVertical": 8,
+                                              "alignItems": "center",
+                                              "alignSelf": "flex-start",
+                                              "backgroundColor": "#00000000",
+                                              "borderRadius": 4,
+                                              "flexDirection": "row",
+                                              "justifyContent": "center",
+                                              "paddingBottom": 6,
+                                              "paddingLeft": 16,
+                                              "paddingRight": 16,
+                                              "paddingTop": 6,
                                             }
                                           }
                                         >
                                           <View
-                                            accessibilityState={
+                                            dataSet={{}}
+                                            style={
                                               {
-                                                "busy": undefined,
-                                                "checked": undefined,
-                                                "disabled": undefined,
-                                                "expanded": undefined,
-                                                "selected": undefined,
+                                                "alignItems": "center",
+                                                "flexDirection": "row",
                                               }
                                             }
-                                            accessibilityValue={
-                                              {
-                                                "max": undefined,
-                                                "min": undefined,
-                                                "now": undefined,
-                                                "text": undefined,
-                                              }
-                                            }
-                                            accessible={true}
-                                            collapsable={false}
-                                            focusable={true}
-                                            onBlur={[Function]}
-                                            onClick={[Function]}
-                                            onFocus={[Function]}
-                                            onResponderGrant={[Function]}
-                                            onResponderMove={[Function]}
-                                            onResponderRelease={[Function]}
-                                            onResponderTerminate={[Function]}
-                                            onResponderTerminationRequest={[Function]}
-                                            onStartShouldSetResponder={[Function]}
+                                            test={true}
                                           >
                                             <View
+                                              dataSet={{}}
                                               style={{}}
                                             >
-                                              <View
+                                              <Text
+                                                dataSet={{}}
                                                 style={
-                                                  [
-                                                    {
-                                                      "flexDirection": "row",
-                                                    },
-                                                    {
-                                                      "alignItems": "center",
-                                                    },
-                                                  ]
+                                                  {
+                                                    "backgroundColor": undefined,
+                                                    "color": "#028843",
+                                                    "fontFamily": undefined,
+                                                    "fontSize": 14,
+                                                    "fontStyle": "normal",
+                                                    "fontWeight": "500",
+                                                    "letterSpacing": 0.4,
+                                                    "lineHeight": 24,
+                                                    "textDecorationLine": undefined,
+                                                    "textTransform": "uppercase",
+                                                  }
                                                 }
                                               >
-                                                <Text
-                                                  letterSpacing="0.15px"
-                                                  lineHeight="24px"
-                                                  style={
-                                                    [
-                                                      {
-                                                        "marginRight": 4,
-                                                        "verticalAlign": "middle",
-                                                      },
-                                                      {
-                                                        "color": "#028843",
-                                                        "fontSize": 16,
-                                                        "fontWeight": "400",
-                                                        "textTransform": "uppercase",
-                                                      },
-                                                    ]
-                                                  }
-                                                >
-                                                  LandPKS Data Portal
-                                                </Text>
-                                                <View
-                                                  accessibilityRole="button"
-                                                  accessibilityState={
-                                                    {
-                                                      "busy": undefined,
-                                                      "checked": undefined,
-                                                      "disabled": undefined,
-                                                      "expanded": undefined,
-                                                      "selected": undefined,
-                                                    }
-                                                  }
-                                                  accessibilityValue={
-                                                    {
-                                                      "max": undefined,
-                                                      "min": undefined,
-                                                      "now": undefined,
-                                                      "text": undefined,
-                                                    }
-                                                  }
-                                                  accessible={true}
-                                                  collapsable={false}
-                                                  colorScheme="primary"
-                                                  dataSet={{}}
-                                                  focusable={true}
-                                                  onBlur={[Function]}
-                                                  onClick={[Function]}
-                                                  onFocus={[Function]}
-                                                  onResponderGrant={[Function]}
-                                                  onResponderMove={[Function]}
-                                                  onResponderRelease={[Function]}
-                                                  onResponderTerminate={[Function]}
-                                                  onResponderTerminationRequest={[Function]}
-                                                  onStartShouldSetResponder={[Function]}
-                                                  style={
-                                                    {
-                                                      "alignItems": "center",
-                                                      "borderRadius": 4,
-                                                      "flexDirection": "row",
-                                                      "justifyContent": "center",
-                                                      "paddingBottom": 4,
-                                                      "paddingLeft": 4,
-                                                      "paddingRight": 4,
-                                                      "paddingTop": 4,
-                                                    }
-                                                  }
-                                                >
-                                                  <Icon
-                                                    color="#028843"
-                                                    name="open-in-new"
-                                                    size={24}
-                                                    style={{}}
-                                                  />
-                                                </View>
-                                              </View>
+                                                LandPKS Data Portal
+                                              </Text>
                                             </View>
+                                            <View
+                                              dataSet={{}}
+                                              style={
+                                                {
+                                                  "width": 6,
+                                                }
+                                              }
+                                            />
+                                            <Icon
+                                              color="#028843"
+                                              name="open-in-new"
+                                              size={20}
+                                              style={{}}
+                                            />
                                           </View>
                                         </View>
                                         <Text

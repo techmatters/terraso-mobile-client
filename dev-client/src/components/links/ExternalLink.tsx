@@ -15,17 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {useCallback, useMemo} from 'react';
-import {Linking, Pressable, StyleSheet, View} from 'react-native';
+import {useCallback, useMemo} from 'react';
+import {Linking} from 'react-native';
 
-import {IconButton as NativeIconButton} from 'native-base';
-
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {
-  Box,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {validateUrl} from 'terraso-mobile-client/util';
 
 export type ExternalLinkProps = {
@@ -33,44 +26,18 @@ export type ExternalLinkProps = {
   url: string;
 };
 
-export const ExternalLink = React.forwardRef(
-  ({label, url}: ExternalLinkProps, ref: React.Ref<unknown>) => {
-    const isValidUrl = useMemo(() => validateUrl(url), [url]);
-    const openUrl = useCallback(() => Linking.openURL(url), [url]);
+export const ExternalLink = ({label, url}: ExternalLinkProps) => {
+  const isValidUrl = useMemo(() => validateUrl(url), [url]);
+  const openUrl = useCallback(() => Linking.openURL(url), [url]);
 
-    return (
-      isValidUrl && (
-        <View style={styles.container}>
-          <Pressable onPress={openUrl}>
-            <Box>
-              <Row alignItems="center">
-                <Text
-                  color="primary.main"
-                  fontSize="md"
-                  textTransform="uppercase"
-                  style={styles.label}>
-                  {label}
-                </Text>
-                <NativeIconButton
-                  ref={ref}
-                  icon={<Icon name="open-in-new" />}
-                />
-              </Row>
-            </Box>
-          </Pressable>
-        </View>
-      )
-    );
-  },
-);
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 11,
-    paddingVertical: 8,
-  },
-  label: {
-    marginRight: 4,
-    verticalAlign: 'middle',
-  },
-});
+  return (
+    isValidUrl && (
+      <TextButton
+        role="link"
+        label={label}
+        rightIcon="open-in-new"
+        onPress={openUrl}
+      />
+    )
+  );
+};
