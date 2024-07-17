@@ -19,19 +19,20 @@ import {useEffect} from 'react';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {selectElevation} from 'terraso-mobile-client/model/elevation/elevationSelectors';
+import {selectCachedElevation} from 'terraso-mobile-client/model/elevation/elevationSelectors';
 import {fetchElevation} from 'terraso-mobile-client/model/elevation/elevationSlice';
+import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
-export const useElevationData = (coords: Coords): number | undefined => {
+export const useElevationData = (coords: Coords): ElevationRecord => {
   const dispatch = useDispatch();
-  const elevation = useSelector(selectElevation(coords));
+  const cachedElevation = useSelector(selectCachedElevation(coords));
 
   useEffect(() => {
-    if (!elevation) {
+    if (!cachedElevation) {
       dispatch(fetchElevation(coords));
     }
-  }, [dispatch, elevation, coords]);
+  }, [dispatch, cachedElevation, coords]);
 
-  return elevation?.value;
+  return cachedElevation ?? {fetching: true};
 };
