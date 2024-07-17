@@ -67,7 +67,7 @@ export const TemporaryLocationCallout = ({
   const onCreate = useCallback(() => {
     navigation.navigate('CREATE_SITE', {
       coords,
-      elevation: elevation,
+      elevation: elevation.value,
     });
     closeCallout();
   }, [closeCallout, navigation, coords, elevation]);
@@ -75,7 +75,7 @@ export const TemporaryLocationCallout = ({
   const onLearnMore = useCallback(() => {
     navigation.navigate('LOCATION_DASHBOARD', {
       coords,
-      elevation: elevation,
+      elevation: elevation.value,
     });
   }, [navigation, coords, elevation]);
 
@@ -114,10 +114,10 @@ export const TemporaryLocationCallout = ({
         <CalloutDetail
           label={t('site.elevation_label')}
           value={
-            elevation ? (
-              <Text bold>{renderElevation(t, elevation)}</Text>
-            ) : (
+            elevation.fetching ? (
               <ActivityIndicator size="small" />
+            ) : (
+              <Text bold>{renderElevation(t, elevation.value)}</Text>
             )
           }
         />

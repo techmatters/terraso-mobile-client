@@ -18,7 +18,10 @@
 import {Coords} from 'terraso-client-shared/types';
 
 import {elevationKey} from 'terraso-mobile-client/model/elevation/elevationFunctions';
+import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {AppState} from 'terraso-mobile-client/store';
 
-export const selectElevation = (coords: Coords) => (state: AppState) =>
-  state.elevation.elevation[elevationKey(coords)];
+export const selectCachedElevation =
+  (coords: Coords) =>
+  (state: AppState): ElevationRecord | undefined =>
+    state.elevation.elevationCache[elevationKey(coords)];
