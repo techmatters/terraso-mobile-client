@@ -1199,65 +1199,24 @@ exports[`renders correctly 1`] = `
                                               </Text>
                                                Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. 
                                             </Text>
-                                            <View
-                                              accessibilityRole="link"
-                                              accessibilityState={
-                                                {
-                                                  "busy": undefined,
-                                                  "checked": undefined,
-                                                  "disabled": undefined,
-                                                  "expanded": undefined,
-                                                  "selected": undefined,
-                                                }
-                                              }
-                                              accessibilityValue={
-                                                {
-                                                  "max": undefined,
-                                                  "min": undefined,
-                                                  "now": undefined,
-                                                  "text": undefined,
-                                                }
-                                              }
-                                              accessible={true}
-                                              collapsable={false}
-                                              dataSet={{}}
-                                              focusable={true}
-                                              onBlur={[Function]}
-                                              onClick={[Function]}
-                                              onFocus={[Function]}
-                                              onResponderGrant={[Function]}
-                                              onResponderMove={[Function]}
-                                              onResponderRelease={[Function]}
-                                              onResponderTerminate={[Function]}
-                                              onResponderTerminationRequest={[Function]}
-                                              onStartShouldSetResponder={[Function]}
+                                            <Text
+                                              letterSpacing="0.15px"
+                                              lineHeight="24px"
+                                              onPress={[Function]}
+                                              onPressIn={[Function]}
+                                              onPressOut={[Function]}
+                                              role="link"
                                               style={
                                                 {
-                                                  "flexDirection": "row",
-                                                  "height": "auto",
-                                                  "width": "auto",
+                                                  "color": "#028843",
+                                                  "fontSize": 16,
+                                                  "fontWeight": "700",
+                                                  "textDecorationLine": "underline",
                                                 }
                                               }
                                             >
-                                              <Text
-                                                dataSet={{}}
-                                                style={
-                                                  {
-                                                    "backgroundColor": undefined,
-                                                    "color": "#028843",
-                                                    "fontFamily": undefined,
-                                                    "fontSize": 16,
-                                                    "fontStyle": "normal",
-                                                    "fontWeight": "800",
-                                                    "letterSpacing": 0.15,
-                                                    "lineHeight": 24,
-                                                    "textDecorationLine": "underline",
-                                                  }
-                                                }
-                                              >
-                                                Read more about our data privacy policy.
-                                              </Text>
-                                            </View>
+                                              Read more about our data privacy policy.
+                                            </Text>
                                           </View>
                                         </View>
                                       </View>

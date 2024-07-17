@@ -43,6 +43,7 @@
     "expo-media-library": "~16.0.4",
     "expo-screen-orientation": "~7.0.5",
     "expo-sensors": "~13.0.9",
+    "expo-web-browser": "~13.0.3",
     "formik": "^2.4.6",
     "haversine": "^1.1.1",
     "i18next": "^23.11.5",
