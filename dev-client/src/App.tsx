@@ -68,7 +68,7 @@ if (APP_CONFIG.sentryEnabled) {
       }),
     ],
     _experiments: {
-      replaysSessionSampleRate: 1.0,
+      replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
     },
   });
