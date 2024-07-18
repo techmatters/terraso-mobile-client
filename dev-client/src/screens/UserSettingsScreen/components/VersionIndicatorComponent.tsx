@@ -23,14 +23,25 @@ import {APP_CONFIG} from 'terraso-mobile-client/config';
 export function VersionIndicator() {
   const {t} = useTranslation();
 
+  let environment;
+
+  if (APP_CONFIG.environment === 'staging') {
+    environment = t('settings.beta');
+  } else if (APP_CONFIG.environment !== 'production') {
+    environment = APP_CONFIG.environment;
+  }
+
   return (
     <Text variant="body2">
       {APP_CONFIG.version && APP_CONFIG.build
         ? t('settings.version', {
             version: APP_CONFIG.version,
             build: APP_CONFIG.build,
+            environment,
           })
-        : `(${t('settings.unknown_version')})`}
+        : `(${t('settings.unknown_version', {
+            environment,
+          })})`}
     </Text>
   );
 }
