@@ -147,12 +147,13 @@ export const LoginScreen = () => {
           </Heading>
         </Column>
         <Column alignItems="center" flexGrow={1}>
-          {!isLoading && <LoginButtons onPress={onPress} />}
-          {isLoading && (
+          {isLoading ? (
             <ActivityIndicator
               size="large"
               color={theme.colors.primary.contrast}
             />
+          ) : (
+            <LoginButtons onPress={onPress} />
           )}
         </Column>
         <Column alignItems="center">
