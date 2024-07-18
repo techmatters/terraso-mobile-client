@@ -11,6 +11,9 @@ pre-commit: lint
 clean-watchman:
 	watchman watch-del-all
 
-clean: clean-watchman
+clean-simulators:
+	{ type -p xcrun && xcrun simctl shutdown all && xcrun simctl erase all; }
+
+clean: clean-watchman clean-simulators
 	rm -rf dev-client/node_modules dev-client/ios dev-client/android
 	cd dev-client && npm ci && npm run prebuild --clean && npm run start -- --reset-cache
