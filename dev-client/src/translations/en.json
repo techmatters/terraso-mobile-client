@@ -384,8 +384,9 @@
     "sign_out": "Sign Out",
     "delete_account": "Delete Account",
     "delete_account_pending": "Pending",
-    "unknown_version": "Untagged application version",
-    "version": "Version {{version}} ({{build}})"
+    "unknown_version": "Untagged application version {{environment}}",
+    "beta": "beta",
+    "version": "Version {{version}} ({{build}}) {{environment}}"
   },
   "badge": {
     "new": "New"
