@@ -25,6 +25,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {ConfirmDeleteDepthModal} from 'terraso-mobile-client/components/modals/ConfirmDeleteDepthModal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {DataGridTable} from 'terraso-mobile-client/components/tables/DataGridTable';
 import {useDispatch} from 'terraso-mobile-client/store';
@@ -71,13 +72,18 @@ export const DepthTable = ({
       if (canDeleteDepth) {
         result.push(
           <Box flex={1} flexDirection="row" justifyContent="flex-end">
-            <IconButton
-              name="close"
-              onPress={deleteDepth(depthInterval)}
-              _icon={{
-                size: 'sm',
-                color: 'action.active',
-              }}
+            <ConfirmDeleteDepthModal
+              onConfirm={deleteDepth(depthInterval)}
+              trigger={onOpen => (
+                <IconButton
+                  name="close"
+                  onPress={onOpen}
+                  _icon={{
+                    size: 'sm',
+                    color: 'action.active',
+                  }}
+                />
+              )}
             />
           </Box>,
         );
