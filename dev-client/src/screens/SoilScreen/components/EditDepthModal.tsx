@@ -46,6 +46,7 @@ import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {ConfirmDeleteDepthModal} from 'terraso-mobile-client/components/modals/ConfirmDeleteDepthModal';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -220,7 +221,8 @@ export const EditDepthModal = ({
 
             <Row justifyContent="flex-end">
               {mutable && (
-                <ConfirmModal
+                <ConfirmDeleteDepthModal
+                  onConfirm={deleteDepth}
                   trigger={onOpen => (
                     <DeleteButton
                       label={t('soil.depth.delete_button')}
@@ -228,10 +230,6 @@ export const EditDepthModal = ({
                       mr="20px"
                     />
                   )}
-                  title={t('soil.depth.delete_modal.title')}
-                  body={t('soil.depth.delete_modal.body')}
-                  actionName={t('soil.depth.delete_modal.action')}
-                  handleConfirm={deleteDepth}
                 />
               )}
               <ConfirmEditingModal

@@ -70,7 +70,7 @@ export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
           <Row justifyContent="flex-start" key={i} variant="tablerow" py="10px">
             {row.map(displayCol)}
           </Row>
-          <Divider />
+          <Divider key={`divider${i}`} />
         </>
       ))}
     </Box>
