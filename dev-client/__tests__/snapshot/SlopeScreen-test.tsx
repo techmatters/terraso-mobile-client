@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {testState} from '@testing/snapshot/data';
-import {render} from '@testing/snapshot/utils';
+import {testState} from '@testing/integration/data';
+import {render} from '@testing/integration/utils';
 
 import {methodRequired} from 'terraso-client-shared/soilId/soilIdSlice';
 import {collectionMethods} from 'terraso-client-shared/soilId/soilIdTypes';

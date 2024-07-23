@@ -12,7 +12,7 @@
     "start": "expo start --dev-client",
     "test": "jest",
     "test:unit": "jest -c jest.unit.config.js",
-    "test:snapshot": "jest -c jest.snapshot.config.js",
+    "test:integration": "jest -c jest.integration.config.js",
     "update-tests": "npm run test -- -u",
     "check-ts": "tsc --noEmit",
     "check-modules": "depcheck",
@@ -111,7 +111,7 @@
   "jest": {
     "projects": [
       "<rootDir>/jest.unit.config.js",
-      "<rootDir>/jest.snapshot.config.js"
+      "<rootDir>/jest.integration.config.js"
     ]
   },
   "expo": {

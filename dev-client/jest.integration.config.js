@@ -16,14 +16,14 @@
  */
 
 module.exports = {
-  displayName: 'snapshot',
+  displayName: 'integration',
   testMatch: ['**/__tests__/**/*[.-]test.[jt]s?(x)'],
   preset: 'jest-expo',
   setupFilesAfterEnv: [
     '@testing-library/jest-native/extend-expect',
     '@rnmapbox/maps/setup-jest',
     './node_modules/react-native-mmkv-storage/jest/mmkvJestSetup.js',
-    '<rootDir>/jest/snapshot/setup.ts',
+    '<rootDir>/jest/integration/setup.ts',
   ],
   transformIgnorePatterns: [
     'node_modules/(?!(react-native|@react-native|react-native-cookies|uuid|react-native-mmkv-storage|react-native-autocomplete-input|expo(nent)?|@expo(nent)?/.*)|expo-constants|@rnmapbox/)',
