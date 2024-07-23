@@ -28,7 +28,7 @@ import {
   MunsellColor,
   munsellToRGB,
   munsellToString,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+} from 'terraso-mobile-client/model/color/munsellConversions';
 
 type Props = {
   color: MunsellColor;

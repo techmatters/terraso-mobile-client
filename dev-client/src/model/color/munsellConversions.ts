@@ -53,7 +53,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {entries} from 'terraso-client-shared/utils';
 
-import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
+import {SOIL_COLORS} from 'terraso-mobile-client/model/color/soilColors';
 
 const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;
 

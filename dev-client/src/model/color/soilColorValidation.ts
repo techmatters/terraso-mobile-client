@@ -34,8 +34,8 @@ import {
   SoilColorHue,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {MunsellColor} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
-import {SOIL_COLORS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColors';
+import {MunsellColor} from 'terraso-mobile-client/model/color/munsellConversions';
+import {SOIL_COLORS} from 'terraso-mobile-client/model/color/soilColors';
 
 export type ColorProperties = {
   hue: SoilColorHue | null;

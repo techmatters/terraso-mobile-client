@@ -39,18 +39,18 @@ import {
   Paragraph,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
 import {
   parseMunsellHue,
   renderMunsellHue,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+} from 'terraso-mobile-client/model/color/munsellConversions';
 import {
   ColorProperties,
   ColorPropertyUpdate,
   isColorComplete,
   updateColorSelections,
   validProperties,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/soilColorValidation';
+} from 'terraso-mobile-client/model/color/soilColorValidation';
+import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
