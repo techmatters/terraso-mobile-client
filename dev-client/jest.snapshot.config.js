@@ -14,16 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/snapshot/data';
-import {render} from '@testing/snapshot/utils';
 
-import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
-
-test('renders correctly', () => {
-  const screen = render(<SoilScreen siteId="1" />, {
-    route: 'LOCATION_DASHBOARD',
-    initialState: testState,
-  }).toJSON();
-
-  expect(screen).toMatchSnapshot();
-});
+module.exports = {
+  displayName: 'snapshot',
+  testMatch: ['**/__tests__/**/*[.-]test.[jt]s?(x)'],
+  preset: 'jest-expo',
+  setupFilesAfterEnv: [
+    '@testing-library/jest-native/extend-expect',
+    '@rnmapbox/maps/setup-jest',
+    './node_modules/react-native-mmkv-storage/jest/mmkvJestSetup.js',
+    '<rootDir>/jest/snapshot/setup.ts',
+  ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native|@react-native|react-native-cookies|uuid|react-native-mmkv-storage|react-native-autocomplete-input|expo(nent)?|@expo(nent)?/.*)|expo-constants|@rnmapbox/)',
+  ],
+};

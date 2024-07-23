@@ -14,16 +14,5 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/snapshot/data';
-import {render} from '@testing/snapshot/utils';
 
-import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
-
-test('renders correctly', () => {
-  const screen = render(<SoilScreen siteId="1" />, {
-    route: 'LOCATION_DASHBOARD',
-    initialState: testState,
-  }).toJSON();
-
-  expect(screen).toMatchSnapshot();
-});
+// fill me in if you need special config for unit testing

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/data';
-import {render} from '@testing/utils';
+import {testState} from '@testing/snapshot/data';
+import {render} from '@testing/snapshot/utils';
 
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
 

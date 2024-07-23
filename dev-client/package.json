@@ -11,6 +11,8 @@
     "format-js": "npm run format",
     "start": "expo start --dev-client",
     "test": "jest",
+    "test:unit": "jest -c jest.unit.config.js",
+    "test:snapshot": "jest -c jest.snapshot.config.js",
     "update-tests": "npm run test -- -u",
     "check-ts": "tsc --noEmit",
     "check-modules": "depcheck",
@@ -101,26 +103,22 @@
     "react-devtools": "^5.3.1",
     "react-native-svg-transformer": "^1.5.0",
     "react-test-renderer": "18.2.0",
+    "ts-jest": "^29.2.3",
     "ts-morph": "^23.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   },
   "jest": {
-    "preset": "jest-expo",
-    "setupFilesAfterEnv": [
-      "@testing-library/jest-native/extend-expect",
-      "@rnmapbox/maps/setup-jest",
-      "./node_modules/react-native-mmkv-storage/jest/mmkvJestSetup.js",
-      "<rootDir>/jest/setup.ts"
+    "projects": [
+      "<rootDir>/jest.unit.config.js",
+      "<rootDir>/jest.snapshot.config.js"
     ],
     "moduleNameMapper": {
-      "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.ts",
+      "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
+        "<rootDir>/__mocks__/fileMock.ts",
       "^@testing/(.*)": "<rootDir>/jest/$1",
       "^terraso-mobile-client/(.*)": "<rootDir>/src/$1"
-    },
-    "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|@react-native|react-native-cookies|uuid|react-native-mmkv-storage|react-native-autocomplete-input|expo(nent)?|@expo(nent)?/.*)|expo-constants|@rnmapbox/)"
-    ]
+    }
   },
   "expo": {
     "autolinking": {
@@ -130,6 +128,13 @@
       ]
     }
   },
+  "ignore": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__tests__/**",
+    "src/tests",
+    "jest"
+  ],
   "engines": {
     "node": ">=18"
   }
