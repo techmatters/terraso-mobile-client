@@ -15,7 +15,50 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {fullMunsellColor} from 'terraso-mobile-client/model/color/munsellConversions';
+import {
+  fullMunsellColor,
+  isColorComplete,
+} from 'terraso-mobile-client/model/color/munsellConversions';
+
+describe('isColorComplete', () => {
+  test('returns true if complete', () => {
+    expect(
+      isColorComplete({
+        colorHue: 1,
+        colorValue: 2,
+        colorChroma: 3,
+      }),
+    ).toEqual(true);
+  });
+
+  test('returns false if value is missing any number', () => {
+    expect(isColorComplete({})).toEqual(false);
+
+    expect(
+      isColorComplete({
+        colorHue: 1,
+        colorValue: null,
+        colorChroma: null,
+      }),
+    ).toEqual(false);
+
+    expect(
+      isColorComplete({
+        colorHue: null,
+        colorValue: 1,
+        colorChroma: null,
+      }),
+    ).toEqual(false);
+
+    expect(
+      isColorComplete({
+        colorHue: null,
+        colorValue: null,
+        colorChroma: 1,
+      }),
+    ).toEqual(false);
+  });
+});
 
 describe('fullMunsellColor', () => {
   test('returns the color if complete', () => {

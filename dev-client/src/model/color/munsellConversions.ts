@@ -81,14 +81,20 @@ export type PartialMunsellColor = {
 
 const COLOR_COUNT = 16;
 
+export const isColorComplete = <T>(
+  soilData: T & PartialMunsellColor,
+): soilData is T & MunsellColor => {
+  return (
+    typeof soilData?.colorHue === 'number' &&
+    typeof soilData.colorValue === 'number' &&
+    typeof soilData.colorChroma === 'number'
+  );
+};
+
 export const fullMunsellColor = (
   color: PartialMunsellColor,
 ): MunsellColor | undefined => {
-  if (
-    typeof color.colorHue === 'number' &&
-    typeof color.colorChroma === 'number' &&
-    typeof color.colorValue === 'number'
-  ) {
+  if (isColorComplete(color)) {
     return {
       colorHue: color.colorHue,
       colorChroma: color.colorChroma,

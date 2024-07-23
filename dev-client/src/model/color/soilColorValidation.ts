@@ -30,11 +30,9 @@ import {
   colorHueSubsteps,
   ColorValue,
   colorValues,
-  DepthDependentSoilData,
   SoilColorHue,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {MunsellColor} from 'terraso-mobile-client/model/color/munsellConversions';
 import {SOIL_COLORS} from 'terraso-mobile-client/model/color/soilColors';
 
 export type ColorProperties = {
@@ -176,15 +174,5 @@ export const isChromaValid = (color: ColorProperties) => {
   return (
     color.chroma === null ||
     validProperties(color).chromas.includes(color.chroma)
-  );
-};
-
-export const isColorComplete = (
-  soilData: DepthDependentSoilData,
-): soilData is DepthDependentSoilData & MunsellColor => {
-  return (
-    typeof soilData?.colorHue === 'number' &&
-    typeof soilData.colorValue === 'number' &&
-    typeof soilData.colorChroma === 'number'
   );
 };

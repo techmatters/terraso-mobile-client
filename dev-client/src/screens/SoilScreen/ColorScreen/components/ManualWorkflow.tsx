@@ -40,13 +40,13 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
+  isColorComplete,
   parseMunsellHue,
   renderMunsellHue,
 } from 'terraso-mobile-client/model/color/munsellConversions';
 import {
   ColorProperties,
   ColorPropertyUpdate,
-  isColorComplete,
   updateColorSelections,
   validProperties,
 } from 'terraso-mobile-client/model/color/soilColorValidation';

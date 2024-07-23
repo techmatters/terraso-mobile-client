@@ -24,7 +24,7 @@ import {selectDepthDependentData} from 'terraso-client-shared/selectors';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {isColorComplete} from 'terraso-mobile-client/model/color/soilColorValidation';
+import {isColorComplete} from 'terraso-mobile-client/model/color/munsellConversions';
 import {updatePreferences} from 'terraso-mobile-client/model/preferences/preferencesSlice';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';

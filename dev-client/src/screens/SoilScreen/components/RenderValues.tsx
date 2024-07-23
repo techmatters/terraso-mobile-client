@@ -24,8 +24,10 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {munsellToString} from 'terraso-mobile-client/model/color/munsellConversions';
-import {isColorComplete} from 'terraso-mobile-client/model/color/soilColorValidation';
+import {
+  isColorComplete,
+  munsellToString,
+} from 'terraso-mobile-client/model/color/munsellConversions';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 
 export const renderDepth = (
