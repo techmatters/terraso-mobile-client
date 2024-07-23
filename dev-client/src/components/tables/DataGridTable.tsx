@@ -65,7 +65,7 @@ export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
         ))}
       </Row>
       <Divider />
-      {rows.map((row: (typeof rows)[number], i: number) => (
+      {rows?.map((row: (typeof rows)[number], i: number) => (
         <>
           <Row justifyContent="flex-start" key={i} variant="tablerow" py="10px">
             {row.map(displayCol)}

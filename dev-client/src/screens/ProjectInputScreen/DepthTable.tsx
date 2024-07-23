@@ -63,7 +63,7 @@ export const DepthTable = ({
   );
 
   const rows = useMemo(() => {
-    return depthIntervals.map(({label, depthInterval}) => {
+    return depthIntervals?.map(({label, depthInterval}) => {
       let result: (string | React.ReactElement)[] = [];
       if (includeLabel) {
         result.push(label || '');
