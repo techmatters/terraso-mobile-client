@@ -18,6 +18,9 @@
 import {
   fullMunsellColor,
   isColorComplete,
+  LABToMunsell,
+  munsellHVCToLAB,
+  munsellToRGB,
 } from 'terraso-mobile-client/model/color/munsellConversions';
 
 describe('isColorComplete', () => {
@@ -101,5 +104,36 @@ describe('fullMunsellColor', () => {
         colorChroma: 1,
       }),
     ).toBeUndefined();
+  });
+});
+
+describe('munsellToRGB', () => {
+  it('does the magic math', () => {
+    const result = munsellToRGB({
+      colorHue: 0.5,
+      colorValue: 0.5,
+      colorChroma: 0.5,
+    });
+    expect(result[0]).toBeCloseTo(22);
+    expect(result[1]).toBeCloseTo(15);
+    expect(result[2]).toBeCloseTo(19);
+  });
+});
+
+describe('munsellHVCToLAB', () => {
+  it('does the magic math', () => {
+    const result = munsellHVCToLAB([0.5, 0.5, 0.5]);
+    expect(result.L).toBeCloseTo(5.123);
+    expect(result.A).toBeCloseTo(3.437);
+    expect(result.B).toBeCloseTo(-0.784);
+  });
+});
+
+describe('LABToMunsell', () => {
+  it('does the magic math', () => {
+    const result = LABToMunsell({L: 5.123, A: 3.437, B: -0.784});
+    expect(result.colorHue).toBeCloseTo(0.5);
+    expect(result.colorValue).toBeCloseTo(0.5);
+    expect(result.colorChroma).toBeCloseTo(0.5);
   });
 });
