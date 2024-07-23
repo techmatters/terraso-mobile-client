@@ -160,3 +160,21 @@ Once all of the dependencies are installed, you'll need to do the following to e
 - See the `settings.py` value `JWT_EXCHANGE_PROVIDERS`. You will need to set the environment variable `GOOGLE_MOBILE_CLIENT_ID`
 5. Set up mobile config to connect to backend
 - See [Android emulator networking](https://developer.android.com/studio/run/emulator-networking.html) for details on how to connect to your backend instance
+
+# Testing
+
+We use Jest for testing. Project tests are partitioned into **unit** (fast, no external dependencies), and **integration** (slow, may rely on disk access or network calls etc). You can run unit tests with `npm run test:unit` and integration tests with `npm run test:integration`; run all tests with `npm run test`. Tests are run automatically on GitHub and must pass for a PR to be eligible for merging.
+
+### Configuration
+
+Unit and integration tests have their own Jest configuration files to reflect their needs. Unit tests are covered by the `jest.unit.config.js`, while integration tests are covered by `jest.integration.config.js`. The `jest` section of `package.json` lists these both as projects for Jest to run, which is how `npm run test` runs them all.
+
+Unit tests are written inline in `src` and should live parallel to the source files they cover. Unit tests must be suffixed with `.test.ts/tsx/js/jsx` for the test runner to recognize them.
+
+Integration tests exist separately in `__tests__`. Any file containing test definitions in this directory will be picked up by the integration test runner.
+
+Additionally, both suites of tests have access to the `jest` directory, which contains utility and common setup code. This directory is mapped to the `@testing` import path via `jest` configuration.
+
+### Snapshot tests
+
+A subset of our integration tests are **snapshot tests**, which are organized under `__tests/snapshot`. These run application screens in a stubbed-out test harness and compare the resulting React Native DOM tree against one stored in a corresponding snapshot file, highlighting any differences. If a snapshot needs to be updated as a result of a change, you can run `npm run test -- -u` to automatically update them from the results of a test run.

@@ -14,16 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/data';
-import {render} from '@testing/utils';
 
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
-
-test('renders correctly', () => {
-  const screen = render(<LocationDashboardScreen siteId="1" />, {
-    route: 'LOCATION_DASHBOARD',
-    initialState: testState,
-  }).toJSON();
-
-  expect(screen).toMatchSnapshot();
-});
+module.exports = {
+  displayName: 'unit',
+  testMatch: ['**/src/**/*.test.[jt]s?(x)'],
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/jest/unit/setup.ts'],
+  clearMocks: true,
+  moduleNameMapper: {
+    '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+      '<rootDir>/__mocks__/fileMock.ts',
+    '^@testing/(.*)': '<rootDir>/jest/$1',
+    '^terraso-mobile-client/(.*)': '<rootDir>/src/$1',
+  },
+};

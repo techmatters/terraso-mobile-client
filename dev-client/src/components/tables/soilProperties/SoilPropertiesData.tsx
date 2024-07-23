@@ -32,7 +32,7 @@ import {
 import {
   fullMunsellColor,
   munsellToString,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+} from 'terraso-mobile-client/model/color/munsellConversions';
 
 export type SoilPropertiesDataTableRow = {
   depth: DepthInterval;

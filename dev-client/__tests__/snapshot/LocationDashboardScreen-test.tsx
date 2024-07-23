@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/data';
-import {render} from '@testing/utils';
+import {testState} from '@testing/integration/data';
+import {render} from '@testing/integration/utils';
 
-import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
+import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 
 test('renders correctly', () => {
-  const screen = render(<ProjectViewScreen projectId="1" />, {
-    route: 'PROJECT_VIEW',
+  const screen = render(<LocationDashboardScreen siteId="1" />, {
+    route: 'LOCATION_DASHBOARD',
     initialState: testState,
   }).toJSON();
 
