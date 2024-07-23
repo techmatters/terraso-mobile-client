@@ -40,19 +40,19 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
-import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
-import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {
   getColor,
   InvalidColorResult,
   MunsellColor,
   REFERENCES,
   RGBA,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/utils/munsellConversions';
+} from 'terraso-mobile-client/model/color/munsellConversions';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
+import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
+import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 const analyzeImage = async ({
