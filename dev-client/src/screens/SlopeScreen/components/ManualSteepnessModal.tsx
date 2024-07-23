@@ -64,7 +64,8 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
           .nullable()
           .optional()
           .typeError(t('slope.steepness.percentage_help'))
-          .min(0, t('slope.steepness.percentage_help')),
+          .min(0, t('slope.steepness.percentage_help'))
+          .max(999, t('slope.steepness.percentage_help')),
         slopeSteepnessDegree: yup
           .number()
           .nullable()
