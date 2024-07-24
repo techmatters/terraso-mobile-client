@@ -43,6 +43,8 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -123,57 +125,73 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar title={name} />} BottomNavigation={null}>
-      <ScrollView
-        bg="primary.contrast"
-        _contentContainerStyle={styles.scrollContentContainer}>
-        <Column>
-          <Column p="15px" bg="primary.contrast">
-            <Heading variant="h6">{t('slope.steepness.long_title')}</Heading>
+      <SiteRoleContextProvider siteId={siteId}>
+        <ScrollView
+          bg="primary.contrast"
+          _contentContainerStyle={styles.scrollContentContainer}>
+          <Column>
+            <Column p="15px" bg="primary.contrast">
+              <Heading variant="h6">{t('slope.steepness.long_title')}</Heading>
+            </Column>
           </Column>
-        </Column>
-        <Column p="15px" bg="grey.300">
-          <Text variant="body1">{t('slope.steepness.description')}</Text>
-          <Box height="30px" />
-          <Row justifyContent="space-between">
-            <Modal
-              trigger={onOpen => (
+          <Column p="15px" bg="grey.300">
+            <RestrictBySiteRole
+              role={[
+                {kind: 'site', role: 'OWNER'},
+                {kind: 'project', role: 'MANAGER'},
+                {kind: 'project', role: 'CONTRIBUTOR'},
+              ]}>
+              <Text variant="body1">{t('slope.steepness.description')}</Text>
+              <Box height="30px" />
+              <Row justifyContent="space-between">
+                <Modal
+                  trigger={onOpen => (
+                    <Button
+                      onPress={onOpen}
+                      _text={{textTransform: 'uppercase'}}
+                      rightIcon={<Icon name="chevron-right" />}>
+                      {t('slope.steepness.manual_label')}
+                    </Button>
+                  )}>
+                  <ManualSteepnessModal siteId={siteId} />
+                </Modal>
                 <Button
-                  onPress={onOpen}
                   _text={{textTransform: 'uppercase'}}
-                  rightIcon={<Icon name="chevron-right" />}>
-                  {t('slope.steepness.manual_label')}
+                  rightIcon={<Icon name="chevron-right" />}
+                  onPress={onMeter}>
+                  {t('slope.steepness.slope_meter')}
                 </Button>
-              )}>
-              <ManualSteepnessModal siteId={siteId} />
-            </Modal>
-            <Button
-              _text={{textTransform: 'uppercase'}}
-              rightIcon={<Icon name="chevron-right" />}
-              onPress={onMeter}>
-              {t('slope.steepness.slope_meter')}
-            </Button>
-          </Row>
-          <Box height="15px" />
-          <Text variant="body1" fontWeight={700} alignSelf="center">
-            {renderSteepness(t, soilData)}
-          </Text>
-        </Column>
-        <ConfirmModal
-          ref={confirmationModalRef}
-          title={t('slope.steepness.confirm_title')}
-          body={t('slope.steepness.confirm_body')}
-          actionName={t('general.change')}
-          handleConfirm={onConfirmSteepness}
-          isConfirmError={false}
-        />
-        <ImageRadio
-          value={soilData.slopeSteepnessSelect}
-          options={steepnessOptions as any}
-          onChange={onSteepnessOptionSelected}
-          minimumPerRow={2}
-        />
-      </ScrollView>
-      <DoneButton />
+              </Row>
+              <Box height="15px" />
+            </RestrictBySiteRole>
+            <Text variant="body1" fontWeight={700} alignSelf="center">
+              {renderSteepness(t, soilData)}
+            </Text>
+          </Column>
+          <ConfirmModal
+            ref={confirmationModalRef}
+            title={t('slope.steepness.confirm_title')}
+            body={t('slope.steepness.confirm_body')}
+            actionName={t('general.change')}
+            handleConfirm={onConfirmSteepness}
+            isConfirmError={false}
+          />
+          <ImageRadio
+            value={soilData.slopeSteepnessSelect}
+            options={steepnessOptions as any}
+            onChange={onSteepnessOptionSelected}
+            minimumPerRow={2}
+          />
+        </ScrollView>
+        <RestrictBySiteRole
+          role={[
+            {kind: 'project', role: 'MANAGER'},
+            {kind: 'project', role: 'CONTRIBUTOR'},
+            {kind: 'site', role: 'OWNER'},
+          ]}>
+          <DoneButton />
+        </RestrictBySiteRole>
+      </SiteRoleContextProvider>
     </ScreenScaffold>
   );
 };
