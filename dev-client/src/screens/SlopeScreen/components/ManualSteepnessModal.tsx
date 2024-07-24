@@ -64,7 +64,8 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
           .nullable()
           .optional()
           .typeError(t('slope.steepness.percentage_help'))
-          .min(0, t('slope.steepness.percentage_help')),
+          .min(0, t('slope.steepness.percentage_help'))
+          .max(999, t('slope.steepness.percentage_help')),
         slopeSteepnessDegree: yup
           .number()
           .nullable()
@@ -139,6 +140,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 helpText={t('slope.steepness.percentage_help')}
                 placeholder={t('slope.steepness.percentage_placeholder')}
                 textInputLabel={t('slope.steepness.percentage_placeholder')}
+                maxLength={3}
                 onChangeText={text => {
                   handleChange('slopeSteepnessPercent')(text);
                   setLastTouched('slopeSteepnessPercent');
@@ -164,6 +166,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 helpText={t('slope.steepness.degree_help')}
                 placeholder={t('slope.steepness.degree_placeholder')}
                 textInputLabel={t('slope.steepness.degree_placeholder')}
+                maxLength={2}
                 onChangeText={text => {
                   handleChange('slopeSteepnessDegree')(text);
                   setLastTouched('slopeSteepnessDegree');

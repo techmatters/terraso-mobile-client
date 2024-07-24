@@ -833,7 +833,7 @@
       "confirm_title": "Change slope?",
       "confirm_body": "Are you sure you want to override the slope data?",
       "percentage_placeholder": "Percentage",
-      "percentage_help": "0% minimum",
+      "percentage_help": "0%–999%",
       "degree": "{{value}}°",
       "degree_help": "0°–89°",
       "degree_placeholder": "Degree",
