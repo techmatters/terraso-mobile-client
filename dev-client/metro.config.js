@@ -1,5 +1,6 @@
 const {getDefaultConfig} = require('expo/metro-config');
 const {mergeConfig} = require('@react-native/metro-config');
+const {withSentryConfig} = require('@sentry/react-native/metro');
 
 const {
   createSentryMetroSerializer,
@@ -30,4 +31,7 @@ const config = {
   annotateReactComponents: true,
 };
 
-module.exports = mergeConfig(defaultConfig, config);
+const m = mergeConfig(defaultConfig, config);
+module.exports = withSentryConfig(m, {
+  annotateReactComponents: true,
+});
