@@ -20,6 +20,8 @@ import 'ts-node/register';
 import {ConfigContext, ExpoConfig} from 'expo/config';
 import {withAppBuildGradle} from 'expo/config-plugins';
 
+import {withSentry} from '@sentry/react-native/expo';
+
 import {fromEntries} from 'terraso-client-shared/utils';
 
 const BUILD_REGEX = /^v?(?<build>[0-9]+)(?<tag>beta)?$/;
@@ -76,7 +78,7 @@ if (typeof APP_BUILD === 'string') {
   ENV_CONFIG.APP_BUILD = buildNumber.toString();
 }
 
-export default ({config}: ConfigContext): ExpoConfig => ({
+const configData = ({config}: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'LandPKS Soil ID',
   slug: 'landpks',
@@ -134,13 +136,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     ['expo-apple-authentication'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
     [
-      '@sentry/react-native/expo',
-      {
-        organization: ENV_CONFIG.SENTRY_ORG,
-        project: ENV_CONFIG.SENTRY_PROJECT,
-      },
-    ],
-    [
       '@rnmapbox/maps',
       {
         RNMapboxMapsDownloadToken: BUILD_CONFIG.MAPBOX_DOWNLOADS_TOKEN,
@@ -163,4 +158,10 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     ],
   ],
   extra: ENV_CONFIG,
+});
+
+export default withSentry(configData, {
+  url: 'https://sentry.io/',
+  organization: ENV_CONFIG.SENTRY_ORG,
+  project: ENV_CONFIG.SENTRY_PROJECT,
 });
