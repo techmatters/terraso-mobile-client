@@ -27,8 +27,6 @@ const config = {
   serializer: {
     customSerializer: createSentryMetroSerializer(),
   },
-
-  annotateReactComponents: true,
 };
 
 const m = mergeConfig(defaultConfig, config);
