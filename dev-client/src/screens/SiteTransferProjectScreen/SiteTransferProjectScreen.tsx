@@ -209,7 +209,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
               </Text>
             }
             boxProps={{
-              mb: projectSites.length === 0 ? '2px' : undefined,
+              mb: '2px',
             }}
             initiallyOpen={projectSites.length > 0}
             disableOpen={projectSites.length === 0}>
