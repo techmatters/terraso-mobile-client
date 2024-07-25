@@ -24,7 +24,6 @@ import {Searchbar} from 'react-native-paper';
 import {useForegroundPermissions} from 'expo-location';
 
 import {Pressable} from 'native-base';
-import {useDebouncedCallback} from 'use-debounce';
 
 import {Coords} from 'terraso-client-shared/types';
 
@@ -40,13 +39,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
-import {
-  initMapSearch,
-  Suggestion,
-} from 'terraso-mobile-client/services/mapSearchService';
-import {isValidCoordinates} from 'terraso-mobile-client/util';
-
-const {getSuggestions, retrieveFeature} = initMapSearch();
+import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
 
 type SuggestionProps = {
   name: string;
@@ -80,8 +73,8 @@ type Props = {
 export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [, setAbortController] = useState<AbortController | null>(null);
+  const {coords, suggestions, querySuggestions, lookupFeature} =
+    useMapSuggestions();
   const [hideResults, setHideResults] = useState(false);
   const homeScreen = useHomeScreenContext();
 
@@ -91,67 +84,21 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
     }
   }, [homeScreen, query]);
 
-  async function makeSuggestionsApiCall(queryText: string) {
-    const newAbortController = new AbortController();
-    setAbortController(current => {
-      if (current !== null) {
-        current.abort();
-      }
-      return newAbortController;
-    });
-    const newSuggestions = await getSuggestions(
-      queryText,
-      newAbortController.signal,
-    );
-    setAbortController(null);
-    return newSuggestions;
-  }
-
-  async function querySuggestions(queryText: string) {
-    if (isValidCoordinates(queryText)) {
-      const [latitude, longitude] = queryText.split(',').map(Number);
-      zoomTo && zoomTo({latitude, longitude});
-    } else {
-      if (queryText.length >= MAP_QUERY_MIN_LENGTH) {
-        try {
-          const {suggestions: newSuggestions} =
-            await makeSuggestionsApiCall(queryText);
-          setSuggestions(newSuggestions);
-        } catch (e: any) {
-          if (e.name !== 'AbortError') {
-            throw e;
-          }
-        }
-      } else if (queryText.length === 0) {
-        setAbortController(current => {
-          if (current !== null) {
-            current.abort();
-          }
-          return null;
-        });
-        setSuggestions([]);
-      }
+  useEffect(() => {
+    if (zoomTo && coords) {
+      zoomTo(coords);
     }
-  }
-  const debouncedQuerySuggestions = useDebouncedCallback(querySuggestions, 500);
+  }, [zoomTo, coords]);
 
-  const selectQuery = (name: string, mapboxId: string) => {
-    setQuery(name);
-    setHideResults(true);
-    if (zoomTo) {
+  const selectQuery = useCallback(
+    (name: string, mapboxId: string) => {
+      setQuery(name);
+      setHideResults(true);
       lookupFeature(mapboxId);
-    }
-    Keyboard.dismiss();
-  };
-
-  async function lookupFeature(mapboxId: string) {
-    let {features} = await retrieveFeature(mapboxId);
-    // TODO: For now we are just going to zoom to the first feature
-    // Should see what the best way to do this is
-    if (zoomTo) {
-      zoomTo(features[0]?.properties?.coordinates);
-    }
-  }
+      Keyboard.dismiss();
+    },
+    [lookupFeature],
+  );
 
   return (
     <Box
@@ -186,11 +133,11 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
               <Searchbar
                 onChangeText={newText => {
                   setQuery(newText);
-                  debouncedQuerySuggestions(newText);
+                  querySuggestions(newText);
                 }}
                 onFocus={() => {
                   setHideResults(false);
-                  debouncedQuerySuggestions(query);
+                  querySuggestions(query);
                 }}
                 onEndEditing={() => {
                   setHideResults(true);
