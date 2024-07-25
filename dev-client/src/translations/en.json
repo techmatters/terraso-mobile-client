@@ -362,8 +362,7 @@
     "transfer_sites": {
       "heading": "Transfer Sites to this Project",
       "description": "Transfer LandPKS Soil ID sites you manage to this project. When you transfer sites, they will use the data settings and team member roles from this project.",
-      "unaffiliated": "Unaffiliated",
-      "tooltip": "Sites you transfer to this project will inherit this project’s data settings, input requirements, and team members."
+      "unaffiliated": "Unaffiliated"
     },
     "form": {
       "name_min_length_error": "Project name must be at least {{min}} characters",
