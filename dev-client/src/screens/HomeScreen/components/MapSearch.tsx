@@ -43,7 +43,7 @@ import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenCont
 import {
   initMapSearch,
   Suggestion,
-} from 'terraso-mobile-client/screens/HomeScreen/utils/mapSearchTools';
+} from 'terraso-mobile-client/services/mapSearchService';
 import {isValidCoordinates} from 'terraso-mobile-client/util';
 
 const {getSuggestions, retrieveFeature} = initMapSearch();
