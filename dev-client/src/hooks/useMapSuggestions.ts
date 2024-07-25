@@ -21,7 +21,10 @@ import {useDebouncedCallback} from 'use-debounce';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
+import {
+  MAP_QUERY_MIN_LENGTH,
+  SEARCH_DEBOUNCE_TIME_MS,
+} from 'terraso-mobile-client/constants';
 import {
   initMapSearch,
   Suggestion,
@@ -92,7 +95,10 @@ export const useMapSuggestions = () => {
     },
     [makeSuggestionsApiCall],
   );
-  const debouncedQuerySuggestions = useDebouncedCallback(querySuggestions, 500);
+  const debouncedQuerySuggestions = useDebouncedCallback(
+    querySuggestions,
+    SEARCH_DEBOUNCE_TIME_MS,
+  );
 
   const lookupFeature = useCallback(async (mapboxId: string) => {
     let {features} = await retrieveFeature(mapboxId);
