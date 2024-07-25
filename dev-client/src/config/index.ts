@@ -62,19 +62,10 @@ if (Platform.OS === 'ios') {
   throw new Error(`Unsupported platform ${Platform.OS}`);
 }
 
-const sentryEnabled = ENV_CONFIG.SENTRY_ENABLED;
-if (sentryEnabled !== 'true' && sentryEnabled !== 'false') {
-  throw new Error(
-    `Config setting SENTRY_ENABLED set to invalid value: ${sentryEnabled}`,
-  );
-}
-
 export const APP_CONFIG = {
   appleClientId: Constants.expoConfig!.ios?.bundleIdentifier!,
   microsoftClientId: ENV_CONFIG.MICROSOFT_OAUTH_CLIENT_ID,
   mapboxAccessToken: ENV_CONFIG.PUBLIC_MAPBOX_TOKEN,
-  sentryDsn: ENV_CONFIG.SENTRY_DSN,
-  sentryEnabled: sentryEnabled === 'true',
   environment: ENV_CONFIG.ENV,
   build: ENV_CONFIG.APP_BUILD,
   version: Constants.expoConfig!.version,

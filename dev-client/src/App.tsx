@@ -41,8 +41,6 @@ import {PaperProvider, Portal} from 'react-native-paper';
 import {enableFreeze} from 'react-native-screens';
 
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {captureConsoleIntegration} from '@sentry/integrations';
-import * as Sentry from '@sentry/react-native';
 
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
@@ -54,25 +52,6 @@ import {createStore} from 'terraso-mobile-client/store';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
-
-if (APP_CONFIG.sentryEnabled) {
-  Sentry.init({
-    dsn: APP_CONFIG.sentryDsn,
-    environment: APP_CONFIG.environment,
-    integrations: [
-      captureConsoleIntegration({levels: ['warn', 'error']}),
-      Sentry.mobileReplayIntegration({
-        maskAllImages: true,
-        maskAllVectors: true,
-        maskAllText: true,
-      }),
-    ],
-    _experiments: {
-      replaysSessionSampleRate: 0.1,
-      replaysOnErrorSampleRate: 1.0,
-    },
-  });
-}
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
@@ -117,4 +96,4 @@ function App(): React.JSX.Element {
 
 const style = {flex: 1};
 
-export default APP_CONFIG.sentryEnabled ? Sentry.wrap(App) : App;
+export default App;

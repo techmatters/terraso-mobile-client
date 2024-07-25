@@ -49,10 +49,6 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
   'CI',
   'ENV',
   'PUBLIC_MAPBOX_TOKEN',
-  'SENTRY_DSN',
-  'SENTRY_ENABLED',
-  'SENTRY_ORG',
-  'SENTRY_PROJECT',
   'TERRASO_BACKEND',
   'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
   'GOOGLE_OAUTH_IOS_CLIENT_ID',
@@ -133,13 +129,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   plugins: [
     ['expo-apple-authentication'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
-    [
-      '@sentry/react-native/expo',
-      {
-        organization: ENV_CONFIG.SENTRY_ORG,
-        project: ENV_CONFIG.SENTRY_PROJECT,
-      },
-    ],
     [
       '@rnmapbox/maps',
       {
