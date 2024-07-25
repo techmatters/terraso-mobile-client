@@ -61,19 +61,19 @@ export const SiteCard = ({
   return (
     <Card
       Header={
-        <Heading variant="h6" color="primary.main">
+        <Heading
+          variant="h6"
+          color="primary.main"
+          maxWidth={isPopover ? '85%' : undefined}>
           {site.name}
         </Heading>
       }
+      maxWidth={isPopover ? '90%' : undefined}
       onPress={onCardPress}
       buttons={buttons}
       isPopover={isPopover}>
       {project && <Text variant="body1">{project.name}</Text>}
-      <Row
-        alignItems="center"
-        pt="md"
-        justifyContent="space-between"
-        w={isPopover ? '300px' : undefined}>
+      <Row alignItems="center" pt="md" justifyContent="space-between">
         <StaticMapView coords={site} style={styles.mapView} />
         {project && (
           <PeopleBadge count={Object.keys(project.memberships).length} />
