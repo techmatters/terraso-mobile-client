@@ -21,8 +21,13 @@ const {getSuggestions, retrieveFeature} = initMapSearch();
 export const useMapSuggestions = () => {
   const [coords, setCoords] = useState<Coords | undefined>(undefined);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [, setAbortController] = useState<AbortController | null>(null);
 
+  /*
+   * We use the AbortController API to cancel pending calls when new ones go out;
+   * otherwise a stale async call could overwrite the results of a newer one if it
+   * completes first.
+   */
+  const [, setAbortController] = useState<AbortController | null>(null);
   const makeSuggestionsApiCall = useCallback(async (queryText: string) => {
     const newAbortController = new AbortController();
     setAbortController(current => {
