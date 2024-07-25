@@ -40,3 +40,4 @@ export const PROJECT_DEFAULT_MEASUREMENT_UNITS: MeasurementUnit = 'METRIC';
 export const GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE = 5;
 export const LOCALE = 'en-US';
 export const MAP_QUERY_MIN_LENGTH = 2;
+export const SEARCH_DEBOUNCE_TIME_MS = 500;
