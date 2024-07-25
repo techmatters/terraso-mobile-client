@@ -25,7 +25,6 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {HelpTooltipButton} from 'terraso-mobile-client/components/tooltips/HelpTooltipButton';
 
 type Props = {query: string; setQuery: (query: string) => void};
 
@@ -35,9 +34,6 @@ export const ListHeader = memo(({query, setQuery}: Props) => {
     <Column space="10px" px="12px" pt="10px" pb="10px">
       <Row>
         <Heading>{t('projects.transfer_sites.heading')}</Heading>
-        <HelpTooltipButton>
-          {t('projects.transfer_sites.tooltip')}
-        </HelpTooltipButton>
       </Row>
       <Text>{t('projects.transfer_sites.description')}</Text>
       <Searchbar
