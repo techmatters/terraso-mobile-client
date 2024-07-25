@@ -18,8 +18,6 @@ const config = {
     assetExts: assetExts.filter(ext => ext !== 'svg'),
     sourceExts: [...sourceExts, 'svg'],
   },
-
-  annotateReactComponents: true,
 };
 
 module.exports = mergeConfig(defaultConfig, config);
