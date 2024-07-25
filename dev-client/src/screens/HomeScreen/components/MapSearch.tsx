@@ -24,6 +24,7 @@ import {Searchbar} from 'react-native-paper';
 import {useForegroundPermissions} from 'expo-location';
 
 import {Pressable} from 'native-base';
+import {useDebouncedCallback} from 'use-debounce';
 
 import {Coords} from 'terraso-client-shared/types';
 
@@ -132,6 +133,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       }
     }
   }
+  const debouncedQuerySuggestions = useDebouncedCallback(querySuggestions, 500);
 
   const selectQuery = (name: string, mapboxId: string) => {
     setQuery(name);
@@ -184,11 +186,11 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
               <Searchbar
                 onChangeText={newText => {
                   setQuery(newText);
-                  querySuggestions(newText);
+                  debouncedQuerySuggestions(newText);
                 }}
                 onFocus={() => {
                   setHideResults(false);
-                  querySuggestions(query);
+                  debouncedQuerySuggestions(query);
                 }}
                 onEndEditing={() => {
                   setHideResults(true);
