@@ -55,6 +55,9 @@ import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
 
+// Mask user data on production environment
+const maskReplays = APP_CONFIG.environment === 'production';
+
 if (APP_CONFIG.sentryEnabled) {
   Sentry.init({
     dsn: APP_CONFIG.sentryDsn,
@@ -62,9 +65,9 @@ if (APP_CONFIG.sentryEnabled) {
     integrations: [
       captureConsoleIntegration({levels: ['warn', 'error']}),
       Sentry.mobileReplayIntegration({
-        maskAllImages: true,
-        maskAllVectors: true,
-        maskAllText: true,
+        maskAllImages: maskReplays,
+        maskAllVectors: maskReplays,
+        maskAllText: maskReplays,
       }),
     ],
     _experiments: {
