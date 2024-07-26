@@ -41,6 +41,7 @@ import {
   Box,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {DepthTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthTable';
 import {useDispatch} from 'terraso-mobile-client/store';
@@ -124,24 +125,28 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
         />
       )}
       {isCustom && (
-        <Modal
-          trigger={onOpen => (
-            <Button
-              onPress={onOpen}
-              alignSelf="flex-start"
-              backgroundColor="primary.main"
-              shadow={5}
-              _text={{textTransform: 'uppercase'}}
-              leftIcon={<Icon name="add" />}>
-              {t('soil.add_depth_label')}
-            </Button>
-          )}
-          Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
-          <AddDepthModalBody
-            onSubmit={onAddDepth}
-            existingDepths={settings.depthIntervals}
-          />
-        </Modal>
+        <RestrictByProjectRole role="MANAGER">
+          <Modal
+            trigger={onOpen => (
+              <Button
+                onPress={onOpen}
+                alignSelf="flex-start"
+                backgroundColor="primary.main"
+                shadow={5}
+                _text={{textTransform: 'uppercase'}}
+                leftIcon={<Icon name="add" />}>
+                {t('soil.add_depth_label')}
+              </Button>
+            )}
+            Header={
+              <Heading variant="h6">{t('soil.depth.add_title')}</Heading>
+            }>
+            <AddDepthModalBody
+              onSubmit={onAddDepth}
+              existingDepths={settings.depthIntervals}
+            />
+          </Modal>
+        </RestrictByProjectRole>
       )}
     </Box>
   );
