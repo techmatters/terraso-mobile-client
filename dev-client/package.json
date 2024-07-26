@@ -16,7 +16,8 @@
     "update-tests": "npm run test -- -u",
     "check-ts": "tsc --noEmit",
     "check-modules": "depcheck",
-    "prebuild": "expo prebuild"
+    "prebuild": "expo prebuild",
+    "clean-watchman": "watchman watch-del-all"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.0.5",

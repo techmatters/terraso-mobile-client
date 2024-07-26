@@ -9,7 +9,7 @@ setup-git-hooks:
 pre-commit: lint
 
 clean-watchman:
-	watchman watch-del-all
+	cd dev-client && npm run clean-watchman
 
 clean-simulators:
 	{ type -p xcrun && xcrun simctl shutdown all && xcrun simctl erase all; }
