@@ -15,24 +15,32 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
-import {SignOutModal} from 'terraso-mobile-client/components/modals/SignOutModal';
+import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
+import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-export function SignOutButton() {
+export function DeleteAccountItem() {
   const {t} = useTranslation();
+  const {isPending} = useUserDeletionRequests();
+  const navigation = useNavigation();
+  const onDeleteAccount = useCallback(
+    () => navigation.navigate('DELETE_ACCOUNT'),
+    [navigation],
+  );
 
   return (
-    <SignOutModal
-      trigger={onOpen => (
-        <ListButton
-          type="default"
-          iconName="logout"
-          labelText={t('settings.sign_out')}
-          onPress={onOpen}
-        />
-      )}
+    <MenuItem
+      variant="destructive"
+      iconName="delete"
+      labelText={t('settings.delete_account')}
+      disabled={isPending}
+      subLabelText={
+        isPending ? t('settings.delete_account_pending') : undefined
+      }
+      onPress={onDeleteAccount}
     />
   );
 }

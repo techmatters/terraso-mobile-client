@@ -23,10 +23,10 @@ import {Button} from 'native-base';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 
-export type ListButtonType = 'default' | 'error';
+export type MenuItemVariant = 'default' | 'destructive';
 
-export type ListButtonProps = {
-  type: ListButtonType;
+export type MenuItemProps = {
+  variant: MenuItemVariant;
   labelText: string;
   subLabelText?: string;
   iconName: IconName;
@@ -34,23 +34,23 @@ export type ListButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export function ListButton({
-  type = 'default',
+export function MenuItem({
+  variant = 'default',
   iconName,
   labelText,
   subLabelText,
   disabled,
   onPress,
-}: ListButtonProps) {
+}: MenuItemProps) {
   const {color, pressedColor} = useMemo(() => {
     if (disabled) {
       return COLORS.disabled;
-    } else if (type === 'error') {
+    } else if (variant === 'destructive') {
       return COLORS.error;
     } else {
       return COLORS.default;
     }
-  }, [disabled, type]);
+  }, [disabled, variant]);
 
   return (
     <Button

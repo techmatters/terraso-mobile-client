@@ -22,7 +22,7 @@ import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type ButtonListProps = React.PropsWithChildren;
 
-export function ButtonList({children}: ButtonListProps) {
+export function MenuList({children}: ButtonListProps) {
   return (
     <Column mt="12px" mb="24px" space="6px">
       <Divider />
