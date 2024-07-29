@@ -34,6 +34,7 @@ export function DeleteAccountItem() {
   return (
     <MenuItem
       variant="destructive"
+      uppercase
       icon="delete"
       label={t('settings.delete_account')}
       disabled={isPending}

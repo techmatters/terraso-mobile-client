@@ -26,6 +26,7 @@ export type MenuItemVariant = 'default' | 'destructive';
 
 export type MenuItemProps = {
   variant?: MenuItemVariant;
+  uppercase?: boolean;
   label: string;
   subLabel?: string;
   icon?: IconName | React.ReactElement;
@@ -36,6 +37,7 @@ export type MenuItemProps = {
 
 export function MenuItem({
   variant = 'default',
+  uppercase = false,
   icon,
   label,
   subLabel,
@@ -75,7 +77,13 @@ export function MenuItem({
         </View>
         <View style={[styles.section, styles.labelSection]}>
           <View style={[styles.labelsContainer]}>
-            <Text selectable={false} style={[styles.label, variantStyle]}>
+            <Text
+              selectable={false}
+              style={[
+                styles.label,
+                uppercase && styles.uppercaseLabel,
+                variantStyle,
+              ]}>
               {label}
             </Text>
             {subLabel && (
@@ -113,8 +121,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   label: {
-    textTransform: 'uppercase',
     fontSize: 16,
+  },
+  uppercaseLabel: {
+    textTransform: 'uppercase',
   },
   subLabel: {
     fontSize: 16,
