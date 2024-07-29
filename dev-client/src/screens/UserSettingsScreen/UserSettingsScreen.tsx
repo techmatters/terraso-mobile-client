@@ -27,7 +27,7 @@ import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen
 export function UserSettingsScreen() {
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} RightButton={null} />}>
-      <Column height="full" margin="12px">
+      <Column margin="12px">
         <UserIndicator />
         <MenuList>
           <SignOutItem />
