@@ -16,69 +16,122 @@
  */
 
 import {useMemo} from 'react';
-import {Text} from 'react-native';
-import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
-
-import {Button} from 'native-base';
+import {PressableProps, StyleSheet, View} from 'react-native';
+import {Text, TouchableRipple} from 'react-native-paper';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export type MenuItemVariant = 'default' | 'destructive';
 
 export type MenuItemProps = {
-  variant: MenuItemVariant;
-  labelText: string;
-  subLabelText?: string;
-  iconName: IconName;
+  variant?: MenuItemVariant;
+  label: string;
+  subLabel?: string;
+  icon?: IconName | React.ReactElement;
+  pill?: React.ReactNode;
   disabled?: boolean;
   onPress?: PressableProps['onPress'];
 };
 
 export function MenuItem({
   variant = 'default',
-  iconName,
-  labelText,
-  subLabelText,
+  icon,
+  label,
+  subLabel,
+  pill,
   disabled,
   onPress,
-}: MenuItemProps) {
-  const {color, pressedColor} = useMemo(() => {
+  children,
+}: React.PropsWithChildren<MenuItemProps>) {
+  const variantStyle = useMemo(() => {
     if (disabled) {
-      return COLORS.disabled;
+      return styles.disabled;
     } else if (variant === 'destructive') {
-      return COLORS.error;
+      return styles.destructive;
     } else {
-      return COLORS.default;
+      return styles.default;
     }
   }, [disabled, variant]);
 
   return (
-    <Button
-      size="md"
-      variant="ghost"
-      alignSelf="flex-start"
-      _text={{color: color, textTransform: 'uppercase'}}
-      leftIcon={iconName ? <Icon name={iconName} color={color} /> : undefined}
-      _pressed={{backgroundColor: pressedColor}}
+    <TouchableRipple
+      onPress={onPress!}
       disabled={disabled}
-      onPress={onPress}>
-      {labelText}
-      {subLabelText && <Text>{subLabelText}</Text>}
-    </Button>
+      accessibilityRole="menuitem"
+      accessibilityState={{disabled: disabled}}
+      accessibilityLabel={`${label} ${subLabel}`}>
+      <View style={styles.root}>
+        <View style={[styles.section, styles.iconSection]}>
+          {typeof icon === 'string' ? (
+            <Icon
+              name={icon as IconName}
+              size="sm"
+              color={variantStyle.color}
+            />
+          ) : (
+            icon
+          )}
+        </View>
+        <View style={[styles.section, styles.labelSection]}>
+          <View style={[styles.labelsContainer]}>
+            <Text selectable={false} style={[styles.label, variantStyle]}>
+              {label}
+            </Text>
+            {subLabel && (
+              <Text selectable={false} style={[styles.subLabel]}>
+                {subLabel}
+              </Text>
+            )}
+            {children && <View style={styles.childContainer}>{children}</View>}
+          </View>
+        </View>
+        {pill && (
+          <View style={[styles.section, styles.pillSection]}>{pill}</View>
+        )}
+      </View>
+    </TouchableRipple>
   );
 }
 
-const COLORS = {
-  disabled: {
-    color: 'text.disabled',
-    pressedColor: undefined,
+const styles = StyleSheet.create({
+  root: {
+    flexDirection: 'row',
+    margin: 16,
+  },
+  section: {
+    alignSelf: 'center',
+  },
+  iconSection: {
+    marginRight: 32,
+  },
+  labelSection: {
+    marginRight: 16,
+    flex: 1,
+  },
+  labelsContainer: {
+    flexDirection: 'column',
+  },
+  label: {
+    textTransform: 'uppercase',
+    fontSize: 16,
+  },
+  subLabel: {
+    fontSize: 16,
+  },
+  childContainer: {
+    marginTop: 16,
   },
   default: {
-    color: 'text.primary',
-    pressedColor: undefined,
+    color: convertColorProp('text.primary'),
   },
-  error: {
-    color: 'error.main',
-    pressedColor: 'red.100',
+  destructive: {
+    color: convertColorProp('error.main'),
   },
-};
+  disabled: {
+    color: convertColorProp('text.disabled'),
+  },
+  pillSection: {
+    marginLeft: 'auto',
+  },
+});

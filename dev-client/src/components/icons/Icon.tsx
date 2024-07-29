@@ -16,6 +16,7 @@
  */
 
 import React from 'react';
+import {ColorValue} from 'react-native';
 
 import MaterialIcon from '@expo/vector-icons/MaterialIcons';
 
@@ -33,7 +34,7 @@ export type IconProps = Omit<
 > &
   NativeBaseProps & {
     size?: keyof typeof theme.components.Icon.sizes | number;
-    color?: ThemeColor | string;
+    color?: ThemeColor | ColorValue | string;
   };
 
 export type IconName = IconProps['name'];

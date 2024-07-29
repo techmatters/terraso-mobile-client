@@ -28,8 +28,8 @@ export function SignOutItem() {
       trigger={onOpen => (
         <MenuItem
           variant="default"
-          iconName="logout"
-          labelText={t('settings.sign_out')}
+          icon="logout"
+          label={t('settings.sign_out')}
           onPress={onOpen}
         />
       )}

@@ -34,12 +34,10 @@ export function DeleteAccountItem() {
   return (
     <MenuItem
       variant="destructive"
-      iconName="delete"
-      labelText={t('settings.delete_account')}
+      icon="delete"
+      label={t('settings.delete_account')}
       disabled={isPending}
-      subLabelText={
-        isPending ? t('settings.delete_account_pending') : undefined
-      }
+      subLabel={isPending ? t('settings.delete_account_pending') : undefined}
       onPress={onDeleteAccount}
     />
   );

@@ -16,15 +16,14 @@
  */
 
 import {Children} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {Divider} from 'react-native-paper';
-
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export type ButtonListProps = React.PropsWithChildren;
 
 export function MenuList({children}: ButtonListProps) {
   return (
-    <Column mt="12px" mb="24px" space="6px">
+    <View style={styles.root} accessibilityRole="menu">
       <Divider />
       {Children.map(children, child => {
         return (
@@ -34,6 +33,14 @@ export function MenuList({children}: ButtonListProps) {
           </>
         );
       })}
-    </Column>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flexDirection: 'column',
+    marginTop: 12,
+    marginBottom: 24,
+  },
+});
