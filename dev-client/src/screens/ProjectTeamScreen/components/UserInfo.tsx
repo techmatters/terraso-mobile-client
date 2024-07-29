@@ -18,17 +18,16 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Image} from 'native-base';
-
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 
+import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
 import {
-  Badge,
   Box,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RolePill} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/RolePill';
 import {formatName} from 'terraso-mobile-client/util';
 
 type InfoProps = {
@@ -51,20 +50,11 @@ export const UserInfo = ({membership, user, isCurrentUser}: InfoProps) => {
   return (
     <Row space={3} justifyContent="space-between" alignItems="center">
       <Box>
-        <Image variant="profilePic" alt="" source={{uri: user.profileImage}} />
+        <ProfilePic user={user} />
       </Box>
       <Text flex={3}>{userLabel}</Text>
       <Box>
-        <Badge
-          _text={{
-            fontSize: '14px',
-          }}
-          variant="chip"
-          bg="primary.lighter"
-          py="10px"
-          px="15px">
-          {t(`general.role.${membership.userRole}`)}
-        </Badge>
+        <RolePill membership={membership} />
       </Box>
     </Row>
   );
