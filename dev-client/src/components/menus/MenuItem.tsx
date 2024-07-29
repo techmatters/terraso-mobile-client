@@ -131,6 +131,8 @@ const styles = StyleSheet.create({
   },
   childContainer: {
     marginTop: 16,
+    marginLeft:
+      -16 /* Makes for neater layout in rare cases where children appear */,
   },
   default: {
     color: convertColorProp('text.primary'),
