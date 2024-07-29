@@ -31,6 +31,7 @@ export type MenuItemProps = {
   subLabel?: string;
   icon?: IconName | React.ReactElement;
   pill?: React.ReactNode;
+  selected?: boolean;
   disabled?: boolean;
   onPress?: PressableProps['onPress'];
 };
@@ -42,6 +43,7 @@ export function MenuItem({
   label,
   subLabel,
   pill,
+  selected,
   disabled,
   onPress,
   children,
@@ -60,8 +62,9 @@ export function MenuItem({
     <TouchableRipple
       onPress={onPress!}
       disabled={disabled}
+      style={selected ? styles.selected : undefined}
       accessibilityRole="menuitem"
-      accessibilityState={{disabled: disabled}}
+      accessibilityState={{selected: selected, disabled: disabled}}
       accessibilityLabel={`${label} ${subLabel}`}>
       <View style={styles.root}>
         <View style={[styles.section, styles.iconSection]}>
@@ -106,6 +109,9 @@ const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
     margin: 16,
+  },
+  selected: {
+    backgroundColor: convertColorProp('input.filled.enabledFill'),
   },
   section: {
     alignSelf: 'center',
