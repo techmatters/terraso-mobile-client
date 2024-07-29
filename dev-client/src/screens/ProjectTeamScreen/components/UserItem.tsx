@@ -15,17 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet} from 'react-native';
 
-import {Button, Pressable} from 'native-base';
+import {Button} from 'native-base';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 
+import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
+import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {UserInfo} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserInfo';
+import {RolePill} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/RolePill';
+import {formatName} from 'terraso-mobile-client/util';
 
 type TriggerProps = {
   onOpen: () => void;
@@ -35,10 +37,7 @@ type TriggerProps = {
 function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
   return (
     <Button
-      size="md"
-      mt="10px"
-      ml="50px"
-      style={styles.button}
+      size="sm"
       _text={{color: 'error.main'}}
       _pressed={{backgroundColor: '#ff0000'}}
       bgColor="grey.200"
@@ -69,6 +68,15 @@ export const UserItem = ({
 }: ItemProps) => {
   const {t} = useTranslation();
 
+  const userLabel = useMemo(() => {
+    let name = formatName(user.firstName, user.lastName);
+    if (isForCurrentUser) {
+      return t('general.you_name', {name: name});
+    } else {
+      return name;
+    }
+  }, [user, isForCurrentUser, t]);
+
   /*
    * Any non-manager user can leave the project, but managers can only leave if they are not the
    * only manager.
@@ -77,40 +85,25 @@ export const UserItem = ({
     isForCurrentUser && !(isInManagerView && isForSingleManagerProject);
 
   return (
-    <Box width="100%" py={5}>
-      <Column>
-        {!isForCurrentUser && isInManagerView ? (
-          <Pressable onPress={memberAction}>
-            <UserInfo
-              membership={membership}
-              user={user}
-              isCurrentUser={isForCurrentUser}
+    <MenuItem
+      icon={<ProfilePic user={user} />}
+      label={userLabel}
+      pill={<RolePill membership={membership} />}
+      onPress={isForCurrentUser ? undefined : memberAction}>
+      {userCanLeaveProject && (
+        <ConfirmModal
+          trigger={onOpen => (
+            <LeaveProjectTrigger
+              onOpen={onOpen}
+              message={t('projects.team.leave_project_modal.trigger')}
             />
-          </Pressable>
-        ) : (
-          <UserInfo
-            membership={membership}
-            user={user}
-            isCurrentUser={isForCurrentUser}
-          />
-        )}
-        {userCanLeaveProject && (
-          <ConfirmModal
-            trigger={onOpen => (
-              <LeaveProjectTrigger
-                onOpen={onOpen}
-                message={t('projects.team.leave_project_modal.trigger')}
-              />
-            )}
-            title={t('projects.team.leave_project_modal.title')}
-            body={t('projects.team.leave_project_modal.body')}
-            actionName={t('projects.team.leave_project_modal.action_name')}
-            handleConfirm={removeUser}
-          />
-        )}
-      </Column>
-    </Box>
+          )}
+          title={t('projects.team.leave_project_modal.title')}
+          body={t('projects.team.leave_project_modal.body')}
+          actionName={t('projects.team.leave_project_modal.action_name')}
+          handleConfirm={removeUser}
+        />
+      )}
+    </MenuItem>
   );
 };
-
-const styles = StyleSheet.create({button: {alignSelf: 'flex-start'}});

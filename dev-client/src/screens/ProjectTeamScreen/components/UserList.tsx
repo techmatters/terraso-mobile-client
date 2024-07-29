@@ -17,14 +17,13 @@
 
 import {useMemo} from 'react';
 
-import {Divider, FlatList} from 'native-base';
-
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   ProjectMembership,
   ProjectRole,
 } from 'terraso-client-shared/project/projectSlice';
 
+import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {UserItem} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserItem';
 
 type ListProps = {
@@ -49,10 +48,10 @@ export const UserList = ({
   );
 
   return (
-    <FlatList
-      data={memberships}
-      renderItem={({item: [membership, user]}) => (
+    <MenuList>
+      {memberships.map(([membership, user]) => (
         <UserItem
+          key={membership.id}
           membership={membership}
           user={user}
           isForCurrentUser={user.id === currentUserId}
@@ -61,11 +60,7 @@ export const UserList = ({
           removeUser={removeUser(membership)}
           memberAction={memberAction(user.id, membership.id)}
         />
-      )}
-      keyExtractor={([membership, _]) => membership.id}
-      ItemSeparatorComponent={Divider}
-      ListFooterComponent={Divider}
-      width="100%"
-    />
+      ))}
+    </MenuList>
   );
 };
