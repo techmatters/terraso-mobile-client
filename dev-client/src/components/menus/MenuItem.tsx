@@ -71,11 +71,11 @@ export function MenuItem({
           {typeof icon === 'string' ? (
             <Icon
               name={icon as IconName}
-              size="sm"
+              size="md"
               color={variantStyle.color}
             />
           ) : (
-            icon
+            (icon ?? <View style={styles.emptyIcon} />)
           )}
         </View>
         <View style={[styles.section, styles.labelSection]}>
@@ -118,6 +118,9 @@ const styles = StyleSheet.create({
   },
   iconSection: {
     marginRight: 32,
+  },
+  emptyIcon: {
+    width: 24 /* Same width as the default icon component in size: md */,
   },
   labelSection: {
     marginRight: 16,
