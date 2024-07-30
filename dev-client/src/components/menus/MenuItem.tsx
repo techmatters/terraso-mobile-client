@@ -63,11 +63,11 @@ export function MenuItem({
       /* The Ripple component doesn't allow null for onPress, so reduce it to either present or undefined */
       onPress={onPress ? onPress : undefined}
       disabled={disabled}
-      style={selected ? styles.selected : undefined}
+      style={selected ? styles.selected : styles.base}
       accessibilityRole="menuitem"
       accessibilityState={{selected: selected, disabled: disabled}}
       accessibilityLabel={`${label} ${subLabel}`}>
-      <View style={styles.root}>
+      <View style={styles.container}>
         <View style={[styles.section, styles.iconSection]}>
           {typeof icon === 'string' ? (
             <Icon
@@ -107,12 +107,15 @@ export function MenuItem({
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flexDirection: 'row',
-    margin: 16,
+  base: {
+    backgroundColor: convertColorProp('primary.contrast'),
   },
   selected: {
     backgroundColor: convertColorProp('input.filled.enabledFill'),
+  },
+  container: {
+    flexDirection: 'row',
+    margin: 16,
   },
   section: {
     alignSelf: 'center',
