@@ -60,7 +60,8 @@ export function MenuItem({
 
   return (
     <TouchableRipple
-      onPress={onPress!}
+      /* The Ripple component doesn't allow null for onPress, so reduce it to either present or undefined */
+      onPress={onPress ? onPress : undefined}
       disabled={disabled}
       style={selected ? styles.selected : undefined}
       accessibilityRole="menuitem"
