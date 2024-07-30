@@ -42,22 +42,24 @@ type NullableIf<T, Nullable extends boolean> = Nullable extends true
 export type SelectProps<T, Nullable extends boolean> = {
   nullable: Nullable;
   options: T[] | readonly T[];
-  renderValue: (_: T) => string;
+  optionKey?: (_: T) => string;
   value: NullableIf<T, Nullable>;
   onValueChange: (value: NullableIf<T, Nullable>) => void;
   label?: string;
   unselectedLabel?: string;
+  renderValue: (_: T) => string;
   disabled?: boolean;
 } & ViewStyle;
 
 export const Select = <T, Nullable extends boolean>({
   nullable,
   options,
-  onValueChange,
-  renderValue,
+  optionKey,
   value,
+  onValueChange,
   label,
   unselectedLabel,
+  renderValue,
   disabled = false,
   ...style
 }: SelectProps<T, Nullable>) => {
@@ -119,12 +121,18 @@ export const Select = <T, Nullable extends boolean>({
           </Row>
         </Pressable>
         <MenuList>
-          {optionsWithNull.map((option, i) => {
+          {optionsWithNull.map(option => {
             const itemLabel = option ? renderValue(option) : unselectedLabel!;
             const selected = option === value;
+            let key;
+            if (optionKey) {
+              key = option === null ? null : optionKey(option);
+            } else {
+              key = itemLabel;
+            }
             return (
               <MenuItem
-                key={itemLabel + i}
+                key={key}
                 label={itemLabel}
                 icon={selected ? 'check' : undefined}
                 selected={selected}

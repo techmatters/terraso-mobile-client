@@ -67,6 +67,7 @@ export const SiteFilterModal = ({useDistance}: Props) => {
     (id: string) => projects[id].name,
     [projects],
   );
+  const projectKey = useCallback((id: string) => id, []);
 
   return (
     <ListFilterModal
@@ -87,6 +88,7 @@ export const SiteFilterModal = ({useDistance}: Props) => {
       <SelectFilter
         label={t('site.search.filter_projects')}
         options={projectIds}
+        optionKey={projectKey}
         renderValue={renderProject}
         name="project"
         unselectedLabel={t('general.filter.no_project')}

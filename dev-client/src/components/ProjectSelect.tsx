@@ -46,6 +46,7 @@ export const ProjectSelect = ({projectId, userRoles, setProjectId}: Props) => {
     (id: string) => projects[id].name,
     [projects],
   );
+  const projectKey = useCallback((id: string) => id, []);
 
   return (
     <Select
@@ -55,6 +56,7 @@ export const ProjectSelect = ({projectId, userRoles, setProjectId}: Props) => {
       value={projectId}
       onValueChange={setProjectId}
       unselectedLabel={t('general.nullable_option')}
+      optionKey={projectKey}
       renderValue={renderProject}
     />
   );
