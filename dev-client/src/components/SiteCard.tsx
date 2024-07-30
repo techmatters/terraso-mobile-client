@@ -64,12 +64,14 @@ export const SiteCard = ({
         <Heading
           variant="h6"
           color="primary.main"
-          maxWidth={isPopover ? '85%' : undefined} // make space for the close button
-        >
+          flex={isPopover ? 1 : undefined}>
           {site.name}
         </Heading>
       }
-      maxWidth={isPopover ? '90%' : undefined} // overall card width
+      pressableProps={{
+        minWidth: isPopover ? '90%' : undefined,
+        maxWidth: isPopover ? '90%' : undefined,
+      }}
       onPress={onCardPress}
       buttons={buttons}
       isPopover={isPopover}>
