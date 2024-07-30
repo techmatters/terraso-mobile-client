@@ -40,6 +40,7 @@ exports[`renders correctly 1`] = `
       >
         <RNSScreen
           collapsable={false}
+          fullScreenSwipeShadowEnabled={false}
           gestureResponseDistance={
             {
               "bottom": -1,
