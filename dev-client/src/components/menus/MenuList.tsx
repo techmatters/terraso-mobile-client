@@ -15,24 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Children} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Divider} from 'react-native-paper';
 
 export type ButtonListProps = React.PropsWithChildren;
 
 export function MenuList({children}: ButtonListProps) {
   return (
     <View style={styles.root} accessibilityRole="menu">
-      <Divider />
-      {Children.map(children, child => {
-        return (
-          <>
-            {child}
-            <Divider />
-          </>
-        );
-      })}
+      {children}
     </View>
   );
 }

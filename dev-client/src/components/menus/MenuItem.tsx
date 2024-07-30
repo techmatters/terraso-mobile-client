@@ -17,7 +17,7 @@
 
 import {useMemo} from 'react';
 import {PressableProps, StyleSheet, View} from 'react-native';
-import {Text, TouchableRipple} from 'react-native-paper';
+import {Divider, Text, TouchableRipple} from 'react-native-paper';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -59,50 +59,55 @@ export function MenuItem({
   }, [disabled, variant]);
 
   return (
-    <TouchableRipple
-      /* The Ripple component doesn't allow null for onPress, so reduce it to either present or undefined */
-      onPress={onPress ? onPress : undefined}
-      disabled={disabled}
-      style={selected ? styles.selected : styles.base}
-      accessibilityRole="menuitem"
-      accessibilityState={{selected: selected, disabled: disabled}}
-      accessibilityLabel={`${label} ${subLabel}`}>
-      <View style={styles.container}>
-        <View style={[styles.section, styles.iconSection]}>
-          {typeof icon === 'string' ? (
-            <Icon
-              name={icon as IconName}
-              size="md"
-              color={variantStyle.color}
-            />
-          ) : (
-            (icon ?? <View style={styles.emptyIcon} />)
+    <>
+      <TouchableRipple
+        /* The Ripple component doesn't allow null for onPress, so reduce it to either present or undefined */
+        onPress={onPress ? onPress : undefined}
+        disabled={disabled}
+        style={selected ? styles.selected : styles.base}
+        accessibilityRole="menuitem"
+        accessibilityState={{selected: selected, disabled: disabled}}
+        accessibilityLabel={`${label} ${subLabel}`}>
+        <View style={styles.container}>
+          <View style={[styles.section, styles.iconSection]}>
+            {typeof icon === 'string' ? (
+              <Icon
+                name={icon as IconName}
+                size="md"
+                color={variantStyle.color}
+              />
+            ) : (
+              (icon ?? <View style={styles.emptyIcon} />)
+            )}
+          </View>
+          <View style={[styles.section, styles.labelSection]}>
+            <View style={[styles.labelsContainer]}>
+              <Text
+                selectable={false}
+                style={[
+                  styles.label,
+                  uppercase && styles.uppercaseLabel,
+                  variantStyle,
+                ]}>
+                {label}
+              </Text>
+              {subLabel && (
+                <Text selectable={false} style={[styles.subLabel]}>
+                  {subLabel}
+                </Text>
+              )}
+              {children && (
+                <View style={styles.childContainer}>{children}</View>
+              )}
+            </View>
+          </View>
+          {pill && (
+            <View style={[styles.section, styles.pillSection]}>{pill}</View>
           )}
         </View>
-        <View style={[styles.section, styles.labelSection]}>
-          <View style={[styles.labelsContainer]}>
-            <Text
-              selectable={false}
-              style={[
-                styles.label,
-                uppercase && styles.uppercaseLabel,
-                variantStyle,
-              ]}>
-              {label}
-            </Text>
-            {subLabel && (
-              <Text selectable={false} style={[styles.subLabel]}>
-                {subLabel}
-              </Text>
-            )}
-            {children && <View style={styles.childContainer}>{children}</View>}
-          </View>
-        </View>
-        {pill && (
-          <View style={[styles.section, styles.pillSection]}>{pill}</View>
-        )}
-      </View>
-    </TouchableRipple>
+      </TouchableRipple>
+      <Divider />
+    </>
   );
 }
 
