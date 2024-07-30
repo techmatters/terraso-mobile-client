@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Image} from 'native-base';
+import {Image, StyleSheet} from 'react-native';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
 
@@ -24,7 +24,13 @@ type ProfilePicProps = {
 };
 
 export const ProfilePic = ({user}: ProfilePicProps) => {
-  return (
-    <Image variant="profilePic" alt="" source={{uri: user.profileImage}} />
-  );
+  return <Image style={styles.base} alt="" source={{uri: user.profileImage}} />;
 };
+
+const styles = StyleSheet.create({
+  base: {
+    width: 40,
+    height: 40,
+    borderRadius: 80,
+  },
+});
