@@ -19,13 +19,13 @@ import {StyleSheet, View} from 'react-native';
 
 export type ButtonListProps = React.PropsWithChildren;
 
-export function MenuList({children}: ButtonListProps) {
+export const MenuList = ({children}: ButtonListProps) => {
   return (
     <View style={styles.root} accessibilityRole="menu">
       {children}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   root: {

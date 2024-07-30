@@ -36,7 +36,7 @@ export type MenuItemProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export function MenuItem({
+export const MenuItem = ({
   variant = 'default',
   uppercase = false,
   icon,
@@ -47,7 +47,7 @@ export function MenuItem({
   disabled,
   onPress,
   children,
-}: React.PropsWithChildren<MenuItemProps>) {
+}: React.PropsWithChildren<MenuItemProps>) => {
   const variantStyle = useMemo(() => {
     if (disabled) {
       return styles.disabled;
@@ -109,7 +109,7 @@ export function MenuItem({
       <Divider />
     </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   base: {
