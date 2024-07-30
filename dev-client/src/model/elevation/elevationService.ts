@@ -18,6 +18,7 @@
 import {formatCoordinate} from 'terraso-mobile-client/util';
 
 const OUT_OF_RANGE_MESSAGE = 'Invalid or missing input parameters.';
+const UNABLE_TO_PROCESS_MESSAGE = 'Unable to complete operation.';
 
 export const getElevation = async (
   lat: number,
@@ -38,7 +39,7 @@ export const getElevation = async (
       `https://epqs.nationalmap.gov/v1/json/?${queryString}`,
     );
     const result = await response.text();
-    if (result === OUT_OF_RANGE_MESSAGE) {
+    if ([OUT_OF_RANGE_MESSAGE, UNABLE_TO_PROCESS_MESSAGE].includes(result)) {
       elevation = undefined;
     } else {
       elevation = parseFloat(JSON.parse(result).value);
