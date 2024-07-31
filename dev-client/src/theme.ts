@@ -471,14 +471,6 @@ export const theme = extendTheme({
         },
       },
     },
-    Image: {
-      variants: {
-        profilePic: {
-          size: '40px',
-          borderRadius: 80,
-        },
-      },
-    },
     Modal: {
       defaultProps: {
         avoidKeyboard: true,

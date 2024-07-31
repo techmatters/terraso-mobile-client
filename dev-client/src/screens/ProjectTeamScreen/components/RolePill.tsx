@@ -15,25 +15,28 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Children} from 'react';
-import {Divider} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
 
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
 
-export type ButtonListProps = React.PropsWithChildren;
+import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export function ButtonList({children}: ButtonListProps) {
+type RolePillProps = {
+  membership: ProjectMembership;
+};
+
+export const RolePill = ({membership}: RolePillProps) => {
+  const {t} = useTranslation();
   return (
-    <Column mt="12px" mb="24px" space="6px">
-      <Divider />
-      {Children.map(children, child => {
-        return (
-          <>
-            {child}
-            <Divider />
-          </>
-        );
-      })}
-    </Column>
+    <Badge
+      _text={{
+        fontSize: '14px',
+      }}
+      variant="chip"
+      bg="primary.lighter"
+      py="10px"
+      px="15px">
+      {t(`general.role.${membership.userRole}`)}
+    </Badge>
   );
-}
+};

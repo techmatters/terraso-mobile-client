@@ -18,14 +18,13 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Image} from 'native-base';
-
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   PROJECT_ROLES,
   ProjectRole,
 } from 'terraso-client-shared/project/projectSlice';
 
+import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
@@ -45,7 +44,7 @@ type DisplayProps = {
 };
 
 export const UserDisplay = ({
-  user: {profileImage, firstName, lastName, email},
+  user,
   role,
   updateUserRole,
   removeUser,
@@ -55,14 +54,11 @@ export const UserDisplay = ({
     (value: ProjectRole) => t(`general.role.${value}`),
     [t],
   );
+  const {firstName, lastName, email} = user;
   return (
     <Column space="5px">
       <Row mt="15px">
-        <Image
-          variant="profilePic"
-          source={{uri: profileImage}}
-          alt={t('general.profile_image_alt')}
-        />
+        <ProfilePic user={user} />
         <Column flexGrow={2} ml="15px">
           <Text fontWeight={700} fontSize="16px">
             {formatName(firstName, lastName)}

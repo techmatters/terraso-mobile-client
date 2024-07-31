@@ -16,6 +16,7 @@
  */
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ScrollView} from 'react-native-gesture-handler';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
@@ -89,12 +90,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
   );
 
   return (
-    <Column
-      height="full"
-      alignItems="flex-start"
-      p={4}
-      space={3}
-      backgroundColor="background.default">
+    <Column height="full" p={4} space={3} backgroundColor="background.default">
       <RestrictByProjectRole role="MANAGER">
         <AddButton
           text={t('projects.team.add')}
@@ -109,13 +105,15 @@ export const ProjectTeamScreen = ({route}: Props) => {
       <Heading variant="h6" py="20px">
         {t('projects.team.manage_team')}
       </Heading>
-      <UserList
-        memberships={members}
-        currentUserId={currentUser.data?.id}
-        removeUser={removeMembership}
-        memberAction={manageMember}
-        currentUserRole={currentUserRole}
-      />
+      <ScrollView>
+        <UserList
+          memberships={members}
+          currentUserId={currentUser.data?.id}
+          removeUser={removeMembership}
+          memberAction={manageMember}
+          currentUserRole={currentUserRole}
+        />
+      </ScrollView>
     </Column>
   );
 };

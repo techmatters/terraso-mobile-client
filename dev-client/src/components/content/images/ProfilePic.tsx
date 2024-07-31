@@ -15,24 +15,22 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
+import {Image, StyleSheet} from 'react-native';
 
-import {ListButton} from 'terraso-mobile-client/components/buttons/list/ListButton';
-import {SignOutModal} from 'terraso-mobile-client/components/modals/SignOutModal';
+import {User} from 'terraso-client-shared/account/accountSlice';
 
-export function SignOutButton() {
-  const {t} = useTranslation();
+type ProfilePicProps = {
+  user: Pick<User, 'profileImage'>;
+};
 
-  return (
-    <SignOutModal
-      trigger={onOpen => (
-        <ListButton
-          type="default"
-          iconName="logout"
-          labelText={t('settings.sign_out')}
-          onPress={onOpen}
-        />
-      )}
-    />
-  );
-}
+export const ProfilePic = ({user}: ProfilePicProps) => {
+  return <Image style={styles.base} alt="" source={{uri: user.profileImage}} />;
+};
+
+const styles = StyleSheet.create({
+  base: {
+    width: 40,
+    height: 40,
+    borderRadius: 80,
+  },
+});

@@ -15,10 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-
-import {Image} from 'native-base';
-
+import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
 import {
   Column,
   Row,
@@ -31,19 +28,12 @@ type DisplayProps = {
   user: UserFields;
 };
 
-export const MinimalUserDisplay = ({
-  user: {profileImage, firstName, lastName, email},
-}: DisplayProps) => {
-  const {t} = useTranslation();
-
+export const MinimalUserDisplay = ({user}: DisplayProps) => {
+  const {firstName, lastName, email} = user;
   return (
     <Column>
       <Row>
-        <Image
-          variant="profilePic"
-          source={{uri: profileImage}}
-          alt={t('general.profile_image_alt')}
-        />
+        <ProfilePic user={user} />
 
         <Column ml="32px">
           <Text variant="body1-strong">{formatName(firstName, lastName)}</Text>
