@@ -19,12 +19,13 @@ import {useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Pressable, StyleSheet, ViewStyle} from 'react-native';
 
-import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
+import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
-  Box,
   Column,
   Row,
   Text,
@@ -41,81 +42,30 @@ type NullableIf<T, Nullable extends boolean> = Nullable extends true
 export type SelectProps<T, Nullable extends boolean> = {
   nullable: Nullable;
   options: T[] | readonly T[];
-  renderValue: (_: T) => string;
+  optionKey?: (_: T) => string;
   value: NullableIf<T, Nullable>;
   onValueChange: (value: NullableIf<T, Nullable>) => void;
   label?: string;
   unselectedLabel?: string;
+  renderValue: (_: T) => string;
   disabled?: boolean;
 } & ViewStyle;
 
 export const Select = <T, Nullable extends boolean>({
   nullable,
   options,
-  onValueChange,
-  renderValue,
+  optionKey,
   value,
+  onValueChange,
   label,
   unselectedLabel,
+  renderValue,
   disabled = false,
   ...style
 }: SelectProps<T, Nullable>) => {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
   const onClose = useCallback(() => ref.current?.onClose(), [ref]);
-
-  const renderOption = useCallback(
-    ({item: option}: {item: T | null}) => (
-      <Pressable
-        accessibilityState={{
-          selected: value === option,
-        }}
-        onPress={() => {
-          onValueChange(option as T);
-          onClose();
-        }}>
-        <Row
-          backgroundColor={
-            option === value ? 'input.filled.enabledFill' : 'primary.contrast'
-          }
-          justifyContent="flex-start"
-          alignItems="center"
-          paddingVertical="sm"
-          paddingHorizontal="sm">
-          <Icon
-            color={option === value ? 'action.active' : 'primary.contrast'}
-            name="check"
-            size="sm"
-          />
-          <Box width="sm" />
-          <Text variant="body1" color="text.primary">
-            {option ? renderValue(option) : unselectedLabel}
-          </Text>
-        </Row>
-      </Pressable>
-    ),
-    [value, renderValue, onValueChange, unselectedLabel, onClose],
-  );
-
-  const Header = useMemo(
-    () => (
-      <Pressable onPress={onClose}>
-        <Row
-          backgroundColor="primary.main"
-          justifyContent="flex-end"
-          alignItems="center"
-          padding="md">
-          <Text
-            variant="body1-strong"
-            color="primary.contrast"
-            textTransform="uppercase">
-            {t('general.done')}
-          </Text>
-        </Row>
-      </Pressable>
-    ),
-    [t, onClose],
-  );
 
   const optionsWithNull = useMemo(
     () => (nullable ? [null, ...options] : options),
@@ -152,11 +102,49 @@ export const Select = <T, Nullable extends boolean>({
           </Row>
         </Pressable>
       )}>
-      <BottomSheetFlatList
-        ListHeaderComponent={Header}
-        data={optionsWithNull}
-        renderItem={renderOption}
-      />
+      <BottomSheetScrollView>
+        <Pressable
+          onPress={onClose}
+          accessibilityLabel={t('general.done')}
+          accessibilityRole="button">
+          <Row
+            backgroundColor="primary.main"
+            justifyContent="flex-end"
+            alignItems="center"
+            padding="md">
+            <Text
+              variant="body1-strong"
+              color="primary.contrast"
+              textTransform="uppercase">
+              {t('general.done')}
+            </Text>
+          </Row>
+        </Pressable>
+        <MenuList>
+          {optionsWithNull.map(option => {
+            const itemLabel = option ? renderValue(option) : unselectedLabel!;
+            const selected = option === value;
+            let key;
+            if (optionKey) {
+              key = option === null ? null : optionKey(option);
+            } else {
+              key = itemLabel;
+            }
+            return (
+              <MenuItem
+                key={key}
+                label={itemLabel}
+                icon={selected ? 'check' : undefined}
+                selected={selected}
+                onPress={() => {
+                  onValueChange(option as T);
+                  onClose();
+                }}
+              />
+            );
+          })}
+        </MenuList>
+      </BottomSheetScrollView>
     </OverlaySheet>
   );
 };

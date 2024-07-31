@@ -15,24 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ButtonList} from 'terraso-mobile-client/components/buttons/list/ButtonList';
+import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {DeleteAccountButton} from 'terraso-mobile-client/screens/UserSettingsScreen/components/actions/DeleteAccountButton';
-import {SignOutButton} from 'terraso-mobile-client/screens/UserSettingsScreen/components/actions/SignOutButton';
+import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
+import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
 import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/UserIndicatorComponent';
 import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
 
 export function UserSettingsScreen() {
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} RightButton={null} />}>
-      <Column height="full" margin="12px">
+      <Column margin="12px">
         <UserIndicator />
-        <ButtonList>
-          <SignOutButton />
-          <DeleteAccountButton />
-        </ButtonList>
+        <MenuList>
+          <SignOutItem />
+          <DeleteAccountItem />
+        </MenuList>
         <VersionIndicator />
       </Column>
     </ScreenScaffold>
