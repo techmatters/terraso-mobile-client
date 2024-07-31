@@ -16,7 +16,7 @@
  */
 
 import React, {useCallback} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ViewStyle} from 'react-native';
 
 import {Site} from 'terraso-client-shared/site/siteSlice';
 
@@ -68,10 +68,7 @@ export const SiteCard = ({
           {site.name}
         </Heading>
       }
-      pressableProps={{
-        minWidth: isPopover ? '90%' : undefined,
-        maxWidth: isPopover ? '90%' : undefined,
-      }}
+      pressableStyle={pressableStyles(isPopover)}
       onPress={onCardPress}
       buttons={buttons}
       isPopover={isPopover}>
@@ -97,6 +94,13 @@ export const SiteCard = ({
       </Row>
     </Card>
   );
+};
+
+const pressableStyles = (isPopover: Boolean = false): ViewStyle => {
+  return {
+    minWidth: isPopover ? '90%' : undefined,
+    maxWidth: isPopover ? '40%' : undefined,
+  };
 };
 
 const styles = StyleSheet.create({

@@ -15,9 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-// using native-base's Pressable so we can assign minWidth to it.
-// the react-native Pressable doesn't support this prop.
-import {Pressable} from 'native-base';
+import {Pressable, ViewStyle} from 'react-native';
 
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -47,7 +45,7 @@ type Props = {
   children?: React.ReactNode;
   onPress?: () => void;
   isPopover?: Boolean;
-  pressableProps?: React.ComponentProps<typeof Pressable>;
+  pressableStyle?: ViewStyle;
 } & React.ComponentProps<typeof Box>;
 
 export const Card = ({
@@ -56,10 +54,10 @@ export const Card = ({
   onPress,
   children,
   isPopover = false,
-  pressableProps,
+  pressableStyle,
   ...boxProps
 }: Props) => (
-  <Pressable onPress={onPress} {...pressableProps}>
+  <Pressable onPress={onPress} style={pressableStyle}>
     <Box
       padding="md"
       margin="0"
