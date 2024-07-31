@@ -1,0 +1,3 @@
+name: "General (LandPKS Project)"
+description: Regular blank issue, with Project = LandPKS
+projects: ["techmatters/7"]
