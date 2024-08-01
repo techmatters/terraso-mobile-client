@@ -68,6 +68,7 @@ export const Card = ({
       {isPopover && <CardTriangle />}
       {(Header || buttons) && (
         <Row
+          space="md"
           alignItems="flex-start"
           justifyContent="space-between"
           width="100%">
