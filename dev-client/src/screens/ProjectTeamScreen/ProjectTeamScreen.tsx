@@ -28,6 +28,7 @@ import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {
+  Box,
   Column,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -92,15 +93,17 @@ export const ProjectTeamScreen = ({route}: Props) => {
   return (
     <Column height="full" p={4} space={3} backgroundColor="background.default">
       <RestrictByProjectRole role="MANAGER">
-        <AddButton
-          text={t('projects.team.add')}
-          buttonProps={{
-            onPress: () =>
-              navigation.navigate('ADD_USER_PROJECT', {
-                projectId: route.params.projectId,
-              }),
-          }}
-        />
+        <Box alignSelf="flex-start">
+          <AddButton
+            text={t('projects.team.add')}
+            buttonProps={{
+              onPress: () =>
+                navigation.navigate('ADD_USER_PROJECT', {
+                  projectId: route.params.projectId,
+                }),
+            }}
+          />
+        </Box>
       </RestrictByProjectRole>
       <Heading variant="h6" py="20px">
         {t('projects.team.manage_team')}
