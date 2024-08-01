@@ -85,8 +85,8 @@ export const TemporaryLocationCallout = ({
         <LatLngDetail isCurrentLocation={isCurrentLocation} coords={coords} />
       }
       buttons={<CloseButton onPress={closeCallout} />}
-      maxWidth="90%"
-      width="270px"
+      width="90%"
+      maxWidth="350px"
       isPopover={true}>
       <Column mt="12px" space="12px">
         <>
