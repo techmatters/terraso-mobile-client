@@ -18,16 +18,13 @@
 import {useEffect} from 'react';
 
 import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
-import {Location, locationManager} from '@rnmapbox/maps';
 
 import {
   fetchUser,
   setHasAccessTokenAsync,
 } from 'terraso-client-shared/account/accountSlice';
 
-import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
 import {useStorage} from 'terraso-mobile-client/hooks/useStorage';
-import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 import {
   modalScreens,
@@ -63,30 +60,6 @@ export const RootNavigator = () => {
       dispatch(fetchUser());
     }
   }, [hasToken, currentUser, dispatch]);
-
-  useEffect(() => {
-    locationManager.getLastKnownLocation().then(initCoords => {
-      if (initCoords !== null) {
-        dispatch(
-          updateLocation({
-            coords: initCoords.coords,
-            accuracyM: initCoords.coords.accuracy ?? null,
-          }),
-        );
-      }
-    });
-
-    // add listener to update location on user movement
-    const listener = ({coords}: Location) => {
-      dispatch(
-        updateLocation({coords: coords, accuracyM: coords.accuracy ?? null}),
-      );
-    };
-    locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
-    locationManager.addListener(listener);
-
-    return () => locationManager.removeListener(listener);
-  }, [dispatch]);
 
   return (
     <RootStack.Navigator
