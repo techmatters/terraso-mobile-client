@@ -15,11 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {memo} from 'react';
+import {memo, useEffect} from 'react';
 
 import {NavigationHelpers} from '@react-navigation/native';
+import {Location, locationManager} from '@rnmapbox/maps';
 
+import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
 import {useKeyboardStatus} from 'terraso-mobile-client/hooks/useKeyboardStatus';
+import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
 import {
   BottomNavigator,
   BottomTabs,
@@ -28,9 +31,35 @@ import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 export const BottomTabsScreen = memo(() => {
+  const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
+
+  useEffect(() => {
+    locationManager.getLastKnownLocation().then(initCoords => {
+      if (initCoords !== null) {
+        dispatch(
+          updateLocation({
+            coords: initCoords.coords,
+            accuracyM: initCoords.coords.accuracy ?? null,
+          }),
+        );
+      }
+    });
+
+    // add listener to update location on user movement
+    const listener = ({coords}: Location) => {
+      dispatch(
+        updateLocation({coords: coords, accuracyM: coords.accuracy ?? null}),
+      );
+    };
+    locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
+    locationManager.addListener(listener);
+
+    return () => locationManager.removeListener(listener);
+  }, [dispatch]);
 
   return (
     <BottomTabs.Navigator
