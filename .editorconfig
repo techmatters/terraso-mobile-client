@@ -15,9 +15,6 @@ max_line_length = 0
 trim_trailing_whitespace = false
 
 [*.json]
-indent_size = 4
-
-[{package.json,package-lock.json}]
 indent_size = 2
 
 [COMMIT_EDITMSG]
