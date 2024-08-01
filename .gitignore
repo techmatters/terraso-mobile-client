@@ -80,4 +80,5 @@ buildcache/
 
 # Sentry
 sentry.properties
+.sentry
 
