@@ -99,7 +99,7 @@ export const SiteCard = ({
 const pressableStyles = (isPopover: Boolean = false): ViewStyle => {
   return {
     minWidth: isPopover ? '90%' : undefined,
-    maxWidth: isPopover ? '40%' : undefined,
+    maxWidth: isPopover ? '90%' : undefined,
   };
 };
 
