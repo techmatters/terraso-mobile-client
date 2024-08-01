@@ -279,7 +279,7 @@
       }
     },
     "team": {
-      "add": "Add team members",
+      "add": "Add team member",
       "manage_team": "Manage Team",
       "leave_project_modal": {
         "trigger": "LEAVE PROJECT",
