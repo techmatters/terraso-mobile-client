@@ -16,7 +16,7 @@
  */
 
 import React, {useCallback} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ViewStyle} from 'react-native';
 
 import {Site} from 'terraso-client-shared/site/siteSlice';
 
@@ -61,19 +61,19 @@ export const SiteCard = ({
   return (
     <Card
       Header={
-        <Heading variant="h6" color="primary.main">
+        <Heading
+          variant="h6"
+          color="primary.main"
+          flex={isPopover ? 1 : undefined}>
           {site.name}
         </Heading>
       }
+      pressableStyle={pressableStyles(isPopover)}
       onPress={onCardPress}
       buttons={buttons}
       isPopover={isPopover}>
       {project && <Text variant="body1">{project.name}</Text>}
-      <Row
-        alignItems="center"
-        pt="md"
-        justifyContent="space-between"
-        w={isPopover ? '300px' : undefined}>
+      <Row alignItems="center" pt="md" justifyContent="space-between">
         <StaticMapView coords={site} style={styles.mapView} />
         {project && (
           <PeopleBadge count={Object.keys(project.memberships).length} />
@@ -94,6 +94,13 @@ export const SiteCard = ({
       </Row>
     </Card>
   );
+};
+
+const pressableStyles = (isPopover: Boolean = false): ViewStyle => {
+  return {
+    minWidth: isPopover ? '90%' : undefined,
+    maxWidth: isPopover ? '90%' : undefined,
+  };
 };
 
 const styles = StyleSheet.create({
