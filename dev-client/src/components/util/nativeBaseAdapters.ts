@@ -82,6 +82,7 @@ const nativeBaseDimensions = {
   maxHeight: 'maxHeight',
   h: 'height',
   width: 'width',
+  minWidth: 'minWidth',
   maxWidth: 'maxWidth',
   w: 'width',
   left: 'left',

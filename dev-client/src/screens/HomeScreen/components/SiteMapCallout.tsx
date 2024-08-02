@@ -92,7 +92,7 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
 
       return (
         <Card
-          width="270px"
+          width="350px"
           buttons={<CloseButton onPress={closeCallout} />}
           isPopover={true}>
           <FlatList

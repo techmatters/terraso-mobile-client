@@ -49,6 +49,7 @@ export const AppBar = ({
           <Heading
             variant="h6"
             color="primary.contrast"
+            pr={RightButton ? '65px' : undefined}
             pl={LeftButton ? undefined : '16px'}>
             {title ?? t(`screens.${route.name}`)}
           </Heading>
