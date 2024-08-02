@@ -119,6 +119,7 @@ export const ProjectInputScreen = ({
           </RestrictByProjectRole>
         </Box>
         <Accordion
+          initiallyOpen={true}
           Head={
             <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
               {t('soil.pit')}
@@ -128,6 +129,7 @@ export const ProjectInputScreen = ({
         </Accordion>
         <Box height={4} />
         <Accordion
+          initiallyOpen={true}
           Head={
             <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
               {t('soil.project_settings.required_data_title')}
