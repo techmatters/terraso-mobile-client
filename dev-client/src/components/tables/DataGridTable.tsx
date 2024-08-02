@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -66,12 +66,12 @@ export const DataGridTable = ({rows, headers, ...containerProps}: Props) => {
       </Row>
       <Divider />
       {rows.map((row: (typeof rows)[number], i: number) => (
-        <>
-          <Row justifyContent="flex-start" key={i} variant="tablerow" py="10px">
+        <React.Fragment key={i}>
+          <Row justifyContent="flex-start" variant="tablerow" py="10px">
             {row.map(displayCol)}
           </Row>
           <Divider key={`divider${i}`} />
-        </>
+        </React.Fragment>
       ))}
     </Box>
   );
