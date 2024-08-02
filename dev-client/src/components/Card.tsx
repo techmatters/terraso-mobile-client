@@ -62,7 +62,6 @@ export const Card = ({
       padding="md"
       margin="0"
       backgroundColor="background.default"
-      width="100%"
       shadow={undefined}
       {...boxProps}>
       {isPopover && <CardTriangle />}
