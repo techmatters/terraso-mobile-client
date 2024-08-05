@@ -49,6 +49,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
@@ -132,36 +133,38 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar title={name} />} BottomNavigation={null}>
-      <ScrollView
-        bg="primary.contrast"
-        _contentContainerStyle={styles.scrollContentContainer}>
-        <Column>
-          <Column p="15px" bg="primary.contrast">
-            <Row alignItems="center">
-              <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
-              <InfoOverlaySheetButton Header={t('slope.shape.info.title')}>
-                <SlopeShapeInfoContent />
-              </InfoOverlaySheetButton>
-            </Row>
+      <SiteRoleContextProvider siteId={siteId}>
+        <ScrollView
+          bg="primary.contrast"
+          _contentContainerStyle={styles.scrollContentContainer}>
+          <Column>
+            <Column p="15px" bg="primary.contrast">
+              <Row alignItems="center">
+                <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
+                <InfoOverlaySheetButton Header={t('slope.shape.info.title')}>
+                  <SlopeShapeInfoContent />
+                </InfoOverlaySheetButton>
+              </Row>
+            </Column>
           </Column>
-        </Column>
-        <ImageRadio
-          value={
-            downSlope && crossSlope ? `${downSlope}:${crossSlope}` : undefined
-          }
-          options={options}
-          onChange={onChange}
-          minimumPerRow={3}
-        />
-      </ScrollView>
-      <RestrictBySiteRole
-        role={[
-          {kind: 'site', role: 'OWNER'},
-          {kind: 'project', role: 'MANAGER'},
-          {kind: 'project', role: 'CONTRIBUTOR'},
-        ]}>
-        <DoneButton />
-      </RestrictBySiteRole>
+          <ImageRadio
+            value={
+              downSlope && crossSlope ? `${downSlope}:${crossSlope}` : undefined
+            }
+            options={options}
+            onChange={onChange}
+            minimumPerRow={3}
+          />
+        </ScrollView>
+        <RestrictBySiteRole
+          role={[
+            {kind: 'site', role: 'OWNER'},
+            {kind: 'project', role: 'MANAGER'},
+            {kind: 'project', role: 'CONTRIBUTOR'},
+          ]}>
+          <DoneButton />
+        </RestrictBySiteRole>
+      </SiteRoleContextProvider>
     </ScreenScaffold>
   );
 };
