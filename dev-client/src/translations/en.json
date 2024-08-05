@@ -23,7 +23,7 @@
   },
   "home": {
     "info": {
-      "title": "Soil Science in Your Hands",
+      "title": "Discover your land’s potential",
       "intro_image_alt": "",
       "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.\n\n<2>There are three ways to use the map:</2>",
       "list1": "Tap the map to drop a pin and get more information about that location.",
@@ -473,7 +473,7 @@
   },
   "login": {
     "title": "LandPKS Soil ID",
-    "subtitle": "Soil science in your hands",
+    "subtitle": "Discover your land’s potential",
     "from": "from"
   },
   "delete_account": {
