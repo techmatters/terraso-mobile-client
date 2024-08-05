@@ -56,7 +56,7 @@
     "quantize": "^1.0.2",
     "react": "18.2.0",
     "react-i18next": "^15.0.0",
-    "react-native": "^0.74.3",
+    "react-native": "^0.74.4",
     "react-native-autocomplete-input": "^5.4.0",
     "react-native-gesture-handler": "^2.17.1",
     "react-native-get-random-values": "^1.11.0",
