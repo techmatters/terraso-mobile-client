@@ -18,7 +18,10 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
+import {
+  selectDepthDependentData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
@@ -31,7 +34,9 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
   isColorComplete,
   MunsellColor,
@@ -66,6 +71,16 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
 
   const dispatch = useDispatch();
 
+  const userRole = useSelector(state =>
+    selectUserRoleSite(state, props.siteId),
+  );
+
+  const canDelete = useMemo(
+    () =>
+      userRole && ['MANAGER', 'CONTRIBUTOR', 'OWNER'].includes(userRole.role),
+    [userRole],
+  );
+
   const onClearValues = useCallback(() => {
     dispatch(
       updateDepthDependentSoilData({
@@ -85,43 +100,63 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
 
   return (
     <SoilPitInputScreenScaffold {...props}>
-      <Column padding="md">
-        <Row alignItems="flex-end">
-          <Row alignItems="center">
-            <Heading variant="h6">{t('soil.color.title')}</Heading>
-            <InfoOverlaySheetButton Header={t('soil.color.title')}>
-              <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
-              <BulletList
-                data={[1, 2, 3]}
-                renderItem={i => (
-                  <Text variant="body1">{t(`soil.color.info.bullet${i}`)}</Text>
-                )}
-              />
-              <Paragraph variant="body1">{t('soil.color.info.p2')}</Paragraph>
-              <Paragraph variant="body1">{t('soil.color.info.p3')}</Paragraph>
-            </InfoOverlaySheetButton>
+      <SiteRoleContextProvider siteId={props.siteId}>
+        <Column padding="md">
+          <Row alignItems="flex-end">
+            <Row alignItems="center">
+              <Heading variant="h6">{t('soil.color.title')}</Heading>
+              <InfoOverlaySheetButton Header={t('soil.color.title')}>
+                <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
+                <BulletList
+                  data={[1, 2, 3]}
+                  renderItem={i => (
+                    <Text variant="body1">
+                      {t(`soil.color.info.bullet${i}`)}
+                    </Text>
+                  )}
+                />
+                <Paragraph variant="body1">{t('soil.color.info.p2')}</Paragraph>
+                <Paragraph variant="body1">{t('soil.color.info.p3')}</Paragraph>
+              </InfoOverlaySheetButton>
+            </Row>
+            <Box flex={1} />
+            <RestrictBySiteRole
+              role={[
+                {kind: 'project', role: 'MANAGER'},
+                {kind: 'project', role: 'CONTRIBUTOR'},
+                {kind: 'site', role: 'OWNER'},
+              ]}>
+              {(workflow === 'CAMERA' || color) && (
+                <SwitchWorkflowButton {...props} />
+              )}
+            </RestrictBySiteRole>
           </Row>
-          <Box flex={1} />
-          {(workflow === 'CAMERA' || color) && (
-            <SwitchWorkflowButton {...props} />
-          )}
-        </Row>
-      </Column>
-      {workflow === 'MANUAL' && <ManualWorkflow {...props} />}
-      {workflow === 'CAMERA' && !color && <CameraWorkflow {...props} />}
-      {color && (
-        <>
-          <ColorDisplay
-            onDelete={workflow === 'CAMERA' ? onClearValues : undefined}
-            color={color}
-            variant="lg"
-          />
-          {workflow === 'CAMERA' && <PhotoConditions {...props} />}
-        </>
-      )}
-      <Box position="absolute" right="0" bottom="0">
-        <DoneButton isDisabled={!color} />
-      </Box>
+        </Column>
+        {workflow === 'MANUAL' && <ManualWorkflow {...props} />}
+        {workflow === 'CAMERA' && !color && <CameraWorkflow {...props} />}
+        {color && (
+          <>
+            <ColorDisplay
+              onDelete={
+                canDelete && workflow === 'CAMERA' ? onClearValues : undefined
+              }
+              color={color}
+              variant="lg"
+            />
+            {workflow === 'CAMERA' && <PhotoConditions {...props} />}
+          </>
+        )}
+        <RestrictBySiteRole
+          role={[
+            {kind: 'project', role: 'MANAGER'},
+            {kind: 'project', role: 'CONTRIBUTOR'},
+            {kind: 'site', role: 'OWNER'},
+          ]}>
+          <Box position="absolute" right="0" bottom="0">
+            <DoneButton isDisabled={!color} />
+          </Box>
+        </RestrictBySiteRole>
+      </SiteRoleContextProvider>
     </SoilPitInputScreenScaffold>
   );
 };
