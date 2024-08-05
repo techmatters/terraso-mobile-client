@@ -17,8 +17,9 @@
 
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ScrollView} from 'react-native';
 
-import {Button, FlatList} from 'native-base';
+import {Button} from 'native-base';
 
 import SiteNote from 'terraso-client-shared/site/siteSlice';
 
@@ -57,37 +58,36 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   }, [navigation, siteId]);
 
   return (
-    <Column>
-      <Row backgroundColor="background.default" px="16px" py="12px">
-        <Heading variant="h6">{t('site.notes.title')}</Heading>
-      </Row>
-      <Box height="16px" />
-      {project?.siteInstructions && (
-        <SiteInstructionsCard siteInstructions={project?.siteInstructions} />
-      )}
-      <RestrictBySiteRole
-        role={[
-          {kind: 'site', role: 'OWNER'},
-          {kind: 'project', role: 'MANAGER'},
-          {kind: 'project', role: 'CONTRIBUTOR'},
-        ]}>
-        <Box pl={4} pb={4} alignItems="flex-start">
-          <Button
-            size="lg"
-            shadow={5}
-            onPress={onAddNote}
-            _text={{textTransform: 'uppercase'}}>
-            {t('site.notes.add_note_label')}
-          </Button>
-        </Box>
-      </RestrictBySiteRole>
-      <FlatList
-        pb={540}
-        data={Object.values(site.notes)}
-        keyExtractor={note => note.id}
-        ListFooterComponent={<Box height="300px" />}
-        renderItem={({item: note}) => <SiteNoteCard note={note} />}
-      />
-    </Column>
+    <ScrollView>
+      <Column>
+        <Row backgroundColor="background.default" px="16px" py="12px">
+          <Heading variant="h6">{t('site.notes.title')}</Heading>
+        </Row>
+        <Box height="16px" />
+        {project?.siteInstructions && (
+          <SiteInstructionsCard siteInstructions={project?.siteInstructions} />
+        )}
+        <RestrictBySiteRole
+          role={[
+            {kind: 'site', role: 'OWNER'},
+            {kind: 'project', role: 'MANAGER'},
+            {kind: 'project', role: 'CONTRIBUTOR'},
+          ]}>
+          <Box pl={4} pb={4} alignItems="flex-start">
+            <Button
+              size="lg"
+              shadow={5}
+              onPress={onAddNote}
+              _text={{textTransform: 'uppercase'}}>
+              {t('site.notes.add_note_label')}
+            </Button>
+          </Box>
+        </RestrictBySiteRole>
+        {Object.values(site.notes).map(note => (
+          <SiteNoteCard note={note} key={note.id} />
+        ))}
+        {site.notes && <Box height="300px" />}
+      </Column>
+    </ScrollView>
   );
 };
