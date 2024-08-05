@@ -44,7 +44,9 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
 import {
@@ -140,54 +142,78 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
 
   return (
     <SoilPitInputScreenScaffold {...props}>
-      <ScrollView bg="grey.300">
-        <Column p="15px" bg="primary.contrast">
-          <Row alignItems="center">
-            <Heading variant="h6">{t('soil.texture.title')}</Heading>
-            <InfoOverlaySheetButton Header={t('soil.texture.info.title')}>
-              <TextureInfoContent />
-            </InfoOverlaySheetButton>
-          </Row>
-          <Box height="sm" />
-          <Select
-            nullable
-            label={t('soil.texture.label')}
-            options={textures}
-            value={depthData?.texture ?? null}
-            onValueChange={onTextureChange}
-            renderValue={renderTexture}
-          />
-        </Column>
-        <Column p="15px" alignItems="flex-start">
-          <Text variant="body1">{t('soil.texture.guide_intro')}</Text>
-          <Box height="10px" />
-          <Button
-            onPress={onGuide}
-            rightIcon={<Icon name="chevron-right" />}
-            _text={{textTransform: 'uppercase'}}>
-            {t('soil.texture.use_guide_label')}
-          </Button>
-        </Column>
-        <Column p="15px" bg="primary.contrast">
-          <Row alignItems="center">
-            <Text variant="body1-strong">
-              {t('soil.texture.fragment_title')}
-            </Text>
-            <InfoOverlaySheetButton
-              Header={t('soil.texture.fragment.info.title')}>
-              <RockFragmentVolumeInfoContent />
-            </InfoOverlaySheetButton>
-          </Row>
-          <Box height="10px" />
-          <ImageRadio
-            value={depthData?.rockFragmentVolume}
-            options={fragmentOptions}
-            minimumPerRow={2}
-            onChange={onFragmentChange}
-          />
-        </Column>
-      </ScrollView>
-      <DoneButton />
+      <SiteRoleContextProvider siteId={siteId}>
+        <ScrollView>
+          <Column p="15px" bg="primary.contrast">
+            <Row alignItems="center">
+              <Heading variant="h6">{t('soil.texture.title')}</Heading>
+              <InfoOverlaySheetButton Header={t('soil.texture.info.title')}>
+                <TextureInfoContent />
+              </InfoOverlaySheetButton>
+            </Row>
+            <RestrictBySiteRole
+              role={[
+                {kind: 'project', role: 'MANAGER'},
+                {kind: 'project', role: 'CONTRIBUTOR'},
+                {kind: 'site', role: 'OWNER'},
+              ]}>
+              <Box height="sm" />
+              <Select
+                nullable
+                label={t('soil.texture.label')}
+                options={textures}
+                value={depthData?.texture ?? null}
+                onValueChange={onTextureChange}
+                renderValue={renderTexture}
+              />
+            </RestrictBySiteRole>
+          </Column>
+          <RestrictBySiteRole
+            role={[
+              {kind: 'project', role: 'MANAGER'},
+              {kind: 'project', role: 'CONTRIBUTOR'},
+              {kind: 'site', role: 'OWNER'},
+            ]}>
+            <Column p="15px" alignItems="flex-start" bg="grey.300">
+              <Text variant="body1">{t('soil.texture.guide_intro')}</Text>
+              <Box height="10px" />
+              <Button
+                onPress={onGuide}
+                rightIcon={<Icon name="chevron-right" />}
+                _text={{textTransform: 'uppercase'}}>
+                {t('soil.texture.use_guide_label')}
+              </Button>
+            </Column>
+          </RestrictBySiteRole>
+
+          <Column p="15px" bg="primary.contrast">
+            <Row alignItems="center">
+              <Text variant="body1-strong">
+                {t('soil.texture.fragment_title')}
+              </Text>
+              <InfoOverlaySheetButton
+                Header={t('soil.texture.fragment.info.title')}>
+                <RockFragmentVolumeInfoContent />
+              </InfoOverlaySheetButton>
+            </Row>
+            <Box height="10px" />
+            <ImageRadio
+              value={depthData?.rockFragmentVolume}
+              options={fragmentOptions}
+              minimumPerRow={2}
+              onChange={onFragmentChange}
+            />
+          </Column>
+        </ScrollView>
+        <RestrictBySiteRole
+          role={[
+            {kind: 'project', role: 'MANAGER'},
+            {kind: 'project', role: 'CONTRIBUTOR'},
+            {kind: 'site', role: 'OWNER'},
+          ]}>
+          <DoneButton />
+        </RestrictBySiteRole>
+      </SiteRoleContextProvider>
     </SoilPitInputScreenScaffold>
   );
 };
