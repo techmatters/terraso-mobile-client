@@ -128,7 +128,7 @@ export const Select = <T, Nullable extends boolean>({
             if (optionKey) {
               key = option === null ? null : optionKey(option);
             } else {
-              key = itemLabel;
+              key = itemLabel === undefined ? '' : itemLabel;
             }
             return (
               <MenuItem
