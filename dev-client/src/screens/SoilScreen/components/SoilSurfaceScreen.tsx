@@ -33,6 +33,8 @@ import {
   Heading,
   Paragraph,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -57,30 +59,47 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar title={site.name} />}>
-      <Column padding="md">
-        <Heading variant="h6">
-          {t('soil.collection_method.verticalCracking')}
-        </Heading>
-        <Select
-          nullable
-          value={cracking ?? null}
-          onValueChange={onUpdate}
-          options={surfaceCracks}
-          renderValue={renderSurfaceCrack}
-        />
-        <Box height="lg" />
-        <Paragraph>
-          {t('soil.vertical_cracking.description', {units: 'METRIC'})}
-        </Paragraph>
-        <Box width="100%" alignItems="center">
-          <Image
-            source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
-          />
-        </Box>
-      </Column>
-      <Box position="absolute" bottom="0" right="0">
-        <DoneButton isDisabled={!cracking} />
-      </Box>
+      <SiteRoleContextProvider siteId={siteId}>
+        <Column padding="md">
+          <Heading variant="h6">
+            {t('soil.collection_method.verticalCracking')}
+          </Heading>
+          <RestrictBySiteRole
+            role={[
+              {kind: 'site', role: 'OWNER'},
+              {kind: 'project', role: 'MANAGER'},
+              {kind: 'project', role: 'CONTRIBUTOR'},
+            ]}>
+            <Select
+              nullable
+              value={cracking ?? null}
+              onValueChange={onUpdate}
+              options={surfaceCracks}
+              renderValue={renderSurfaceCrack}
+            />
+            <Box height="lg" />
+          </RestrictBySiteRole>
+
+          <Paragraph>
+            {t('soil.vertical_cracking.description', {units: 'METRIC'})}
+          </Paragraph>
+          <Box width="100%" alignItems="center">
+            <Image
+              source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
+            />
+          </Box>
+        </Column>
+        <RestrictBySiteRole
+          role={[
+            {kind: 'site', role: 'OWNER'},
+            {kind: 'project', role: 'MANAGER'},
+            {kind: 'project', role: 'CONTRIBUTOR'},
+          ]}>
+          <Box position="absolute" bottom="0" right="0">
+            <DoneButton isDisabled={!cracking} />
+          </Box>
+        </RestrictBySiteRole>
+      </SiteRoleContextProvider>
     </ScreenScaffold>
   );
 };
