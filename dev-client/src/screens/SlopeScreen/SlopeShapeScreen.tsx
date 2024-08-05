@@ -47,6 +47,7 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -153,7 +154,14 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
           minimumPerRow={3}
         />
       </ScrollView>
-      <DoneButton />
+      <RestrictBySiteRole
+        role={[
+          {kind: 'site', role: 'OWNER'},
+          {kind: 'project', role: 'MANAGER'},
+          {kind: 'project', role: 'CONTRIBUTOR'},
+        ]}>
+        <DoneButton />
+      </RestrictBySiteRole>
     </ScreenScaffold>
   );
 };
