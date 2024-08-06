@@ -94,11 +94,16 @@ export const Select = <T, Nullable extends boolean>({
               ) : (
                 <></>
               )}
-              <Text variant="input-text">
+              <Text
+                variant="input-text"
+                color={disabled ? 'text.disabled' : 'text.primary'}>
                 {value === null ? label : renderValue(value)}
               </Text>
             </Column>
-            <Icon color="action.active" name="arrow-drop-down" />
+            <Icon
+              color={disabled ? 'action.disabled' : 'action.active'}
+              name="arrow-drop-down"
+            />
           </Row>
         </Pressable>
       )}>
