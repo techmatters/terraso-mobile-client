@@ -24,6 +24,8 @@ import {fromEntries} from 'terraso-client-shared/utils';
 
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -96,17 +98,26 @@ export const PhotoConditions = (props: SoilPitInputScreenProps) => {
   );
 
   return (
-    <Column paddingHorizontal="md">
-      <RadioBlock
-        label={t('soil.color.soil_condition')}
-        options={soilOptions}
-        groupProps={soilGroupProps}
-      />
-      <RadioBlock
-        label={t('soil.color.lighting_condition')}
-        options={lightingOptions}
-        groupProps={lightingGroupProps}
-      />
-    </Column>
+    <SiteRoleContextProvider siteId={props.siteId}>
+      <RestrictBySiteRole
+        role={[
+          {kind: 'project', role: 'MANAGER'},
+          {kind: 'project', role: 'CONTRIBUTOR'},
+          {kind: 'site', role: 'OWNER'},
+        ]}>
+        <Column paddingHorizontal="md">
+          <RadioBlock
+            label={t('soil.color.soil_condition')}
+            options={soilOptions}
+            groupProps={soilGroupProps}
+          />
+          <RadioBlock
+            label={t('soil.color.lighting_condition')}
+            options={lightingOptions}
+            groupProps={lightingGroupProps}
+          />
+        </Column>
+      </RestrictBySiteRole>
+    </SiteRoleContextProvider>
   );
 };
