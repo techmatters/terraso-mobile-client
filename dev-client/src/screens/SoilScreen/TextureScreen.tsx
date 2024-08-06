@@ -21,7 +21,10 @@ import {Image, ImageSourcePropType} from 'react-native';
 
 import {Button, ScrollView} from 'native-base';
 
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
+import {
+  selectDepthDependentData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {
   RockFragmentVolume,
   SoilTexture,
@@ -73,6 +76,13 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const depthData = useSelector(selectDepthDependentData(props));
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+
+  const isViewer = useMemo(
+    () => Boolean(userRole && ['VIEWER'].includes(userRole.role)),
+    [userRole],
+  );
 
   const onTextureChange = useCallback(
     (texture: SoilTexture | null) => {
@@ -201,7 +211,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
               value={depthData?.rockFragmentVolume}
               options={fragmentOptions}
               minimumPerRow={2}
-              onChange={onFragmentChange}
+              onChange={isViewer ? () => {} : onFragmentChange}
             />
           </Column>
         </ScrollView>
