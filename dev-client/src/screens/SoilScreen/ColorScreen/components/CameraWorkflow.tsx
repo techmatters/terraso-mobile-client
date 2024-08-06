@@ -28,6 +28,8 @@ import {
   Column,
   Paragraph,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
@@ -51,26 +53,35 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   );
 
   return (
-    <Column>
-      <Box alignItems="center" paddingVertical="lg">
-        <PickImageButton
-          featureName={t('soil.color.featureName')}
-          onPick={onPickImage}
-        />
-      </Box>
-      <Column
-        backgroundColor="grey.300"
-        paddingHorizontal="md"
-        paddingVertical="lg"
-        alignItems="flex-start">
-        <Paragraph>{t('soil.color.photo_need_help')}</Paragraph>
-        <Button
-          _text={{textTransform: 'uppercase'}}
-          onPress={onUseGuide}
-          rightIcon={<Icon name="chevron-right" />}>
-          {t('soil.color.use_guide_label')}
-        </Button>
-      </Column>
-    </Column>
+    <SiteRoleContextProvider siteId={props.siteId}>
+      <RestrictBySiteRole
+        role={[
+          {kind: 'project', role: 'MANAGER'},
+          {kind: 'project', role: 'CONTRIBUTOR'},
+          {kind: 'site', role: 'OWNER'},
+        ]}>
+        <Column>
+          <Box alignItems="center" paddingVertical="lg">
+            <PickImageButton
+              featureName={t('soil.color.featureName')}
+              onPick={onPickImage}
+            />
+          </Box>
+          <Column
+            backgroundColor="grey.300"
+            paddingHorizontal="md"
+            paddingVertical="lg"
+            alignItems="flex-start">
+            <Paragraph>{t('soil.color.photo_need_help')}</Paragraph>
+            <Button
+              _text={{textTransform: 'uppercase'}}
+              onPress={onUseGuide}
+              rightIcon={<Icon name="chevron-right" />}>
+              {t('soil.color.use_guide_label')}
+            </Button>
+          </Column>
+        </Column>
+      </RestrictBySiteRole>
+    </SiteRoleContextProvider>
   );
 };
