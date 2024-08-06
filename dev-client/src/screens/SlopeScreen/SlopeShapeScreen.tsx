@@ -25,7 +25,10 @@ import {
   SoilIdSoilDataCrossSlopeChoices,
   SoilIdSoilDataDownSlopeChoices,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {selectSoilData} from 'terraso-client-shared/selectors';
+import {
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';
@@ -68,6 +71,13 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const {downSlope, crossSlope} = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
+
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+
+  const isViewer = useMemo(
+    () => Boolean(userRole && ['VIEWER'].includes(userRole.role)),
+    [userRole],
+  );
 
   const options = useMemo<Record<CombinedSlope, ImageRadioOption>>(
     () => ({
@@ -152,7 +162,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
               downSlope && crossSlope ? `${downSlope}:${crossSlope}` : undefined
             }
             options={options}
-            onChange={onChange}
+            onChange={isViewer ? () => {} : onChange}
             minimumPerRow={3}
           />
         </ScrollView>

@@ -22,7 +22,10 @@ import {Image, StyleSheet} from 'react-native';
 import {Button, ScrollView} from 'native-base';
 
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {selectSoilData} from 'terraso-client-shared/selectors';
+import {
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
@@ -69,6 +72,13 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
     useState<SoilIdSoilDataSlopeSteepnessSelectChoices | null>(null);
   const confirmationModalRef = useRef<ModalHandle>(null);
   const navigation = useNavigation();
+
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+
+  const isViewer = useMemo(
+    () => Boolean(userRole && ['VIEWER'].includes(userRole.role)),
+    [userRole],
+  );
 
   const steepnessOptions = useMemo(
     () =>
@@ -179,7 +189,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
           <ImageRadio
             value={soilData.slopeSteepnessSelect}
             options={steepnessOptions as any}
-            onChange={onSteepnessOptionSelected}
+            onChange={isViewer ? () => {} : onSteepnessOptionSelected}
             minimumPerRow={2}
           />
         </ScrollView>
