@@ -61,10 +61,7 @@ export const SiteCard = ({
   return (
     <Card
       Header={
-        <Heading
-          variant="h6"
-          color="primary.main"
-          flex={isPopover ? 1 : undefined}>
+        <Heading variant="h6" color="primary.main" flex={1}>
           {site.name}
         </Heading>
       }
