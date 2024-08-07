@@ -41,9 +41,8 @@
  * the only number left is the value.
  */
 
-import {getDeltaE00, LAB} from 'delta-e';
-import {labToMhvc, mhvcToLab, mhvcToRgb255, rgb255ToMhvc} from 'munsell';
-import quantize from 'quantize';
+import {LAB} from 'delta-e';
+import {labToMhvc, mhvcToLab, mhvcToRgb255} from 'munsell';
 
 import {
   ColorHue,
@@ -51,35 +50,13 @@ import {
   colorValues,
   nonNeutralColorHues,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {entries} from 'terraso-client-shared/utils';
 
-import {SOIL_COLORS} from 'terraso-mobile-client/model/color/soilColors';
-
-const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;
-
-export const REFERENCES = {
-  CAMERA_TRAX: [210.15, 213.95, 218.42],
-  CANARY_POST_IT: [249.92, 242.07, 161.42],
-  WHITE_BALANCE: [192.96, 192.0, 191.74],
-} as const satisfies Record<string, RGB>;
-
-export type RGBA = [number, number, number, number];
-export type RGB = [number, number, number];
-// Munsell hue/value/chroma tuple
-export type MunsellHVC = readonly [number, number, number];
-export type MunsellColor = {
-  colorHue: number;
-  colorChroma: number;
-  colorValue: number;
-};
-
-export type PartialMunsellColor = {
-  colorHue?: number | null;
-  colorChroma?: number | null;
-  colorValue?: number | null;
-};
-
-const COLOR_COUNT = 16;
+import {
+  MunsellColor,
+  MunsellHVC,
+  PartialMunsellColor,
+  RGB,
+} from 'terraso-mobile-client/model/color/types';
 
 export const isColorComplete = <T>(
   soilData: T & PartialMunsellColor,
@@ -119,79 +96,6 @@ export const munsellHVCToLAB = (color: MunsellHVC): LAB => {
 export const LABToMunsell = ({L, A, B}: LAB): MunsellColor => {
   const [colorHue, colorValue, colorChroma] = labToMhvc(L, A, B);
   return {colorHue, colorValue, colorChroma};
-};
-
-export type ValidColorResult = {result: MunsellColor};
-export type InvalidColorResult = {
-  invalidResult: MunsellColor;
-  nearestValidResult: MunsellColor;
-};
-export type ColorResult = ValidColorResult | InvalidColorResult;
-export const getColor = (
-  pixelCard: RGBA[],
-  pixelSoil: RGBA[],
-  referenceRGB: RGB,
-): ColorResult => {
-  const getPalette = (pixels: RGBA[]) => {
-    // Transform pixel info from canvas so quantize can use it
-    const pixelArray = pixels.flatMap(([r, g, b, a]) => {
-      // If pixel is mostly opaque and not white
-      if (a >= 125) {
-        if (!(r > 250 && g > 250 && b > 250)) {
-          return [[r, g, b] as quantize.RgbPixel];
-        }
-      }
-      return [];
-    });
-    // Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
-    var cmap = quantize(pixelArray, COLOR_COUNT);
-    if (cmap === false) {
-      throw new Error('Unexpected color algorithm failure!');
-    }
-
-    return cmap.palette();
-  };
-
-  // Get the color palettes of both soil and card
-  const paletteCard = getPalette(pixelCard);
-  const paletteSample = getPalette(pixelSoil);
-
-  // Correction values obtain from spectrophotometer Observer. = 2°, Illuminant = D65
-  const correctSampleRGB = (cardPixel: RGB, samplePixel: RGB) => {
-    const corrected = cardPixel.map(
-      (cardV, index) => (referenceRGB[index] / cardV) * samplePixel[index],
-    ) as RGB;
-
-    return {
-      rgb: corrected,
-      rgbRaw: samplePixel,
-    };
-  };
-
-  const sample = correctSampleRGB(paletteCard[0], paletteSample[0]);
-  const predicted = rgb255ToMhvc(...sample.rgb);
-
-  // take the minimum by distance to predicted color
-  const nearest = nearestSoilColor(predicted);
-
-  const nearestResult = {
-    colorHue: nearest[0],
-    colorValue: nearest[1],
-    colorChroma: nearest[2],
-  };
-
-  if (munsellDistance(nearest, predicted) < SOIL_COLOR_SIMILARITY_THRESHOLD) {
-    return {result: nearestResult};
-  }
-
-  return {
-    nearestValidResult: nearestResult,
-    invalidResult: {
-      colorHue: predicted[0],
-      colorValue: predicted[1],
-      colorChroma: predicted[2],
-    },
-  };
 };
 
 type PartialHue = {
@@ -252,27 +156,3 @@ export const munsellToString = (color: MunsellColor) => {
 
   return `${hueSubstep}${hue} ${value}/${chroma}`;
 };
-
-export const nearestSoilColor = (color: MunsellHVC) =>
-  FLATTENED_SOIL_COLORS.reduce((a, b) =>
-    munsellDistance(a, color) < munsellDistance(b, color) ? a : b,
-  );
-
-export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
-  getDeltaE00(munsellHVCToLAB(a), munsellHVCToLAB(b));
-
-const FLATTENED_SOIL_COLORS: MunsellHVC[] = entries(SOIL_COLORS).flatMap(
-  ([hue, substepValueChromas]) =>
-    substepValueChromas.flatMap(([substep, valueChromas]) =>
-      valueChromas.flatMap(([value, chromas]) =>
-        chromas.map(
-          chroma =>
-            [
-              hue === 'N' ? 0 : nonNeutralColorHues.indexOf(hue) * 10 + substep,
-              value,
-              chroma,
-            ] as const,
-        ),
-      ),
-    ),
-);

@@ -25,10 +25,10 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
-  MunsellColor,
   munsellToRGB,
   munsellToString,
-} from 'terraso-mobile-client/model/color/munsellConversions';
+} from 'terraso-mobile-client/model/color/colorConversions';
+import {MunsellColor} from 'terraso-mobile-client/model/color/types';
 
 type Props = {
   color: MunsellColor;

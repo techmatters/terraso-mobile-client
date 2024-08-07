@@ -27,7 +27,7 @@ import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   isColorComplete,
   munsellToString,
-} from 'terraso-mobile-client/model/color/munsellConversions';
+} from 'terraso-mobile-client/model/color/colorConversions';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 
 export const renderDepth = (
