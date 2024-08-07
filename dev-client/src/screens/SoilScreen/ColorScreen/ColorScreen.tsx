@@ -39,10 +39,8 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {
-  isColorComplete,
-  MunsellColor,
-} from 'terraso-mobile-client/model/color/munsellConversions';
+import {isColorComplete} from 'terraso-mobile-client/model/color/colorConversions';
+import {MunsellColor} from 'terraso-mobile-client/model/color/types';
 import {
   isProjectEditor,
   SITE_EDITOR_ROLES,
