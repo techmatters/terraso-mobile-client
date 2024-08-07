@@ -34,6 +34,7 @@ import {
 const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;
 const COLOR_COUNT = 16;
 
+// Correction values obtain from spectrophotometer Observer. = 2°, Illuminant = D65
 export const REFERENCES = {
   CAMERA_TRAX: [210.15, 213.95, 218.42],
   CANARY_POST_IT: [249.92, 242.07, 161.42],
@@ -45,44 +46,9 @@ export const getColor = (
   pixelSoil: RGBA[],
   referenceRGB: RGB,
 ): ColorResult => {
-  const getPalette = (pixels: RGBA[]) => {
-    // Transform pixel info from canvas so quantize can use it
-    const pixelArray = pixels.flatMap(([r, g, b, a]) => {
-      // If pixel is mostly opaque and not white
-      if (a >= 125) {
-        if (!(r > 250 && g > 250 && b > 250)) {
-          return [[r, g, b] as quantize.RgbPixel];
-        }
-      }
-      return [];
-    });
-    // Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
-    var cmap = quantize(pixelArray, COLOR_COUNT);
-    if (cmap === false) {
-      throw new Error('Unexpected color algorithm failure!');
-    }
-
-    return cmap.palette();
-  };
-
-  // Get the color palettes of both soil and card
-  const paletteCard = getPalette(pixelCard);
-  const paletteSample = getPalette(pixelSoil);
-
-  // Correction values obtain from spectrophotometer Observer. = 2°, Illuminant = D65
-  const correctSampleRGB = (cardPixel: RGB, samplePixel: RGB) => {
-    const corrected = cardPixel.map(
-      (cardV, index) => (referenceRGB[index] / cardV) * samplePixel[index],
-    ) as RGB;
-
-    return {
-      rgb: corrected,
-      rgbRaw: samplePixel,
-    };
-  };
-
-  const sample = correctSampleRGB(paletteCard[0], paletteSample[0]);
-  const predicted = rgb255ToMhvc(...sample.rgb);
+  const predicted = rgb255ToMhvc(
+    ...predictColorFromReference(pixelSoil, pixelCard, referenceRGB),
+  );
 
   // take the minimum by distance to predicted color
   const nearest = nearestSoilColor(predicted);
@@ -107,12 +73,55 @@ export const getColor = (
   };
 };
 
-export const nearestSoilColor = (color: MunsellHVC) =>
+export const predictColorFromReference = (
+  samplePixels: RGBA[],
+  referencePixels: RGBA[],
+  referenceRGB: RGB,
+) => {
+  return correctSampleRGB(
+    dominantColor(referencePixels),
+    dominantColor(samplePixels),
+    referenceRGB,
+  );
+};
+
+const correctSampleRGB = (
+  cardPixel: RGB,
+  samplePixel: RGB,
+  referenceRGB: RGB,
+): RGB => {
+  return cardPixel.map(
+    (cardV, index) => (referenceRGB[index] / cardV) * samplePixel[index],
+  ) as RGB;
+};
+
+export const dominantColor = (pixels: RGBA[]): RGB => {
+  // Transform pixel info from canvas so quantize can use it
+  const pixelArray = pixels.flatMap(([r, g, b, a]) => {
+    // If pixel is mostly opaque and not white
+    if (a >= 125) {
+      if (!(r > 250 && g > 250 && b > 250)) {
+        return [[r, g, b] as quantize.RgbPixel];
+      }
+    }
+    return [];
+  });
+
+  // Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
+  var cmap = quantize(pixelArray, COLOR_COUNT);
+  if (cmap === false) {
+    throw new Error('Unexpected color algorithm failure!');
+  }
+
+  return cmap.palette()[0];
+};
+
+const nearestSoilColor = (color: MunsellHVC) =>
   FLATTENED_SOIL_COLORS.reduce((a, b) =>
     munsellDistance(a, color) < munsellDistance(b, color) ? a : b,
   );
 
-export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
+const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
   getDeltaE00(munsellHVCToLAB(a), munsellHVCToLAB(b));
 
 const FLATTENED_SOIL_COLORS: MunsellHVC[] = entries(SOIL_COLORS).flatMap(
