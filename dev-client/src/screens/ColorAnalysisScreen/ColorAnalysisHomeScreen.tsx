@@ -42,11 +42,13 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   getColor,
+  REFERENCES,
+} from 'terraso-mobile-client/model/color/colorDetection';
+import {
   InvalidColorResult,
   MunsellColor,
-  REFERENCES,
   RGBA,
-} from 'terraso-mobile-client/model/color/munsellConversions';
+} from 'terraso-mobile-client/model/color/types';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
 import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';
