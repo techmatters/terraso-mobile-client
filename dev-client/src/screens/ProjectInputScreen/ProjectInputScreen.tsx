@@ -119,6 +119,7 @@ export const ProjectInputScreen = ({
           </RestrictByProjectRole>
         </Box>
         <Accordion
+          initiallyOpen={true}
           Head={
             <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
               {t('soil.pit')}
@@ -127,19 +128,15 @@ export const ProjectInputScreen = ({
           <SoilPitSettings projectId={projectId} />
         </Accordion>
         <Box height={4} />
-        <RestrictByProjectRole role="MANAGER">
-          <Accordion
-            Head={
-              <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
-                {t('soil.project_settings.required_data_title')}
-              </Text>
-            }>
-            <RequiredDataSettings
-              projectId={projectId}
-              enabled={allowEditing}
-            />
-          </Accordion>
-        </RestrictByProjectRole>
+        <Accordion
+          initiallyOpen={true}
+          Head={
+            <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
+              {t('soil.project_settings.required_data_title')}
+            </Text>
+          }>
+          <RequiredDataSettings projectId={projectId} enabled={allowEditing} />
+        </Accordion>
       </ScrollView>
       <RestrictByProjectRole role="MANAGER">
         <Fab
