@@ -144,7 +144,9 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 onChangeText={text => {
                   handleChange('slopeSteepnessPercent')(text);
                   setLastTouched('slopeSteepnessPercent');
-                  if (
+                  if (text === '') {
+                    handleChange('slopeSteepnessDegree')('');
+                  } else if (
                     (
                       yup.reach(
                         schema,
@@ -170,7 +172,9 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 onChangeText={text => {
                   handleChange('slopeSteepnessDegree')(text);
                   setLastTouched('slopeSteepnessDegree');
-                  if (
+                  if (text === '') {
+                    handleChange('slopeSteepnessPercent')('');
+                  } else if (
                     (
                       yup.reach(
                         schema,
