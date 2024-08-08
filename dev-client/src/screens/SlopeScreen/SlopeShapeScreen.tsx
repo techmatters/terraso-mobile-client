@@ -25,7 +25,10 @@ import {
   SoilIdSoilDataCrossSlopeChoices,
   SoilIdSoilDataDownSlopeChoices,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {selectSoilData} from 'terraso-client-shared/selectors';
+import {
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';
@@ -47,7 +50,13 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
@@ -66,6 +75,10 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const {downSlope, crossSlope} = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
+
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const options = useMemo<Record<CombinedSlope, ImageRadioOption>>(
     () => ({
@@ -131,29 +144,33 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
 
   return (
     <ScreenScaffold AppBar={<AppBar title={name} />} BottomNavigation={null}>
-      <ScrollView
-        bg="primary.contrast"
-        _contentContainerStyle={styles.scrollContentContainer}>
-        <Column>
-          <Column p="15px" bg="primary.contrast">
-            <Row alignItems="center">
-              <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
-              <InfoOverlaySheetButton Header={t('slope.shape.info.title')}>
-                <SlopeShapeInfoContent />
-              </InfoOverlaySheetButton>
-            </Row>
+      <SiteRoleContextProvider siteId={siteId}>
+        <ScrollView
+          bg="primary.contrast"
+          _contentContainerStyle={styles.scrollContentContainer}>
+          <Column>
+            <Column p="15px" bg="primary.contrast">
+              <Row alignItems="center">
+                <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
+                <InfoOverlaySheetButton Header={t('slope.shape.info.title')}>
+                  <SlopeShapeInfoContent />
+                </InfoOverlaySheetButton>
+              </Row>
+            </Column>
           </Column>
-        </Column>
-        <ImageRadio
-          value={
-            downSlope && crossSlope ? `${downSlope}:${crossSlope}` : undefined
-          }
-          options={options}
-          onChange={onChange}
-          minimumPerRow={3}
-        />
-      </ScrollView>
-      <DoneButton />
+          <ImageRadio
+            value={
+              downSlope && crossSlope ? `${downSlope}:${crossSlope}` : undefined
+            }
+            options={options}
+            onChange={isViewer ? () => {} : onChange}
+            minimumPerRow={3}
+          />
+        </ScrollView>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+          <DoneButton />
+        </RestrictBySiteRole>
+      </SiteRoleContextProvider>
     </ScreenScaffold>
   );
 };

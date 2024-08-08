@@ -34,6 +34,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   TabRoutes,
   TabStackParamList,
@@ -92,7 +93,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
 
   return (
     <Column height="full" p={4} space={3} backgroundColor="background.default">
-      <RestrictByProjectRole role="MANAGER">
+      <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
         <Box alignSelf="flex-start">
           <AddButton
             text={t('projects.team.add')}
