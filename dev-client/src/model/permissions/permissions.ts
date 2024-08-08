@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {ProjectMembershipProjectRoleChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SiteUserRole} from 'terraso-client-shared/selectors';
 
 export const matchesOne =
@@ -36,6 +37,11 @@ export const SITE_EDITOR_ROLES: SiteUserRole[] = [
   {kind: 'project', role: 'MANAGER'},
   {kind: 'project', role: 'CONTRIBUTOR'},
   {kind: 'site', role: 'OWNER'},
+];
+
+export const PROJECT_EDITOR_ROLES: ProjectMembershipProjectRoleChoices[] = [
+  'MANAGER',
+  'CONTRIBUTOR',
 ];
 
 export const isProjectViewer = (userRole: SiteUserRole | null) => {
