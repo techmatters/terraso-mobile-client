@@ -33,6 +33,7 @@ import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   TabRoutes,
   TabStackParamList,
@@ -82,7 +83,7 @@ export function ProjectSettingsScreen({
           description={description}
           userRole={userRole}
         />
-        <RestrictByProjectRole role="MANAGER">
+        <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
           <ConfirmModal
             title={t('projects.settings.delete_button_prompt')}
             actionName={t('projects.settings.delete_button')}
