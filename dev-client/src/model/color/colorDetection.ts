@@ -32,7 +32,7 @@ import {
 } from 'terraso-mobile-client/model/color/types';
 
 const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;
-const COLOR_COUNT = 16;
+const COLOR_COUNT = 5;
 
 // Correction values obtain from spectrophotometer Observer. = 2°, Illuminant = D65
 export const REFERENCES = {
@@ -108,12 +108,17 @@ export const dominantColor = (pixels: RGBA[]): RGB => {
   });
 
   // Quantize.js performs median cut algorithm, and returns a palette of the "top 16" colors in the picture
-  var cmap = quantize(pixelArray, COLOR_COUNT);
-  if (cmap === false) {
+  var colorMap = quantize(pixelArray, COLOR_COUNT);
+  if (colorMap === false) {
     throw new Error('Unexpected color algorithm failure!');
   }
 
-  return cmap.palette()[0];
+  const colorsWithCounts = colorMap.vboxes.map(
+    vbox => [vbox.color, vbox.vbox.count()] as const,
+  );
+  const [dominantColor] = colorsWithCounts.sort(([, c1], [, c2]) => c2 - c1)[0];
+
+  return dominantColor;
 };
 
 const nearestSoilColor = (color: MunsellHVC) =>
