@@ -21,7 +21,7 @@ import {
   LABToMunsell,
   munsellHVCToLAB,
   munsellToRGB,
-} from 'terraso-mobile-client/model/color/munsellConversions';
+} from 'terraso-mobile-client/model/color/colorConversions';
 
 describe('isColorComplete', () => {
   test('returns true if complete', () => {

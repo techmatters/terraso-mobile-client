@@ -32,10 +32,8 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
-import {
-  isColorComplete,
-  MunsellColor,
-} from 'terraso-mobile-client/model/color/munsellConversions';
+import {isColorComplete} from 'terraso-mobile-client/model/color/colorConversions';
+import {MunsellColor} from 'terraso-mobile-client/model/color/types';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
