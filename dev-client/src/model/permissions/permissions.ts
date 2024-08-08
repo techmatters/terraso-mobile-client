@@ -32,3 +32,18 @@ export const isSiteManager = matchesRole([
   {kind: 'project', role: 'MANAGER'},
 ]);
 
+export const SITE_EDITOR_ROLES: SiteUserRole[] = [
+  {kind: 'project', role: 'MANAGER'},
+  {kind: 'project', role: 'CONTRIBUTOR'},
+  {kind: 'site', role: 'OWNER'},
+];
+
+export const isProjectViewer = (userRole: SiteUserRole | null) => {
+  return Boolean(userRole && ['VIEWER'].includes(userRole.role));
+};
+
+export const isProjectEditor = (userRole: SiteUserRole | null) => {
+  return Boolean(
+    userRole && ['MANAGER', 'CONTRIBUTOR', 'OWNER'].includes(userRole.role),
+  );
+};
