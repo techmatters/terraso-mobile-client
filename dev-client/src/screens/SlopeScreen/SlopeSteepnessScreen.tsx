@@ -145,12 +145,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
             </Column>
           </Column>
           <Column p="15px" bg="grey.300">
-            <RestrictBySiteRole
-              role={[
-                {kind: 'site', role: 'OWNER'},
-                {kind: 'project', role: 'MANAGER'},
-                {kind: 'project', role: 'CONTRIBUTOR'},
-              ]}>
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
               <Text variant="body1">{t('slope.steepness.description')}</Text>
               <Box height="30px" />
               <Row justifyContent="space-between">
@@ -193,12 +188,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
             minimumPerRow={2}
           />
         </ScrollView>
-        <RestrictBySiteRole
-          role={[
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-            {kind: 'site', role: 'OWNER'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <DoneButton />
         </RestrictBySiteRole>
       </SiteRoleContextProvider>

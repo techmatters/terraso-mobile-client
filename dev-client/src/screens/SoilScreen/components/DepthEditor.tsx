@@ -24,6 +24,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {EditDepthModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthModal';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 
@@ -49,12 +50,7 @@ export const DepthEditor = ({
       <Heading variant="h6" color="primary.contrast">
         {renderDepth(t, interval)}
       </Heading>
-      <RestrictBySiteRole
-        role={[
-          {kind: 'project', role: 'MANAGER'},
-          {kind: 'project', role: 'CONTRIBUTOR'},
-          {kind: 'site', role: 'OWNER'},
-        ]}>
+      <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <EditDepthModal
           siteId={siteId}
           depthInterval={interval.depthInterval}

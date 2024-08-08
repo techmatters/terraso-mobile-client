@@ -161,12 +161,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
                 <TextureInfoContent />
               </InfoOverlaySheetButton>
             </Row>
-            <RestrictBySiteRole
-              role={[
-                {kind: 'project', role: 'MANAGER'},
-                {kind: 'project', role: 'CONTRIBUTOR'},
-                {kind: 'site', role: 'OWNER'},
-              ]}>
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
               <Box height="sm" />
               <Select
                 nullable
@@ -178,12 +173,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
               />
             </RestrictBySiteRole>
           </Column>
-          <RestrictBySiteRole
-            role={[
-              {kind: 'project', role: 'MANAGER'},
-              {kind: 'project', role: 'CONTRIBUTOR'},
-              {kind: 'site', role: 'OWNER'},
-            ]}>
+          <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
             <Column p="15px" alignItems="flex-start" bg="grey.300">
               <Text variant="body1">{t('soil.texture.guide_intro')}</Text>
               <Box height="10px" />
@@ -215,12 +205,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             />
           </Column>
         </ScrollView>
-        <RestrictBySiteRole
-          role={[
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-            {kind: 'site', role: 'OWNER'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <DoneButton />
         </RestrictBySiteRole>
       </SiteRoleContextProvider>

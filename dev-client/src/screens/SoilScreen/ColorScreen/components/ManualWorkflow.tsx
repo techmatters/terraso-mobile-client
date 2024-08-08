@@ -190,12 +190,7 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
             />
           )}
         </Row>
-        <RestrictBySiteRole
-          role={[
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-            {kind: 'site', role: 'OWNER'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           {!isColorComplete(data) && (
             <Column
               paddingHorizontal="md"
