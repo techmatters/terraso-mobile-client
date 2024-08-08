@@ -162,17 +162,16 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
                 <TextureInfoContent />
               </InfoOverlaySheetButton>
             </Row>
-            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-              <Box height="sm" />
-              <Select
-                nullable
-                label={t('soil.texture.label')}
-                options={textures}
-                value={depthData?.texture ?? null}
-                onValueChange={onTextureChange}
-                renderValue={renderTexture}
-              />
-            </RestrictBySiteRole>
+            <Box height="sm" />
+            <Select
+              disabled={isViewer}
+              nullable
+              label={t('soil.texture.label')}
+              options={textures}
+              value={depthData?.texture ?? null}
+              onValueChange={onTextureChange}
+              renderValue={renderTexture}
+            />
           </Column>
           <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
             <Column p="15px" alignItems="flex-start" bg="grey.300">
