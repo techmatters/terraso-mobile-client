@@ -116,9 +116,9 @@ export const dominantColor = (pixels: RGBA[]): RGB => {
   const colorsWithCounts = colorMap.vboxes.map(
     vbox => [vbox.color, vbox.vbox.count()] as const,
   );
-  const [dominantColor] = colorsWithCounts.sort(([, c1], [, c2]) => c2 - c1)[0];
+  const [color] = colorsWithCounts.sort(([, c1], [, c2]) => c2 - c1)[0];
 
-  return dominantColor;
+  return color;
 };
 
 const nearestSoilColor = (color: MunsellHVC) =>
