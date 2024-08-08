@@ -41,6 +41,10 @@ import {
   isColorComplete,
   MunsellColor,
 } from 'terraso-mobile-client/model/color/munsellConversions';
+import {
+  isProjectEditor,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
@@ -75,11 +79,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
     selectUserRoleSite(state, props.siteId),
   );
 
-  const canDelete = useMemo(
-    () =>
-      userRole && ['MANAGER', 'CONTRIBUTOR', 'OWNER'].includes(userRole.role),
-    [userRole],
-  );
+  const canDelete = useMemo(() => isProjectEditor(userRole), [userRole]);
 
   const onClearValues = useCallback(() => {
     dispatch(
