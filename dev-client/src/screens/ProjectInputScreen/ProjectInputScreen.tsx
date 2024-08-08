@@ -36,6 +36,7 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   TabRoutes,
   TabStackParamList,
@@ -103,7 +104,7 @@ export const ProjectInputScreen = ({
               allDisabled={!allowEditing}
             />
           </Row>
-          <RestrictByProjectRole role="MANAGER">
+          <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
             <Text bold>{t('projects.inputs.instructions.title')}</Text>
             <Text>{t('projects.inputs.instructions.description')}</Text>
             <Button
@@ -138,7 +139,7 @@ export const ProjectInputScreen = ({
           <RequiredDataSettings projectId={projectId} enabled={allowEditing} />
         </Accordion>
       </ScrollView>
-      <RestrictByProjectRole role="MANAGER">
+      <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
         <Fab
           onPress={() => onSave()}
           textTransform="uppercase"
