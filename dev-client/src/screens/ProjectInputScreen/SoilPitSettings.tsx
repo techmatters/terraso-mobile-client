@@ -43,6 +43,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {DepthTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthTable';
 import {useDispatch} from 'terraso-mobile-client/store';
 
@@ -125,7 +126,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
         />
       )}
       {isCustom && (
-        <RestrictByProjectRole role="MANAGER">
+        <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
           <Modal
             trigger={onOpen => (
               <Button

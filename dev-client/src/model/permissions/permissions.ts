@@ -44,6 +44,10 @@ export const PROJECT_EDITOR_ROLES: ProjectMembershipProjectRoleChoices[] = [
   'CONTRIBUTOR',
 ];
 
+export const PROJECT_MANAGER_ROLES: ProjectMembershipProjectRoleChoices[] = [
+  'MANAGER',
+];
+
 export const isProjectViewer = (userRole: SiteUserRole | null) => {
   return Boolean(userRole && ['VIEWER'].includes(userRole.role));
 };
