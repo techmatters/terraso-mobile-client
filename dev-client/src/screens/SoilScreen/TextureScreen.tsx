@@ -50,6 +50,10 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
 import {
@@ -79,10 +83,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
 
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  const isViewer = useMemo(
-    () => Boolean(userRole && ['VIEWER'].includes(userRole.role)),
-    [userRole],
-  );
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const onTextureChange = useCallback(
     (texture: SoilTexture | null) => {

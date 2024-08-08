@@ -53,6 +53,10 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
@@ -74,10 +78,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
 
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  const isViewer = useMemo(
-    () => Boolean(userRole && ['VIEWER'].includes(userRole.role)),
-    [userRole],
-  );
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const options = useMemo<Record<CombinedSlope, ImageRadioOption>>(
     () => ({
