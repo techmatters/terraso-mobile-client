@@ -30,6 +30,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteInstructionsCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteInstructionsCard';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
@@ -67,12 +68,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
         {project?.siteInstructions && (
           <SiteInstructionsCard siteInstructions={project?.siteInstructions} />
         )}
-        <RestrictBySiteRole
-          role={[
-            {kind: 'site', role: 'OWNER'},
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <Box pl={4} pb={4} alignItems="flex-start">
             <Button
               size="lg"

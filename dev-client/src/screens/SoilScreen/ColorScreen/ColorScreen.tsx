@@ -120,12 +120,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
               </InfoOverlaySheetButton>
             </Row>
             <Box flex={1} />
-            <RestrictBySiteRole
-              role={[
-                {kind: 'project', role: 'MANAGER'},
-                {kind: 'project', role: 'CONTRIBUTOR'},
-                {kind: 'site', role: 'OWNER'},
-              ]}>
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
               {(workflow === 'CAMERA' || color) && (
                 <SwitchWorkflowButton {...props} />
               )}
@@ -146,12 +141,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
             {workflow === 'CAMERA' && <PhotoConditions {...props} />}
           </>
         )}
-        <RestrictBySiteRole
-          role={[
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-            {kind: 'site', role: 'OWNER'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <Box position="absolute" right="0" bottom="0">
             <DoneButton isDisabled={!color} />
           </Box>

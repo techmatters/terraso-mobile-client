@@ -30,6 +30,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
@@ -54,12 +55,7 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
 
   return (
     <SiteRoleContextProvider siteId={props.siteId}>
-      <RestrictBySiteRole
-        role={[
-          {kind: 'project', role: 'MANAGER'},
-          {kind: 'project', role: 'CONTRIBUTOR'},
-          {kind: 'site', role: 'OWNER'},
-        ]}>
+      <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Column>
           <Box alignItems="center" paddingVertical="lg">
             <PickImageButton

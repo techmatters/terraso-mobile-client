@@ -35,6 +35,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -64,12 +65,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
           <Heading variant="h6">
             {t('soil.collection_method.verticalCracking')}
           </Heading>
-          <RestrictBySiteRole
-            role={[
-              {kind: 'site', role: 'OWNER'},
-              {kind: 'project', role: 'MANAGER'},
-              {kind: 'project', role: 'CONTRIBUTOR'},
-            ]}>
+          <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
             <Select
               nullable
               value={cracking ?? null}
@@ -89,12 +85,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
             />
           </Box>
         </Column>
-        <RestrictBySiteRole
-          role={[
-            {kind: 'site', role: 'OWNER'},
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <Box position="absolute" bottom="0" right="0">
             <DoneButton isDisabled={!cracking} />
           </Box>

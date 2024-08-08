@@ -31,6 +31,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   renderSlopeSteepnessDegree,
@@ -79,12 +80,7 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
           )}
         </Box>
 
-        <RestrictBySiteRole
-          role={[
-            {kind: 'site', role: 'OWNER'},
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <Box paddingVertical="lg">
             <Button
               _text={{textTransform: 'uppercase'}}

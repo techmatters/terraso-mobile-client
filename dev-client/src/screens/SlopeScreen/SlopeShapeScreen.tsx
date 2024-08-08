@@ -166,12 +166,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
             minimumPerRow={3}
           />
         </ScrollView>
-        <RestrictBySiteRole
-          role={[
-            {kind: 'site', role: 'OWNER'},
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <DoneButton />
         </RestrictBySiteRole>
       </SiteRoleContextProvider>

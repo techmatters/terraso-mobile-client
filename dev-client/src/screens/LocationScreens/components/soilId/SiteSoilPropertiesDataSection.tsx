@@ -33,6 +33,7 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {rowsFromSiteSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
+import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -62,12 +63,7 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
 
       <Box marginTop="sm" />
       <SoilPropertiesDataTable rows={dataTableRows} />
-      <RestrictBySiteRole
-        role={[
-          {kind: 'site', role: 'OWNER'},
-          {kind: 'project', role: 'MANAGER'},
-          {kind: 'project', role: 'CONTRIBUTOR'},
-        ]}>
+      <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Box paddingVertical="lg">
           <Button
             _text={{textTransform: 'uppercase'}}
