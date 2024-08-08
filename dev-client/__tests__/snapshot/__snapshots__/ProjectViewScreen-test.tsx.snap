@@ -2403,7 +2403,7 @@ exports[`renders correctly 1`] = `
                                                   lineHeight="24px"
                                                   style={
                                                     {
-                                                      "color": "#1A202C",
+                                                      "color": "#9EA8AB",
                                                       "fontSize": 16,
                                                       "fontWeight": "400",
                                                     }
@@ -2413,7 +2413,7 @@ exports[`renders correctly 1`] = `
                                                 </Text>
                                               </View>
                                               <Icon
-                                                color="#1A202C"
+                                                color="#8B9498"
                                                 name="arrow-drop-down"
                                                 size={24}
                                                 style={{}}
