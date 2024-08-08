@@ -55,6 +55,10 @@ import {
   updateColorSelections,
   validProperties,
 } from 'terraso-mobile-client/model/color/soilColorValidation';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -68,10 +72,7 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
     selectUserRoleSite(state, props.siteId),
   );
 
-  const isViewer = useMemo(
-    () => Boolean(userRole && ['VIEWER'].includes(userRole.role)),
-    [userRole],
-  );
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const {hue: initialHue, substep: initialSubstep} = renderMunsellHue(data);
 

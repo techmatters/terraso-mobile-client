@@ -48,6 +48,10 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -75,10 +79,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
 
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  const isViewer = useMemo(
-    () => Boolean(userRole && ['VIEWER'].includes(userRole.role)),
-    [userRole],
-  );
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const steepnessOptions = useMemo(
     () =>
