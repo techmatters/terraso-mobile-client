@@ -1,0 +1,2521 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Terraso\n"
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2024-08-05T23:26:07.544Z\n"
+"PO-Revision-Date: 2024-08-05T23:26:07.545Z\n"
+
+msgctxt "0"
+msgid "soil##texture##rock##VOLUME"
+msgstr "0–1%"
+
+msgctxt "1"
+msgid "soil##texture##rock##VOLUME"
+msgid_plural "soil##texture##rock##VOLUME"
+msgstr[0] ""
+msgstr[1] "1–15%"
+
+msgctxt "15"
+msgid "soil##texture##rock##VOLUME"
+msgid_plural "soil##texture##rock##VOLUME"
+msgstr[0] ""
+msgstr[1] "15–35%"
+
+msgctxt "35"
+msgid "soil##texture##rock##VOLUME"
+msgid_plural "soil##texture##rock##VOLUME"
+msgstr[0] ""
+msgstr[1] "35–60%"
+
+msgid "welcome##title"
+msgstr "Welcome to LandPKS Soil ID"
+
+msgid "welcome##version##title"
+msgstr "This version includes:"
+
+msgid "welcome##version##bullet"
+msgid_plural "welcome##version##bullet"
+msgstr[0] "Site notes"
+msgstr[1] "Project management"
+msgstr[2] "Soil identification for US locations"
+msgstr[3] "Slope and soil data collection"
+
+msgid "welcome##next##title"
+msgstr "What’s next?"
+
+msgid "welcome##next##subtitle"
+msgstr "Future versions will include:"
+
+msgid "welcome##next##bullet"
+msgid_plural "welcome##next##bullet"
+msgstr[0] "Additional soil properties, such as soil structure and soil organic carbon"
+msgstr[1] "Site photos"
+msgstr[2] "Offline capabilities"
+msgstr[3] "Data visualization enhancements"
+
+msgid "home##info##title"
+msgstr "Discover your land’s potential"
+
+msgid "home##info##description"
+msgstr ""
+"<0>Discover the potential use and value of your land.</0> Accurately "
+"determine the soil type and other features of your land. Gain insights for "
+"grazing and farming options, carbon sequestration, and more.\n"
+"\n"
+"<2>There are three ways to use the map:</2>"
+
+msgid "home##info##list1"
+msgstr "Tap the map to drop a pin and get more information about that location."
+
+msgid "home##info##list2"
+msgstr "Tap the location icon <icon/> to find your current GPS location."
+
+msgid "home##info##list3"
+msgstr "Enter coordinates, address, or search term in the search bar."
+
+msgid "home##info##description2"
+msgstr ""
+"<bold>Find more information and guides</bold> at:\n"
+"<icon />"
+
+msgid "search##placeholder"
+msgstr "Search map"
+
+msgid "site##progress"
+msgstr "Progress: {{progress}}"
+
+msgid "site##members"
+msgstr "{{members}} Members"
+
+msgid "site##coords"
+msgstr "{{lat}}, {{lng}}"
+
+msgid "site##empty##info"
+msgstr ""
+"You don’t have any sites yet. A site lets you collect and save data, learn "
+"more about your land and its potential, and share with others.\n"
+"\n"
+"<bold>Use the map to create a site.</bold> There are three ways to use the "
+"map to find a location for a site:\n"
+
+msgid "site##empty##bullet"
+msgid_plural "site##empty##bullet"
+msgstr[0] "Enter coordinates, address, or other search term in the search bar."
+msgstr[1] "Tap the map to drop a pin and get more information about that location."
+msgstr[2] "Tap the location icon <icon/> to find your current GPS location."
+
+msgid "site##create##title"
+msgstr "Create Site"
+
+msgid "site##create##description"
+msgstr ""
+"Create a site here to save this location, collect data, and see more "
+"detailed reports."
+
+msgid "site##create##gps"
+msgstr "Use my current location (GPS)"
+
+msgid "site##create##pin"
+msgstr "Use map pin"
+
+msgid "site##create##manual"
+msgstr "Enter coordinates"
+
+msgid "site##create##latitude"
+msgstr "Latitude"
+
+msgid "site##create##longitude"
+msgstr "Longitude"
+
+msgid "site##dashboard##privacy"
+msgstr "Data Privacy"
+
+msgid "site##soil##title"
+msgstr "Soil ID"
+
+msgid "site##soil##description##site"
+msgstr ""
+"LandPKS Soil ID uses data from soil maps and data entered by users about "
+"this site to calculate the top matches for the site’s soil. Choose the best "
+"soil match for this site to learn about its ecological site and other "
+"properties."
+
+msgid "site##soil##matches##title"
+msgstr "Top Soil Matches"
+
+msgid "site##soil##matches##info##title"
+msgstr "Top soil matches"
+
+msgid "site##soil##matches##info##description##site"
+msgstr ""
+"The soils listed are the most likely to be found at the site based on USDA "
+"NRCS soil maps for this location.\n"
+"\n"
+"Enter the recommended slope and soil data to improve accuracy of the match "
+"scores. When this data is entered, the list will automatically update."
+
+msgid "site##soil##matches##match"
+msgstr "match"
+
+msgid "site##soil##site##title"
+msgstr "Site Data"
+
+msgid "site##soil##site##description"
+msgstr ""
+"Improve Soil ID results by entering some data for this site using the "
+"helpful guides along the way."
+
+msgid "site##soil##site##slope##title"
+msgstr "Slope Steepness"
+
+msgid "site##soil##site##soil##title"
+msgstr "Soil Properties"
+
+msgid "site##soil##site##soil##depth"
+msgstr ""
+"Depth ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": "
+"\"{{units}}\"}))"
+
+msgid "site##soil##site##soil##texture"
+msgstr "Texture"
+
+msgid "site##soil##site##soil##color"
+msgstr "Color"
+
+msgid "site##notes##title"
+msgstr "Site Notes"
+
+msgid "site##search##placeholder"
+msgstr "Search sites"
+
+msgid "site##search##sort##label"
+msgstr "Sort sites by"
+
+msgid "site##search##sort##nameAsc"
+msgstr "Name (A to Z)"
+
+msgid "site##search##sort##nameDesc"
+msgstr "Name (Z to A)"
+
+msgid "site##search##sort##lastModAsc"
+msgstr "Last Modified (most recent)"
+
+msgid "site##search##sort##lastModDesc"
+msgstr "Last Modified (least recent)"
+
+msgid "site##search##sort##distanceAsc"
+msgstr "Distance (closest)"
+
+msgid "site##search##sort##distanceDesc"
+msgstr "Distance (furthest)"
+
+msgid "site##tabs##SITE"
+msgstr "Site"
+
+msgid "site##tabs##SLOPE"
+msgstr "Slope"
+
+msgid "site##tabs##SOIL"
+msgstr "Soil"
+
+msgid "site##tabs##NOTES"
+msgstr "Notes"
+
+msgid "projects##label"
+msgstr "Project"
+
+msgid "projects##title"
+msgstr "Projects"
+
+msgid "projects##header"
+msgstr "Projects"
+
+msgid "projects##none##header"
+msgstr "You don’t have any projects."
+
+msgid "projects##none##info"
+msgstr "Projects let you group sites, set data needs, and manage team members."
+
+msgid "projects##create##public"
+msgstr "Public"
+
+msgid "projects##create##private"
+msgstr "Private"
+
+msgid "projects##tabs##inputs"
+msgstr "Inputs"
+
+msgid "projects##tabs##team"
+msgstr "Team"
+
+msgid "projects##tabs##sites"
+msgstr "Sites"
+
+msgid "projects##tabs##settings"
+msgstr "Settings"
+
+msgid "projects##inputs##units##heading"
+msgstr "Units of Measurement"
+
+msgid "projects##inputs##units##a11yLabel"
+msgstr "measurement units"
+
+msgid "projects##inputs##units##english"
+msgstr "English (in, ft, lb)"
+
+msgid "projects##inputs##units##metric"
+msgstr "Metric (cm, m , kg)"
+
+msgid "projects##inputs##soil##heading"
+msgstr "Default Soil Information Source"
+
+msgid "projects##inputs##soil##survey"
+msgstr "USDA NRCS Soil Survey"
+
+msgid "projects##inputs##soil##grids"
+msgstr "SoilGrids"
+
+msgid "projects##inputs##soil##a11yLabel"
+msgstr "default soil information source"
+
+msgid "projects##inputs##instructions##title"
+msgstr "Pinned Note"
+
+msgid "projects##inputs##instructions##description"
+msgstr ""
+"This content will display at the top of the Notes section of each site in "
+"this project."
+
+msgid "projects##inputs##depths##title"
+msgstr "Soil Pit Depths"
+
+msgid "projects##inputs##depths##preset##NRCS"
+msgstr "NRCS/GSP"
+
+msgid "projects##inputs##depths##preset##BLM"
+msgstr "BLM Monitoring Standard"
+
+msgid "projects##inputs##depths##preset##CUSTOM"
+msgstr "Custom…"
+
+msgid "projects##inputs##depths##preset##NONE"
+msgstr "None specified"
+
+msgid "projects##inputs##depths##confirm##title"
+msgstr "Change depths?"
+
+msgid "projects##inputs##depths##confirm##body"
+msgstr ""
+"Soil pit data that has been entered will be deleted. This action cannot be "
+"undone."
+
+msgid "projects##inputs##depths##confirm##confirm"
+msgstr "Change"
+
+msgid "projects##inputs##depths##label"
+msgstr "Label"
+
+msgid "projects##inputs##depths##depth"
+msgstr "Depth ({{units}})"
+
+msgid "projects##team##add"
+msgstr "Add team member"
+
+msgid "projects##settings##cancel"
+msgstr "Cancel"
+
+msgid "projects##settings##archive"
+msgstr "Archive this project"
+
+msgid "projects##settings##delete"
+msgstr "Delete this project"
+
+msgid "projects##sites##add"
+msgstr "Add sites"
+
+msgid "projects##sites##transfer"
+msgstr "Transfer Sites"
+
+msgid "projects##sites##create"
+msgstr "Create Sites"
+
+msgid "projects##sites##search##placeholder"
+msgstr "Search"
+
+msgid "projects##sites##sort##label"
+msgstr "Sort sites by:"
+
+msgid "projects##sites##sort##nameAsc"
+msgstr "Site name (A to Z)"
+
+msgid "projects##sites##sort##updatedAtAsc"
+msgstr "Date modified (most recent)"
+
+msgid "projects##sites##sort##distanceAsc"
+msgstr "Distance (nearest to me)"
+
+msgid "projects##add##heading"
+msgstr "Add Team Member"
+
+msgid "projects##manage##title"
+msgstr "Manage Team Member"
+
+msgid "projects##manage##remove"
+msgstr "Remove from project"
+
+msgid "projects##transfer##heading"
+msgstr "Transfer Sites to this Project"
+
+msgid "projects##transfer##description"
+msgstr ""
+"Transfer LandPKS Soil ID sites you manage to this project. When you "
+"transfer sites, they will use the data settings and team member roles from "
+"this project."
+
+msgid "projects##transfer##unaffiliated"
+msgstr "Unaffiliated"
+
+msgid "projects##search##placeholder"
+msgstr "Search projects"
+
+msgid "projects##search##nameAsc"
+msgstr "Sort (A to Z)"
+
+msgid "projects##search##nameDesc"
+msgstr "Sort (Z to A)"
+
+msgid "settings##beta"
+msgstr "beta"
+
+msgid "settings##version"
+msgstr "Version {{version}} ({{build}}) {{environment}}"
+
+msgid "badge##new"
+msgstr "New"
+
+msgid "general##sites"
+msgstr "sites"
+
+msgid "general##users"
+msgstr "users"
+
+msgid "general##save"
+msgstr "Save"
+
+msgid "general##use"
+msgstr "Use"
+
+msgid "general##details"
+msgstr "Details"
+
+msgid "general##apply"
+msgstr "Apply"
+
+msgid "general##role##MANAGER"
+msgstr "Manager"
+
+msgid "general##role##CONTRIBUTOR"
+msgstr "Contributor"
+
+msgid "general##role##VIEWER"
+msgstr "Viewer"
+
+msgid "general##measurement##METRIC"
+msgstr "Metric"
+
+msgid "general##measurement##ENGLISH"
+msgstr "English"
+
+msgid "general##cancel"
+msgstr "Cancel"
+
+msgid "general##add"
+msgstr "Add"
+
+msgid "general##submit"
+msgstr "submit"
+
+msgid "general##change"
+msgstr "Change"
+
+msgid "general##done"
+msgstr "Done"
+
+msgid "general##required"
+msgstr "Required"
+
+msgid "general##yes"
+msgstr "Yes"
+
+msgid "general##no"
+msgstr "No"
+
+msgid "general##next"
+msgstr "Next"
+
+msgid "general##proceed"
+msgstr "Proceed"
+
+msgid "errors##generic"
+msgstr "Error saving soil ID information."
+
+msgid "screens##HOME"
+msgstr "LandPKS Soil ID"
+
+msgid "screens##LOGIN"
+msgstr "Login"
+
+msgid "screens##SETTINGS"
+msgstr "Settings"
+
+msgid "login##title"
+msgstr "LandPKS Soil ID"
+
+msgid "login##subtitle"
+msgstr "Discover your land’s potential"
+
+msgid "login##from"
+msgstr "from"
+
+msgid "delete##title"
+msgstr "Delete Account"
+
+msgid "delete##confirm##p0"
+msgstr "<bold>{{email}}</bold>"
+
+msgid "delete##confirm##p1"
+msgstr ""
+"The LandPKS account associated with this email address will be deleted. "
+"This removes:"
+
+msgid "delete##confirm##p2##b0"
+msgstr "your unaffiliated sites"
+
+msgid "delete##confirm##p2##b1"
+msgstr "projects for which you are the only manager, and their affiliated sites"
+
+msgid "delete##confirm##p3"
+msgstr "The following won’t be deleted:"
+
+msgid "delete##confirm##p4##b0"
+msgstr "data you contributed to a project for which you aren’t the only manager"
+
+msgid "delete##confirm##p4##b1"
+msgstr "your Terraso account (including groups, landscapes, and story maps"
+
+msgid "delete##confirm##p5"
+msgstr "<bold>Type your email address to confirm deletion:</bold>"
+
+msgid "delete##confirm##cancel"
+msgstr "Cancel"
+
+msgid "delete##confirm##delete"
+msgstr "Delete"
+
+msgid "delete##pending##p0"
+msgstr "<bold>{{email}}</bold>"
+
+msgid "delete##pending##p1"
+msgstr ""
+"Your account deletion request has been sent. The account for {{email}} will "
+"be deleted within five business days."
+
+msgid "delete##pending##p2"
+msgstr "You will receive an email confirmation when your account has been deleted."
+
+msgid "privacy##label"
+msgstr "Data Privacy"
+
+msgid "privacy##public##inline"
+msgstr "public"
+
+msgid "privacy##public##title"
+msgstr "Public"
+
+msgid "privacy##private##inline"
+msgstr "private"
+
+msgid "privacy##private##title"
+msgstr "Private"
+
+msgid "bottom##sites"
+msgstr "Sites"
+
+msgid "bottom##projects"
+msgstr "Projects"
+
+msgid "bottom##settings"
+msgstr "Settings"
+
+msgid "geo##latitude##inline"
+msgstr "latitude"
+
+msgid "geo##latitude##title"
+msgstr "Latitude"
+
+msgid "geo##longitude##inline"
+msgstr "longitude"
+
+msgid "geo##longitude##title"
+msgstr "Longitude"
+
+msgid "geo##elevation##inline"
+msgstr "elevation"
+
+msgid "geo##elevation##title"
+msgstr "Elevation"
+
+msgid "soil##bedrock"
+msgstr "Bedrock"
+
+msgid "soil##loading"
+msgstr "Loading…"
+
+msgid "soil##error"
+msgstr "Error"
+
+msgid "soil##surface"
+msgstr "Soil Surface"
+
+msgid "soil##pit"
+msgstr "Soil Pit"
+
+msgid "soil##collection##slope"
+msgstr "Slope and Landscape"
+
+msgid "soil##collection##soilTexture"
+msgstr "Soil Texture"
+
+msgid "soil##collection##rockFragmentVolume"
+msgstr "Rock Fragment"
+
+msgid "soil##collection##soilColor"
+msgstr "Soil Color"
+
+msgid "soil##collection##verticalCracking"
+msgstr "Vertical Cracks"
+
+msgid "soil##collection##carbonates"
+msgstr "Carbonates"
+
+msgid "soil##collection##ph"
+msgstr "pH"
+
+msgid "soil##collection##soilOrganicCarbonMatter"
+msgstr "SOC/SOM"
+
+msgid "soil##collection##electricalConductivity"
+msgstr "Electrical Conductivity"
+
+msgid "soil##collection##sodiumAdsorptionRatio"
+msgstr "SAR"
+
+msgid "soil##collection##soilStructure"
+msgstr "Structure"
+
+msgid "soil##collection##landUseLandCover"
+msgstr "Land Use/Land Cover"
+
+msgid "soil##collection##soilLimitations"
+msgstr "Limitations"
+
+msgid "soil##collection##photos"
+msgstr "Photos"
+
+msgid "soil##collection##notes"
+msgstr "Notes"
+
+msgid "soil##vertical##description"
+msgstr ""
+"Vertical cracks may appear on the soil surface when some soils experience "
+"changes in moisture or temperature. The cracks may be permanent, or they "
+"may disappear after some time.\n"
+"\n"
+"Vertical cracks are at least $t(soil.vertical_cracking.description_width, "
+"{\"context\": \"{{units}}\"}) wide and "
+"$t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) "
+"deep. You should be able to place a pencil inside the cracks."
+
+msgid "soil##data##rockFragmentVolume"
+msgstr "Rock fragment"
+
+msgid "soil##data##texture"
+msgstr "Texture"
+
+msgid "soil##data##colorValue"
+msgstr "Color"
+
+msgid "soil##soil##header"
+msgstr "Change soil pit depths"
+
+msgid "soil##soil##info"
+msgstr "Data already entered for a depth will be deleted when the depth is changed."
+
+msgid "soil##soil##label"
+msgstr "Depths"
+
+msgid "soil##soil##NRCS"
+msgstr "NRCS/GSP (default)"
+
+msgid "soil##soil##BLM"
+msgstr "BLM Monitoring Standard"
+
+msgid "soil##soil##CUSTOM"
+msgstr "Custom"
+
+msgid "soil##depth##update##title"
+msgstr "Change depth?"
+
+msgid "soil##depth##update##body"
+msgstr ""
+"Data that has been entered at this depth will be deleted. This action "
+"cannot be undone."
+
+msgid "soil##depth##update##action"
+msgstr "Change"
+
+msgid "soil##depth##delete##title"
+msgstr "Delete depth?"
+
+msgid "soil##depth##delete##body"
+msgstr ""
+"Data that has been entered at this depth will be deleted. This action "
+"cannot be undone."
+
+msgid "soil##depth##delete##action"
+msgstr "Delete"
+
+msgid "soil##depth##error##overlaps"
+msgstr "Overlaps existing"
+
+msgid "soil##depth##error##ordering"
+msgstr "Depth bounds error"
+
+msgid "soil##depth##bounds"
+msgstr "{{start}}–{{end}}{{units}}"
+
+msgid "soil##texture##title"
+msgstr "Soil Texture"
+
+msgid "soil##texture##label"
+msgstr "Texture"
+
+msgid "soil##texture##info##title"
+msgstr "Soil Texture"
+
+msgid "soil##texture##info##description"
+msgstr ""
+"Soil is made up of particles of different sizes. Once you remove all large "
+"particles (anything over "
+"$t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in "
+"diameter), what is left is a mixture of sand, silt, and clay.\n"
+"\n"
+"<bold>Soil texture</bold> is determined by the percent of sand, silt, and "
+"clay in the soil. Changes in this ratio can have large impacts on the "
+"potential of the soil.\n"
+"\n"
+"Soil texture determines many important characteristics of your land, "
+"including:\n"
+"\n"
+"<bullets />\n"
+"Knowing the soil texture also helps you more accurately identify your soil."
+
+msgid "soil##texture##info##point1"
+msgstr "How much water the soil can hold"
+
+msgid "soil##texture##info##point2"
+msgstr "How quickly water can be absorbed into and percolate through the soil"
+
+msgid "soil##texture##info##point3"
+msgstr "How easily soil erodes when exposed to wind or water"
+
+msgid "soil##texture##info##point4"
+msgstr ""
+"How soil responds to management activities (for example, compaction from "
+"tillage operations)"
+
+msgid "soil##texture##guide##title"
+msgstr "Texture Guide"
+
+msgid "soil##texture##guide##result"
+msgstr "Soil Texture: {{result}}"
+
+msgid "soil##texture##guide##ribbon##SM"
+msgstr "<2.5cm"
+
+msgid "soil##texture##guide##ribbon##MD"
+msgstr "2.5–5cm"
+
+msgid "soil##texture##guide##ribbon##LG"
+msgstr ">5cm"
+
+msgid "soil##texture##guide##grittyness##GRITTY"
+msgstr "Gritty"
+
+msgid "soil##texture##guide##grittyness##NEITHER"
+msgstr "Not gritty or smooth"
+
+msgid "soil##texture##guide##grittyness##SMOOTH"
+msgstr "Smooth"
+
+msgid "soil##texture##guide##prepare"
+msgstr "Prepare the soil:"
+
+msgid "soil##texture##guide##wet"
+msgstr "Wet the soil:"
+
+msgid "soil##texture##guide##ball"
+msgstr "Form a ball:"
+
+msgid "soil##texture##guide##ribbon"
+msgstr "Form a ribbon"
+
+msgid "soil##texture##guide##grittyness"
+msgstr "Feel the soil:"
+
+msgid "soil##texture##fragment##info##title"
+msgstr "Rock Fragment Volume"
+
+msgid "soil##texture##fragment##info##description"
+msgstr ""
+"Rock fragment volume is a measurement of how much of the soil volume is "
+"taken up by rocks, which is defined as anything larger than "
+"$t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\""
+"}) in diameter.\n"
+"\n"
+"This can be estimated visually by comparing the volume of the soil before "
+"and after removing the rocks, as well as by comparing the volume of rocks "
+"removed to the volume of the remaining soil.\n"
+"\n"
+"Alternatively, for a more precise measurement, you can place the rocks from "
+"the sample in a bucket with a known volume of water and measure the change "
+"in volume. Then divide that volume by the volume of the original soil "
+"sample to get a percentage."
+
+msgid "soil##texture##class##CLAY"
+msgstr "Clay"
+
+msgid "soil##texture##class##LOAM"
+msgstr "Loam"
+
+msgid "soil##texture##class##SAND"
+msgstr "Sand"
+
+msgid "soil##texture##class##SILT"
+msgstr "Silt"
+
+msgid "soil##color##title"
+msgstr "Soil Color"
+
+msgid "soil##color##featureName"
+msgstr "Soil Color"
+
+msgid "soil##color##info##p1"
+msgstr "Soil color can tell you a lot about soil, including:"
+
+msgid "soil##color##info##bullet1"
+msgstr "Which minerals are present"
+
+msgid "soil##color##info##bullet2"
+msgstr "How much organic matter is present"
+
+msgid "soil##color##info##bullet3"
+msgstr "And much more"
+
+msgid "soil##color##info##p2"
+msgstr "Soil color can be measured using a Munsell book or spectrometer."
+
+msgid "soil##color##info##p3"
+msgstr ""
+"In this app, you can also take a photo with a reference card like a Post-it "
+"Note to determine your soil color."
+
+msgid "soil##color##confirm##title"
+msgstr "Delete data?"
+
+msgid "soil##color##confirm##body"
+msgstr "This will delete the soil color data associated with this depth."
+
+msgid "soil##color##unexpected##title"
+msgstr "Unexpected soil color"
+
+msgid "soil##color##unexpected##body"
+msgstr ""
+"This is not a typical soil color. Do you want to proceed anyway, or use the "
+"closest suggested color?"
+
+msgid "soil##color##unexpected##suggestion"
+msgstr "Suggestion"
+
+msgid "soil##color##hue"
+msgstr "Hue"
+
+msgid "soil##color##value"
+msgstr "Value"
+
+msgid "soil##color##chroma"
+msgstr "Chroma"
+
+msgid "soil##color##workflow##MANUAL"
+msgstr "Enter Values"
+
+msgid "soil##color##workflow##CAMERA"
+msgstr "Use Photo"
+
+msgid "soil##color##guide##step1##title"
+msgstr "1. Gather Post-it Notes."
+
+msgid "soil##color##guide##step1##content"
+msgstr ""
+"To ensure accurate color analysis you must use 3M Canary Yellow Post-it "
+"Notes for your reference card, with these guidelines:"
+
+msgid "soil##color##guide##step1##bullets##1"
+msgstr "Only use new Post-it Notes."
+
+msgid "soil##color##guide##step1##bullets##2"
+msgstr "Stack at least 3 Post-it Notes on top of each other."
+
+msgid "soil##color##guide##step1##bullets##3"
+msgstr "Make sure each Post-it note lays flat, isn’t written on, and isn’t dirty."
+
+msgid "soil##color##guide##step1##bullets##4"
+msgstr ""
+"Make sure each Post-it note isn’t degraded by sunlight, as considerable "
+"variation can exist depending on sun exposure."
+
+msgid "soil##color##guide##step1##bullets##5"
+msgstr "Store Post-it notes in dark envelopes to avoid sun exposure."
+
+msgid "soil##color##guide##step2##title"
+msgstr "2. Prepare Soil Sample."
+
+msgid "soil##color##guide##step2##content"
+msgstr ""
+"Use dry soil whenever possible. The app does have a way to indicate if your "
+"soil is wet, but dry soil color estimates are more accurate.\n"
+"\n"
+"If your soil layer has multiple colors (i.e. mottles, redoximorphic "
+"features, or carbonates), isolate the dominant matrix color from the pile.\n"
+"\n"
+"Run soil through a "
+"$t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) sieve "
+"to create a pile of homogenous soil, or use your hands to pick out anything "
+"larger than "
+"$t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n"
+"\n"
+"Flatten the pile of soil to minimize shadows within the soil sample."
+
+msgid "soil##color##guide##step3##title"
+msgstr "3. Prepare lighting."
+
+msgid "soil##color##guide##step3##content"
+msgstr ""
+"The soil color photo needs to be taken in even lighting conditions and "
+"shaded from direct sun.\n"
+"\n"
+"Try to have an overhead light source rather than side lighting."
+
+msgid "soil##color##guide##step4##title"
+msgstr "4. Place reference card next to soil."
+
+msgid "soil##color##guide##step4##content"
+msgstr ""
+"Place the Post-it note next to the prepared soil sample, in the proper "
+"lighting conditions."
+
+msgid "soil##color##guide##step5##title"
+msgstr "5. Compose photo."
+
+msgid "soil##color##guide##step5##content"
+msgstr ""
+"Place the camera as close to the soil and Post-It note as you can without "
+"creating shadows or blurriness."
+
+msgid "soil##color##guide##step6##title"
+msgstr "6. Ready to take the photo?"
+
+msgid "soil##color##guide##step6##content"
+msgstr ""
+"If you’ve followed the instructions above, you’re ready! You can take a "
+"photo with your device’s camera, or go back to upload a photo."
+
+msgid "soil##color##reference"
+msgstr "Reference"
+
+msgid "soil##color##soil"
+msgstr "Soil"
+
+msgid "soil##color##analyze"
+msgstr "Analyze"
+
+msgid "slope##title"
+msgstr "Slope"
+
+msgid "slope##info##title"
+msgstr "Slope"
+
+msgid "slope##info##description"
+msgstr ""
+"Describe the characteristics of the slope of the land on which the site is "
+"located.\n"
+"\n"
+"Instructions on how to collect each data input are available by tapping on "
+"the input name.\n"
+"\n"
+"Slope is important in identifying the soil. It also helps determine the "
+"soil’s erosion potential, ability to hold water, and more."
+
+msgid "slope##steepness##description"
+msgstr ""
+"Enter steepness manually, using the slope meter, or selecting from the "
+"images below."
+
+msgid "slope##steepness##degree"
+msgstr "{{value}}°"
+
+msgid "slope##steepness##info##title"
+msgstr "How to use Slope Meter"
+
+msgid "slope##steepness##info##description"
+msgstr ""
+"Stand facing the site from at least "
+"$t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) "
+"away.\n"
+"\n"
+"Identify the direction of the predominant slope at the site.\n"
+"\n"
+"Stand so that you can see the ridge or silhouette of that predominant slope "
+"(although you may need to get close to the ground to see it.)\n"
+"\n"
+"The direction you are facing should be perpendicular to the direction of "
+"the slope. If you hold your arms out to your sides, the line they make "
+"should be parallel to the direction of the slope.\n"
+"\n"
+"Position your phone so that the solid white line is lined up with the "
+"land’s slope; try to place the white line along the slope’s edge. You may "
+"need to crouch down if the silhouette of the slope is not easy to see while "
+"standing.\n"
+"\n"
+"<bold>Alternate Method</bold>: If the land shape is not too curved or "
+"bumpy, you can place a yard stick on the ground at the site and then align "
+"your phone on the stick to get the angle of the slope."
+
+msgid "slope##steepness##select##FLAT"
+msgstr "Flat"
+
+msgid "slope##steepness##select##GENTLE"
+msgstr "Gentle"
+
+msgid "slope##steepness##select##MODERATE"
+msgstr "Moderate"
+
+msgid "slope##steepness##select##ROLLING"
+msgstr "Rolling"
+
+msgid "slope##steepness##select##HILLY"
+msgstr "Hilly"
+
+msgid "slope##steepness##select##STEEP"
+msgstr "Steep"
+
+msgid "slope##steepness##select##STEEPEST"
+msgstr "Steepest"
+
+msgid "slope##shape##title"
+msgstr "Shape"
+
+msgid "slope##shape##info##title"
+msgstr "Slope Shape"
+
+msgid "slope##shape##info##description"
+msgstr ""
+"Slope shape refers to the way the land curves in the area surrounding your "
+"site point.\n"
+"\n"
+"Slope shape is determined in two directions: <bold>downslope</bold> and "
+"<bold>cross-slope</bold>.\n"
+"\n"
+"First, determine the primary direction of the slope at the site. Ignore "
+"small bumps or ditches; look about "
+"$t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) in "
+"all directions.\n"
+"\n"
+"If it rained, in which general direction would water flow downhill? This is "
+"called the <bold>downslope</bold> direction.\n"
+"\n"
+"The cross-slope direction can be found by looking at a right angle (90 "
+"degrees) from the downslope direction.\n"
+"\n"
+"If you walk away from the site while staying at the same elevation, this is "
+"the <bold>cross-slope</bold> direction.\n"
+"\n"
+"Second, determine the shape of the slope for each direction.\n"
+"\n"
+"<bold>Concave</bold> means that the land slopes increasingly upward as you "
+"move away from your point along the cross-slope or downslope. For example, "
+"the downslope is often concave at the foot of a hill as it changes from a "
+"steep slope to a more shallow one.\n"
+"\n"
+"<bold>Convex</bold> means that the land slopes increasingly downward as you "
+"move away from your point along a particular direction. For example, the "
+"downslope is often convex at the top of a hill as it changes from a shallow "
+"slope to a steeper one.\n"
+"\n"
+"<bold>Linear</bold> means the slope is consistent along the entirety of a "
+"particular direction. It does not necessarily mean the land is flat; it "
+"just means that the slope does not change."
+
+msgid "slope##shape##info##concave"
+msgstr "Concave"
+
+msgid "slope##shape##info##convex"
+msgstr "Convex"
+
+msgid "slope##shape##info##linear"
+msgstr "Linear"
+
+msgid "slope##shape##select##CONCAVE"
+msgstr "Concave"
+
+msgid "slope##shape##select##CONVEX"
+msgstr "Convex"
+
+msgid "slope##shape##select##LINEAR"
+msgstr "Linear"
+
+msgid "soil##texture##rock##VOLUME"
+msgid_plural "soil##texture##rock##VOLUME"
+msgstr[0] ""
+msgstr[1] ">60%"
+
+msgctxt "more"
+msgid "welcome##learn"
+msgstr "Learn more and stay updated:"
+
+msgctxt "more"
+msgid "projects##learn"
+msgstr "Learn more about using projects"
+
+msgctxt "text"
+msgid "welcome##link"
+msgstr "LandPKS from Terraso"
+
+msgctxt "text"
+msgid "site##dashboard##archive_button_help"
+msgstr "Mark this site read-only"
+
+msgctxt "text"
+msgid "site##notes##placeholder"
+msgstr "Start typing your note…"
+
+msgctxt "text"
+msgid "projects##add##help"
+msgstr ""
+"Enter the email address of the person’s Terraso account. A Terraso account "
+"can be created by installing the LandPKS Soil ID app and signing in."
+
+msgctxt "text"
+msgid "general##info##data_portal_link"
+msgstr "LandPKS Data Portal"
+
+msgctxt "text"
+msgid "general##info##privacy_policy_link"
+msgstr "Read more about our data privacy policy."
+
+msgctxt "url"
+msgid "welcome##link"
+msgstr "https://landpks.terraso.org/"
+
+msgctxt "url"
+msgid "home##info##link"
+msgstr "https://landpotential.org/"
+
+msgctxt "url"
+msgid "site##soil##matches##native_lands"
+msgstr "https://nativeland.info/"
+
+msgctxt "url"
+msgid "site##soil##soil##series_descr"
+msgstr "Soil Series Full Description"
+
+msgctxt "url"
+msgid "site##soil##soil##eco_descr"
+msgstr "Ecological Site Full Description"
+
+msgctxt "url"
+msgid "site##soil##soil##location"
+msgstr "View location on soil web"
+
+msgctxt "url"
+msgid "general##info##data_portal_link"
+msgstr "https://landpks.terraso.org/portal"
+
+msgctxt "url"
+msgid "general##info##privacy_policy_link"
+msgstr "https://techmatters.org/privacy-policy/"
+
+msgctxt "started"
+msgid "welcome##get"
+msgstr "Get started"
+
+msgctxt "alt"
+msgid "home##info##intro_image"
+msgstr ""
+
+msgctxt "alt"
+msgid "general##profile_image"
+msgstr "Profile image"
+
+msgctxt "label"
+msgid "home##info##link"
+msgstr "landpotential.org"
+
+msgctxt "label"
+msgid "site##elevation"
+msgstr "Elevation"
+
+msgctxt "label"
+msgid "site##create##button"
+msgstr "Create Site Here"
+
+msgctxt "label"
+msgid "site##create##name"
+msgstr "Site Name"
+
+msgctxt "label"
+msgid "site##create##location"
+msgstr "Site Location"
+
+msgctxt "label"
+msgid "site##create##add_to_project"
+msgstr "Add to Project"
+
+msgctxt "label"
+msgid "site##dashboard##transfer"
+msgstr "Transfer to Project"
+
+msgctxt "label"
+msgid "site##dashboard##speed##note"
+msgstr "NOTE"
+
+msgctxt "label"
+msgid "site##dashboard##speed##photo"
+msgstr "PHOTO"
+
+msgctxt "label"
+msgid "site##dashboard##speed##bedrock"
+msgstr "BEDROCK"
+
+msgctxt "label"
+msgid "site##soil##soil##eco_name"
+msgstr "<bold>Ecological Site Name:</bold> {{name}}"
+
+msgctxt "label"
+msgid "site##soil##soil##eco_id"
+msgstr "<bold>Ecological Site ID:</bold> {{id}}"
+
+msgctxt "label"
+msgid "site##soil##soil##land_class"
+msgstr "<bold>Land Capability Class:</bold> {{land}}"
+
+msgctxt "label"
+msgid "site##soil##soil##data_source"
+msgstr "<bold>Data Source:</bold> {{source}}"
+
+msgctxt "label"
+msgid "site##soil##soil##inside_map"
+msgstr "In soil map unit"
+
+msgctxt "label"
+msgid "site##soil##soil##outside_map"
+msgstr "In adjacent map unit, {{distance}} {{units}} distance"
+
+msgctxt "label"
+msgid "site##notes##add_note"
+msgstr "Add Note"
+
+msgctxt "label"
+msgid "site##search##accessibility"
+msgstr "Filter sites by site name"
+
+msgctxt "label"
+msgid "projects##search"
+msgstr "Enter text to filter projects by name"
+
+msgctxt "label"
+msgid "projects##role_filter"
+msgstr "Filter projects by role"
+
+msgctxt "label"
+msgid "projects##create##name"
+msgstr "Project Name"
+
+msgctxt "label"
+msgid "projects##create##description"
+msgstr "Project Description"
+
+msgctxt "label"
+msgid "projects##create##privacy"
+msgstr "Data Privacy"
+
+msgctxt "label"
+msgid "projects##inputs##instructions##add"
+msgstr "Note"
+
+msgctxt "label"
+msgid "projects##sites##search##accessility"
+msgstr "Search for sites"
+
+msgctxt "label"
+msgid "projects##sort"
+msgstr "Sort projects by:"
+
+msgctxt "label"
+msgid "general##email"
+msgstr "Email address"
+
+msgctxt "label"
+msgid "listfilter##open_modal"
+msgstr "Update list filters"
+
+msgctxt "label"
+msgid "listfilter##num_filters"
+msgstr "Number of filters applied"
+
+msgctxt "label"
+msgid "listfilter##clear_search"
+msgstr "Clear search filter"
+
+msgctxt "label"
+msgid "listfilter##text_input"
+msgstr "Filter list by search input"
+
+msgctxt "label"
+msgid "soil##add_depth"
+msgstr "Add Depth"
+
+msgctxt "label"
+msgid "soil##project##pit_required"
+msgstr "Soil pit required"
+
+msgctxt "label"
+msgid "soil##depth##apply_to_all"
+msgstr "Apply to all depths"
+
+msgctxt "label"
+msgid "soil##depth##start"
+msgstr "From ({{units}})"
+
+msgctxt "label"
+msgid "soil##depth##end"
+msgstr "To ({{units}})"
+
+msgctxt "label"
+msgid "soil##texture##guide##use"
+msgstr "Use This Texture"
+
+msgctxt "label"
+msgid "soil##texture##use_guide"
+msgstr "Use Guide"
+
+msgctxt "label"
+msgid "soil##texture##clay"
+msgstr "Percent clay"
+
+msgctxt "label"
+msgid "soil##color##use_guide"
+msgstr "Use Guide"
+
+msgctxt "label"
+msgid "slope##steepness##manual"
+msgstr "Manual"
+
+msgctxt "title"
+msgid "site##list"
+msgstr "Sites List"
+
+msgctxt "title"
+msgid "site##dashboard##settings"
+msgstr "Site Settings"
+
+msgctxt "title"
+msgid "site##dashboard##default"
+msgstr "Temporary Pin"
+
+msgctxt "title"
+msgid "site##soil##matches##error_generic"
+msgstr "Can’t fetch soil map"
+
+msgctxt "title"
+msgid "site##soil##matches##no_map_data"
+msgstr "No soil map data"
+
+msgctxt "title"
+msgid "site##notes##add"
+msgstr "Site Note"
+
+msgctxt "title"
+msgid "site##notes##edit"
+msgstr "Site Note"
+
+msgctxt "title"
+msgid "site##notes##confirm_removal"
+msgstr "Delete note?"
+
+msgctxt "title"
+msgid "projects##inputs##instructions##screen"
+msgstr "Pinned Note"
+
+msgctxt "title"
+msgid "projects##manage##confirm_removal"
+msgstr "Remove from Project?"
+
+msgctxt "title"
+msgid "general##info##privacy"
+msgstr "LandPKS Data Privacy"
+
+msgctxt "title"
+msgid "permissions##camera"
+msgstr "LandPKS Soil ID needs to access your camera"
+
+msgctxt "title"
+msgid "permissions##gallery"
+msgstr "LandPKS Soil ID needs to access your photo gallery"
+
+msgctxt "title"
+msgid "permissions##location"
+msgstr "LandPKS Soil ID needs to access your location"
+
+msgctxt "title"
+msgid "soil##project##required_data"
+msgstr "Data Collection Requirements"
+
+msgctxt "title"
+msgid "soil##depth##add"
+msgstr "Add depth"
+
+msgctxt "title"
+msgid "soil##depth##edit"
+msgstr "Depth"
+
+msgctxt "title"
+msgid "soil##depth##data_inputs"
+msgstr "Soil Data Inputs"
+
+msgctxt "title"
+msgid "soil##texture##clay"
+msgstr "Percent Clay"
+
+msgctxt "title"
+msgid "soil##texture##fragment"
+msgstr "Rock Fragment Volume"
+
+msgctxt "title"
+msgid "slope##steepness##short"
+msgstr "Steepness"
+
+msgctxt "title"
+msgid "slope##steepness##long"
+msgstr "Slope Steepness"
+
+msgctxt "title"
+msgid "slope##steepness##confirm"
+msgstr "Change slope?"
+
+msgctxt "title"
+msgid "slope##shape##long"
+msgstr "Slope Shape"
+
+msgctxt "updated"
+msgid "site##last"
+msgstr "Last Modified: {{date}} by {{name}}"
+
+msgctxt "info"
+msgid "site##more"
+msgstr "Learn more"
+
+msgctxt "location"
+msgid "site##your"
+msgstr "Your location"
+
+msgctxt "location"
+msgid "site##soil##description##temp"
+msgstr ""
+"LandPKS Soil ID uses data from soil maps to calculate predictions for the "
+"soil at this location. Create a site at this location to enter data and "
+"improve the results."
+
+msgctxt "location"
+msgid "site##soil##matches##info##description##temp"
+msgstr ""
+"The soils listed are the most likely to be found at this location based on "
+"USDA NRCS soil maps.\n"
+"\n"
+"Create a site here and enter the recommended data to improve accuracy of "
+"the match scores. "
+
+msgctxt "prediction"
+msgid "site##soil_id"
+msgstr "Soil ID Top Match"
+
+msgctxt "prediction"
+msgid "site##ecological_site"
+msgstr "Ecological Site Top Match"
+
+msgctxt "avg"
+msgid "site##annual_precip"
+msgstr "Annual precipitation avg"
+
+msgctxt "value"
+msgid "site##elevation"
+msgstr "{{value}} {{units}}"
+
+msgctxt "unknown"
+msgid "site##elevation"
+msgstr "unknown"
+
+msgctxt "accuracy"
+msgid "site##create##location"
+msgstr "GPS accuracy: {{accuracyM}} m"
+
+msgctxt "accuracy"
+msgid "site##dashboard##location"
+msgstr "Location Accuracy"
+
+msgctxt "caption"
+msgid "site##create##add_to_project"
+msgstr "Project"
+
+msgctxt "tooltip"
+msgid "site##create##add_to_project"
+msgstr ""
+"The site will inherit the settings of the project, including data "
+"collection requirements and team members. Create new projects using the "
+"Projects tab in the bottom navigation."
+
+msgctxt "tooltip"
+msgid "site##create##privacy"
+msgstr "Public projects will sync data to public data portals. "
+
+msgctxt "link"
+msgid "site##create##privacy_tooltip"
+msgstr "Learn more"
+
+msgctxt "link"
+msgid "site##soil##matches##native_lands"
+msgstr "nativeland.info"
+
+msgctxt "link"
+msgid "projects##settings##copy_download"
+msgstr "Copy project download link"
+
+msgctxt "error"
+msgid "site##form##name_min_length"
+msgstr "Site name must be at least {{min}} characters"
+
+msgctxt "error"
+msgid "site##form##name_max_length"
+msgstr "Site name must be at most {{max}} characters"
+
+msgctxt "error"
+msgid "site##form##min_latitude"
+msgstr "Latitude must be at least {{min}}"
+
+msgctxt "error"
+msgid "site##form##max_latitude"
+msgstr "Latitude must be at most {{max}}"
+
+msgctxt "error"
+msgid "site##form##min_longitude"
+msgstr "Longitude must be at least {{min}}"
+
+msgctxt "error"
+msgid "site##form##max_longitude"
+msgstr "Longitude must be at most {{max}}"
+
+msgctxt "error"
+msgid "site##notes##min_length"
+msgstr "Must be at least {{min}} characters"
+
+msgctxt "error"
+msgid "projects##form##name_min_length"
+msgstr "Project name must be at least {{min}} characters"
+
+msgctxt "error"
+msgid "projects##form##name_max_length"
+msgstr "Project name must be at most {{max}} characters"
+
+msgctxt "error"
+msgid "projects##form##description_min_length"
+msgstr "Project description must be at least {{min}} characters"
+
+msgctxt "error"
+msgid "projects##form##description_max_length"
+msgstr "Project description must be at most {{max}} characters"
+
+msgctxt "button"
+msgid "site##dashboard##team"
+msgstr "Team"
+
+msgctxt "button"
+msgid "site##dashboard##copy_download_link"
+msgstr "Copy site download link"
+
+msgctxt "button"
+msgid "site##dashboard##archive"
+msgstr "Archive this site"
+
+msgctxt "button"
+msgid "site##dashboard##delete"
+msgstr "Delete this site"
+
+msgctxt "button"
+msgid "projects##create"
+msgstr "Create project"
+
+msgctxt "button"
+msgid "projects##settings##archive"
+msgstr "Archive"
+
+msgctxt "button"
+msgid "projects##settings##delete"
+msgstr "Delete"
+
+msgctxt "button"
+msgid "soil##depth##delete"
+msgstr "Delete depth"
+
+msgctxt "site##title"
+msgid "site##dashboard##delete"
+msgstr "Delete site?"
+
+msgctxt "site##title"
+msgid "projects##sites##delete"
+msgstr "Delete site?"
+
+msgctxt "site##title"
+msgid "projects##sites##remove"
+msgstr "Remove site from project?"
+
+msgctxt "site##title"
+msgid "projects##sites##transfer"
+msgstr "Transfer sites?"
+
+msgctxt "site##body"
+msgid "site##dashboard##delete"
+msgstr ""
+"This will permanently delete the site {{siteName}} and all of its data. "
+"This cannot be undone."
+
+msgctxt "site##body"
+msgid "projects##sites##delete"
+msgstr ""
+"This will permanently delete the site {{siteName}} and all of its data. "
+"This cannot be undone.\n"
+"\n"
+"Project managers can remove the site from this project to retain its data."
+
+msgctxt "site##body"
+msgid "projects##sites##remove"
+msgstr ""
+"Only you will have access to this site and its data. Other project team "
+"members will no longer have access."
+
+msgctxt "site##body"
+msgid "projects##sites##transfer"
+msgstr ""
+"Transferred sites will use the data settings and team member roles from "
+"this project.\n"
+"\n"
+"If sites have data entered at different depths than what is specified in "
+"this project, that data will be deleted. This can’t be undone."
+
+msgctxt "name"
+msgid "site##dashboard##delete_site##action"
+msgstr "Delete"
+
+msgctxt "name"
+msgid "projects##team##leave_project##action"
+msgstr "Leave"
+
+msgctxt "name"
+msgid "projects##sites##delete_site##action"
+msgstr "Delete"
+
+msgctxt "name"
+msgid "projects##sites##remove_site##action"
+msgstr "Remove Site"
+
+msgctxt "name"
+msgid "projects##sites##transfer_site##action"
+msgstr "Transfer"
+
+msgctxt "name"
+msgid "general##you"
+msgstr "{{name}} (you)"
+
+msgctxt "name"
+msgid "soil##ecological_site"
+msgstr "Ecological Site Name"
+
+msgctxt "name"
+msgid "soil##color##confirm##action"
+msgstr "Delete"
+
+msgctxt "body"
+msgid "site##soil##matches##error_generic"
+msgstr "LandPKS was unable to fetch the soil map for this location. Try again later."
+
+msgctxt "body"
+msgid "site##soil##matches##no_map_data"
+msgstr ""
+"There is no soil map data available for this site, so LandPKS cannot "
+"generate soil matches for this site. Data can still be collected for this "
+"site, and if soil map data becomes available in the future, soil matches "
+"will appear here."
+
+msgctxt "body"
+msgid "site##notes##confirm_removal"
+msgstr "This action cannot be undone."
+
+msgctxt "body"
+msgid "projects##manage##confirm_removal"
+msgstr ""
+"This will remove the team member from the project, but will retain their "
+"contributed site data."
+
+msgctxt "body"
+msgid "permissions##camera"
+msgstr ""
+"To use {{feature}}, grant LandPKS Soil ID access to your camera in device "
+"settings."
+
+msgctxt "body"
+msgid "permissions##gallery"
+msgstr ""
+"To use {{feature}}, grant LandPKS Soil ID access to your photo gallery in "
+"device settings."
+
+msgctxt "body"
+msgid "permissions##location"
+msgstr ""
+"For the best map experience, grant LandPKS Soil ID access to your location "
+"in device settings."
+
+msgctxt "body"
+msgid "sign##confirm"
+msgstr "Are you sure you want to sign out?"
+
+msgctxt "body"
+msgid "slope##steepness##confirm"
+msgstr "Are you sure you want to override the slope data?"
+
+msgctxt "intro"
+msgid "site##soil##matches##native_lands"
+msgstr "Soil resources for Native lands:"
+
+msgctxt "intro"
+msgid "soil##texture##guide"
+msgstr "Don’t know your soil texture? Use the step-by-step guide."
+
+msgctxt "data"
+msgid "site##soil##site##slope##add"
+msgstr "Add slope"
+
+msgctxt "data"
+msgid "site##soil##site##soil##add"
+msgstr "Add soil data"
+
+msgctxt "data"
+msgid "soil##explore"
+msgstr "Explore the data"
+
+msgctxt "METRIC"
+msgid "site##soil##site##soil##depth_units"
+msgstr "cm"
+
+msgctxt "METRIC"
+msgid "site##soil##soil##map_units"
+msgstr "meters"
+
+msgctxt "METRIC"
+msgid "soil##vertical##description_width"
+msgstr "5 mm"
+
+msgctxt "METRIC"
+msgid "soil##vertical##description_depth"
+msgstr "25 cm"
+
+msgctxt "METRIC"
+msgid "soil##texture##info##description_diameter"
+msgstr "2mm"
+
+msgctxt "METRIC"
+msgid "soil##texture##fragment##info##description_diameter"
+msgstr "2mm"
+
+msgctxt "METRIC"
+msgid "soil##color##guide##step2##content_size"
+msgstr "2mm"
+
+msgctxt "METRIC"
+msgid "slope##steepness##info##description_distance"
+msgstr "4 meters"
+
+msgctxt "METRIC"
+msgid "slope##shape##info##description_distance"
+msgstr "20–30 meters"
+
+msgctxt "ENGLISH"
+msgid "site##soil##site##soil##depth_units"
+msgstr "”"
+
+msgctxt "ENGLISH"
+msgid "soil##vertical##description_width"
+msgstr "3/16”"
+
+msgctxt "ENGLISH"
+msgid "soil##vertical##description_depth"
+msgstr "10”"
+
+msgctxt "ENGLISH"
+msgid "soil##texture##info##description_diameter"
+msgstr "1/16”"
+
+msgctxt "ENGLISH"
+msgid "soil##texture##fragment##info##description_diameter"
+msgstr "1/16”"
+
+msgctxt "ENGLISH"
+msgid "soil##color##guide##step2##content_size"
+msgstr "1/16”"
+
+msgctxt "ENGLISH"
+msgid "slope##steepness##info##description_distance"
+msgstr "15 feet"
+
+msgctxt "ENGLISH"
+msgid "slope##shape##info##description_distance"
+msgstr "60–90 feet"
+
+msgctxt "fragment"
+msgid "site##soil##site##soil##rock"
+msgstr "Rock Fragment"
+
+msgctxt "header"
+msgid "site##soil##soil##properties"
+msgstr "Soil Properties"
+
+msgctxt "header"
+msgid "projects##edit##input"
+msgstr "General Project Settings"
+
+msgctxt "score##header"
+msgid "site##soil##location"
+msgstr "Location Score"
+
+msgctxt "score##header"
+msgid "site##soil##soil_properties"
+msgstr "Soil Properties Score"
+
+msgctxt "score##p1"
+msgid "site##soil##location"
+msgstr ""
+"Location score is based solely on soil maps and the site’s location. This "
+"does not take into account data that has been entered by users at the site."
+
+msgctxt "score##p1"
+msgid "site##soil##soil_properties"
+msgstr ""
+"Soil Properties Score reflects the similarity between the soil match and "
+"the data entered for this site."
+
+msgctxt "score##p2"
+msgid "site##soil##location"
+msgstr ""
+"LandPKS Soil ID bases soil matches on soil maps created by the USDA NRCS. "
+"Traditional soil maps don’t predict a single soil for each location; they "
+"are organized into “soil map units” that each contain multiple possible "
+"soils. Each possible soil in a map unit is estimated to cover a certain "
+"percentage of the unit."
+
+msgctxt "score##p2"
+msgid "site##soil##soil_properties"
+msgstr ""
+"A higher Soil Properties Score means that the user-entered data is similar "
+"to the soil match. A low score means the two are less similar, and it is "
+"less likely for this match to be the correct soil ID for the site."
+
+msgctxt "score##p3"
+msgid "site##soil##location"
+msgstr ""
+"The <bold>location score</bold> for a soil match is based on the percentage "
+"of the map unit that the soil covers. It is then reduced by a value "
+"proportional to the distance of the map unit from the site. In other words, "
+"soils in the site’s map unit generally receive a higher location score than "
+"soils in a neighboring map unit. Similarly, soils that make up a larger "
+"percentage of the map unit receive a higher location score than soils that "
+"make up a smaller percentage of the map unit."
+
+msgctxt "score##p3"
+msgid "site##soil##soil_properties"
+msgstr ""
+"The more data entered for a site, the more reliable the Soil Properties "
+"Score will be."
+
+msgctxt "score##p4"
+msgid "site##soil##soil_properties"
+msgstr ""
+"LandPKS Soil ID considers the following properties in calculating Soil "
+"Properties Score:"
+
+msgctxt "properties##1"
+msgid "site##soil##soil"
+msgstr "Soil texture by depth"
+
+msgctxt "properties##2"
+msgid "site##soil##soil"
+msgstr "Rock fragment by depth"
+
+msgctxt "properties##3"
+msgid "site##soil##soil"
+msgstr "Soil color by depth"
+
+msgctxt "properties##4"
+msgid "site##soil##soil"
+msgstr "Site slope"
+
+msgctxt "properties##5"
+msgid "site##soil##soil"
+msgstr "Surface cracking"
+
+msgctxt "attribution"
+msgid "site##notes##note"
+msgstr "{{createdAt}} by {{name}}"
+
+msgctxt "instructions"
+msgid "site##notes##project"
+msgstr "Pinned Note"
+
+msgctxt "projects"
+msgid "site##search##filter"
+msgstr "Filter sites by project"
+
+msgctxt "role"
+msgid "site##search##filter"
+msgstr "Filter sites by role"
+
+msgctxt "role"
+msgid "projects##manage##project"
+msgstr "Project Role"
+
+msgctxt "role"
+msgid "general##filter##no"
+msgstr "None"
+
+msgctxt "matches"
+msgid "site##search##no"
+msgstr "No sites match the current search and filter options."
+
+msgctxt "matches"
+msgid "projects##search##no"
+msgstr "No projects match the current search and filter options."
+
+msgctxt "matches"
+msgid "soil##no"
+msgstr "No matches"
+
+msgctxt "to"
+msgid "projects##go"
+msgstr "Go to Project"
+
+msgctxt "to"
+msgid "projects##sites##go"
+msgstr "Go to Site"
+
+msgctxt "team"
+msgid "projects##team##manage"
+msgstr "Manage Team"
+
+msgctxt "project##trigger"
+msgid "projects##team##leave"
+msgstr "LEAVE PROJECT"
+
+msgctxt "project##title"
+msgid "projects##team##leave"
+msgstr "Leave Project?"
+
+msgctxt "project##body"
+msgid "projects##team##leave"
+msgstr ""
+"This will remove your access to the project, but data you have contributed "
+"will remain with the project."
+
+msgctxt "description"
+msgid "projects##settings##download_link"
+msgstr ""
+"A zipped file of all the project’s assets including a .csv file of site "
+"data, field notes, audit logs, and photos. Anyone with this link can view "
+"all the assets."
+
+msgctxt "description"
+msgid "projects##settings##archive"
+msgstr ""
+"The project will be moved to Archived Projects, making it read-only. Team "
+"members can access the data, and project managers can restore it at any "
+"time. Public projects that are archived will remain viewable on data "
+"portals."
+
+msgctxt "description"
+msgid "projects##settings##delete"
+msgstr ""
+"This will permanently delete the project and its sites’ data. This can’t be "
+"undone.\n"
+"\n"
+"Project managers have the option to transfer sites from this project to "
+"keep site data."
+
+msgctxt "prompt"
+msgid "projects##settings##archive_button"
+msgstr "Archive Project?"
+
+msgctxt "prompt"
+msgid "projects##settings##delete_button"
+msgstr "Delete project?"
+
+msgctxt "viewer"
+msgid "projects##sites##empty"
+msgstr "This project has no sites yet."
+
+msgctxt "contributor"
+msgid "projects##sites##empty"
+msgstr ""
+"You can transfer existing LandPKS Soil ID sites to this project. You can "
+"also create new sites on the Sites tab and add them to this project."
+
+msgctxt "log"
+msgid "projects##sites##audit"
+msgstr "Audit Log"
+
+msgctxt "site"
+msgid "projects##sites##remove"
+msgstr "Remove from Project"
+
+msgctxt "site"
+msgid "projects##sites##delete"
+msgstr "Delete Site"
+
+msgctxt "exist"
+msgid "projects##add##user_does_not"
+msgstr "No Terraso account found"
+
+msgctxt "project"
+msgid "projects##add##user_in"
+msgstr "Already a team member"
+
+msgctxt "project"
+msgid "general##filter##no"
+msgstr "None"
+
+msgctxt "email"
+msgid "projects##add##invalid"
+msgstr "Enter a valid email address"
+
+msgctxt "help"
+msgid "projects##manage##manager"
+msgstr "Can view and edit all aspects of the project and its affiliated sites"
+
+msgctxt "help"
+msgid "projects##manage##contributor"
+msgstr "Can view, add, and edit site data"
+
+msgctxt "help"
+msgid "projects##manage##viewer"
+msgstr "Can view site data"
+
+msgctxt "help"
+msgid "projects##manage##remove"
+msgstr ""
+"Remove the team member’s access to this project, retaining any data "
+"contributed to sites"
+
+msgctxt "help"
+msgid "soil##depth##label"
+msgstr "{{max}} characters max"
+
+msgctxt "help"
+msgid "soil##texture##guide##ball"
+msgstr "Does the soil form a ball?"
+
+msgctxt "help"
+msgid "soil##texture##guide##ribbon"
+msgstr "Does the soil form a ribbon?"
+
+msgctxt "help"
+msgid "soil##texture##guide##ribbon_length"
+msgstr "How long is the ribbon?"
+
+msgctxt "help"
+msgid "soil##texture##guide##grittyness"
+msgstr "How does the soil feel?"
+
+msgctxt "help"
+msgid "soil##texture##clay"
+msgstr "0–100%"
+
+msgctxt "help"
+msgid "soil##color##photo_need"
+msgstr ""
+"To use a photo to determine soil color, you’ll need a 3M Canary Yellow "
+"Post-it Note for color reference and a properly prepared soil sample. Need "
+"help? Use the step-by-step guide."
+
+msgctxt "help"
+msgid "slope##steepness##manual"
+msgstr "Enter steepness percentage or degree:"
+
+msgctxt "help"
+msgid "slope##steepness##percentage"
+msgstr "0%–999%"
+
+msgctxt "help"
+msgid "slope##steepness##degree"
+msgstr "0°–89°"
+
+msgctxt "action"
+msgid "projects##manage##confirm_removal"
+msgstr "Remove"
+
+msgctxt "action"
+msgid "sign##confirm"
+msgstr "Sign out"
+
+msgctxt "user"
+msgid "settings##unknown"
+msgstr "Unknown user"
+
+msgctxt "out"
+msgid "settings##sign"
+msgstr "Sign Out"
+
+msgctxt "account"
+msgid "settings##delete"
+msgstr "Delete Account"
+
+msgctxt "pending"
+msgid "settings##delete_account"
+msgstr "Pending"
+
+msgctxt "version"
+msgid "settings##unknown"
+msgstr "Untagged application version {{environment}}"
+
+msgctxt "modified"
+msgid "general##last"
+msgstr "Last Modified"
+
+msgctxt "fab"
+msgid "general##save"
+msgstr "SAVE"
+
+msgctxt "fab"
+msgid "general##cancel"
+msgstr "Cancel"
+
+msgctxt "fab"
+msgid "general##delete"
+msgstr "Delete"
+
+msgctxt "fab"
+msgid "general##close"
+msgstr "Close"
+
+msgctxt "by"
+msgid "general##last_modified"
+msgstr "last modified {{user}}, {{date}}"
+
+msgctxt "all"
+msgid "general##select"
+msgstr "Select All"
+
+msgctxt "placeholder"
+msgid "general##email"
+msgstr "name@domain.com"
+
+msgctxt "placeholder"
+msgid "soil##depth##label"
+msgstr "Label"
+
+msgctxt "placeholder"
+msgid "slope##steepness##percentage"
+msgstr "Percentage"
+
+msgctxt "placeholder"
+msgid "slope##steepness##degree"
+msgstr "Degree"
+
+msgctxt "sort"
+msgid "general##filter##no"
+msgstr "None"
+
+msgctxt "option"
+msgid "general##nullable"
+msgstr "None"
+
+msgctxt "item1"
+msgid "general##info##privacy"
+msgstr "<bold>Public sites</bold> are visible to anyone on the LandPKS data portal."
+
+msgctxt "item2"
+msgid "general##info##privacy"
+msgstr ""
+"All data entered into the LandPKS Soil ID mobile app is included, except "
+"for personally identifiable information (PII)."
+
+msgctxt "item3"
+msgid "general##info##privacy"
+msgstr ""
+"<bold>A private site</bold> not affiliated with a project is only visible "
+"to the person who created it. That person can change the privacy at any "
+"time. "
+
+msgctxt "item4"
+msgid "general##info##privacy"
+msgstr ""
+"<bold>A project’s privacy setting determines the privacy of its affiliated "
+"sites.</bold> Sites that belong to a private project are visible to project "
+"team members. A project manager can change the privacy at any time. "
+
+msgctxt "limit"
+msgid "general##character"
+msgstr "{{current}} / {{limit}} characters"
+
+msgctxt "settings"
+msgid "general##open"
+msgstr "Go to settings"
+
+msgctxt "LIST"
+msgid "screens##PROJECT"
+msgstr "Projects"
+
+msgctxt "VIEW"
+msgid "screens##PROJECT"
+msgstr "Project #{{id}}"
+
+msgctxt "PROJECT"
+msgid "screens##CREATE"
+msgstr "Create Project"
+
+msgctxt "PROJECT"
+msgid "screens##SITE_TRANSFER"
+msgstr "Project #{{id}}"
+
+msgctxt "SITE"
+msgid "screens##CREATE"
+msgstr "Create Site"
+
+msgctxt "GUIDE"
+msgid "screens##COLOR"
+msgstr "Soil Color Guide"
+
+msgctxt "HOME"
+msgid "screens##COLOR_ANALYSIS"
+msgstr "Photo Analysis"
+
+msgctxt "ACCOUNT"
+msgid "screens##DELETE"
+msgstr "Settings"
+
+msgctxt "login"
+msgid "account##google"
+msgstr "Sign in with Google"
+
+msgctxt "login"
+msgid "account##apple"
+msgstr "Sign in with Apple"
+
+msgctxt "login"
+msgid "account##microsoft"
+msgstr "Sign in with Microsoft"
+
+msgctxt "match"
+msgid "soil##top"
+msgstr "Top Match"
+
+msgctxt "id"
+msgid "soil##soil"
+msgstr "Soil ID"
+
+msgctxt "method"
+msgid "soil##required"
+msgstr "{{method}} (required)"
+
+msgctxt "method##slope"
+msgid "soil##collection"
+msgstr "Includes slope steepness, shape, aspect, and landscape position"
+
+msgctxt "method##soilTexture"
+msgid "soil##collection"
+msgstr "Includes texture class, percent clay, and rock fragments"
+
+msgctxt "CRACKING"
+msgid "soil##vertical##value##NO"
+msgstr "No Cracking"
+
+msgctxt "ONLY"
+msgid "soil##vertical##value##SURFACE_CRACKING"
+msgstr "Surface Cracking Only"
+
+msgctxt "CRACKS"
+msgid "soil##vertical##value##DEEP_VERTICAL"
+msgstr "Deep Vertical Cracks"
+
+msgctxt "required"
+msgid "soil##depth##number"
+msgstr "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) must be a number"
+
+msgctxt "start"
+msgid "soil##depth##depth"
+msgstr "depth start"
+
+msgctxt "end"
+msgid "soil##depth##depth"
+msgstr "depth end"
+
+msgctxt "labelled"
+msgid "soil##depth##bounds"
+msgstr "{{label}}: {{start}}–{{end}}{{units}}"
+
+msgctxt "unitless"
+msgid "soil##depth##bounds"
+msgstr "{{start}}–{{end}}"
+
+msgctxt "details"
+msgid "soil##texture##guide##prepare"
+msgid_plural "soil##texture##guide##prepare"
+msgstr[0] "Crush clumps of soil (if possible)."
+msgstr[1] "Get a soil sample of at least a few handfuls."
+msgstr[2] "Remove all rock fragments larger than 2mm. Use a sieve if you have one."
+
+msgctxt "details"
+msgid "soil##texture##guide##wet"
+msgid_plural "soil##texture##guide##wet"
+msgstr[0] "Work the water uniformly into the soil with your hands."
+msgstr[1] ""
+"The soil should be thoroughly damp, but not glistening, with a texture like "
+"putty. If the soil is too wet, add more dry soil from your sample."
+msgstr[2] ""
+"Avoid working the soil with your hands for longer than 2 minutes. If you go "
+"beyond 2 minutes, discard the soil and start with a new sample."
+msgstr[3] "Pick up a handful of soil the size of a golf ball (≈25 g)."
+msgstr[4] "Use a spray bottle to slowly apply water to the sample."
+
+msgctxt "details"
+msgid "soil##texture##guide##ball"
+msgid_plural "soil##texture##guide##ball"
+msgstr[0] "Roll the soil in your hands to see if it forms a ball."
+msgstr[1] ""
+"If it crumbles when you apply slight pressure to roll it, the soil does not "
+"form a ball."
+
+msgctxt "details"
+msgid "soil##texture##guide##ribbon"
+msgid_plural "soil##texture##guide##ribbon"
+msgstr[0] ""
+"The ribbon should be parallel to the floor, not pointing upward or "
+"downwards."
+msgstr[1] ""
+"If the soil crumbles instead of holding together when you press to form a "
+"ribbon, then it does not form a ribbon."
+msgstr[2] ""
+"Let the ribbon fall naturally due to gravity. Measure the length of the "
+"segment, ignoring ragged edges."
+msgstr[3] "Grip the soil with your fingers (not your thumb)."
+msgstr[4] ""
+"Use the inside of your thumb knuckle (the flat part) to push the soil "
+"upwards over the edge of your index finger. Do not use the tip of your "
+"thumb to press the soil."
+
+msgctxt "details"
+msgid "soil##texture##guide##grittyness"
+msgid_plural "soil##texture##guide##grittyness"
+msgstr[0] ""
+"<0>Not gritty or smooth</0> means that neither of those two textures "
+"dominates. You may still feel some sand grains or some soapiness, but the "
+"feel of the soil is not predominantly one or the other."
+msgstr[1] "<0>Gritty</0> means you can feel individual grains in the soil."
+msgstr[2] "<0>Smooth</0> means that the wetted soil is slippery or soapy in feel."
+
+msgctxt "LOAM"
+msgid "soil##texture##class##CLAY"
+msgstr "Clay Loam"
+
+msgctxt "LOAM"
+msgid "soil##texture##class##SANDY_CLAY"
+msgstr "Sandy Clay Loam"
+
+msgctxt "LOAM"
+msgid "soil##texture##class##SANDY"
+msgstr "Sandy Loam"
+
+msgctxt "LOAM"
+msgid "soil##texture##class##SILTY_CLAY"
+msgstr "Silty Clay Loam"
+
+msgctxt "LOAM"
+msgid "soil##texture##class##SILT"
+msgstr "Silt Loam"
+
+msgctxt "SAND"
+msgid "soil##texture##class##LOAMY"
+msgstr "Loamy Sand"
+
+msgctxt "CLAY"
+msgid "soil##texture##class##SANDY"
+msgstr "Sandy Clay"
+
+msgctxt "CLAY"
+msgid "soil##texture##class##SILTY"
+msgstr "Silty Clay"
+
+msgctxt "result"
+msgid "soil##color##unexpected##your"
+msgstr "Your result"
+
+msgctxt "suggestion"
+msgid "soil##color##unexpected##use"
+msgstr "Use suggestion"
+
+msgctxt "back"
+msgid "soil##color##guide##go"
+msgstr "Go back"
+
+msgctxt "photo"
+msgid "soil##color##guide##take"
+msgstr "Take Photo"
+
+msgctxt "reference"
+msgid "soil##color##crop"
+msgstr ""
+"Crop image to show only the 3M Canary Yellow Post-it Note. Pinch the image "
+"with your thumb and forefinger to zoom in (pinching inward) or zoom out "
+"(pinching outward). Move the image in the box by swiping with one finger."
+
+msgctxt "soil"
+msgid "soil##color##crop"
+msgstr ""
+"Crop image to show only the soil sample. Pinch the image with your thumb "
+"and forefinger to zoom in (pinching inward) or zoom out (pinching outward). "
+"Move the image in the box by swiping with one finger."
+
+msgctxt "condition"
+msgid "soil##color##soil"
+msgstr "Soil condition:"
+
+msgctxt "condition"
+msgid "soil##color##lighting"
+msgstr "Photo has even lighting and no shadows:"
+
+msgctxt "instead"
+msgid "soil##color##use_photo"
+msgstr "Don’t know the soil color values? Use a photo instead (guide included.)"
+
+msgctxt "soil##MOIST"
+msgid "soil##color##color_photo"
+msgstr "Moist"
+
+msgctxt "soil##DRY"
+msgid "soil##color##color_photo"
+msgstr "Dry"
+
+msgctxt "lighting##EVEN"
+msgid "soil##color##color_photo"
+msgstr "Yes"
+
+msgctxt "lighting##UNEVEN"
+msgid "soil##color##color_photo"
+msgstr "No"
+
+msgctxt "meter"
+msgid "slope##steepness##slope"
+msgstr "Slope Meter"
+
+msgctxt "grant"
+msgid "slope##steepness##camera"
+msgstr "Grant Camera Permission"
+
+msgctxt "camera"
+msgid "slope##steepness##no"
+msgstr "No Camera Access"
+
+msgctxt "camera"
+msgid "image##use"
+msgstr "Take Photo"
+
+msgctxt "explanation"
+msgid "slope##steepness##no_camera"
+msgstr "For best results, allow LandPKS Soil ID to use your camera in Settings"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##FLAT"
+msgstr "0–2%"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##GENTLE"
+msgstr "2–5%"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##MODERATE"
+msgstr "5–10%"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##ROLLING"
+msgstr "10–15%"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##HILLY"
+msgstr "15–30%"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##STEEP"
+msgstr "30–50%"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##MODERATELY_STEEP"
+msgstr "50–60%"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##VERY_STEEP"
+msgstr "60–100%"
+
+msgctxt "PERCENT"
+msgid "slope##steepness##select##STEEPEST"
+msgstr "100%+"
+
+msgctxt "STEEP"
+msgid "slope##steepness##select##MODERATELY"
+msgstr "Moderately Steep"
+
+msgctxt "STEEP"
+msgid "slope##steepness##select##VERY"
+msgstr "Very Steep"
+
+msgctxt "display"
+msgid "slope##steepness##select"
+msgstr "{{steepness_name}} {{steepness_percent}}"
+
+msgctxt "slope"
+msgid "slope##shape##info##down"
+msgstr "Down Slope"
+
+msgctxt "slope"
+msgid "slope##shape##info##cross"
+msgstr "Cross Slope"
+
+msgctxt "gallery"
+msgid "image##choose_from"
+msgstr "Photo Library"
