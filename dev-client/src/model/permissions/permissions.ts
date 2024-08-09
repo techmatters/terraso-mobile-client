@@ -22,7 +22,7 @@ export const matchesOne =
   <T>(cmp: (a: T, b: T) => boolean) =>
   (examples: T[]) =>
   (sample: T) =>
-    examples.filter(x => cmp(x, sample)).length > 0;
+    examples.find(x => cmp(x, sample)) !== undefined;
 
 export const matchesRole = matchesOne(
   (a: SiteUserRole, b: SiteUserRole) => a.kind === b.kind && a.role === b.role,
