@@ -89,7 +89,7 @@
     "@react-native/metro-config": "^0.74.87",
     "@react-native/typescript-config": "^0.74.87",
     "@testing-library/jest-native": "^5.4.3",
-    "@testing-library/react-native": "^12.5.2",
+    "@testing-library/react-native": "^12.5.3",
     "@types/base-64": "^1.0.2",
     "@types/delta-e": "^0.0.2",
     "@types/haversine": "^1.1.8",
