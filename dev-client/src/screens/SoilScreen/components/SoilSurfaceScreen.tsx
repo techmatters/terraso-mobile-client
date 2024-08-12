@@ -14,11 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image} from 'react-native';
 
-import {selectSite, selectSoilData} from 'terraso-client-shared/selectors';
+import {
+  selectSite,
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {
   SurfaceCracks,
@@ -33,6 +37,12 @@ import {
   Heading,
   Paragraph,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -55,32 +65,42 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
     [t],
   );
 
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
+
   return (
     <ScreenScaffold AppBar={<AppBar title={site.name} />}>
-      <Column padding="md">
-        <Heading variant="h6">
-          {t('soil.collection_method.verticalCracking')}
-        </Heading>
-        <Select
-          nullable
-          value={cracking ?? null}
-          onValueChange={onUpdate}
-          options={surfaceCracks}
-          renderValue={renderSurfaceCrack}
-        />
-        <Box height="lg" />
-        <Paragraph>
-          {t('soil.vertical_cracking.description', {units: 'METRIC'})}
-        </Paragraph>
-        <Box width="100%" alignItems="center">
-          <Image
-            source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
+      <SiteRoleContextProvider siteId={siteId}>
+        <Column padding="md">
+          <Heading variant="h6">
+            {t('soil.collection_method.verticalCracking')}
+          </Heading>
+          <Select
+            disabled={isViewer}
+            nullable
+            value={cracking ?? null}
+            onValueChange={onUpdate}
+            options={surfaceCracks}
+            renderValue={renderSurfaceCrack}
           />
-        </Box>
-      </Column>
-      <Box position="absolute" bottom="0" right="0">
-        <DoneButton isDisabled={!cracking} />
-      </Box>
+          <Box height="lg" />
+
+          <Paragraph>
+            {t('soil.vertical_cracking.description', {units: 'METRIC'})}
+          </Paragraph>
+          <Box width="100%" alignItems="center">
+            <Image
+              source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
+            />
+          </Box>
+        </Column>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+          <Box position="absolute" bottom="0" right="0">
+            <DoneButton isDisabled={!cracking} />
+          </Box>
+        </RestrictBySiteRole>
+      </SiteRoleContextProvider>
     </ScreenScaffold>
   );
 };

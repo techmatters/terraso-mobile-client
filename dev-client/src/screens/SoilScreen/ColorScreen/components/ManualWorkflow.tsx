@@ -20,7 +20,10 @@ import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 import Animated, {LinearTransition} from 'react-native-reanimated';
 
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
+import {
+  selectDepthDependentData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {
   ColorChroma,
   ColorHueSubstep,
@@ -39,6 +42,8 @@ import {
   Paragraph,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
   isColorComplete,
   parseMunsellHue,
@@ -50,6 +55,10 @@ import {
   updateColorSelections,
   validProperties,
 } from 'terraso-mobile-client/model/color/soilColorValidation';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -58,6 +67,12 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const data = useSelector(selectDepthDependentData(props));
+
+  const userRole = useSelector(state =>
+    selectUserRoleSite(state, props.siteId),
+  );
+
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const {hue: initialHue, substep: initialSubstep} = renderMunsellHue(data);
 
@@ -115,78 +130,86 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const validOptions = useMemo(() => validProperties(color), [color]);
 
   return (
-    <Column>
-      <Row padding="md" rowGap={24} flexWrap="wrap" alignItems="center">
-        {color.hue !== 'N' && (
-          <>
+    <SiteRoleContextProvider siteId={props.siteId}>
+      <Column>
+        <Row padding="md" rowGap={24} flexWrap="wrap" alignItems="center">
+          {color.hue !== 'N' && (
+            <>
+              <Select
+                disabled={isViewer}
+                nullable
+                options={validOptions.substeps}
+                value={color.substep}
+                label={t('soil.color.hue')}
+                onValueChange={onUpdateSubstep}
+                renderValue={value => value.toString()}
+                {...styles.propertySelect}
+              />
+              <Box flex={1} />
+            </>
+          )}
+          <Animated.View layout={LinearTransition}>
             <Select
+              disabled={isViewer}
               nullable
-              options={validOptions.substeps}
-              value={color.substep}
+              options={soilColorHues}
+              value={color.hue}
               label={t('soil.color.hue')}
-              onValueChange={onUpdateSubstep}
-              renderValue={value => value.toString()}
+              onValueChange={onUpdateHue}
+              renderValue={value => value}
               {...styles.propertySelect}
             />
-            <Box flex={1} />
-          </>
-        )}
-        <Animated.View layout={LinearTransition}>
-          <Select
-            nullable
-            options={soilColorHues}
-            value={color.hue}
-            label={t('soil.color.hue')}
-            onValueChange={onUpdateHue}
-            renderValue={value => value}
-            {...styles.propertySelect}
-          />
-        </Animated.View>
-        {color.hue === 'N' && <Box flex={1} />}
-        <Animated.View layout={LinearTransition}>
-          <Select
-            nullable
-            value={color.value}
-            options={validOptions.values}
-            onValueChange={onUpdateValue}
-            renderValue={value => value.toString()}
-            label={t('soil.color.value')}
-            {...styles.propertySelect}
-          />
-        </Animated.View>
-        <Animated.View layout={LinearTransition} style={styles.slash}>
-          <Heading variant="h6" textAlign="center">
-            /
-          </Heading>
-        </Animated.View>
-        {color.chroma !== 0 && (
-          <Select
-            nullable
-            value={color.chroma}
-            options={validOptions.chromas}
-            onValueChange={onUpdateChroma}
-            renderValue={chroma => chroma.toString()}
-            label={t('soil.color.chroma')}
-            {...styles.propertySelect}
-          />
-        )}
-      </Row>
-      {!isColorComplete(data) && (
-        <Column
-          paddingHorizontal="md"
-          paddingVertical="lg"
-          backgroundColor="grey.300"
-          alignItems="flex-start">
-          <Paragraph variant="body1">
-            {t('soil.color.use_photo_instead')}
-          </Paragraph>
-          <SwitchWorkflowButton
-            {...props}
-            rightIcon={<Icon name="chevron-right" />}
-          />
-        </Column>
-      )}
-    </Column>
+          </Animated.View>
+          {color.hue === 'N' && <Box flex={1} />}
+          <Animated.View layout={LinearTransition}>
+            <Select
+              disabled={isViewer}
+              nullable
+              value={color.value}
+              options={validOptions.values}
+              onValueChange={onUpdateValue}
+              renderValue={value => value.toString()}
+              label={t('soil.color.value')}
+              {...styles.propertySelect}
+            />
+          </Animated.View>
+          <Animated.View layout={LinearTransition} style={styles.slash}>
+            <Heading variant="h6" textAlign="center">
+              /
+            </Heading>
+          </Animated.View>
+          {color.chroma !== 0 && (
+            <Select
+              disabled={isViewer}
+              nullable
+              value={color.chroma}
+              options={validOptions.chromas}
+              onValueChange={onUpdateChroma}
+              renderValue={chroma => chroma.toString()}
+              label={t('soil.color.chroma')}
+              {...styles.propertySelect}
+            />
+          )}
+        </Row>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+          {!isColorComplete(data) && (
+            <Column
+              paddingHorizontal="md"
+              paddingVertical="lg"
+              backgroundColor="grey.300"
+              alignItems="flex-start">
+              <Paragraph variant="body1">
+                {t('soil.color.use_photo_instead')}
+              </Paragraph>
+              <SwitchWorkflowButton
+                {...props}
+                rightIcon={<Icon name="chevron-right" />}
+              />
+            </Column>
+          )}
+        </RestrictBySiteRole>
+      </Column>
+    </SiteRoleContextProvider>
   );
 };
 

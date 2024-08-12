@@ -22,7 +22,10 @@ import {Image, StyleSheet} from 'react-native';
 import {Button, ScrollView} from 'native-base';
 
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {selectSoilData} from 'terraso-client-shared/selectors';
+import {
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
@@ -45,6 +48,10 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -69,6 +76,10 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
     useState<SoilIdSoilDataSlopeSteepnessSelectChoices | null>(null);
   const confirmationModalRef = useRef<ModalHandle>(null);
   const navigation = useNavigation();
+
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const steepnessOptions = useMemo(
     () =>
@@ -135,12 +146,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
             </Column>
           </Column>
           <Column p="15px" bg="grey.300">
-            <RestrictBySiteRole
-              role={[
-                {kind: 'site', role: 'OWNER'},
-                {kind: 'project', role: 'MANAGER'},
-                {kind: 'project', role: 'CONTRIBUTOR'},
-              ]}>
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
               <Text variant="body1">{t('slope.steepness.description')}</Text>
               <Box height="30px" />
               <Row justifyContent="space-between">
@@ -179,16 +185,11 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
           <ImageRadio
             value={soilData.slopeSteepnessSelect}
             options={steepnessOptions as any}
-            onChange={onSteepnessOptionSelected}
+            onChange={isViewer ? () => {} : onSteepnessOptionSelected}
             minimumPerRow={2}
           />
         </ScrollView>
-        <RestrictBySiteRole
-          role={[
-            {kind: 'project', role: 'MANAGER'},
-            {kind: 'project', role: 'CONTRIBUTOR'},
-            {kind: 'site', role: 'OWNER'},
-          ]}>
+        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <DoneButton />
         </RestrictBySiteRole>
       </SiteRoleContextProvider>
