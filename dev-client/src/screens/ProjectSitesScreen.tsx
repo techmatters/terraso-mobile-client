@@ -54,6 +54,7 @@ import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictBy
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {PROJECT_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   TabRoutes,
   TabStackParamList,
@@ -279,12 +280,12 @@ export function ProjectSitesScreen({
       {isEmpty && (
         <>
           <Text>{t('projects.sites.empty_viewer')}</Text>
-          <RestrictByProjectRole role={['MANAGER', 'CONTRIBUTOR']}>
+          <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
             <Text>{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
         </>
       )}
-      <RestrictByProjectRole role={['MANAGER', 'CONTRIBUTOR']}>
+      <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
         <Button
           onPress={transferCallback}
           alignSelf="flex-start"

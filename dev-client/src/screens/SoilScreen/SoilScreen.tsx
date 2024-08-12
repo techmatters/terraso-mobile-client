@@ -45,6 +45,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
@@ -118,12 +119,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           requiredInputs={projectRequiredInputs}
         />
       ))}
-      <RestrictBySiteRole
-        role={[
-          {kind: 'project', role: 'MANAGER'},
-          {kind: 'project', role: 'CONTRIBUTOR'},
-          {kind: 'site', role: 'OWNER'},
-        ]}>
+      <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Modal
           trigger={onOpen => (
             <Button

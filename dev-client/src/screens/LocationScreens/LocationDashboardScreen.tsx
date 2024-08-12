@@ -23,6 +23,7 @@ import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -33,7 +34,6 @@ import {
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
-import {isSiteManager} from 'terraso-mobile-client/util';
 
 type Props = ({siteId: string} | {coords: Coords} | {elevation: number}) & {
   initialTab?: SiteTabName;
