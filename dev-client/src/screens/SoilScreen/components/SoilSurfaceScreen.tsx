@@ -14,11 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image} from 'react-native';
 
-import {selectSite, selectSoilData} from 'terraso-client-shared/selectors';
+import {
+  selectSite,
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-client-shared/selectors';
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {
   SurfaceCracks,
@@ -35,7 +39,10 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {
+  isProjectViewer,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -58,6 +65,10 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
     [t],
   );
 
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+
+  const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
+
   return (
     <ScreenScaffold AppBar={<AppBar title={site.name} />}>
       <SiteRoleContextProvider siteId={siteId}>
@@ -65,16 +76,15 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
           <Heading variant="h6">
             {t('soil.collection_method.verticalCracking')}
           </Heading>
-          <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-            <Select
-              nullable
-              value={cracking ?? null}
-              onValueChange={onUpdate}
-              options={surfaceCracks}
-              renderValue={renderSurfaceCrack}
-            />
-            <Box height="lg" />
-          </RestrictBySiteRole>
+          <Select
+            disabled={isViewer}
+            nullable
+            value={cracking ?? null}
+            onValueChange={onUpdate}
+            options={surfaceCracks}
+            renderValue={renderSurfaceCrack}
+          />
+          <Box height="lg" />
 
           <Paragraph>
             {t('soil.vertical_cracking.description', {units: 'METRIC'})}
