@@ -18,7 +18,7 @@
 import {
   IconButton,
   IconButtonProps,
-} from 'terraso-mobile-client/components/icons/IconButton';
+} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
 export const BottomNavIconButton = (
   props: IconButtonProps & {label: string},

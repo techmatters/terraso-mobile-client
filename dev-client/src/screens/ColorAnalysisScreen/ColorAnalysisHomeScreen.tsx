@@ -23,8 +23,8 @@ import {Fab} from 'native-base';
 
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
   decodeBase64Jpg,
   PhotoWithBase64,

@@ -24,8 +24,8 @@ import {
   ProjectRole,
 } from 'terraso-client-shared/project/projectSlice';
 
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   Column,

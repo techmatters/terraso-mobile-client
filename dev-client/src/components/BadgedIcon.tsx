@@ -16,8 +16,8 @@
  */
 import {Pressable} from 'native-base';
 
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {

@@ -27,7 +27,7 @@ import {Pressable} from 'native-base';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
 import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {

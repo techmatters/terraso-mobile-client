@@ -16,7 +16,7 @@
  */
 import {ReactNode, useCallback, useState} from 'react';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   Box,
   BoxProps,

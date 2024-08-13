@@ -35,7 +35,7 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {normalizeText} from 'terraso-client-shared/utils';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   ListFilterModal,
   ListFilterProvider,

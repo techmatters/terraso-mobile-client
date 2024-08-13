@@ -17,7 +17,7 @@
 
 import {memo} from 'react';
 
-import {HelpButton} from 'terraso-mobile-client/components/buttons/HelpButton';
+import {HelpButton} from 'terraso-mobile-client/components/buttons/icons/HelpButton';
 import {Tooltip} from 'terraso-mobile-client/components/tooltips/Tooltip';
 
 type Props = React.PropsWithChildren;

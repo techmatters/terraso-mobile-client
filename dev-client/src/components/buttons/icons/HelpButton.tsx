@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,25 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {forwardRef} from 'react';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
-type BigCloseButtonProps = {
+type HelpButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export const BigCloseButton = ({onPress}: BigCloseButtonProps) => {
-  return (
-    <IconButton
-      name="close"
-      size="lg"
-      background="grey.200"
-      _icon={iconProps}
-      borderRadius="full"
-      onPress={onPress}
-    />
-  );
-};
+export const HelpButton = forwardRef(({onPress}: HelpButtonProps, ref) => (
+  <IconButton
+    ref={ref}
+    _icon={iconProps}
+    ml="6px"
+    p="0"
+    name="help"
+    onPress={onPress}
+  />
+));
 
-const iconProps = {color: 'action.active'};
+const iconProps = {color: 'action.active_subtle', size: 'md'};

@@ -18,19 +18,19 @@
 import {forwardRef} from 'react';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
-type HelpButtonProps = {
+type InfoButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export const HelpButton = forwardRef(({onPress}: HelpButtonProps, ref) => (
+export const InfoButton = forwardRef(({onPress}: InfoButtonProps, ref) => (
   <IconButton
     ref={ref}
     _icon={iconProps}
     ml="6px"
     p="0"
-    name="help"
+    name="info"
     onPress={onPress}
   />
 ));
