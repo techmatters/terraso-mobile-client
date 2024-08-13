@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
+import {PressableProps} from 'react-native';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
