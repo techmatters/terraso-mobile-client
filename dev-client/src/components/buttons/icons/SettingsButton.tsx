@@ -18,14 +18,24 @@
 import {forwardRef} from 'react';
 import {PressableProps, View} from 'react-native';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+import {
+  IconButton
+} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 
-type InfoButtonProps = {
+type BackButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export const InfoButton = forwardRef<View, InfoButtonProps>(
-  ({onPress}: InfoButtonProps, ref) => (
-    <IconButton ref={ref} type="sm" name="info" onPress={onPress} />
-  ),
+export const BackButton = forwardRef<View, BackButtonProps>(
+  ({onPress}: BackButtonProps, ref) => {
+    return (
+      <IconButton
+        ref={ref}
+        type="md"
+        name="close"
+        variant="primary-filled"
+        onPress={onPress}
+      />
+    );
+  },
 );

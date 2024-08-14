@@ -17,22 +17,16 @@
 
 import {forwardRef} from 'react';
 import {PressableProps} from 'react-native';
+import {View} from 'react-native-reanimated/lib/typescript/Animated';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 
 type HelpButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export const HelpButton = forwardRef(({onPress}: HelpButtonProps, ref) => (
-  <IconButton
-    ref={ref}
-    _icon={iconProps}
-    ml="6px"
-    p="0"
-    name="help"
-    onPress={onPress}
-  />
-));
-
-const iconProps = {color: 'action.active_subtle', size: 'md'};
+export const HelpButton = forwardRef<View, HelpButtonProps>(
+  ({onPress}: HelpButtonProps, ref) => (
+    <IconButton type="sm" name="help" ref={ref} onPress={onPress} />
+  ),
+);

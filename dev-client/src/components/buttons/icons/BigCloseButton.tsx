@@ -17,23 +17,21 @@
 
 import {PressableProps} from 'react-native';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {
+  IconButton,
+  IconButtonVariant,
+} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 
 type BigCloseButtonProps = {
+  variant?: IconButtonVariant;
   onPress?: PressableProps['onPress'];
 };
 
-export const BigCloseButton = ({onPress}: BigCloseButtonProps) => {
+export const BigCloseButton = ({
+  variant = 'normal-filled',
+  onPress,
+}: BigCloseButtonProps) => {
   return (
-    <IconButton
-      name="close"
-      size="lg"
-      background="grey.200"
-      _icon={iconProps}
-      borderRadius="full"
-      onPress={onPress}
-    />
+    <IconButton type="md" name="close" variant={variant} onPress={onPress} />
   );
 };
-
-const iconProps = {color: 'action.active'};

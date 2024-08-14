@@ -15,25 +15,29 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {PressableProps} from 'react-native';
+import {forwardRef} from 'react';
+import {PressableProps, View} from 'react-native';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {
+  IconButton,
+  IconButtonVariant,
+} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 
 type CloseButtonProps = {
+  variant?: IconButtonVariant;
   onPress?: PressableProps['onPress'];
 };
 
-export const CloseButton = ({onPress}: CloseButtonProps) => {
-  return (
-    <IconButton
-      name="close"
-      size="sm"
-      background="grey.200"
-      _icon={iconProps}
-      borderRadius="full"
-      onPress={onPress}
-    />
-  );
-};
-
-const iconProps = {color: 'action.active'};
+export const CloseButton = forwardRef<View, CloseButtonProps>(
+  ({variant = 'normal-filled', onPress}: CloseButtonProps, ref) => {
+    return (
+      <IconButton
+        ref={ref}
+        type="sm"
+        name="close"
+        variant={variant}
+        onPress={onPress}
+      />
+    );
+  },
+);
