@@ -15,67 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
-import {useTranslation} from 'react-i18next';
-
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {
-  PROJECT_ROLES,
-  ProjectRole,
-} from 'terraso-client-shared/project/projectSlice';
-
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
-import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
-import {Select} from 'terraso-mobile-client/components/inputs/Select';
-import {
-  Column,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {formatName} from 'terraso-mobile-client/util';
 
 export type UserFields = Omit<User, 'preferences'>;
-
-type DisplayProps = {
-  user: UserFields;
-  role: ProjectRole;
-  updateUserRole: (role: ProjectRole) => void;
-  removeUser: () => void;
-};
-
-export const UserDisplay = ({
-  user,
-  role,
-  updateUserRole,
-  removeUser,
-}: DisplayProps) => {
-  const {t} = useTranslation();
-  const renderRole = useCallback(
-    (value: ProjectRole) => t(`general.role.${value}`),
-    [t],
-  );
-  const {firstName, lastName, email} = user;
-  return (
-    <Column space="5px">
-      <Row mt="15px">
-        <ProfilePic user={user} />
-        <Column flexGrow={2} ml="15px">
-          <Text fontWeight={700} fontSize="16px">
-            {formatName(firstName, lastName)}
-          </Text>
-          <Text fontWeight={400} fontSize="14px">
-            {email}
-          </Text>
-        </Column>
-        <IconButton name="delete" onPress={removeUser} />
-      </Row>
-      <Select
-        nullable={false}
-        value={role}
-        onValueChange={updateUserRole}
-        options={PROJECT_ROLES}
-        renderValue={renderRole}
-      />
-    </Column>
-  );
-};
