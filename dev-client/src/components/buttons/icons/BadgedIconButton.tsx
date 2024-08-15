@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {PressableProps} from 'react-native';
+import {forwardRef} from 'react';
+import {PressableProps, View} from 'react-native';
 
 import {Pressable} from 'native-base';
 
@@ -22,7 +23,7 @@ import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconBut
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type Props = {
+type BadgedIconButtonProps = {
   name: IconName;
   badgeNum: number;
   accessibilityLabel?: string;
@@ -30,29 +31,35 @@ type Props = {
   onPress?: PressableProps['onPress'];
 };
 
-export const BadgedIconButton = ({
-  name,
-  badgeNum,
-  accessibilityLabel,
-  badgeAccessibilityLabel,
-  onPress,
-}: Props) => {
-  return (
-    <Pressable onPress={onPress}>
-      {badgeNum > 0 && (
-        <Badge
-          variant="notification"
-          accessibilityLabel={badgeAccessibilityLabel}>
-          {badgeNum}
-        </Badge>
-      )}
-      <IconButton
-        type="md"
-        variant="light-filled"
-        name={name}
-        accessibilityLabel={accessibilityLabel}
-        onPress={onPress}
-      />
-    </Pressable>
-  );
-};
+export const BadgedIconButton = forwardRef<View, BadgedIconButtonProps>(
+  (
+    {
+      name,
+      badgeNum,
+      accessibilityLabel,
+      badgeAccessibilityLabel,
+      onPress,
+    }: BadgedIconButtonProps,
+    ref,
+  ) => {
+    return (
+      <Pressable onPress={onPress}>
+        {badgeNum > 0 && (
+          <Badge
+            variant="notification"
+            accessibilityLabel={badgeAccessibilityLabel}>
+            {badgeNum}
+          </Badge>
+        )}
+        <IconButton
+          ref={ref}
+          type="md"
+          variant="light-filled"
+          name={name}
+          accessibilityLabel={accessibilityLabel}
+          onPress={onPress}
+        />
+      </Pressable>
+    );
+  },
+);
