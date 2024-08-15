@@ -15,14 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
-import {DataPrivacyContent} from 'terraso-mobile-client/components/privacy/DataPrivacyContent';
-import {DataPrivacyHeading} from 'terraso-mobile-client/components/privacy/DataPrivacyHeading';
+import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
+import {LandPKSInfoContent} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoContent';
+import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 
-export const DataPrivacyInfoButton = () => {
+export const LandPKSInfoButton = () => {
   return (
-    <InfoButton Header={<DataPrivacyHeading />}>
-      <DataPrivacyContent />
-    </InfoButton>
+    <InfoSheet
+      trigger={onOpen => <AppBarIconButton name="info" onPress={onOpen} />}>
+      <LandPKSInfoContent />
+    </InfoSheet>
   );
 };

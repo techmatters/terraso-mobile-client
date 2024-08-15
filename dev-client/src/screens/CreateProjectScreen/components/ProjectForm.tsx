@@ -28,6 +28,7 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
@@ -36,7 +37,6 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/privacy/DataPrivacyInfoButton';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   PROJECT_DESCRIPTION_MAX_LENGTH,

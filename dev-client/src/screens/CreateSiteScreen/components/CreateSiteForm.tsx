@@ -26,6 +26,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {HelpButton} from 'terraso-mobile-client/components/buttons/icons/common/HelpButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
@@ -36,7 +37,6 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/privacy/DataPrivacyInfoButton';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';

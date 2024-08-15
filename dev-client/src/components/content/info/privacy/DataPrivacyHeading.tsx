@@ -15,20 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 
-type InfoSheetProps = React.PropsWithChildren<{
-  Header?: React.ReactNode;
-  trigger?: ModalTrigger;
-}>;
-
-export const InfoSheet = ({Header, trigger, children}: InfoSheetProps) => (
-  <OverlaySheet
-    fullHeight
-    trigger={trigger}
-    Header={<Heading variant="h4">{Header}</Heading>}>
-    {children}
-  </OverlaySheet>
-);
+export const DataPrivacyHeading = () => {
+  return <TranslatedContent i18nKey="general.info.privacy_title" />;
+};

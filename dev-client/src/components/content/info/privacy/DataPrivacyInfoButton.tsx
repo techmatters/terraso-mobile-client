@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,8 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
+import {DataPrivacyContent} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyContent';
+import {DataPrivacyHeading} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyHeading';
 
-export const DataPrivacyHeading = () => {
-  return <TranslatedContent i18nKey="general.info.privacy_title" />;
+export const DataPrivacyInfoButton = () => {
+  return (
+    <InfoButton Header={<DataPrivacyHeading />}>
+      <DataPrivacyContent />
+    </InfoButton>
+  );
 };

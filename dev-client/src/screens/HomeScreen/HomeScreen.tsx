@@ -28,7 +28,7 @@ import {
 
 import {useForegroundPermissions} from 'expo-location';
 
-import BottomSheet, {BottomSheetModal} from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
 import Mapbox from '@rnmapbox/maps';
 
 import {selectSitesAndUserRoles} from 'terraso-client-shared/selectors';
@@ -36,13 +36,12 @@ import {Site} from 'terraso-client-shared/site/siteSlice';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';
 
-import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
+import {LandPKSInfoButton} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoButton';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {HomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
 import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';
 import {
@@ -70,7 +69,6 @@ export const HomeScreen = memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const infoBottomSheetRef = useRef<BottomSheetModal>(null);
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>(noneCallout());
@@ -157,15 +155,6 @@ export const HomeScreen = memo(() => {
     [mapStyleURL, setMapStyleURL],
   );
 
-  const onInfo = useCallback(
-    () => infoBottomSheetRef.current?.present(),
-    [infoBottomSheetRef],
-  );
-  const onInfoClose = useCallback(
-    () => infoBottomSheetRef.current?.dismiss(),
-    [infoBottomSheetRef],
-  );
-
   const {siteDistances} = useGeospatialContext();
 
   const filters = useMemo(
@@ -175,12 +164,7 @@ export const HomeScreen = memo(() => {
 
   return (
     <ScreenScaffold
-      AppBar={
-        <AppBar
-          LeftButton={null}
-          RightButton={<AppBarIconButton name="info" onPress={onInfo} />}
-        />
-      }>
+      AppBar={<AppBar LeftButton={null} RightButton={<LandPKSInfoButton />} />}>
       <ListFilterProvider items={siteList} filters={filters}>
         <Box flex={1}>
           <Box flex={1} zIndex={-1}>
@@ -204,7 +188,6 @@ export const HomeScreen = memo(() => {
             snapIndex={1}
           />
         </Box>
-        <LandPKSInfoModal ref={infoBottomSheetRef} onClose={onInfoClose} />
       </ListFilterProvider>
     </ScreenScaffold>
   );

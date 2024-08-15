@@ -26,6 +26,7 @@ import {updateProject} from 'terraso-client-shared/project/projectSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -33,7 +34,6 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/privacy/DataPrivacyInfoButton';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
