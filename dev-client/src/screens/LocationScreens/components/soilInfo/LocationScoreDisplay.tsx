@@ -25,6 +25,7 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
+import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
@@ -61,10 +62,12 @@ export function LocationScoreDisplay({
             <Heading variant="h6">
               {t('site.soil_id.location_score_info.header')}
             </Heading>
-            <InfoOverlaySheetButton
-              Header={t('site.soil_id.location_score_info.header')}>
-              <LocationScoreInfoContent isSite={isSite} />
-            </InfoOverlaySheetButton>
+            <HelpSection>
+              <InfoOverlaySheetButton
+                Header={t('site.soil_id.location_score_info.header')}>
+                <LocationScoreInfoContent isSite={isSite} />
+              </InfoOverlaySheetButton>
+            </HelpSection>
           </Row>
           <TranslatedParagraph
             i18nKey={

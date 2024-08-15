@@ -25,6 +25,7 @@ import {
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
 
+import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {
   Heading,
@@ -62,9 +63,11 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
     <ScrollView backgroundColor="grey.300">
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
         <Heading variant="h6">{t('slope.title')}</Heading>
-        <InfoOverlaySheetButton Header={t('slope.info.title')}>
-          <SlopeInfoContent />
-        </InfoOverlaySheetButton>
+        <HelpSection>
+          <InfoOverlaySheetButton Header={t('slope.info.title')}>
+            <SlopeInfoContent />
+          </InfoOverlaySheetButton>
+        </HelpSection>
       </Row>
       <Divider />
       <DataInputSummary

@@ -23,6 +23,7 @@ import {
   SoilMatchInfo,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
 import {
   Column,
   Heading,
@@ -55,10 +56,12 @@ export function PropertiesScoreDisplay({
           <Heading variant="h6">
             {t('site.soil_id.soil_properties_score_info.header')}
           </Heading>
-          <InfoOverlaySheetButton
-            Header={t('site.soil_id.soil_properties_score_info.header')}>
-            <SoilPropertiesScoreInfoContent />
-          </InfoOverlaySheetButton>
+          <HelpSection>
+            <InfoOverlaySheetButton
+              Header={t('site.soil_id.soil_properties_score_info.header')}>
+              <SoilPropertiesScoreInfoContent />
+            </InfoOverlaySheetButton>
+          </HelpSection>
         </Row>
         <ScoreTile score={matchInfo.score} />
       </Row>

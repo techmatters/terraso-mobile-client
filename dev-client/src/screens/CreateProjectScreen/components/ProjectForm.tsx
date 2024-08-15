@@ -27,6 +27,7 @@ import {
   ProjectUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
@@ -201,7 +202,9 @@ export default function ProjectForm({
             <Heading bold size="md">
               {t('projects.create.privacy_label')}
             </Heading>
-            <DataPrivacyInfoSheetButton />
+            <HelpSection>
+              <DataPrivacyInfoSheetButton />
+            </HelpSection>
           </Row>
         }
         options={{
