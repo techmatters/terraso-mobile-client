@@ -71,6 +71,7 @@ export const IconButton = forwardRef<View, IconButtonProps>(
           name={name}
           size={convertIconSize(type === 'sq' ? 'md' : type)}
           style={[
+            styles.base,
             iconStyleForType(type),
             iconStyleForVariant(variant),
             pressed ? pressedStyleForVariant(variant) : undefined,
@@ -119,6 +120,10 @@ const pressedStyleForVariant = (variant: IconButtonVariant) => {
 };
 
 const styles = StyleSheet.create({
+  base: {
+    verticalAlign: 'middle',
+    textAlign: 'center',
+  },
   sm: {
     padding: 4,
     borderRadius: 100,
@@ -160,8 +165,6 @@ const styles = StyleSheet.create({
     borderColor: convertColorProp('secondary.main'),
     borderRadius: 100,
     borderWidth: 1,
-    paddingTop: 6,
-    paddingLeft: 6,
   },
   locationPressed: {
     color: convertColorProp('secondary.dark'),
