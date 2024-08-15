@@ -5,30 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-08-05T23:26:07.544Z\n"
-"PO-Revision-Date: 2024-08-05T23:26:07.545Z\n"
-
-msgctxt "0"
-msgid "soil##texture##rock##VOLUME"
-msgstr "0–1%"
-
-msgctxt "1"
-msgid "soil##texture##rock##VOLUME"
-msgid_plural "soil##texture##rock##VOLUME"
-msgstr[0] ""
-msgstr[1] "1–15%"
-
-msgctxt "15"
-msgid "soil##texture##rock##VOLUME"
-msgid_plural "soil##texture##rock##VOLUME"
-msgstr[0] ""
-msgstr[1] "15–35%"
-
-msgctxt "35"
-msgid "soil##texture##rock##VOLUME"
-msgid_plural "soil##texture##rock##VOLUME"
-msgstr[0] ""
-msgstr[1] "35–60%"
+"POT-Creation-Date: 2024-08-15T04:59:04.894Z\n"
+"PO-Revision-Date: 2024-08-15T04:59:04.895Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -807,6 +785,21 @@ msgstr "Sand"
 msgid "soil##texture##class##SILT"
 msgstr "Silt"
 
+msgid "soil##texture##rockfragment##VOLUME:0:1"
+msgstr "0–1%"
+
+msgid "soil##texture##rockfragment##VOLUME:1:15"
+msgstr "1–15%"
+
+msgid "soil##texture##rockfragment##VOLUME:15:35"
+msgstr "15–35%"
+
+msgid "soil##texture##rockfragment##VOLUME:35:60"
+msgstr "35–60%"
+
+msgid "soil##texture##rockfragment##VOLUME:60"
+msgstr ">60%"
+
 msgid "soil##color##title"
 msgstr "Soil Color"
 
@@ -1086,11 +1079,6 @@ msgstr "Convex"
 
 msgid "slope##shape##select##LINEAR"
 msgstr "Linear"
-
-msgid "soil##texture##rock##VOLUME"
-msgid_plural "soil##texture##rock##VOLUME"
-msgstr[0] ""
-msgstr[1] ">60%"
 
 msgctxt "more"
 msgid "welcome##learn"
