@@ -69,20 +69,33 @@ const toPoOptions = {
   project: 'Terraso',
 };
 const toPo = () =>
-  transform('PO', '../../src/translations/', (locale, filePath) =>
-    i18nextToPo(locale, readFileSync(filePath), toPoOptions).then(
+  transform('PO', '../../src/translations/', (locale, filePath) => {
+    let data = readFileSync(filePath).toString();
+    data = data
+      .replace(/"VOLUME_(\d+)_(\d+)"/g, '"VOLUME:$1:$2"')
+      .replace(/"VOLUME_(\d+)"/g, '"VOLUME:$1"');
+
+    return i18nextToPo(locale, data, toPoOptions).then(
       save(`locales/po/${locale}.po`),
-    ),
-  );
+    );
+  });
 
 // JSON transform
 const toJsonOptions = {};
 const toJson = () =>
-  transform('JSON', '../../locales/po/', (locale, filePath) =>
-    gettextToI18next(locale, readFileSync(filePath), toJsonOptions).then(
-      save(`src/translations/${locale}.json`),
-    ),
-  );
+  transform('JSON', '../../locales/po/', (locale, filePath) => {
+    let data = gettextToI18next(
+      locale,
+      readFileSync(filePath),
+      toJsonOptions,
+    ).then(data =>
+      data
+        .replace(/"VOLUME:(\d+):(\d+)"/g, '"VOLUME_$1_$2"')
+        .replace(/VOLUME:(\d+)/g, 'VOLUME_$1'),
+    );
+
+    return data.then(save(`src/translations/${locale}.json`));
+  });
 
 // Scripts entry
 if (transformTo === 'po') {
