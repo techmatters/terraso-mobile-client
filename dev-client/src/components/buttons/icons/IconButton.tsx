@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {forwardRef} from 'react';
+import React, {forwardRef, useState} from 'react';
 import {Pressable, PressableProps, StyleSheet, View} from 'react-native';
 
 import {MaterialIcons} from '@expo/vector-icons';
@@ -57,16 +57,24 @@ export const IconButton = forwardRef<View, IconButtonProps>(
     }: IconButtonProps,
     ref,
   ) => {
+    const [pressed, setPressed] = useState(false);
+
     return (
       <Pressable
         ref={ref}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
         onPress={onPress}>
         <MaterialIcons
           name={name}
           size={convertIconSize(type === 'sq' ? 'md' : type)}
-          style={[iconStyleForVariant(variant), iconStyleForType(type)]}
+          style={[
+            iconStyleForType(type),
+            iconStyleForVariant(variant),
+            pressed ? pressedStyleForVariant(variant) : undefined,
+          ]}
         />
       </Pressable>
     );
@@ -98,6 +106,15 @@ const iconStyleForVariant = (variant: IconButtonVariant) => {
       return styles.location;
     default:
       return styles.normal;
+  }
+};
+
+const pressedStyleForVariant = (variant: IconButtonVariant) => {
+  switch (variant) {
+    case 'location':
+      return styles.locationPressed;
+    default:
+      return undefined;
   }
 };
 
@@ -145,5 +162,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingTop: 6,
     paddingLeft: 6,
+  },
+  locationPressed: {
+    color: convertColorProp('secondary.dark'),
+    borderColor: convertColorProp('secondary.dark'),
   },
 });
