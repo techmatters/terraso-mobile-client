@@ -125,17 +125,14 @@ const styles = StyleSheet.create({
   normal: {
     color: convertColorProp('text.locationicon'),
     backgroundColor: convertColorProp('transparent'),
-    borderRadius: 100,
   },
   normalFilled: {
     color: convertColorProp('text.locationicon'),
     backgroundColor: convertColorProp('grey.200'),
-    borderRadius: 100,
   },
   primaryFilled: {
     color: convertColorProp('primary.contrast'),
     backgroundColor: convertColorProp('primary.dark'),
-    borderRadius: 100,
   },
   light: {
     color: convertColorProp('primary.contrast'),
@@ -149,7 +146,6 @@ const styles = StyleSheet.create({
     color: convertColorProp('secondary.dark'),
     backgroundColor: convertColorProp('transparent'),
     borderColor: convertColorProp('secondary.dark'),
-    borderRadius: 100,
     borderWidth: 1,
   },
 });
