@@ -216,6 +216,10 @@ exports[`renders correctly 1`] = `
                               style={
                                 [
                                   {
+                                    "textAlign": "center",
+                                    "verticalAlign": "middle",
+                                  },
+                                  {
                                     "borderRadius": 100,
                                     "padding": 12,
                                   },

@@ -222,6 +222,10 @@ exports[`renders correctly 1`] = `
                             style={
                               [
                                 {
+                                  "textAlign": "center",
+                                  "verticalAlign": "middle",
+                                },
+                                {
                                   "borderRadius": 100,
                                   "padding": 4,
                                 },
@@ -321,6 +325,10 @@ exports[`renders correctly 1`] = `
                                   size={24}
                                   style={
                                     [
+                                      {
+                                        "textAlign": "center",
+                                        "verticalAlign": "middle",
+                                      },
                                       {
                                         "borderRadius": 100,
                                         "padding": 12,
