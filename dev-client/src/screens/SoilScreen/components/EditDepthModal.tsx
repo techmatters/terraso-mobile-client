@@ -37,7 +37,7 @@ import {
 import {fromEntries} from 'terraso-client-shared/utils';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 import {
   DepthForm,
   DepthFormInput,
@@ -170,8 +170,9 @@ export const EditDepthModal = ({
       ref={modalRef}
       trigger={onOpen => (
         <IconButton
+          type="sm"
+          variant="light"
           name="more-vert"
-          _icon={{color: 'primary.contrast'}}
           onPress={onOpen}
         />
       )}

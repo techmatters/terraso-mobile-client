@@ -35,7 +35,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -90,7 +90,8 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         backgroundColor="background.default"
         px="16px"
         py="12px"
-        justifyContent="space-between">
+        justifyContent="space-between"
+        alignItems="center">
         <Heading variant="h6">{t('soil.pit')}</Heading>
         {!projectSettings && (
           <OverlaySheet
@@ -98,11 +99,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
             }
             trigger={onOpen => (
-              <IconButton
-                name="tune"
-                _icon={{color: 'action.active'}}
-                onPress={onOpen}
-              />
+              <IconButton type="md" name="tune" onPress={onOpen} />
             )}>
             <EditSiteSoilDepthPreset
               selected={soilData.depthIntervalPreset}

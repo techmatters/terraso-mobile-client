@@ -17,12 +17,13 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,
   Column,
   Text,
+  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   MunsellColor,
@@ -56,17 +57,14 @@ export const ColorDisplay = ({onDelete, color, variant}: Props) => {
             actionName={t('soil.color.confirm_delete.action_name')}
             handleConfirm={onDelete}
             trigger={onPress => (
-              <IconButton
-                position="absolute"
-                name="delete"
-                top="-18px"
-                right="-18px"
-                size="md"
-                borderRadius="full"
-                backgroundColor="grey.300"
-                _icon={{color: 'action.active'}}
-                onPress={onPress}
-              />
+              <View position="absolute" top="-18px" right="-18px">
+                <IconButton
+                  name="delete"
+                  type="md"
+                  variant="normal-filled"
+                  onPress={onPress}
+                />
+              </View>
             )}
           />
         )}

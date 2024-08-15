@@ -27,7 +27,7 @@ import {Pressable} from 'native-base';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
 import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {
@@ -156,11 +156,8 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
         <Column space={3}>
           <IconButton
             name="layers"
-            _icon={{
-              color: 'action.active',
-            }}
-            bgColor="white"
-            padding={2}
+            variant="light-filled"
+            type="sq"
             onPress={toggleMapLayer}
           />
           <PermissionsRequestWrapper
@@ -171,10 +168,8 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
             {onRequest => (
               <IconButton
                 name="my-location"
-                _icon={{color: 'action.active'}}
-                bgColor="white"
-                padding={2}
-                borderRadius={15}
+                variant="light-filled"
+                type="sq"
                 onPress={onRequest}
               />
             )}

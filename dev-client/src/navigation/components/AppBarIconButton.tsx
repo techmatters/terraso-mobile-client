@@ -15,11 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  IconButton,
-  IconButtonProps,
-} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {PressableProps} from 'react-native';
 
-export const AppBarIconButton = (props: IconButtonProps) => (
-  <IconButton size="md" _icon={{color: 'primary.contrast'}} {...props} />
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+import {IconName} from 'terraso-mobile-client/components/icons/Icon';
+
+export type AppBarIconButtonProps = {
+  name: IconName;
+  onPress?: PressableProps['onPress'];
+};
+
+export const AppBarIconButton = ({name, onPress}: AppBarIconButtonProps) => (
+  <IconButton type="md" variant="light" name={name} onPress={onPress} />
 );

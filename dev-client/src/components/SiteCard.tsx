@@ -20,7 +20,7 @@ import {StyleSheet, ViewStyle} from 'react-native';
 
 import {Site} from 'terraso-client-shared/site/siteSlice';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {
   Box,
@@ -78,13 +78,9 @@ export const SiteCard = ({
         <Box flexGrow={1} />
         {onShowSiteOnMap && (
           <IconButton
+            type="sm"
+            variant="location"
             name="location-on"
-            variant="outline"
-            rounded="full"
-            borderColor="secondary.main"
-            _icon={{
-              color: 'secondary.main',
-            }}
             onPress={() => onShowSiteOnMap(site)}
           />
         )}

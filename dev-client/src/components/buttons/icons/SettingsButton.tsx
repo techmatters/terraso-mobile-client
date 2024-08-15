@@ -18,9 +18,7 @@
 import {forwardRef} from 'react';
 import {PressableProps, View} from 'react-native';
 
-import {
-  IconButton
-} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 
 type BackButtonProps = {
   onPress?: PressableProps['onPress'];

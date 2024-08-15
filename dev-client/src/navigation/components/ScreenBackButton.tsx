@@ -27,11 +27,5 @@ export const ScreenBackButton = ({icon = 'arrow-back'}: Props) => {
   const navigation = useNavigation();
   const goBack = useCallback(() => navigation.pop(), [navigation]);
 
-  return (
-    <AppBarIconButton
-      name={icon}
-      onPress={goBack}
-      _pressed={{backgroundColor: 'primary.main'}}
-    />
-  );
+  return <AppBarIconButton name={icon} onPress={goBack} />;
 };

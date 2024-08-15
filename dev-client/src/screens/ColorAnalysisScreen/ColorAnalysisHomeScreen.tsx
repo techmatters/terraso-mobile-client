@@ -23,7 +23,7 @@ import {Fab} from 'native-base';
 
 import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   decodeBase64Jpg,
@@ -39,6 +39,7 @@ import {
   Column,
   Row,
   Text,
+  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   getColor,
@@ -160,17 +161,14 @@ export const ColorAnalysisHomeScreen = () => {
           width="100%"
           height="180px">
           <Image source={photo} resizeMode="cover" style={styles.image} />
-          <IconButton
-            position="absolute"
-            name="delete"
-            top="-18px"
-            right="-18px"
-            size="md"
-            borderRadius="full"
-            backgroundColor="grey.300"
-            _icon={{color: 'action.active'}}
-            onPress={() => navigation.pop()}
-          />
+          <View position="absolute" top="-18px" right="-18px">
+            <IconButton
+              name="delete"
+              type="md"
+              variant="normal-filled"
+              onPress={() => navigation.pop()}
+            />
+          </View>
         </Box>
         <Box height="lg" />
         <Row justifyContent="space-between">
