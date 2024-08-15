@@ -143,7 +143,7 @@ export const SoilPropertiesDataTable = ({rows}: Props) => {
               <DataTableCell
                 text={
                   row.rockFragment
-                    ? t(`soil.texture.rock_fragment.${row.rockFragment}`)
+                    ? t(`soil.texture.rockfragment.${row.rockFragment}`)
                     : ''
                 }
                 width={columnWidthRockFragment}
