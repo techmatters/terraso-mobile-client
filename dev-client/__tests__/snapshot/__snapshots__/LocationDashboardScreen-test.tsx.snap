@@ -227,7 +227,6 @@ exports[`renders correctly 1`] = `
                                     "backgroundColor": "#00000000",
                                     "color": "#FFFFFF",
                                   },
-                                  undefined,
                                 ]
                               }
                             />

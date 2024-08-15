@@ -227,7 +227,6 @@ exports[`renders correctly 1`] = `
                                     "backgroundColor": "#00000000",
                                     "color": "#FFFFFF",
                                   },
-                                  undefined,
                                 ]
                               }
                             />
@@ -1183,10 +1182,8 @@ exports[`renders correctly 1`] = `
                                             },
                                             {
                                               "backgroundColor": "#00000000",
-                                              "borderRadius": 100,
                                               "color": "#001923B3",
                                             },
-                                            undefined,
                                           ]
                                         }
                                       />
@@ -1298,10 +1295,8 @@ exports[`renders correctly 1`] = `
                                                   },
                                                   {
                                                     "backgroundColor": "#EEEEEE",
-                                                    "borderRadius": 100,
                                                     "color": "#001923B3",
                                                   },
-                                                  undefined,
                                                 ]
                                               }
                                             />
