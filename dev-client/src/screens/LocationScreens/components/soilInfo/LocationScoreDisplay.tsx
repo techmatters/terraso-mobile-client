@@ -25,6 +25,7 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
@@ -33,7 +34,6 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {LocationScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {getSoilWebUrl} from 'terraso-mobile-client/util';
@@ -63,10 +63,9 @@ export function LocationScoreDisplay({
               {t('site.soil_id.location_score_info.header')}
             </Heading>
             <HelpContentSpacer />
-            <InfoOverlaySheetButton
-              Header={t('site.soil_id.location_score_info.header')}>
+            <InfoButton Header={t('site.soil_id.location_score_info.header')}>
               <LocationScoreInfoContent isSite={isSite} />
-            </InfoOverlaySheetButton>
+            </InfoButton>
           </Row>
           <TranslatedParagraph
             i18nKey={

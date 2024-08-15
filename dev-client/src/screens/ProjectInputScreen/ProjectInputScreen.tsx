@@ -33,9 +33,9 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/privacy/DataPrivacyInfoButton';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
@@ -90,7 +90,7 @@ export const ProjectInputScreen = ({
                     {t('site.dashboard.privacy')}
                   </Text>
                   <HelpContentSpacer />
-                  <DataPrivacyInfoSheetButton />
+                  <DataPrivacyInfoButton />
                 </Row>
               }
               options={{

@@ -15,20 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
-import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
+import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 
-type Props = {
+type InfoSheetProps = React.PropsWithChildren<{
   Header: React.ReactNode;
-};
+  trigger?: ModalTrigger;
+}>;
 
-export const InfoOverlaySheetButton = ({
-  Header,
-  children,
-}: React.PropsWithChildren<Props>) => (
-  <InfoOverlaySheet
-    trigger={onOpen => <InfoButton onPress={onOpen} />}
-    Header={Header}>
+export const InfoSheet = ({Header, trigger, children}: InfoSheetProps) => (
+  <OverlaySheet
+    fullHeight
+    trigger={trigger}
+    Header={<Heading variant="h4">{Header}</Heading>}>
     {children}
-  </InfoOverlaySheet>
+  </OverlaySheet>
 );

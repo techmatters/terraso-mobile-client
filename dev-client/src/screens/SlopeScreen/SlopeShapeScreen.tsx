@@ -41,6 +41,7 @@ import LinearConcave from 'terraso-mobile-client/assets/slope/shape/linear-conca
 import LinearConvex from 'terraso-mobile-client/assets/slope/shape/linear-convex.svg';
 import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear.svg';
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {
   ImageRadio,
@@ -52,7 +53,6 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
   isProjectViewer,
@@ -154,9 +154,9 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
               <Row alignItems="center">
                 <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
                 <HelpContentSpacer />
-                <InfoOverlaySheetButton Header={t('slope.shape.info.title')}>
+                <InfoButton Header={t('slope.shape.info.title')}>
                   <SlopeShapeInfoContent />
-                </InfoOverlaySheetButton>
+                </InfoButton>
               </Row>
             </Column>
           </Column>

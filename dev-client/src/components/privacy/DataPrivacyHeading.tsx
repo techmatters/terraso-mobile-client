@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2023 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,24 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 
-type Props = {
-  Header: React.ReactNode;
-  trigger?: ModalTrigger;
+export const DataPrivacyHeading = () => {
+  return <TranslatedContent i18nKey="general.info.privacy_title" />;
 };
-
-export const InfoOverlaySheet = ({
-  Header,
-  trigger,
-  children,
-}: React.PropsWithChildren<Props>) => (
-  <OverlaySheet
-    fullHeight
-    trigger={trigger}
-    Header={<Heading variant="h4">{Header}</Heading>}>
-    {children}
-  </OverlaySheet>
-);

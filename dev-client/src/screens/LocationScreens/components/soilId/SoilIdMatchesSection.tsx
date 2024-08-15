@@ -21,6 +21,7 @@ import {ActivityIndicator} from 'react-native-paper';
 import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
@@ -32,8 +33,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
+import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
   getSortedDataBasedMatches,
   getSortedLocationBasedMatches,
@@ -57,9 +57,9 @@ export const SoilIdMatchesSection = ({
       <Row alignItems="center" pb="12px">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
         <HelpContentSpacer />
-        <InfoOverlaySheetButton Header={t('site.soil_id.matches.info.title')}>
+        <InfoButton Header={t('site.soil_id.matches.info.title')}>
           <TopSoilMatchesInfoContent isSite={isSite} />
-        </InfoOverlaySheetButton>
+        </InfoButton>
       </Row>
       <MatchTilesOrMessage siteId={siteId} coords={coords} />
     </ScreenContentSection>
@@ -79,7 +79,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
     case 'ready': {
       if (isSite) {
         return getSortedDataBasedMatches(soilIdData).map(dataMatch => (
-          <InfoOverlaySheet
+          <InfoSheet
             key={dataMatch.soilInfo.soilSeries.name}
             Header={dataMatch.soilInfo.soilSeries.name}
             trigger={onOpen => (
@@ -90,11 +90,11 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
               />
             )}>
             <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
-          </InfoOverlaySheet>
+          </InfoSheet>
         ));
       } else {
         return getSortedLocationBasedMatches(soilIdData).map(locationMatch => (
-          <InfoOverlaySheet
+          <InfoSheet
             key={locationMatch.soilInfo.soilSeries.name}
             Header={locationMatch.soilInfo.soilSeries.name}
             trigger={onOpen => (
@@ -108,7 +108,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
               locationMatch={locationMatch}
               coords={coords}
             />
-          </InfoOverlaySheet>
+          </InfoSheet>
         ));
       }
     }

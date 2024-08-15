@@ -36,8 +36,8 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/privacy/DataPrivacyInfoButton';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {
   PROJECT_DESCRIPTION_MAX_LENGTH,
   PROJECT_DESCRIPTION_MIN_LENGTH,
@@ -203,7 +203,7 @@ export default function ProjectForm({
               {t('projects.create.privacy_label')}
             </Heading>
             <HelpContentSpacer />
-            <DataPrivacyInfoSheetButton />
+            <DataPrivacyInfoButton />
           </Row>
         }
         options={{

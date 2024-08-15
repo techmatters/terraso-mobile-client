@@ -15,23 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
-import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
-import {DataPrivacyContent} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyContent';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
+import {DataPrivacyContent} from 'terraso-mobile-client/components/privacy/DataPrivacyContent';
+import {DataPrivacyHeading} from 'terraso-mobile-client/components/privacy/DataPrivacyHeading';
 
-type Props = {
-  trigger?: ModalTrigger;
-};
-
-export const DataPrivacyInfoSheet = ({
-  trigger,
-}: React.PropsWithChildren<Props>) => {
+export const DataPrivacyInfoButton = () => {
   return (
-    <InfoOverlaySheet
-      trigger={trigger}
-      Header={<TranslatedHeading i18nKey="general.info.privacy_title" />}>
+    <InfoButton Header={<DataPrivacyHeading />}>
       <DataPrivacyContent />
-    </InfoOverlaySheet>
+    </InfoButton>
   );
 };

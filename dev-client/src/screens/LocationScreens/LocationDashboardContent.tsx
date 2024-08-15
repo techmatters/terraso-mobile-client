@@ -32,8 +32,8 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/privacy/DataPrivacyInfoButton';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -135,7 +135,7 @@ export const LocationDashboardContent = ({
                     {t('site.dashboard.privacy')}
                   </Text>
                   <HelpContentSpacer />
-                  <DataPrivacyInfoSheetButton />
+                  <DataPrivacyInfoButton />
                 </Row>
               }
               options={{

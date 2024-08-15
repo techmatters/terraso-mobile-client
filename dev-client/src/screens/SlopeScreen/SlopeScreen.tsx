@@ -25,13 +25,13 @@ import {
   useSiteProjectSoilSettings,
 } from 'terraso-client-shared/selectors';
 
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SlopeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeInfoContent';
 import {
@@ -64,9 +64,9 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
         <Heading variant="h6">{t('slope.title')}</Heading>
         <HelpContentSpacer />
-        <InfoOverlaySheetButton Header={t('slope.info.title')}>
+        <InfoButton Header={t('slope.info.title')}>
           <SlopeInfoContent />
-        </InfoOverlaySheetButton>
+        </InfoButton>
       </Row>
       <Divider />
       <DataInputSummary

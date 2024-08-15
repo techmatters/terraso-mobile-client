@@ -26,6 +26,7 @@ import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdS
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {
   Box,
@@ -36,7 +37,6 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
   isColorComplete,
@@ -107,7 +107,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
             <Row alignItems="center">
               <Heading variant="h6">{t('soil.color.title')}</Heading>
               <HelpContentSpacer />
-              <InfoOverlaySheetButton Header={t('soil.color.title')}>
+              <InfoButton Header={t('soil.color.title')}>
                 <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
                 <BulletList
                   data={[1, 2, 3]}
@@ -119,7 +119,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
                 />
                 <Paragraph variant="body1">{t('soil.color.info.p2')}</Paragraph>
                 <Paragraph variant="body1">{t('soil.color.info.p3')}</Paragraph>
-              </InfoOverlaySheetButton>
+              </InfoButton>
             </Row>
             <Box flex={1} />
             <RestrictBySiteRole role={SITE_EDITOR_ROLES}>

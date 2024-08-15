@@ -36,8 +36,8 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/privacy/DataPrivacyInfoButton';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
-import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -129,7 +129,7 @@ export const CreateSiteForm = ({
             <FormLabel>
               {t('privacy.label')}
               <HelpContentSpacer />
-              <DataPrivacyInfoSheetButton />
+              <DataPrivacyInfoButton />
             </FormLabel>
             <FormRadioGroup
               values={['PUBLIC', 'PRIVATE']}
