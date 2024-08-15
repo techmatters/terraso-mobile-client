@@ -14,50 +14,45 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import {PressableProps} from 'react-native';
+
 import {Pressable} from 'native-base';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
-  _badge?: {} & Omit<React.ComponentProps<typeof Badge>, 'variant'>;
-  _iconButton?: {} & Omit<
-    React.ComponentProps<typeof IconButton>,
-    'onPress' | 'name' | 'accessibilityLabel'
-  >;
+  name: IconName;
   badgeNum: number;
-  iconName: IconName;
   accessibilityLabel?: string;
-} & React.ComponentProps<typeof Pressable>;
+  badgeAccessibilityLabel?: string;
+  onPress?: PressableProps['onPress'];
+};
 
-const BadgedIcon = ({
+export const BadgedIconButton = ({
+  name,
   badgeNum,
-  iconName,
-  onPress,
-  _badge = {},
-  _iconButton = {},
   accessibilityLabel,
-  ...pressableProps
+  badgeAccessibilityLabel,
+  onPress,
 }: Props) => {
   return (
-    <Pressable {...pressableProps}>
+    <Pressable onPress={onPress}>
       {badgeNum > 0 && (
-        <Badge variant="notification" {..._badge}>
+        <Badge
+          variant="notification"
+          accessibilityLabel={badgeAccessibilityLabel}>
           {badgeNum}
         </Badge>
       )}
       <IconButton
-        name={iconName}
-        {..._iconButton}
-        onPress={onPress}
+        type="md"
+        variant="light-filled"
+        name={name}
         accessibilityLabel={accessibilityLabel}
-        _pressed={{
-          bg: 'background.default',
-        }}
+        onPress={onPress}
       />
     </Pressable>
   );
 };
-
-export default BadgedIcon;

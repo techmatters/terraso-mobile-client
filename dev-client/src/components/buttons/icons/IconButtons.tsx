@@ -42,17 +42,26 @@ export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
   type: IconButtonType;
   name: IconName;
   variant?: IconButtonVariant;
-  label?: string;
+  accessibilityLabel?: string;
   onPress?: PressableProps['onPress'];
 };
 
 export const IconButton = forwardRef<View, IconButtonProps>(
-  ({type, name, variant = 'normal', label, onPress}: IconButtonProps, ref) => {
+  (
+    {
+      type,
+      name,
+      variant = 'normal',
+      accessibilityLabel,
+      onPress,
+    }: IconButtonProps,
+    ref,
+  ) => {
     return (
       <Pressable
         ref={ref}
         accessibilityRole="button"
-        accessibilityLabel={label}
+        accessibilityLabel={accessibilityLabel}
         onPress={onPress}>
         <MaterialIcons
           name={name}
