@@ -30,7 +30,7 @@ import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';
 
-import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/CloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {
   Box,

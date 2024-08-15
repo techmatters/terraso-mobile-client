@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/InfoButton';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
 
 type Props = {

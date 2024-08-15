@@ -20,7 +20,7 @@ import {forwardRef} from 'react';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
-import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/BigCloseButton';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {LandPKSInfo} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfo';

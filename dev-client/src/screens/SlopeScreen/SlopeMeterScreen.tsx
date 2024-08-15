@@ -26,7 +26,7 @@ import {Button} from 'native-base';
 
 import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 
-import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/BigCloseButton';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
