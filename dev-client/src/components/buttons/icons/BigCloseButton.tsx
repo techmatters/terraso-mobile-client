@@ -20,7 +20,7 @@ import {PressableProps} from 'react-native';
 import {
   IconButton,
   IconButtonVariant,
-} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
 type BigCloseButtonProps = {
   variant?: IconButtonVariant;

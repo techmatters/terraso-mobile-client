@@ -17,7 +17,7 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,

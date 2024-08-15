@@ -35,7 +35,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdSlice';
 
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {

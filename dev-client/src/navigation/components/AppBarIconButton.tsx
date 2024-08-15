@@ -17,7 +17,7 @@
 
 import {PressableProps} from 'react-native';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 
 export type AppBarIconButtonProps = {

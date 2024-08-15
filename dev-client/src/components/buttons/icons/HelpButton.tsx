@@ -19,7 +19,7 @@ import {forwardRef} from 'react';
 import {PressableProps} from 'react-native';
 import {View} from 'react-native-reanimated/lib/typescript/Animated';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
 type HelpButtonProps = {
   onPress?: PressableProps['onPress'];

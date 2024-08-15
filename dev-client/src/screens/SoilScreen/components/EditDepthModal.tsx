@@ -37,7 +37,7 @@ import {
 import {fromEntries} from 'terraso-client-shared/utils';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButtons';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   DepthForm,
   DepthFormInput,
