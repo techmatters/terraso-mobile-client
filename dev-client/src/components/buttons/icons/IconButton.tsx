@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef} from 'react';
 import {Pressable, PressableProps, StyleSheet, View} from 'react-native';
 
 import MaterialIcon from '@expo/vector-icons/MaterialIcons';
@@ -57,15 +57,11 @@ export const IconButton = forwardRef<View, IconButtonProps>(
     }: IconButtonProps,
     ref,
   ) => {
-    const [pressed, setPressed] = useState(false);
-
     return (
       <Pressable
         ref={ref}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
-        onPressIn={() => setPressed(true)}
-        onPressOut={() => setPressed(false)}
         onPress={onPress}>
         <MaterialIcon
           name={name}
@@ -74,7 +70,6 @@ export const IconButton = forwardRef<View, IconButtonProps>(
             styles.base,
             iconStyleForType(type),
             iconStyleForVariant(variant),
-            pressed ? pressedStyleForVariant(variant) : undefined,
           ]}
         />
       </Pressable>
@@ -107,15 +102,6 @@ const iconStyleForVariant = (variant: IconButtonVariant) => {
       return styles.location;
     default:
       return styles.normal;
-  }
-};
-
-const pressedStyleForVariant = (variant: IconButtonVariant) => {
-  switch (variant) {
-    case 'location':
-      return styles.locationPressed;
-    default:
-      return undefined;
   }
 };
 
@@ -160,14 +146,10 @@ const styles = StyleSheet.create({
     backgroundColor: convertColorProp('primary.contrast'),
   },
   location: {
-    color: convertColorProp('secondary.main'),
+    color: convertColorProp('secondary.dark'),
     backgroundColor: convertColorProp('transparent'),
-    borderColor: convertColorProp('secondary.main'),
+    borderColor: convertColorProp('secondary.dark'),
     borderRadius: 100,
     borderWidth: 1,
-  },
-  locationPressed: {
-    color: convertColorProp('secondary.dark'),
-    borderColor: convertColorProp('secondary.dark'),
   },
 });
