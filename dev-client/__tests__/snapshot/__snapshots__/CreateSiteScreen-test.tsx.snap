@@ -210,7 +210,23 @@ exports[`renders correctly 1`] = `
                             onResponderTerminationRequest={[Function]}
                             onStartShouldSetResponder={[Function]}
                           >
-                            <Text />
+                            <Icon
+                              name="close"
+                              size={24}
+                              style={
+                                [
+                                  {
+                                    "borderRadius": 100,
+                                    "padding": 12,
+                                  },
+                                  {
+                                    "backgroundColor": "#00000000",
+                                    "color": "#FFFFFF",
+                                  },
+                                  undefined,
+                                ]
+                              }
+                            />
                           </View>
                           <Text
                             lineHeight="32px"
@@ -1148,7 +1164,24 @@ exports[`renders correctly 1`] = `
                                       onResponderTerminationRequest={[Function]}
                                       onStartShouldSetResponder={[Function]}
                                     >
-                                      <Text />
+                                      <Icon
+                                        name="info"
+                                        size={20}
+                                        style={
+                                          [
+                                            {
+                                              "borderRadius": 100,
+                                              "padding": 4,
+                                            },
+                                            {
+                                              "backgroundColor": "#00000000",
+                                              "borderRadius": 100,
+                                              "color": "#001923B3",
+                                            },
+                                            undefined,
+                                          ]
+                                        }
+                                      />
                                     </View>
                                   </View>
                                   <RCTScrollView
@@ -1242,7 +1275,24 @@ exports[`renders correctly 1`] = `
                                             onResponderTerminationRequest={[Function]}
                                             onStartShouldSetResponder={[Function]}
                                           >
-                                            <Text />
+                                            <Icon
+                                              name="close"
+                                              size={24}
+                                              style={
+                                                [
+                                                  {
+                                                    "borderRadius": 100,
+                                                    "padding": 12,
+                                                  },
+                                                  {
+                                                    "backgroundColor": "#EEEEEE",
+                                                    "borderRadius": 100,
+                                                    "color": "#001923B3",
+                                                  },
+                                                  undefined,
+                                                ]
+                                              }
+                                            />
                                           </View>
                                         </View>
                                         <View

@@ -18,7 +18,7 @@
 import React, {forwardRef, useState} from 'react';
 import {Pressable, PressableProps, StyleSheet, View} from 'react-native';
 
-import {MaterialIcons} from '@expo/vector-icons';
+import MaterialIcon from '@expo/vector-icons/MaterialIcons';
 
 import {IconButton as NativeIconButton} from 'native-base';
 
@@ -67,7 +67,7 @@ export const IconButton = forwardRef<View, IconButtonProps>(
         onPressIn={() => setPressed(true)}
         onPressOut={() => setPressed(false)}
         onPress={onPress}>
-        <MaterialIcons
+        <MaterialIcon
           name={name}
           size={convertIconSize(type === 'sq' ? 'md' : type)}
           style={[
