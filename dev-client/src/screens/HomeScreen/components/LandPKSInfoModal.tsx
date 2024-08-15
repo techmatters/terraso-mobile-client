@@ -20,7 +20,7 @@ import {forwardRef} from 'react';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
-import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/CloseButton';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/BigCloseButton';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {LandPKSInfo} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfo';
@@ -42,7 +42,7 @@ export const LandPKSInfoModal = forwardRef<BottomSheetModal, Props>(
         backdropComponent={BackdropComponent}>
         <LandPKSInfo />
         <Box position="absolute" top="18px" right="23px">
-          <CloseButton onPress={onClose} />
+          <BigCloseButton onPress={onClose} />
         </Box>
       </BottomSheetModal>
     );
