@@ -22,10 +22,10 @@ import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
 import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
+import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   SiteLocationDashboardTabNavigator,

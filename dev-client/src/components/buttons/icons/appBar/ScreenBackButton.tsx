@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2023 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,25 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef} from 'react';
-import {PressableProps, View} from 'react-native';
+import {useCallback} from 'react';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
+import {IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-type BackButtonProps = {
-  onPress?: PressableProps['onPress'];
+type Props = {icon?: IconName};
+
+export const ScreenBackButton = ({icon = 'arrow-back'}: Props) => {
+  const navigation = useNavigation();
+  const goBack = useCallback(() => navigation.pop(), [navigation]);
+
+  return <AppBarIconButton name={icon} onPress={goBack} />;
 };
-
-export const BackButton = forwardRef<View, BackButtonProps>(
-  ({onPress}: BackButtonProps, ref) => {
-    return (
-      <IconButton
-        ref={ref}
-        type="md"
-        name="close"
-        variant="primary-filled"
-        onPress={onPress}
-      />
-    );
-  },
-);

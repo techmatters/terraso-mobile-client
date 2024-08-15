@@ -33,7 +33,6 @@ export type IconButtonType = 'sm' | 'md' | 'sq';
 export type IconButtonVariant =
   | 'normal'
   | 'normal-filled'
-  | 'primary-filled'
   | 'light'
   | 'light-filled'
   | 'location';
@@ -92,8 +91,6 @@ const iconStyleForVariant = (variant: IconButtonVariant) => {
   switch (variant) {
     case 'normal-filled':
       return styles.normalFilled;
-    case 'primary-filled':
-      return styles.primaryFilled;
     case 'light':
       return styles.light;
     case 'light-filled':
@@ -129,10 +126,6 @@ const styles = StyleSheet.create({
   normalFilled: {
     color: convertColorProp('text.locationicon'),
     backgroundColor: convertColorProp('grey.200'),
-  },
-  primaryFilled: {
-    color: convertColorProp('primary.contrast'),
-    backgroundColor: convertColorProp('primary.dark'),
   },
   light: {
     color: convertColorProp('primary.contrast'),

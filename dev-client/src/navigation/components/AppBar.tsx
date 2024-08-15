@@ -18,12 +18,12 @@ import {useTranslation} from 'react-i18next';
 
 import {useRoute} from '@react-navigation/native';
 
+import {ScreenBackButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenBackButton';
 import {
   Column,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
 
 type Props = {
   LeftButton?: React.ReactNode;

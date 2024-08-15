@@ -18,24 +18,20 @@
 import {forwardRef} from 'react';
 import {PressableProps, View} from 'react-native';
 
-import {
-  IconButton,
-  IconButtonVariant,
-} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
 type CloseButtonProps = {
-  variant?: IconButtonVariant;
   onPress?: PressableProps['onPress'];
 };
 
 export const CloseButton = forwardRef<View, CloseButtonProps>(
-  ({variant = 'normal-filled', onPress}: CloseButtonProps, ref) => {
+  ({onPress}: CloseButtonProps, ref) => {
     return (
       <IconButton
         ref={ref}
         type="sm"
         name="close"
-        variant={variant}
+        variant="normal-filled"
         onPress={onPress}
       />
     );

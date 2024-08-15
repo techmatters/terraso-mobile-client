@@ -24,8 +24,8 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
+import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {ScreenCloseButton} from 'terraso-mobile-client/navigation/components/ScreenCloseButton';
 import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch} from 'terraso-mobile-client/store';

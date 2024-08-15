@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2023 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,25 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef} from 'react';
-import {PressableProps, View} from 'react-native';
+import {ScreenBackButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenBackButton';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
-
-type BackButtonProps = {
-  onPress?: PressableProps['onPress'];
-};
-
-export const BackButton = forwardRef<View, BackButtonProps>(
-  ({onPress}: BackButtonProps, ref) => {
-    return (
-      <IconButton
-        ref={ref}
-        type="md"
-        name="close"
-        variant="primary-filled"
-        onPress={onPress}
-      />
-    );
-  },
-);
+export const ScreenCloseButton = () => <ScreenBackButton icon="close" />;
