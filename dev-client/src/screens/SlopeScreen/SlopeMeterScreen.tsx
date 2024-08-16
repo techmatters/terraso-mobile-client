@@ -127,7 +127,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
             <Row alignItems="center">
               <Heading variant="h6">{t('slope.steepness.slope_meter')}</Heading>
               <HelpContentSpacer />
-              <InfoButton Header={t('slope.steepness.info.title')}>
+              <InfoButton sheetHeading={t('slope.steepness.info.title')}>
                 <SlopeMeterInfoContent />
               </InfoButton>
             </Row>

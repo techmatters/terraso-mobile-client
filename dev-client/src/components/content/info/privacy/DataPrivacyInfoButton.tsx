@@ -21,7 +21,7 @@ import {DataPrivacyHeading} from 'terraso-mobile-client/components/content/info/
 
 export const DataPrivacyInfoButton = () => {
   return (
-    <InfoButton Header={<DataPrivacyHeading />}>
+    <InfoButton sheetHeading={<DataPrivacyHeading />}>
       <DataPrivacyContent />
     </InfoButton>
   );

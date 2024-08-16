@@ -20,15 +20,15 @@ import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
 
 type InfoSheetProps = React.PropsWithChildren<{
-  Header?: React.ReactNode;
+  heading?: React.ReactNode;
   trigger?: ModalTrigger;
 }>;
 
-export const InfoSheet = ({Header, trigger, children}: InfoSheetProps) => (
+export const InfoSheet = ({heading, trigger, children}: InfoSheetProps) => (
   <OverlaySheet
     fullHeight
     trigger={trigger}
-    Header={<Heading variant="h4">{Header}</Heading>}>
+    Header={<Heading variant="h4">{heading}</Heading>}>
     {children}
   </OverlaySheet>
 );

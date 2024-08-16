@@ -63,7 +63,8 @@ export function LocationScoreDisplay({
               {t('site.soil_id.location_score_info.header')}
             </Heading>
             <HelpContentSpacer />
-            <InfoButton Header={t('site.soil_id.location_score_info.header')}>
+            <InfoButton
+              sheetHeading={t('site.soil_id.location_score_info.header')}>
               <LocationScoreInfoContent isSite={isSite} />
             </InfoButton>
           </Row>

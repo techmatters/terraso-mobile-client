@@ -64,7 +64,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
         <Heading variant="h6">{t('slope.title')}</Heading>
         <HelpContentSpacer />
-        <InfoButton Header={t('slope.info.title')}>
+        <InfoButton sheetHeading={t('slope.info.title')}>
           <SlopeInfoContent />
         </InfoButton>
       </Row>

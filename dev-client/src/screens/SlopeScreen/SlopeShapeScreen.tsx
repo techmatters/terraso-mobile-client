@@ -154,7 +154,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
               <Row alignItems="center">
                 <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
                 <HelpContentSpacer />
-                <InfoButton Header={t('slope.shape.info.title')}>
+                <InfoButton sheetHeading={t('slope.shape.info.title')}>
                   <SlopeShapeInfoContent />
                 </InfoButton>
               </Row>

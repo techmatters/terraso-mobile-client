@@ -107,7 +107,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
             <Row alignItems="center">
               <Heading variant="h6">{t('soil.color.title')}</Heading>
               <HelpContentSpacer />
-              <InfoButton Header={t('soil.color.title')}>
+              <InfoButton sheetHeading={t('soil.color.title')}>
                 <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
                 <BulletList
                   data={[1, 2, 3]}

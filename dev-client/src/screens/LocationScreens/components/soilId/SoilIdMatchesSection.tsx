@@ -57,7 +57,7 @@ export const SoilIdMatchesSection = ({
       <Row alignItems="center" pb="12px">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
         <HelpContentSpacer />
-        <InfoButton Header={t('site.soil_id.matches.info.title')}>
+        <InfoButton sheetHeading={t('site.soil_id.matches.info.title')}>
           <TopSoilMatchesInfoContent isSite={isSite} />
         </InfoButton>
       </Row>
@@ -81,7 +81,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
         return getSortedDataBasedMatches(soilIdData).map(dataMatch => (
           <InfoSheet
             key={dataMatch.soilInfo.soilSeries.name}
-            Header={dataMatch.soilInfo.soilSeries.name}
+            heading={dataMatch.soilInfo.soilSeries.name}
             trigger={onOpen => (
               <SoilMatchTile
                 soil_name={dataMatch.soilInfo.soilSeries.name}
@@ -96,7 +96,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
         return getSortedLocationBasedMatches(soilIdData).map(locationMatch => (
           <InfoSheet
             key={locationMatch.soilInfo.soilSeries.name}
-            Header={locationMatch.soilInfo.soilSeries.name}
+            heading={locationMatch.soilInfo.soilSeries.name}
             trigger={onOpen => (
               <SoilMatchTile
                 soil_name={locationMatch.soilInfo.soilSeries.name}

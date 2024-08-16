@@ -160,7 +160,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             <Row alignItems="center">
               <Heading variant="h6">{t('soil.texture.title')}</Heading>
               <HelpContentSpacer />
-              <InfoButton Header={t('soil.texture.info.title')}>
+              <InfoButton sheetHeading={t('soil.texture.info.title')}>
                 <TextureInfoContent />
               </InfoButton>
             </Row>
@@ -194,7 +194,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
                 {t('soil.texture.fragment_title')}
               </Text>
               <HelpContentSpacer />
-              <InfoButton Header={t('soil.texture.fragment.info.title')}>
+              <InfoButton sheetHeading={t('soil.texture.fragment.info.title')}>
                 <RockFragmentVolumeInfoContent />
               </InfoButton>
             </Row>

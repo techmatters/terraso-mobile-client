@@ -58,7 +58,7 @@ export function PropertiesScoreDisplay({
           </Heading>
           <HelpContentSpacer />
           <InfoButton
-            Header={t('site.soil_id.soil_properties_score_info.header')}>
+            sheetHeading={t('site.soil_id.soil_properties_score_info.header')}>
             <SoilPropertiesScoreInfoContent />
           </InfoButton>
         </Row>

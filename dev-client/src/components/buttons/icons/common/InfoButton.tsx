@@ -19,16 +19,16 @@ import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconBut
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 
 type InfoButtonProps = React.PropsWithChildren<{
-  Header: React.ReactNode;
+  sheetHeading?: React.ReactNode;
 }>;
 
 export const InfoButton = ({
-  Header: Header,
+  sheetHeading,
   children,
 }: React.PropsWithChildren<InfoButtonProps>) => (
   <InfoSheet
     trigger={onOpen => <IconButton type="sm" name="info" onPress={onOpen} />}
-    Header={Header}>
+    heading={sheetHeading}>
     {children}
   </InfoSheet>
 );
