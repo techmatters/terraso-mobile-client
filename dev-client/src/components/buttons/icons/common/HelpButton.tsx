@@ -15,18 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef} from 'react';
-import {PressableProps} from 'react-native';
-import {View} from 'react-native-reanimated/lib/typescript/Animated';
-
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {Tooltip} from 'terraso-mobile-client/components/tooltips/Tooltip';
 
-type HelpButtonProps = {
-  onPress?: PressableProps['onPress'];
-};
+type HelpButtonProps = React.PropsWithChildren;
 
-export const HelpButton = forwardRef<View, HelpButtonProps>(
-  ({onPress}: HelpButtonProps, ref) => (
-    <IconButton type="sm" name="help" ref={ref} onPress={onPress} />
-  ),
+export const HelpButton = ({children}: HelpButtonProps) => (
+  <Tooltip trigger={props => <IconButton type="sm" name="help" {...props} />}>
+    {children}
+  </Tooltip>
 );
