@@ -34,7 +34,7 @@ import {
 import {entries, fromEntries} from 'terraso-client-shared/utils';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
-import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
@@ -159,11 +159,10 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
           <Column p="15px" bg="primary.contrast">
             <Row alignItems="center">
               <Heading variant="h6">{t('soil.texture.title')}</Heading>
-              <HelpSection>
-                <InfoOverlaySheetButton Header={t('soil.texture.info.title')}>
-                  <TextureInfoContent />
-                </InfoOverlaySheetButton>
-              </HelpSection>
+              <HelpContentSpacer />
+              <InfoOverlaySheetButton Header={t('soil.texture.info.title')}>
+                <TextureInfoContent />
+              </InfoOverlaySheetButton>
             </Row>
             <Box height="sm" />
             <Select
@@ -194,12 +193,11 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
               <Text variant="body1-strong">
                 {t('soil.texture.fragment_title')}
               </Text>
-              <HelpSection>
-                <InfoOverlaySheetButton
-                  Header={t('soil.texture.fragment.info.title')}>
-                  <RockFragmentVolumeInfoContent />
-                </InfoOverlaySheetButton>
-              </HelpSection>
+              <HelpContentSpacer />
+              <InfoOverlaySheetButton
+                Header={t('soil.texture.fragment.info.title')}>
+                <RockFragmentVolumeInfoContent />
+              </InfoOverlaySheetButton>
             </Row>
             <Box height="10px" />
             <ImageRadio

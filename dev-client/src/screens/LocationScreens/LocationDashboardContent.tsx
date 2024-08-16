@@ -24,7 +24,7 @@ import {ScrollView} from 'native-base';
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
-import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {
   Box,
   Column,
@@ -134,9 +134,8 @@ export const LocationDashboardContent = ({
                   <Text variant="body1" bold>
                     {t('site.dashboard.privacy')}
                   </Text>
-                  <HelpSection>
-                    <DataPrivacyInfoSheetButton />
-                  </HelpSection>
+                  <HelpContentSpacer />
+                  <DataPrivacyInfoSheetButton />
                 </Row>
               }
               options={{

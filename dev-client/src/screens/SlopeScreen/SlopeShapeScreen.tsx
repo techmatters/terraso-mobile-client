@@ -41,7 +41,7 @@ import LinearConcave from 'terraso-mobile-client/assets/slope/shape/linear-conca
 import LinearConvex from 'terraso-mobile-client/assets/slope/shape/linear-convex.svg';
 import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear.svg';
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
-import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {
   ImageRadio,
   ImageRadioOption,
@@ -153,11 +153,10 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
             <Column p="15px" bg="primary.contrast">
               <Row alignItems="center">
                 <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
-                <HelpSection>
-                  <InfoOverlaySheetButton Header={t('slope.shape.info.title')}>
-                    <SlopeShapeInfoContent />
-                  </InfoOverlaySheetButton>
-                </HelpSection>
+                <HelpContentSpacer />
+                <InfoOverlaySheetButton Header={t('slope.shape.info.title')}>
+                  <SlopeShapeInfoContent />
+                </InfoOverlaySheetButton>
               </Row>
             </Column>
           </Column>

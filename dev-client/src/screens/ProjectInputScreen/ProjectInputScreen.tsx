@@ -25,7 +25,7 @@ import {Button, Fab} from 'native-base';
 import {updateProject} from 'terraso-client-shared/project/projectSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
-import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -89,9 +89,8 @@ export const ProjectInputScreen = ({
                   <Text variant="body1" bold>
                     {t('site.dashboard.privacy')}
                   </Text>
-                  <HelpSection>
-                    <DataPrivacyInfoSheetButton />
-                  </HelpSection>
+                  <HelpContentSpacer />
+                  <DataPrivacyInfoSheetButton />
                 </Row>
               }
               options={{

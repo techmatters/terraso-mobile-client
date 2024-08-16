@@ -25,7 +25,7 @@ import {InferType} from 'yup';
 import {Coords} from 'terraso-client-shared/types';
 
 import {HelpButton} from 'terraso-mobile-client/components/buttons/icons/common/HelpButton';
-import {HelpSection} from 'terraso-mobile-client/components/content/HelpSection';
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
@@ -106,13 +106,12 @@ export const CreateSiteForm = ({
             <FormField name="projectId">
               <FormLabel>
                 {t('site.create.add_to_project_label')}
-                <HelpSection>
-                  <HelpButton>
-                    <Text color="primary.contrast" variant="body1">
-                      {t('site.create.add_to_project_tooltip')}
-                    </Text>
-                  </HelpButton>
-                </HelpSection>
+                <HelpContentSpacer />
+                <HelpButton>
+                  <Text color="primary.contrast" variant="body1">
+                    {t('site.create.add_to_project_tooltip')}
+                  </Text>
+                </HelpButton>
               </FormLabel>
               <ProjectSelect
                 projectId={values.projectId ?? null}
@@ -129,9 +128,8 @@ export const CreateSiteForm = ({
           <FormField name="privacy">
             <FormLabel>
               {t('privacy.label')}
-              <HelpSection>
-                <DataPrivacyInfoSheetButton />
-              </HelpSection>
+              <HelpContentSpacer />
+              <DataPrivacyInfoSheetButton />
             </FormLabel>
             <FormRadioGroup
               values={['PUBLIC', 'PRIVATE']}
