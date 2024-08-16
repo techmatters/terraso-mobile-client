@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 
 export const DataPrivacyHeading = () => {
-  return <TranslatedContent i18nKey="general.info.privacy_title" />;
+  return <TranslatedHeading i18nKey="general.info.privacy_title" />;
 };

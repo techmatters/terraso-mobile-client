@@ -15,20 +15,81 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
+import {StyleSheet, View} from 'react-native';
 
-type InfoSheetProps = React.PropsWithChildren<{
+import {
+  BottomSheetScrollView,
+  BottomSheetModal as GorhomBottomSheetModal,
+} from '@gorhom/bottom-sheet';
+import {useFocusEffect} from '@react-navigation/native';
+
+import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
+import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
+import {
+  ModalContext,
+  ModalHandle,
+  ModalTrigger,
+} from 'terraso-mobile-client/components/modals/Modal';
+import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
+
+export type InfoSheetProps = React.PropsWithChildren<{
   heading?: React.ReactNode;
   trigger?: ModalTrigger;
 }>;
 
-export const InfoSheet = ({heading, trigger, children}: InfoSheetProps) => (
-  <OverlaySheet
-    fullHeight
-    trigger={trigger}
-    Header={<Heading variant="h4">{heading}</Heading>}>
-    {children}
-  </OverlaySheet>
+export const InfoSheet = forwardRef<ModalHandle, InfoSheetProps>(
+  ({heading, trigger, children}: InfoSheetProps, ref) => {
+    const {headerHeight} = useHeaderHeight();
+
+    const modalRef = useRef<GorhomBottomSheetModal>(null);
+    const methods = useMemo(
+      () => ({
+        onClose: () => modalRef.current?.dismiss(),
+        onOpen: () => modalRef.current?.present(),
+      }),
+      [modalRef],
+    );
+    useImperativeHandle(ref, () => methods, [methods]);
+
+    return (
+      <>
+        {trigger && trigger(methods.onOpen)}
+        <GorhomBottomSheetModal
+          ref={modalRef}
+          handleComponent={null}
+          topInset={headerHeight}
+          backdropComponent={BackdropComponent}
+          snapPoints={['100%']}
+          enableDynamicSizing={false}>
+          <ModalContext.Provider value={methods}>
+            <BottomSheetScrollView focusHook={useFocusEffect}>
+              <View style={styles.content}>
+                <View style={styles.headingRow}>
+                  <View style={styles.headingContent}>{heading}</View>
+                  <BigCloseButton onPress={methods.onClose} />
+                </View>
+                {children}
+              </View>
+            </BottomSheetScrollView>
+          </ModalContext.Provider>
+        </GorhomBottomSheetModal>
+      </>
+    );
+  },
 );
+
+const styles = StyleSheet.create({
+  content: {
+    padding: 16,
+  },
+  headingRow: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    alignContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  headingContent: {
+    marginRight: 'auto',
+  },
+});

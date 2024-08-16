@@ -27,6 +27,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
@@ -64,7 +65,9 @@ export function LocationScoreDisplay({
             </Heading>
             <HelpContentSpacer />
             <InfoButton
-              sheetHeading={t('site.soil_id.location_score_info.header')}>
+              sheetHeading={
+                <TranslatedHeading i18nKey="site.soil_id.location_score_info.header" />
+              }>
               <LocationScoreInfoContent isSite={isSite} />
             </InfoButton>
           </Row>

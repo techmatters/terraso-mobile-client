@@ -25,6 +25,7 @@ import {
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
   Column,
   Heading,
@@ -58,7 +59,9 @@ export function PropertiesScoreDisplay({
           </Heading>
           <HelpContentSpacer />
           <InfoButton
-            sheetHeading={t('site.soil_id.soil_properties_score_info.header')}>
+            sheetHeading={
+              <TranslatedHeading i18nKey="site.soil_id.soil_properties_score_info.header" />
+            }>
             <SoilPropertiesScoreInfoContent />
           </InfoButton>
         </Row>

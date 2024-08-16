@@ -36,6 +36,7 @@ import {entries, fromEntries} from 'terraso-client-shared/utils';
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
@@ -160,7 +161,10 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             <Row alignItems="center">
               <Heading variant="h6">{t('soil.texture.title')}</Heading>
               <HelpContentSpacer />
-              <InfoButton sheetHeading={t('soil.texture.info.title')}>
+              <InfoButton
+                sheetHeading={
+                  <TranslatedHeading i18nKey="soil.texture.info.title" />
+                }>
                 <TextureInfoContent />
               </InfoButton>
             </Row>
@@ -194,7 +198,10 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
                 {t('soil.texture.fragment_title')}
               </Text>
               <HelpContentSpacer />
-              <InfoButton sheetHeading={t('soil.texture.fragment.info.title')}>
+              <InfoButton
+                sheetHeading={
+                  <TranslatedHeading i18nKey="soil.texture.fragment.info.title" />
+                }>
                 <RockFragmentVolumeInfoContent />
               </InfoButton>
             </Row>

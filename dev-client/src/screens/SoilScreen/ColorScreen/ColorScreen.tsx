@@ -28,6 +28,7 @@ import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
   Box,
   Column,
@@ -107,7 +108,8 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
             <Row alignItems="center">
               <Heading variant="h6">{t('soil.color.title')}</Heading>
               <HelpContentSpacer />
-              <InfoButton sheetHeading={t('soil.color.title')}>
+              <InfoButton
+                sheetHeading={<TranslatedHeading i18nKey="soil.color.title" />}>
                 <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
                 <BulletList
                   data={[1, 2, 3]}

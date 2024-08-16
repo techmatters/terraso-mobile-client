@@ -29,6 +29,7 @@ import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {
@@ -127,7 +128,10 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
             <Row alignItems="center">
               <Heading variant="h6">{t('slope.steepness.slope_meter')}</Heading>
               <HelpContentSpacer />
-              <InfoButton sheetHeading={t('slope.steepness.info.title')}>
+              <InfoButton
+                sheetHeading={
+                  <TranslatedHeading i18nKey="slope.steepness.info.title" />
+                }>
                 <SlopeMeterInfoContent />
               </InfoButton>
             </Row>

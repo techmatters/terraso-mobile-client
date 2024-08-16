@@ -27,6 +27,7 @@ import {
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {
   Heading,
@@ -64,7 +65,8 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
       <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
         <Heading variant="h6">{t('slope.title')}</Heading>
         <HelpContentSpacer />
-        <InfoButton sheetHeading={t('slope.info.title')}>
+        <InfoButton
+          sheetHeading={<TranslatedHeading i18nKey="slope.info.title" />}>
           <SlopeInfoContent />
         </InfoButton>
       </Row>

@@ -43,6 +43,7 @@ import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
   ImageRadio,
   ImageRadioOption,
@@ -154,7 +155,10 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
               <Row alignItems="center">
                 <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
                 <HelpContentSpacer />
-                <InfoButton sheetHeading={t('slope.shape.info.title')}>
+                <InfoButton
+                  sheetHeading={
+                    <TranslatedHeading i18nKey="slope.shape.info.title" />
+                  }>
                   <SlopeShapeInfoContent />
                 </InfoButton>
               </Row>

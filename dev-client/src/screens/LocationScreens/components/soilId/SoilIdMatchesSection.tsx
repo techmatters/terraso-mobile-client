@@ -24,6 +24,7 @@ import {Coords} from 'terraso-client-shared/types';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
 import {ErrorMessageBox} from 'terraso-mobile-client/components/messages/ErrorMessageBox';
@@ -57,7 +58,10 @@ export const SoilIdMatchesSection = ({
       <Row alignItems="center" pb="12px">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
         <HelpContentSpacer />
-        <InfoButton sheetHeading={t('site.soil_id.matches.info.title')}>
+        <InfoButton
+          sheetHeading={
+            <TranslatedHeading i18nKey="site.soil_id.matches.info.title" />
+          }>
           <TopSoilMatchesInfoContent isSite={isSite} />
         </InfoButton>
       </Row>
@@ -81,7 +85,11 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
         return getSortedDataBasedMatches(soilIdData).map(dataMatch => (
           <InfoSheet
             key={dataMatch.soilInfo.soilSeries.name}
-            heading={dataMatch.soilInfo.soilSeries.name}
+            heading={
+              <Heading variant="h4">
+                {dataMatch.soilInfo.soilSeries.name}
+              </Heading>
+            }
             trigger={onOpen => (
               <SoilMatchTile
                 soil_name={dataMatch.soilInfo.soilSeries.name}
@@ -96,7 +104,11 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
         return getSortedLocationBasedMatches(soilIdData).map(locationMatch => (
           <InfoSheet
             key={locationMatch.soilInfo.soilSeries.name}
-            heading={locationMatch.soilInfo.soilSeries.name}
+            heading={
+              <Heading variant="h4">
+                {locationMatch.soilInfo.soilSeries.name}
+              </Heading>
+            }
             trigger={onOpen => (
               <SoilMatchTile
                 soil_name={locationMatch.soilInfo.soilSeries.name}
