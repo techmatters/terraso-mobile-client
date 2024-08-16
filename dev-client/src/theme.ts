@@ -132,7 +132,7 @@ export const theme = extendTheme({
           },
         },
         notification: {
-          bg: 'primary.lightest',
+          bg: 'primary.lighter',
           _text: {
             fontSize: '12px',
           },

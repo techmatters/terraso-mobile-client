@@ -53,7 +53,7 @@ export const BadgedIconButton = forwardRef<View, BadgedIconButtonProps>(
         )}
         <IconButton
           ref={ref}
-          type="md"
+          type="sm"
           variant="light-filled"
           name={name}
           accessibilityLabel={accessibilityLabel}
