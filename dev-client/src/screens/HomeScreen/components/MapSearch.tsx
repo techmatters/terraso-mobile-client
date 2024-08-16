@@ -157,7 +157,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
           <IconButton
             name="layers"
             variant="light-filled"
-            type="sq"
+            type="md"
             onPress={toggleMapLayer}
           />
           <PermissionsRequestWrapper
@@ -169,7 +169,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
               <IconButton
                 name="my-location"
                 variant="light-filled"
-                type="sq"
+                type="md"
                 onPress={onRequest}
               />
             )}
