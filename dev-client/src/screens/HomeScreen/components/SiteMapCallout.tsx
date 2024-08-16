@@ -24,7 +24,7 @@ import {FlatList} from 'native-base';
 import {Site} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
-import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';

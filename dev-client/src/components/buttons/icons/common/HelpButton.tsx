@@ -15,25 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {Tooltip} from 'terraso-mobile-client/components/tooltips/Tooltip';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+type HelpButtonProps = React.PropsWithChildren;
 
-type CloseButtonProps = {
-  onPress?: PressableProps['onPress'];
-};
-
-export const CloseButton = ({onPress}: CloseButtonProps) => {
-  return (
-    <IconButton
-      name="close"
-      size="sm"
-      background="grey.200"
-      _icon={iconProps}
-      borderRadius="full"
-      onPress={onPress}
-    />
-  );
-};
-
-const iconProps = {color: 'action.active'};
+export const HelpButton = ({children}: HelpButtonProps) => (
+  <Tooltip trigger={props => <IconButton type="sm" name="help" {...props} />}>
+    {children}
+  </Tooltip>
+);

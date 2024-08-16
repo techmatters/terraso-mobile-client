@@ -15,6 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ScreenBackButton} from 'terraso-mobile-client/navigation/components/ScreenBackButton';
+import {ScreenBackButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenBackButton';
 
 export const ScreenCloseButton = () => <ScreenBackButton icon="close" />;

@@ -35,7 +35,7 @@ import {
 } from 'terraso-client-shared/site/siteSlice';
 import {normalizeText} from 'terraso-client-shared/utils';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   ListFilterModal,
   ListFilterProvider,
@@ -92,16 +92,7 @@ const SiteMenu = ({site}: SiteProps) => {
       }}
       visible={visible}
       onDismiss={closeMenu}
-      anchor={
-        <IconButton
-          onPress={openMenu}
-          _pressed={{
-            backgroundColor: 'background.default',
-            color: 'primary.dark',
-          }}
-          name="more-vert"
-        />
-      }>
+      anchor={<IconButton name="more-vert" type="sm" onPress={openMenu} />}>
       <ConfirmModal
         trigger={onOpen => {
           return (

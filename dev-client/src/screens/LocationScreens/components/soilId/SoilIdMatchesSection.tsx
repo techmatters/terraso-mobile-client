@@ -21,6 +21,7 @@ import {ActivityIndicator} from 'react-native-paper';
 import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
@@ -55,6 +56,7 @@ export const SoilIdMatchesSection = ({
     <ScreenContentSection backgroundColor="grey.200">
       <Row alignItems="center" pb="12px">
         <Heading variant="h6">{t('site.soil_id.matches.title')}</Heading>
+        <HelpContentSpacer />
         <InfoOverlaySheetButton Header={t('site.soil_id.matches.info.title')}>
           <TopSoilMatchesInfoContent isSite={isSite} />
         </InfoOverlaySheetButton>

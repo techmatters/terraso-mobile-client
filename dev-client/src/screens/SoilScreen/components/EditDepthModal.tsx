@@ -37,6 +37,7 @@ import {
 import {fromEntries} from 'terraso-client-shared/utils';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   DepthForm,
   DepthFormInput,
@@ -45,7 +46,6 @@ import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {ConfirmDeleteDepthModal} from 'terraso-mobile-client/components/modals/ConfirmDeleteDepthModal';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
@@ -170,8 +170,9 @@ export const EditDepthModal = ({
       ref={modalRef}
       trigger={onOpen => (
         <IconButton
+          type="sm"
+          variant="light"
           name="more-vert"
-          _icon={{color: 'primary.contrast'}}
           onPress={onOpen}
         />
       )}

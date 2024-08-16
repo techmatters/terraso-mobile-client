@@ -25,6 +25,7 @@ import {Button, Fab} from 'native-base';
 import {updateProject} from 'terraso-client-shared/project/projectSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -84,10 +85,11 @@ export const ProjectInputScreen = ({
           <Row pb={4}>
             <RadioBlock
               label={
-                <Row>
+                <Row alignItems="center">
                   <Text variant="body1" bold>
                     {t('site.dashboard.privacy')}
                   </Text>
+                  <HelpContentSpacer />
                   <DataPrivacyInfoSheetButton />
                 </Row>
               }

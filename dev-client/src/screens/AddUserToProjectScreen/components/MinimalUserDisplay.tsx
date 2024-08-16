@@ -15,14 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {User} from 'terraso-client-shared/account/accountSlice';
+
 import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
 import {
   Column,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/UserDisplay';
 import {formatName} from 'terraso-mobile-client/util';
+
+export type UserFields = Omit<User, 'preferences'>;
 
 type DisplayProps = {
   user: UserFields;

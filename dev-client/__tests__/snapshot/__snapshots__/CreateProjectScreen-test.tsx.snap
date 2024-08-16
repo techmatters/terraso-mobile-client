@@ -199,8 +199,6 @@ exports[`renders correctly 1`] = `
                             }
                             accessible={true}
                             collapsable={false}
-                            colorScheme="primary"
-                            dataSet={{}}
                             focusable={true}
                             onBlur={[Function]}
                             onClick={[Function]}
@@ -211,24 +209,26 @@ exports[`renders correctly 1`] = `
                             onResponderTerminate={[Function]}
                             onResponderTerminationRequest={[Function]}
                             onStartShouldSetResponder={[Function]}
-                            style={
-                              {
-                                "alignItems": "center",
-                                "borderRadius": 4,
-                                "flexDirection": "row",
-                                "justifyContent": "center",
-                                "paddingBottom": 12,
-                                "paddingLeft": 12,
-                                "paddingRight": 12,
-                                "paddingTop": 12,
-                              }
-                            }
                           >
                             <Icon
-                              color="#FFFFFF"
                               name="close"
                               size={24}
-                              style={{}}
+                              style={
+                                [
+                                  {
+                                    "textAlign": "center",
+                                    "verticalAlign": "middle",
+                                  },
+                                  {
+                                    "borderRadius": 100,
+                                    "padding": 12,
+                                  },
+                                  {
+                                    "backgroundColor": "#00000000",
+                                    "color": "#FFFFFF",
+                                  },
+                                ]
+                              }
                             />
                           </View>
                           <Text
@@ -833,6 +833,13 @@ exports[`renders correctly 1`] = `
                                       Data Privacy
                                     </Text>
                                     <View
+                                      style={
+                                        {
+                                          "marginLeft": 6,
+                                        }
+                                      }
+                                    />
+                                    <View
                                       accessibilityState={
                                         {
                                           "busy": undefined,
@@ -884,8 +891,6 @@ exports[`renders correctly 1`] = `
                                         }
                                         accessible={true}
                                         collapsable={false}
-                                        colorScheme="primary"
-                                        dataSet={{}}
                                         focusable={true}
                                         onBlur={[Function]}
                                         onClick={[Function]}
@@ -896,25 +901,26 @@ exports[`renders correctly 1`] = `
                                         onResponderTerminate={[Function]}
                                         onResponderTerminationRequest={[Function]}
                                         onStartShouldSetResponder={[Function]}
-                                        style={
-                                          {
-                                            "alignItems": "center",
-                                            "borderRadius": 4,
-                                            "flexDirection": "row",
-                                            "justifyContent": "center",
-                                            "marginLeft": 6,
-                                            "paddingBottom": 0,
-                                            "paddingLeft": 0,
-                                            "paddingRight": 0,
-                                            "paddingTop": 0,
-                                          }
-                                        }
                                       >
                                         <Icon
-                                          color="#1A202CB2"
                                           name="info"
-                                          size={24}
-                                          style={{}}
+                                          size={20}
+                                          style={
+                                            [
+                                              {
+                                                "textAlign": "center",
+                                                "verticalAlign": "middle",
+                                              },
+                                              {
+                                                "borderRadius": 100,
+                                                "padding": 4,
+                                              },
+                                              {
+                                                "backgroundColor": "#00000000",
+                                                "color": "#001923B3",
+                                              },
+                                            ]
+                                          }
                                         />
                                       </View>
                                     </View>
@@ -998,8 +1004,6 @@ exports[`renders correctly 1`] = `
                                               }
                                               accessible={true}
                                               collapsable={false}
-                                              colorScheme="primary"
-                                              dataSet={{}}
                                               focusable={true}
                                               onBlur={[Function]}
                                               onClick={[Function]}
@@ -1010,25 +1014,26 @@ exports[`renders correctly 1`] = `
                                               onResponderTerminate={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
-                                              style={
-                                                {
-                                                  "alignItems": "center",
-                                                  "backgroundColor": "#EEEEEE",
-                                                  "borderRadius": 9999,
-                                                  "flexDirection": "row",
-                                                  "justifyContent": "center",
-                                                  "paddingBottom": 16,
-                                                  "paddingLeft": 16,
-                                                  "paddingRight": 16,
-                                                  "paddingTop": 16,
-                                                }
-                                              }
                                             >
                                               <Icon
-                                                color="#1A202C"
                                                 name="close"
                                                 size={24}
-                                                style={{}}
+                                                style={
+                                                  [
+                                                    {
+                                                      "textAlign": "center",
+                                                      "verticalAlign": "middle",
+                                                    },
+                                                    {
+                                                      "borderRadius": 100,
+                                                      "padding": 12,
+                                                    },
+                                                    {
+                                                      "backgroundColor": "#EEEEEE",
+                                                      "color": "#001923B3",
+                                                    },
+                                                  ]
+                                                }
                                               />
                                             </View>
                                           </View>

@@ -15,29 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback} from 'react';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
+import {IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-export const SpeedDial = ({children}: React.PropsWithChildren<{}>) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleIsOpen = useCallback(() => setIsOpen(value => !value), []);
+type Props = {icon?: IconName};
 
-  return (
-    <Column
-      alignItems="flex-end"
-      position="absolute"
-      right="16px"
-      bottom="16px"
-      space="16px">
-      {isOpen && children}
-      <IconButton
-        variant="FAB"
-        size="lg"
-        name={isOpen ? 'close' : 'add'}
-        onPress={toggleIsOpen}
-      />
-    </Column>
-  );
+export const ScreenBackButton = ({icon = 'arrow-back'}: Props) => {
+  const navigation = useNavigation();
+  const goBack = useCallback(() => navigation.pop(), [navigation]);
+
+  return <AppBarIconButton name={icon} onPress={goBack} />;
 };
