@@ -29,7 +29,7 @@ import {Searchbar} from 'react-native-paper';
 
 import {Button, FormControl, Radio} from 'native-base';
 
-import BadgedIcon from 'terraso-mobile-client/components/BadgedIcon';
+import {BadgedIconButton} from 'terraso-mobile-client/components/buttons/icons/BadgedIconButton';
 import {
   Select,
   SelectProps,
@@ -423,20 +423,15 @@ export const FilterModalTrigger = ({
 
   return (
     <Row space="20px" mb="15px" alignItems="center">
-      <BadgedIcon
-        iconName="filter-list"
+      <BadgedIconButton
+        name="filter-list"
+        badgeNum={numFilters}
         onPress={() => {
           Keyboard.dismiss();
           onOpen();
         }}
-        badgeNum={numFilters}
         accessibilityLabel={t('listfilter.open_modal_label')}
-        _badge={{
-          accessibilityLabel: t('listfilter.num_filters_label'),
-        }}
-        _iconButton={{
-          variant: 'filterIcon',
-        }}
+        badgeAccessibilityLabel={t('listfilter.num_filters_label')}
       />
       {children}
     </Row>

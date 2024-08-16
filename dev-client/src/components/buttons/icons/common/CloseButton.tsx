@@ -16,23 +16,24 @@
  */
 
 import {forwardRef} from 'react';
-import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
+import {PressableProps, View} from 'react-native';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
-type HelpButtonProps = {
+type CloseButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export const HelpButton = forwardRef(({onPress}: HelpButtonProps, ref) => (
-  <IconButton
-    ref={ref}
-    _icon={iconProps}
-    ml="6px"
-    p="0"
-    name="help"
-    onPress={onPress}
-  />
-));
-
-const iconProps = {color: 'action.active_subtle', size: 'md'};
+export const CloseButton = forwardRef<View, CloseButtonProps>(
+  ({onPress}: CloseButtonProps, ref) => {
+    return (
+      <IconButton
+        ref={ref}
+        type="sm"
+        name="close"
+        variant="normal-filled"
+        onPress={onPress}
+      />
+    );
+  },
+);

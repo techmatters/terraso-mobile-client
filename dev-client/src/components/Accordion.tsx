@@ -16,7 +16,7 @@
  */
 import {ReactNode, useCallback, useState} from 'react';
 
-import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   Box,
   BoxProps,
@@ -52,13 +52,7 @@ export const Accordion = ({
         justifyContent="space-between"
         px="16px">
         {Head}
-        {!disableOpen && (
-          <IconButton
-            name={name}
-            onPress={onPress}
-            _icon={{color: 'primary.contrast'}}
-          />
-        )}
+        {!disableOpen && <IconButton type="sm" name={name} onPress={onPress} />}
       </Row>
       {open && children}
     </Box>

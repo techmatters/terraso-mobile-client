@@ -24,6 +24,7 @@ import {ScrollView} from 'native-base';
 import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {
   Box,
   Column,
@@ -129,10 +130,11 @@ export const LocationDashboardContent = ({
           <Row>
             <RadioBlock
               label={
-                <Row>
+                <Row alignItems="center">
                   <Text variant="body1" bold>
                     {t('site.dashboard.privacy')}
                   </Text>
+                  <HelpContentSpacer />
                   <DataPrivacyInfoSheetButton />
                 </Row>
               }

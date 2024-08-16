@@ -26,6 +26,7 @@ import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdS
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {
   Box,
   Column,
@@ -105,6 +106,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
           <Row alignItems="flex-end">
             <Row alignItems="center">
               <Heading variant="h6">{t('soil.color.title')}</Heading>
+              <HelpContentSpacer />
               <InfoOverlaySheetButton Header={t('soil.color.title')}>
                 <Paragraph variant="body1">{t('soil.color.info.p1')}</Paragraph>
                 <BulletList

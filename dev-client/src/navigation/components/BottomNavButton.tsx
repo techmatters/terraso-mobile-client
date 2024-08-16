@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2023 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,38 +15,40 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
-import {Pressable} from 'react-native';
+import {Pressable, PressableProps} from 'react-native';
 
 import {Center, IconButton as NativeIconButton} from 'native-base';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
+export type BottomNavButtonProps = {
   name: IconName;
-  label?: string;
+  label: string;
+  onPress: PressableProps['onPress'];
 };
 
-export const IconButton = React.forwardRef(
-  ({name, label, ...props}: IconButtonProps, ref: React.Ref<unknown>) => {
-    const icon = (
-      <NativeIconButton ref={ref} icon={<Icon name={name} />} {...props} />
-    );
-    if (label === undefined) {
-      return icon;
-    }
-    return (
-      <Pressable onPress={props.onPress}>
-        <Box p="1">
-          {icon}
-          <Center>
-            <Text color="primary.contrast" fontSize="xs">
-              {label}
-            </Text>
-          </Center>
-        </Box>
-      </Pressable>
-    );
-  },
-);
+export const BottomNavButton = ({
+  name,
+  label,
+  onPress,
+}: BottomNavButtonProps) => {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}>
+      <Box p="1">
+        <NativeIconButton
+          onPress={onPress}
+          icon={<Icon name={name} color="primary.contrast" />}
+        />
+        <Center>
+          <Text color="primary.contrast" fontSize="xs">
+            {label}
+          </Text>
+        </Center>
+      </Box>
+    </Pressable>
+  );
+};

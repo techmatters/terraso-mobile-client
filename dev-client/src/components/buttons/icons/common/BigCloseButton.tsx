@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2023–2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,15 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {memo} from 'react';
+import {PressableProps} from 'react-native';
 
-import {HelpButton} from 'terraso-mobile-client/components/buttons/HelpButton';
-import {Tooltip} from 'terraso-mobile-client/components/tooltips/Tooltip';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
-type Props = React.PropsWithChildren;
+type BigCloseButtonProps = {
+  onPress?: PressableProps['onPress'];
+};
 
-export const HelpTooltipButton = memo(({children}: Props) => {
+export const BigCloseButton = ({onPress}: BigCloseButtonProps) => {
   return (
-    <Tooltip trigger={props => <HelpButton {...props} />}>{children}</Tooltip>
+    <IconButton
+      type="md"
+      name="close"
+      variant="normal-filled"
+      onPress={onPress}
+    />
   );
-});
+};

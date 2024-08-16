@@ -21,7 +21,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationHelpers} from '@react-navigation/native';
 
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {BottomNavIconButton} from 'terraso-mobile-client/navigation/components/BottomNavIconButton';
+import {BottomNavButton} from 'terraso-mobile-client/navigation/components/BottomNavButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -59,17 +59,17 @@ export const BottomNavigator = memo(
 
     return (
       <Row bg="primary.main" justifyContent="space-around" pb={2}>
-        <BottomNavIconButton
+        <BottomNavButton
           name="location-pin"
           label={t('bottom_navigation.sites')}
           onPress={onSites}
         />
-        <BottomNavIconButton
+        <BottomNavButton
           name="work"
           label={t('bottom_navigation.projects')}
           onPress={onProject}
         />
-        <BottomNavIconButton
+        <BottomNavButton
           name="settings"
           label={t('bottom_navigation.settings')}
           onPress={onSettings}

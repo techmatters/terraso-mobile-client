@@ -28,7 +28,7 @@ import {
 import {KeyboardAvoidingView, Pressable, StyleSheet} from 'react-native';
 import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
 
-import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
 import {
   Box,
   BoxProps,

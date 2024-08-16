@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {InfoButton} from 'terraso-mobile-client/components/buttons/InfoButton';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {DataPrivacyInfoSheet} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheet';
 
 export const DataPrivacyInfoSheetButton = () => {

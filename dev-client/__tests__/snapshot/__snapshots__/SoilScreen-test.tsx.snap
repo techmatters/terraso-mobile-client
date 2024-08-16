@@ -248,6 +248,7 @@ exports[`renders correctly 1`] = `
                           "flexDirection": "row",
                         },
                         {
+                          "alignItems": "center",
                           "backgroundColor": "#FFFFFF",
                           "justifyContent": "space-between",
                           "paddingHorizontal": 16,

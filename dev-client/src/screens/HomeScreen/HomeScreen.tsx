@@ -36,12 +36,12 @@ import {Site} from 'terraso-client-shared/site/siteSlice';
 import {fetchSoilDataForUser} from 'terraso-client-shared/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';
 
+import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {HomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {AppBarIconButton} from 'terraso-mobile-client/navigation/components/AppBarIconButton';
 import {LandPKSInfoModal} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfoModal';
 import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';

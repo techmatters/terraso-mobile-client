@@ -30,7 +30,7 @@ import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/UserDisplay';
+import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
 
 type FormValues = {
   email: string;

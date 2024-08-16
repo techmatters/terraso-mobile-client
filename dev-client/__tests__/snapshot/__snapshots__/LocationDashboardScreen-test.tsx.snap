@@ -199,8 +199,6 @@ exports[`renders correctly 1`] = `
                             }
                             accessible={true}
                             collapsable={false}
-                            colorScheme="primary"
-                            dataSet={{}}
                             focusable={true}
                             onBlur={[Function]}
                             onClick={[Function]}
@@ -211,24 +209,26 @@ exports[`renders correctly 1`] = `
                             onResponderTerminate={[Function]}
                             onResponderTerminationRequest={[Function]}
                             onStartShouldSetResponder={[Function]}
-                            style={
-                              {
-                                "alignItems": "center",
-                                "borderRadius": 4,
-                                "flexDirection": "row",
-                                "justifyContent": "center",
-                                "paddingBottom": 12,
-                                "paddingLeft": 12,
-                                "paddingRight": 12,
-                                "paddingTop": 12,
-                              }
-                            }
                           >
                             <Icon
-                              color="#FFFFFF"
                               name="arrow-back"
                               size={24}
-                              style={{}}
+                              style={
+                                [
+                                  {
+                                    "textAlign": "center",
+                                    "verticalAlign": "middle",
+                                  },
+                                  {
+                                    "borderRadius": 100,
+                                    "padding": 12,
+                                  },
+                                  {
+                                    "backgroundColor": "#00000000",
+                                    "color": "#FFFFFF",
+                                  },
+                                ]
+                              }
                             />
                           </View>
                           <Text

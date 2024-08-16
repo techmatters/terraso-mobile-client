@@ -36,6 +36,7 @@ type TypeAt<
   : O[K];
 
 export type ThemeColor = PathOf<typeof theme.colors>;
+export type IconSize = PathOf<typeof theme.components.Icon.sizes>;
 
 export const getByKey = <O extends Record<string, any>, K extends string>(
   object: O,
@@ -214,6 +215,9 @@ export const convertDimensionProp = (
     return dim as NonNullable<DimensionValue>;
   }
 };
+
+export const convertIconSize = (size: IconSize | number | undefined) =>
+  typeof size === 'string' ? theme.components.Icon.sizes[size] : size;
 
 export const convertColorProp = (color: ColorValue | ThemeColor | undefined) =>
   typeof color === 'string' ? (getByKey(theme.colors, color) ?? color) : color;

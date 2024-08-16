@@ -78,7 +78,7 @@ export const theme = extendTheme({
       primary: '#1A202C',
       secondary: '#33474F',
       disabled: '#9EA8AB',
-      locationicon: '#001923B3',
+      icon: '#001923B3',
     },
     m3: {
       sys: {
@@ -132,7 +132,7 @@ export const theme = extendTheme({
           },
         },
         notification: {
-          bg: 'primary.lightest',
+          bg: 'primary.lighter',
           _text: {
             fontSize: '12px',
           },
@@ -201,19 +201,6 @@ export const theme = extendTheme({
             _icon: {
               color: 'action.disabled',
             },
-          },
-        },
-        speedDial: {
-          size: 'md',
-          borderRadius: '50px',
-          shadow: 6,
-          backgroundColor: 'primary.contrast',
-          _icon: {
-            size: 'sm',
-            color: 'text.primary',
-          },
-          _text: {
-            color: 'text.primary',
           },
         },
         fullWidth: {
