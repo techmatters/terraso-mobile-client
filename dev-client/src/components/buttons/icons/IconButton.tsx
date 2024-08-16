@@ -120,11 +120,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   normal: {
-    color: convertColorProp('text.locationicon'),
+    color: convertColorProp('text.icon'),
     backgroundColor: convertColorProp('transparent'),
   },
   normalFilled: {
-    color: convertColorProp('text.locationicon'),
+    color: convertColorProp('text.icon'),
     backgroundColor: convertColorProp('grey.200'),
   },
   light: {
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: convertColorProp('transparent'),
   },
   lightFilled: {
-    color: convertColorProp('text.locationicon'),
+    color: convertColorProp('text.icon'),
     backgroundColor: convertColorProp('primary.contrast'),
   },
   location: {

@@ -78,7 +78,7 @@ export const theme = extendTheme({
       primary: '#1A202C',
       secondary: '#33474F',
       disabled: '#9EA8AB',
-      locationicon: '#001923B3',
+      icon: '#001923B3',
     },
     m3: {
       sys: {
