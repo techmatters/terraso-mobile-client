@@ -203,19 +203,6 @@ export const theme = extendTheme({
             },
           },
         },
-        speedDial: {
-          size: 'md',
-          borderRadius: '50px',
-          shadow: 6,
-          backgroundColor: 'primary.contrast',
-          _icon: {
-            size: 'sm',
-            color: 'text.primary',
-          },
-          _text: {
-            color: 'text.primary',
-          },
-        },
         fullWidth: {
           borderRadius: '0px',
           width: 'full',
