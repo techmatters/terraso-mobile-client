@@ -15,13 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
-
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
-import {
-  BackendNetInfoComponent,
-  GeneralNetInfoComponent,
-} from 'terraso-mobile-client/components/messages/NetInfoPrototypes';
+import {AllNetInfoPrototypes} from 'terraso-mobile-client/components/messages/NetInfoPrototypes';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -29,14 +24,6 @@ import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScree
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
 import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/UserIndicatorComponent';
 import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
-
-const LoggingButton = () => {
-  return (
-    <Button onPress={() => console.log('-------------')}>
-      Press me to log
-    </Button>
-  );
-};
 
 export const UserSettingsScreen = () => {
   console.log('----------- Rendering UserSettingsScreen -----------');
@@ -49,10 +36,7 @@ export const UserSettingsScreen = () => {
           <DeleteAccountItem />
         </MenuList>
         <VersionIndicator />
-
-        <GeneralNetInfoComponent />
-        <BackendNetInfoComponent />
-        <LoggingButton />
+        <AllNetInfoPrototypes />
       </Column>
     </ScreenScaffold>
   );

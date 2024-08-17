@@ -23,21 +23,18 @@ export const terrasoBackendConfig = {
   reachabilityUrl: getAPIConfig().terrasoAPIURL + '/healthz',
   // getAPIConfig().graphQLEndpoint, //This returns true a couple times, but ends on false -- not sure why it would ever return true tbh
   reachabilityTest: async (response: Response) => {
-    console.log('Response status: ', response.status);
+    console.log('Backend response status: ', response.status);
     return response.status === 200;
   },
-  reachabilityLongTimeout: 10 * 1000,
-  reachabilityShortTimeout: 5 * 1000,
-  reachabilityRequestTimeout: 15 * 1000,
+  reachabilityShortTimeout: 5 * 1000, // 5s
+  reachabilityLongTimeout: 60 * 1000, // 60s
+  reachabilityRequestTimeout: 15 * 1000, // 15s
   reachabilityShouldRun: () => true,
   shouldFetchWiFiSSID: false, // Assume we don't need this until we do
   useNativeReachability: false, // I think if this is true, it'll do whatever the device does to detect reachability natively, and ignore most of the specified reachability config
 };
 
-export const useTerrasoBackendNetInfo = () => {
-  const isPaused = false;
-  const configuration = terrasoBackendConfig;
-
-  const {netInfo, refresh} = useNetInfoInstance(isPaused, configuration);
+export const useTerrasoBackendNetInfo = (isPaused: boolean = false) => {
+  const {netInfo, refresh} = useNetInfoInstance(isPaused, terrasoBackendConfig);
   return {netInfo, refresh};
 };
