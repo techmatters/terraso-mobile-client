@@ -209,6 +209,16 @@ exports[`renders correctly 1`] = `
                             onResponderTerminate={[Function]}
                             onResponderTerminationRequest={[Function]}
                             onStartShouldSetResponder={[Function]}
+                            style={
+                              [
+                                {
+                                  "borderRadius": 100,
+                                },
+                                {
+                                  "backgroundColor": "#00000000",
+                                },
+                              ]
+                            }
                           >
                             <Icon
                               name="arrow-back"
@@ -220,11 +230,9 @@ exports[`renders correctly 1`] = `
                                     "verticalAlign": "middle",
                                   },
                                   {
-                                    "borderRadius": 100,
                                     "padding": 12,
                                   },
                                   {
-                                    "backgroundColor": "#00000000",
                                     "color": "#FFFFFF",
                                   },
                                 ]
