@@ -61,12 +61,13 @@ export const IconButton = forwardRef<View, IconButtonProps>(
         ref={ref}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
+        style={[containerStyleForType(type), containerStyleForVariant(variant)]}
         onPress={onPress}>
         <MaterialIcon
           name={name}
           size={convertIconSize(type === 'sq' ? 'md' : type)}
           style={[
-            styles.base,
+            styles.icon,
             iconStyleForType(type),
             iconStyleForVariant(variant),
           ]}
@@ -76,69 +77,111 @@ export const IconButton = forwardRef<View, IconButtonProps>(
   },
 );
 
+const containerStyleForType = (type: IconButtonType) => {
+  switch (type) {
+    case 'sm':
+      return styles.containerSm;
+    case 'md':
+      return styles.containerMd;
+    case 'sq':
+      return styles.containerSq;
+  }
+};
+
 const iconStyleForType = (type: IconButtonType) => {
   switch (type) {
     case 'sm':
-      return styles.sm;
+      return styles.iconSm;
     case 'md':
-      return styles.md;
+      return styles.iconMd;
     case 'sq':
-      return styles.sq;
+      return styles.iconSq;
+  }
+};
+
+const containerStyleForVariant = (variant: IconButtonVariant) => {
+  switch (variant) {
+    case 'normal-filled':
+      return styles.containerNormalFilled;
+    case 'light':
+      return styles.containerLight;
+    case 'light-filled':
+      return styles.containerLightFilled;
+    case 'location':
+      return styles.containerLocation;
+    default:
+      return styles.containerNormal;
   }
 };
 
 const iconStyleForVariant = (variant: IconButtonVariant) => {
   switch (variant) {
     case 'normal-filled':
-      return styles.normalFilled;
+      return styles.iconNormalFilled;
     case 'light':
-      return styles.light;
+      return styles.iconLight;
     case 'light-filled':
-      return styles.lightFilled;
+      return styles.iconLightFilled;
     case 'location':
-      return styles.location;
+      return styles.iconLocation;
     default:
-      return styles.normal;
+      return styles.iconNormal;
   }
 };
 
 const styles = StyleSheet.create({
-  base: {
+  icon: {
     verticalAlign: 'middle',
     textAlign: 'center',
   },
-  sm: {
+  containerSm: {
+    borderRadius: 100,
+  },
+  iconSm: {
     padding: 4,
+  },
+  containerMd: {
     borderRadius: 100,
   },
-  md: {
+  iconMd: {
     padding: 12,
-    borderRadius: 100,
   },
-  sq: {
-    padding: 8,
+  containerSq: {
     borderRadius: 5,
   },
-  normal: {
-    color: convertColorProp('text.icon'),
+  iconSq: {
+    padding: 8,
+  },
+  containerNormal: {
     backgroundColor: convertColorProp('transparent'),
   },
-  normalFilled: {
+  iconNormal: {
     color: convertColorProp('text.icon'),
+  },
+  containerNormalFilled: {
     backgroundColor: convertColorProp('grey.200'),
   },
-  light: {
-    color: convertColorProp('primary.contrast'),
+  iconNormalFilled: {
+    color: convertColorProp('text.icon'),
+  },
+  containerLight: {
     backgroundColor: convertColorProp('transparent'),
   },
-  lightFilled: {
-    color: convertColorProp('text.icon'),
+  iconLight: {
+    color: convertColorProp('primary.contrast'),
+  },
+  containerLightFilled: {
     backgroundColor: convertColorProp('primary.contrast'),
   },
-  location: {
-    color: convertColorProp('secondary.dark'),
+  iconLightFilled: {
+    color: convertColorProp('text.icon'),
+  },
+  containerLocation: {
     backgroundColor: convertColorProp('transparent'),
     borderColor: convertColorProp('secondary.dark'),
     borderWidth: 1,
+  },
+  iconLocation: {
+    color: convertColorProp('secondary.dark'),
   },
 });
