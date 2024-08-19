@@ -44,6 +44,9 @@ type Props = ModalProps & {
   scrollable?: boolean;
 };
 
+/**
+ * @deprecated This has been supplanted by InfoSheet for displaying information, and will be replaced with FormOverlaySheet for UI controls (mobile-client ticket #1774).
+ */
 export const OverlaySheet = forwardRef<
   ModalHandle,
   React.PropsWithChildren<Props>
