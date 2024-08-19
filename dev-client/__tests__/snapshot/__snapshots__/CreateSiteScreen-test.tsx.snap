@@ -209,6 +209,16 @@ exports[`renders correctly 1`] = `
                             onResponderTerminate={[Function]}
                             onResponderTerminationRequest={[Function]}
                             onStartShouldSetResponder={[Function]}
+                            style={
+                              [
+                                {
+                                  "borderRadius": 100,
+                                },
+                                {
+                                  "backgroundColor": "#00000000",
+                                },
+                              ]
+                            }
                           >
                             <Icon
                               name="close"
@@ -220,11 +230,9 @@ exports[`renders correctly 1`] = `
                                     "verticalAlign": "middle",
                                   },
                                   {
-                                    "borderRadius": 100,
                                     "padding": 12,
                                   },
                                   {
-                                    "backgroundColor": "#00000000",
                                     "color": "#FFFFFF",
                                   },
                                 ]
@@ -1166,6 +1174,16 @@ exports[`renders correctly 1`] = `
                                     onResponderTerminate={[Function]}
                                     onResponderTerminationRequest={[Function]}
                                     onStartShouldSetResponder={[Function]}
+                                    style={
+                                      [
+                                        {
+                                          "borderRadius": 100,
+                                        },
+                                        {
+                                          "backgroundColor": "#00000000",
+                                        },
+                                      ]
+                                    }
                                   >
                                     <Icon
                                       name="info"
@@ -1177,11 +1195,9 @@ exports[`renders correctly 1`] = `
                                             "verticalAlign": "middle",
                                           },
                                           {
-                                            "borderRadius": 100,
                                             "padding": 4,
                                           },
                                           {
-                                            "backgroundColor": "#00000000",
                                             "color": "#001923B3",
                                           },
                                         ]
@@ -1279,6 +1295,16 @@ exports[`renders correctly 1`] = `
                                           onResponderTerminate={[Function]}
                                           onResponderTerminationRequest={[Function]}
                                           onStartShouldSetResponder={[Function]}
+                                          style={
+                                            [
+                                              {
+                                                "borderRadius": 100,
+                                              },
+                                              {
+                                                "backgroundColor": "#EEEEEE",
+                                              },
+                                            ]
+                                          }
                                         >
                                           <Icon
                                             name="close"
@@ -1290,11 +1316,9 @@ exports[`renders correctly 1`] = `
                                                   "verticalAlign": "middle",
                                                 },
                                                 {
-                                                  "borderRadius": 100,
                                                   "padding": 12,
                                                 },
                                                 {
-                                                  "backgroundColor": "#EEEEEE",
                                                   "color": "#001923B3",
                                                 },
                                               ]
