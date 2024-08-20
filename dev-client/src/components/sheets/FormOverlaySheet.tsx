@@ -45,9 +45,9 @@ type Props = ModalProps & {
 };
 
 /**
- * @deprecated This has been supplanted by InfoSheet for displaying information, and will be replaced with FormOverlaySheet for UI controls (mobile-client ticket #1774).
+ * To be simplified internally with FormOverlaySheet component work (mobile-client ticket #1774).
  */
-export const OverlaySheet = forwardRef<
+export const FormOverlaySheet = forwardRef<
   ModalHandle,
   React.PropsWithChildren<Props>
 >(
