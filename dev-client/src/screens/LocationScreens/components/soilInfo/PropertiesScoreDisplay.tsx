@@ -23,13 +23,14 @@ import {
   SoilMatchInfo,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
   Column,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
@@ -57,10 +58,12 @@ export function PropertiesScoreDisplay({
             {t('site.soil_id.soil_properties_score_info.header')}
           </Heading>
           <HelpContentSpacer />
-          <InfoOverlaySheetButton
-            Header={t('site.soil_id.soil_properties_score_info.header')}>
+          <InfoButton
+            sheetHeading={
+              <TranslatedHeading i18nKey="site.soil_id.soil_properties_score_info.header" />
+            }>
             <SoilPropertiesScoreInfoContent />
-          </InfoOverlaySheetButton>
+          </InfoButton>
         </Row>
         <ScoreTile score={matchInfo.score} />
       </Row>

@@ -28,6 +28,7 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
@@ -37,7 +38,6 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {
   PROJECT_DESCRIPTION_MAX_LENGTH,
   PROJECT_DESCRIPTION_MIN_LENGTH,
@@ -203,7 +203,7 @@ export default function ProjectForm({
               {t('projects.create.privacy_label')}
             </Heading>
             <HelpContentSpacer />
-            <DataPrivacyInfoSheetButton />
+            <DataPrivacyInfoButton />
           </Row>
         }
         options={{

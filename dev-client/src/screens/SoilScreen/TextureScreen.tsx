@@ -34,7 +34,9 @@ import {
 import {entries, fromEntries} from 'terraso-client-shared/utils';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
@@ -49,7 +51,6 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {InfoOverlaySheetButton} from 'terraso-mobile-client/components/sheets/InfoOverlaySheetButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
   isProjectViewer,
@@ -160,9 +161,12 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
             <Row alignItems="center">
               <Heading variant="h6">{t('soil.texture.title')}</Heading>
               <HelpContentSpacer />
-              <InfoOverlaySheetButton Header={t('soil.texture.info.title')}>
+              <InfoButton
+                sheetHeading={
+                  <TranslatedHeading i18nKey="soil.texture.info.title" />
+                }>
                 <TextureInfoContent />
-              </InfoOverlaySheetButton>
+              </InfoButton>
             </Row>
             <Box height="sm" />
             <Select
@@ -194,10 +198,12 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
                 {t('soil.texture.fragment_title')}
               </Text>
               <HelpContentSpacer />
-              <InfoOverlaySheetButton
-                Header={t('soil.texture.fragment.info.title')}>
+              <InfoButton
+                sheetHeading={
+                  <TranslatedHeading i18nKey="soil.texture.fragment.info.title" />
+                }>
                 <RockFragmentVolumeInfoContent />
-              </InfoOverlaySheetButton>
+              </InfoButton>
             </Row>
             <Box height="10px" />
             <ImageRadio

@@ -44,7 +44,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
@@ -94,7 +94,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         alignItems="center">
         <Heading variant="h6">{t('soil.pit')}</Heading>
         {!projectSettings && (
-          <OverlaySheet
+          <FormOverlaySheet
             Header={
               <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
             }
@@ -105,7 +105,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               selected={soilData.depthIntervalPreset}
               updateChoice={updateSoilDataDepthPreset}
             />
-          </OverlaySheet>
+          </FormOverlaySheet>
         )}
       </Row>
       {allDepths.map(interval => (

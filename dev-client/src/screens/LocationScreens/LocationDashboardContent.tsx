@@ -25,6 +25,7 @@ import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {
   Box,
   Column,
@@ -33,7 +34,6 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -135,7 +135,7 @@ export const LocationDashboardContent = ({
                     {t('site.dashboard.privacy')}
                   </Text>
                   <HelpContentSpacer />
-                  <DataPrivacyInfoSheetButton />
+                  <DataPrivacyInfoButton />
                 </Row>
               }
               options={{

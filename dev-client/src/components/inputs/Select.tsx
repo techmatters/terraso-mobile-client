@@ -30,7 +30,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
 import {theme} from 'terraso-mobile-client/theme';
 
 // utility type so we can strictly validate the types of inputs/callbacks
@@ -73,7 +73,7 @@ export const Select = <T, Nullable extends boolean>({
   );
 
   return (
-    <OverlaySheet
+    <FormOverlaySheet
       ref={ref}
       scrollable={false}
       Closer={null}
@@ -150,6 +150,6 @@ export const Select = <T, Nullable extends boolean>({
           })}
         </MenuList>
       </BottomSheetScrollView>
-    </OverlaySheet>
+    </FormOverlaySheet>
   );
 };
