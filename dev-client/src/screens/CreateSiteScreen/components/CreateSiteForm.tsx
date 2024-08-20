@@ -26,6 +26,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {HelpButton} from 'terraso-mobile-client/components/buttons/icons/common/HelpButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
@@ -37,7 +38,6 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
-import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -129,7 +129,7 @@ export const CreateSiteForm = ({
             <FormLabel>
               {t('privacy.label')}
               <HelpContentSpacer />
-              <DataPrivacyInfoSheetButton />
+              <DataPrivacyInfoButton />
             </FormLabel>
             <FormRadioGroup
               values={['PUBLIC', 'PRIVATE']}

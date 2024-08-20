@@ -16,19 +16,13 @@
  */
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
-import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
+import {DataPrivacyContent} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyContent';
+import {DataPrivacyHeading} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyHeading';
 
-type Props = {
-  Header: React.ReactNode;
+export const DataPrivacyInfoButton = () => {
+  return (
+    <InfoButton sheetHeading={<DataPrivacyHeading />}>
+      <DataPrivacyContent />
+    </InfoButton>
+  );
 };
-
-export const InfoOverlaySheetButton = ({
-  Header,
-  children,
-}: React.PropsWithChildren<Props>) => (
-  <InfoOverlaySheet
-    trigger={onOpen => <InfoButton onPress={onOpen} />}
-    Header={Header}>
-    {children}
-  </InfoOverlaySheet>
-);

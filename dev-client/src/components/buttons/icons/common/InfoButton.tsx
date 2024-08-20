@@ -15,17 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef} from 'react';
-import {PressableProps, View} from 'react-native';
-
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 
-type InfoButtonProps = {
-  onPress?: PressableProps['onPress'];
-};
+type InfoButtonProps = React.PropsWithChildren<{
+  sheetHeading?: React.ReactNode;
+}>;
 
-export const InfoButton = forwardRef<View, InfoButtonProps>(
-  ({onPress}: InfoButtonProps, ref) => (
-    <IconButton ref={ref} type="sm" name="info" onPress={onPress} />
-  ),
+export const InfoButton = ({
+  sheetHeading,
+  children,
+}: React.PropsWithChildren<InfoButtonProps>) => (
+  <InfoSheet
+    trigger={onOpen => <IconButton type="sm" name="info" onPress={onOpen} />}
+    heading={sheetHeading}>
+    {children}
+  </InfoSheet>
 );

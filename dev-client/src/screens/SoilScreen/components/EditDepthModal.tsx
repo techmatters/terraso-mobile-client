@@ -55,7 +55,7 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
@@ -166,7 +166,7 @@ export const EditDepthModal = ({
   }, [dispatch, depthInterval, siteId, onClose]);
 
   return (
-    <OverlaySheet
+    <FormOverlaySheet
       ref={modalRef}
       trigger={onOpen => (
         <IconButton
@@ -242,7 +242,7 @@ export const EditDepthModal = ({
           </Column>
         )}
       </Formik>
-    </OverlaySheet>
+    </FormOverlaySheet>
   );
 };
 

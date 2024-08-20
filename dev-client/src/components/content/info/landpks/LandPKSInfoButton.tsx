@@ -15,24 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {OverlaySheet} from 'terraso-mobile-client/components/sheets/OverlaySheet';
+import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
+import {LandPKSInfoContent} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoContent';
+import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 
-type Props = {
-  Header: React.ReactNode;
-  trigger?: ModalTrigger;
+export const LandPKSInfoButton = () => {
+  return (
+    <InfoSheet
+      trigger={onOpen => <AppBarIconButton name="info" onPress={onOpen} />}>
+      <LandPKSInfoContent />
+    </InfoSheet>
+  );
 };
-
-export const InfoOverlaySheet = ({
-  Header,
-  trigger,
-  children,
-}: React.PropsWithChildren<Props>) => (
-  <OverlaySheet
-    fullHeight
-    trigger={trigger}
-    Header={<Heading variant="h4">{Header}</Heading>}>
-    {children}
-  </OverlaySheet>
-);

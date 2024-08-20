@@ -16,22 +16,7 @@
  */
 
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {ModalTrigger} from 'terraso-mobile-client/components/modals/Modal';
-import {InfoOverlaySheet} from 'terraso-mobile-client/components/sheets/InfoOverlaySheet';
-import {DataPrivacyContent} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyContent';
 
-type Props = {
-  trigger?: ModalTrigger;
-};
-
-export const DataPrivacyInfoSheet = ({
-  trigger,
-}: React.PropsWithChildren<Props>) => {
-  return (
-    <InfoOverlaySheet
-      trigger={trigger}
-      Header={<TranslatedHeading i18nKey="general.info.privacy_title" />}>
-      <DataPrivacyContent />
-    </InfoOverlaySheet>
-  );
+export const DataPrivacyHeading = () => {
+  return <TranslatedHeading i18nKey="general.info.privacy_title" />;
 };

@@ -848,6 +848,7 @@ exports[`renders correctly 1`] = `
                                       }
                                     />
                                     <View
+                                      accessibilityRole="button"
                                       accessibilityState={
                                         {
                                           "busy": undefined,
@@ -877,68 +878,35 @@ exports[`renders correctly 1`] = `
                                       onResponderTerminate={[Function]}
                                       onResponderTerminationRequest={[Function]}
                                       onStartShouldSetResponder={[Function]}
+                                      style={
+                                        [
+                                          {
+                                            "borderRadius": 100,
+                                          },
+                                          {
+                                            "backgroundColor": "#00000000",
+                                          },
+                                        ]
+                                      }
                                     >
-                                      <View
-                                        accessibilityRole="button"
-                                        accessibilityState={
-                                          {
-                                            "busy": undefined,
-                                            "checked": undefined,
-                                            "disabled": undefined,
-                                            "expanded": undefined,
-                                            "selected": undefined,
-                                          }
-                                        }
-                                        accessibilityValue={
-                                          {
-                                            "max": undefined,
-                                            "min": undefined,
-                                            "now": undefined,
-                                            "text": undefined,
-                                          }
-                                        }
-                                        accessible={true}
-                                        collapsable={false}
-                                        focusable={true}
-                                        onBlur={[Function]}
-                                        onClick={[Function]}
-                                        onFocus={[Function]}
-                                        onResponderGrant={[Function]}
-                                        onResponderMove={[Function]}
-                                        onResponderRelease={[Function]}
-                                        onResponderTerminate={[Function]}
-                                        onResponderTerminationRequest={[Function]}
-                                        onStartShouldSetResponder={[Function]}
+                                      <Icon
+                                        name="info"
+                                        size={20}
                                         style={
                                           [
                                             {
-                                              "borderRadius": 100,
+                                              "textAlign": "center",
+                                              "verticalAlign": "middle",
                                             },
                                             {
-                                              "backgroundColor": "#00000000",
+                                              "padding": 4,
+                                            },
+                                            {
+                                              "color": "#001923B3",
                                             },
                                           ]
                                         }
-                                      >
-                                        <Icon
-                                          name="info"
-                                          size={20}
-                                          style={
-                                            [
-                                              {
-                                                "textAlign": "center",
-                                                "verticalAlign": "middle",
-                                              },
-                                              {
-                                                "padding": 4,
-                                              },
-                                              {
-                                                "color": "#001923B3",
-                                              },
-                                            ]
-                                          }
-                                        />
-                                      </View>
+                                      />
                                     </View>
                                     <RCTScrollView
                                       focusHook={[Function]}
@@ -946,36 +914,25 @@ exports[`renders correctly 1`] = `
                                       <View>
                                         <View
                                           style={
-                                            [
-                                              {
-                                                "flexDirection": "column",
-                                              },
-                                              {
-                                                "padding": 16,
-                                              },
-                                            ]
+                                            {
+                                              "padding": 16,
+                                            }
                                           }
                                         >
                                           <View
                                             style={
-                                              [
-                                                {
-                                                  "flexDirection": "row",
-                                                },
-                                                {
-                                                  "alignItems": "center",
-                                                  "marginBottom": 16,
-                                                },
-                                              ]
+                                              {
+                                                "alignContent": "space-evenly",
+                                                "alignItems": "center",
+                                                "flexDirection": "row",
+                                                "marginBottom": 16,
+                                              }
                                             }
                                           >
-                                            <Text
-                                              lineHeight="32px"
+                                            <View
                                               style={
                                                 {
-                                                  "color": "#1A202C",
-                                                  "fontSize": 24,
-                                                  "fontWeight": "700",
+                                                  "marginRight": "auto",
                                                 }
                                               }
                                             >
@@ -991,14 +948,7 @@ exports[`renders correctly 1`] = `
                                               >
                                                 LandPKS Data Privacy
                                               </Text>
-                                            </Text>
-                                            <View
-                                              style={
-                                                {
-                                                  "flex": 1,
-                                                }
-                                              }
-                                            />
+                                            </View>
                                             <View
                                               accessibilityRole="button"
                                               accessibilityState={

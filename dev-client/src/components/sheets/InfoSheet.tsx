@@ -16,7 +16,7 @@
  */
 
 import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
-import {Pressable} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {
   BottomSheetScrollView,
@@ -29,93 +29,67 @@ import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/com
 import {
   ModalContext,
   ModalHandle,
-  ModalProps,
+  ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {
-  Box,
-  Column,
-  Row,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
-type Props = ModalProps & {
-  fullHeight?: boolean;
-  maxHeight?: number;
-  scrollable?: boolean;
-};
+export type InfoSheetProps = React.PropsWithChildren<{
+  heading?: React.ReactNode;
+  trigger?: ModalTrigger;
+}>;
 
-export const OverlaySheet = forwardRef<
-  ModalHandle,
-  React.PropsWithChildren<Props>
->(
-  (
-    {
-      Header,
-      children,
-      trigger,
-      Closer,
-      fullHeight = false,
-      scrollable = true,
-      maxHeight,
-    },
-    forwardedRef,
-  ) => {
+export const InfoSheet = forwardRef<ModalHandle, InfoSheetProps>(
+  ({heading, trigger, children}: InfoSheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
 
-    const ref = useRef<GorhomBottomSheetModal>(null);
+    const modalRef = useRef<GorhomBottomSheetModal>(null);
     const methods = useMemo(
       () => ({
-        onClose: () => ref.current?.dismiss(),
-        onOpen: () => ref.current?.present(),
+        onClose: () => modalRef.current?.dismiss(),
+        onOpen: () => modalRef.current?.present(),
       }),
-      [ref],
+      [modalRef],
     );
-    useImperativeHandle(forwardedRef, () => methods, [methods]);
-
-    const contents =
-      Header || Closer ? (
-        <Column padding="md">
-          <Row alignItems="center" mb="md">
-            {Header}
-            <Box flex={1} />
-            {Closer === undefined ? (
-              <BigCloseButton onPress={methods.onClose} />
-            ) : (
-              Closer
-            )}
-          </Row>
-          {children}
-        </Column>
-      ) : (
-        children
-      );
+    useImperativeHandle(ref, () => methods, [methods]);
 
     return (
       <>
-        {trigger && (
-          <Pressable onPress={methods.onOpen}>
-            {trigger(methods.onOpen)}
-          </Pressable>
-        )}
+        {trigger && trigger(methods.onOpen)}
         <GorhomBottomSheetModal
-          ref={ref}
+          ref={modalRef}
           handleComponent={null}
           topInset={headerHeight}
           backdropComponent={BackdropComponent}
-          snapPoints={fullHeight ? ['100%'] : undefined}
-          enableDynamicSizing={!fullHeight}
-          maxDynamicContentSize={fullHeight ? undefined : maxHeight}>
+          snapPoints={['100%']}
+          enableDynamicSizing={false}>
           <ModalContext.Provider value={methods}>
-            {scrollable ? (
-              <BottomSheetScrollView focusHook={useFocusEffect}>
-                {contents}
-              </BottomSheetScrollView>
-            ) : (
-              contents
-            )}
+            <BottomSheetScrollView focusHook={useFocusEffect}>
+              <View style={styles.content}>
+                <View style={styles.headingRow}>
+                  <View style={styles.headingContent}>{heading}</View>
+                  <BigCloseButton onPress={methods.onClose} />
+                </View>
+                {children}
+              </View>
+            </BottomSheetScrollView>
           </ModalContext.Provider>
         </GorhomBottomSheetModal>
       </>
     );
   },
 );
+
+const styles = StyleSheet.create({
+  content: {
+    padding: 16,
+  },
+  headingRow: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    alignContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  headingContent: {
+    marginRight: 'auto',
+  },
+});

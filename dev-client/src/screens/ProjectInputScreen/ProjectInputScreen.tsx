@@ -26,6 +26,7 @@ import {updateProject} from 'terraso-client-shared/project/projectSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -35,7 +36,6 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {DataPrivacyInfoSheetButton} from 'terraso-mobile-client/components/sheets/privacy/DataPrivacyInfoSheetButton';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
@@ -90,7 +90,7 @@ export const ProjectInputScreen = ({
                     {t('site.dashboard.privacy')}
                   </Text>
                   <HelpContentSpacer />
-                  <DataPrivacyInfoSheetButton />
+                  <DataPrivacyInfoButton />
                 </Row>
               }
               options={{
