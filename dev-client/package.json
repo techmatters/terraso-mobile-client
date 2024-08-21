@@ -95,7 +95,7 @@
     "@types/haversine": "^1.1.8",
     "@types/jest": "^29.5.12",
     "@types/quantize": "^1.0.2",
-    "@types/react": "^18.2.79",
+    "@types/react": "^18.3.4",
     "@types/uuid": "^10.0.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-root-import": "^6.6.0",
