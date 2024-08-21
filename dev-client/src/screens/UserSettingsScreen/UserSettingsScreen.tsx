@@ -16,7 +16,7 @@
  */
 
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
-import {AllNetInfoPrototypes} from 'terraso-mobile-client/components/messages/NetInfoPrototypes';
+import {OfflineTextDisplay} from 'terraso-mobile-client/components/messages/NetInfoPrototypes';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -36,7 +36,7 @@ export const UserSettingsScreen = () => {
           <DeleteAccountItem />
         </MenuList>
         <VersionIndicator />
-        <AllNetInfoPrototypes />
+        <OfflineTextDisplay />
       </Column>
     </ScreenScaffold>
   );

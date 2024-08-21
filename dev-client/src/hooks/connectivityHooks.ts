@@ -15,7 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useNetInfoInstance} from '@react-native-community/netinfo';
+import {useEffect, useState} from 'react';
+
+// import {AppState} from 'react-native';
+
+import {
+  addEventListener,
+  useNetInfoInstance,
+} from '@react-native-community/netinfo';
 
 import {getAPIConfig} from 'terraso-client-shared/config';
 
@@ -37,4 +44,50 @@ export const terrasoBackendConfig = {
 export const useTerrasoBackendNetInfo = (isPaused: boolean = false) => {
   const {netInfo, refresh} = useNetInfoInstance(isPaused, terrasoBackendConfig);
   return {netInfo, refresh};
+};
+
+export const useIsOffline = () => {
+  const [isOffline, setIsOffline] = useState<boolean | null>(false);
+  // TODO: Maybe make this a type that can be "Offline" | "Unknown" | "Connected"
+
+  useEffect(() => {
+    const unsubscribe = addEventListener(state => {
+      console.log(
+        'Connected =',
+        state.isConnected,
+        ' | Reachable =',
+        state.isInternetReachable,
+      );
+
+      // Return null if isConnected is null -- make a test for that cuz
+      //   false && null = false
+      //   null && false = null
+      const isOnline = state.isConnected && state.isInternetReachable;
+      setIsOffline(isOnline === null ? null : !isOnline);
+
+      return () => unsubscribe();
+    });
+
+    //   const startMonitoring = () => {};
+
+    //   const stopMonitoring = () => {
+
+    //   };
+
+    //   if (AppState.currentState === 'active') {
+    //     startMonitoring();
+    //   }
+
+    //   const appStateListener = AppState.addEventListener('change', state => {
+    //     if (state === 'active') {
+    //       startMonitoring();
+    //     } else {
+    //       stopMonitoring();
+    //     }
+    //   });
+
+    //   return () => appStateListener.remove();
+  }, []);
+
+  return isOffline;
 };

@@ -25,7 +25,10 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useTerrasoBackendNetInfo} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {
+  useIsOffline,
+  useTerrasoBackendNetInfo,
+} from 'terraso-mobile-client/hooks/connectivityHooks';
 
 // Prototype 1: Using a hook to get netinfo regularly
 export const SingletonGeneralNetInfo = () => {
@@ -111,6 +114,21 @@ export const FetchSingletonGeneralNetInfoZone = () => {
   );
 };
 
+// Prototype 3: "You're offline" text using addEventListener
+export const OfflineTextDisplay = () => {
+  const isOffline = useIsOffline();
+
+  return (
+    <Text>{`${
+      isOffline === null
+        ? 'NULL'
+        : isOffline
+          ? 'Offline'
+          : 'Internet reachable!'
+    }`}</Text>
+  );
+};
+
 export const LoggingButton = () => {
   return (
     <Button onPress={() => console.log('-------------')}>
@@ -119,6 +137,7 @@ export const LoggingButton = () => {
   );
 };
 
+// Except OfflineBanner, which is in the ScreenScaffold
 export const AllNetInfoPrototypes = () => {
   return (
     <Column marginTop={10}>
@@ -126,6 +145,8 @@ export const AllNetInfoPrototypes = () => {
       <IsolatedBackendNetInfo />
       <Divider marginTop={3} />
       <FetchSingletonGeneralNetInfoZone />
+      <Divider marginTop={3} marginBottom={3} />
+      <OfflineTextDisplay />
       <Divider marginTop={3} marginBottom={3} />
       <LoggingButton />
     </Column>

@@ -21,7 +21,7 @@ import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
 import {CloseButton} from 'terraso-mobile-client/components/buttons/CloseButton';
-import {AllNetInfoPrototypes} from 'terraso-mobile-client/components/messages/NetInfoPrototypes';
+import {OfflineTextDisplay} from 'terraso-mobile-client/components/messages/NetInfoPrototypes';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {LandPKSInfo} from 'terraso-mobile-client/screens/HomeScreen/components/LandPKSInfo';
@@ -42,7 +42,7 @@ export const LandPKSInfoModal = forwardRef<BottomSheetModal, Props>(
         topInset={headerHeight}
         backdropComponent={BackdropComponent}>
         <LandPKSInfo />
-        <AllNetInfoPrototypes />
+        <OfflineTextDisplay />
         <Box position="absolute" top="18px" right="23px">
           <CloseButton onPress={onClose} />
         </Box>
