@@ -21,184 +21,81 @@ import {
   getTopMatch,
 } from 'terraso-mobile-client/model/soilId/soilIdRanking';
 
-const locationBasedSoil0 = {
-  dataSource: 'Data source 0',
-  distanceToNearestMapUnitM: 5,
-  match: {
-    rank: 0,
-    score: 0.5,
-  },
-  soilInfo: {
-    landCapabilityClass: {
-      capabilityClass: 'Class 0',
-      subClass: 'Subclass 0',
+const locationBasedMatchWithRank = (rank: number) => {
+  return {
+    dataSource: `Data source ${rank}`,
+    distanceToNearestMapUnitM: 5,
+    match: {
+      rank: rank,
+      score: 0.5,
     },
-    soilData: {
-      depthDependentData: [],
+    soilInfo: {
+      landCapabilityClass: {
+        capabilityClass: `Class ${rank}`,
+        subClass: `Subclass ${rank}`,
+      },
+      soilData: {
+        depthDependentData: [],
+      },
+      soilSeries: {
+        description: `Description ${rank}`,
+        fullDescriptionUrl: `Url ${rank}`,
+        name: `Name ${rank}`,
+        taxonomySubgroup: `Taxonomy subgroup ${rank}`,
+      },
     },
-    soilSeries: {
-      description: 'Description 0',
-      fullDescriptionUrl: 'Url 0',
-      name: 'Name 0',
-      taxonomySubgroup: 'Taxonomy subgroup 0',
-    },
-  },
-};
-const locationBasedSoil1 = {
-  dataSource: 'Data source 1',
-  distanceToNearestMapUnitM: 5,
-  match: {
-    rank: 1,
-    score: 0.5,
-  },
-  soilInfo: {
-    landCapabilityClass: {
-      capabilityClass: 'Class 1',
-      subClass: 'Subclass 1',
-    },
-    soilData: {
-      depthDependentData: [],
-    },
-    soilSeries: {
-      description: 'Description 1',
-      fullDescriptionUrl: 'Url 1',
-      name: 'Name 1',
-      taxonomySubgroup: 'Taxonomy subgroup 1',
-    },
-  },
-};
-const locationBasedSoil2 = {
-  dataSource: 'Data source 2',
-  distanceToNearestMapUnitM: 5,
-  match: {
-    rank: 2,
-    score: 0.5,
-  },
-  soilInfo: {
-    landCapabilityClass: {
-      capabilityClass: 'Class 2',
-      subClass: 'Subclass 2',
-    },
-    soilData: {
-      depthDependentData: [],
-    },
-    soilSeries: {
-      description: 'Description 2',
-      fullDescriptionUrl: 'Url 2',
-      name: 'Name 2',
-      taxonomySubgroup: 'Taxonomy subgroup 2',
-    },
-  },
+  };
 };
 
-const dataBasedSoil0 = {
-  dataSource: 'Data source 0',
-  distanceToNearestMapUnitM: 5,
-  combinedMatch: {
-    rank: 0,
-    score: 0.5,
-  },
-  dataMatch: {
-    rank: 1,
-    score: 0.5,
-  },
-  locationMatch: {
-    rank: 1,
-    score: 0.5,
-  },
-  soilInfo: {
-    landCapabilityClass: {
-      capabilityClass: 'Class 0',
-      subClass: 'Subclass 0',
-    },
-    soilData: {
-      depthDependentData: [],
-    },
-    soilSeries: {
-      description: 'Description 0',
-      fullDescriptionUrl: 'Url 0',
-      name: 'Name 0',
-      taxonomySubgroup: 'Taxonomy subgroup 0',
-    },
-  },
+type DataRanks = {
+  combinedRank: number;
+  dataRank: number;
+  locationRank: number;
 };
-const dataBasedSoil1 = {
-  dataSource: 'Data source 1',
-  distanceToNearestMapUnitM: 5,
-  combinedMatch: {
-    rank: 1,
-    score: 0.5,
-  },
-  dataMatch: {
-    rank: 2,
-    score: 0.5,
-  },
-  locationMatch: {
-    rank: 2,
-    score: 0.5,
-  },
-  soilInfo: {
-    landCapabilityClass: {
-      capabilityClass: 'Class 1',
-      subClass: 'Subclass 1',
+const dataBasedMatchWithRanks = ({
+  combinedRank,
+  dataRank,
+  locationRank,
+}: DataRanks) => {
+  return {
+    dataSource: `Data source ${combinedRank}`,
+    distanceToNearestMapUnitM: 5,
+    combinedMatch: {
+      rank: combinedRank,
+      score: 0.5,
     },
-    soilData: {
-      depthDependentData: [],
+    dataMatch: {
+      rank: dataRank,
+      score: 0.5,
     },
-    soilSeries: {
-      description: 'Description 1',
-      fullDescriptionUrl: 'Url 1',
-      name: 'Name 1',
-      taxonomySubgroup: 'Taxonomy subgroup 1',
+    locationMatch: {
+      rank: locationRank,
+      score: 0.5,
     },
-  },
-};
-const dataBasedSoil2 = {
-  dataSource: 'Data source 2',
-  distanceToNearestMapUnitM: 5,
-  combinedMatch: {
-    rank: 2,
-    score: 0.5,
-  },
-  dataMatch: {
-    rank: 0,
-    score: 0.5,
-  },
-  locationMatch: {
-    rank: 0,
-    score: 0.5,
-  },
-  soilInfo: {
-    landCapabilityClass: {
-      capabilityClass: 'Class 2',
-      subClass: 'Subclass 2',
+    soilInfo: {
+      landCapabilityClass: {
+        capabilityClass: `Class ${combinedRank}`,
+        subClass: `Subclass ${combinedRank}`,
+      },
+      soilData: {
+        depthDependentData: [],
+      },
+      soilSeries: {
+        description: `Description ${combinedRank}`,
+        fullDescriptionUrl: `Url ${combinedRank}`,
+        name: `Name ${combinedRank}`,
+        taxonomySubgroup: `Taxonomy subgroup ${combinedRank}`,
+      },
     },
-    soilData: {
-      depthDependentData: [],
-    },
-    soilSeries: {
-      description: 'Description 2',
-      fullDescriptionUrl: 'Url 2',
-      name: 'Name 2',
-      taxonomySubgroup: 'Taxonomy subgroup 2',
-    },
-  },
+  };
 };
 
 describe('location based matches', () => {
-  test('get top match by rank', () => {
-    const inputSoilIdResults = {
-      locationBasedMatches: [
-        locationBasedSoil0,
-        locationBasedSoil1,
-        locationBasedSoil2,
-      ],
-      dataBasedMatches: [],
-    };
-    expect(getTopMatch(inputSoilIdResults)).toEqual(locationBasedSoil0);
-  });
+  const locationBasedSoil0 = locationBasedMatchWithRank(0);
+  const locationBasedSoil1 = locationBasedMatchWithRank(1);
+  const locationBasedSoil2 = locationBasedMatchWithRank(2);
 
-  test('get top match by rank when reordered', () => {
+  test('get top match by rank', () => {
     const inputSoilIdResults = {
       locationBasedMatches: [
         locationBasedSoil2,
@@ -229,15 +126,27 @@ describe('location based matches', () => {
 });
 
 describe('data based matches', () => {
-  test('get top match by combined match rank', () => {
-    const inputSoilIdResults = {
-      dataBasedMatches: [dataBasedSoil0, dataBasedSoil1, dataBasedSoil2],
-      locationBasedMatches: [],
-    };
-    expect(getTopMatch(inputSoilIdResults)).toEqual(dataBasedSoil0);
+  const locationBasedSoil0 = locationBasedMatchWithRank(0);
+  const locationBasedSoil1 = locationBasedMatchWithRank(1);
+  const locationBasedSoil2 = locationBasedMatchWithRank(2);
+
+  const dataBasedSoil0 = dataBasedMatchWithRanks({
+    combinedRank: 0,
+    dataRank: 1,
+    locationRank: 1,
+  });
+  const dataBasedSoil1 = dataBasedMatchWithRanks({
+    combinedRank: 1,
+    dataRank: 2,
+    locationRank: 2,
+  });
+  const dataBasedSoil2 = dataBasedMatchWithRanks({
+    combinedRank: 2,
+    dataRank: 0,
+    locationRank: 0,
   });
 
-  test('get top match by combined match rank when reordered', () => {
+  test('get top match by combined match rank', () => {
     const inputSoilIdResults = {
       dataBasedMatches: [dataBasedSoil1, dataBasedSoil2, dataBasedSoil0],
       locationBasedMatches: [],
