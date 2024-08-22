@@ -36,14 +36,14 @@ export const getTopMatch = (
   }
 };
 
-export const getBetterDataMatch = (
+const getBetterDataMatch = (
   a: DataBasedSoilMatch,
   b: DataBasedSoilMatch,
 ): DataBasedSoilMatch => {
   return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
 };
 
-export const getBetterLocationMatch = (
+const getBetterLocationMatch = (
   a: LocationBasedSoilMatch,
   b: LocationBasedSoilMatch,
 ): LocationBasedSoilMatch => {
