@@ -34,6 +34,9 @@ type Props = {
   children: (onOpen: () => void) => React.ReactNode;
 };
 
+// FYI if a calling component uses the permission hook and needs to
+// update when permissions are granted, it can set permissionedAction
+// to the GetPermissionMethod returned by the hook
 export const PermissionsRequestWrapper = ({
   requestModalTitle,
   requestModalBody,

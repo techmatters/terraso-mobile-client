@@ -47,7 +47,7 @@ const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
 export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
-  const [permission] = useCameraPermissions();
+  const [permission, _, getCameraPermissionAsync] = useCameraPermissions();
   const [deviceTiltDeg, setDeviceTiltDeg] = useState<number | null>(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -106,7 +106,8 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
               requestModalBody={t('permissions.camera_body', {
                 feature: t('slope.steepness.slope_meter'),
               })}
-              permissionHook={useCameraPermissions}>
+              permissionHook={useCameraPermissions}
+              permissionedAction={getCameraPermissionAsync}>
               {onRequest => (
                 <Button size="lg" onPress={onRequest}>
                   {t('slope.steepness.camera_grant')}
