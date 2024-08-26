@@ -414,7 +414,6 @@ exports[`renders correctly 1`] = `
                             showsHorizontalScrollIndicator={false}
                             showsVerticalScrollIndicator={false}
                             stickyHeaderIndices={[]}
-                            style={{}}
                             viewabilityConfigCallbackPairs={
                               [
                                 {
