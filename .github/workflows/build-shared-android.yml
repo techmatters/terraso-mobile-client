@@ -84,7 +84,7 @@ jobs:
       - name: Set up our JDK environment
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version-file: '.tool-versions'
           distribution: 'temurin'
           cache: gradle
 
