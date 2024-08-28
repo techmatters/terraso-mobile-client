@@ -94,12 +94,13 @@ The below commands implicitly call `npm run start` when they are finished, so yo
 
 1. Run `npm run android` to load the app on an emulator or connnected physical device.
 2. Run `npm run android -- --variant release` to load a release build of the app onto an emulator or connected physical device.
+3. Run `npm run android -- --device "Pixel_6a_API_35"` to load the app on a specific emulator or device. (Use `emulator -list-avds` to get the names of available emulators and devices.)
 
 ## iOS
 
 1. Run `npm run ios` to load the app in the simulator.
 2. Run `npm run ios -- --configuration release` to load a release build of the app in the simulator.
-3. Run `npm run ios -- --device "Jane iPhone"` to load the app in on your device.
+3. Run `npm run ios -- --device "Jane iPhone"` to load the app on a specific device. (Use `xcrun simctl list devices available` to get a list of available simulators.)
 
 # Releases
 
