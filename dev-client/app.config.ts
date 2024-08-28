@@ -162,6 +162,7 @@ const defaultConfig: ExpoConfig = {
 };
 
 export default withSentry(defaultConfig, {
+  url: 'https://sentry.io/',
   organization: ENV_CONFIG.SENTRY_ORG,
   project: ENV_CONFIG.SENTRY_PROJECT,
 });
