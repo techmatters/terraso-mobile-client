@@ -1,6 +1,4 @@
-const {mergeConfig} = require('@react-native/metro-config');
 const {getSentryExpoConfig} = require('@sentry/react-native/metro');
-
 const {
   createSentryMetroSerializer,
 } = require('@sentry/react-native/dist/js/tools/sentryMetroSerializer');
@@ -15,6 +13,7 @@ const {assetExts, sourceExts} = defaultConfig.resolver;
  * @type {import('metro-config').MetroConfig}
  */
 const config = {
+  ...defaultConfig,
   transformer: {
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
   },
@@ -29,7 +28,6 @@ const config = {
   },
 };
 
-const m = mergeConfig(defaultConfig, config);
-module.exports = getSentryExpoConfig(m, {
+module.exports = getSentryExpoConfig(config, {
   annotateReactComponents: true,
 });
