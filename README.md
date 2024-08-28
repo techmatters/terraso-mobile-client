@@ -88,8 +88,7 @@ $ sudo apt install node watchman openjdk-17-jdk
 # Running the app locally
 
 Do **not** use the `a` or `i` subcommands in `npm run start`, they don't work with our workflow.
-The below commands implicitly call `npm run start` when they are finished, so you shouldn't ordinarily
-need to call it manually.
+The below commands implicitly call `npm run start` when they are finished, so you shouldn't ordinarily need to call it manually.
 
 ## Android
 
