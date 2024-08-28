@@ -79,7 +79,6 @@ if (typeof APP_BUILD === 'string') {
 }
 
 const defaultConfig: ExpoConfig = {
-  ...config,
   name: 'LandPKS Soil ID',
   slug: 'landpks',
   version: '1.1',
