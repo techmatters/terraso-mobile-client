@@ -48,11 +48,13 @@ $ bundle exec pod install
 ```
 
 If you get this error:
+
 ```
 xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
 ```
 
 Then run this:
+
 ```sh
 $ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 ```
@@ -86,18 +88,19 @@ $ sudo apt install node watchman openjdk-17-jdk
 # Running the app locally
 
 Do **not** use the `a` or `i` subcommands in `npm run start`, they don't work with our workflow.
-The below commands implicitly call `npm run start` when they are finished, so you shouldn't ordinarily
-need to call it manually.
+The below commands implicitly call `npm run start` when they are finished, so you shouldn't ordinarily need to call it manually.
 
 ## Android
+
 1. Run `npm run android` to load the app on an emulator or connnected physical device.
 2. Run `npm run android -- --variant release` to load a release build of the app onto an emulator or connected physical device.
+3. Run `npm run android -- --device "Pixel_6a_API_35"` to load the app on a specific emulator or device. (Use `emulator -list-avds` to get the names of available emulators and devices.)
 
 ## iOS
 
 1. Run `npm run ios` to load the app in the simulator.
 2. Run `npm run ios -- --configuration release` to load a release build of the app in the simulator.
-3. Run `npm run ios -- --device "Jane iPhone"` to load the app in on your device.
+3. Run `npm run ios -- --device "Jane iPhone"` to load the app on a specific device. (Use `xcrun simctl list devices available` to get a list of available simulators.)
 
 # Releases
 
@@ -106,6 +109,7 @@ need to call it manually.
 ### Initial setup
 
 #### Generate a keystore:
+
 ```
 keytool -genkey -v -keystore terraso-lpks-key.keystore -alias terraso-lpks -keyalg RSA -keysize 2048 -validity 10000
 ```
@@ -113,6 +117,7 @@ keytool -genkey -v -keystore terraso-lpks-key.keystore -alias terraso-lpks -keya
 #### Define confguration variables
 
 Add this to `~/.gradle/gradle.properties`. Use the password you created in “generate a keystore.”
+
 ```
 cat << EOF >> ~/.gradle/gradle.properties
 LPKS_UPLOAD_STORE_FILE=terraso-lpks-key.keystore
@@ -123,6 +128,7 @@ EOF
 ```
 
 #### Move the keystore in to your development folder
+
 ```
 mv terraso-lpks-key.keystore mobile-client/dev-client/android/app
 ```
@@ -132,6 +138,7 @@ mv terraso-lpks-key.keystore mobile-client/dev-client/android/app
 From `mobile-client/dev-client/android`:
 
 Build the app bundle:
+
 ```
 ./gradlew bundleRelease
 ```
@@ -153,12 +160,17 @@ Ensure you are using a verison of Java [compatible with gradle](https://docs.gra
 Once all of the dependencies are installed, you'll need to do the following to enable logins:
 
 1. Set up a Google OAuth project for Android or iOS if it doesn't already exist
+
 - See [Google Cloud Console](https://console.cloud.google.com/)
+
 2. Copy `.env.sample` to `.env`. Change `GOOGLE_OAUTH_APP_CLIENT_ID` variable to match the value of your OAuth App client ID in Google Cloud Console.
 3. Get an instance of the Terraso backend running locally
 4. Set up the instance config to use the OAuth client
+
 - See the `settings.py` value `JWT_EXCHANGE_PROVIDERS`. You will need to set the environment variable `GOOGLE_MOBILE_CLIENT_ID`
+
 5. Set up mobile config to connect to backend
+
 - See [Android emulator networking](https://developer.android.com/studio/run/emulator-networking.html) for details on how to connect to your backend instance
 
 # Testing
