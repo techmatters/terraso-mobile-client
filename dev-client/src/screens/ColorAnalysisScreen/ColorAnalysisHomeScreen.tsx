@@ -26,10 +26,6 @@ import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdS
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {IconButton} from 'terraso-mobile-client/components/icons/IconButton';
 import {
-  decodeBase64Jpg,
-  PhotoWithBase64,
-} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
-import {
   ActionButton,
   ActionsModal,
 } from 'terraso-mobile-client/components/modals/ActionsModal';
@@ -40,14 +36,10 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {
-  getColor,
-  REFERENCES,
-} from 'terraso-mobile-client/model/color/colorDetection';
+import {getColorFromImages} from 'terraso-mobile-client/model/color/colorDetection';
 import {
   InvalidColorResult,
   MunsellColor,
-  RGBA,
 } from 'terraso-mobile-client/model/color/types';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
@@ -56,25 +48,6 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {useDispatch} from 'terraso-mobile-client/store';
-
-const analyzeImage = async ({
-  reference,
-  soil,
-}: Record<'soil' | 'reference', PhotoWithBase64>) => {
-  const [referencePixels, soilPixels] = [reference, soil].map(({base64}) => {
-    const {data, height, width} = decodeBase64Jpg(base64);
-    const pixels: RGBA[] = [];
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < height; x++) {
-        const offset = (y * width + x) * 4;
-        pixels.push([...data.slice(offset, offset + 4)] as RGBA);
-      }
-    }
-    return pixels;
-  });
-
-  return getColor(referencePixels, soilPixels, REFERENCES.CANARY_POST_IT);
-};
 
 export const ColorAnalysisHomeScreen = () => {
   const {
@@ -111,8 +84,8 @@ export const ColorAnalysisHomeScreen = () => {
       return null;
     }
 
-    return async () => {
-      const color = await analyzeImage({
+    return () => {
+      const color = getColorFromImages({
         reference: reference.photo,
         soil: soil.photo,
       });
