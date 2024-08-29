@@ -16,7 +16,11 @@
  */
 
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {Project, ProjectRole} from 'terraso-client-shared/project/projectSlice';
+import {
+  Project,
+  ProjectMembership,
+  ProjectRole,
+} from 'terraso-client-shared/project/projectSlice';
 
 import {userHasProjectRole} from 'terraso-mobile-client/model/permissions/permissions';
 
@@ -48,29 +52,29 @@ const emptyProject: Project = {
   archived: false,
 };
 
-const sampleProject: Project = {
-  id: '4',
-  name: 'test',
-  privacy: 'PUBLIC',
-  measurementUnits: 'METRIC',
-  description: 'test description',
-  updatedAt: '8/28/2024',
-  memberships: {sample: {userId: '1', userRole: 'MANAGER', id: '2'}},
-  sites: {},
-  archived: false,
+const projectWithMembersjips = (
+  memberships: Record<string, ProjectMembership>,
+): Project => {
+  return {
+    id: '4',
+    name: 'test',
+    privacy: 'PUBLIC',
+    measurementUnits: 'METRIC',
+    description: 'test description',
+    updatedAt: '8/28/2024',
+    memberships: memberships,
+    sites: {},
+    archived: false,
+  };
 };
 
-const sampleProject2: Project = {
-  id: '4',
-  name: 'test',
-  privacy: 'PUBLIC',
-  measurementUnits: 'METRIC',
-  description: 'test description',
-  updatedAt: '8/28/2024',
-  memberships: {sample: {userId: '2', userRole: 'VIEWER', id: '2'}},
-  sites: {},
-  archived: false,
-};
+const sampleProject = projectWithMembersjips({
+  sample: {userId: '1', userRole: 'MANAGER', id: '2'},
+});
+
+const sampleProject2 = projectWithMembersjips({
+  sample: {userId: '2', userRole: 'VIEWER', id: '3'},
+});
 
 const sampleManagerRoles: ProjectRole[] = ['MANAGER'];
 
