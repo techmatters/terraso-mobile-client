@@ -77,6 +77,7 @@ const sampleProject2 = projectWithMembersjips({
 });
 
 const sampleManagerRoles: ProjectRole[] = ['MANAGER'];
+const sampleViewerRoles: ProjectRole[] = ['VIEWER'];
 
 describe('permission tests', () => {
   test('no user', () => {
@@ -99,6 +100,16 @@ describe('permission tests', () => {
     );
 
     expect(result).toBeTruthy();
+  });
+
+  test('user is in project with unexpected role', () => {
+    const result = userHasProjectRole(
+      sampleUser,
+      sampleProject,
+      sampleViewerRoles,
+    );
+
+    expect(result).toBeFalsy();
   });
 
   test('user is not in project', () => {
