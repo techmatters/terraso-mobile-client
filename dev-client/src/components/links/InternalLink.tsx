@@ -29,7 +29,7 @@ type InternalLinkProps = {
   url: string;
 };
 
-export default function InternalLink({label, onPress, url}: InternalLinkProps) {
+export function InternalLink({label, onPress, url}: InternalLinkProps) {
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
   const openUrl = useCallback(() => openBrowserAsync(url), [url]);
   const [pressed, setPressed] = useState(false);

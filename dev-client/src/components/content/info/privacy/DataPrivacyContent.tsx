@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
-import InternalLink from 'terraso-mobile-client/components/links/InternalLink';
+import {InternalLink} from 'terraso-mobile-client/components/links/InternalLink';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const DataPrivacyContent = () => {
