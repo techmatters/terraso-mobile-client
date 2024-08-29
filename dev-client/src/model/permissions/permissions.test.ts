@@ -52,7 +52,7 @@ const emptyProject: Project = {
   archived: false,
 };
 
-const projectWithMembersjips = (
+const projectWithMemberships = (
   memberships: Record<string, ProjectMembership>,
 ): Project => {
   return {
@@ -68,11 +68,11 @@ const projectWithMembersjips = (
   };
 };
 
-const sampleProject = projectWithMembersjips({
+const sampleProject = projectWithMemberships({
   sample: {userId: '1', userRole: 'MANAGER', id: '2'},
 });
 
-const sampleProject2 = projectWithMembersjips({
+const sampleProject2 = projectWithMemberships({
   sample: {userId: '2', userRole: 'VIEWER', id: '3'},
 });
 
