@@ -24,62 +24,62 @@ import {
 
 import {userHasProjectRole} from 'terraso-mobile-client/model/permissions/permissions';
 
-const emptyUser = null;
-const emptyRoles: ProjectRole[] = [];
+describe('permission tests', () => {
+  const emptyUser = null;
+  const emptyRoles: ProjectRole[] = [];
 
-const sampleUser: User = {
-  id: '1',
-  email: 'email@example.com',
-  firstName: 'Test',
-  lastName: 'Test',
-  profileImage: '',
-  preferences: {
-    group_notifications: 'true',
-    story_map_notifications: 'true',
-    language: 'en-US',
-  },
-};
+  const sampleUser: User = {
+    id: '1',
+    email: 'email@example.com',
+    firstName: 'Test',
+    lastName: 'Test',
+    profileImage: '',
+    preferences: {
+      group_notifications: 'true',
+      story_map_notifications: 'true',
+      language: 'en-US',
+    },
+  };
 
-const emptyProject: Project = {
-  id: '3',
-  name: 'test',
-  privacy: 'PUBLIC',
-  measurementUnits: 'METRIC',
-  description: 'test description',
-  updatedAt: '8/28/2024',
-  memberships: {},
-  sites: {},
-  archived: false,
-};
-
-const projectWithMemberships = (
-  memberships: Record<string, ProjectMembership>,
-): Project => {
-  return {
-    id: '4',
+  const emptyProject: Project = {
+    id: '3',
     name: 'test',
     privacy: 'PUBLIC',
     measurementUnits: 'METRIC',
     description: 'test description',
     updatedAt: '8/28/2024',
-    memberships: memberships,
+    memberships: {},
     sites: {},
     archived: false,
   };
-};
 
-const sampleProject = projectWithMemberships({
-  sample: {userId: '1', userRole: 'MANAGER', id: '2'},
-});
+  const projectWithMemberships = (
+    memberships: Record<string, ProjectMembership>,
+  ): Project => {
+    return {
+      id: '4',
+      name: 'test',
+      privacy: 'PUBLIC',
+      measurementUnits: 'METRIC',
+      description: 'test description',
+      updatedAt: '8/28/2024',
+      memberships: memberships,
+      sites: {},
+      archived: false,
+    };
+  };
 
-const sampleProject2 = projectWithMemberships({
-  sample: {userId: '2', userRole: 'VIEWER', id: '3'},
-});
+  const sampleProject = projectWithMemberships({
+    sample: {userId: '1', userRole: 'MANAGER', id: '2'},
+  });
 
-const sampleManagerRoles: ProjectRole[] = ['MANAGER'];
-const sampleViewerRoles: ProjectRole[] = ['VIEWER'];
+  const sampleProject2 = projectWithMemberships({
+    sample: {userId: '2', userRole: 'VIEWER', id: '3'},
+  });
 
-describe('permission tests', () => {
+  const sampleManagerRoles: ProjectRole[] = ['MANAGER'];
+  const sampleViewerRoles: ProjectRole[] = ['VIEWER'];
+
   test('no user', () => {
     const result = userHasProjectRole(emptyUser, emptyProject, emptyRoles);
 
