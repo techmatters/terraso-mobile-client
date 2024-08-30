@@ -41,18 +41,6 @@ describe('permission tests', () => {
     },
   };
 
-  const emptyProject: Project = {
-    id: '3',
-    name: 'test',
-    privacy: 'PUBLIC',
-    measurementUnits: 'METRIC',
-    description: 'test description',
-    updatedAt: '8/28/2024',
-    memberships: {},
-    sites: {},
-    archived: false,
-  };
-
   const projectWithMemberships = (
     memberships: Record<string, ProjectMembership>,
   ): Project => {
@@ -69,30 +57,32 @@ describe('permission tests', () => {
     };
   };
 
-  const sampleProject = projectWithMemberships({
-    sample: {userId: '1', userRole: 'MANAGER', id: '2'},
-  });
-
-  const sampleProject2 = projectWithMemberships({
-    sample: {userId: '2', userRole: 'VIEWER', id: '3'},
-  });
-
   const sampleManagerRoles: ProjectRole[] = ['MANAGER'];
   const sampleViewerRoles: ProjectRole[] = ['VIEWER'];
 
   test('no user', () => {
+    const emptyProject = projectWithMemberships({});
+
     const result = userHasProjectRole(emptyUser, emptyProject, emptyRoles);
 
     expect(result).toBeFalsy();
   });
 
   test('user is in project with no role', () => {
+    const sampleProject = projectWithMemberships({
+      sample: {userId: sampleUser.id, userRole: 'MANAGER', id: '2'},
+    });
+
     const result = userHasProjectRole(sampleUser, sampleProject);
 
     expect(result).toBeTruthy();
   });
 
   test('user is in project with role', () => {
+    const sampleProject = projectWithMemberships({
+      sample: {userId: sampleUser.id, userRole: 'MANAGER', id: '2'},
+    });
+
     const result = userHasProjectRole(
       sampleUser,
       sampleProject,
@@ -103,6 +93,10 @@ describe('permission tests', () => {
   });
 
   test('user is in project with unexpected role', () => {
+    const sampleProject = projectWithMemberships({
+      sample: {userId: sampleUser.id, userRole: 'MANAGER', id: '2'},
+    });
+
     const result = userHasProjectRole(
       sampleUser,
       sampleProject,
@@ -113,9 +107,13 @@ describe('permission tests', () => {
   });
 
   test('user is not in project', () => {
+    const sampleProject = projectWithMemberships({
+      sample: {userId: sampleUser.id, userRole: 'VIEWER', id: '3'},
+    });
+
     const result = userHasProjectRole(
       sampleUser,
-      sampleProject2,
+      sampleProject,
       sampleManagerRoles,
     );
 
