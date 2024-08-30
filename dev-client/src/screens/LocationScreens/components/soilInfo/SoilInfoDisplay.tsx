@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {SoilInfo} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
-import InternalLink from 'terraso-mobile-client/components/links/InternalLink';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
   Box,
   Column,
@@ -42,7 +42,7 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
         {soilInfo.soilSeries.taxonomySubgroup}
       </Heading>
       <Text variant="body1">{soilInfo.soilSeries.description}</Text>
-      <InternalLink
+      <ExternalLink
         label={t('site.soil_id.soil_info.series_descr_url')}
         url={soilInfo.soilSeries.fullDescriptionUrl}
       />
@@ -62,7 +62,7 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
               }}
             />
           </Box>
-          <InternalLink
+          <ExternalLink
             label={t('site.soil_id.soil_info.eco_descr_url')}
             url={soilInfo.ecologicalSite.url}
           />
