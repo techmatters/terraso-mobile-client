@@ -51,7 +51,7 @@ mmkvMock.mock(); // Mock the storage
 
 setAPIConfig({
   terrasoAPIURL: 'http://127.0.0.1:8000',
-  graphQLEndpoint: '/graphql',
+  graphQLEndpoint: '/graphql/',
   tokenStorage: {
     getToken: async () => undefined,
   } as any,
