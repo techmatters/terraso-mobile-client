@@ -15,7 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembershipProjectRoleChoices} from 'terraso-client-shared/graphqlSchema/graphql';
+import {Project, ProjectRole} from 'terraso-client-shared/project/projectSlice';
 import {SiteUserRole} from 'terraso-client-shared/selectors';
 
 export const matchesOne =
@@ -55,5 +57,31 @@ export const isProjectViewer = (userRole: SiteUserRole | null) => {
 export const isProjectEditor = (userRole: SiteUserRole | null) => {
   return Boolean(
     userRole && ['MANAGER', 'CONTRIBUTOR', 'OWNER'].includes(userRole.role),
+  );
+};
+
+export const userHasProjectRole = (
+  currentUser: User | null,
+  project: Project,
+  userRoles?: ProjectRole[],
+) => {
+  if (!currentUser) {
+    return false;
+  }
+
+  if (!userRoles) {
+    return true;
+  }
+
+  /*
+   * Filter returns whether we can find a membership for the project
+   * that matches the current user and has a role in the accepted list
+   */
+  return Boolean(
+    Object.values(project.memberships).find(
+      membership =>
+        currentUser?.id === membership.userId &&
+        userRoles.includes(membership.userRole),
+    ),
   );
 };
