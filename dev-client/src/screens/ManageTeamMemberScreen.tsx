@@ -25,7 +25,7 @@ import {
   deleteUserFromProject,
   ProjectRole,
   updateUserRole,
-} from 'terraso-client-shared/project/projectSlice';
+} from 'terraso-mobile-client/model/project/projectSlice';
 
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';

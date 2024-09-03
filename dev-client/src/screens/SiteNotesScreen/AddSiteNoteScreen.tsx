@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
 import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {addSiteNote} from 'terraso-client-shared/site/siteSlice';
+import {addSiteNote} from 'terraso-mobile-client/model/site/siteSlice';
 
 import {
   Box,

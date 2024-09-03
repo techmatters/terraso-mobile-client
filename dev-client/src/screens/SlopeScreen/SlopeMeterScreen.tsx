@@ -24,7 +24,7 @@ import {DeviceMotion} from 'expo-sensors';
 
 import {Button} from 'native-base';
 
-import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';

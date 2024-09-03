@@ -18,7 +18,7 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {PROJECT_ROLES} from 'terraso-client-shared/project/projectSlice';
+import {PROJECT_ROLES} from 'terraso-mobile-client/model/project/projectSlice';
 
 import {
   ListFilterModal,

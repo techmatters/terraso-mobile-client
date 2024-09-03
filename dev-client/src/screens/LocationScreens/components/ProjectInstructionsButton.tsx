@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
-import {Project} from 'terraso-client-shared/project/projectSlice';
+import {Project} from 'terraso-mobile-client/model/project/projectSlice';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {

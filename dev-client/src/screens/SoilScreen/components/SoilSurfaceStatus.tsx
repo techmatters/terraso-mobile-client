@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {
   selectSoilData,
   useSiteProjectSoilSettings,
-} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/selectors';
 
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {

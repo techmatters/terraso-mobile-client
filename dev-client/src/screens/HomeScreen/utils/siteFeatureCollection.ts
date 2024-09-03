@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 
 export const siteFeatureCollection = (
   sites: Pick<Site, 'id' | 'latitude' | 'longitude'>[],

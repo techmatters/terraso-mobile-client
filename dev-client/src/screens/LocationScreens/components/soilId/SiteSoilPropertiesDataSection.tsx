@@ -23,7 +23,7 @@ import {Button} from 'native-base';
 import {
   selectSoilData,
   useSiteSoilIntervals,
-} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/selectors';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {

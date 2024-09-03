@@ -20,7 +20,7 @@ import {createContext, useContext} from 'react';
 import {
   selectUserRoleSite,
   SiteUserRole,
-} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/selectors';
 
 import {useSelector} from 'terraso-mobile-client/store';
 

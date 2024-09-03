@@ -16,7 +16,7 @@
  */
 
 import {ProjectMembershipProjectRoleChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 import {normalizeText} from 'terraso-client-shared/utils';
 
 import {SortingOption} from 'terraso-mobile-client/components/ListFilter';

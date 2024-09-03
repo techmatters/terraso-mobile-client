@@ -23,7 +23,7 @@ import Animated, {LinearTransition} from 'react-native-reanimated';
 import {
   selectDepthDependentData,
   selectUserRoleSite,
-} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/selectors';
 import {
   ColorChroma,
   ColorHueSubstep,
@@ -31,7 +31,7 @@ import {
   SoilColorHue,
   soilColorHues,
   updateDepthDependentSoilData,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';

@@ -23,8 +23,8 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   deleteUserFromProject,
   ProjectMembership,
-} from 'terraso-client-shared/project/projectSlice';
-import {selectProjectMembershipsWithUsers} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/project/projectSlice';
+import {selectProjectMembershipsWithUsers} from 'terraso-mobile-client/model/selectors';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {

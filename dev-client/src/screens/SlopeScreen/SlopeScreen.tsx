@@ -23,7 +23,7 @@ import {ScrollView} from 'native-base';
 import {
   selectSoilData,
   useSiteProjectSoilSettings,
-} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/selectors';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';

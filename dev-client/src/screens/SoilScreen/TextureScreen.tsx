@@ -24,13 +24,13 @@ import {Button, ScrollView} from 'native-base';
 import {
   selectDepthDependentData,
   selectUserRoleSite,
-} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/selectors';
 import {
   RockFragmentVolume,
   SoilTexture,
   textures,
   updateDepthDependentSoilData,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {entries, fromEntries} from 'terraso-client-shared/utils';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';

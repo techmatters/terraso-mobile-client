@@ -25,14 +25,14 @@ import {
   selectSoilData,
   useSiteProjectSoilSettings,
   useSiteSoilIntervals,
-} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/selectors';
 import {
   LabelledDepthInterval,
   methodRequired,
   soilPitMethods,
   updateSoilData,
   updateSoilDataDepthInterval,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';

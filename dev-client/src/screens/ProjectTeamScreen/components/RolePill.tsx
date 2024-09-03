@@ -17,7 +17,7 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
+import {ProjectMembership} from 'terraso-mobile-client/model/project/projectSlice';
 
 import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
