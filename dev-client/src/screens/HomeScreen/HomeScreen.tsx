@@ -26,8 +26,6 @@ import {
   useState,
 } from 'react';
 
-import {useForegroundPermissions} from 'expo-location';
-
 import BottomSheet from '@gorhom/bottom-sheet';
 import Mapbox from '@rnmapbox/maps';
 
@@ -59,16 +57,6 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const HomeScreen = memo(() => {
-  const [locationPermission, requestLocationPermission] =
-    useForegroundPermissions();
-  useEffect(() => {
-    if (!locationPermission?.granted) {
-      requestLocationPermission();
-    }
-    // disable depcheck because we only want to run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>(noneCallout());
