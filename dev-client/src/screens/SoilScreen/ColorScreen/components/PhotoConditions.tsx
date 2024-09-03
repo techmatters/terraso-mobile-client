@@ -18,7 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {selectDepthDependentData} from 'terraso-mobile-client/model/selectors';
+import {selectDepthDependentData} from 'terraso-mobile-client/store/selectors';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 

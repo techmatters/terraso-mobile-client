@@ -21,7 +21,7 @@ import {Image, StyleSheet} from 'react-native';
 
 import {Button} from 'native-base';
 
-import {selectSoilData} from 'terraso-mobile-client/model/selectors';
+import {selectSoilData} from 'terraso-mobile-client/store/selectors';
 import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';

@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Fab, FlatList} from 'native-base';
 
-import {selectProjectsWithTransferrableSites} from 'terraso-mobile-client/model/selectors';
+import {selectProjectsWithTransferrableSites} from 'terraso-mobile-client/store/selectors';
 import {transferSites} from 'terraso-mobile-client/model/site/siteSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';

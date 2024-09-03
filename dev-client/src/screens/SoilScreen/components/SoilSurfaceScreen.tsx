@@ -22,7 +22,7 @@ import {
   selectSite,
   selectSoilData,
   selectUserRoleSite,
-} from 'terraso-mobile-client/model/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
   SurfaceCracks,

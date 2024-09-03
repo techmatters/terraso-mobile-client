@@ -24,7 +24,7 @@ import {Button, ScrollView} from 'native-base';
 import {
   selectDepthDependentData,
   selectUserRoleSite,
-} from 'terraso-mobile-client/model/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import {
   RockFragmentVolume,
   SoilTexture,

@@ -21,7 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {
   selectDepthDependentData,
   selectUserRoleSite,
-} from 'terraso-mobile-client/model/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';

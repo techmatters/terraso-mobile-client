@@ -24,7 +24,7 @@ import {
   deleteUserFromProject,
   ProjectMembership,
 } from 'terraso-mobile-client/model/project/projectSlice';
-import {selectProjectMembershipsWithUsers} from 'terraso-mobile-client/model/selectors';
+import {selectProjectMembershipsWithUsers} from 'terraso-mobile-client/store/selectors';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {

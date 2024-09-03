@@ -36,7 +36,7 @@ import {
   selectSitesAndUserRoles,
   selectUserRoleSite,
   useSiteSoilIntervals,
-} from 'terraso-mobile-client/model/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import { Site } from 'terraso-client-shared/site/siteTypes';
 import {
   DepthInterval,

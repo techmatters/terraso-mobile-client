@@ -18,7 +18,7 @@
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembershipProjectRoleChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Project, ProjectRole} from 'terraso-mobile-client/model/project/projectSlice';
-import {SiteUserRole} from 'terraso-mobile-client/model/selectors';
+import {SiteUserRole} from 'terraso-mobile-client/store/selectors';
 
 export const matchesOne =
   <T>(cmp: (a: T, b: T) => boolean) =>

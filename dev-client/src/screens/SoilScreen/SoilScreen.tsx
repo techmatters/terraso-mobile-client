@@ -25,7 +25,7 @@ import {
   selectSoilData,
   useSiteProjectSoilSettings,
   useSiteSoilIntervals,
-} from 'terraso-mobile-client/model/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import {
   LabelledDepthInterval,
   methodRequired,

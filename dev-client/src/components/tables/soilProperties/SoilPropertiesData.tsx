@@ -22,7 +22,7 @@ import {
   SoilIdDepthDependentSoilDataTextureChoices,
   SoilIdSoilData,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {AggregatedInterval} from 'terraso-mobile-client/model/selectors';
+import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
 import {sameDepth} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
   SoilData,

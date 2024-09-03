@@ -31,7 +31,7 @@ import {useForegroundPermissions} from 'expo-location';
 import BottomSheet from '@gorhom/bottom-sheet';
 import Mapbox from '@rnmapbox/maps';
 
-import {selectSitesAndUserRoles} from 'terraso-mobile-client/model/selectors';
+import {selectSitesAndUserRoles} from 'terraso-mobile-client/store/selectors';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';

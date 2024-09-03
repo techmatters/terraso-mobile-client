@@ -25,7 +25,7 @@ import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/g
 import {
   selectSoilData,
   selectUserRoleSite,
-} from 'terraso-mobile-client/model/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';

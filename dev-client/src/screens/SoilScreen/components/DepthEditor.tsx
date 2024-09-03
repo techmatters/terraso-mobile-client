@@ -16,7 +16,7 @@
  */
 import {useTranslation} from 'react-i18next';
 
-import {AggregatedInterval} from 'terraso-mobile-client/model/selectors';
+import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
 import {soilPitMethods} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {

@@ -21,7 +21,7 @@ import {
   AggregatedInterval,
   selectDepthDependentData,
   useSiteProjectSoilSettings,
-} from 'terraso-mobile-client/model/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import {
   methodEnabled,
   methodRequired,

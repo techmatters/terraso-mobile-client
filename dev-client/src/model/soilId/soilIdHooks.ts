@@ -18,7 +18,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_SOIL_DATA } from 'terraso-mobile-client/model/soilId/soilDataConstants';
-import { selectSoilData } from 'terraso-mobile-client/model/selectors';
+import { selectSoilData } from 'terraso-mobile-client/store/selectors';
 import { selectSoilIdMatches } from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {
   fetchDataBasedSoilMatches,

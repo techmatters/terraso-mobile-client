@@ -18,7 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {selectSite, selectUserRoleSite} from 'terraso-mobile-client/model/selectors';
+import {selectSite, selectUserRoleSite} from 'terraso-mobile-client/store/selectors';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 

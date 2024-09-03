@@ -23,7 +23,7 @@ import Animated, {LinearTransition} from 'react-native-reanimated';
 import {
   selectDepthDependentData,
   selectUserRoleSite,
-} from 'terraso-mobile-client/model/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import {
   ColorChroma,
   ColorHueSubstep,

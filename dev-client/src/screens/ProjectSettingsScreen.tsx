@@ -26,7 +26,7 @@ import {
   deleteProject,
   updateProject,
 } from 'terraso-mobile-client/model/project/projectSlice';
-import {selectProject} from 'terraso-mobile-client/model/selectors';
+import {selectProject} from 'terraso-mobile-client/store/selectors';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';

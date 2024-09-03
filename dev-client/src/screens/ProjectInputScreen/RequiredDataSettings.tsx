@@ -21,7 +21,7 @@ import {Switch} from 'react-native';
 
 import {useTheme} from 'native-base';
 
-import {useProjectSoilSettings} from 'terraso-mobile-client/model/selectors';
+import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
 import {
   collectionMethods,
   methodRequired,

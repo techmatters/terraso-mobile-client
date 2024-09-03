@@ -23,7 +23,7 @@ import {Button} from 'native-base';
 import * as yup from 'yup';
 
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {useSiteSoilIntervals} from 'terraso-mobile-client/model/selectors';
+import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
 import {
   deleteSoilDataDepthInterval,
   DepthInterval,

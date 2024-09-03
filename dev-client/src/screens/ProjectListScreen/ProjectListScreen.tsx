@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
 import {PROJECT_ROLES} from 'terraso-mobile-client/model/project/projectSlice';
-import {selectProjectUserRolesMap} from 'terraso-mobile-client/model/selectors';
+import {selectProjectUserRolesMap} from 'terraso-mobile-client/store/selectors';
 import {normalizeText} from 'terraso-client-shared/utils';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
