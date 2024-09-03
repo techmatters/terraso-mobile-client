@@ -21,11 +21,9 @@ import {
   setUsers,
   updateUsers,
 } from 'terraso-client-shared/account/accountSlice';
+import {Project, ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 import {
   ProjectAddUserMutationInput,
-  ProjectManagementProjectMeasurementUnitsChoices,
-  ProjectManagementProjectPrivacyChoices,
-  ProjectMembershipProjectRoleChoices,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import * as projectService from 'terraso-client-shared/project/projectService';
 import { setSites, updateSites } from 'terraso-mobile-client/model/site/siteSlice';
@@ -33,46 +31,7 @@ import { updateProjectSettings } from 'terraso-mobile-client/model/soilId/soilId
 import {
   createAsyncThunk,
   dispatchByKeys,
-  SerializableSet,
 } from 'terraso-client-shared/store/utils';
-
-export type ProjectMembership = {
-  userId: string;
-  userRole: ProjectRole;
-  id: string;
-};
-
-export type ProjectRole = ProjectMembershipProjectRoleChoices;
-export const PROJECT_ROLES = [
-  'MANAGER',
-  'CONTRIBUTOR',
-  'VIEWER',
-] as const satisfies readonly ProjectRole[];
-
-export type MeasurementUnit = ProjectManagementProjectMeasurementUnitsChoices;
-export const MEASUREMENT_UNITS = [
-  'METRIC',
-  'ENGLISH',
-] as const satisfies readonly MeasurementUnit[];
-
-export type ProjectPrivacy = ProjectManagementProjectPrivacyChoices;
-export const PROJECT_PRIVACIES = [
-  'PRIVATE',
-  'PUBLIC',
-] as const satisfies readonly ProjectPrivacy[];
-
-export type Project = {
-  id: string;
-  name: string;
-  privacy: ProjectPrivacy;
-  measurementUnits: MeasurementUnit;
-  description: string;
-  siteInstructions?: string;
-  updatedAt: string; // this should be Date.toLocaleDateString; redux can't serialize Dates
-  memberships: Record<string, ProjectMembership>;
-  sites: SerializableSet;
-  archived: boolean;
-};
 
 interface MembershipKey {
   projectId: string;

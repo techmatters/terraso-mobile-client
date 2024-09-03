@@ -20,7 +20,7 @@ import {
   Project,
   ProjectMembership,
   ProjectRole,
-} from 'terraso-client-shared/project/projectSlice';
+} from 'terraso-client-shared/project/projectTypes';
 
 import {userHasProjectRole} from 'terraso-mobile-client/model/permissions/permissions';
 

@@ -26,9 +26,9 @@ import {Button, FlatList} from 'native-base';
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {
-  Project,
   removeSiteFromAllProjects,
 } from 'terraso-mobile-client/model/project/projectSlice';
+import {Project} from 'terraso-client-shared/project/projectTypes';
 import {
   deleteSite,
   updateSite,

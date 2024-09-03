@@ -16,7 +16,7 @@
  */
 import {useMemo} from 'react';
 
-import {ProjectRole} from 'terraso-mobile-client/model/project/projectSlice';
+import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 import {SiteUserRole} from 'terraso-mobile-client/store/selectors';
 
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';

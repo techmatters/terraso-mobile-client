@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {MeasurementUnit} from 'terraso-mobile-client/model/project/projectSlice';
+import {MeasurementUnit} from 'terraso-client-shared/project/projectTypes';
 
 /** Minimum distance to travel before Mapbox will update user location */
 export const USER_DISPLACEMENT_MIN_DISTANCE_M = 1;

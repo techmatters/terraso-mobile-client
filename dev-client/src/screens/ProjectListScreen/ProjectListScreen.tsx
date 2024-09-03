@@ -19,7 +19,7 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {PROJECT_ROLES} from 'terraso-mobile-client/model/project/projectSlice';
+import {PROJECT_ROLES} from 'terraso-client-shared/project/projectTypes';
 import {selectProjectUserRolesMap} from 'terraso-mobile-client/store/selectors';
 import {normalizeText} from 'terraso-client-shared/utils';
 

@@ -29,7 +29,7 @@ import {
   ProjectMembership,
   ProjectPrivacy,
   ProjectRole,
-} from 'terraso-mobile-client/model/project/projectSlice';
+} from 'terraso-client-shared/project/projectTypes';
 import {
   selectProjectMembershipsWithUsers,
   selectProjectsWithTransferrableSites,

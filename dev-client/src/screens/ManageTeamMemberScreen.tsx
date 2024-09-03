@@ -23,9 +23,9 @@ import {Button} from 'native-base';
 
 import {
   deleteUserFromProject,
-  ProjectRole,
   updateUserRole,
 } from 'terraso-mobile-client/model/project/projectSlice';
+import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';

@@ -18,7 +18,7 @@
 import {useTranslation} from 'react-i18next';
 
 import {ProjectMembershipProjectRoleChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {ProjectRole} from 'terraso-mobile-client/model/project/projectSlice';
+import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {
   Column,
