@@ -61,7 +61,7 @@ const useSelector = reduxUseSelector as TypedUseSelectorHook<AppState>;
 const selectProjectMemberships = (state: AppState, projectId: string) =>
   state.project.projects[projectId]?.memberships ?? [];
 
-export const selectUsers = (state: AppState) => state.account.users;
+const selectUsers = (state: AppState) => state.account.users;
 
 export const selectProjectMembershipsWithUsers = createSelector(
   [selectProjectMemberships, selectUsers],

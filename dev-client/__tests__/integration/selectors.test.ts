@@ -35,7 +35,6 @@ import {
   selectProjectsWithTransferrableSites,
   selectSitesAndUserRoles,
   selectUserRoleSite,
-  selectUsers,
   useSiteSoilIntervals,
 } from 'terraso-mobile-client/model/selectors';
 import { Site } from 'terraso-client-shared/site/siteTypes';
@@ -266,14 +265,6 @@ function initState(
     },
   );
 }
-
-test('store typing', () => {
-  const user = generateUser();
-  const store = createStore(initState([], [user]));
-
-  selectUsers(store.getState());
-});
-
 
 test('can select memberships', () => {
   const user = generateUser();
