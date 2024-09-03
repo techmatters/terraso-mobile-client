@@ -722,7 +722,7 @@
         "SILTY_CLAY_LOAM": "Silty Clay Loam",
         "SILT_LOAM": "Silt Loam"
       },
-      "rock_fragment": {
+      "rockfragment": {
         "VOLUME_0_1": "0–1%",
         "VOLUME_1_15": "1–15%",
         "VOLUME_15_35": "15–35%",
