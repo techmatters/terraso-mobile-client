@@ -80,7 +80,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'LandPKS Soil ID',
   slug: 'landpks',
-  version: '1.0.1',
+  version: '1.0.2',
   orientation: 'portrait',
   splash: {
     image: 'src/assets/splash.png',
