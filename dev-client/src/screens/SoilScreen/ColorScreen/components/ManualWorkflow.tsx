@@ -48,7 +48,7 @@ import {
   isColorComplete,
   parseMunsellHue,
   renderMunsellHue,
-} from 'terraso-mobile-client/model/color/munsellConversions';
+} from 'terraso-mobile-client/model/color/colorConversions';
 import {
   ColorProperties,
   ColorPropertyUpdate,
