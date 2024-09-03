@@ -64,6 +64,16 @@ const transform = (process, from, i18Transform) => {
     .catch(error => console.error(`Error transforming to ${process}`, error));
 };
 
+/* i18next-conv treats the rock fragemnt volume labels (VOLUME_0_1, VOLUME_1_15,
+ * VOLUME_15_35, VOLUME_35_60, VOLUME_60) as plurals, resulting in a msgctext
+ * and one or two msgstr(s).
+ *
+ * To avoid this, we change the labels to VOLUME:0:1, VOLUME:1:15, etc. before
+ * converting to .po.
+ *
+ * We reverse this conversion when going from .po to .json.
+ */
+
 // PO transform
 const toPoOptions = {
   project: 'Terraso',
