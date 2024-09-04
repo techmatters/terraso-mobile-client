@@ -16,7 +16,6 @@
  */
 
 import {useCallback, useMemo, useRef} from 'react';
-import {useTranslation} from 'react-i18next';
 import {Pressable, StyleSheet, ViewStyle} from 'react-native';
 
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
@@ -31,6 +30,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
+import {FormOverlaySheetHeader} from 'terraso-mobile-client/components/sheets/FormOverlaySheetHeader';
 import {theme} from 'terraso-mobile-client/theme';
 
 // utility type so we can strictly validate the types of inputs/callbacks
@@ -63,7 +63,6 @@ export const Select = <T, Nullable extends boolean>({
   disabled = false,
   ...style
 }: SelectProps<T, Nullable>) => {
-  const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
   const onClose = useCallback(() => ref.current?.onClose(), [ref]);
 
@@ -108,23 +107,7 @@ export const Select = <T, Nullable extends boolean>({
         </Pressable>
       )}>
       <BottomSheetScrollView>
-        <Pressable
-          onPress={onClose}
-          accessibilityLabel={t('general.done')}
-          accessibilityRole="button">
-          <Row
-            backgroundColor="primary.main"
-            justifyContent="flex-end"
-            alignItems="center"
-            padding="md">
-            <Text
-              variant="body1-strong"
-              color="primary.contrast"
-              textTransform="uppercase">
-              {t('general.done')}
-            </Text>
-          </Row>
-        </Pressable>
+        <FormOverlaySheetHeader onDone={() => ref.current?.onClose()} />
         <MenuList>
           {optionsWithNull.map(option => {
             const itemLabel = option ? renderValue(option) : unselectedLabel!;
