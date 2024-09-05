@@ -36,6 +36,11 @@ export type SimpleOverlaySheetProps = React.PropsWithChildren<{
   trigger?: ModalTrigger;
 }>;
 
+/*
+ * Simple overlay sheet with no special header or sizing. Just fits to its
+ * contents, making them scrollable if needed. Intended for one-off cases
+ * where design doesn't indicate more specific sheet behavior.
+ */
 export const SimpleOverlaySheet = forwardRef<
   ModalHandle,
   SimpleOverlaySheetProps

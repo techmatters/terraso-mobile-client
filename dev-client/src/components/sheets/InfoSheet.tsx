@@ -39,6 +39,10 @@ export type InfoSheetProps = React.PropsWithChildren<{
   trigger?: ModalTrigger;
 }>;
 
+/*
+ * Full-screen overlay sheet with a top header and big close button. Takes up
+ * entire screen height (minus app bar).
+ */
 export const InfoSheet = forwardRef<ModalHandle, InfoSheetProps>(
   ({heading, trigger, children}: InfoSheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();

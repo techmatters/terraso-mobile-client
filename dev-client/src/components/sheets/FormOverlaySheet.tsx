@@ -37,8 +37,9 @@ export type FormOverlaySheetProps = React.PropsWithChildren<{
   trigger?: ModalTrigger;
 }>;
 
-/**
- * To be simplified internally with FormOverlaySheet component work (mobile-client ticket #1774).
+/*
+ * Half-screen overlay sheet with a top header labeled "done", used for
+ * presenting form controls to the user.
  */
 export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
   ({children, trigger}: FormOverlaySheetProps, ref) => {
