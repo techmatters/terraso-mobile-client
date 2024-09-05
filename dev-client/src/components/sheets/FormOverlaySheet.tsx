@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
+import {forwardRef} from 'react';
 import {Pressable} from 'react-native';
 
 import {
@@ -36,6 +36,7 @@ import {
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useGorhomModalHandleRef} from 'terraso-mobile-client/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 type Props = ModalProps & {
@@ -61,19 +62,10 @@ export const FormOverlaySheet = forwardRef<
       scrollable = true,
       maxHeight,
     },
-    forwardedRef,
+    ref,
   ) => {
     const {headerHeight} = useHeaderHeight();
-
-    const ref = useRef<GorhomBottomSheetModal>(null);
-    const methods = useMemo(
-      () => ({
-        onClose: () => ref.current?.dismiss(),
-        onOpen: () => ref.current?.present(),
-      }),
-      [ref],
-    );
-    useImperativeHandle(forwardedRef, () => methods, [methods]);
+    const {modalRef, methods} = useGorhomModalHandleRef(ref);
 
     const contents =
       Header || Closer ? (
@@ -101,7 +93,7 @@ export const FormOverlaySheet = forwardRef<
           </Pressable>
         )}
         <GorhomBottomSheetModal
-          ref={ref}
+          ref={modalRef}
           handleComponent={null}
           topInset={headerHeight}
           backdropComponent={BackdropComponent}

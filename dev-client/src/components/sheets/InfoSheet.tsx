@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
+import {forwardRef} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {
@@ -31,6 +31,7 @@ import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
+import {useGorhomModalHandleRef} from 'terraso-mobile-client/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type InfoSheetProps = React.PropsWithChildren<{
@@ -41,16 +42,7 @@ export type InfoSheetProps = React.PropsWithChildren<{
 export const InfoSheet = forwardRef<ModalHandle, InfoSheetProps>(
   ({heading, trigger, children}: InfoSheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
-
-    const modalRef = useRef<GorhomBottomSheetModal>(null);
-    const methods = useMemo(
-      () => ({
-        onClose: () => modalRef.current?.dismiss(),
-        onOpen: () => modalRef.current?.present(),
-      }),
-      [modalRef],
-    );
-    useImperativeHandle(ref, () => methods, [methods]);
+    const {modalRef, methods} = useGorhomModalHandleRef(ref);
 
     return (
       <>
