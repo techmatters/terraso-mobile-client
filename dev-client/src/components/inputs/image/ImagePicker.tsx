@@ -39,7 +39,7 @@ import {
 } from 'terraso-mobile-client/components/modals/Modal';
 import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SimpleOverlaySheet} from 'terraso-mobile-client/components/sheets/SimpleOverlaySheet';
+import {StandaloneOverlaySheet} from 'terraso-mobile-client/components/sheets/StandaloneOverlaySheet';
 
 export type Photo = {
   width: number;
@@ -93,7 +93,7 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
   const onCancel = useCallback(() => ref.current?.onClose(), []);
 
   return (
-    <SimpleOverlaySheet trigger={children} ref={ref}>
+    <StandaloneOverlaySheet trigger={children} ref={ref}>
       <Column padding="lg" space="md">
         <PermissionsRequestWrapper
           requestModalTitle={t('permissions.camera_title')}
@@ -134,6 +134,6 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
           {t('general.cancel')}
         </Button>
       </Column>
-    </SimpleOverlaySheet>
+    </StandaloneOverlaySheet>
   );
 };

@@ -32,7 +32,7 @@ import {
 import {useGorhomModalHandleRef} from 'terraso-mobile-client/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
-export type SimpleOverlaySheetProps = React.PropsWithChildren<{
+export type StandaloneOverlaySheetProps = React.PropsWithChildren<{
   trigger?: ModalTrigger;
 }>;
 
@@ -41,10 +41,10 @@ export type SimpleOverlaySheetProps = React.PropsWithChildren<{
  * contents, making them scrollable if needed. Intended for one-off cases
  * where design doesn't indicate more specific sheet behavior.
  */
-export const SimpleOverlaySheet = forwardRef<
+export const StandaloneOverlaySheet = forwardRef<
   ModalHandle,
-  SimpleOverlaySheetProps
->(({trigger, children}: SimpleOverlaySheetProps, ref) => {
+  StandaloneOverlaySheetProps
+>(({trigger, children}: StandaloneOverlaySheetProps, ref) => {
   const {headerHeight} = useHeaderHeight();
   const {modalRef, methods} = useGorhomModalHandleRef(ref);
 
