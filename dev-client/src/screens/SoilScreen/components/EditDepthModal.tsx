@@ -44,7 +44,7 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
+import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
   deleteSoilDataDepthInterval,
   DepthInterval,
@@ -166,7 +166,7 @@ export const EditDepthModal = ({
   }, [dispatch, depthInterval, siteId, onClose]);
 
   return (
-    <FormOverlaySheet
+    <InfoSheet
       ref={modalRef}
       trigger={onOpen => (
         <IconButton
@@ -176,7 +176,7 @@ export const EditDepthModal = ({
           onPress={onOpen}
         />
       )}
-      Header={
+      heading={
         <Heading variant="h6">
           {mutable ? t('soil.depth.edit_title') : renderDepth(t, thisDepth)}
         </Heading>
@@ -242,7 +242,7 @@ export const EditDepthModal = ({
           </Column>
         )}
       </Formik>
-    </FormOverlaySheet>
+    </InfoSheet>
   );
 };
 
