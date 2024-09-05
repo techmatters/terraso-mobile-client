@@ -16,17 +16,15 @@
  */
 
 import {useTranslation} from 'react-i18next';
-import {Pressable} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
 
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 type FormOverlaySheetHeaderProps = {
   onDone?: () => void;
 };
 
-/**
- * To be simplified internally with FormOverlaySheet component work (mobile-client ticket #1774).
- */
 export const FormOverlaySheetHeader = ({
   onDone,
 }: FormOverlaySheetHeaderProps) => {
@@ -36,19 +34,25 @@ export const FormOverlaySheetHeader = ({
     <Pressable
       onPress={onDone}
       accessibilityRole="button"
-      accessibilityLabel={t('general.done')}>
-      <Row
-        backgroundColor="primary.main"
-        justifyContent="flex-end"
-        alignItems="center"
-        padding="md">
-        <Text
-          variant="body1-strong"
-          color="primary.contrast"
-          textTransform="uppercase">
-          {t('general.done')}
-        </Text>
-      </Row>
+      accessibilityLabel={t('general.done')}
+      style={styles.header}>
+      <Text
+        variant="body1-strong"
+        color="primary.contrast"
+        textTransform="uppercase">
+        {t('general.done')}
+      </Text>
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: convertColorProp('primary.main'),
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+});

@@ -16,6 +16,7 @@
  */
 
 import {forwardRef} from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {
   BottomSheetScrollView,
@@ -59,7 +60,7 @@ export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
           <FormOverlaySheetHeader onDone={methods.onClose} />
           <ModalContext.Provider value={methods}>
             <BottomSheetScrollView focusHook={useFocusEffect}>
-              {children}
+              <View style={styles.content}>{children}</View>
             </BottomSheetScrollView>
           </ModalContext.Provider>
         </GorhomBottomSheetModal>
@@ -67,3 +68,10 @@ export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
     );
   },
 );
+
+const styles = StyleSheet.create({
+  content: {
+    paddingTop: 8,
+    paddingBottom: 24,
+  },
+});
