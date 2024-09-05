@@ -31,7 +31,7 @@ import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {useGorhomModalHandleRef} from 'terraso-mobile-client/hooks/gorhomHooks';
+import {useGorhomModalHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type InfoSheetProps = React.PropsWithChildren<{
