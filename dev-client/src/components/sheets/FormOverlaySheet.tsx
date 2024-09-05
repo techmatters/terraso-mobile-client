@@ -57,11 +57,12 @@ export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
           backdropComponent={BackdropComponent}
           snapPoints={['50%', '100%']}
           enableDynamicSizing={false}>
-          <FormOverlaySheetHeader onDone={methods.onClose} />
           <ModalContext.Provider value={methods}>
+            <FormOverlaySheetHeader onDone={methods.onClose} />
             <BottomSheetScrollView focusHook={useFocusEffect}>
-              <View style={styles.content}>{children}</View>
+              {children}
             </BottomSheetScrollView>
+            <View style={styles.bottomPadding} />
           </ModalContext.Provider>
         </GorhomBottomSheetModal>
       </>
@@ -70,8 +71,7 @@ export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
 );
 
 const styles = StyleSheet.create({
-  content: {
-    paddingTop: 8,
-    paddingBottom: 24,
+  bottomPadding: {
+    padding: 24,
   },
 });
