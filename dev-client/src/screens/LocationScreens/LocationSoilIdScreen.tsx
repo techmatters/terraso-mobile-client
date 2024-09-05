@@ -18,7 +18,7 @@
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native-gesture-handler';
 
-import {selectSite} from 'terraso-client-shared/selectors';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 import {Coords} from 'terraso-client-shared/types';
 
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';

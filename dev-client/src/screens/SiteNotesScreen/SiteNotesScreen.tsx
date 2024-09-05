@@ -21,8 +21,6 @@ import {ScrollView} from 'react-native';
 
 import {Button} from 'native-base';
 
-import SiteNote from 'terraso-client-shared/site/siteSlice';
-
 import {
   Box,
   Column,
@@ -35,14 +33,6 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {SiteInstructionsCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteInstructionsCard';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
 import {useSelector} from 'terraso-mobile-client/store';
-
-export type SiteNote = {
-  id: string;
-  content: string;
-  createdAt: string;
-  authorFirstName: string;
-  authorLastName: string;
-};
 
 export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();

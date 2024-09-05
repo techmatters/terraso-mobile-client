@@ -20,8 +20,8 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
-import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {selectDepthDependentData} from 'terraso-mobile-client/store/selectors';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {isColorComplete} from 'terraso-mobile-client/model/color/colorConversions';

@@ -23,8 +23,8 @@ import {Button} from 'native-base';
 
 import {
   addUserToProject,
-  ProjectRole,
-} from 'terraso-client-shared/project/projectSlice';
+} from 'terraso-mobile-client/model/project/projectSlice';
+import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {

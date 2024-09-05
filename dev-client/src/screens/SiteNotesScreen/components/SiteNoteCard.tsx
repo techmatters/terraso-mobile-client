@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Spacer} from 'native-base';
 
-import {SiteNote} from 'terraso-client-shared/site/siteSlice';
+import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';

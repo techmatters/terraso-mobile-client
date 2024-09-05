@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Fab} from 'native-base';
 
-import {deleteSite, updateSite} from 'terraso-client-shared/site/siteSlice';
+import {deleteSite, updateSite} from 'terraso-mobile-client/model/site/siteSlice';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';

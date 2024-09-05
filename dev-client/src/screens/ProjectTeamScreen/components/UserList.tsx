@@ -21,7 +21,7 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   ProjectMembership,
   ProjectRole,
-} from 'terraso-client-shared/project/projectSlice';
+} from 'terraso-client-shared/project/projectTypes';
 
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {UserItem} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserItem';

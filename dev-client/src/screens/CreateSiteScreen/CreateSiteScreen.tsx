@@ -21,7 +21,7 @@ import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql'
 import {
   addSite,
   fetchSitesForProject,
-} from 'terraso-client-shared/site/siteSlice';
+} from 'terraso-mobile-client/model/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';

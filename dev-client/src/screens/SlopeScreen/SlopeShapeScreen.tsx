@@ -28,8 +28,8 @@ import {
 import {
   selectSoilData,
   selectUserRoleSite,
-} from 'terraso-client-shared/selectors';
-import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/store/selectors';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';
 import ConcaveConvex from 'terraso-mobile-client/assets/slope/shape/concave-convex.svg';

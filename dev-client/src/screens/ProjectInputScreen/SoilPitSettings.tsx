@@ -20,14 +20,14 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
-import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
+import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
 import {
   DEPTH_PRESETS,
   LabelledDepthInterval,
   ProjectDepthIntervalPreset,
   updateProjectDepthInterval,
   updateProjectSoilSettings,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';

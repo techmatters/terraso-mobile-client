@@ -22,8 +22,8 @@ import {Formik} from 'formik';
 import {Button} from 'native-base';
 import * as yup from 'yup';
 
-import {selectSoilData} from 'terraso-client-shared/selectors';
-import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {selectSoilData} from 'terraso-mobile-client/store/selectors';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';

@@ -21,8 +21,8 @@ import {useTranslation} from 'react-i18next';
 import {
   selectDepthDependentData,
   selectUserRoleSite,
-} from 'terraso-client-shared/selectors';
-import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/store/selectors';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';

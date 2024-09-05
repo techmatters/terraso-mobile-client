@@ -18,7 +18,7 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {ProjectRole} from 'terraso-client-shared/project/projectSlice';
+import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {useProjectUserRolesFilter} from 'terraso-mobile-client/hooks/permissionHooks';

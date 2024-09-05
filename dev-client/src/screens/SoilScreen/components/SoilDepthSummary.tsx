@@ -21,12 +21,12 @@ import {
   AggregatedInterval,
   selectDepthDependentData,
   useSiteProjectSoilSettings,
-} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/store/selectors';
 import {
   methodEnabled,
   methodRequired,
   soilPitMethods,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';

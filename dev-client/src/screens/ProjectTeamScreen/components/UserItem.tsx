@@ -21,7 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {Button} from 'native-base';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {ProjectMembership} from 'terraso-client-shared/project/projectSlice';
+import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
 import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';

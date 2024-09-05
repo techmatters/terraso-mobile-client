@@ -18,7 +18,7 @@
 import {useCallback} from 'react';
 import {Pressable} from 'react-native';
 
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 
 import {
   Column,

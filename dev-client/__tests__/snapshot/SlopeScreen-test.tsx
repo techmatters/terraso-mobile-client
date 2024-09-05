@@ -18,7 +18,7 @@
 import {testState} from '@testing/integration/data';
 import {render} from '@testing/integration/utils';
 
-import {methodRequired} from 'terraso-client-shared/soilId/soilIdSlice';
+import {methodRequired} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {collectionMethods} from 'terraso-client-shared/soilId/soilIdTypes';
 import {fromEntries} from 'terraso-client-shared/utils';
 
