@@ -17,6 +17,8 @@
 
 import {memo, useEffect} from 'react';
 
+import {useForegroundPermissions} from 'expo-location';
+
 import {NavigationHelpers} from '@react-navigation/native';
 import {Location, locationManager} from '@rnmapbox/maps';
 
@@ -36,30 +38,42 @@ import {useDispatch} from 'terraso-mobile-client/store';
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
+  const [potentiallyOutdatedLocationPermission, _, requestLocationPermission] =
+    useForegroundPermissions();
 
   useEffect(() => {
-    locationManager.getLastKnownLocation().then(initCoords => {
-      if (initCoords !== null) {
+    if (!potentiallyOutdatedLocationPermission?.granted) {
+      requestLocationPermission();
+    }
+    // disable depcheck because we only want to run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (potentiallyOutdatedLocationPermission?.granted) {
+      locationManager.getLastKnownLocation().then(initCoords => {
+        if (initCoords !== null) {
+          dispatch(
+            updateLocation({
+              coords: initCoords.coords,
+              accuracyM: initCoords.coords.accuracy ?? null,
+            }),
+          );
+        }
+      });
+
+      // add listener to update location on user movement
+      const listener = ({coords}: Location) => {
         dispatch(
-          updateLocation({
-            coords: initCoords.coords,
-            accuracyM: initCoords.coords.accuracy ?? null,
-          }),
+          updateLocation({coords: coords, accuracyM: coords.accuracy ?? null}),
         );
-      }
-    });
+      };
+      locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
+      locationManager.addListener(listener);
 
-    // add listener to update location on user movement
-    const listener = ({coords}: Location) => {
-      dispatch(
-        updateLocation({coords: coords, accuracyM: coords.accuracy ?? null}),
-      );
-    };
-    locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
-    locationManager.addListener(listener);
-
-    return () => locationManager.removeListener(listener);
-  }, [dispatch]);
+      return () => locationManager.removeListener(listener);
+    }
+  }, [dispatch, potentiallyOutdatedLocationPermission]);
 
   return (
     <BottomTabs.Navigator
