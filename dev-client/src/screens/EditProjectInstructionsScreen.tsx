@@ -21,9 +21,9 @@ import {Keyboard} from 'react-native';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
-  Project,
   updateProject,
-} from 'terraso-client-shared/project/projectSlice';
+} from 'terraso-mobile-client/model/project/projectSlice';
+import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {
   Box,

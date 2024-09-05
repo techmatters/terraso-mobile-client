@@ -18,7 +18,7 @@
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
+import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';

@@ -26,8 +26,8 @@ import {
   DataBasedSoilMatch,
   LocationBasedSoilMatch,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
-import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdSlice';
+import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
+import {SoilIdStatus} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';
 
 import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';

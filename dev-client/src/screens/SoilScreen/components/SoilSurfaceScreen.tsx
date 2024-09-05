@@ -22,8 +22,8 @@ import {
   selectSite,
   selectSoilData,
   selectUserRoleSite,
-} from 'terraso-client-shared/selectors';
-import {updateSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/store/selectors';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
   SurfaceCracks,
   surfaceCracks,

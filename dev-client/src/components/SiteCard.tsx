@@ -18,7 +18,7 @@
 import React, {useCallback} from 'react';
 import {StyleSheet, ViewStyle} from 'react-native';
 
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Card} from 'terraso-mobile-client/components/Card';

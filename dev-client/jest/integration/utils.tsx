@@ -23,6 +23,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {render as rnRender} from '@testing-library/react-native';
 import {NativeBaseProvider} from 'native-base';
 
+import { renderHook } from '@testing-library/react-native';
+
 import {
   RootStack,
   RootStackParamList,
@@ -81,3 +83,14 @@ export const render = (
 
   return rnRender(ui, {wrapper: Wrapper});
 };
+
+/* For unit-testing redux selectors; allows rendering a hook with a provided store state. */
+export const renderSelectorHook = <Result,>(
+  callback: () => Result,
+  initialStoreState: Partial<AppState>,
+) =>
+  renderHook(callback, {
+    wrapper: props => (
+      <Provider store={createStore(initialStoreState)} {...props} />
+    ),
+  }).result.current;

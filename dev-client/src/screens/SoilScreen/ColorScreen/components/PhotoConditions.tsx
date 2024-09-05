@@ -18,8 +18,8 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {selectDepthDependentData} from 'terraso-client-shared/selectors';
-import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {selectDepthDependentData} from 'terraso-mobile-client/store/selectors';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';

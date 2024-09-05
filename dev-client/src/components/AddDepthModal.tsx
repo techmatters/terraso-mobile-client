@@ -24,7 +24,7 @@ import {Button} from 'native-base';
 import {
   DepthInterval,
   LabelledDepthInterval,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {
   DepthForm,

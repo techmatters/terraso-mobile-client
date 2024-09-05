@@ -25,8 +25,8 @@ import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/gr
 import {
   deleteProject,
   updateProject,
-} from 'terraso-client-shared/project/projectSlice';
-import {selectProject} from 'terraso-client-shared/selectors';
+} from 'terraso-mobile-client/model/project/projectSlice';
+import {selectProject} from 'terraso-mobile-client/store/selectors';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';

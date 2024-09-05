@@ -21,7 +21,8 @@ import {StyleSheet} from 'react-native';
 
 import {ScrollView} from 'native-base';
 
-import {SitePrivacy, updateSite} from 'terraso-client-shared/site/siteSlice';
+import {SitePrivacy} from 'terraso-client-shared/site/siteTypes';
+import {updateSite} from 'terraso-mobile-client/model/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';

@@ -24,7 +24,7 @@ import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 import {useTheme} from 'native-base';
 
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {

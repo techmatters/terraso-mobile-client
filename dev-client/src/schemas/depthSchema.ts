@@ -18,7 +18,7 @@
 import {TFunction} from 'i18next';
 import * as yup from 'yup';
 
-import {DepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
+import {DepthInterval} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {
   DEPTH_LABEL_MAX_LENGTH,

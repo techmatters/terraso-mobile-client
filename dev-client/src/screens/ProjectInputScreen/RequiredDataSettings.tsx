@@ -21,12 +21,12 @@ import {Switch} from 'react-native';
 
 import {useTheme} from 'native-base';
 
-import {useProjectSoilSettings} from 'terraso-client-shared/selectors';
+import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
 import {
   collectionMethods,
   methodRequired,
   updateProjectSoilSettings,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {
   Box,

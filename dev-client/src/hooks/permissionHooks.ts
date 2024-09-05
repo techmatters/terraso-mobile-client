@@ -17,7 +17,7 @@
 
 import {useCallback} from 'react';
 
-import {Project, ProjectRole} from 'terraso-client-shared/project/projectSlice';
+import {Project, ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {userHasProjectRole} from 'terraso-mobile-client/model/permissions/permissions';
 import {useSelector} from 'terraso-mobile-client/store';

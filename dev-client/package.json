@@ -72,7 +72,7 @@
     "react-native-screens": "^3.34.0",
     "react-native-svg": "^15.6.0",
     "react-native-tab-view": "^3.5.2",
-    "terraso-client-shared": "github:techmatters/terraso-client-shared#0fd354a7a42f2d0317f5add48b016e62acb29a5b",
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#3878fd0",
     "use-debounce": "^10.0.3",
     "uuid": "^10.0.0",
     "yup": "^1.4.0"
@@ -94,6 +94,7 @@
     "@types/delta-e": "^0.0.2",
     "@types/haversine": "^1.1.8",
     "@types/jest": "^29.5.12",
+    "@types/lodash": "^4.17.7",
     "@types/quantize": "^1.0.2",
     "@types/react": "^18.3.5",
     "@types/uuid": "^10.0.0",

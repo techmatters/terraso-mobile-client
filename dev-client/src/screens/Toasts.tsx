@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 
 import {useToast} from 'native-base';
 
-import {setSoilIdStatus} from 'terraso-client-shared/soilId/soilIdSlice';
+import {setSoilIdStatus} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 

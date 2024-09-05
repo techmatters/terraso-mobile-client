@@ -22,9 +22,9 @@ import {Keyboard} from 'react-native';
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {
   deleteSiteNote,
-  SiteNote,
   updateSiteNote,
-} from 'terraso-client-shared/site/siteSlice';
+} from 'terraso-mobile-client/model/site/siteSlice';
+import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {
   Box,

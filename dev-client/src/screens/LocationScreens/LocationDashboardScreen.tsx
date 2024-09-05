@@ -18,8 +18,8 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {selectSite, selectUserRoleSite} from 'terraso-client-shared/selectors';
-import {useSoilIdData} from 'terraso-client-shared/soilId/soilIdHooks';
+import {selectSite, selectUserRoleSite} from 'terraso-mobile-client/store/selectors';
+import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';

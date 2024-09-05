@@ -16,7 +16,7 @@
  */
 import {useCallback} from 'react';
 
-import {Project} from 'terraso-client-shared/project/projectSlice';
+import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {Card} from 'terraso-mobile-client/components/Card';
 import {

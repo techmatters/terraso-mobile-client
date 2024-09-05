@@ -29,7 +29,7 @@ import Mapbox, {Camera, Location} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {useTheme} from 'native-base';
 
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';

@@ -24,15 +24,15 @@ import type {CompositeScreenProps} from '@react-navigation/native';
 import {createSelector} from '@reduxjs/toolkit';
 import {Button, FlatList} from 'native-base';
 
+import {Site} from 'terraso-client-shared/site/siteTypes';
 import {
-  Project,
   removeSiteFromAllProjects,
-} from 'terraso-client-shared/project/projectSlice';
+} from 'terraso-mobile-client/model/project/projectSlice';
+import {Project} from 'terraso-client-shared/project/projectTypes';
 import {
   deleteSite,
-  Site,
   updateSite,
-} from 'terraso-client-shared/site/siteSlice';
+} from 'terraso-mobile-client/model/site/siteSlice';
 import {normalizeText} from 'terraso-client-shared/utils';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';

@@ -21,7 +21,7 @@ import {
   DepthDependentSoilData,
   LabelledDepthInterval,
   SoilPitMethod,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {

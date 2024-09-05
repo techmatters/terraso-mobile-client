@@ -26,7 +26,7 @@ import {Button, ScrollView} from 'native-base';
 import {
   SoilTexture,
   updateDepthDependentSoilData,
-} from 'terraso-client-shared/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';

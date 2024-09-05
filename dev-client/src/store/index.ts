@@ -21,28 +21,44 @@ import {
   TypedUseSelectorHook,
 } from 'react-redux';
 
-import {StateFromReducersMapObject} from '@reduxjs/toolkit';
+import {
+  configureStore,
+  StateFromReducersMapObject,
+} from '@reduxjs/toolkit';
 
-import createStoreFactory, {
+import {
   DispatchFromStoreFactory,
-  StateFromStoreFactory,
+  handleAbortMiddleware,
+  sharedReducers,
 } from 'terraso-client-shared/store/store';
 
+import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
+import siteReducer from 'terraso-mobile-client/model/site/siteSlice';
+import soilIdReducer from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {reducer as elevationReducer} from 'terraso-mobile-client/model/elevation/elevationSlice';
 import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
 import {reducer as preferencesReducer} from 'terraso-mobile-client/model/preferences/preferencesSlice';
 
 const reducers = {
+  ...sharedReducers,
   map: mapReducer,
   preferences: preferencesReducer,
   elevation: elevationReducer,
+  site: siteReducer,
+  project: projectReducer,
+  soilId: soilIdReducer,
 };
 
-export type AppState = StateFromStoreFactory<typeof createStore> &
-  StateFromReducersMapObject<typeof reducers>;
+export type AppState = StateFromReducersMapObject<typeof reducers>;
 export type AppDispatch = DispatchFromStoreFactory<typeof createStore>;
 
 export const useSelector: TypedUseSelectorHook<AppState> = reduxUseSelector;
 export const useDispatch: () => AppDispatch = reduxUseDispatch;
 
-export const createStore = createStoreFactory(reducers);
+export const createStore = (intialState?: Partial<AppState>) =>
+  configureStore({
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware().concat(handleAbortMiddleware),
+    reducer: reducers,
+    preloadedState: intialState,
+  });

@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {FlatList} from 'native-base';
 
-import {Project} from 'terraso-client-shared/project/projectSlice';
+import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';

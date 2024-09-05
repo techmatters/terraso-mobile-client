@@ -21,7 +21,7 @@ import {Image, Pressable, StyleSheet} from 'react-native';
 
 import {Fab} from 'native-base';
 
-import {updateDepthDependentSoilData} from 'terraso-client-shared/soilId/soilIdSlice';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';

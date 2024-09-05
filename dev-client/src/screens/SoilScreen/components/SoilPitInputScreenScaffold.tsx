@@ -17,7 +17,7 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {LabelledDepthInterval} from 'terraso-client-shared/soilId/soilIdSlice';
+import {LabelledDepthInterval} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';

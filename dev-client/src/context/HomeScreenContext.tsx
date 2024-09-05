@@ -17,7 +17,7 @@
 
 import {createContext, memo, RefObject, useContext, useRef} from 'react';
 
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 
 type HomeScreenRef = {
   showSiteOnMap: (site: Site) => void;

@@ -22,7 +22,7 @@ import {ScrollView} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Button, Fab} from 'native-base';
 
-import {updateProject} from 'terraso-client-shared/project/projectSlice';
+import {updateProject} from 'terraso-mobile-client/model/project/projectSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';

@@ -21,7 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {Formik} from 'formik';
 
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Site} from 'terraso-client-shared/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
