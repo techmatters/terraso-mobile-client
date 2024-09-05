@@ -91,12 +91,12 @@ function App(): React.JSX.Element {
   return (
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
-        <HeaderHeightContext.Provider value={{headerHeight, setHeaderHeight}}>
-          <BottomSheetModalProvider>
-            <PaperProvider theme={paperTheme}>
-              <NativeBaseProvider theme={theme}>
-                <Portal.Host>
-                  <NavigationContainer>
+        <NavigationContainer>
+          <HeaderHeightContext.Provider value={{headerHeight, setHeaderHeight}}>
+            <BottomSheetModalProvider>
+              <PaperProvider theme={paperTheme}>
+                <NativeBaseProvider theme={theme}>
+                  <Portal.Host>
                     <BottomSheetModalProvider>
                       <GeospatialProvider>
                         <Toasts />
@@ -105,12 +105,12 @@ function App(): React.JSX.Element {
                         </HomeScreenContextProvider>
                       </GeospatialProvider>
                     </BottomSheetModalProvider>
-                  </NavigationContainer>
-                </Portal.Host>
-              </NativeBaseProvider>
-            </PaperProvider>
-          </BottomSheetModalProvider>
-        </HeaderHeightContext.Provider>
+                  </Portal.Host>
+                </NativeBaseProvider>
+              </PaperProvider>
+            </BottomSheetModalProvider>
+          </HeaderHeightContext.Provider>
+        </NavigationContainer>
       </Provider>
     </GestureHandlerRootView>
   );
