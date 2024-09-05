@@ -18,8 +18,6 @@
 import {useCallback, useMemo, useRef} from 'react';
 import {Pressable, StyleSheet, ViewStyle} from 'react-native';
 
-import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
@@ -30,7 +28,6 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
-import {FormOverlaySheetHeader} from 'terraso-mobile-client/components/sheets/FormOverlaySheetHeader';
 import {theme} from 'terraso-mobile-client/theme';
 
 // utility type so we can strictly validate the types of inputs/callbacks
@@ -74,8 +71,6 @@ export const Select = <T, Nullable extends boolean>({
   return (
     <FormOverlaySheet
       ref={ref}
-      scrollable={false}
-      Closer={null}
       trigger={onOpen => (
         <Pressable
           accessibilityState={{disabled}}
@@ -106,33 +101,30 @@ export const Select = <T, Nullable extends boolean>({
           </Row>
         </Pressable>
       )}>
-      <BottomSheetScrollView>
-        <FormOverlaySheetHeader onDone={() => ref.current?.onClose()} />
-        <MenuList>
-          {optionsWithNull.map(option => {
-            const itemLabel = option ? renderValue(option) : unselectedLabel!;
-            const selected = option === value;
-            let key;
-            if (optionKey) {
-              key = option === null ? null : optionKey(option);
-            } else {
-              key = itemLabel === undefined ? '' : itemLabel;
-            }
-            return (
-              <MenuItem
-                key={key}
-                label={itemLabel}
-                icon={selected ? 'check' : undefined}
-                selected={selected}
-                onPress={() => {
-                  onValueChange(option as T);
-                  onClose();
-                }}
-              />
-            );
-          })}
-        </MenuList>
-      </BottomSheetScrollView>
+      <MenuList>
+        {optionsWithNull.map(option => {
+          const itemLabel = option ? renderValue(option) : unselectedLabel!;
+          const selected = option === value;
+          let key;
+          if (optionKey) {
+            key = option === null ? null : optionKey(option);
+          } else {
+            key = itemLabel === undefined ? '' : itemLabel;
+          }
+          return (
+            <MenuItem
+              key={key}
+              label={itemLabel}
+              icon={selected ? 'check' : undefined}
+              selected={selected}
+              onPress={() => {
+                onValueChange(option as T);
+                onClose();
+              }}
+            />
+          );
+        })}
+      </MenuList>
     </FormOverlaySheet>
   );
 };

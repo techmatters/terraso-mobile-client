@@ -16,7 +16,6 @@
  */
 
 import {forwardRef} from 'react';
-import {Pressable} from 'react-native';
 
 import {
   BottomSheetScrollView,
@@ -25,89 +24,42 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
-import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {
   ModalContext,
   ModalHandle,
-  ModalProps,
+  ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {
-  Box,
-  Column,
-  Row,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {FormOverlaySheetHeader} from 'terraso-mobile-client/components/sheets/FormOverlaySheetHeader';
 import {useGorhomModalHandleRef} from 'terraso-mobile-client/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
-type Props = ModalProps & {
-  fullHeight?: boolean;
-  maxHeight?: number;
-  scrollable?: boolean;
-};
+export type FormOverlaySheetProps = React.PropsWithChildren<{
+  trigger?: ModalTrigger;
+}>;
 
 /**
  * To be simplified internally with FormOverlaySheet component work (mobile-client ticket #1774).
  */
-export const FormOverlaySheet = forwardRef<
-  ModalHandle,
-  React.PropsWithChildren<Props>
->(
-  (
-    {
-      Header,
-      children,
-      trigger,
-      Closer,
-      fullHeight = false,
-      scrollable = true,
-      maxHeight,
-    },
-    ref,
-  ) => {
+export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
+  ({children, trigger}: FormOverlaySheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
     const {modalRef, methods} = useGorhomModalHandleRef(ref);
 
-    const contents =
-      Header || Closer ? (
-        <Column padding="md">
-          <Row alignItems="center" mb="md">
-            {Header}
-            <Box flex={1} />
-            {Closer === undefined ? (
-              <BigCloseButton onPress={methods.onClose} />
-            ) : (
-              Closer
-            )}
-          </Row>
-          {children}
-        </Column>
-      ) : (
-        children
-      );
-
     return (
       <>
-        {trigger && (
-          <Pressable onPress={methods.onOpen}>
-            {trigger(methods.onOpen)}
-          </Pressable>
-        )}
+        {trigger && trigger(methods.onOpen)}
         <GorhomBottomSheetModal
           ref={modalRef}
           handleComponent={null}
           topInset={headerHeight}
           backdropComponent={BackdropComponent}
           snapPoints={['50%', '100%']}
-          enableDynamicSizing={!fullHeight}
-          maxDynamicContentSize={fullHeight ? undefined : maxHeight}>
+          enableDynamicSizing={false}>
+          <FormOverlaySheetHeader onDone={methods.onClose} />
           <ModalContext.Provider value={methods}>
-            {scrollable ? (
-              <BottomSheetScrollView focusHook={useFocusEffect}>
-                {contents}
-              </BottomSheetScrollView>
-            ) : (
-              contents
-            )}
+            <BottomSheetScrollView focusHook={useFocusEffect}>
+              {children}
+            </BottomSheetScrollView>
           </ModalContext.Provider>
         </GorhomBottomSheetModal>
       </>
