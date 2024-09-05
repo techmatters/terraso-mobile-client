@@ -46,18 +46,21 @@ export const PermissionsRequestWrapper = ({
 }: Props) => {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
-  const [permissions, requestPermissions] = usePermissions();
+  // Issue #1808: These permissions could be outdated if
+  // a) nobody has done a "get" or "request" on them since they changed, or
+  // b) a descendant component did the "get" or "request", so there is no reason for the given component to re-render
+  const [potentiallyOutdatedPermissions, requestPermissions] = usePermissions();
 
   const onRequestAction = useCallback(async () => {
-    if (permissions === null) {
+    if (potentiallyOutdatedPermissions === null) {
       return;
     }
 
-    if (permissions.granted) {
+    if (potentiallyOutdatedPermissions.granted) {
       if (permissionedAction !== undefined) {
         permissionedAction();
       }
-    } else if (permissions.canAskAgain) {
+    } else if (potentiallyOutdatedPermissions.canAskAgain) {
       const result = await requestPermissions();
       if (result.granted && permissionedAction !== undefined) {
         permissionedAction();
@@ -65,7 +68,7 @@ export const PermissionsRequestWrapper = ({
     } else {
       ref.current?.onOpen();
     }
-  }, [permissionedAction, permissions, requestPermissions]);
+  }, [permissionedAction, potentiallyOutdatedPermissions, requestPermissions]);
 
   return (
     <>
