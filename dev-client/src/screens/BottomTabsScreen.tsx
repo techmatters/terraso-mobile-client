@@ -38,11 +38,11 @@ import {useDispatch} from 'terraso-mobile-client/store';
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
-  const [locationPermission, requestLocationPermission] =
+  const [potentiallyOutdatedLocationPermission, _, requestLocationPermission] =
     useForegroundPermissions();
 
   useEffect(() => {
-    if (!locationPermission?.granted) {
+    if (!potentiallyOutdatedLocationPermission?.granted) {
       requestLocationPermission();
     }
     // disable depcheck because we only want to run on mount
@@ -50,7 +50,7 @@ export const BottomTabsScreen = memo(() => {
   }, []);
 
   useEffect(() => {
-    if (locationPermission?.granted) {
+    if (potentiallyOutdatedLocationPermission?.granted) {
       locationManager.getLastKnownLocation().then(initCoords => {
         if (initCoords !== null) {
           dispatch(
@@ -73,7 +73,7 @@ export const BottomTabsScreen = memo(() => {
 
       return () => locationManager.removeListener(listener);
     }
-  }, [dispatch, locationPermission]);
+  }, [dispatch, potentiallyOutdatedLocationPermission]);
 
   return (
     <BottomTabs.Navigator
