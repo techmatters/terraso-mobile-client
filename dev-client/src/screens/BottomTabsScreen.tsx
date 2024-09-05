@@ -49,10 +49,6 @@ export const BottomTabsScreen = memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(
-    'Rerender BottomTabsScreen. Permission? ',
-    locationPermission?.granted,
-  );
   useEffect(() => {
     if (locationPermission?.granted) {
       locationManager.getLastKnownLocation().then(initCoords => {
