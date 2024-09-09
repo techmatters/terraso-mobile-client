@@ -20,19 +20,18 @@ import {useTranslation} from 'react-i18next';
 
 import {Fab, FlatList} from 'native-base';
 
-import {selectProjectsWithTransferrableSites} from 'terraso-mobile-client/store/selectors';
-import {transferSites} from 'terraso-mobile-client/model/site/siteSlice';
-
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
+import {transferSites} from 'terraso-mobile-client/model/site/siteSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {CheckboxGroup} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/CheckboxGroup';
 import {ListHeader} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/components/ListHeader';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectProjectsWithTransferrableSites} from 'terraso-mobile-client/store/selectors';
 import {removeKeys} from 'terraso-mobile-client/util';
 
 const UNAFFILIATED = {

@@ -17,11 +17,6 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  selectSoilData,
-  useSiteProjectSoilSettings,
-} from 'terraso-mobile-client/store/selectors';
-
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {
   Column,
@@ -30,6 +25,10 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSoilData,
+  useSiteProjectSoilSettings,
+} from 'terraso-mobile-client/store/selectors';
 
 type Props = {siteId: string};
 

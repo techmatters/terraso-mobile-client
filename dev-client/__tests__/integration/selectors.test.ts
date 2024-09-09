@@ -15,29 +15,27 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { merge } from 'lodash/fp';
+import {renderSelectorHook} from '@testing/integration/utils';
+import {merge} from 'lodash/fp';
+import {v4 as uuidv4} from 'uuid';
+
 import {
   initialState as accountInitialState,
   User,
 } from 'terraso-client-shared/account/accountSlice';
-import {
-  DEFAULT_ENABLED_SOIL_PIT_METHODS,
-  DEPTH_INTERVAL_PRESETS,
-} from 'terraso-mobile-client/model/soilId/soilDataConstants';
 import {
   Project,
   ProjectMembership,
   ProjectPrivacy,
   ProjectRole,
 } from 'terraso-client-shared/project/projectTypes';
+import {Site} from 'terraso-client-shared/site/siteTypes';
+import {SerializableSet} from 'terraso-client-shared/store/utils';
+
 import {
-  selectProjectMembershipsWithUsers,
-  selectProjectsWithTransferrableSites,
-  selectSitesAndUserRoles,
-  selectUserRoleSite,
-  useSiteSoilIntervals,
-} from 'terraso-mobile-client/store/selectors';
-import { Site } from 'terraso-client-shared/site/siteTypes';
+  DEFAULT_ENABLED_SOIL_PIT_METHODS,
+  DEPTH_INTERVAL_PRESETS,
+} from 'terraso-mobile-client/model/soilId/soilDataConstants';
 import {
   DepthInterval,
   methodEnabled,
@@ -50,11 +48,14 @@ import {
   soilPitMethods,
   SoilState,
 } from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import { SerializableSet } from 'terraso-client-shared/store/utils';
-import { v4 as uuidv4 } from 'uuid';
-import { createStore } from 'terraso-mobile-client/store';
-import { renderSelectorHook } from '@testing/integration/utils';
-
+import {createStore} from 'terraso-mobile-client/store';
+import {
+  selectProjectMembershipsWithUsers,
+  selectProjectsWithTransferrableSites,
+  selectSitesAndUserRoles,
+  selectUserRoleSite,
+  useSiteSoilIntervals,
+} from 'terraso-mobile-client/store/selectors';
 
 const generateUser = () => {
   const id = uuidv4();
@@ -93,9 +94,8 @@ const generateProject = (
   };
 };
 
-const generateSite = (args?: { project: Project } | { owner: User }): Site => {
-  let project,
-    owner;
+const generateSite = (args?: {project: Project} | {owner: User}): Site => {
+  let project, owner;
   if (args && 'project' in args) {
     project = args.project;
   } else if (args) {
@@ -122,7 +122,7 @@ const generateSite = (args?: { project: Project } | { owner: User }): Site => {
 };
 
 const generateMembership = (userId: string, userRole: ProjectRole) => {
-  return { id: uuidv4(), userId, userRole };
+  return {id: uuidv4(), userId, userRole};
 };
 
 const createSoilData = (
@@ -181,7 +181,7 @@ const generateSiteInterval = (
   // soilStructureEnabled: false,
   soilTextureEnabled: false,
   // carbonatesEnabled: false,
-  ...(label !== undefined ? { label } : { label: '' }),
+  ...(label !== undefined ? {label} : {label: ''}),
   ...DEFAULT_ENABLED_SOIL_PIT_METHODS.reduce(
     (x, method) => ({
       ...x,
@@ -223,7 +223,7 @@ const keyBy = <T, Index extends keyof T>(
   index: Index,
 ) => {
   return elements.reduce(
-    (x, y) => ({ ...x, [y[index] as string | number]: y }),
+    (x, y) => ({...x, [y[index] as string | number]: y}),
     {},
   );
 };
@@ -241,7 +241,7 @@ function initState(
   const soilData = soilId?.soilData || {};
   const projectSettings = soilId?.projectSettings || {};
   return merge(
-    { account: { ...accountInitialState } },
+    {account: {...accountInitialState}},
     {
       account: {
         users: keyBy(users, 'id'),
@@ -314,8 +314,8 @@ test('can access all projects with role', () => {
     generateMembership(user.id, 'CONTRIBUTOR'),
   ]);
   const project3 = generateProject([generateMembership(user.id, 'MANAGER')]);
-  const site1 = generateSite({ project: project1 });
-  const site2 = generateSite({ project: project2 });
+  const site1 = generateSite({project: project1});
+  const site2 = generateSite({project: project2});
   const site3 = generateSite();
 
   const store = createStore(
@@ -332,8 +332,8 @@ test('can access all projects with role', () => {
   );
   expect(pairs).toStrictEqual({
     projects: {
-      [project1.id]: { projectName: project1.name, projectId: project1.id },
-      [project3.id]: { projectName: project3.name, projectId: project3.id },
+      [project1.id]: {projectName: project1.name, projectId: project1.id},
+      [project3.id]: {projectName: project3.name, projectId: project3.id},
     },
     sites: [
       {
@@ -343,7 +343,7 @@ test('can access all projects with role', () => {
         siteName: site1.name,
       },
     ],
-    unaffiliatedSites: [{ siteId: site3.id, siteName: site3.name }],
+    unaffiliatedSites: [{siteId: site3.id, siteName: site3.name}],
   });
 });
 
@@ -353,10 +353,10 @@ test('select user sites with project role', () => {
   const project2 = generateProject([
     generateMembership(user.id, 'CONTRIBUTOR'),
   ]);
-  const site1 = generateSite({ project: project1 });
-  const site2 = generateSite({ project: project2 });
+  const site1 = generateSite({project: project1});
+  const site2 = generateSite({project: project2});
   const site3 = generateSite();
-  const site4 = generateSite({ project: project2 });
+  const site4 = generateSite({project: project2});
 
   const store = createStore(
     initState(
@@ -378,27 +378,27 @@ test('select user sites with project role', () => {
 
 test('select user role when site owned', () => {
   const user = generateUser();
-  const site = generateSite({ owner: user });
+  const site = generateSite({owner: user});
   const store = createStore(initState([], [user], [site], user.id));
 
   const siteRole = selectUserRoleSite(store.getState(), site.id);
-  expect(siteRole).toStrictEqual({ kind: 'site', role: 'OWNER' });
+  expect(siteRole).toStrictEqual({kind: 'site', role: 'OWNER'});
 });
 
 test('select user role in project of site', () => {
   const user = generateUser();
   const project = generateProject([generateMembership(user.id, 'VIEWER')]);
-  const site = generateSite({ project });
+  const site = generateSite({project});
   const store = createStore(initState([project], [user], [site], user.id));
 
   const siteRole = selectUserRoleSite(store.getState(), site.id);
-  expect(siteRole).toStrictEqual({ kind: 'project', role: 'VIEWER' });
+  expect(siteRole).toStrictEqual({kind: 'project', role: 'VIEWER'});
 });
 
 test('select predefined project selector', () => {
   const user = generateUser();
   const project = generateProject([generateMembership(user.id, 'MANAGER')]);
-  const site = generateSite({ project });
+  const site = generateSite({project});
   const soilData = createSoilData(site);
   const projectSettings = createProjectSettings(project, {
     depthIntervalPreset: 'NRCS',
@@ -413,28 +413,28 @@ test('select predefined project selector', () => {
   );
 
   expect(
-    aggregatedIntervals.map(({ interval: { depthInterval } }) => depthInterval),
+    aggregatedIntervals.map(({interval: {depthInterval}}) => depthInterval),
   ).toStrictEqual(
-    DEPTH_INTERVAL_PRESETS.NRCS.map(({ depthInterval }) => depthInterval),
+    DEPTH_INTERVAL_PRESETS.NRCS.map(({depthInterval}) => depthInterval),
   );
 });
 
 test('select predefined project selector with custom preset', () => {
   const user = generateUser();
   const project = generateProject([generateMembership(user.id, 'MANAGER')]);
-  const site = generateSite({ project });
+  const site = generateSite({project});
   const projectDepthIntervals = [
-    { depthInterval: { start: 2, end: 3 }, label: 'first' },
-    { depthInterval: { start: 5, end: 6 }, label: '' },
+    {depthInterval: {start: 2, end: 3}, label: 'first'},
+    {depthInterval: {start: 5, end: 6}, label: ''},
   ];
   const projectSettings = createProjectSettings(project, {
     depthIntervalPreset: 'CUSTOM',
     depthIntervals: projectDepthIntervals,
   });
   const siteDepthIntervals = [
-    generateSiteInterval({ start: 1, end: 2 }, 'site-0'),
-    generateSiteInterval({ start: 4, end: 6 }, 'site-1'),
-    generateSiteInterval({ start: 7, end: 10 }, 'site-2'),
+    generateSiteInterval({start: 1, end: 2}, 'site-0'),
+    generateSiteInterval({start: 4, end: 6}, 'site-1'),
+    generateSiteInterval({start: 7, end: 10}, 'site-2'),
   ];
   const soilData = createSoilData(site, {
     depthIntervals: siteDepthIntervals,
@@ -477,21 +477,21 @@ test('select predefined project selector with custom preset', () => {
 test('overlapping site intervals get the project values of the preset interval', () => {
   const user = generateUser();
   const project = generateProject([generateMembership(user.id, 'MANAGER')]);
-  const site = generateSite({ project });
+  const site = generateSite({project});
 
   const projectDepthIntervals = [
-    { depthInterval: { start: 1, end: 2 }, label: 'first' },
-    { depthInterval: { start: 2, end: 3 }, label: 'second' },
+    {depthInterval: {start: 1, end: 2}, label: 'first'},
+    {depthInterval: {start: 2, end: 3}, label: 'second'},
   ];
   const projectSettings = createProjectSettings(project, {
     depthIntervalPreset: 'CUSTOM',
     depthIntervals: projectDepthIntervals,
   });
   const siteDepthIntervals = [
-    generateSiteInterval({ start: 1, end: 2 }, 'label', {
+    generateSiteInterval({start: 1, end: 2}, 'label', {
       // carbonatesEnabled: true,
     }),
-    generateSiteInterval({ start: 2, end: 3 }, 'label', {
+    generateSiteInterval({start: 2, end: 3}, 'label', {
       // phEnabled: true,
     }),
   ];
@@ -518,7 +518,7 @@ test('overlapping site intervals get the project values of the preset interval',
     },
     {
       isFromPreset: true,
-      interval: { ...siteDepthIntervals[1], label: 'second' },
+      interval: {...siteDepthIntervals[1], label: 'second'},
     },
   ]);
 });

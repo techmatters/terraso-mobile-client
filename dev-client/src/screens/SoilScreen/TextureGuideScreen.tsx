@@ -23,11 +23,6 @@ import {ResizeMode, Video} from 'expo-av';
 
 import {Button, ScrollView} from 'native-base';
 
-import {
-  SoilTexture,
-  updateDepthDependentSoilData,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
@@ -36,6 +31,10 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {
+  SoilTexture,
+  updateDepthDependentSoilData,
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -52,7 +51,6 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
   const [grit, setGrit] = useState<'GRITTY' | 'SMOOTH' | 'NEITHER'>();
 
   const result = useMemo<SoilTexture | undefined>(() => {
-    /* eslint-disable curly */
     if (ball === undefined) return undefined;
     if (ball === 'NO') return 'SAND';
     if (ribbon === undefined) return undefined;
@@ -73,7 +71,6 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
       if (grit === 'NEITHER') return 'CLAY';
       if (grit === 'SMOOTH') return 'SILTY_CLAY';
     }
-    /* eslint-enable curly */
   }, [ball, ribbon, ribbonLength, grit]);
 
   const dispatch = useDispatch();

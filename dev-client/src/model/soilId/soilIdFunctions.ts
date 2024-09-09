@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { mhvcToLab } from 'munsell';
+import {mhvcToLab} from 'munsell';
+
 import {
   DataBasedSoilMatch,
   LabColorInput,
@@ -35,7 +36,7 @@ import {
   SoilIdStatus,
   SoilPitMethod,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import { Coords } from 'terraso-client-shared/types';
+import {Coords} from 'terraso-client-shared/types';
 
 export const methodEnabled = <T extends SoilPitMethod>(
   method: T,
@@ -46,18 +47,18 @@ export const methodRequired = <T extends CollectionMethod>(
 ): `${T}Required` => `${method}Required`;
 
 export const sameDepth =
-  ({ depthInterval: a }: { depthInterval: DepthInterval }) =>
-  ({ depthInterval: b }: { depthInterval: DepthInterval }) =>
+  ({depthInterval: a}: {depthInterval: DepthInterval}) =>
+  ({depthInterval: b}: {depthInterval: DepthInterval}) =>
     a.start === b.start && a.end === b.end;
 
 export const overlaps =
-  ({ depthInterval: a }: { depthInterval: DepthInterval }) =>
-  ({ depthInterval: b }: { depthInterval: DepthInterval }) =>
+  ({depthInterval: a}: {depthInterval: DepthInterval}) =>
+  ({depthInterval: b}: {depthInterval: DepthInterval}) =>
     Math.max(a.start, b.start) < Math.min(a.end, b.end);
 
 export const compareInterval = (
-  { depthInterval: a }: { depthInterval: DepthInterval },
-  { depthInterval: b }: { depthInterval: DepthInterval },
+  {depthInterval: a}: {depthInterval: DepthInterval},
+  {depthInterval: b}: {depthInterval: DepthInterval},
 ) => a.start - b.start;
 
 export const degreeToPercent = (degrees: number) =>
@@ -120,7 +121,7 @@ export const soilDataLabColorInput = (
     return undefined;
   }
   const [L, A, B] = mhvcToLab(data.colorHue, data.colorValue, data.colorChroma);
-  return { L, A, B };
+  return {L, A, B};
 };
 
 export const soilDataToIdInput = (data: SoilData): SoilIdInputData => {

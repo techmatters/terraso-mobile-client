@@ -22,8 +22,6 @@ import {
   SoilIdDepthDependentSoilDataTextureChoices,
   SoilIdSoilData,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
-import {sameDepth} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
   SoilData,
   SoilDataDepthInterval,
@@ -33,6 +31,8 @@ import {
   fullMunsellColor,
   munsellToString,
 } from 'terraso-mobile-client/model/color/colorConversions';
+import {sameDepth} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
 
 export type SoilPropertiesDataTableRow = {
   depth: DepthInterval;

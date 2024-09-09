@@ -21,9 +21,6 @@ import {Image, StyleSheet} from 'react-native';
 
 import {Button} from 'native-base';
 
-import {selectSoilData} from 'terraso-mobile-client/store/selectors';
-import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -32,6 +29,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   renderSlopeSteepnessDegree,
@@ -39,6 +37,7 @@ import {
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
 import {useSelector} from 'terraso-mobile-client/store';
+import {selectSoilData} from 'terraso-mobile-client/store/selectors';
 
 type Props = {siteId: string};
 export const SiteSlopeDataSection = ({siteId}: Props) => {

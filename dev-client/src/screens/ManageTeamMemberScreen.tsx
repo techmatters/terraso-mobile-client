@@ -21,10 +21,6 @@ import {Divider} from 'react-native-paper';
 
 import {Button} from 'native-base';
 
-import {
-  deleteUserFromProject,
-  updateUserRole,
-} from 'terraso-mobile-client/model/project/projectSlice';
 import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
@@ -36,6 +32,10 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  deleteUserFromProject,
+  updateUserRole,
+} from 'terraso-mobile-client/model/project/projectSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {MinimalUserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';

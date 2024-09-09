@@ -21,9 +21,6 @@ import {useTranslation} from 'react-i18next';
 import {TabActions} from '@react-navigation/native';
 import {Button} from 'native-base';
 
-import {
-  addUserToProject,
-} from 'terraso-mobile-client/model/project/projectSlice';
 import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
@@ -32,6 +29,7 @@ import {
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {addUserToProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {TabRoutes} from 'terraso-mobile-client/navigation/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';

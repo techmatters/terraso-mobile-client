@@ -21,9 +21,8 @@ import {useTranslation} from 'react-i18next';
 import {Formik, FormikProps} from 'formik';
 import {Button, KeyboardAvoidingView, ScrollView} from 'native-base';
 
-import {addProject} from 'terraso-mobile-client/model/project/projectSlice';
-
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {addProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import ProjectForm, {
   ProjectFormValues,

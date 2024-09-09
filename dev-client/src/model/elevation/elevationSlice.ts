@@ -41,10 +41,14 @@ const {reducer} = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchElevation.pending, (state, action) => {
-        state.elevationCache[elevationKey(action.meta.arg)] = {fetching: true};
+        state.elevationCache[elevationKey(action.meta.arg)] = {
+          fetching: true,
+        };
       })
       .addCase(fetchElevation.rejected, (state, action) => {
-        state.elevationCache[elevationKey(action.meta.arg)] = {fetching: false};
+        state.elevationCache[elevationKey(action.meta.arg)] = {
+          fetching: false,
+        };
       })
       .addCase(fetchElevation.fulfilled, (state, action) => {
         state.elevationCache[elevationKey(action.meta.arg)] = {

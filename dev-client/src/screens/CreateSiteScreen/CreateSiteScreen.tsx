@@ -18,13 +18,13 @@
 import {useCallback} from 'react';
 
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {Coords} from 'terraso-client-shared/types';
+
+import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {
   addSite,
   fetchSitesForProject,
 } from 'terraso-mobile-client/model/site/siteSlice';
-import {Coords} from 'terraso-client-shared/types';
-
-import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';

@@ -23,7 +23,10 @@ export const LastModified = () => {
   const {t} = useTranslation();
   return (
     <Text variant="body2" fontStyle="italic">
-      {t('general.last_modified_by', {user: 'Sample Sam', date: '08/16/2023'})}
+      {t('general.last_modified_by', {
+        user: 'Sample Sam',
+        date: '08/16/2023',
+      })}
     </Text>
   );
 };

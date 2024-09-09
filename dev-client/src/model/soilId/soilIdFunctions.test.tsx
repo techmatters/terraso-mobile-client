@@ -16,6 +16,11 @@
  */
 
 import {
+  DepthDependentSoilData,
+  SoilData,
+} from 'terraso-client-shared/soilId/soilIdTypes';
+
+import {
   compareInterval,
   degreeToPercent,
   methodEnabled,
@@ -32,8 +37,6 @@ import {
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
-import { DepthDependentSoilData, SoilData } from 'terraso-client-shared/soilId/soilIdTypes';
-
 describe('methodEnabled', () => {
   test('formats method names with the Enabled suffix', () => {
     expect(methodEnabled('soilTexture')).toBe('soilTextureEnabled');
@@ -48,22 +51,22 @@ describe('methodRequired', () => {
 
 describe('sameDepth', () => {
   test('matches identical depth intervals', () => {
-    const a = { depthInterval: { start: 1, end: 2 } };
-    const b = { depthInterval: { start: 1, end: 2 } };
+    const a = {depthInterval: {start: 1, end: 2}};
+    const b = {depthInterval: {start: 1, end: 2}};
 
     expect(sameDepth(a)(b)).toBeTruthy();
   });
 
   test('rejects different starts', () => {
-    const a = { depthInterval: { start: 1, end: 2 } };
-    const c = { depthInterval: { start: 10, end: 2 } };
+    const a = {depthInterval: {start: 1, end: 2}};
+    const c = {depthInterval: {start: 10, end: 2}};
 
     expect(sameDepth(a)(c)).toBeFalsy();
   });
 
   test('rejects different ends', () => {
-    const a = { depthInterval: { start: 1, end: 2 } };
-    const d = { depthInterval: { start: 1, end: 20 } };
+    const a = {depthInterval: {start: 1, end: 2}};
+    const d = {depthInterval: {start: 1, end: 20}};
 
     expect(sameDepth(a)(d)).toBeFalsy();
   });
@@ -71,36 +74,36 @@ describe('sameDepth', () => {
 
 describe('overlaps', () => {
   test('accepts identical intervals', () => {
-    const a = { depthInterval: { start: 1, end: 2 } };
-    const b = { depthInterval: { start: 1, end: 2 } };
+    const a = {depthInterval: {start: 1, end: 2}};
+    const b = {depthInterval: {start: 1, end: 2}};
 
     expect(overlaps(a)(b)).toBeTruthy();
   });
 
   test('accepts intervals overlapping at the start', () => {
-    const a = { depthInterval: { start: 1, end: 2 } };
-    const b = { depthInterval: { start: 0, end: 1.1 } };
+    const a = {depthInterval: {start: 1, end: 2}};
+    const b = {depthInterval: {start: 0, end: 1.1}};
 
     expect(overlaps(a)(b)).toBeTruthy();
   });
 
   test('accepts intervals overlapping at the end', () => {
-    const a = { depthInterval: { start: 1, end: 2 } };
-    const b = { depthInterval: { start: 1.9, end: 3 } };
+    const a = {depthInterval: {start: 1, end: 2}};
+    const b = {depthInterval: {start: 1.9, end: 3}};
 
     expect(overlaps(a)(b)).toBeTruthy();
   });
 
   test('rejects intervals fully before', () => {
-    const a = { depthInterval: { start: 1, end: 2 } };
-    const b = { depthInterval: { start: 2, end: 3 } };
+    const a = {depthInterval: {start: 1, end: 2}};
+    const b = {depthInterval: {start: 2, end: 3}};
 
     expect(overlaps(a)(b)).toBeFalsy();
   });
 
   test('rejects intervals fully after', () => {
-    const a = { depthInterval: { start: 1, end: 2 } };
-    const b = { depthInterval: { start: 0, end: 1 } };
+    const a = {depthInterval: {start: 1, end: 2}};
+    const b = {depthInterval: {start: 0, end: 1}};
 
     expect(overlaps(a)(b)).toBeFalsy();
   });
@@ -108,9 +111,9 @@ describe('overlaps', () => {
 
 describe('compareInterval', () => {
   test('compares based on start value', () => {
-    const a = { depthInterval: { start: 0, end: 2 } };
-    const b = { depthInterval: { start: -1, end: 2 } };
-    const c = { depthInterval: { start: 1, end: 2 } };
+    const a = {depthInterval: {start: 0, end: 2}};
+    const b = {depthInterval: {start: -1, end: 2}};
+    const c = {depthInterval: {start: 1, end: 2}};
 
     expect(compareInterval(a, b)).toBeGreaterThan(0);
     expect(compareInterval(a, a)).toEqual(0);
@@ -118,9 +121,9 @@ describe('compareInterval', () => {
   });
 
   test('can be used to sort intervals', () => {
-    const a = { depthInterval: { start: 0, end: 2 } };
-    const b = { depthInterval: { start: -1, end: 2 } };
-    const c = { depthInterval: { start: 1, end: 2 } };
+    const a = {depthInterval: {start: 0, end: 2}};
+    const b = {depthInterval: {start: -1, end: 2}};
+    const c = {depthInterval: {start: 1, end: 2}};
 
     const sorted = [c, b, a].sort(compareInterval);
 
@@ -206,7 +209,7 @@ describe('soilDataLabColorInput', () => {
     data.colorValue = 0.5;
     data.colorChroma = 0.5;
 
-    const { L, A, B } = soilDataLabColorInput(data)!;
+    const {L, A, B} = soilDataLabColorInput(data)!;
     expect(L).toBeCloseTo(5.124);
     expect(A).toBeCloseTo(3.437);
     expect(B).toBeCloseTo(-0.784);
@@ -228,7 +231,7 @@ describe('soilDataToIdInput', () => {
     data.slopeSteepnessDegree = 45;
     data.depthDependentData = [
       {
-        depthInterval: { start: 1, end: 2 },
+        depthInterval: {start: 1, end: 2},
         colorHue: 0,
         colorValue: 0,
         colorChroma: 0,
@@ -239,8 +242,8 @@ describe('soilDataToIdInput', () => {
     expect(soilDataToIdInput(data)).toEqual({
       depthDependentData: [
         {
-          depthInterval: { start: 1, end: 2 },
-          colorLAB: { L: 0, A: 0, B: 0 },
+          depthInterval: {start: 1, end: 2},
+          colorLAB: {L: 0, A: 0, B: 0},
           rockFragmentVolume: 'VOLUME_0_1',
           texture: 'CLAY',
         },
@@ -252,11 +255,11 @@ describe('soilDataToIdInput', () => {
 
 describe('soilIdKey', () => {
   test('produces keys for coords and sites', () => {
-    expect(soilIdKey({ longitude: 1, latitude: 2 }, 'abc')).toBe('(1, 2) abc');
+    expect(soilIdKey({longitude: 1, latitude: 2}, 'abc')).toBe('(1, 2) abc');
   });
 
   test('produces keys for coords', () => {
-    expect(soilIdKey({ longitude: 1, latitude: 2 })).toBe('(1, 2) ');
+    expect(soilIdKey({longitude: 1, latitude: 2})).toBe('(1, 2) ');
   });
 });
 

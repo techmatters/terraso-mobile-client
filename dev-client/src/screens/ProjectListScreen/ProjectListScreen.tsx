@@ -20,7 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
 import {PROJECT_ROLES} from 'terraso-client-shared/project/projectTypes';
-import {selectProjectUserRolesMap} from 'terraso-mobile-client/store/selectors';
 import {normalizeText} from 'terraso-client-shared/utils';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
@@ -40,6 +39,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
+import {selectProjectUserRolesMap} from 'terraso-mobile-client/store/selectors';
 import {equals, searchText} from 'terraso-mobile-client/util';
 
 const SORT_OPTIONS = ['nameAsc', 'nameDesc'];

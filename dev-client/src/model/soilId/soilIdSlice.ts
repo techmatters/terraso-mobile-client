@@ -15,17 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { setUsers } from 'terraso-client-shared/account/accountSlice';
-import { setProjects } from 'terraso-mobile-client/model/project/projectSlice';
-import { setSites } from 'terraso-mobile-client/model/site/siteSlice';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+
+import {setUsers} from 'terraso-client-shared/account/accountSlice';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
-import {
-  soilIdEntryDataBased,
-  soilIdEntryForStatus,
-  soilIdEntryLocationBased,
-  soilIdKey,
-} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 import * as soilIdService from 'terraso-client-shared/soilId/soilIdService';
 import {
   CollectionMethod,
@@ -40,6 +33,15 @@ import {
   createAsyncThunk,
   dispatchByKeys,
 } from 'terraso-client-shared/store/utils';
+
+import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
+import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
+import {
+  soilIdEntryDataBased,
+  soilIdEntryForStatus,
+  soilIdEntryLocationBased,
+  soilIdKey,
+} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';

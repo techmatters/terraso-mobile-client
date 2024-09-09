@@ -20,9 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  updateProject,
-} from 'terraso-mobile-client/model/project/projectSlice';
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {
@@ -31,6 +28,7 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
+import {updateProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
 import {useDispatch} from 'terraso-mobile-client/store';
