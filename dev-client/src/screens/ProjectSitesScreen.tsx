@@ -24,15 +24,8 @@ import type {CompositeScreenProps} from '@react-navigation/native';
 import {createSelector} from '@reduxjs/toolkit';
 import {Button, FlatList} from 'native-base';
 
-import {Site} from 'terraso-client-shared/site/siteTypes';
-import {
-  removeSiteFromAllProjects,
-} from 'terraso-mobile-client/model/project/projectSlice';
 import {Project} from 'terraso-client-shared/project/projectTypes';
-import {
-  deleteSite,
-  updateSite,
-} from 'terraso-mobile-client/model/site/siteSlice';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 import {normalizeText} from 'terraso-client-shared/utils';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
@@ -55,6 +48,11 @@ import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {removeSiteFromAllProjects} from 'terraso-mobile-client/model/project/projectSlice';
+import {
+  deleteSite,
+  updateSite,
+} from 'terraso-mobile-client/model/site/siteSlice';
 import {
   TabRoutes,
   TabStackParamList,

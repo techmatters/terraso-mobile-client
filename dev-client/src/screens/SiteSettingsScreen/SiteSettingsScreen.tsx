@@ -20,8 +20,6 @@ import {useTranslation} from 'react-i18next';
 
 import {Fab} from 'native-base';
 
-import {deleteSite, updateSite} from 'terraso-mobile-client/model/site/siteSlice';
-
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
@@ -30,6 +28,10 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
+import {
+  deleteSite,
+  updateSite,
+} from 'terraso-mobile-client/model/site/siteSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';

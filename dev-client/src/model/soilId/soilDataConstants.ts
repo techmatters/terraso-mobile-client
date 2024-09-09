@@ -16,10 +16,6 @@
  */
 
 import {
-  methodEnabled,
-  methodRequired,
-} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
-import {
   collectionMethods,
   LabelledDepthInterval,
   ProjectSoilSettings,
@@ -27,28 +23,33 @@ import {
   SoilPitMethod,
   soilPitMethods,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import { fromEntries, mapEntries } from 'terraso-client-shared/utils';
+import {fromEntries, mapEntries} from 'terraso-client-shared/utils';
+
+import {
+  methodEnabled,
+  methodRequired,
+} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
 export const DEPTH_INTERVAL_PRESETS = mapEntries(
   {
     NRCS: [
-      { start: 0, end: 5 },
-      { start: 5, end: 15 },
-      { start: 15, end: 30 },
-      { start: 30, end: 60 },
-      { start: 60, end: 100 },
-      { start: 100, end: 200 },
+      {start: 0, end: 5},
+      {start: 5, end: 15},
+      {start: 15, end: 30},
+      {start: 30, end: 60},
+      {start: 60, end: 100},
+      {start: 100, end: 200},
     ],
     BLM: [
-      { start: 0, end: 1 },
-      { start: 1, end: 10 },
-      { start: 10, end: 20 },
-      { start: 20, end: 50 },
-      { start: 50, end: 70 },
+      {start: 0, end: 1},
+      {start: 1, end: 10},
+      {start: 10, end: 20},
+      {start: 20, end: 50},
+      {start: 50, end: 70},
     ],
   } as const,
   depthIntervals =>
-    depthIntervals.map(depthInterval => ({ label: '', depthInterval })),
+    depthIntervals.map(depthInterval => ({label: '', depthInterval})),
 ) satisfies Record<'NRCS' | 'BLM', readonly LabelledDepthInterval[]>;
 
 export const DEFAULT_ENABLED_SOIL_PIT_METHODS: SoilPitMethod[] = [

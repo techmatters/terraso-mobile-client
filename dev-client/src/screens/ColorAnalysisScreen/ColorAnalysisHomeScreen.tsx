@@ -21,8 +21,6 @@ import {Image, Pressable, StyleSheet} from 'react-native';
 
 import {Fab} from 'native-base';
 
-import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
@@ -42,6 +40,7 @@ import {
   InvalidColorResult,
   MunsellColor,
 } from 'terraso-mobile-client/model/color/types';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
 import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAnalysisScreen/navigation/navigation';

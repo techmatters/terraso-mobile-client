@@ -21,10 +21,7 @@ import {
   TypedUseSelectorHook,
 } from 'react-redux';
 
-import {
-  configureStore,
-  StateFromReducersMapObject,
-} from '@reduxjs/toolkit';
+import {configureStore, StateFromReducersMapObject} from '@reduxjs/toolkit';
 
 import {
   DispatchFromStoreFactory,
@@ -32,12 +29,12 @@ import {
   sharedReducers,
 } from 'terraso-client-shared/store/store';
 
-import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
-import siteReducer from 'terraso-mobile-client/model/site/siteSlice';
-import soilIdReducer from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {reducer as elevationReducer} from 'terraso-mobile-client/model/elevation/elevationSlice';
 import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
 import {reducer as preferencesReducer} from 'terraso-mobile-client/model/preferences/preferencesSlice';
+import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
+import siteReducer from 'terraso-mobile-client/model/site/siteSlice';
+import soilIdReducer from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 const reducers = {
   ...sharedReducers,

@@ -17,17 +17,16 @@
 
 import {TFunction} from 'i18next';
 
-import {
-  DepthDependentSoilData,
-  LabelledDepthInterval,
-  SoilPitMethod,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   isColorComplete,
   munsellToString,
 } from 'terraso-mobile-client/model/color/colorConversions';
+import {
+  DepthDependentSoilData,
+  LabelledDepthInterval,
+  SoilPitMethod,
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 
 export const renderDepth = (

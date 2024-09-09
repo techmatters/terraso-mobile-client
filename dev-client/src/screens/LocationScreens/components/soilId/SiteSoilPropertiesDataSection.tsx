@@ -20,11 +20,6 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
-import {
-  selectSoilData,
-  useSiteSoilIntervals,
-} from 'terraso-mobile-client/store/selectors';
-
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -37,6 +32,10 @@ import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permiss
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
 import {useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSoilData,
+  useSiteSoilIntervals,
+} from 'terraso-mobile-client/store/selectors';
 
 type Props = {siteId: string};
 

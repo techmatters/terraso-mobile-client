@@ -18,7 +18,6 @@
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
@@ -35,6 +34,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
+import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {
   getSortedDataBasedMatches,
   getSortedLocationBasedMatches,

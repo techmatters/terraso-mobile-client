@@ -15,11 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { DEFAULT_SOIL_DATA } from 'terraso-mobile-client/model/soilId/soilDataConstants';
-import { selectSoilData } from 'terraso-mobile-client/store/selectors';
-import { selectSoilIdMatches } from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+import {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+
+import type {SharedDispatch} from 'terraso-client-shared/store/store';
+import {Coords} from 'terraso-client-shared/types';
+
+import {DEFAULT_SOIL_DATA} from 'terraso-mobile-client/model/soilId/soilDataConstants';
+import {selectSoilIdMatches} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {
   fetchDataBasedSoilMatches,
   fetchLocationBasedSoilMatches,
@@ -27,8 +30,7 @@ import {
   SoilIdData,
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import type { SharedDispatch } from 'terraso-client-shared/store/store';
-import { Coords } from 'terraso-client-shared/types';
+import {selectSoilData} from 'terraso-mobile-client/store/selectors';
 
 /*
  * Note that the soilId redux slice only supports a single cached value for soil ID data.

@@ -18,8 +18,6 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {selectDepthDependentData} from 'terraso-mobile-client/store/selectors';
-import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -27,8 +25,10 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectDepthDependentData} from 'terraso-mobile-client/store/selectors';
 
 export const PhotoConditions = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();

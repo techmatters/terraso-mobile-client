@@ -22,16 +22,15 @@ import {Formik} from 'formik';
 import {Button} from 'native-base';
 
 import {
-  DepthInterval,
-  LabelledDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
-import {
   DepthForm,
   DepthFormInput,
 } from 'terraso-mobile-client/components/DepthForm';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  DepthInterval,
+  LabelledDepthInterval,
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 
 type Props = {

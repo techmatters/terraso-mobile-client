@@ -21,16 +21,6 @@ import {Image, ImageSourcePropType} from 'react-native';
 
 import {Button, ScrollView} from 'native-base';
 
-import {
-  selectDepthDependentData,
-  selectUserRoleSite,
-} from 'terraso-mobile-client/store/selectors';
-import {
-  RockFragmentVolume,
-  SoilTexture,
-  textures,
-  updateDepthDependentSoilData,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {entries, fromEntries} from 'terraso-client-shared/utils';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
@@ -56,6 +46,12 @@ import {
   isProjectViewer,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
+import {
+  RockFragmentVolume,
+  SoilTexture,
+  textures,
+  updateDepthDependentSoilData,
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {RockFragmentVolumeInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/RockFragmentVolumeInfoContent';
 import {
@@ -64,6 +60,10 @@ import {
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/components/TextureInfoContent';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  selectDepthDependentData,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
 
 const FRAGMENT_IMAGES = {
   VOLUME_0_1: require('terraso-mobile-client/assets/texture/rock-fragment/1.png'),

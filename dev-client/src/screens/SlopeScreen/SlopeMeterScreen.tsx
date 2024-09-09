@@ -24,8 +24,6 @@ import {DeviceMotion} from 'expo-sensors';
 
 import {Button} from 'native-base';
 
-import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
@@ -38,6 +36,7 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';

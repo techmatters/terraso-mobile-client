@@ -22,9 +22,6 @@ import {Formik} from 'formik';
 import {Button} from 'native-base';
 import * as yup from 'yup';
 
-import {selectSoilData} from 'terraso-mobile-client/store/selectors';
-import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
@@ -34,11 +31,13 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
   degreeToPercent,
   percentToDegree,
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectSoilData} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   siteId: string;

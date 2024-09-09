@@ -17,23 +17,22 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  AggregatedInterval,
-  selectDepthDependentData,
-  useSiteProjectSoilSettings,
-} from 'terraso-mobile-client/store/selectors';
+import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
+import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   methodEnabled,
   methodRequired,
   soilPitMethods,
 } from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
-import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
-import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {DepthEditor} from 'terraso-mobile-client/screens/SoilScreen/components/DepthEditor';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useSelector} from 'terraso-mobile-client/store';
+import {
+  AggregatedInterval,
+  selectDepthDependentData,
+  useSiteProjectSoilSettings,
+} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   siteId: string;

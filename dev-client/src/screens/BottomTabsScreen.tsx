@@ -65,7 +65,10 @@ export const BottomTabsScreen = memo(() => {
       // add listener to update location on user movement
       const listener = ({coords}: Location) => {
         dispatch(
-          updateLocation({coords: coords, accuracyM: coords.accuracy ?? null}),
+          updateLocation({
+            coords: coords,
+            accuracyM: coords.accuracy ?? null,
+          }),
         );
       };
       locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);

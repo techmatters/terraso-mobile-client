@@ -20,15 +20,6 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
-import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
-import {
-  DEPTH_PRESETS,
-  LabelledDepthInterval,
-  ProjectDepthIntervalPreset,
-  updateProjectDepthInterval,
-  updateProjectSoilSettings,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
@@ -44,8 +35,16 @@ import {
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {
+  DEPTH_PRESETS,
+  LabelledDepthInterval,
+  ProjectDepthIntervalPreset,
+  updateProjectDepthInterval,
+  updateProjectSoilSettings,
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {DepthTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthTable';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
 
 export const SoilPitSettings = ({projectId}: {projectId: string}) => {
   const {t} = useTranslation();

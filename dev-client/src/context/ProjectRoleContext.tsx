@@ -17,9 +17,9 @@
 import {createContext, useContext} from 'react';
 
 import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
-import {selectUserRoleProject} from 'terraso-mobile-client/store/selectors';
 
 import {useSelector} from 'terraso-mobile-client/store';
+import {selectUserRoleProject} from 'terraso-mobile-client/store/selectors';
 
 const ProjectRoleContext = createContext<ProjectRole | null>(null);
 

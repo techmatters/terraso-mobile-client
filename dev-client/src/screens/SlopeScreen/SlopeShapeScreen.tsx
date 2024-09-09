@@ -25,11 +25,6 @@ import {
   SoilIdSoilDataCrossSlopeChoices,
   SoilIdSoilDataDownSlopeChoices,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  selectSoilData,
-  selectUserRoleSite,
-} from 'terraso-mobile-client/store/selectors';
-import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';
 import ConcaveConvex from 'terraso-mobile-client/assets/slope/shape/concave-convex.svg';
@@ -59,11 +54,16 @@ import {
   isProjectViewer,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeShapeInfoContent';
 import {renderShape} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   siteId: string;

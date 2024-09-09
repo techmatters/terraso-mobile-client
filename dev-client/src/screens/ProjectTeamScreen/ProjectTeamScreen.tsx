@@ -20,10 +20,6 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-import {
-  deleteUserFromProject,
-} from 'terraso-mobile-client/model/project/projectSlice';
-import {selectProjectMembershipsWithUsers} from 'terraso-mobile-client/store/selectors';
 import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
@@ -35,6 +31,7 @@ import {
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {deleteUserFromProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {
   TabRoutes,
   TabStackParamList,
@@ -42,6 +39,7 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {UserList} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserList';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectProjectMembershipsWithUsers} from 'terraso-mobile-client/store/selectors';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 

@@ -22,11 +22,6 @@ import {Image, StyleSheet} from 'react-native';
 import {Button, ScrollView} from 'native-base';
 
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  selectSoilData,
-  selectUserRoleSite,
-} from 'terraso-mobile-client/store/selectors';
-import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
@@ -52,6 +47,7 @@ import {
   isProjectViewer,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -62,6 +58,10 @@ import {
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   siteId: string;

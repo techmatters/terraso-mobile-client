@@ -18,12 +18,11 @@
 import {TFunction} from 'i18next';
 import * as yup from 'yup';
 
-import {DepthInterval} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {
   DEPTH_LABEL_MAX_LENGTH,
   DEPTH_MAX,
 } from 'terraso-mobile-client/constants';
+import {DepthInterval} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 type Args = {
   t: TFunction;

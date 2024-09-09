@@ -18,16 +18,15 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {ConfirmDeleteDepthModal} from 'terraso-mobile-client/components/modals/ConfirmDeleteDepthModal';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {DataGridTable} from 'terraso-mobile-client/components/tables/DataGridTable';
 import {
   deleteProjectDepthInterval,
   DepthInterval,
   ProjectDepthInterval,
 } from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
-import {ConfirmDeleteDepthModal} from 'terraso-mobile-client/components/modals/ConfirmDeleteDepthModal';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {DataGridTable} from 'terraso-mobile-client/components/tables/DataGridTable';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 type TableProps = {

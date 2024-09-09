@@ -20,10 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  deleteSiteNote,
-  updateSiteNote,
-} from 'terraso-mobile-client/model/site/siteSlice';
 import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {
@@ -32,6 +28,10 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
+import {
+  deleteSiteNote,
+  updateSiteNote,
+} from 'terraso-mobile-client/model/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';

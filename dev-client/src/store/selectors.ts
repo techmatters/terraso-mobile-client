@@ -15,24 +15,39 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { useMemo } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
+import {useMemo} from 'react';
 import {
   useSelector as reduxUseSelector,
   TypedUseSelectorHook,
 } from 'react-redux';
-import { User } from 'terraso-client-shared/account/accountSlice';
+
+import {createSelector} from '@reduxjs/toolkit';
+
+import {User} from 'terraso-client-shared/account/accountSlice';
+import {
+  Project,
+  ProjectMembership,
+  ProjectRole,
+} from 'terraso-client-shared/project/projectTypes';
+import {
+  DepthDependentSoilData,
+  ProjectSoilSettings,
+  SoilDataDepthInterval,
+  soilPitMethods,
+} from 'terraso-client-shared/soilId/soilIdTypes';
+import {
+  exists,
+  filterValues,
+  fromEntries,
+  mapValues,
+} from 'terraso-client-shared/utils';
+
 import {
   DEFAULT_ENABLED_SOIL_PIT_METHODS,
   DEFAULT_PROJECT_SETTINGS,
   DEFAULT_SOIL_DATA,
   DEPTH_INTERVAL_PRESETS,
 } from 'terraso-mobile-client/model/soilId/soilDataConstants';
-import {
-  Project,
-  ProjectMembership,
-  ProjectRole,
-} from 'terraso-client-shared/project/projectTypes';
 import {
   compareInterval,
   DepthInterval,
@@ -42,19 +57,7 @@ import {
   sameDepth,
   SoilData,
 } from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {
-  DepthDependentSoilData,
-  ProjectSoilSettings,
-  SoilDataDepthInterval,
-  soilPitMethods,
-} from 'terraso-client-shared/soilId/soilIdTypes';
-import { type AppState } from 'terraso-mobile-client/store/index';
-import {
-  exists,
-  filterValues,
-  fromEntries,
-  mapValues,
-} from 'terraso-client-shared/utils';
+import {type AppState} from 'terraso-mobile-client/store/index';
 
 const useSelector = reduxUseSelector as TypedUseSelectorHook<AppState>;
 
@@ -104,7 +107,7 @@ const createUserRoleMap = (
         return {};
       }
       const membership = Object.values(project.memberships).find(
-        ({ userId: membUserId }) => membUserId === userId,
+        ({userId: membUserId}) => membUserId === userId,
       );
       if (membership) {
         return [project.id, membership.userRole];
@@ -159,24 +162,24 @@ export const selectProjectsWithTransferrableSites = createSelector(
     );
 
     const unaffiliatedSites = Object.values(sites)
-      .filter(({ projectId }) => projectId === undefined)
-      .map(({ id, name }) => ({ siteId: id, siteName: name }));
+      .filter(({projectId}) => projectId === undefined)
+      .map(({id, name}) => ({siteId: id, siteName: name}));
     const projectRecord = projects.reduce(
-      (x, { id, name }) => ({
+      (x, {id, name}) => ({
         ...x,
-        [id]: { projectId: id, projectName: name },
+        [id]: {projectId: id, projectName: name},
       }),
-      {} as Record<string, { projectId: string; projectName: string }>,
+      {} as Record<string, {projectId: string; projectName: string}>,
     );
-    return { projects: projectRecord, sites: projectSites, unaffiliatedSites };
+    return {projects: projectRecord, sites: projectSites, unaffiliatedSites};
   },
 );
 
 // Note on "site" kind: In the future, there will also be site level roles, like manager and viewer
 // For now we only care if a user owns a site or not.
 export type SiteUserRole =
-  | { kind: 'site'; role: 'OWNER' }
-  | { kind: 'project'; role: ProjectRole };
+  | {kind: 'site'; role: 'OWNER'}
+  | {kind: 'project'; role: ProjectRole};
 
 const selectSiteId = (_state: any, siteId: string) => siteId;
 
@@ -188,19 +191,19 @@ export const selectUserRoleSite = createSelector(
       return null;
     }
     if (site.ownerId === userId) {
-      return { kind: 'site', role: 'OWNER' };
+      return {kind: 'site', role: 'OWNER'};
     }
     if (site.projectId === undefined) {
       return null;
     }
     const project = projects[site.projectId];
     const membership = Object.values(project.memberships).find(
-      ({ userId: projectUserId }) => userId === projectUserId,
+      ({userId: projectUserId}) => userId === projectUserId,
     );
     if (membership === undefined) {
       return null;
     }
-    return { kind: 'project', role: membership.userRole };
+    return {kind: 'project', role: membership.userRole};
   },
 );
 
@@ -214,7 +217,7 @@ export const selectUserRoleProject = createSelector(
       return null;
     }
     const membership = Object.values(project.memberships).find(
-      ({ userId: projectUserId }) => userId === projectUserId,
+      ({userId: projectUserId}) => userId === projectUserId,
     );
     if (membership === undefined) {
       return null;
@@ -328,7 +331,7 @@ export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
               ),
             },
           })),
-      ].sort(({ interval: a }, { interval: b }) => compareInterval(a, b)),
+      ].sort(({interval: a}, {interval: b}) => compareInterval(a, b)),
     [presetIntervals, projectSettings, soilData.depthIntervals],
   );
 };
@@ -338,7 +341,7 @@ export const selectDepthDependentData = ({
   depthInterval,
 }: {
   siteId: string;
-  depthInterval: { depthInterval: DepthInterval };
+  depthInterval: {depthInterval: DepthInterval};
 }): ((state: AppState) => DepthDependentSoilData) =>
   createSelector(
     selectSoilData(siteId),

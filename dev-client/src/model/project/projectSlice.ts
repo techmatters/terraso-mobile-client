@@ -15,23 +15,29 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
+
 import {
   addUser,
   setUsers,
   updateUsers,
 } from 'terraso-client-shared/account/accountSlice';
-import {Project, ProjectMembership} from 'terraso-client-shared/project/projectTypes';
-import {
-  ProjectAddUserMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import {ProjectAddUserMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as projectService from 'terraso-client-shared/project/projectService';
-import { setSites, updateSites } from 'terraso-mobile-client/model/site/siteSlice';
-import { updateProjectSettings } from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {
+  Project,
+  ProjectMembership,
+} from 'terraso-client-shared/project/projectTypes';
 import {
   createAsyncThunk,
   dispatchByKeys,
 } from 'terraso-client-shared/store/utils';
+
+import {
+  setSites,
+  updateSites,
+} from 'terraso-mobile-client/model/site/siteSlice';
+import {updateProjectSettings} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 interface MembershipKey {
   projectId: string;
@@ -61,26 +67,26 @@ const projectSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(
       addSiteToProject,
-      (state, { payload: { siteId, projectId } }) => {
+      (state, {payload: {siteId, projectId}}) => {
         state.projects[projectId].sites[siteId] = true;
       },
     );
 
     builder.addCase(
       removeMembershipFromProject,
-      (state, { payload: { membershipId, projectId } }) => {
+      (state, {payload: {membershipId, projectId}}) => {
         delete state.projects[projectId].memberships[membershipId];
       },
     );
 
     builder.addCase(
       removeSiteFromProject,
-      (state, { payload: { siteId, projectId } }) => {
+      (state, {payload: {siteId, projectId}}) => {
         delete state.projects[projectId].sites[siteId];
       },
     );
 
-    builder.addCase(removeSiteFromAllProjects, (state, { payload: siteId }) => {
+    builder.addCase(removeSiteFromAllProjects, (state, {payload: siteId}) => {
       for (let project of Object.values(state.projects)) {
         if (siteId in project.sites) {
           delete project.sites[siteId];
@@ -88,20 +94,20 @@ const projectSlice = createSlice({
       }
     });
 
-    builder.addCase(deleteProject.fulfilled, (state, { meta }) => {
+    builder.addCase(deleteProject.fulfilled, (state, {meta}) => {
       delete state.projects[meta.arg.id];
     });
 
     builder.addCase(
       archiveProject.fulfilled,
-      (state, { meta, payload: archived }) => {
+      (state, {meta, payload: archived}) => {
         state.projects[meta.arg.id].archived = archived;
       },
     );
 
     builder.addCase(
       addUserToProject.fulfilled,
-      (state, { meta, payload: { id: membershipId, userRole, userId } }) => {
+      (state, {meta, payload: {id: membershipId, userRole, userId}}) => {
         state.projects[meta.arg.projectId].memberships[membershipId] = {
           id: membershipId,
           userRole,
@@ -112,21 +118,21 @@ const projectSlice = createSlice({
 
     builder.addCase(
       updateUserRole.fulfilled,
-      (state, { payload: { projectId, membershipId, userRole } }) => {
+      (state, {payload: {projectId, membershipId, userRole}}) => {
         state.projects[projectId].memberships[membershipId].userRole = userRole;
       },
     );
 
     builder.addCase(
       deleteUserFromProject.fulfilled,
-      (state, { payload: { projectId, membershipId } }) => {
+      (state, {payload: {projectId, membershipId}}) => {
         delete state.projects[projectId].memberships[membershipId];
       },
     );
   },
 });
 
-export const { setProjects, updateProjects } = projectSlice.actions;
+export const {setProjects, updateProjects} = projectSlice.actions;
 
 export const removeMembershipFromProject = createAction<MembershipKey>(
   'project/removeMembershipFromProject',
@@ -149,7 +155,7 @@ export const removeSiteFromAllProjects = createAction<string>(
 );
 
 const updateDispatchMap = () => ({
-  project: (project: Project) => updateProjects({ [project.id]: project }),
+  project: (project: Project) => updateProjects({[project.id]: project}),
   sites: updateSites,
   users: updateUsers,
   soilSettings: updateProjectSettings,
@@ -193,7 +199,7 @@ export const archiveProject = createAsyncThunk(
 export const addUserToProject = createAsyncThunk<
   ProjectMembership,
   ProjectAddUserMutationInput
->('project/addUser', async (input, _, { dispatch }) => {
+>('project/addUser', async (input, _, {dispatch}) => {
   const res = await projectService.addUserToProject(input);
   // TODO: Should make user required in future!
   // https://github.com/techmatters/terraso-backend/issues/859

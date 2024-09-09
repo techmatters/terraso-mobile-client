@@ -20,11 +20,6 @@ import {Divider} from 'react-native-paper';
 
 import {ScrollView} from 'native-base';
 
-import {
-  selectSoilData,
-  useSiteProjectSoilSettings,
-} from 'terraso-mobile-client/store/selectors';
-
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
@@ -40,6 +35,10 @@ import {
   renderSteepness,
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSoilData,
+  useSiteProjectSoilSettings,
+} from 'terraso-mobile-client/store/selectors';
 
 export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();

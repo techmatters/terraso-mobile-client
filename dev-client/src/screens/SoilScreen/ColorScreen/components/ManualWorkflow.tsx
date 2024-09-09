@@ -20,19 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 import Animated, {LinearTransition} from 'react-native-reanimated';
 
-import {
-  selectDepthDependentData,
-  selectUserRoleSite,
-} from 'terraso-mobile-client/store/selectors';
-import {
-  ColorChroma,
-  ColorHueSubstep,
-  ColorValue,
-  SoilColorHue,
-  soilColorHues,
-  updateDepthDependentSoilData,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
@@ -59,9 +46,21 @@ import {
   isProjectViewer,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
+import {
+  ColorChroma,
+  ColorHueSubstep,
+  ColorValue,
+  SoilColorHue,
+  soilColorHues,
+  updateDepthDependentSoilData,
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {SwitchWorkflowButton} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/SwitchWorkflowButton';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  selectDepthDependentData,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
 
 export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();

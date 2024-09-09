@@ -29,9 +29,7 @@ import {
 import BottomSheet from '@gorhom/bottom-sheet';
 import Mapbox from '@rnmapbox/maps';
 
-import {selectSitesAndUserRoles} from 'terraso-mobile-client/store/selectors';
 import {Site} from 'terraso-client-shared/site/siteTypes';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {Coords} from 'terraso-client-shared/types';
 
 import {LandPKSInfoButton} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoButton';
@@ -39,6 +37,7 @@ import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {HomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
+import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';
@@ -55,6 +54,7 @@ import {
 import {getHomeScreenFilters} from 'terraso-mobile-client/screens/HomeScreen/utils/homeScreenFilters';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectSitesAndUserRoles} from 'terraso-mobile-client/store/selectors';
 
 export const HomeScreen = memo(() => {
   const siteListBottomSheetRef = useRef<BottomSheet>(null);

@@ -22,7 +22,6 @@ import {StyleSheet} from 'react-native';
 import {ScrollView} from 'native-base';
 
 import {SitePrivacy} from 'terraso-client-shared/site/siteTypes';
-import {updateSite} from 'terraso-mobile-client/model/site/siteSlice';
 import {Coords} from 'terraso-client-shared/types';
 
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
@@ -37,6 +36,7 @@ import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
+import {updateSite} from 'terraso-mobile-client/model/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {LocationPrediction} from 'terraso-mobile-client/screens/LocationScreens/components/LocationPrediction';
