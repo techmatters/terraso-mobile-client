@@ -17,10 +17,10 @@
 import {useMemo} from 'react';
 
 import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
-import {SiteUserRole} from 'terraso-mobile-client/store/selectors';
 
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
+import {SiteUserRole} from 'terraso-mobile-client/store/selectors';
 
 type RestrictProps<RoleType> = {
   role: RoleType | RoleType[];

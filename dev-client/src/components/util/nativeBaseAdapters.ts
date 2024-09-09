@@ -182,7 +182,9 @@ export type NativeBaseProps = Partial<
   {
     [K in keyof (typeof nativeBaseDimensions &
       typeof nativeBaseNumerics)]: NBDimensionValue;
-  } & {[K in keyof typeof nativeBaseStyleProps]: (ViewStyle & TextStyle)[K]} & {
+  } & {
+    [K in keyof typeof nativeBaseStyleProps]: (ViewStyle & TextStyle)[K];
+  } & {
     [K in keyof typeof nativeBaseColorProps]: ThemeColor | ColorValue;
   } & PropsOf<typeof nativeBaseSpecialProps>
 >;

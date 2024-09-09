@@ -20,14 +20,13 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
-import {selectDepthDependentData} from 'terraso-mobile-client/store/selectors';
-import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {isColorComplete} from 'terraso-mobile-client/model/color/colorConversions';
 import {updatePreferences} from 'terraso-mobile-client/model/preferences/preferencesSlice';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectDepthDependentData} from 'terraso-mobile-client/store/selectors';
 
 export const SwitchWorkflowButton = ({
   siteId,

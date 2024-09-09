@@ -23,17 +23,6 @@ import {Button} from 'native-base';
 import * as yup from 'yup';
 
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
-import {
-  deleteSoilDataDepthInterval,
-  DepthInterval,
-  methodEnabled,
-  sameDepth,
-  SoilDataDepthInterval,
-  SoilPitMethod,
-  soilPitMethods,
-  updateSoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {fromEntries} from 'terraso-client-shared/utils';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
@@ -56,9 +45,20 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
+import {
+  deleteSoilDataDepthInterval,
+  DepthInterval,
+  methodEnabled,
+  sameDepth,
+  SoilDataDepthInterval,
+  SoilPitMethod,
+  soilPitMethods,
+  updateSoilDataDepthInterval,
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
 import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
 
 type EditDepthFormInput = DepthFormInput &

@@ -21,19 +21,18 @@ import {Switch} from 'react-native';
 
 import {useTheme} from 'native-base';
 
-import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
-import {
-  collectionMethods,
-  methodRequired,
-  updateProjectSoilSettings,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {
   Box,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  collectionMethods,
+  methodRequired,
+  updateProjectSoilSettings,
+} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
 import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
 
 export const RequiredDataSettings = ({

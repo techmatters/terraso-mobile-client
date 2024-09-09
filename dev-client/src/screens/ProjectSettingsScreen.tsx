@@ -22,11 +22,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'native-base';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  deleteProject,
-  updateProject,
-} from 'terraso-mobile-client/model/project/projectSlice';
-import {selectProject} from 'terraso-mobile-client/store/selectors';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
@@ -35,12 +30,17 @@ import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictBy
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
+  deleteProject,
+  updateProject,
+} from 'terraso-mobile-client/model/project/projectSlice';
+import {
   TabRoutes,
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectProject} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;

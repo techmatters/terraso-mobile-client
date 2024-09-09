@@ -15,9 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { SoilIdEntry } from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import { SoilIdKey } from 'terraso-client-shared/soilId/soilIdTypes';
-import { AppState } from 'terraso-mobile-client/store';
+import {SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
+
+import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilIdMatches =
   (key: SoilIdKey) =>

@@ -19,12 +19,6 @@ import {useTranslation} from 'react-i18next';
 import {Image} from 'react-native';
 
 import {
-  selectSite,
-  selectSoilData,
-  selectUserRoleSite,
-} from 'terraso-mobile-client/store/selectors';
-import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {
   SurfaceCracks,
   surfaceCracks,
 } from 'terraso-client-shared/soilId/soilIdTypes';
@@ -43,9 +37,15 @@ import {
   isProjectViewer,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
+import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSite,
+  selectSoilData,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
 
 type Props = {siteId: string};
 

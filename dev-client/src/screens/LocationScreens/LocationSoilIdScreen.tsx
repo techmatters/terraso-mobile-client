@@ -18,7 +18,6 @@
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native-gesture-handler';
 
-import {selectSite} from 'terraso-mobile-client/store/selectors';
 import {Coords} from 'terraso-client-shared/types';
 
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -30,6 +29,7 @@ import {SoilIdDescriptionSection} from 'terraso-mobile-client/screens/LocationSc
 import {SoilIdMatchesSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdMatchesSection';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   siteId?: string;

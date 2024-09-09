@@ -18,12 +18,6 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  selectDepthDependentData,
-  selectUserRoleSite,
-} from 'terraso-mobile-client/store/selectors';
-import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
@@ -45,6 +39,7 @@ import {
   isProjectEditor,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
@@ -55,6 +50,10 @@ import {
   SoilPitInputScreenScaffold,
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  selectDepthDependentData,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 

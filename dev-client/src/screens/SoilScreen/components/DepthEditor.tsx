@@ -16,17 +16,16 @@
  */
 import {useTranslation} from 'react-i18next';
 
-import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
-import {soilPitMethods} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
 import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {soilPitMethods} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {EditDepthModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthModal';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
+import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
 
 export type DepthEditorProps = {
   siteId: string;

@@ -18,13 +18,12 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {selectSite, selectUserRoleSite} from 'terraso-mobile-client/store/selectors';
-import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {Coords} from 'terraso-client-shared/types';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
+import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
@@ -34,6 +33,10 @@ import {
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSite,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
 
 type Props = ({siteId: string} | {coords: Coords} | {elevation: number}) & {
   initialTab?: SiteTabName;
