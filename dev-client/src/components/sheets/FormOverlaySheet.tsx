@@ -31,7 +31,7 @@ import {
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
 import {FormOverlaySheetHeader} from 'terraso-mobile-client/components/sheets/FormOverlaySheetHeader';
-import {useGorhomModalHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
+import {useGorhomSheetHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type FormOverlaySheetProps = React.PropsWithChildren<{
@@ -39,19 +39,18 @@ export type FormOverlaySheetProps = React.PropsWithChildren<{
 }>;
 
 /*
- * Half-screen overlay sheet with a top header labeled "done", used for
- * presenting form controls to the user.
+ * Half-screen overlay sheet with a top header labeled "done", used for presenting form controls to the user.
  */
 export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
   ({children, trigger}: FormOverlaySheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
-    const {modalRef, methods} = useGorhomModalHandleRef(ref);
+    const {sheetRef, methods} = useGorhomSheetHandleRef(ref);
 
     return (
       <>
         {trigger && trigger(methods.onOpen)}
         <GorhomBottomSheetModal
-          ref={modalRef}
+          ref={sheetRef}
           handleComponent={null}
           topInset={headerHeight}
           backdropComponent={BackdropComponent}

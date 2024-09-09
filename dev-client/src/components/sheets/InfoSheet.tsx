@@ -31,7 +31,7 @@ import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {useGorhomModalHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
+import {useGorhomSheetHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type InfoSheetProps = React.PropsWithChildren<{
@@ -46,13 +46,13 @@ export type InfoSheetProps = React.PropsWithChildren<{
 export const InfoSheet = forwardRef<ModalHandle, InfoSheetProps>(
   ({heading, trigger, children}: InfoSheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
-    const {modalRef, methods} = useGorhomModalHandleRef(ref);
+    const {sheetRef, methods} = useGorhomSheetHandleRef(ref);
 
     return (
       <>
         {trigger && trigger(methods.onOpen)}
         <GorhomBottomSheetModal
-          ref={modalRef}
+          ref={sheetRef}
           handleComponent={null}
           topInset={headerHeight}
           backdropComponent={BackdropComponent}

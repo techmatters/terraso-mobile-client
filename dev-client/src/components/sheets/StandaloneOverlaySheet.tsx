@@ -29,7 +29,7 @@ import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {useGorhomModalHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
+import {useGorhomSheetHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type StandaloneOverlaySheetProps = React.PropsWithChildren<{
@@ -46,13 +46,13 @@ export const StandaloneOverlaySheet = forwardRef<
   StandaloneOverlaySheetProps
 >(({trigger, children}: StandaloneOverlaySheetProps, ref) => {
   const {headerHeight} = useHeaderHeight();
-  const {modalRef, methods} = useGorhomModalHandleRef(ref);
+  const {sheetRef, methods} = useGorhomSheetHandleRef(ref);
 
   return (
     <>
       {trigger && trigger(methods.onOpen)}
       <GorhomBottomSheetModal
-        ref={modalRef}
+        ref={sheetRef}
         handleComponent={null}
         topInset={headerHeight}
         enableDynamicSizing={true}

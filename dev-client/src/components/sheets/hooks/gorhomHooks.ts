@@ -28,27 +28,27 @@ import {BottomSheetModal as GorhomBottomSheetModal} from '@gorhom/bottom-sheet';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 
 /* Allows binding a GorhomBottomSheetModal to forwarded refs of our own ModalHandle type */
-export const useGorhomModalHandleRef = (
+export const useGorhomSheetHandleRef = (
   handleRef: ForwardedRef<ModalHandle>,
 ): {
-  modalRef: RefObject<GorhomBottomSheetModal>;
+  sheetRef: RefObject<GorhomBottomSheetModal>;
   methods: ModalHandle;
 } => {
-  const modalRef = useRef<GorhomBottomSheetModal>(null);
-  const methods = useGorhomModalHandle(modalRef);
+  const sheetRef = useRef<GorhomBottomSheetModal>(null);
+  const methods = useGorhomSheetHandle(sheetRef);
   useImperativeHandle(handleRef, () => methods, [methods]);
-  return {modalRef, methods};
+  return {sheetRef, methods};
 };
 
-/* Allows binding a GorhomBottomSheetModal to our own ModalHandle type */
-export const useGorhomModalHandle = (
-  modalRef: RefObject<GorhomBottomSheetModal>,
+/* Allows binding a GorhomBottomSheetModal to our own ModalHandle type. */
+export const useGorhomSheetHandle = (
+  sheetRef: RefObject<GorhomBottomSheetModal>,
 ): ModalHandle => {
   return useMemo(
     () => ({
-      onClose: () => modalRef?.current?.dismiss(),
-      onOpen: () => modalRef?.current?.present(),
+      onClose: () => sheetRef?.current?.dismiss(),
+      onOpen: () => sheetRef?.current?.present(),
     }),
-    [modalRef],
+    [sheetRef],
   );
 };
