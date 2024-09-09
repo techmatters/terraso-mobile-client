@@ -60,7 +60,7 @@
     "munsell": "^1.1.5",
     "native-base": "^3.4.28",
     "quantize": "^1.0.2",
-    "react": "18.2.0",
+    "react": "18.3.1",
     "react-i18next": "^15.0.1",
     "react-native": "^0.75.2",
     "react-native-autocomplete-input": "^5.4.0",
@@ -75,7 +75,7 @@
     "react-native-screens": "^3.34.0",
     "react-native-svg": "^15.6.0",
     "react-native-tab-view": "^3.5.2",
-    "terraso-client-shared": "github:techmatters/terraso-client-shared#3878fd0",
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#8cd860e",
     "use-debounce": "^10.0.3",
     "uuid": "^10.0.0",
     "yup": "^1.4.0"
