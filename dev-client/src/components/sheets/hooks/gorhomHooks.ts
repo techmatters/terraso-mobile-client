@@ -32,12 +32,12 @@ export const useGorhomSheetHandleRef = (
   handleRef: ForwardedRef<ModalHandle>,
 ): {
   sheetRef: RefObject<GorhomBottomSheetModal>;
-  methods: ModalHandle;
+  handle: ModalHandle;
 } => {
   const sheetRef = useRef<GorhomBottomSheetModal>(null);
-  const methods = useGorhomSheetHandle(sheetRef);
-  useImperativeHandle(handleRef, () => methods, [methods]);
-  return {sheetRef, methods};
+  const handle = useGorhomSheetHandle(sheetRef);
+  useImperativeHandle(handleRef, () => handle, [handle]);
+  return {sheetRef, handle};
 };
 
 /* Allows binding a GorhomBottomSheetModal to our own ModalHandle type. */

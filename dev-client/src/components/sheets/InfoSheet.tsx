@@ -46,11 +46,11 @@ export type InfoSheetProps = React.PropsWithChildren<{
 export const InfoSheet = forwardRef<ModalHandle, InfoSheetProps>(
   ({heading, trigger, children}: InfoSheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
-    const {sheetRef, methods} = useGorhomSheetHandleRef(ref);
+    const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
 
     return (
       <>
-        {trigger && trigger(methods.onOpen)}
+        {trigger && trigger(handle.onOpen)}
         <GorhomBottomSheetModal
           ref={sheetRef}
           handleComponent={null}
@@ -58,12 +58,12 @@ export const InfoSheet = forwardRef<ModalHandle, InfoSheetProps>(
           backdropComponent={BackdropComponent}
           snapPoints={['100%']}
           enableDynamicSizing={false}>
-          <ModalContext.Provider value={methods}>
+          <ModalContext.Provider value={handle}>
             <BottomSheetScrollView focusHook={useFocusEffect}>
               <View style={styles.content}>
                 <View style={styles.headingRow}>
                   <View style={styles.headingContent}>{heading}</View>
-                  <BigCloseButton onPress={methods.onClose} />
+                  <BigCloseButton onPress={handle.onClose} />
                 </View>
                 {children}
               </View>

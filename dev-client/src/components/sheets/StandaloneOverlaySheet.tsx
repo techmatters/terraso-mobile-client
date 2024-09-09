@@ -46,18 +46,18 @@ export const StandaloneOverlaySheet = forwardRef<
   StandaloneOverlaySheetProps
 >(({trigger, children}: StandaloneOverlaySheetProps, ref) => {
   const {headerHeight} = useHeaderHeight();
-  const {sheetRef, methods} = useGorhomSheetHandleRef(ref);
+  const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
 
   return (
     <>
-      {trigger && trigger(methods.onOpen)}
+      {trigger && trigger(handle.onOpen)}
       <GorhomBottomSheetModal
         ref={sheetRef}
         handleComponent={null}
         topInset={headerHeight}
         enableDynamicSizing={true}
         backdropComponent={BackdropComponent}>
-        <ModalContext.Provider value={methods}>
+        <ModalContext.Provider value={handle}>
           <BottomSheetScrollView focusHook={useFocusEffect}>
             {children}
           </BottomSheetScrollView>

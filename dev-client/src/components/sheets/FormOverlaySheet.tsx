@@ -44,11 +44,11 @@ export type FormOverlaySheetProps = React.PropsWithChildren<{
 export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
   ({children, trigger}: FormOverlaySheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
-    const {sheetRef, methods} = useGorhomSheetHandleRef(ref);
+    const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
 
     return (
       <>
-        {trigger && trigger(methods.onOpen)}
+        {trigger && trigger(handle.onOpen)}
         <GorhomBottomSheetModal
           ref={sheetRef}
           handleComponent={null}
@@ -56,8 +56,8 @@ export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
           backdropComponent={BackdropComponent}
           snapPoints={['50%', '100%']}
           enableDynamicSizing={false}>
-          <ModalContext.Provider value={methods}>
-            <FormOverlaySheetHeader onDone={methods.onClose} />
+          <ModalContext.Provider value={handle}>
+            <FormOverlaySheetHeader onDone={handle.onClose} />
             <BottomSheetScrollView focusHook={useFocusEffect}>
               {children}
             </BottomSheetScrollView>
