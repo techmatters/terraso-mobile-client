@@ -34,6 +34,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {
   getSortedDataBasedMatches,
@@ -72,10 +73,15 @@ export const SoilIdMatchesSection = ({
 
 const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
   const {t} = useTranslation();
+  const isOffline = useIsOffline();
 
   const soilIdData = useSoilIdData(coords, siteId);
   const status = soilIdData.status;
   const isSite = !!siteId;
+
+  if (isOffline) {
+    return <OfflineMessageBox />;
+  }
 
   switch (status) {
     case 'loading':
@@ -159,5 +165,19 @@ const NoMapDataAlertMessageContent = () => {
         url={t('site.soil_id.matches.native_lands_url')}
       />
     </Box>
+  );
+};
+
+const OfflineMessageBox = () => {
+  const {t} = useTranslation();
+
+  return (
+    <AlertMessageBox title={t('site.soil_id.matches.offline_title')}>
+      <Box>
+        <Text variant="body1" mb="sm">
+          {t('site.soil_id.matches.offline_body')}
+        </Text>
+      </Box>
+    </AlertMessageBox>
   );
 };
