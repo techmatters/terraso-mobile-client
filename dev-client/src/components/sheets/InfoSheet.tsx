@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
+import {forwardRef} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {
@@ -31,6 +31,7 @@ import {
   ModalHandle,
   ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
+import {useGorhomSheetHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type InfoSheetProps = React.PropsWithChildren<{
@@ -38,36 +39,31 @@ export type InfoSheetProps = React.PropsWithChildren<{
   trigger?: ModalTrigger;
 }>;
 
+/*
+ * Full-screen overlay sheet with a top header and big close button. Takes up
+ * entire screen height (minus app bar).
+ */
 export const InfoSheet = forwardRef<ModalHandle, InfoSheetProps>(
   ({heading, trigger, children}: InfoSheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
-
-    const modalRef = useRef<GorhomBottomSheetModal>(null);
-    const methods = useMemo(
-      () => ({
-        onClose: () => modalRef.current?.dismiss(),
-        onOpen: () => modalRef.current?.present(),
-      }),
-      [modalRef],
-    );
-    useImperativeHandle(ref, () => methods, [methods]);
+    const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
 
     return (
       <>
-        {trigger && trigger(methods.onOpen)}
+        {trigger && trigger(handle.onOpen)}
         <GorhomBottomSheetModal
-          ref={modalRef}
+          ref={sheetRef}
           handleComponent={null}
           topInset={headerHeight}
           backdropComponent={BackdropComponent}
           snapPoints={['100%']}
           enableDynamicSizing={false}>
-          <ModalContext.Provider value={methods}>
+          <ModalContext.Provider value={handle}>
             <BottomSheetScrollView focusHook={useFocusEffect}>
               <View style={styles.content}>
                 <View style={styles.headingRow}>
                   <View style={styles.headingContent}>{heading}</View>
-                  <BigCloseButton onPress={methods.onClose} />
+                  <BigCloseButton onPress={handle.onClose} />
                 </View>
                 {children}
               </View>

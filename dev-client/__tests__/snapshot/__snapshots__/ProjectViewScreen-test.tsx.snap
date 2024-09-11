@@ -2283,7 +2283,7 @@ exports[`renders correctly 1`] = `
                                             {
                                               "busy": undefined,
                                               "checked": undefined,
-                                              "disabled": undefined,
+                                              "disabled": true,
                                               "expanded": undefined,
                                               "selected": undefined,
                                             }
@@ -2310,170 +2310,134 @@ exports[`renders correctly 1`] = `
                                           onStartShouldSetResponder={[Function]}
                                         >
                                           <View
-                                            accessibilityState={
-                                              {
-                                                "busy": undefined,
-                                                "checked": undefined,
-                                                "disabled": true,
-                                                "expanded": undefined,
-                                                "selected": undefined,
-                                              }
+                                            style={
+                                              [
+                                                {
+                                                  "flexDirection": "row",
+                                                },
+                                                [
+                                                  {
+                                                    "borderBottomWidth": 0.5,
+                                                  },
+                                                  {
+                                                    "alignItems": "center",
+                                                    "backgroundColor": "#efefef",
+                                                    "borderBottomColor": "#8B8B8B",
+                                                    "justifyContent": "space-between",
+                                                    "padding": 10,
+                                                  },
+                                                ],
+                                              ]
                                             }
-                                            accessibilityValue={
-                                              {
-                                                "max": undefined,
-                                                "min": undefined,
-                                                "now": undefined,
-                                                "text": undefined,
-                                              }
-                                            }
-                                            accessible={true}
-                                            collapsable={false}
-                                            focusable={true}
-                                            onBlur={[Function]}
-                                            onClick={[Function]}
-                                            onFocus={[Function]}
-                                            onResponderGrant={[Function]}
-                                            onResponderMove={[Function]}
-                                            onResponderRelease={[Function]}
-                                            onResponderTerminate={[Function]}
-                                            onResponderTerminationRequest={[Function]}
-                                            onStartShouldSetResponder={[Function]}
                                           >
                                             <View
                                               style={
                                                 [
                                                   {
-                                                    "flexDirection": "row",
+                                                    "flexDirection": "column",
                                                   },
-                                                  [
-                                                    {
-                                                      "borderBottomWidth": 0.5,
-                                                    },
-                                                    {
-                                                      "alignItems": "center",
-                                                      "backgroundColor": "#efefef",
-                                                      "borderBottomColor": "#8B8B8B",
-                                                      "justifyContent": "space-between",
-                                                      "padding": 10,
-                                                    },
-                                                  ],
+                                                  {
+                                                    "justifyContent": "center",
+                                                  },
                                                 ]
                                               }
                                             >
-                                              <View
+                                              <Text
+                                                letterSpacing="0.4px"
+                                                lineHeight="20px"
                                                 style={
-                                                  [
-                                                    {
-                                                      "flexDirection": "column",
-                                                    },
-                                                    {
-                                                      "justifyContent": "center",
-                                                    },
-                                                  ]
+                                                  {
+                                                    "color": "#1A202C",
+                                                    "fontSize": 12,
+                                                    "fontWeight": "400",
+                                                  }
                                                 }
                                               >
-                                                <Text
-                                                  letterSpacing="0.4px"
-                                                  lineHeight="20px"
-                                                  style={
-                                                    {
-                                                      "color": "#1A202C",
-                                                      "fontSize": 12,
-                                                      "fontWeight": "400",
-                                                    }
+                                                Soil Pit Depths
+                                              </Text>
+                                              <Text
+                                                letterSpacing="0.15px"
+                                                lineHeight="24px"
+                                                style={
+                                                  {
+                                                    "color": "#9EA8AB",
+                                                    "fontSize": 16,
+                                                    "fontWeight": "400",
                                                   }
-                                                >
-                                                  Soil Pit Depths
-                                                </Text>
-                                                <Text
-                                                  letterSpacing="0.15px"
-                                                  lineHeight="24px"
-                                                  style={
-                                                    {
-                                                      "color": "#9EA8AB",
-                                                      "fontSize": 16,
-                                                      "fontWeight": "400",
-                                                    }
-                                                  }
-                                                >
-                                                  NRCS/GSP
-                                                </Text>
-                                              </View>
-                                              <Icon
-                                                color="#8B9498"
-                                                name="arrow-drop-down"
-                                                size={24}
-                                                style={{}}
-                                              />
+                                                }
+                                              >
+                                                NRCS/GSP
+                                              </Text>
                                             </View>
+                                            <Icon
+                                              color="#8B9498"
+                                              name="arrow-drop-down"
+                                              size={24}
+                                              style={{}}
+                                            />
                                           </View>
                                         </View>
-                                        <RCTScrollView>
+                                        <View
+                                          accessibilityLabel="Done"
+                                          accessibilityRole="button"
+                                          accessibilityState={
+                                            {
+                                              "busy": undefined,
+                                              "checked": undefined,
+                                              "disabled": undefined,
+                                              "expanded": undefined,
+                                              "selected": undefined,
+                                            }
+                                          }
+                                          accessibilityValue={
+                                            {
+                                              "max": undefined,
+                                              "min": undefined,
+                                              "now": undefined,
+                                              "text": undefined,
+                                            }
+                                          }
+                                          accessible={true}
+                                          collapsable={false}
+                                          focusable={true}
+                                          onBlur={[Function]}
+                                          onClick={[Function]}
+                                          onFocus={[Function]}
+                                          onResponderGrant={[Function]}
+                                          onResponderMove={[Function]}
+                                          onResponderRelease={[Function]}
+                                          onResponderTerminate={[Function]}
+                                          onResponderTerminationRequest={[Function]}
+                                          onStartShouldSetResponder={[Function]}
+                                          style={
+                                            {
+                                              "alignItems": "center",
+                                              "backgroundColor": "#028843",
+                                              "flexDirection": "row",
+                                              "justifyContent": "flex-end",
+                                              "paddingHorizontal": 16,
+                                              "paddingVertical": 14,
+                                            }
+                                          }
+                                        >
+                                          <Text
+                                            lineHeight="24px"
+                                            style={
+                                              {
+                                                "color": "#FFFFFF",
+                                                "fontSize": 16,
+                                                "fontWeight": "700",
+                                                "textTransform": "uppercase",
+                                              }
+                                            }
+                                          >
+                                            Done
+                                          </Text>
+                                        </View>
+                                        <RCTScrollView
+                                          focusHook={[Function]}
+                                        >
                                           <View>
-                                            <View
-                                              accessibilityLabel="Done"
-                                              accessibilityRole="button"
-                                              accessibilityState={
-                                                {
-                                                  "busy": undefined,
-                                                  "checked": undefined,
-                                                  "disabled": undefined,
-                                                  "expanded": undefined,
-                                                  "selected": undefined,
-                                                }
-                                              }
-                                              accessibilityValue={
-                                                {
-                                                  "max": undefined,
-                                                  "min": undefined,
-                                                  "now": undefined,
-                                                  "text": undefined,
-                                                }
-                                              }
-                                              accessible={true}
-                                              collapsable={false}
-                                              focusable={true}
-                                              onBlur={[Function]}
-                                              onClick={[Function]}
-                                              onFocus={[Function]}
-                                              onResponderGrant={[Function]}
-                                              onResponderMove={[Function]}
-                                              onResponderRelease={[Function]}
-                                              onResponderTerminate={[Function]}
-                                              onResponderTerminationRequest={[Function]}
-                                              onStartShouldSetResponder={[Function]}
-                                            >
-                                              <View
-                                                style={
-                                                  [
-                                                    {
-                                                      "flexDirection": "row",
-                                                    },
-                                                    {
-                                                      "alignItems": "center",
-                                                      "backgroundColor": "#028843",
-                                                      "justifyContent": "flex-end",
-                                                      "padding": 16,
-                                                    },
-                                                  ]
-                                                }
-                                              >
-                                                <Text
-                                                  lineHeight="24px"
-                                                  style={
-                                                    {
-                                                      "color": "#FFFFFF",
-                                                      "fontSize": 16,
-                                                      "fontWeight": "700",
-                                                      "textTransform": "uppercase",
-                                                    }
-                                                  }
-                                                >
-                                                  Done
-                                                </Text>
-                                              </View>
-                                            </View>
                                             <View
                                               accessibilityRole="menu"
                                               style={
@@ -3042,6 +3006,13 @@ exports[`renders correctly 1`] = `
                                             </View>
                                           </View>
                                         </RCTScrollView>
+                                        <View
+                                          style={
+                                            {
+                                              "padding": 24,
+                                            }
+                                          }
+                                        />
                                       </View>
                                       <View
                                         style={
