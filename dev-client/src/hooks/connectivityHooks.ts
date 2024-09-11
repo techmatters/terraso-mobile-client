@@ -15,69 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useEffect, useRef, useState} from 'react';
-import {AppState} from 'react-native';
+import {useContext} from 'react';
 
-import {
-  addEventListener,
-  NetInfoSubscription,
-} from '@react-native-community/netinfo';
+import {ConnectivityContext} from 'terraso-mobile-client/context/ConnectivityContext';
 
 export const useIsOffline = () => {
-  const [isOffline, setIsOffline] = useState<boolean | null>(false);
-  const netInfoSubscriptionRef = useRef<NetInfoSubscription | null>(null);
-  // Question: Do we need to use lostConnection as the example? They had it as a ref that would trigger some data refresh
-  // TODO: Maybe make this a type that can be "Offline" | "Unknown" | "Connected"
+  const context = useContext(ConnectivityContext);
 
-  useEffect(() => {
-    const stopMonitoringReachability = () => {
-      if (netInfoSubscriptionRef.current) {
-        netInfoSubscriptionRef.current?.();
-        netInfoSubscriptionRef.current = null;
-      }
-      // TODO: Should we do setIsOffline(undefined) when we stop monitoring, or just keep it what it last was?
-    };
+  if (context === null) {
+    console.warn(
+      'We expect to have set up the isOffline state before using this hook',
+    );
+    return null;
+  }
 
-    const startMonitoringReachability = () => {
-      stopMonitoringReachability();
-
-      netInfoSubscriptionRef.current = addEventListener(state => {
-        // TODO: Remove this
-        console.log(
-          'Connected =',
-          state.isConnected,
-          ' | Reachable =',
-          state.isInternetReachable,
-        );
-
-        // Return null if isConnected is null -- make a test for that cuz
-        //   false && null = false
-        //   null && false = null
-        const isOnline = state.isConnected && state.isInternetReachable;
-        setIsOffline(isOnline === null ? null : !isOnline);
-      });
-    };
-
-    if (AppState.currentState === 'active') {
-      startMonitoringReachability();
-    }
-
-    console.log('add app state listener');
-    const appStateListener = AppState.addEventListener('change', state => {
-      if (state === 'active') {
-        startMonitoringReachability();
-      } else {
-        stopMonitoringReachability();
-      }
-    });
-
-    return () => {
-      // Won't this get called when any component that uses this hook gets unmounted? Isn't that more than we want?
-      // stopMonitoringReachability();
-      console.log('remove app state listener');
-      appStateListener.remove();
-    };
-  }, []);
-
-  return isOffline;
+  return context.isOffline;
 };
