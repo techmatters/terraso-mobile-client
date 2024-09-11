@@ -1,7 +1,4 @@
 const {getSentryExpoConfig} = require('@sentry/react-native/metro');
-const {
-  createSentryMetroSerializer,
-} = require('@sentry/react-native/dist/js/tools/sentryMetroSerializer');
 
 const defaultConfig = getSentryExpoConfig(__dirname);
 
@@ -21,11 +18,7 @@ const config = {
   resolver: {
     assetExts: assetExts.filter(ext => ext !== 'svg'),
     sourceExts: [...sourceExts, 'svg'],
-  },
-
-  serializer: {
-    customSerializer: createSentryMetroSerializer(),
-  },
+  }
 };
 
 module.exports = getSentryExpoConfig(config, {
