@@ -24,6 +24,7 @@ import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/gr
 
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -32,7 +33,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
-import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
+import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   LabelledDepthInterval,
@@ -94,10 +95,8 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
         alignItems="center">
         <Heading variant="h6">{t('soil.pit')}</Heading>
         {!projectSettings && (
-          <FormOverlaySheet
-            Header={
-              <Heading variant="h6">{t('soil.soil_preset.header')}</Heading>
-            }
+          <InfoSheet
+            heading={<TranslatedHeading i18nKey="soil.soil_preset.header" />}
             trigger={onOpen => (
               <IconButton type="md" name="tune" onPress={onOpen} />
             )}>
@@ -105,7 +104,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               selected={soilData.depthIntervalPreset}
               updateChoice={updateSoilDataDepthPreset}
             />
-          </FormOverlaySheet>
+          </InfoSheet>
         )}
       </Row>
       {allDepths.map(interval => (

@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
-import {Pressable} from 'react-native';
+import {forwardRef} from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {
   BottomSheetScrollView,
@@ -25,100 +25,52 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 
 import {BackdropComponent} from 'terraso-mobile-client/components/BackdropComponent';
-import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {
   ModalContext,
   ModalHandle,
-  ModalProps,
+  ModalTrigger,
 } from 'terraso-mobile-client/components/modals/Modal';
-import {
-  Box,
-  Column,
-  Row,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {FormOverlaySheetHeader} from 'terraso-mobile-client/components/sheets/FormOverlaySheetHeader';
+import {useGorhomSheetHandleRef} from 'terraso-mobile-client/components/sheets/hooks/gorhomHooks';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
-type Props = ModalProps & {
-  fullHeight?: boolean;
-  maxHeight?: number;
-  scrollable?: boolean;
-};
+export type FormOverlaySheetProps = React.PropsWithChildren<{
+  trigger?: ModalTrigger;
+}>;
 
-/**
- * To be simplified internally with FormOverlaySheet component work (mobile-client ticket #1774).
+/*
+ * Half-screen overlay sheet with a top header labeled "done", used for presenting form controls to the user.
  */
-export const FormOverlaySheet = forwardRef<
-  ModalHandle,
-  React.PropsWithChildren<Props>
->(
-  (
-    {
-      Header,
-      children,
-      trigger,
-      Closer,
-      fullHeight = false,
-      scrollable = true,
-      maxHeight,
-    },
-    forwardedRef,
-  ) => {
+export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
+  ({children, trigger}: FormOverlaySheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
-
-    const ref = useRef<GorhomBottomSheetModal>(null);
-    const methods = useMemo(
-      () => ({
-        onClose: () => ref.current?.dismiss(),
-        onOpen: () => ref.current?.present(),
-      }),
-      [ref],
-    );
-    useImperativeHandle(forwardedRef, () => methods, [methods]);
-
-    const contents =
-      Header || Closer ? (
-        <Column padding="md">
-          <Row alignItems="center" mb="md">
-            {Header}
-            <Box flex={1} />
-            {Closer === undefined ? (
-              <BigCloseButton onPress={methods.onClose} />
-            ) : (
-              Closer
-            )}
-          </Row>
-          {children}
-        </Column>
-      ) : (
-        children
-      );
+    const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
 
     return (
       <>
-        {trigger && (
-          <Pressable onPress={methods.onOpen}>
-            {trigger(methods.onOpen)}
-          </Pressable>
-        )}
+        {trigger && trigger(handle.onOpen)}
         <GorhomBottomSheetModal
-          ref={ref}
+          ref={sheetRef}
           handleComponent={null}
           topInset={headerHeight}
           backdropComponent={BackdropComponent}
-          snapPoints={fullHeight ? ['100%'] : undefined}
-          enableDynamicSizing={!fullHeight}
-          maxDynamicContentSize={fullHeight ? undefined : maxHeight}>
-          <ModalContext.Provider value={methods}>
-            {scrollable ? (
-              <BottomSheetScrollView focusHook={useFocusEffect}>
-                {contents}
-              </BottomSheetScrollView>
-            ) : (
-              contents
-            )}
+          snapPoints={['50%', '100%']}
+          enableDynamicSizing={false}>
+          <ModalContext.Provider value={handle}>
+            <FormOverlaySheetHeader onDone={handle.onClose} />
+            <BottomSheetScrollView focusHook={useFocusEffect}>
+              {children}
+            </BottomSheetScrollView>
+            <View style={styles.bottomPadding} />
           </ModalContext.Provider>
         </GorhomBottomSheetModal>
       </>
     );
   },
 );
+
+const styles = StyleSheet.create({
+  bottomPadding: {
+    padding: 24,
+  },
+});

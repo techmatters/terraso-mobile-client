@@ -88,15 +88,26 @@ const store = createStore();
 function App(): React.JSX.Element {
   const [headerHeight, setHeaderHeight] = useState(0);
 
+  /*
+   * Notes on app root stack ordering:
+   * - Provider should be above all other content, since it exposes our Redux store
+   * - HeaderHeightContext needs to be above bottom sheets, so they can access its height values for sizing
+   * - NavigationContainer needs to be above any app content (including modals) since content may include
+   *    functionality that navigates to new screens
+   * - There currently need to be two BottomSheetModalProvider instances, one below
+   *    PaperProvider/NativeBaseProvider and one above, since some modals can open sheets, and some sheets need
+   *    NB/Paper components.
+   */
+
   return (
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
-        <HeaderHeightContext.Provider value={{headerHeight, setHeaderHeight}}>
-          <BottomSheetModalProvider>
-            <PaperProvider theme={paperTheme}>
-              <NativeBaseProvider theme={theme}>
-                <Portal.Host>
-                  <NavigationContainer>
+        <NavigationContainer>
+          <HeaderHeightContext.Provider value={{headerHeight, setHeaderHeight}}>
+            <BottomSheetModalProvider>
+              <PaperProvider theme={paperTheme}>
+                <NativeBaseProvider theme={theme}>
+                  <Portal.Host>
                     <BottomSheetModalProvider>
                       <GeospatialProvider>
                         <Toasts />
@@ -105,12 +116,12 @@ function App(): React.JSX.Element {
                         </HomeScreenContextProvider>
                       </GeospatialProvider>
                     </BottomSheetModalProvider>
-                  </NavigationContainer>
-                </Portal.Host>
-              </NativeBaseProvider>
-            </PaperProvider>
-          </BottomSheetModalProvider>
-        </HeaderHeightContext.Provider>
+                  </Portal.Host>
+                </NativeBaseProvider>
+              </PaperProvider>
+            </BottomSheetModalProvider>
+          </HeaderHeightContext.Provider>
+        </NavigationContainer>
       </Provider>
     </GestureHandlerRootView>
   );
