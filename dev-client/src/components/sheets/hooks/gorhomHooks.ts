@@ -27,7 +27,11 @@ import {BottomSheetModal as GorhomBottomSheetModal} from '@gorhom/bottom-sheet';
 
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 
-/* Allows binding a GorhomBottomSheetModal to forwarded refs of our own ModalHandle type */
+/**
+ * Creates a Gorhom BottomSheetModal ref connected to the given ModalHandle forward ref, allowing a sheet instance to
+ * be exposed via the ModalHandle and opened or closed via the handle's methods. Returns both the sheet ref (so it can
+ * be passed down to the sheet component) and the modal handle (so it can be manipulated or passed elsewhere).
+ */
 export const useGorhomSheetHandleRef = (
   handleRef: ForwardedRef<ModalHandle>,
 ): {
@@ -40,7 +44,10 @@ export const useGorhomSheetHandleRef = (
   return {sheetRef, handle};
 };
 
-/* Allows binding a GorhomBottomSheetModal to our own ModalHandle type. */
+/**
+ * Connects a Gorhom BottomSheetModal ref connected to a ModalHandle, allowing it to be opened or closed via the
+ * handle's methods.
+ */
 export const useGorhomSheetHandle = (
   sheetRef: RefObject<GorhomBottomSheetModal>,
 ): ModalHandle => {
