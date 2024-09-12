@@ -22,12 +22,5 @@ import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/Co
 export const useIsOffline = () => {
   const context = useContext(ConnectivityContext);
 
-  if (context === null) {
-    console.warn(
-      'We expect to have set up the isOffline state before using this hook',
-    );
-    return null;
-  }
-
   return context.isOffline;
 };

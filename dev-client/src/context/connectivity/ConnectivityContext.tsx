@@ -29,8 +29,9 @@ export type ConnectivityContextType = {
   isOffline: boolean | null;
 };
 
-export const ConnectivityContext =
-  createContext<ConnectivityContextType | null>(null);
+export const ConnectivityContext = createContext<ConnectivityContextType>({
+  isOffline: null,
+});
 
 export const ConnectivityContextProvider = ({
   children,
