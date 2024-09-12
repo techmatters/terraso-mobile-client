@@ -25,7 +25,6 @@ import {
 
 export type ConnectivityContextType = {
   isOffline: boolean | null;
-  setIsOffline: (newValue: boolean | null) => void;
 };
 
 export const ConnectivityContext =
@@ -89,7 +88,7 @@ export const ConnectivityContextProvider = ({
   }, []);
 
   return (
-    <ConnectivityContext.Provider value={{isOffline, setIsOffline}}>
+    <ConnectivityContext.Provider value={{isOffline}}>
       {children}
     </ConnectivityContext.Provider>
   );
