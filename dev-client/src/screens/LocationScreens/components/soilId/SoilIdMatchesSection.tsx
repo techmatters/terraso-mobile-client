@@ -35,11 +35,9 @@ import {
   getSortedDataBasedMatches,
   getSortedLocationBasedMatches,
 } from 'terraso-mobile-client/model/soilId/soilIdRanking';
-import {
-  NoMapDataAlertMessageBox,
-  OfflineMessageBox,
-  SoilMatchesErrorMessageBox,
-} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/MessageBoxesInsteadOfSoilMatches';
+import {NoMapDataAlertMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/NoMapDataAlertMessageBox';
+import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
+import {SoilMatchesErrorMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/SoilMatchesErrorMessageBox';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
