@@ -23,6 +23,8 @@ import {
   NetInfoSubscription,
 } from '@react-native-community/netinfo';
 
+import {getIsOffline} from 'terraso-mobile-client/context/connectivity/connectivityLogic';
+
 export type ConnectivityContextType = {
   isOffline: boolean | null;
 };
@@ -48,11 +50,12 @@ export const ConnectivityContextProvider = ({
       stopMonitoringReachability();
 
       netInfoSubscriptionRef.current = addEventListener(state => {
-        // TODO: make a test for this cuz
-        //   false && null = false
-        //   null && false = null
-        const isOnline = state.isConnected && state.isInternetReachable;
-        setIsOffline(isOnline === null ? null : !isOnline);
+        setIsOffline(
+          getIsOffline({
+            isConnected: state.isConnected,
+            isInternetReachable: state.isInternetReachable,
+          }),
+        );
       });
     };
 

@@ -15,19 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useContext} from 'react';
-
-import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
-
-export const useIsOffline = () => {
-  const context = useContext(ConnectivityContext);
-
-  if (context === null) {
-    console.warn(
-      'We expect to have set up the isOffline state before using this hook',
-    );
-    return null;
-  }
-
-  return context.isOffline;
+export const getIsOffline = ({
+  isConnected,
+  isInternetReachable,
+}: {
+  isConnected: boolean | null;
+  isInternetReachable: boolean | null;
+}) => {
+  const isOnline = isConnected && isInternetReachable;
+  return isOnline === null ? null : !isOnline;
 };
