@@ -17,8 +17,43 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
+import {ErrorMessageBox} from 'terraso-mobile-client/components/messages/ErrorMessageBox';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
+export const NoMapDataAlertMessageBox = () => {
+  const {t} = useTranslation();
+
+  return (
+    <AlertMessageBox title={t('site.soil_id.matches.no_map_data_title')}>
+      <Box>
+        <Text variant="body1" mb="sm">
+          {t('site.soil_id.matches.no_map_data_body')}
+        </Text>
+        <Text variant="body1">
+          {t('site.soil_id.matches.native_lands_intro')}
+        </Text>
+        <ExternalLink
+          label={t('site.soil_id.matches.native_lands_link')}
+          url={t('site.soil_id.matches.native_lands_url')}
+        />
+      </Box>
+    </AlertMessageBox>
+  );
+};
+
+export const SoilMatchesErrorMessageBox = () => {
+  const {t} = useTranslation();
+
+  return (
+    <ErrorMessageBox title={t('site.soil_id.matches.error_generic_title')}>
+      <Text variant="body1" color="error.content">
+        {t('site.soil_id.matches.error_generic_body')}
+      </Text>
+    </ErrorMessageBox>
+  );
+};
 
 export const OfflineMessageBox = () => {
   const {t} = useTranslation();

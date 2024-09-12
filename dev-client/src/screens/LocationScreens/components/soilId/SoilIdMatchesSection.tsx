@@ -24,14 +24,9 @@ import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
-import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
-import {ErrorMessageBox} from 'terraso-mobile-client/components/messages/ErrorMessageBox';
 import {
-  Box,
   Heading,
   Row,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
@@ -40,7 +35,11 @@ import {
   getSortedDataBasedMatches,
   getSortedLocationBasedMatches,
 } from 'terraso-mobile-client/model/soilId/soilIdRanking';
-import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/OfflineMessageBox';
+import {
+  NoMapDataAlertMessageBox,
+  OfflineMessageBox,
+  SoilMatchesErrorMessageBox,
+} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/MessageBoxesInsteadOfSoilMatches';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
@@ -73,7 +72,6 @@ export const SoilIdMatchesSection = ({
 };
 
 const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
-  const {t} = useTranslation();
   const isOffline = useIsOffline();
 
   const soilIdData = useSoilIdData(coords, siteId);
@@ -132,39 +130,10 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
       }
     }
     case 'DATA_UNAVAILABLE':
-      return (
-        <AlertMessageBox title={t('site.soil_id.matches.no_map_data_title')}>
-          <NoMapDataAlertMessageContent />
-        </AlertMessageBox>
-      );
+      return <NoMapDataAlertMessageBox />;
     case 'error':
     case 'ALGORITHM_FAILURE':
     default:
-      return (
-        <ErrorMessageBox title={t('site.soil_id.matches.error_generic_title')}>
-          <Text variant="body1" color="error.content">
-            {t('site.soil_id.matches.error_generic_body')}
-          </Text>
-        </ErrorMessageBox>
-      );
+      return <SoilMatchesErrorMessageBox />;
   }
-};
-
-const NoMapDataAlertMessageContent = () => {
-  const {t} = useTranslation();
-
-  return (
-    <Box>
-      <Text variant="body1" mb="sm">
-        {t('site.soil_id.matches.no_map_data_body')}
-      </Text>
-      <Text variant="body1">
-        {t('site.soil_id.matches.native_lands_intro')}
-      </Text>
-      <ExternalLink
-        label={t('site.soil_id.matches.native_lands_link')}
-        url={t('site.soil_id.matches.native_lands_url')}
-      />
-    </Box>
-  );
 };
