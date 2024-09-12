@@ -15,6 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+const getIsOnline = ({
+  isConnected,
+  isInternetReachable,
+}: {
+  isConnected: boolean | null;
+  isInternetReachable: boolean | null;
+}) => {
+  return isConnected && isInternetReachable;
+};
+
 export const getIsOffline = ({
   isConnected,
   isInternetReachable,
@@ -22,6 +32,6 @@ export const getIsOffline = ({
   isConnected: boolean | null;
   isInternetReachable: boolean | null;
 }) => {
-  const isOnline = isConnected && isInternetReachable;
+  const isOnline = getIsOnline({isConnected, isInternetReachable});
   return isOnline === null ? null : !isOnline;
 };
