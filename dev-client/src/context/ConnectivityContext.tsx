@@ -35,11 +35,8 @@ export const ConnectivityContextProvider = ({
 }: React.PropsWithChildren) => {
   const [isOffline, setIsOffline] = useState<boolean | null>(null);
   const netInfoSubscriptionRef = useRef<NetInfoSubscription | null>(null);
-  console.log('re-render ConnectivityContextProvider');
 
   useEffect(() => {
-    console.log('setup reachability monitoring');
-
     const stopMonitoringReachability = () => {
       if (netInfoSubscriptionRef.current) {
         netInfoSubscriptionRef.current?.();
@@ -51,14 +48,6 @@ export const ConnectivityContextProvider = ({
       stopMonitoringReachability();
 
       netInfoSubscriptionRef.current = addEventListener(state => {
-        // TODO: Remove this
-        console.log(
-          'Connected =',
-          state.isConnected,
-          ' | Reachable =',
-          state.isInternetReachable,
-        );
-
         // TODO: make a test for this cuz
         //   false && null = false
         //   null && false = null
@@ -71,7 +60,6 @@ export const ConnectivityContextProvider = ({
       startMonitoringReachability();
     }
 
-    console.log('add app state listener');
     const appStateListener = AppState.addEventListener('change', state => {
       if (state === 'active') {
         startMonitoringReachability();
@@ -81,7 +69,6 @@ export const ConnectivityContextProvider = ({
     });
 
     return () => {
-      console.log('remove app state listener');
       stopMonitoringReachability();
       appStateListener.remove();
     };
