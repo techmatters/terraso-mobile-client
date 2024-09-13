@@ -1,0 +1,61 @@
+export type LocalSoilData = {
+  bedrock?: null | number;
+  crossSlope?: null | string;
+  depthDependentData: LocalDepthDependentSoilData[];
+  depthIntervalPreset: string;
+  depthIntervals: LocalDepthInterval[];
+  downSlope?: null | string;
+  floodingSelect?: null | string;
+  grazingSelect?: null | string;
+  landCoverSelect?: null | string;
+  limeRequirementsSelect?: null | string;
+  slopeAspect?: null | number;
+  slopeLandscapePosition?: null | string;
+  slopeSteepnessDegree?: null | number;
+  slopeSteepnessPercent?: null | number;
+  slopeSteepnessSelect?: null | string;
+  soilDepthSelect?: null | string;
+  surfaceCracksSelect?: null | string;
+  surfaceSaltSelect?: null | string;
+  surfaceStoninessSelect?: null | string;
+  waterTableDepthSelect?: null | string;
+};
+
+export type LocalDepthDependentSoilData = {
+  carbonates?: null | string;
+  clayPercent?: null | number;
+  colorChroma?: null | number;
+  colorHue?: null | number;
+  colorPhotoLightingCondition?: null | string;
+  colorPhotoSoilCondition?: null | string;
+  colorPhotoUsed?: null | boolean;
+  colorValue?: null | number;
+  conductivity?: null | any;
+  conductivityTest?: null | string;
+  conductivityUnit?: null | string;
+  depthInterval: LocalDepthInterval;
+  ph?: null | any;
+  phTestingMethod?: null | string;
+  phTestingSolution?: null | string;
+  rockFragmentVolume?: null | string;
+  sodiumAbsorptionRatio?: null | any;
+  soilOrganicCarbon?: null | any;
+  soilOrganicCarbonTesting?: null | string;
+  soilOrganicMatter?: null | any;
+  soilOrganicMatterTesting?: null | string;
+  structure?: null | string;
+  texture?: null | string;
+};
+
+export type LocalDepthInterval = {
+  carbonatesEnabled?: null | boolean;
+  depthInterval: LocalDepthInterval;
+  electricalConductivityEnabled?: null | boolean;
+  label: string;
+  phEnabled?: null | boolean;
+  sodiumAdsorptionRatioEnabled?: null | boolean;
+  soilColorEnabled?: null | boolean;
+  soilOrganicCarbonMatterEnabled?: null | boolean;
+  soilStructureEnabled?: null | boolean;
+  soilTextureEnabled?: null | boolean;
+};
