@@ -24,7 +24,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {APP_CONFIG, MMKV} from 'terraso-mobile-client/config';
 
-export const FeatureFlagControlOrEmptyInProd = () => {
+export const FeatureFlagControl = () => {
   // It may cause issues to toggle a feature flag state while the app is running,
   // so expect the user to restart the app if they want to change the feature flag state.
   // This should never be exposed in production.
