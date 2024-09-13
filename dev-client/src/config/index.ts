@@ -24,7 +24,7 @@ import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 
 const ENV_CONFIG = Constants.expoConfig!.extra!;
 
-const MMKV = new MMKVLoader().withEncryption().initialize();
+export const MMKV = new MMKVLoader().withEncryption().initialize();
 
 setAPIConfig({
   terrasoAPIURL: ENV_CONFIG.TERRASO_BACKEND,
@@ -81,4 +81,5 @@ export const APP_CONFIG = {
   googleClientId,
   googleRedirectURI,
   microsoftRedirectURI,
+  FF_offline: MMKV.getBool('FF_offline') ?? false,
 } as const;
