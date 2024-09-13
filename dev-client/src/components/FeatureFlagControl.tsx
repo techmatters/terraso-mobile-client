@@ -28,6 +28,7 @@ import {APP_CONFIG, MMKV} from 'terraso-mobile-client/config';
 export const FeatureFlagControl = () => {
   // It may cause issues to toggle a feature flag state while the app is running,
   // so expect the user to restart the app if they want to change the feature flag state.
+  // This should never be exposed in production.
 
   const currentFlagState = APP_CONFIG.FF_offline;
   const [nextFlagState, setNextFlagState] = useState<boolean>(
@@ -41,16 +42,20 @@ export const FeatureFlagControl = () => {
   };
 
   return (
-    <View>
-      <Heading mb="10px">Feature Flags</Heading>
-      <Text bold={true}>FF_offline</Text>
-      <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
-      <View style={styles.nextFlagStateView}>
-        <Text>{`On next startup, flag will be: `}</Text>
-        <Switch value={nextFlagState} onValueChange={onToggle} />
-        <Text>{` ${nextFlagState ? 'ON' : 'OFF'}`}</Text>
-      </View>
-    </View>
+    <>
+      {APP_CONFIG.environment !== 'production' && (
+        <View>
+          <Heading mb="10px">Feature Flags</Heading>
+          <Text bold={true}>FF_offline</Text>
+          <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
+          <View style={styles.nextFlagStateView}>
+            <Text>{`On next startup, flag will be: `}</Text>
+            <Switch value={nextFlagState} onValueChange={onToggle} />
+            <Text>{` ${nextFlagState ? 'ON' : 'OFF'}`}</Text>
+          </View>
+        </View>
+      )}
+    </>
   );
 };
 
