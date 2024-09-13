@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
 import {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Switch} from 'react-native-paper';
+import {Divider, Switch} from 'react-native-paper';
 
 import {
   Heading,
@@ -44,16 +43,19 @@ export const FeatureFlagControl = () => {
   return (
     <>
       {APP_CONFIG.environment !== 'production' && (
-        <View>
-          <Heading mb="10px">Feature Flags</Heading>
-          <Text bold={true}>FF_offline</Text>
-          <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
-          <View style={styles.nextFlagStateView}>
-            <Text>{`On next startup, flag will be: `}</Text>
-            <Switch value={nextFlagState} onValueChange={onToggle} />
-            <Text>{` ${nextFlagState ? 'ON' : 'OFF'}`}</Text>
+        <>
+          <Divider />
+          <View>
+            <Heading mb="10px">Feature Flags</Heading>
+            <Text bold={true}>FF_offline</Text>
+            <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
+            <View style={styles.nextFlagStateView}>
+              <Text>{`On next startup will be: `}</Text>
+              <Switch value={nextFlagState} onValueChange={onToggle} />
+              <Text>{` ${nextFlagState ? 'ON' : 'OFF'}`}</Text>
+            </View>
           </View>
-        </View>
+        </>
       )}
     </>
   );

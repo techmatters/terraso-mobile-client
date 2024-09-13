@@ -15,8 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Divider} from 'native-base';
-
 import {FeatureFlagControl} from 'terraso-mobile-client/components/FeatureFlagControl';
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -37,7 +35,6 @@ export function UserSettingsScreen() {
           <DeleteAccountItem />
         </MenuList>
         <VersionIndicator />
-        <Divider marginY="10px" />
         <FeatureFlagControl />
       </Column>
     </ScreenScaffold>
