@@ -12,7 +12,7 @@ export class MmkvLocalDataRepository<T> implements LocalDataRepository<T> {
     private mmkv: MMKVInstance,
   ) {}
 
-  async readAll(): Promise<Record<string, LocalDatum<T>>> {
+  async read(): Promise<Record<string, LocalDatum<T>>> {
     return await this.readRecords();
   }
 
@@ -23,7 +23,7 @@ export class MmkvLocalDataRepository<T> implements LocalDataRepository<T> {
     );
   }
 
-  async writeAll(records: Record<string, T>): Promise<void> {
+  async write(records: Record<string, T>): Promise<void> {
     const now = Date.now();
     const existingRecords = await this.readRecords();
     Object.entries(records).forEach(([key, value]) => {
@@ -37,17 +37,12 @@ export class MmkvLocalDataRepository<T> implements LocalDataRepository<T> {
     await this.writeRecords(existingRecords);
   }
 
-  async write(id: string, data: T): Promise<void> {
-    let records: Record<string, T> = {};
-    records[id] = data;
-    await this.writeAll(records);
-  }
-
-  async markSynced(ids: string[], syncedAt: number): Promise<void> {
+  async markSynced(ids: string[]): Promise<void> {
+    const now = Date.now();
     const records = await this.readRecords();
     ids.forEach(id => {
       records[id].isDirty = false;
-      records[id].syncedAt = syncedAt;
+      records[id].syncedAt = now;
     });
     await this.writeRecords(records);
   }

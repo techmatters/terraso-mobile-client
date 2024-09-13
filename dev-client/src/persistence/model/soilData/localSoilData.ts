@@ -3,7 +3,7 @@ export type LocalSoilData = {
   crossSlope?: null | string;
   depthDependentData: LocalDepthDependentSoilData[];
   depthIntervalPreset: string;
-  depthIntervals: LocalDepthInterval[];
+  depthIntervals: LocalSoilDataDepthInterval[];
   downSlope?: null | string;
   floodingSelect?: null | string;
   grazingSelect?: null | string;
@@ -47,9 +47,10 @@ export type LocalDepthDependentSoilData = {
   texture?: null | string;
 };
 
-export type LocalDepthInterval = {
+export type LocalSoilDataDepthInterval = {
   carbonatesEnabled?: null | boolean;
   depthInterval: LocalDepthInterval;
+  end: number;
   electricalConductivityEnabled?: null | boolean;
   label: string;
   phEnabled?: null | boolean;
@@ -58,4 +59,9 @@ export type LocalDepthInterval = {
   soilOrganicCarbonMatterEnabled?: null | boolean;
   soilStructureEnabled?: null | boolean;
   soilTextureEnabled?: null | boolean;
+};
+
+export type LocalDepthInterval = {
+  start: number;
+  end: number;
 };
