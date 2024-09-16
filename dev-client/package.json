@@ -96,7 +96,7 @@
     "@types/base-64": "^1.0.2",
     "@types/delta-e": "^0.0.2",
     "@types/haversine": "^1.1.8",
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.13",
     "@types/lodash": "^4.17.7",
     "@types/quantize": "^1.0.2",
     "@types/react": "^18.3.5",
