@@ -42,5 +42,5 @@ export const setFlagEnabledOnReload = (
   flag: FeatureFlagName,
   isEnabled: boolean,
 ) => {
-  MMKV.setBool('FF_offline', isEnabled);
+  MMKV.setBool(flag, isEnabled);
 };
