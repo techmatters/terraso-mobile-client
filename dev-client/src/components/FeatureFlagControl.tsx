@@ -22,24 +22,16 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {APP_CONFIG, MMKV} from 'terraso-mobile-client/config';
+import {APP_CONFIG} from 'terraso-mobile-client/config';
+import {
+  FeatureFlagName,
+  featureFlags,
+  isFlagEnabled,
+  setFlagEnabledOnReload,
+  willFlagBeEnabledOnReload,
+} from 'terraso-mobile-client/config/featureFlags';
 
-export const FeatureFlagControl = () => {
-  // It may cause issues to toggle a feature flag state while the app is running,
-  // so expect the user to restart the app if they want to change the feature flag state.
-  // This should never be exposed in production.
-
-  const currentFlagState = APP_CONFIG.FF_offline;
-  const [nextFlagState, setNextFlagState] = useState<boolean>(
-    MMKV.getBool('FF_offline') ?? APP_CONFIG.FF_offline,
-  );
-
-  // nextFlagState and MMKV state should be kept in sync
-  const onToggle = () => {
-    MMKV.setBool('FF_offline', !nextFlagState);
-    setNextFlagState(!nextFlagState);
-  };
-
+export const FeatureFlagControlPanel = () => {
   return (
     <>
       {APP_CONFIG.environment !== 'production' && (
@@ -47,17 +39,43 @@ export const FeatureFlagControl = () => {
           <Divider />
           <View>
             <Heading mb="10px">Feature Flags</Heading>
-            <Text bold={true}>FF_offline</Text>
-            <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
-            <View style={styles.nextFlagStateView}>
-              <Text>{`On next startup will be: `}</Text>
-              <Switch value={nextFlagState} onValueChange={onToggle} />
-              <Text>{` ${nextFlagState ? 'ON' : 'OFF'}`}</Text>
-            </View>
+            <FeatureFlagControl flag="FF_offline" />
           </View>
         </>
       )}
     </>
+  );
+};
+
+type FeatureFlagControlProps = {flag: FeatureFlagName};
+
+const FeatureFlagControl = ({flag}: FeatureFlagControlProps) => {
+  // It may cause issues to toggle a feature flag state while the app is running,
+  // so expect the user to restart the app if they want to change the feature flag state.
+  // This should never be exposed in production.
+
+  const currentFlagState = isFlagEnabled(flag);
+  const [nextFlagState, setNextFlagState] = useState<boolean>(
+    willFlagBeEnabledOnReload(flag),
+  );
+
+  // nextFlagState and onReload state should be kept in sync. This could be refactored better.
+  const onToggle = () => {
+    setFlagEnabledOnReload(flag, !nextFlagState);
+    setNextFlagState(!nextFlagState);
+  };
+
+  return (
+    <View>
+      <Text bold={true}>{flag}</Text>
+      <Text>{featureFlags[flag].description}</Text>
+      <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
+      <View style={styles.nextFlagStateView}>
+        <Text>{`On next startup will be: `}</Text>
+        <Switch value={nextFlagState} onValueChange={onToggle} />
+        <Text>{` ${nextFlagState ? 'ON' : 'OFF'}`}</Text>
+      </View>
+    </View>
   );
 };
 

@@ -22,6 +22,8 @@ import Constants from 'expo-constants';
 
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 
+import {willFlagBeEnabledOnReload} from 'terraso-mobile-client/config/featureFlags';
+
 const ENV_CONFIG = Constants.expoConfig!.extra!;
 
 export const MMKV = new MMKVLoader().withEncryption().initialize();
@@ -81,5 +83,5 @@ export const APP_CONFIG = {
   googleClientId,
   googleRedirectURI,
   microsoftRedirectURI,
-  FF_offline: MMKV.getBool('FF_offline') ?? false,
+  FF_offline: willFlagBeEnabledOnReload('FF_offline'),
 } as const;
