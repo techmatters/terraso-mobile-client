@@ -17,7 +17,10 @@
 
 import {memo, useEffect} from 'react';
 
-import {useForegroundPermissions} from 'expo-location';
+import {
+  requestForegroundPermissionsAsync,
+  useForegroundPermissions,
+} from 'expo-location';
 
 import {NavigationHelpers} from '@react-navigation/native';
 import {Location, locationManager} from '@rnmapbox/maps';
@@ -42,14 +45,35 @@ export const BottomTabsScreen = memo(() => {
     useForegroundPermissions();
 
   useEffect(() => {
+    console.log(
+      'Mounting BottomTabsScreen with permission ',
+      potentiallyOutdatedLocationPermission?.granted,
+      'and canAskAgain',
+      potentiallyOutdatedLocationPermission?.canAskAgain,
+      'and request is',
+      requestLocationPermission,
+    );
+
+    const requestPermissions = async () => {
+      let result = await requestForegroundPermissionsAsync();
+      console.log('Requested permissions; Result:', result);
+
+      return result;
+    };
+
     if (!potentiallyOutdatedLocationPermission?.granted) {
-      requestLocationPermission();
+      requestPermissions();
     }
+
     // disable depcheck because we only want to run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
+    console.log(
+      'Permissions useEffect with permission ',
+      potentiallyOutdatedLocationPermission?.granted,
+    );
     if (potentiallyOutdatedLocationPermission?.granted) {
       locationManager.getLastKnownLocation().then(initCoords => {
         if (initCoords !== null) {

@@ -114,6 +114,7 @@ export const HomeScreen = memo(() => {
       finishedLoading &&
       currentUserCoords !== null
     ) {
+      console.log("...and we're moving!");
       mapRef.current?.moveToPoint(currentUserCoords);
       setFinishedInitialCameraMove(true);
     }
