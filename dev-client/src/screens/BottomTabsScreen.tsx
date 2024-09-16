@@ -17,15 +17,11 @@
 
 import {memo, useEffect} from 'react';
 
-import {
-  requestForegroundPermissionsAsync,
-  useForegroundPermissions,
-} from 'expo-location';
-
 import {NavigationHelpers} from '@react-navigation/native';
 import {Location, locationManager} from '@rnmapbox/maps';
 
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
+import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 import {useKeyboardStatus} from 'terraso-mobile-client/hooks/useKeyboardStatus';
 import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
 import {
@@ -41,28 +37,32 @@ import {useDispatch} from 'terraso-mobile-client/store';
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
-  const [potentiallyOutdatedLocationPermission, _, requestLocationPermission] =
-    useForegroundPermissions();
+  // const [potentiallyOutdatedLocationPermission, _, requestLocationPermission] =
+  //   useForegroundPermissions();
+  const [locationPermissions, _, requestPermissions] =
+    useUpdatedForegroundPermissions();
+  console.log('BottomTabs');
 
   useEffect(() => {
     console.log(
       'Mounting BottomTabsScreen with permission ',
-      potentiallyOutdatedLocationPermission?.granted,
+      locationPermissions?.granted,
       'and canAskAgain',
-      potentiallyOutdatedLocationPermission?.canAskAgain,
-      'and request is',
-      requestLocationPermission,
+      locationPermissions?.canAskAgain,
     );
 
-    const requestPermissions = async () => {
-      let result = await requestForegroundPermissionsAsync();
-      console.log('Requested permissions; Result:', result);
+    const doRequestPermissions = async () => {
+      // let result = await requestForegroundPermissionsAsync();
+      // let deleteThis = await requestForegroundPermissionsAsync();
+      // console.log('requestForegroundPermissionsAsync result: ', deleteThis);
+      let result = await requestPermissions();
+      console.log('requestPermissions result: ', result);
 
       return result;
     };
 
-    if (!potentiallyOutdatedLocationPermission?.granted) {
-      requestPermissions();
+    if (!locationPermissions?.granted) {
+      doRequestPermissions();
     }
 
     // disable depcheck because we only want to run on mount
@@ -72,9 +72,9 @@ export const BottomTabsScreen = memo(() => {
   useEffect(() => {
     console.log(
       'Permissions useEffect with permission ',
-      potentiallyOutdatedLocationPermission?.granted,
+      locationPermissions?.status,
     );
-    if (potentiallyOutdatedLocationPermission?.granted) {
+    if (locationPermissions?.granted) {
       locationManager.getLastKnownLocation().then(initCoords => {
         if (initCoords !== null) {
           dispatch(
@@ -100,7 +100,7 @@ export const BottomTabsScreen = memo(() => {
 
       return () => locationManager.removeListener(listener);
     }
-  }, [dispatch, potentiallyOutdatedLocationPermission]);
+  }, [dispatch, locationPermissions?.granted, locationPermissions?.status]);
 
   return (
     <BottomTabs.Navigator
