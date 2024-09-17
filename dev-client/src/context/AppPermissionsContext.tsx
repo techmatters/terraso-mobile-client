@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createContext, useCallback, useEffect, useState} from 'react';
-import {AppState, AppStateStatus} from 'react-native';
+import {createContext, useCallback, useEffect, useRef, useState} from 'react';
+import {AppState, AppStateStatus, NativeEventSubscription} from 'react-native';
 
 import {
   LocationPermissionResponse,
@@ -39,7 +39,8 @@ export const ForegroundPermissionsProvider = ({
   const [permissions, get, _] = useForegroundPermissions();
   const [updatedPermissions, setUpdatedPermissions] =
     useState<LocationPermissionResponse | null>(permissions);
-  console.log('Calling the Provider', updatedPermissions);
+  const appStateListener = useRef<NativeEventSubscription | null>(null);
+  console.log('Calling the Provider with permissions -->', updatedPermissions);
 
   const updatedGet = useCallback(async () => {
     console.log('Calling get');
@@ -58,12 +59,13 @@ export const ForegroundPermissionsProvider = ({
     return response;
   }, [setUpdatedPermissions]);
 
-  // TODO-cknipe: Only do this once the permissions are ... existent?
-  // I suspect if we put updatedPermissions in the dependency list, it'll add multiple listeners?
-  // Maybe we want to keep track such there is only a single listener for each provider
   useEffect(() => {
-    if (updatedPermissions?.granted) {
-      console.log('UseEffect to add the event listener');
+    // Start listening when we first care about location permissions. Listener is a singleton.
+    // If we switched from background to foreground, check permissions and update if changed
+    if (updatedPermissions && !appStateListener.current) {
+      console.log(
+        'Gonna add AppState listener (should only happen once? Or once per new permission state??)',
+      );
       const onAppStateChange = (state: AppStateStatus) => {
         console.log('App state changed to', state);
         if (state === 'active') {
@@ -71,19 +73,17 @@ export const ForegroundPermissionsProvider = ({
         }
       };
 
-      const appStateListener = AppState.addEventListener(
+      appStateListener.current = AppState.addEventListener(
         'change',
         onAppStateChange,
       );
 
       return () => {
-        appStateListener.remove();
+        console.log('Destroying AppState listener');
+        appStateListener.current?.remove();
       };
     }
-    // TODO-cknipe: Make sure we want to do this; for now I'm just trying to satisfy the linter so I can commit
-    // disable depcheck because we only want to run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updatedGet]);
+  }, [updatedGet, updatedPermissions]);
 
   return (
     <ForegroundPermissionsContext.Provider

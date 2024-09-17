@@ -38,29 +38,29 @@ export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
   const foregroundPermissionsResult = useUpdatedForegroundPermissions();
-  if (foregroundPermissionsResult === null) {
-    // TODO-cknipe: Do something better here
-    throw Error("Somehow foreground permissions haven't yet been initialized");
-  }
-  const {
-    permissions: locationPermissions,
-    request: requestLocationPermissions,
-  } = foregroundPermissionsResult;
-
   console.log('BottomTabs');
+
+  let locationPermissions = foregroundPermissionsResult?.permissions;
+  let requestLocationPermissions = foregroundPermissionsResult?.request;
+
+  if (foregroundPermissionsResult === null) {
+    console.warn("Somehow foreground permissions haven't yet been initialized");
+  } else if (!locationPermissions || !requestLocationPermissions) {
+    console.log("Result isn't null but permissions is");
+  } else {
+    locationPermissions = foregroundPermissionsResult.permissions;
+  }
 
   useEffect(() => {
     console.log(
-      'Mounting BottomTabsScreen with permission ',
+      'Mounting BottomTabsScreen with permission -->',
       locationPermissions?.granted,
-      'and canAskAgain',
-      locationPermissions?.canAskAgain,
     );
 
     const requestAndAwaitPermissions = async () => {
       console.log('Requesting permissions...');
-      const result = await requestLocationPermissions();
-      console.log('requestPermissions result: ', result);
+      const result = await requestLocationPermissions?.();
+      console.log('requestPermissions result --> ', result);
     };
 
     if (!locationPermissions?.granted) {
@@ -73,13 +73,10 @@ export const BottomTabsScreen = memo(() => {
 
   useEffect(() => {
     console.log(
-      'Permissions useEffect with permission ',
+      'Can we set the location/listener? -->',
       locationPermissions?.status,
     );
     if (locationPermissions?.granted) {
-      console.log(
-        'It would make some sense about the locationManager if we see this ever',
-      );
       locationManager.getLastKnownLocation().then(initCoords => {
         if (initCoords !== null) {
           dispatch(
@@ -100,6 +97,7 @@ export const BottomTabsScreen = memo(() => {
           }),
         );
       };
+
       locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
       locationManager.addListener(listener);
 
