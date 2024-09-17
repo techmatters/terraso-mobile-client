@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {FeatureFlagControlPanel} from 'terraso-mobile-client/components/FeatureFlagControl';
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -34,6 +35,7 @@ export function UserSettingsScreen() {
           <DeleteAccountItem />
         </MenuList>
         <VersionIndicator />
+        <FeatureFlagControlPanel />
       </Column>
     </ScreenScaffold>
   );
