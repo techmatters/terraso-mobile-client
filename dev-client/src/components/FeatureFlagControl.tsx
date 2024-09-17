@@ -71,7 +71,7 @@ const FeatureFlagControl = ({flag}: FeatureFlagControlProps) => {
       <Text>{featureFlags[flag].description}</Text>
       <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
       <View style={styles.nextFlagStateView}>
-        <Text>{`On next startup will be: `}</Text>
+        <Text>{`On next app launch will be: `}</Text>
         <Switch value={nextFlagState} onValueChange={onToggle} />
         <Text>{` ${nextFlagState ? 'ON' : 'OFF'}`}</Text>
       </View>
