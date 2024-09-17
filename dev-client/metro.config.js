@@ -21,6 +21,6 @@ const config = {
   },
 };
 
-module.exports = getSentryExpoConfig(config, {
+module.exports = getSentryExpoConfig(__dirname, config, {
   annotateReactComponents: true,
 });
