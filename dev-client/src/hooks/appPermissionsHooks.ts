@@ -15,60 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useState} from 'react';
-import {AppState, AppStateStatus} from 'react-native';
+import {useContext} from 'react';
 
 import {
-  LocationPermissionResponse,
-  requestForegroundPermissionsAsync,
-  useForegroundPermissions,
-} from 'expo-location';
+  ForegroundPermissionsContext,
+  ForegroundPermissionsType,
+} from 'terraso-mobile-client/context/AppPermissionsContext';
 
 // The app permissions hooks supplied by the expo libraries don't actually trigger components to update when app permissions are updated.
 // The permissions object stays stale until the next call to get() or request().
 // This hook wraps the library-supplied hooks and should cause components to update when permissions are updated
-export const useUpdatedForegroundPermissions = (): [
-  LocationPermissionResponse | null,
-  () => Promise<LocationPermissionResponse>,
-  () => Promise<LocationPermissionResponse>,
-] => {
-  const [permissions, get, _] = useForegroundPermissions();
-  const [updatedPermissions, setUpdatedPermissions] = useState(permissions); // Move this to context?
-  console.log('Calling the hook');
-
-  const updatedGet = useCallback(async () => {
-    const response = await get();
-    setUpdatedPermissions(response);
-    return response;
-    // Or should we not return the response here and below to encourage using updatedPermissions instead?
-  }, [get, setUpdatedPermissions]);
-
-  const updatedRequest = useCallback(async () => {
-    // I don't know why, but calling request() instead of requestForegroundPermissionsAsync() here won't pop the permissions dialog
-    console.log('Calling updatedRequest');
-    const response = await requestForegroundPermissionsAsync();
-    setUpdatedPermissions(response);
-    return response;
-  }, [setUpdatedPermissions]);
-
-  // TODO: Move this to context so we don't have a bunch of listeners running everywhere
-  useEffect(() => {
-    console.log('UseEffect to add the event listener');
-    const onAppStateChange = (state: AppStateStatus) => {
-      if (state === 'active') {
-        updatedGet();
-      }
-    };
-    // Register listeners
-    const appStateListener = AppState.addEventListener(
-      'change',
-      onAppStateChange,
-    );
-
-    return () => {
-      appStateListener.remove();
-    };
-  }, [updatedGet]);
-
-  return [updatedPermissions, updatedGet, updatedRequest];
-};
+export const useUpdatedForegroundPermissions =
+  (): ForegroundPermissionsType => {
+    const context = useContext(ForegroundPermissionsContext);
+    return context;
+  };

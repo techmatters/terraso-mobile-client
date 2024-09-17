@@ -37,10 +37,16 @@ import {useDispatch} from 'terraso-mobile-client/store';
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
-  // const [potentiallyOutdatedLocationPermission, _, requestLocationPermission] =
-  //   useForegroundPermissions();
-  const [locationPermissions, _, requestPermissions] =
-    useUpdatedForegroundPermissions();
+  const foregroundPermissionsResult = useUpdatedForegroundPermissions();
+  if (foregroundPermissionsResult === null) {
+    // TODO-cknipe: Do something better here
+    throw Error("Somehow foreground permissions haven't yet been initialized");
+  }
+  const {
+    permissions: locationPermissions,
+    request: requestLocationPermissions,
+  } = foregroundPermissionsResult;
+
   console.log('BottomTabs');
 
   useEffect(() => {
@@ -51,18 +57,14 @@ export const BottomTabsScreen = memo(() => {
       locationPermissions?.canAskAgain,
     );
 
-    const doRequestPermissions = async () => {
-      // let result = await requestForegroundPermissionsAsync();
-      // let deleteThis = await requestForegroundPermissionsAsync();
-      // console.log('requestForegroundPermissionsAsync result: ', deleteThis);
-      let result = await requestPermissions();
+    const requestAndAwaitPermissions = async () => {
+      console.log('Requesting permissions...');
+      const result = await requestLocationPermissions();
       console.log('requestPermissions result: ', result);
-
-      return result;
     };
 
     if (!locationPermissions?.granted) {
-      doRequestPermissions();
+      requestAndAwaitPermissions();
     }
 
     // disable depcheck because we only want to run on mount
@@ -75,6 +77,9 @@ export const BottomTabsScreen = memo(() => {
       locationPermissions?.status,
     );
     if (locationPermissions?.granted) {
+      console.log(
+        'It would make some sense about the locationManager if we see this ever',
+      );
       locationManager.getLastKnownLocation().then(initCoords => {
         if (initCoords !== null) {
           dispatch(
