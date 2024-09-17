@@ -22,6 +22,6 @@ const config = {
 };
 
 const m = mergeConfig(defaultConfig, config);
-module.exports = getSentryExpoConfig(m, {
+module.exports = getSentryExpoConfig(__dirname, config, {
   annotateReactComponents: true,
 });
