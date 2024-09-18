@@ -40,7 +40,7 @@ export const ForegroundPermissionsProvider = ({
   const [updatedPermissions, setUpdatedPermissions] =
     useState<LocationPermissionResponse | null>(permissions);
   const appStateListener = useRef<NativeEventSubscription | null>(null);
-  console.log('Calling the Provider with permissions -->', updatedPermissions);
+  console.log('Calling the Provider');
 
   const updatedGet = useCallback(async () => {
     console.log('Calling get');
@@ -60,8 +60,8 @@ export const ForegroundPermissionsProvider = ({
   }, [setUpdatedPermissions]);
 
   useEffect(() => {
-    // Start listening when we first care about location permissions. Listener is a singleton.
-    // If we switched from background to foreground, check permissions and update if changed
+    // Don't start listening until someone asks about location permissions. Listener is a singleton.
+    // If we switched from background to foreground, update permissions in case they changed
     if (updatedPermissions && !appStateListener.current) {
       console.log(
         'Gonna add AppState listener (should only happen once? Or once per new permission state??)',
