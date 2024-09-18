@@ -37,19 +37,9 @@ import {useDispatch} from 'terraso-mobile-client/store';
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
-  const foregroundPermissionsResult = useUpdatedForegroundPermissions();
+  const [locationPermissions, _, requestLocationPermissions] =
+    useUpdatedForegroundPermissions();
   console.log('BottomTabs');
-
-  let locationPermissions = foregroundPermissionsResult?.permissions;
-  let requestLocationPermissions = foregroundPermissionsResult?.request;
-
-  if (foregroundPermissionsResult === null) {
-    console.warn("Somehow foreground permissions haven't yet been initialized");
-  } else if (!locationPermissions || !requestLocationPermissions) {
-    console.log("Result isn't null but permissions is");
-  } else {
-    locationPermissions = foregroundPermissionsResult.permissions;
-  }
 
   useEffect(() => {
     console.log(
@@ -63,7 +53,7 @@ export const BottomTabsScreen = memo(() => {
       console.log('requestPermissions result --> ', result);
     };
 
-    if (!locationPermissions?.granted) {
+    if (!locationPermissions?.granted && requestLocationPermissions) {
       requestAndAwaitPermissions();
     }
 

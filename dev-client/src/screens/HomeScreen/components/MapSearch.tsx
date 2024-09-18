@@ -21,8 +21,6 @@ import {Keyboard} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import {Searchbar} from 'react-native-paper';
 
-import {useForegroundPermissions} from 'expo-location';
-
 import {Pressable} from 'native-base';
 
 import {Coords} from 'terraso-client-shared/types';
@@ -39,6 +37,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
+import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
 
 type SuggestionProps = {
@@ -163,7 +162,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
           <PermissionsRequestWrapper
             requestModalTitle={t('permissions.location_title')}
             requestModalBody={t('permissions.location_body')}
-            permissionHook={useForegroundPermissions}
+            permissionHook={useUpdatedForegroundPermissions}
             permissionedAction={zoomToUser}>
             {onRequest => (
               <IconButton

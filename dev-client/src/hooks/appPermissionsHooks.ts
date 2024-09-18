@@ -17,16 +17,27 @@
 
 import {useContext} from 'react';
 
-import {
-  ForegroundPermissionsContext,
-  ForegroundPermissionsType,
-} from 'terraso-mobile-client/context/AppPermissionsContext';
+import {PermissionResponse} from 'expo-location';
+
+import {ForegroundPermissionsContext} from 'terraso-mobile-client/context/AppPermissionsContext';
 
 // The app permissions hooks supplied by the expo libraries don't actually trigger components to update when app permissions are updated.
 // The permissions object stays stale until the next call to get() or request().
 // This hook wraps the library-supplied hooks and should cause components to update when permissions are updated
+
+// TODO: Ok but how do make them not null because at this point they won't be
+// Otherwise we're trying as closely as we can to match ReturnType<ReturnType<typeof createPermissionHook>
+export type UpdatedPermissionsHookReturnType = [
+  PermissionResponse | null,
+  (() => Promise<PermissionResponse>) | null,
+  (() => Promise<PermissionResponse>) | null,
+];
+export type UpdatedPermissionsHookType = () => UpdatedPermissionsHookReturnType;
+
 export const useUpdatedForegroundPermissions =
-  (): ForegroundPermissionsType => {
-    const context = useContext(ForegroundPermissionsContext);
-    return context;
+  (): UpdatedPermissionsHookReturnType => {
+    const {permissions, get, request} = useContext(
+      ForegroundPermissionsContext,
+    );
+    return [permissions, get, request];
   };

@@ -23,8 +23,11 @@ import {createPermissionHook} from 'expo-modules-core';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {UpdatedPermissionsHookType} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 
-type PermissionHook = ReturnType<typeof createPermissionHook>;
+type PermissionHook =
+  | ReturnType<typeof createPermissionHook>
+  | UpdatedPermissionsHookType;
 
 type Props = {
   requestModalTitle: string;
@@ -49,18 +52,19 @@ export const PermissionsRequestWrapper = ({
   // Issue #1808: These permissions could be outdated if
   // a) nobody has done a "get" or "request" on them since they changed, or
   // b) a descendant component did the "get" or "request", so there is no reason for the given component to re-render
-  const [potentiallyOutdatedPermissions, requestPermissions] = usePermissions();
+  // AppPermissionsHooks is a first step to have a more reactive interface with permissions
+  const [permissions, requestPermissions] = usePermissions();
 
   const onRequestAction = useCallback(async () => {
-    if (potentiallyOutdatedPermissions === null) {
+    if (permissions === null) {
       return;
     }
 
-    if (potentiallyOutdatedPermissions.granted) {
+    if (permissions.granted) {
       if (permissionedAction !== undefined) {
         permissionedAction();
       }
-    } else if (potentiallyOutdatedPermissions.canAskAgain) {
+    } else if (permissions.canAskAgain && requestPermissions) {
       const result = await requestPermissions();
       if (result.granted && permissionedAction !== undefined) {
         permissionedAction();
@@ -68,7 +72,7 @@ export const PermissionsRequestWrapper = ({
     } else {
       ref.current?.onOpen();
     }
-  }, [permissionedAction, potentiallyOutdatedPermissions, requestPermissions]);
+  }, [permissionedAction, permissions, requestPermissions]);
 
   return (
     <>

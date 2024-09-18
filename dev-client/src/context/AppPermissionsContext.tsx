@@ -26,12 +26,16 @@ import {
 
 export type ForegroundPermissionsType = {
   permissions: LocationPermissionResponse | null;
-  get: () => Promise<LocationPermissionResponse>;
-  request: () => Promise<LocationPermissionResponse>;
-} | null;
+  get: (() => Promise<LocationPermissionResponse>) | null;
+  request: (() => Promise<LocationPermissionResponse>) | null;
+};
 
 export const ForegroundPermissionsContext =
-  createContext<ForegroundPermissionsType>(null);
+  createContext<ForegroundPermissionsType>({
+    permissions: null,
+    get: null,
+    request: null,
+  });
 
 export const ForegroundPermissionsProvider = ({
   children,
