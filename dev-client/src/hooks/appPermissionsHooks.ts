@@ -21,23 +21,26 @@ import {PermissionResponse} from 'expo-location';
 
 import {ForegroundPermissionsContext} from 'terraso-mobile-client/context/AppPermissionsContext';
 
-// The app permissions hooks supplied by the expo libraries don't actually trigger components to update when app permissions are updated.
-// The permissions object stays stale until the next call to get() or request().
-// This hook wraps the library-supplied hooks and should cause components to update when permissions are updated
-
-// TODO: Ok but how do make them not null because at this point they won't be
-// Otherwise we're trying as closely as we can to match ReturnType<ReturnType<typeof createPermissionHook>
+// The app permissions hooks supplied by the expo libraries don't trigger component updates when app permissions
+// are updated. Instead, the permissions object stays stale until the next call to get() or request().
+// This hook wraps the library-supplied hooks and should cause components to update when permissions are
+// updated in the app or after they are updated outside the app.
 export type UpdatedPermissionsHookReturnType = [
-  PermissionResponse | null,
-  (() => Promise<PermissionResponse>) | null,
-  (() => Promise<PermissionResponse>) | null,
+  PermissionResponse | null, // permission
+  () => Promise<PermissionResponse>, // get
+  () => Promise<PermissionResponse>, // request
 ];
 export type UpdatedPermissionsHookType = () => UpdatedPermissionsHookReturnType;
 
-export const useUpdatedForegroundPermissions =
-  (): UpdatedPermissionsHookReturnType => {
-    const {permissions, get, request} = useContext(
-      ForegroundPermissionsContext,
+export const useUpdatedForegroundPermissions = () => {
+  const context = useContext(ForegroundPermissionsContext);
+
+  const [_, get, request] = context;
+  if (get === null || request === null) {
+    // Context provider should have populated this on app launch
+    throw Error(
+      'useUpdatedForegroundPermissions must be used within a ForegroundPermissionsContextProvider',
     );
-    return [permissions, get, request];
-  };
+  }
+  return context as UpdatedPermissionsHookReturnType;
+};

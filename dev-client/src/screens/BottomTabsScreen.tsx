@@ -49,11 +49,11 @@ export const BottomTabsScreen = memo(() => {
 
     const requestAndAwaitPermissions = async () => {
       console.log('Requesting permissions...');
-      const result = await requestLocationPermissions?.();
+      const result = await requestLocationPermissions();
       console.log('requestPermissions result --> ', result);
     };
 
-    if (!locationPermissions?.granted && requestLocationPermissions) {
+    if (!locationPermissions?.granted) {
       requestAndAwaitPermissions();
     }
 

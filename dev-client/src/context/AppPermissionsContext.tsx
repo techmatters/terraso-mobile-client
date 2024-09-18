@@ -24,18 +24,14 @@ import {
   useForegroundPermissions,
 } from 'expo-location';
 
-export type ForegroundPermissionsType = {
-  permissions: LocationPermissionResponse | null;
-  get: (() => Promise<LocationPermissionResponse>) | null;
-  request: (() => Promise<LocationPermissionResponse>) | null;
-};
+export type ForegroundPermissionsType = [
+  LocationPermissionResponse | null, // permissions
+  (() => Promise<LocationPermissionResponse>) | null, // get
+  (() => Promise<LocationPermissionResponse>) | null, // request
+];
 
 export const ForegroundPermissionsContext =
-  createContext<ForegroundPermissionsType>({
-    permissions: null,
-    get: null,
-    request: null,
-  });
+  createContext<ForegroundPermissionsType>([null, null, null]);
 
 export const ForegroundPermissionsProvider = ({
   children,
@@ -91,11 +87,7 @@ export const ForegroundPermissionsProvider = ({
 
   return (
     <ForegroundPermissionsContext.Provider
-      value={{
-        permissions: updatedPermissions,
-        get: updatedGet,
-        request: updatedRequest,
-      }}>
+      value={[updatedPermissions, updatedGet, updatedRequest]}>
       {children}
     </ForegroundPermissionsContext.Provider>
   );
