@@ -17,9 +17,22 @@
 
 import {initReactI18next} from 'react-i18next';
 
+import {getLocales} from 'expo-localization';
+
 import i18n from 'i18next';
 
 import en from 'terraso-mobile-client/translations/en.json';
+import es from 'terraso-mobile-client/translations/es.json';
+
+const fallbackLanguage = 'en';
+let deviceLanguage = getLocales()[0].languageCode;
+
+// getLocales()[0].languageCode can be string|null, and
+// lng needs string|undefined. Check for null and set to the fallback
+// (could also set to undefined).
+if (deviceLanguage === null) {
+  deviceLanguage = fallbackLanguage;
+}
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v3',
@@ -29,10 +42,15 @@ i18n.use(initReactI18next).init({
         ...en,
       },
     },
+    es: {
+      translation: {
+        ...es,
+      },
+    },
   },
-  lng: 'en',
   debug: __DEV__ && process.env.NODE_ENV !== 'test',
-  fallbackLng: 'en',
+  lng: deviceLanguage,
+  fallbackLng: fallbackLanguage,
   interpolation: {
     // react already escapes HTML tags by default
     escapeValue: false,
