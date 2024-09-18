@@ -133,6 +133,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     ['expo-apple-authentication'],
+    ['expo-localization'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
     [
       '@sentry/react-native/expo',
