@@ -117,7 +117,7 @@
           "title": "Top soil matches",
           "description": {
             "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil data to improve accuracy of the match scores. When this data is entered, the list will automatically update.",
-            "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended data to improve accuracy of the match scores. "
+            "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended data to improve accuracy of the match scores."
           }
         },
         "match": "match",
@@ -284,7 +284,7 @@
       "add": "Add team member",
       "manage_team": "Manage Team",
       "leave_project_modal": {
-        "trigger": "LEAVE PROJECT",
+        "trigger": "Leave Project",
         "title": "Leave Project?",
         "body": "This will remove your access to the project, but data you have contributed will remain with the project.",
         "action_name": "Leave"

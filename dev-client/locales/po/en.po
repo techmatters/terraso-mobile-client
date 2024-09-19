@@ -306,7 +306,7 @@ msgstr ""
 "USDA NRCS soil maps.\n"
 "\n"
 "Create a site here and enter the recommended data to improve accuracy of "
-"the match scores. "
+"the match scores."
 
 msgid "site##soil_id##matches##match"
 msgstr "match"
@@ -692,7 +692,7 @@ msgid "projects##team##manage_team"
 msgstr "Manage Team"
 
 msgid "projects##team##leave_project_modal##trigger"
-msgstr "LEAVE PROJECT"
+msgstr "Leave Project"
 
 msgid "projects##team##leave_project_modal##title"
 msgstr "Leave Project?"
