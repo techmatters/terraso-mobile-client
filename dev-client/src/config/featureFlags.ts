@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {APP_CONFIG, MMKV} from 'terraso-mobile-client/config';
+import {APP_CONFIG} from 'terraso-mobile-client/config';
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 // When you add a new flag:
 // 1) Add it to featureFlags here
@@ -35,12 +36,12 @@ export const isFlagEnabled = (flag: FeatureFlagName) => {
 };
 
 export const willFlagBeEnabledOnReload = (flag: FeatureFlagName) => {
-  return MMKV.getBool(flag) ?? featureFlags[flag].defaultIsEnabled;
+  return kvStorage.getBool(flag) ?? featureFlags[flag].defaultIsEnabled;
 };
 
 export const setFlagEnabledOnReload = (
   flag: FeatureFlagName,
   isEnabled: boolean,
 ) => {
-  MMKV.setBool(flag, isEnabled);
+  kvStorage.setBool(flag, isEnabled);
 };

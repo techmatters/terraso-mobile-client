@@ -16,31 +16,29 @@
  */
 
 import {Platform} from 'react-native';
-import {MMKVLoader} from 'react-native-mmkv-storage';
 
 import Constants from 'expo-constants';
 
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 
 import {willFlagBeEnabledOnReload} from 'terraso-mobile-client/config/featureFlags';
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 const ENV_CONFIG = Constants.expoConfig!.extra!;
-
-export const MMKV = new MMKVLoader().withEncryption().initialize();
 
 setAPIConfig({
   terrasoAPIURL: ENV_CONFIG.TERRASO_BACKEND,
   graphQLEndpoint: ENV_CONFIG.TERRASO_BACKEND + '/graphql/',
   tokenStorage: {
     getToken: name => {
-      const value = MMKV.getString(name);
+      const value = kvStorage.getString(name);
       return value === null ? undefined : value;
     },
     setToken: (name, value) => {
-      MMKV.setStringAsync(name, value);
+      kvStorage.setStringAsync(name, value);
     },
     removeToken: name => {
-      MMKV.removeItem(name);
+      kvStorage.removeItem(name);
     },
     initialToken: null,
   },

@@ -24,7 +24,7 @@ import {
   setHasAccessTokenAsync,
 } from 'terraso-client-shared/account/accountSlice';
 
-import {useStorage} from 'terraso-mobile-client/hooks/useStorage';
+import {useKVStorage} from 'terraso-mobile-client/hooks/useStorage';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 import {
   modalScreens,
@@ -46,7 +46,7 @@ export const RootNavigator = () => {
     state => state.account.currentUser.data !== null,
   );
 
-  const [welcomeScreenAlreadySeen] = useStorage(
+  const [welcomeScreenAlreadySeen] = useKVStorage(
     'welcomeScreenAlreadySeen',
     false,
   );

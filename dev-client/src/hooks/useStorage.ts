@@ -15,15 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {MMKVLoader, useMMKVStorage} from 'react-native-mmkv-storage';
+import {useMMKVStorage} from 'react-native-mmkv-storage';
 
-const MMKV = new MMKVLoader().initialize();
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
-if (!MMKV.indexer.hasKey('welcomeScreenAlreadySeen')) {
-  MMKV.setBool('welcomeScreenAlreadySeen', false);
+if (!kvStorage.indexer.hasKey('welcomeScreenAlreadySeen')) {
+  kvStorage.setBool('welcomeScreenAlreadySeen', false);
 }
 
-export const useStorage = (key: string, defaultValue: any) => {
-  const [value, setValue] = useMMKVStorage(key, MMKV, defaultValue);
+export const useKVStorage = (key: string, defaultValue: any) => {
+  const [value, setValue] = useMMKVStorage(key, kvStorage, defaultValue);
   return [value, setValue];
 };
