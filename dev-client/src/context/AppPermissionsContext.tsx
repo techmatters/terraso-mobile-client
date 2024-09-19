@@ -38,47 +38,37 @@ export const ForegroundPermissionsProvider = ({
   const [permissions, request, get] = useForegroundPermissions();
   const [updatedPermissions, setUpdatedPermissions] =
     useState<LocationPermissionResponse | null>(permissions);
-  console.log('---- Permissions Provider re-rendering ----');
 
   const updatedRequest = useCallback(async () => {
     const response = await request();
-    console.log('    Calling updatedRequest(), got', response.status);
     setUpdatedPermissions(response);
     return response;
   }, [request, setUpdatedPermissions]);
 
   const updatedGet = useCallback(async () => {
     const response = await get();
-    console.log('    Called updatedGet(), got', response.status);
     setUpdatedPermissions(response);
     return response;
   }, [get, setUpdatedPermissions]);
 
   useEffect(() => {
-    console.log(
-      'Considering adding a new app state listener... --> updatedPermissions',
-      updatedPermissions?.status,
-    );
     // Don't start listening until someone asks about location permissions.
-    // If app switches from background to foreground, update permissions in case they changed
-    if (updatedPermissions) {
-      console.log('YES, add AppState listener');
+    //   updatedPermissions will only be non-null if permissions have been gotten/requested so far
+    //   For this to be fully correct, all components must use the updated hook, rather than useForegroundPermissions
 
+    if (updatedPermissions) {
+      // If app switches from background to foreground, update permissions in case they changed
       const onAppStateChange = async (state: AppStateStatus) => {
-        console.log('App state changed to', state);
         if (state === 'active') {
-          console.log('    Calling updatedGet()');
           updatedGet();
         }
       };
-
       const appStateListener = AppState.addEventListener(
         'change',
         onAppStateChange,
       );
 
       return () => {
-        console.log('Destroying AppState listener');
         appStateListener.remove();
       };
     }

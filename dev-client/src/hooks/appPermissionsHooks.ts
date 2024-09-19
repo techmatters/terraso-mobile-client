@@ -28,8 +28,8 @@ import {ForegroundPermissionsContext} from 'terraso-mobile-client/context/AppPer
 // updated in the app or after they are updated outside the app.
 export type UpdatedPermissionsHookReturnType = [
   PermissionResponse | null, // permission
-  () => Promise<PermissionResponse>, // get
   () => Promise<PermissionResponse>, // request
+  () => Promise<PermissionResponse>, // get
 ];
 export type UpdatedPermissionsHookType = () => UpdatedPermissionsHookReturnType;
 
