@@ -25,7 +25,7 @@ import en from 'terraso-mobile-client/translations/en.json';
 import es from 'terraso-mobile-client/translations/es.json';
 
 const fallbackLanguage = 'en';
-let deviceLanguage = getLocales()[0].languageCode;
+let deviceLanguage = getLocales()[0]?.languageCode;
 
 // getLocales()[0].languageCode can be string|null, and
 // lng needs string|undefined. Check for null and set to the fallback
