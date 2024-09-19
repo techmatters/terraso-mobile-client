@@ -4,15 +4,11 @@
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "",
-            "bullet_2": "",
             "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
             "bullet_4": "Fotos del sitio"
         },
         "version_includes": {
             "title": "Esta version incluye:",
-            "bullet_1": "",
-            "bullet_2": "",
             "bullet_3": "Notas acerca del sitio",
             "bullet_4": "El manejo de projectos"
         },
@@ -44,7 +40,6 @@
         "empty": {
             "info": "Aún no tienes ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu paisaje y su potencial, y compartir con otros.\n\n<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de utilizar el mapa para encontrar una ubicación para un sitio:",
             "bullet_1": "Toca el mapa para marcar una ubicación y obtener más imformacion acerca del lugar.",
-            "bullet_2": "",
             "bullet_3": "Introduce las coordenadas, la dirección u otro término de búsqueda en la barra de búsqueda."
         },
         "create": {
@@ -161,9 +156,7 @@
                 "no_map_data_body": "No hay datos de mapas de suelos disponibles para este sitio, por lo que LandPKS no puede generar coincidencias de suelo para este sitio. De todos modos, se pueden recopilar datos para este sitio, y si los datos del mapa de suelos están disponibles en el futuro, las coincidencias de suelo aparecerán aquí.",
                 "native_lands_intro": "Recursos de suelos para las tierras indígenas:",
                 "native_lands_link": "nativeland.info",
-                "native_lands_url": "https://nativeland.info/",
-                "offline_title": "",
-                "offline_body": ""
+                "native_lands_url": "https://nativeland.info/"
             },
             "site_data": {
                 "title": "Datos del sitio",
@@ -325,8 +318,7 @@
             },
             "remove_site_modal": {
                 "title": "¿Eliminar sitio de este proyecto?",
-                "body": "Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros del equipo del proyecto dejarán de tener acceso.",
-                "action_name": ""
+                "body": "Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros del equipo del proyecto dejarán de tener acceso."
             },
             "transfer_site_modal": {
                 "title": "¿Transferir sitios?",
@@ -568,29 +560,14 @@
                     "MD": "2.5–5cm",
                     "LG": ">5cm"
                 },
-                "grittyness_type": {
-                    "GRITTY": "",
-                    "NEITHER": "",
-                    "SMOOTH": ""
-                },
-                "prepare_details_1": "",
-                "prepare_details_2": "",
-                "prepare_details_3": "",
-                "wet_details_1": "",
-                "wet_details_2": "",
+                "grittyness_type": {},
                 "wet_details_3": "Integre el agua y el suelo uniformemente con las manos.",
                 "wet_details_4": "La tierra debe estar completamente húmeda, pero no brillante, con una textura parecida a la masilla. Si la tierra está demasiado húmeda, añade más tierra seca de tu muestra.",
-                "wet_details_5": "",
                 "ball_details_1": "Haz rodar la tierra entre tus manos para ver si se forma una bola.",
                 "ball_details_2": "Si se desmorona al ejercer una ligera presión para hacerla rodar, la tierra no forma una bola.",
-                "ribbon_details_1": "",
-                "ribbon_details_2": "",
                 "ribbon_details_3": "La cinta debe estar paralela al suelo, sin apuntar hacia arriba ni hacia abajo.",
                 "ribbon_details_4": "Si la tierra se desmorona en lugar de mantenerse unida cuando se presiona para formar una cinta, entonces no forma una cinta.",
-                "ribbon_details_5": "",
-                "grittyness_details_1": "<0>Granulado</0> significa que se pueden sentir granos individuales en el suelo.",
-                "grittyness_details_2": "",
-                "grittyness_details_3": ""
+                "grittyness_details_1": "<0>Granulado</0> significa que se pueden sentir granos individuales en el suelo."
             },
             "fragment": {
                 "info": {
