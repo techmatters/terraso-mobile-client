@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createContext, useCallback, useEffect, useRef, useState} from 'react';
-import {AppState, AppStateStatus, NativeEventSubscription} from 'react-native';
+import {createContext, useCallback, useEffect, useState} from 'react';
+import {AppState, AppStateStatus} from 'react-native';
 
 import {
   LocationPermissionResponse,
@@ -38,7 +38,6 @@ export const ForegroundPermissionsProvider = ({
   const [permissions, request, get] = useForegroundPermissions();
   const [updatedPermissions, setUpdatedPermissions] =
     useState<LocationPermissionResponse | null>(permissions);
-  const appStateListener = useRef<NativeEventSubscription | null>(null); // Do we still need a ref for this?
   console.log('---- Permissions Provider re-rendering ----');
 
   const updatedRequest = useCallback(async () => {
@@ -60,9 +59,9 @@ export const ForegroundPermissionsProvider = ({
       'Considering adding a new app state listener... --> updatedPermissions',
       updatedPermissions?.status,
     );
-    // Don't start listening until someone asks about location permissions. Listener is a singleton.
-    // If we switched from background to foreground, update permissions in case they changed
-    if (updatedPermissions && !appStateListener.current) {
+    // Don't start listening until someone asks about location permissions.
+    // If app switches from background to foreground, update permissions in case they changed
+    if (updatedPermissions) {
       console.log('YES, add AppState listener');
 
       const onAppStateChange = async (state: AppStateStatus) => {
@@ -73,15 +72,14 @@ export const ForegroundPermissionsProvider = ({
         }
       };
 
-      appStateListener.current = AppState.addEventListener(
+      const appStateListener = AppState.addEventListener(
         'change',
         onAppStateChange,
       );
 
       return () => {
         console.log('Destroying AppState listener');
-        appStateListener.current?.remove();
-        appStateListener.current = null;
+        appStateListener.remove();
       };
     }
   }, [updatedGet, updatedPermissions]);
