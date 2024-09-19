@@ -1,0 +1,97 @@
+/*
+ * Copyright © 2024 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+import {configureStore, createSlice} from '@reduxjs/toolkit';
+
+const {
+  reducer,
+  actions: {increment},
+} = createSlice({
+  name: 'test',
+  initialState: {counter: 0},
+  reducers: {
+    increment: ({counter}) => ({counter: counter + 1}),
+  },
+});
+
+test('persistence middleware saves state to disk', () => {
+  jest.isolateModules(() => {
+    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
+    kvStorage.setBool('FF_offline', true);
+
+    const {
+      persistenceMiddleware,
+      loadPersistedStore,
+    } = require('terraso-mobile-client/store/persistence');
+
+    const store = configureStore({
+      middleware: [persistenceMiddleware],
+      reducer,
+    });
+
+    expect(loadPersistedStore()).toBe(undefined);
+
+    store.dispatch(increment());
+
+    expect(loadPersistedStore()).toEqual({counter: 1});
+  });
+});
+
+test('can initialize store with persisted state', () => {
+  jest.isolateModules(() => {
+    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
+    kvStorage.setBool('FF_offline', true);
+
+    const {
+      persistenceMiddleware,
+      loadPersistedStore,
+    } = require('terraso-mobile-client/store/persistence');
+
+    kvStorage.setMap('persisted-redux-state', {counter: 1});
+    const store = configureStore({
+      middleware: [persistenceMiddleware],
+      reducer,
+      preloadedState: loadPersistedStore(),
+    });
+
+    expect(store.getState()).toEqual({counter: 1});
+
+    store.dispatch(increment());
+
+    expect(loadPersistedStore()).toEqual({counter: 2});
+  });
+});
+
+test('persistence middleware does nothing without feature flag', () => {
+  jest.isolateModules(() => {
+    const {
+      persistenceMiddleware,
+      loadPersistedStore,
+    } = require('terraso-mobile-client/store/persistence');
+
+    const store = configureStore({
+      middleware: [persistenceMiddleware],
+      reducer,
+    });
+
+    expect(loadPersistedStore()).toBe(undefined);
+
+    store.dispatch(increment());
+
+    expect(loadPersistedStore()).toBe(undefined);
+  });
+});
