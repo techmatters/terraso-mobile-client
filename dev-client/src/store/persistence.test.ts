@@ -35,7 +35,7 @@ test('persistence middleware saves state to disk', () => {
 
     const {
       persistenceMiddleware,
-      loadPersistedStore,
+      loadPersistedReduxState,
     } = require('terraso-mobile-client/store/persistence');
 
     const store = configureStore({
@@ -43,11 +43,11 @@ test('persistence middleware saves state to disk', () => {
       reducer,
     });
 
-    expect(loadPersistedStore()).toBe(undefined);
+    expect(loadPersistedReduxState()).toBe(undefined);
 
     store.dispatch(increment());
 
-    expect(loadPersistedStore()).toEqual({counter: 1});
+    expect(loadPersistedReduxState()).toEqual({counter: 1});
   });
 });
 
@@ -58,21 +58,21 @@ test('can initialize store with persisted state', () => {
 
     const {
       persistenceMiddleware,
-      loadPersistedStore,
+      loadPersistedReduxState,
     } = require('terraso-mobile-client/store/persistence');
 
     kvStorage.setMap('persisted-redux-state', {counter: 1});
     const store = configureStore({
       middleware: [persistenceMiddleware],
       reducer,
-      preloadedState: loadPersistedStore(),
+      preloadedState: loadPersistedReduxState(),
     });
 
     expect(store.getState()).toEqual({counter: 1});
 
     store.dispatch(increment());
 
-    expect(loadPersistedStore()).toEqual({counter: 2});
+    expect(loadPersistedReduxState()).toEqual({counter: 2});
   });
 });
 
@@ -80,7 +80,7 @@ test('persistence middleware does nothing without feature flag', () => {
   jest.isolateModules(() => {
     const {
       persistenceMiddleware,
-      loadPersistedStore,
+      loadPersistedReduxState,
     } = require('terraso-mobile-client/store/persistence');
 
     const store = configureStore({
@@ -88,10 +88,10 @@ test('persistence middleware does nothing without feature flag', () => {
       reducer,
     });
 
-    expect(loadPersistedStore()).toBe(undefined);
+    expect(loadPersistedReduxState()).toBe(undefined);
 
     store.dispatch(increment());
 
-    expect(loadPersistedStore()).toBe(undefined);
+    expect(loadPersistedReduxState()).toBe(undefined);
   });
 });
