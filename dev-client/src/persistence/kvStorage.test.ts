@@ -15,11 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
-mmkvMock.mock(); // Mock the storage
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
-beforeEach(() => {
-  // Install the in-memory adapter
-  mmkvMock.unmock(); // Cleanup if already mocked
-  mmkvMock.mock(); // Mock the storage
+test('kvStorage mock works', () => {
+  kvStorage.setMap('map-key', {testKey: 'testValue'});
+  expect(kvStorage.getMap('map-key')).toEqual({testKey: 'testValue'});
 });
