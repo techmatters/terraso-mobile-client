@@ -15,7 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 // When you add a new flag:
@@ -32,7 +31,7 @@ export const featureFlags = {
 export type FeatureFlagName = keyof typeof featureFlags;
 
 export const isFlagEnabled = (flag: FeatureFlagName) => {
-  return APP_CONFIG[flag] as boolean;
+  return ENABLED_FLAGS[flag];
 };
 
 export const willFlagBeEnabledOnReload = (flag: FeatureFlagName) => {
@@ -45,3 +44,9 @@ export const setFlagEnabledOnReload = (
 ) => {
   kvStorage.setBool(flag, isEnabled);
 };
+
+const ENABLED_FLAGS = Object.fromEntries(
+  Object.keys(featureFlags).map(
+    key => [key, willFlagBeEnabledOnReload(key as FeatureFlagName)] as const,
+  ),
+);
