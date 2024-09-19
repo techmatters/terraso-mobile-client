@@ -100,7 +100,7 @@
     "@types/jest": "^29.5.13",
     "@types/lodash": "^4.17.7",
     "@types/quantize": "^1.0.2",
-    "@types/react": "^18.3.5",
+    "@types/react": "^18.3.7",
     "@types/uuid": "^10.0.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-root-import": "^6.6.0",
