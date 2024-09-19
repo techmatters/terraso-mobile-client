@@ -88,7 +88,9 @@ const toPo = () =>
   );
 
 // JSON transform
-const toJsonOptions = {};
+const toJsonOptions = {
+  skipUntranslated: true,
+};
 const toJson = () =>
   transform('JSON', '../../locales/po/', (locale, filePath) =>
     gettextToI18next(locale, readFileSync(filePath), toJsonOptions).then(
