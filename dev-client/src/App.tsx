@@ -50,9 +50,9 @@ import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContex
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {HomeScreenContextProvider} from 'terraso-mobile-client/context/HomeScreenContext';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
-import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
-import {createStore, PERSISTED_STATE_KEY} from 'terraso-mobile-client/store';
+import {createStore} from 'terraso-mobile-client/store';
+import {loadPersistedStore} from 'terraso-mobile-client/store/persistence';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
@@ -85,7 +85,7 @@ LogBox.ignoreLogs([
   'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
 ]);
 
-const store = createStore(kvStorage.getMap(PERSISTED_STATE_KEY) ?? undefined);
+const store = createStore(loadPersistedStore());
 
 function App(): React.JSX.Element {
   const [headerHeight, setHeaderHeight] = useState(0);

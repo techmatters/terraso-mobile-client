@@ -21,11 +21,7 @@ import {
   TypedUseSelectorHook,
 } from 'react-redux';
 
-import {
-  configureStore,
-  Middleware,
-  StateFromReducersMapObject,
-} from '@reduxjs/toolkit';
+import {configureStore, StateFromReducersMapObject} from '@reduxjs/toolkit';
 
 import {
   DispatchFromStoreFactory,
@@ -39,15 +35,7 @@ import {reducer as preferencesReducer} from 'terraso-mobile-client/model/prefere
 import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
 import siteReducer from 'terraso-mobile-client/model/site/siteSlice';
 import soilIdReducer from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
-
-export const PERSISTED_STATE_KEY = 'persisted-state';
-const serializationMiddleware: Middleware = store => next => action => {
-  const result = next(action);
-  const newState = store.getState();
-  kvStorage.setMap(PERSISTED_STATE_KEY, newState);
-  return result;
-};
+import {persistenceMiddleware} from 'terraso-mobile-client/store/persistence';
 
 const reducers = {
   ...sharedReducers,
@@ -70,7 +58,7 @@ export const createStore = (intialState?: Partial<AppState>) =>
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware()
         .concat(handleAbortMiddleware)
-        .concat(serializationMiddleware),
+        .concat(persistenceMiddleware),
     reducer: reducers,
     preloadedState: intialState,
   });
