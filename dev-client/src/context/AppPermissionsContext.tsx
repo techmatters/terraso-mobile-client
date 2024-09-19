@@ -20,14 +20,13 @@ import {AppState, AppStateStatus, NativeEventSubscription} from 'react-native';
 
 import {
   LocationPermissionResponse,
-  requestForegroundPermissionsAsync,
   useForegroundPermissions,
 } from 'expo-location';
 
 export type ForegroundPermissionsType = [
   LocationPermissionResponse | null, // permissions
-  (() => Promise<LocationPermissionResponse>) | null, // get
   (() => Promise<LocationPermissionResponse>) | null, // request
+  (() => Promise<LocationPermissionResponse>) | null, // get
 ];
 
 export const ForegroundPermissionsContext =
@@ -36,39 +35,40 @@ export const ForegroundPermissionsContext =
 export const ForegroundPermissionsProvider = ({
   children,
 }: React.PropsWithChildren) => {
-  const [permissions, get, _] = useForegroundPermissions();
+  const [permissions, request, get] = useForegroundPermissions();
   const [updatedPermissions, setUpdatedPermissions] =
     useState<LocationPermissionResponse | null>(permissions);
-  const appStateListener = useRef<NativeEventSubscription | null>(null);
-  console.log('Calling the Provider');
-
-  const updatedGet = useCallback(async () => {
-    console.log('Calling get');
-    const response = await get();
-    setUpdatedPermissions(response);
-    return response;
-    // TODO-cknipe: Or should we not return the response here and below to encourage using updatedPermissions instead?
-  }, [get, setUpdatedPermissions]);
+  const appStateListener = useRef<NativeEventSubscription | null>(null); // Do we still need a ref for this?
+  console.log('---- Permissions Provider re-rendering ----');
 
   const updatedRequest = useCallback(async () => {
-    // I don't know why, but calling the request function returned by the library's hook
-    // instead of requestForegroundPermissionsAsync() won't pop the permissions dialog
-    console.log('Calling updatedRequest');
-    const response = await requestForegroundPermissionsAsync();
+    const response = await request();
+    console.log('    Calling updatedRequest(), got', response.status);
     setUpdatedPermissions(response);
     return response;
-  }, [setUpdatedPermissions]);
+  }, [request, setUpdatedPermissions]);
+
+  const updatedGet = useCallback(async () => {
+    const response = await get();
+    console.log('    Called updatedGet(), got', response.status);
+    setUpdatedPermissions(response);
+    return response;
+  }, [get, setUpdatedPermissions]);
 
   useEffect(() => {
+    console.log(
+      'Considering adding a new app state listener... --> updatedPermissions',
+      updatedPermissions?.status,
+    );
     // Don't start listening until someone asks about location permissions. Listener is a singleton.
     // If we switched from background to foreground, update permissions in case they changed
     if (updatedPermissions && !appStateListener.current) {
-      console.log(
-        'Gonna add AppState listener (should only happen once? Or once per new permission state??)',
-      );
-      const onAppStateChange = (state: AppStateStatus) => {
+      console.log('YES, add AppState listener');
+
+      const onAppStateChange = async (state: AppStateStatus) => {
         console.log('App state changed to', state);
         if (state === 'active') {
+          console.log('    Calling updatedGet()');
           updatedGet();
         }
       };
@@ -81,13 +81,14 @@ export const ForegroundPermissionsProvider = ({
       return () => {
         console.log('Destroying AppState listener');
         appStateListener.current?.remove();
+        appStateListener.current = null;
       };
     }
   }, [updatedGet, updatedPermissions]);
 
   return (
     <ForegroundPermissionsContext.Provider
-      value={[updatedPermissions, updatedGet, updatedRequest]}>
+      value={[updatedPermissions, updatedRequest, updatedGet]}>
       {children}
     </ForegroundPermissionsContext.Provider>
   );

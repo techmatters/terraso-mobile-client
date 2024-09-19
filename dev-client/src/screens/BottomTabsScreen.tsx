@@ -37,20 +37,12 @@ import {useDispatch} from 'terraso-mobile-client/store';
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
-  const [locationPermissions, _, requestLocationPermissions] =
+  const [locationPermissions, requestLocationPermissions, _] =
     useUpdatedForegroundPermissions();
-  console.log('BottomTabs');
 
   useEffect(() => {
-    console.log(
-      'Mounting BottomTabsScreen with permission -->',
-      locationPermissions?.granted,
-    );
-
     const requestAndAwaitPermissions = async () => {
-      console.log('Requesting permissions...');
-      const result = await requestLocationPermissions();
-      console.log('requestPermissions result --> ', result);
+      await requestLocationPermissions();
     };
 
     if (!locationPermissions?.granted) {
@@ -62,10 +54,6 @@ export const BottomTabsScreen = memo(() => {
   }, []);
 
   useEffect(() => {
-    console.log(
-      'Can we set the location/listener? -->',
-      locationPermissions?.status,
-    );
     if (locationPermissions?.granted) {
       locationManager.getLastKnownLocation().then(initCoords => {
         if (initCoords !== null) {
