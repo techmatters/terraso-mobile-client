@@ -38,7 +38,7 @@ export const useUpdatedForegroundPermissions = () => {
 
   const [_, request, get] = context;
   // Context provider should have populated this on app launch
-  if (get === null || request === null) {
+  if (request === null || get === null) {
     throw Error(
       'useUpdatedForegroundPermissions must be used within a ForegroundPermissionsContextProvider',
     );

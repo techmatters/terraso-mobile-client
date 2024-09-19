@@ -81,7 +81,7 @@ export const BottomTabsScreen = memo(() => {
 
       return () => locationManager.removeListener(listener);
     }
-  }, [dispatch, locationPermissions?.granted, locationPermissions?.status]);
+  }, [dispatch, locationPermissions?.granted]);
 
   return (
     <BottomTabs.Navigator

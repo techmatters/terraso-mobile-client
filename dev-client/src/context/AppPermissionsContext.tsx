@@ -55,7 +55,6 @@ export const ForegroundPermissionsProvider = ({
     // Don't start listening until someone asks about location permissions.
     //   updatedPermissions will only be non-null if permissions have been gotten/requested so far
     //   For this to be fully correct, all components must use the updated hook, rather than useForegroundPermissions
-
     if (updatedPermissions) {
       // If app switches from background to foreground, update permissions in case they changed
       const onAppStateChange = async (state: AppStateStatus) => {
