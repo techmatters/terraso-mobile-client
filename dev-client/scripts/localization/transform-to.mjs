@@ -77,6 +77,8 @@ const transform = (process, from, i18Transform) => {
 // PO transform
 const toPoOptions = {
   project: 'Terraso',
+  ctxSeparator: '',
+  compatibilityJSON: 'v4',
 };
 const toPo = () =>
   transform('PO', '../../src/translations/', (locale, filePath) =>
