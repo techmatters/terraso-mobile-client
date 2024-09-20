@@ -1,16 +1,16 @@
 {
     "welcome": {
         "title": "Bienvenido a LandPKS Soil ID",
+        "version_includes": {
+            "title": "Esta version incluye:",
+            "bullet_3": "Notas acerca del sitio",
+            "bullet_4": "El manejo de projectos"
+        },
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
             "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
             "bullet_4": "Fotos del sitio"
-        },
-        "version_includes": {
-            "title": "Esta version incluye:",
-            "bullet_3": "Notas acerca del sitio",
-            "bullet_4": "El manejo de projectos"
         },
         "learn_more": "Aprende más acerca del uso de proyectos",
         "link_text": "LandPKS de Terraso",
