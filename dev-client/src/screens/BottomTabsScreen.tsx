@@ -41,12 +41,8 @@ export const BottomTabsScreen = memo(() => {
     useUpdatedForegroundPermissions();
 
   useEffect(() => {
-    const requestAndAwaitPermissions = async () => {
-      await requestLocationPermissions();
-    };
-
     if (!locationPermissions?.granted) {
-      requestAndAwaitPermissions();
+      requestLocationPermissions();
     }
 
     // disable depcheck because we only want to run on mount
