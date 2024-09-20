@@ -103,6 +103,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       'android.permissions.RECORD_AUDIO',
       'android.permissions.MODIFY_AUDIO_SETTINGS',
       'android.permissions.VIBRATE',
+      'android.permission.READ_MEDIA_VIDEO',
     ],
   },
   ios: {
