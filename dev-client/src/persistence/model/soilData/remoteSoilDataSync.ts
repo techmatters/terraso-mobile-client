@@ -1,3 +1,20 @@
+/*
+ * Copyright © 2024 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
 import {
   DepthDependentSoilDataUpdateMutationInput,
   Maybe,
@@ -30,30 +47,43 @@ import {
   SoilIdSoilDataWaterTableDepthSelectChoices,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
-
-import {LocalDatum} from 'terraso-mobile-client/persistence/localData';
 import {
-  LocalDepthDependentSoilData,
-  LocalSoilData,
-  LocalSoilDataDepthInterval,
-} from 'terraso-mobile-client/persistence/model/soilData/localSoilData';
+  DepthDependentSoilData,
+  SoilData,
+  SoilDataDepthInterval,
+} from 'terraso-client-shared/soilId/soilIdTypes';
 
-export const sync = async (
-  dirty: Record<string, LocalDatum<LocalSoilData>>,
-): Promise<void> => {
+import {MMKV} from 'terraso-mobile-client/hooks/useStorage';
+import {MmkvSyncRepository} from 'terraso-mobile-client/persistence/sync/mmkv/mmkvSyncRecords';
+import {
+  SyncRecord,
+  SyncRunner,
+} from 'terraso-mobile-client/persistence/sync/SyncRecords';
+import {AppState} from 'terraso-mobile-client/store';
+
+export const selectRecords = (
+  currentState: AppState,
+  dirty: SyncRecord[],
+): Record<string, SoilData> => {
+  return Object.fromEntries(
+    dirty
+      .map(record => record.id)
+      .map(id => [id, currentState.soilId.soilData[id]!]),
+  );
+};
+
+export const sync = async (dirty: Record<string, SoilData>): Promise<void> => {
   for (const [key, value] of Object.entries(dirty)) {
-    await soilDataService.updateSoilData(
-      localDataToMutation(key, value.content),
-    );
+    await soilDataService.updateSoilData(localDataToMutation(key, value));
     await Promise.all(
-      value.content.depthIntervals.map(interval => {
+      value.depthIntervals.map(interval => {
         soilDataService.updateSoilDataDepthInterval(
           localDataToDepthIntervalMutation(key, interval),
         );
       }),
     );
     await Promise.all(
-      value.content.depthDependentData.map(data => {
+      value.depthDependentData.map(data => {
         soilDataService.updateDepthDependentSoilData(
           localDataToDepthDependentMutation(key, data),
         );
@@ -62,11 +92,9 @@ export const sync = async (
   }
 };
 
-/* TODO where is the best place to check the format of local data for validity? */
-
 export const localDataToMutation = (
   id: string,
-  data: LocalSoilData,
+  data: SoilData,
 ): SoilDataUpdateMutationInput => {
   return {
     siteId: id,
@@ -105,7 +133,7 @@ export const localDataToMutation = (
 
 export const localDataToDepthIntervalMutation = (
   id: string,
-  data: LocalSoilDataDepthInterval,
+  data: SoilDataDepthInterval,
 ): SoilDataUpdateDepthIntervalMutationInput => {
   return {
     siteId: id,
@@ -125,7 +153,7 @@ export const localDataToDepthIntervalMutation = (
 
 export const localDataToDepthDependentMutation = (
   id: string,
-  data: LocalDepthDependentSoilData,
+  data: DepthDependentSoilData,
 ): DepthDependentSoilDataUpdateMutationInput => {
   return {
     siteId: id,
@@ -166,3 +194,9 @@ export const localDataToDepthDependentMutation = (
     texture: data.texture as Maybe<SoilIdDepthDependentSoilDataTextureChoices>,
   };
 };
+
+export const SoilDataSyncRunner = new SyncRunner<SoilData>(
+  new MmkvSyncRepository('soilData', MMKV),
+  selectRecords,
+  sync,
+);
