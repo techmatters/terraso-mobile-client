@@ -28,7 +28,6 @@ import {
 
 import BottomSheet from '@gorhom/bottom-sheet';
 import Mapbox from '@rnmapbox/maps';
-import {Button} from 'native-base';
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
@@ -154,7 +153,6 @@ export const SitesScreen = memo(() => {
   return (
     <ScreenScaffold
       AppBar={<AppBar LeftButton={null} RightButton={<LandPKSInfoButton />} />}>
-      <SyncButton />
       <ListFilterProvider items={siteList} filters={filters}>
         <Box flex={1}>
           <Box flex={1} zIndex={-1}>
@@ -182,11 +180,3 @@ export const SitesScreen = memo(() => {
     </ScreenScaffold>
   );
 });
-
-const SyncButton = () => {
-  const onSync = useCallback(() => {
-    console.log('Syncing');
-  }, []);
-
-  return <Button onPress={onSync}>SYNC</Button>;
-};
