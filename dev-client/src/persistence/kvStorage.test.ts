@@ -15,15 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMMKVStorage} from 'react-native-mmkv-storage';
-
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
-if (!kvStorage.indexer.hasKey('welcomeScreenAlreadySeen')) {
-  kvStorage.setBool('welcomeScreenAlreadySeen', false);
-}
-
-export const useKVStorage = (key: string, defaultValue: any) => {
-  const [value, setValue] = useMMKVStorage(key, kvStorage, defaultValue);
-  return [value, setValue];
-};
+test('kvStorage mock works', () => {
+  kvStorage.setMap('map-key', {testKey: 'testValue'});
+  expect(kvStorage.getMap('map-key')).toEqual({testKey: 'testValue'});
+});
