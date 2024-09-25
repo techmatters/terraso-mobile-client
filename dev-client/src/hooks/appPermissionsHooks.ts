@@ -21,11 +21,18 @@ import {PermissionResponse} from 'expo-location';
 
 import {ForegroundPermissionsContext} from 'terraso-mobile-client/context/AppPermissionsContext';
 
-// As of Sept 2024, the app permissions hooks supplied by the expo libraries don't trigger component updates
-// when app permissions are updated. Instead, the permissions object stays stale until the next call to
-// get() or request().
-// This hook wraps the library-supplied hooks and should cause components to update when permissions are
-// updated in the app or after they are updated outside the app.
+/* As of Sept 2024, the app permissions hooks supplied by the expo libraries don't trigger component updates
+ * when app permissions are updated. Instead, the permissions object stays stale until the next call to
+ * get() or request().
+ * This hook wraps the library-supplied hooks and should cause components to update when permissions are
+ * updated in the app via this hook's request(), or after they are updated outside the app.
+ * For the hook behavior to be fully correct, all components must use the updated hook, not the expo one.
+
+ * Note: There is an assumption here that the only time the permissions will change is: 
+ *   - As a result of calling the context's updated request() method
+ *   - While the app state is not "active"
+ * If you encounter bugs with this hook, check if these assumptions are still correct.
+ */
 export type UpdatedPermissionsHookReturnType = [
   PermissionResponse | null, // permission
   () => Promise<PermissionResponse>, // request
