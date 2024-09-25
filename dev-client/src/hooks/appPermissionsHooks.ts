@@ -43,9 +43,8 @@ export type UpdatedPermissionsHookType = () => UpdatedPermissionsHookReturnType;
 export const useUpdatedForegroundPermissions = () => {
   const context = useContext(ForegroundPermissionsContext);
 
-  const [_, request, get] = context;
   // Context provider should have populated this on app launch
-  if (request === null || get === null) {
+  if (context === null) {
     throw Error(
       'useUpdatedForegroundPermissions must be used within a ForegroundPermissionsContextProvider',
     );

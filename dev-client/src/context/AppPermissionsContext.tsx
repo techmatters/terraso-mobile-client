@@ -23,14 +23,12 @@ import {
   useForegroundPermissions,
 } from 'expo-location';
 
-export type ForegroundPermissionsType = [
-  LocationPermissionResponse | null, // permissions
-  (() => Promise<LocationPermissionResponse>) | null, // request
-  (() => Promise<LocationPermissionResponse>) | null, // get
-];
+import {UpdatedPermissionsHookReturnType} from 'terraso-mobile-client/hooks/appPermissionsHooks';
+
+export type ForegroundPermissionsType = UpdatedPermissionsHookReturnType | null;
 
 export const ForegroundPermissionsContext =
-  createContext<ForegroundPermissionsType>([null, null, null]);
+  createContext<ForegroundPermissionsType>(null);
 
 export const ForegroundPermissionsProvider = ({
   children,
