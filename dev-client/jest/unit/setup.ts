@@ -15,4 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-// fill me in if you need special config for unit testing
+let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
+mmkvMock.mock(); // Mock the storage
+
+beforeEach(() => {
+  // Install the in-memory adapter
+  mmkvMock.unmock(); // Cleanup if already mocked
+  mmkvMock.mock(); // Mock the storage
+});
