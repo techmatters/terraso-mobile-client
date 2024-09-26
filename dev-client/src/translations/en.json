@@ -396,7 +396,7 @@
         "sites": "sites",
         "users": "users",
         "save": "Save",
-        "save_fab": "SAVE",
+        "save_fab": "Save",
         "use": "Use",
         "last_modified_by": "last modified {{user}}, {{date}}",
         "select_all": "Select All",
