@@ -78,6 +78,9 @@ test('can initialize store with persisted state', () => {
 
 test('persistence middleware does nothing without feature flag', () => {
   jest.isolateModules(() => {
+    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
+    kvStorage.setBool('FF_offline', false);
+
     const {
       persistenceMiddleware,
       loadPersistedReduxState,
