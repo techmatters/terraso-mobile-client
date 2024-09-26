@@ -23,20 +23,44 @@ import {createPermissionHook} from 'expo-modules-core';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {UpdatedPermissionsHookType} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 
 type PermissionHook = ReturnType<typeof createPermissionHook>;
+type PermissionResponse = ReturnType<PermissionHook>[0];
+type RequestPermissionMethod = ReturnType<PermissionHook>[1];
 
-type Props = {
-  requestModalTitle: string;
-  requestModalBody: string;
-  permissionHook: PermissionHook;
-  permissionedAction?: () => void;
-  children: (onOpen: () => void) => React.ReactNode;
+type UpdatedProps = Omit<ImplProps, 'permissions' | 'requestPermissions'> & {
+  permissionHook: UpdatedPermissionsHookType;
 };
 
-// FYI if a calling component uses the permission hook and needs to
-// update when permissions are granted, it can set permissionedAction
-// to the GetPermissionMethod returned by the hook
+export const UpdatedPermissionsRequestWrapper = ({
+  requestModalTitle,
+  requestModalBody,
+  permissionHook: usePermissions,
+  permissionedAction,
+  children,
+}: UpdatedProps) => {
+  const {permissions, request} = usePermissions();
+  return (
+    <PermissionsRequestWrapperImpl
+      requestModalTitle={requestModalTitle}
+      requestModalBody={requestModalBody}
+      permissionedAction={permissionedAction}
+      children={children}
+      permissions={permissions}
+      requestPermissions={request}
+    />
+  );
+};
+
+type Props = Omit<ImplProps, 'permissions' | 'requestPermissions'> & {
+  permissionHook: PermissionHook;
+};
+// Issue #1749: Prefer to use one of our own "updated" app permissions hooks (or create one using this)
+// The updated permissions hooks are a first step to have a more reactive interface with permissions.
+// Otherwise, the permissions could be outdated if:
+// a) nobody has done a "get" or "request" on them since they changed, or
+// b) a descendant component did the "get" or "request", so there is no reason for the given component to re-render
 export const PermissionsRequestWrapper = ({
   requestModalTitle,
   requestModalBody,
@@ -44,23 +68,49 @@ export const PermissionsRequestWrapper = ({
   permissionedAction,
   children,
 }: Props) => {
+  const [permissions, requestPermissions] = usePermissions();
+  return (
+    <PermissionsRequestWrapperImpl
+      requestModalTitle={requestModalTitle}
+      requestModalBody={requestModalBody}
+      permissionedAction={permissionedAction}
+      children={children}
+      permissions={permissions}
+      requestPermissions={requestPermissions}
+    />
+  );
+};
+
+type ImplProps = {
+  requestModalTitle: string;
+  requestModalBody: string;
+  permissions: PermissionResponse | null;
+  requestPermissions: RequestPermissionMethod;
+  permissionedAction?: () => void;
+  children: (onOpen: () => void) => React.ReactNode;
+};
+
+const PermissionsRequestWrapperImpl = ({
+  requestModalTitle,
+  requestModalBody,
+  permissionedAction,
+  permissions,
+  requestPermissions,
+  children,
+}: ImplProps) => {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
-  // Issue #1808: These permissions could be outdated if
-  // a) nobody has done a "get" or "request" on them since they changed, or
-  // b) a descendant component did the "get" or "request", so there is no reason for the given component to re-render
-  const [potentiallyOutdatedPermissions, requestPermissions] = usePermissions();
 
   const onRequestAction = useCallback(async () => {
-    if (potentiallyOutdatedPermissions === null) {
+    if (permissions === null) {
       return;
     }
 
-    if (potentiallyOutdatedPermissions.granted) {
+    if (permissions.granted) {
       if (permissionedAction !== undefined) {
         permissionedAction();
       }
-    } else if (potentiallyOutdatedPermissions.canAskAgain) {
+    } else if (permissions.canAskAgain && requestPermissions) {
       const result = await requestPermissions();
       if (result.granted && permissionedAction !== undefined) {
         permissionedAction();
@@ -68,7 +118,7 @@ export const PermissionsRequestWrapper = ({
     } else {
       ref.current?.onOpen();
     }
-  }, [permissionedAction, potentiallyOutdatedPermissions, requestPermissions]);
+  }, [permissionedAction, permissions, requestPermissions]);
 
   return (
     <>
