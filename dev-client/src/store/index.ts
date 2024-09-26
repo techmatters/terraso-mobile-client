@@ -35,6 +35,7 @@ import {reducer as preferencesReducer} from 'terraso-mobile-client/model/prefere
 import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
 import siteReducer from 'terraso-mobile-client/model/site/siteSlice';
 import soilIdReducer from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {persistenceMiddleware} from 'terraso-mobile-client/store/persistence';
 
 const reducers = {
   ...sharedReducers,
@@ -55,7 +56,9 @@ export const useDispatch: () => AppDispatch = reduxUseDispatch;
 export const createStore = (intialState?: Partial<AppState>) =>
   configureStore({
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().concat(handleAbortMiddleware),
+      getDefaultMiddleware()
+        .concat(handleAbortMiddleware)
+        .concat(persistenceMiddleware),
     reducer: reducers,
     preloadedState: intialState,
   });

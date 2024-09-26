@@ -53,6 +53,7 @@ import {HomeScreenContextProvider} from 'terraso-mobile-client/context/HomeScree
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
+import {loadPersistedReduxState} from 'terraso-mobile-client/store/persistence';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
@@ -85,7 +86,7 @@ LogBox.ignoreLogs([
   'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
 ]);
 
-const store = createStore();
+const store = createStore(loadPersistedReduxState());
 
 function App(): React.JSX.Element {
   const [headerHeight, setHeaderHeight] = useState(0);
