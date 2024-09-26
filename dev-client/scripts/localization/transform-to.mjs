@@ -38,7 +38,12 @@ const save = target => result => writeFile(target, result);
 // Base transform function
 const transform = (process, from, i18Transform) => {
   return filesInFolder(new URL(from, import.meta.url))
-    .then(files => files.filter(file => !file.toString().endsWith('.ts')))
+    .then(files =>
+      files.filter(
+        file =>
+          file.toString().endsWith('.json') || file.toString().endsWith('.po'),
+      ),
+    )
     .then(files => {
       console.log(
         `${process} transform starting.`,
