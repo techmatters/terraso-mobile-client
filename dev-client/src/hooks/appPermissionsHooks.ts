@@ -33,11 +33,12 @@ import {ForegroundPermissionsContext} from 'terraso-mobile-client/context/AppPer
  *   - While the app state is not "active"
  * If you encounter bugs with this hook, check if these assumptions are still correct.
  */
-export type UpdatedPermissionsHookReturnType = [
-  PermissionResponse | null, // permission
-  () => Promise<PermissionResponse>, // request
-  () => Promise<PermissionResponse>, // get
-];
+export type UpdatedPermissionsHookReturnType = {
+  permissions: PermissionResponse | null;
+  request: () => Promise<PermissionResponse>;
+  get: () => Promise<PermissionResponse>;
+};
+
 export type UpdatedPermissionsHookType = () => UpdatedPermissionsHookReturnType;
 
 export const useUpdatedForegroundPermissions = () => {

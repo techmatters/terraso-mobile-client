@@ -37,8 +37,10 @@ import {useDispatch} from 'terraso-mobile-client/store';
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
-  const [locationPermissions, requestLocationPermissions, _] =
-    useUpdatedForegroundPermissions();
+  const {
+    permissions: locationPermissions,
+    request: requestLocationPermissions,
+  } = useUpdatedForegroundPermissions();
 
   useEffect(() => {
     if (!locationPermissions?.granted) {

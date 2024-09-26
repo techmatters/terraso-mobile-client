@@ -72,7 +72,11 @@ export const ForegroundPermissionsProvider = ({
 
   return (
     <ForegroundPermissionsContext.Provider
-      value={[updatedPermissions, updatedRequest, updatedGet]}>
+      value={{
+        permissions: updatedPermissions,
+        request: updatedRequest,
+        get: updatedGet,
+      }}>
       {children}
     </ForegroundPermissionsContext.Provider>
   );
