@@ -53,51 +53,44 @@ import {
   SoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {MMKV} from 'terraso-mobile-client/hooks/useStorage';
-import {MmkvSyncRepository} from 'terraso-mobile-client/persistence/sync/mmkv/mmkvSyncRecords';
-import {
-  SyncRecord,
-  SyncRunner,
-} from 'terraso-mobile-client/persistence/sync/SyncRecords';
-import {AppState} from 'terraso-mobile-client/store';
+/* TODO: only transfer fields based on change records */
 
-export const selectRecords = (
-  currentState: AppState,
-  dirty: SyncRecord[],
-): Record<string, SoilData> => {
-  return Object.fromEntries(
-    dirty
-      .map(record => record.id)
-      .map(id => [id, currentState.soilId.soilData[id]!]),
-  );
+export const sync = async (
+  dirty: Record<string, SoilData>,
+): Promise<Record<string, SoilData>> => {
+  const results: Record<string, SoilData> = {};
+  for (const [siteId, soilData] of Object.entries(dirty)) {
+    results[siteId] = await syncSoilData(siteId, soilData);
+  }
+  return results;
 };
 
-export const sync = async (dirty: Record<string, SoilData>): Promise<void> => {
-  for (const [key, value] of Object.entries(dirty)) {
-    await soilDataService.updateSoilData(localDataToMutation(key, value));
-    await Promise.all(
-      value.depthIntervals.map(interval => {
-        soilDataService.updateSoilDataDepthInterval(
-          localDataToDepthIntervalMutation(key, interval),
-        );
-      }),
-    );
-    await Promise.all(
-      value.depthDependentData.map(data => {
-        soilDataService.updateDepthDependentSoilData(
-          localDataToDepthDependentMutation(key, data),
-        );
-      }),
+export const syncSoilData = async (
+  siteId: string,
+  soilData: SoilData,
+): Promise<SoilData> => {
+  let finalResult = await soilDataService.updateSoilData(
+    localDataToMutation(siteId, soilData),
+  );
+  for (const depthInterval of soilData.depthIntervals) {
+    finalResult = await soilDataService.updateSoilDataDepthInterval(
+      localDataToDepthIntervalMutation(siteId, depthInterval),
     );
   }
+  for (const data of soilData.depthDependentData) {
+    finalResult = await soilDataService.updateDepthDependentSoilData(
+      localDataToDepthDependentMutation(siteId, data),
+    );
+  }
+  return finalResult;
 };
 
 export const localDataToMutation = (
-  id: string,
+  siteId: string,
   data: SoilData,
 ): SoilDataUpdateMutationInput => {
   return {
-    siteId: id,
+    siteId: siteId,
     bedrock: data.bedrock,
     crossSlope: data.crossSlope as Maybe<SoilIdSoilDataCrossSlopeChoices>,
     depthIntervalPreset:
@@ -132,11 +125,11 @@ export const localDataToMutation = (
 };
 
 export const localDataToDepthIntervalMutation = (
-  id: string,
+  siteId: string,
   data: SoilDataDepthInterval,
 ): SoilDataUpdateDepthIntervalMutationInput => {
   return {
-    siteId: id,
+    siteId: siteId,
 
     carbonatesEnabled: data.carbonatesEnabled,
     depthInterval: data.depthInterval,
@@ -152,11 +145,11 @@ export const localDataToDepthIntervalMutation = (
 };
 
 export const localDataToDepthDependentMutation = (
-  id: string,
+  siteId: string,
   data: DepthDependentSoilData,
 ): DepthDependentSoilDataUpdateMutationInput => {
   return {
-    siteId: id,
+    siteId: siteId,
 
     carbonates:
       data.carbonates as Maybe<SoilIdDepthDependentSoilDataCarbonatesChoices>,
@@ -194,9 +187,3 @@ export const localDataToDepthDependentMutation = (
     texture: data.texture as Maybe<SoilIdDepthDependentSoilDataTextureChoices>,
   };
 };
-
-export const SoilDataSyncRunner = new SyncRunner<SoilData>(
-  new MmkvSyncRepository('soilData', MMKV),
-  selectRecords,
-  sync,
-);

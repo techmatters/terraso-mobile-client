@@ -36,12 +36,19 @@ import {
 
 import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
 import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
+import {SoilDataChangeSet} from 'terraso-mobile-client/model/soilId/persistence/soilDataChanges';
+import * as localSoilDataService from 'terraso-mobile-client/model/soilId/persistence/soilDataService';
 import {
   soilIdEntryDataBased,
   soilIdEntryForStatus,
   soilIdEntryLocationBased,
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+import {
+  addSyncRecord,
+  clearSyncRecords,
+  SyncRecords,
+} from 'terraso-mobile-client/model/sync/syncRecords';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';
@@ -52,6 +59,8 @@ export type MethodRequired<
 
 export type SoilState = {
   soilData: Record<string, SoilData | undefined>;
+  soilDataSync: SyncRecords<SoilDataChangeSet>;
+
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
   status: LoadingState;
 
@@ -60,6 +69,8 @@ export type SoilState = {
 
 const initialState: SoilState = {
   soilData: {},
+  soilDataSync: {},
+
   projectSettings: {},
   status: 'loading',
 
@@ -72,13 +83,8 @@ const soilIdSlice = createSlice({
   reducers: {
     setSoilData: (state, action: PayloadAction<Record<string, SoilData>>) => {
       state.soilData = action.payload;
+      state.soilDataSync = {};
       state.matches = {};
-    },
-    updateSoilData: (
-      state,
-      action: PayloadAction<Record<string, SoilData>>,
-    ) => {
-      Object.assign(state.soilData, action.payload);
     },
     setProjectSettings: (
       state,
@@ -100,23 +106,49 @@ const soilIdSlice = createSlice({
     },
   },
   extraReducers: builder => {
+    builder.addCase(syncSoilDataForUser.fulfilled, (state, action) => {
+      Object.assign(state.soilData, action.payload);
+      clearSyncRecords(state.soilDataSync, action.meta.arg);
+      flushDataBasedMatches(state);
+    });
+
     builder.addCase(updateSoilData.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload;
+      state.soilData[action.meta.arg.siteId] = action.payload.result;
+      addSyncRecord(
+        state.soilDataSync,
+        action.meta.arg.siteId,
+        action.payload.changes,
+      );
       flushDataBasedMatches(state);
     });
 
     builder.addCase(updateDepthDependentSoilData.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload;
+      state.soilData[action.meta.arg.siteId] = action.payload.result;
+      addSyncRecord(
+        state.soilDataSync,
+        action.meta.arg.siteId,
+        action.payload.changes,
+      );
       flushDataBasedMatches(state);
     });
 
     builder.addCase(updateSoilDataDepthInterval.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload;
+      state.soilData[action.meta.arg.siteId] = action.payload.result;
+      addSyncRecord(
+        state.soilDataSync,
+        action.meta.arg.siteId,
+        action.payload.changes,
+      );
       flushDataBasedMatches(state);
     });
 
     builder.addCase(deleteSoilDataDepthInterval.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload;
+      state.soilData[action.meta.arg.siteId] = action.payload.result;
+      addSyncRecord(
+        state.soilDataSync,
+        action.meta.arg.siteId,
+        action.payload.changes,
+      );
       flushDataBasedMatches(state);
     });
 
@@ -215,24 +247,29 @@ export const fetchSoilDataForUser = createAsyncThunk(
   })),
 );
 
+export const syncSoilDataForUser = createAsyncThunk(
+  'soilId/syncSoilDataForUser',
+  localSoilDataService.syncSoilDataThunk,
+);
+
 export const updateSoilData = createAsyncThunk(
   'soilId/updateSoilData',
-  soilDataService.updateSoilData,
+  localSoilDataService.updateSoilDataThunk,
 );
 
 export const updateDepthDependentSoilData = createAsyncThunk(
   'soilId/updateDepthDependentSoilData',
-  soilDataService.updateDepthDependentSoilData,
+  localSoilDataService.updateDepthDependentSoilDataThunk,
 );
 
 export const updateSoilDataDepthInterval = createAsyncThunk(
   'soilId/updateSoilDataDepthInterval',
-  soilDataService.updateSoilDataDepthInterval,
+  localSoilDataService.updateDepthDependentSoilDataThunk,
 );
 
 export const deleteSoilDataDepthInterval = createAsyncThunk(
   'soilId/deleteSoilDataDepthInterval',
-  soilDataService.deleteSoilDataDepthInterval,
+  localSoilDataService.deleteSoilDataDepthIntervalThunk,
 );
 
 export const updateProjectSoilSettings = createAsyncThunk(
