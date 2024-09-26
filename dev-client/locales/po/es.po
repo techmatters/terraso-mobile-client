@@ -526,7 +526,7 @@ msgstr "Textura del suelo"
 
 #: 
 msgid "soil##texture##info##description"
-msgstr "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{«context»:«{{units}}»}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n"
+msgstr "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n"
 "\n"
 "<bold>La textura del suelo</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener un gran impacto en el potencial del suelo.\n"
 "\n"
@@ -585,7 +585,7 @@ msgstr "Volumen de fragmentos de roca"
 
 #: 
 msgid "soil##texture##fragment##info##description"
-msgstr "El volumen de fragmentos de roca es una medida de cuánto volumen del suelo está ocupado por rocas, lo cual se define como cualquier cosa mayor a $t(soil.texture.fragment.info.description_diameter,{«context»:«{{units}}»}) de diámetro.\n"
+msgstr "El volumen de fragmentos de roca es una medida de cuánto volumen del suelo está ocupado por rocas, lo cual se define como cualquier cosa mayor a $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro.\n"
 "\n"
 "Esto puede estimarse visualmente comparando el volumen del suelo antes y después de retirar las rocas o comparando el volumen de rocas retiradas con el volumen del suelo restante.\n"
 "\n"
@@ -697,7 +697,7 @@ msgstr "Utiliza tierra seca siempre que sea posible. La aplicación permite indi
 "\n"
 "Si su capa de suelo tiene múltiples colores (es decir, motas, características redoximórficas, o carbonatos), aisla el color dominante de la matriz de la pila.\n"
 "\n"
-"Pasa el suelo a través de un $t(soil.color.guide.step2.content_size,{«context»:«{{units}}»}) tamiz para crear una pila de suelo homogéneo, o usa tus manos para recoger cualquier cosa más grande que $t(soil.color.guide.step2.content_size,{«context»:«{{units}}»}).\n"
+"Pasa el suelo a través de un $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) tamiz para crear una pila de suelo homogéneo, o usa tus manos para recoger cualquier cosa más grande que $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n"
 "\n"
 "Aplana la pila de tierra para minimizar las sombras dentro de la muestra de tierra."
 
@@ -775,7 +775,7 @@ msgstr "Cómo usar el medidor de pendiente"
 
 #: 
 msgid "slope##steepness##info##description"
-msgstr "Colócate frente al lugar a una distancia mínima de $t(slope.steepness.info.description_distance, {«context»: «{{units}}»}).\n"
+msgstr "Colócate frente al lugar a una distancia mínima de $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}).\n"
 "\n"
 "Identifica la dirección de la pendiente predominante en el lugar.\n"
 "\n"
@@ -801,7 +801,7 @@ msgstr "La forma de la pendiente se refiere a la forma en que se curva el terren
 "\n"
 "La forma de la pendiente se determina en dos direcciones: <bold>pendiente descendente</bold> y <bold>pendiente transversal</bold>.\n"
 "\n"
-"En primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(pendiente.forma.info.descripcion_distancia, {«contexto»: «{{unidades}}»}\"}) en todas las direcciones.\n"
+"En primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(pendiente.forma.info.descripcion_distancia, {\"contexto\": \"{{unidades}}\"}\"}) en todas las direcciones.\n"
 "\n"
 "Si lloviera, ¿en qué dirección general fluiría el agua cuesta abajo? Esto se denomina la dirección <bold>pendiente abajo</bold>.\n"
 "\n"
@@ -835,11 +835,11 @@ msgstr "Esta version incluye:"
 
 #: 
 msgid "welcome##version_includes##bullet_1"
-msgstr ""
+msgstr "Identificación de suelos dentro de los EEUU"
 
 #: 
 msgid "welcome##version_includes##bullet_2"
-msgstr ""
+msgstr "Recogida de datos sobre pendientes y suelos"
 
 #: 
 msgid "welcome##version_includes##bullet_3"
@@ -851,11 +851,11 @@ msgstr "El manejo de projectos"
 
 #: 
 msgid "welcome##next##bullet_1"
-msgstr ""
+msgstr "Capacidades sin conexión"
 
 #: 
 msgid "welcome##next##bullet_2"
-msgstr ""
+msgstr "Mejoras en la visualización de datos"
 
 #: 
 msgid "welcome##next##bullet_3"
@@ -939,7 +939,7 @@ msgstr "Toca el mapa para marcar una ubicación y obtener más imformacion acerc
 
 #: 
 msgid "site##empty##bullet_2"
-msgstr ""
+msgstr "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual."
 
 #: 
 msgid "site##empty##bullet_3"
@@ -1083,7 +1083,7 @@ msgstr "Mejores coincidencias de suelo"
 
 #: 
 msgid "site##soil_id##matches##info##title"
-msgstr "Mejores coincidencias del suelo"
+msgstr "Mejores coincidencias de suelo"
 
 #: 
 msgid "site##soil_id##matches##info##description##site"
@@ -1131,11 +1131,11 @@ msgstr "https://nativeland.info/"
 
 #: 
 msgid "site##soil_id##matches##offline_title"
-msgstr ""
+msgstr "Estás fuera de linea"
 
 #: 
 msgid "site##soil_id##matches##offline_body"
-msgstr ""
+msgstr "Las coincidencias de suelos se actualizarán aquí cuando estás sin conexión."
 
 #: 
 msgid "site##soil_id##site_data##title"
@@ -1511,7 +1511,7 @@ msgstr "Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros 
 
 #: 
 msgid "projects##sites##remove_site_modal##action_name"
-msgstr ""
+msgstr "Eliminar sitio."
 
 #: 
 msgid "projects##sites##transfer_site_modal##title"
@@ -1858,7 +1858,7 @@ msgstr "Cancelar"
 
 #: 
 msgid "delete_account##confirm##delete"
-msgstr "Borrar"
+msgstr "Eliminar"
 
 #: 
 msgid "delete_account##pending##p0"
@@ -2116,7 +2116,7 @@ msgstr "A ({{units}})"
 
 #: 
 msgid "soil##depth##number_required"
-msgstr "$t(soil.depth.depth, {«context»: «{{item}}»}) debe ser un número"
+msgstr "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) debe ser un número"
 
 #: 
 msgid "soil##depth##depth_start"
@@ -2204,35 +2204,35 @@ msgstr ">5cm"
 
 #: 
 msgid "soil##texture##guide##grittyness_type##GRITTY"
-msgstr ""
+msgstr "Granulado"
 
 #: 
 msgid "soil##texture##guide##grittyness_type##NEITHER"
-msgstr ""
+msgstr "Ni granulado ni suave"
 
 #: 
 msgid "soil##texture##guide##grittyness_type##SMOOTH"
-msgstr ""
+msgstr "Suave"
 
 #: 
 msgid "soil##texture##guide##prepare_details_1"
-msgstr ""
+msgstr "Obtén una muestra de tierra de al menos unos puñados."
 
 #: 
 msgid "soil##texture##guide##prepare_details_2"
-msgstr ""
+msgstr "Retira todos los fragmentos de roca mayores de 2 mm. Si es posible, utiliza un tamiz."
 
 #: 
 msgid "soil##texture##guide##prepare_details_3"
-msgstr ""
+msgstr "Aplasta los grumos de tierra (si es posible)."
 
 #: 
 msgid "soil##texture##guide##wet_details_1"
-msgstr ""
+msgstr "Recoge un puñado de tierra del tamaño de una pelota de golf (más o menos 25 g)."
 
 #: 
 msgid "soil##texture##guide##wet_details_2"
-msgstr ""
+msgstr "Utiliza una botella pulverizadora para aplicar lentamente agua a la muestra."
 
 #: 
 msgid "soil##texture##guide##wet_details_3"
@@ -2244,7 +2244,7 @@ msgstr "La tierra debe estar completamente húmeda, pero no brillante, con una t
 
 #: 
 msgid "soil##texture##guide##wet_details_5"
-msgstr ""
+msgstr "Evita trabajar la tierra con las manos durante más de 2 minutos. Si sobrepasa los 2 minutos, desecha la tierra y empieza con una nueva muestra."
 
 #: 
 msgid "soil##texture##guide##ball_details_1"
@@ -2256,11 +2256,11 @@ msgstr "Si se desmorona al ejercer una ligera presión para hacerla rodar, la ti
 
 #: 
 msgid "soil##texture##guide##ribbon_details_1"
-msgstr ""
+msgstr "Agarra la tierra con los dedos (no con el pulgar)."
 
 #: 
 msgid "soil##texture##guide##ribbon_details_2"
-msgstr ""
+msgstr "Utiliza la parte interior del nudillo del pulgar (la parte plana) para empujar la tierra hacia arriba por encima del borde del dedo índice. No utilices la punta del pulgar para presionar la tierra."
 
 #: 
 msgid "soil##texture##guide##ribbon_details_3"
@@ -2272,7 +2272,7 @@ msgstr "Si la tierra se desmorona en lugar de mantenerse unida cuando se presion
 
 #: 
 msgid "soil##texture##guide##ribbon_details_5"
-msgstr ""
+msgstr "Deja que la cinta caiga naturalmente por efecto de la gravedad. Mide la longitud del segmento, sin tener en cuenta los bordes irregulares."
 
 #: 
 msgid "soil##texture##guide##grittyness_details_1"
@@ -2280,11 +2280,11 @@ msgstr "<0>Granulado</0> significa que se pueden sentir granos individuales en e
 
 #: 
 msgid "soil##texture##guide##grittyness_details_2"
-msgstr ""
+msgstr "<0>Liso</0> significa que el suelo mojado se siente resbaladizo o jabonoso al tacto."
 
 #: 
 msgid "soil##texture##guide##grittyness_details_3"
-msgstr ""
+msgstr "<0>Ni granulado ni suave</0> significa que no predomina ninguna de esas dos texturas. Es posible que aún se perciban algunos granos de arena o algo jabonoso pero al tacto, pero ninguna predomina."
 
 #: 
 msgid "soil##texture##guide_intro"
