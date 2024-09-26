@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-09-19T19:20:33.263Z\n"
-"PO-Revision-Date: 2024-09-19T19:20:33.264Z\n"
+"POT-Creation-Date: 2024-09-26T19:04:41.107Z\n"
+"PO-Revision-Date: 2024-09-26T19:04:41.108Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -58,9 +58,6 @@ msgstr "Get started"
 
 msgid "home##info##title"
 msgstr "Discover your land’s potential"
-
-msgid "home##info##intro_image_alt"
-msgstr ""
 
 msgid "home##info##description"
 msgstr ""
@@ -965,7 +962,7 @@ msgid "general##save"
 msgstr "Save"
 
 msgid "general##save_fab"
-msgstr "SAVE"
+msgstr "Save"
 
 msgid "general##use"
 msgstr "Use"
