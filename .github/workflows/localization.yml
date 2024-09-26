@@ -23,7 +23,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
+        working-directory: ./dev-client
         run: npm ci
 
       - name: Run missing keys check
+        working-directory: ./dev-client
         run: npm run localization-check-missing
