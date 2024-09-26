@@ -15,9 +15,8 @@ on:
 jobs:
   missing-keys:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: Check out git repository
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -25,8 +24,10 @@ jobs:
         with:
           node-version-file: '.tool-versions'
           cache: 'npm'
+          cache-dependency-path: |
+            dev-client/package-lock.json
 
-      - name: Install dependencies
+      - name: Install Node dependencies
         working-directory: ./dev-client
         run: npm ci
 
