@@ -45,6 +45,7 @@ import {captureConsoleIntegration} from '@sentry/integrations';
 import * as Sentry from '@sentry/react-native';
 
 import {APP_CONFIG} from 'terraso-mobile-client/config';
+import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
@@ -114,7 +115,9 @@ function App(): React.JSX.Element {
                         <Toasts />
                         <HomeScreenContextProvider>
                           <ConnectivityContextProvider>
-                            <RootNavigator />
+                            <ForegroundPermissionsProvider>
+                              <RootNavigator />
+                            </ForegroundPermissionsProvider>
                           </ConnectivityContextProvider>
                         </HomeScreenContextProvider>
                       </GeospatialProvider>

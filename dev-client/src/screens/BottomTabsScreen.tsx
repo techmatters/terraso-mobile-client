@@ -17,12 +17,11 @@
 
 import {memo, useEffect} from 'react';
 
-import {useForegroundPermissions} from 'expo-location';
-
 import {NavigationHelpers} from '@react-navigation/native';
 import {Location, locationManager} from '@rnmapbox/maps';
 
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
+import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 import {useKeyboardStatus} from 'terraso-mobile-client/hooks/useKeyboardStatus';
 import {updateLocation} from 'terraso-mobile-client/model/map/mapSlice';
 import {
@@ -38,19 +37,22 @@ import {useDispatch} from 'terraso-mobile-client/store';
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
   const {keyboardStatus} = useKeyboardStatus();
-  const [potentiallyOutdatedLocationPermission, _, requestLocationPermission] =
-    useForegroundPermissions();
+  const {
+    permissions: locationPermissions,
+    request: requestLocationPermissions,
+  } = useUpdatedForegroundPermissions();
 
   useEffect(() => {
-    if (!potentiallyOutdatedLocationPermission?.granted) {
-      requestLocationPermission();
+    if (!locationPermissions?.granted) {
+      requestLocationPermissions();
     }
+
     // disable depcheck because we only want to run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (potentiallyOutdatedLocationPermission?.granted) {
+    if (locationPermissions?.granted) {
       locationManager.getLastKnownLocation().then(initCoords => {
         if (initCoords !== null) {
           dispatch(
@@ -71,12 +73,13 @@ export const BottomTabsScreen = memo(() => {
           }),
         );
       };
+
       locationManager.setMinDisplacement(USER_DISPLACEMENT_MIN_DISTANCE_M);
       locationManager.addListener(listener);
 
       return () => locationManager.removeListener(listener);
     }
-  }, [dispatch, potentiallyOutdatedLocationPermission]);
+  }, [dispatch, locationPermissions?.granted]);
 
   return (
     <BottomTabs.Navigator
