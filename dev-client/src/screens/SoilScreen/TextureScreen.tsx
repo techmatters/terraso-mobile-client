@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo} from 'react';
+import {useCallback, useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, ImageSourcePropType} from 'react-native';
 
@@ -78,10 +78,11 @@ const FRAGMENT_IMAGES = {
 
 export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const {siteId, depthInterval} = props;
+  const navigation = useNavigation();
+
   const {t} = useTranslation();
   const depthData = useSelector(selectDepthDependentData(props));
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
@@ -152,6 +153,19 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
     },
     [dispatch, siteId, depthInterval],
   );
+
+  // TODO-cknipe: How to make this less ad-hoc? Since we'll want something similar on most screens
+  const name = useSelector(state => state.site.sites[siteId]?.name);
+  const dependenciesExist = !!name;
+  useEffect(() => {
+    if (!dependenciesExist) {
+      navigation.navigate('BOTTOM_TABS');
+    }
+  }, [dependenciesExist, navigation]);
+
+  if (!dependenciesExist) {
+    return null;
+  }
 
   return (
     <SoilPitInputScreenScaffold {...props}>
