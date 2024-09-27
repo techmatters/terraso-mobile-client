@@ -15,12 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {
   Box,
@@ -37,21 +36,28 @@ import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/compon
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
-  note: SiteNote;
+  noteId: string;
+  siteId: string;
 };
 
-export const EditSiteNoteScreen = ({note}: Props) => {
+export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const site = useSelector(state => state.site.sites[siteId]);
+  const note = site?.notes[noteId];
+
+  // TODO-cknipe: I guess we could also handle the case where the user has been deleted
+  // or no longer has permissions to edit notes?
   const currentUser = useSelector(state => state.account.currentUser.data);
-  const currentUserIsAuthor = note.authorId === currentUser?.id;
+  const currentUserIsAuthor = note?.authorId === currentUser?.id;
 
   const handleUpdateNote = async ({content}: {content: string}) => {
     if (!currentUserIsAuthor) {
+      // TODO-cknipe: Is this ok?
       navigation.pop();
       return;
     } else if (!content.trim()) {
@@ -69,15 +75,41 @@ export const EditSiteNoteScreen = ({note}: Props) => {
       console.error('Failed to update note:', error);
     } finally {
       setIsSubmitting(false);
+      // TODO-cknipe: Is this ok?
       navigation.pop();
     }
   };
 
   const handleDelete = useCallback(async () => {
     setIsSubmitting(true);
-    await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
+    await dispatch(deleteSiteNote(note)).then(() => {
+      // TODO-cknipe: This would conflict with the pop in the useEffect. Figure out how to reconcile.
+      // navigation.pop();
+    });
     setIsSubmitting(false);
-  }, [navigation, dispatch, note]);
+  }, [dispatch, note]);
+
+  // TODO-cknipe: Generalize this
+  useEffect(() => {
+    if (!site) {
+      console.log(
+        'Close EditSiteNoteScreen; no site\n',
+        navigation.getState().routes,
+      );
+      navigation.navigate('BOTTOM_TABS');
+    } else if (!note) {
+      console.log(
+        'Close EditSiteNoteScreen; no note\n',
+        navigation.getState().routes,
+      );
+      navigation.pop();
+    }
+  }, [navigation, note, site]);
+
+  const dependenciesExist = !!site && !!note;
+  if (!dependenciesExist) {
+    return null;
+  }
 
   return (
     <ScreenFormWrapper
