@@ -45,26 +45,22 @@ type Props = {
   siteId: string;
   initialTab: SiteTabName;
 };
-export const SiteLocationDashboardTabNavigator = memo(
-  ({siteId, initialTab}: Props) => {
-    const {t} = useTranslation();
-    const defaultOptions = useDefaultTabOptions();
-    const tabs = useMemo(
-      () =>
-        Object.entries(tabDefinitions).map(([name, View]) => (
-          <Tab.Screen
-            name={name as SiteTabName}
-            key={name}
-            initialParams={{siteId}}
-            options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
-            children={props => (
-              <View {...((props.route.params ?? {}) as any)} />
-            )}
-          />
-        )),
-      [siteId, t, defaultOptions],
-    );
+export const SiteTabNavigator = memo(({siteId, initialTab}: Props) => {
+  const {t} = useTranslation();
+  const defaultOptions = useDefaultTabOptions();
+  const tabs = useMemo(
+    () =>
+      Object.entries(tabDefinitions).map(([name, View]) => (
+        <Tab.Screen
+          name={name as SiteTabName}
+          key={name}
+          initialParams={{siteId}}
+          options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
+          children={props => <View {...((props.route.params ?? {}) as any)} />}
+        />
+      )),
+    [siteId, t, defaultOptions],
+  );
 
-    return <Tab.Navigator initialRouteName={initialTab}>{tabs}</Tab.Navigator>;
-  },
-);
+  return <Tab.Navigator initialRouteName={initialTab}>{tabs}</Tab.Navigator>;
+});

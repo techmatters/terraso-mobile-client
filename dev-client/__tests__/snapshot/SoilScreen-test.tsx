@@ -21,7 +21,7 @@ import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 
 test('renders correctly', () => {
   const screen = render(<SoilScreen siteId="1" />, {
-    route: 'LOCATION_DASHBOARD',
+    route: 'SITE_TABS',
     initialState: testState,
   }).toJSON();
 

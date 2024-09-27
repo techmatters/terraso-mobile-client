@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo} from 'react';
+import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Coords} from 'terraso-client-shared/types';
@@ -27,10 +27,9 @@ import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
-  SiteLocationDashboardTabNavigator,
   SiteTabName,
-} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
-import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
+  SiteTabNavigator,
+} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
@@ -38,34 +37,38 @@ import {
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
 
-type Props = ({siteId: string} | {coords: Coords} | {elevation: number}) & {
-  initialTab?: SiteTabName;
-};
+type Props = {siteId: string; elevation?: number; initialTab?: SiteTabName};
 
 // A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with only coords)
-export const LocationDashboardScreen = (props: Props) => {
+export const SiteTabsScreen = (props: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const initialTab = props.initialTab === undefined ? 'SITE' : props.initialTab;
 
-  const siteId = 'siteId' in props ? props.siteId : undefined;
-  const site = useSelector(state =>
-    siteId === undefined ? undefined : selectSite(siteId)(state),
-  );
-  const coords = 'coords' in props ? props.coords : site!;
+  const siteId = props.siteId;
+  const site = useSelector(state => selectSite(siteId)(state)); // TODO-cknipe: What if site was deleted?
+  const coords = site as Coords;
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  const elevation = 'elevation' in props ? props.elevation : undefined;
+  console.log('---> LocationScreen being rendered');
 
-  const userRole = useSelector(state =>
-    siteId === undefined ? null : selectUserRoleSite(state, siteId),
-  );
+  // TODO-cknipe: Generalize this
+  const dependenciesExist = !!site;
+  useEffect(() => {
+    if (!dependenciesExist) {
+      console.log(
+        'We should close the SiteNotes screen',
+        navigation.getState().routes[navigation.getState().routes.length - 1],
+      );
+      navigation.navigate('BOTTOM_TABS');
+    }
+  }, [dependenciesExist, navigation]);
 
   useSoilIdData(coords, siteId);
 
   const appBarRightButton = useMemo(() => {
-    // display nothing if no site associated with location or
-    // user does not own the site / is not manager
-    if (!siteId || userRole === null || !isSiteManager(userRole)) {
+    // display nothing if user does not own the site / is not manager
+    if (userRole === null || !isSiteManager(userRole)) {
       return undefined;
     }
 
@@ -78,6 +81,11 @@ export const LocationDashboardScreen = (props: Props) => {
     );
   }, [siteId, navigation, userRole]);
 
+  if (!dependenciesExist) {
+    console.log("We're early returning");
+    return null;
+  }
+
   return (
     <ScreenScaffold
       AppBar={
@@ -86,20 +94,9 @@ export const LocationDashboardScreen = (props: Props) => {
           title={site?.name ?? t('site.dashboard.default_title')}
         />
       }>
-      {siteId ? (
-        <SiteRoleContextProvider siteId={siteId}>
-          <SiteLocationDashboardTabNavigator
-            siteId={siteId}
-            initialTab={initialTab}
-          />
-        </SiteRoleContextProvider>
-      ) : (
-        <LocationDashboardContent
-          siteId={siteId}
-          coords={coords}
-          elevation={elevation}
-        />
-      )}
+      <SiteRoleContextProvider siteId={siteId}>
+        <SiteTabNavigator siteId={siteId} initialTab={initialTab} />
+      </SiteRoleContextProvider>
     </ScreenScaffold>
   );
 };
