@@ -55,7 +55,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   useEffect(() => {
     if (!dependenciesExist) {
       console.log(
-        'We should close the SiteNotes screen',
+        '       We should close the SiteNotes screen',
         navigation.getState().routes[navigation.getState().routes.length - 1],
       );
       navigation.navigate('BOTTOM_TABS');
@@ -63,6 +63,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   }, [dependenciesExist, navigation]);
 
   if (!dependenciesExist) {
+    console.log("       SiteNotesScreen's site =", site);
     return null;
   }
 

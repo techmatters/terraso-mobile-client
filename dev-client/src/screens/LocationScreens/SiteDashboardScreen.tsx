@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,25 +15,31 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-
 import {Coords} from 'terraso-client-shared/types';
 
-import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useSelector} from 'terraso-mobile-client/store';
 
-type Props = {coords: Coords; elevation?: number};
+type Props = {
+  siteId: string;
+};
+export const SiteDashboardScreen = ({siteId}: Props) => {
+  const site = useSelector(state => state.site.sites[siteId]);
+  // TODO-cknipe: Does it mean anything different if elevation is null vs undefined?
 
-export const TemporaryLocationScreen = (props: Props) => {
-  const {t} = useTranslation();
-  const coords = props.coords;
-  const elevation = 'elevation' in props ? props.elevation : undefined;
+  // TODO-cknipe: Check for if site is gone
+  console.log('-----> SiteDashboardScreen being rendered');
+
+  if (!site) {
+    console.log('       and site is', site);
+    return null;
+  }
 
   return (
-    <ScreenScaffold
-      AppBar={<AppBar title={t('site.dashboard.default_title')} />}>
-      <LocationDashboardContent coords={coords} elevation={elevation} />
-    </ScreenScaffold>
+    <LocationDashboardContent
+      site={site}
+      coords={site as Coords}
+      elevation={site?.elevation ?? undefined}
+    />
   );
 };

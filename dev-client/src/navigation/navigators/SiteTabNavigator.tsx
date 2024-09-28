@@ -25,7 +25,7 @@ import {
   ParamList,
   ScreenDefinitions,
 } from 'terraso-mobile-client/navigation/types';
-import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
+import {SiteDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteDashboardScreen';
 import {SiteNotesScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/SiteNotesScreen';
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
@@ -33,7 +33,7 @@ import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 type TabsParamList = ParamList<typeof tabDefinitions>;
 export type SiteTabName = keyof TabsParamList;
 const tabDefinitions = {
-  SITE: LocationDashboardContent,
+  SITE: SiteDashboardScreen,
   SLOPE: SlopeScreen,
   SOIL: SoilScreen,
   NOTES: SiteNotesScreen,
