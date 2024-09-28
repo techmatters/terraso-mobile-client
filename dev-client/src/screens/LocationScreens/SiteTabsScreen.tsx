@@ -18,12 +18,9 @@
 import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Coords} from 'terraso-client-shared/types';
-
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
-import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
@@ -47,24 +44,18 @@ export const SiteTabsScreen = (props: Props) => {
 
   const siteId = props.siteId;
   const site = useSelector(state => selectSite(siteId)(state)); // TODO-cknipe: What if site was deleted?
-  const coords = site as Coords;
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  console.log('---> LocationScreen being rendered');
+  console.log('--> SiteTabsScreen being rendered');
 
   // TODO-cknipe: Generalize this
   const dependenciesExist = !!site;
   useEffect(() => {
     if (!dependenciesExist) {
-      console.log(
-        'We should close the SiteNotes screen',
-        navigation.getState().routes[navigation.getState().routes.length - 1],
-      );
+      console.log('    We should close the SiteTabs screen');
       navigation.navigate('BOTTOM_TABS');
     }
   }, [dependenciesExist, navigation]);
-
-  useSoilIdData(coords, siteId);
 
   const appBarRightButton = useMemo(() => {
     // display nothing if user does not own the site / is not manager
@@ -82,7 +73,7 @@ export const SiteTabsScreen = (props: Props) => {
   }, [siteId, navigation, userRole]);
 
   if (!dependenciesExist) {
-    console.log("We're early returning");
+    console.log('    SiteTabsScreen site =', site);
     return null;
   }
 
