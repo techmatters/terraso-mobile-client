@@ -30,7 +30,7 @@ import {
 
 import {
   DepthIntervalChange,
-  FieldChange,
+  gatherChangedFields,
   gatherDepthDependentData,
   gatherDepthIntervals,
   SoilDataChangeSet,
@@ -44,11 +44,7 @@ export const sync = async (
   for (const [siteId, entry] of Object.entries(syncState)) {
     if (entry.state) {
       /* NOTE: what do we do if the state is undefined? when does this happen? */
-      results[siteId] = await syncSoilData(
-        siteId,
-        entry.state,
-        entry.changeData,
-      );
+      results[siteId] = await syncSoilData(siteId, entry.state, entry.changes);
     }
   }
   return results;
@@ -56,16 +52,16 @@ export const sync = async (
 
 export const syncSoilData = async (
   siteId: string,
-  soilData: SoilData,
-  changeSet: SoilDataChangeSet,
+  data: SoilData,
+  changes: SoilDataChangeSet,
 ): Promise<SoilData> => {
   let finalResult = await soilDataService.updateSoilData(
-    localDataToMutation(siteId, soilData, changeSet),
+    localDataToMutation(siteId, data, changes),
   );
 
-  const depthIntervals = gatherDepthIntervals(soilData);
+  const depthIntervals = gatherDepthIntervals(data);
   for (const [depthInterval, change] of Object.entries(
-    changeSet.depthIntervalChanges,
+    changes.depthIntervalChanges,
   )) {
     if (change.deleted) {
       finalResult = await soilDataService.deleteSoilDataDepthInterval(
@@ -82,9 +78,9 @@ export const syncSoilData = async (
     }
   }
 
-  const depthDependentData = gatherDepthDependentData(soilData);
+  const depthDependentData = gatherDepthDependentData(data);
   for (const [depthInterval, change] of Object.entries(
-    changeSet.depthDependentDataChanges,
+    changes.depthDependentDataChanges,
   )) {
     finalResult = await soilDataService.updateDepthDependentSoilData(
       localDataToDepthDependentMutation(
@@ -100,11 +96,11 @@ export const syncSoilData = async (
 export const localDataToMutation = (
   siteId: string,
   data: SoilData,
-  changeData: SoilDataChangeSet,
+  changes: SoilDataChangeSet,
 ): SoilDataUpdateMutationInput => {
   return {
     siteId: siteId,
-    ...gatherFields(changeData.fieldChanges, data),
+    ...gatherChangedFields(changes.fieldChanges, data),
   };
 };
 
@@ -121,35 +117,23 @@ export const localDataToDepthIntervalDeletion = (
 export const localDataToDepthIntervalMutation = (
   siteId: string,
   data: SoilDataDepthInterval,
-  changeData: DepthIntervalChange,
+  changes: DepthIntervalChange,
 ): SoilDataUpdateDepthIntervalMutationInput => {
   return {
     siteId: siteId,
-    depthInterval: changeData.depthInterval,
-    ...gatherFields(changeData.fieldChanges, data),
+    depthInterval: changes.depthInterval,
+    ...gatherChangedFields(changes.fieldChanges, data),
   };
 };
 
 export const localDataToDepthDependentMutation = (
   siteId: string,
   data: DepthDependentSoilData,
-  changeData: DepthIntervalChange,
+  changes: DepthIntervalChange,
 ): DepthDependentSoilDataUpdateMutationInput => {
   return {
     siteId: siteId,
-    depthInterval: changeData.depthInterval,
-    ...gatherFields(changeData.fieldChanges, data),
+    depthInterval: changes.depthInterval,
+    ...gatherChangedFields(changes.fieldChanges, data),
   };
-};
-
-export const gatherFields = (
-  fields: Record<string, FieldChange>,
-  mutationInput: any,
-): Record<string, any> => {
-  const mutatedFields: Record<string, any> = {};
-  for (const field of Object.keys(fields)) {
-    if (field in mutationInput && mutationInput[field] !== undefined)
-      mutatedFields[field] = mutationInput[field];
-  }
-  return mutatedFields;
 };

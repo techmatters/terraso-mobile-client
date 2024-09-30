@@ -106,6 +106,18 @@ export type FieldChange = {
   fieldName: string;
 };
 
+export const gatherChangedFields = (
+  fields: Record<string, FieldChange>,
+  input: any,
+): Record<string, any> => {
+  const mutatedFields: Record<string, any> = {};
+  for (const field of Object.keys(fields)) {
+    if (field in input && input[field] !== undefined)
+      mutatedFields[field] = input[field];
+  }
+  return mutatedFields;
+};
+
 export type DepthIntervalChange = {
   depthInterval: DepthInterval;
   fieldChanges: Record<string, FieldChange>;

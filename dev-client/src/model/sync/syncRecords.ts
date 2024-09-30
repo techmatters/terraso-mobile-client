@@ -19,19 +19,19 @@ export type SyncRecords<C> = Record<string, SyncRecord<C>>;
 
 export type SyncRecord<C> = {
   /* TODO: other forms of recordkeeping? do we want to track timestamps? */
-  changeData: C;
+  changes: C;
 };
 
 export type SyncState<S, C> = {
   state: S;
-  changeData: C;
+  changes: C;
 };
 
 export const addSyncRecord = <C>(
   records: SyncRecords<C>,
   id: string,
-  changeData: C,
-) => (records[id] = {changeData: changeData});
+  changes: C,
+) => (records[id] = {changes: changes});
 
 export const clearSyncRecords = <C>(records: SyncRecords<C>, ids: string[]) => {
   for (const id of ids) {
@@ -49,7 +49,7 @@ export const gatherSyncState = <C, S>(
     if (id in records) {
       result[id] = {
         state: state[id],
-        changeData: records[id].changeData,
+        changes: records[id].changes,
       };
     }
   });
