@@ -17,6 +17,7 @@
 
 import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ToastAndroid} from 'react-native';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
@@ -53,6 +54,8 @@ export const SiteTabsScreen = (props: Props) => {
   useEffect(() => {
     if (!dependenciesExist) {
       console.log('    We should close the SiteTabs screen');
+      // TODO: Decide design / Decide how to show toasts?
+      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
       navigation.navigate('BOTTOM_TABS');
     }
   }, [dependenciesExist, navigation]);
