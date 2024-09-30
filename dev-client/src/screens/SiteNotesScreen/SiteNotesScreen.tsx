@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect} from 'react';
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native';
 
@@ -44,28 +44,9 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
       : state.project.projects[site.projectId],
   );
 
-  console.log('-----> SiteNotesScreen is being rendered');
-
   const onAddNote = useCallback(() => {
     navigation.navigate('ADD_SITE_NOTE', {siteId: siteId});
   }, [navigation, siteId]);
-
-  // TODO-cknipe: Generalize this
-  const dependenciesExist = !!site;
-  useEffect(() => {
-    if (!dependenciesExist) {
-      console.log(
-        '       We should close the SiteNotes screen',
-        navigation.getState().routes[navigation.getState().routes.length - 1],
-      );
-      navigation.navigate('BOTTOM_TABS');
-    }
-  }, [dependenciesExist, navigation]);
-
-  if (!dependenciesExist) {
-    console.log("       SiteNotesScreen's site =", site);
-    return null;
-  }
 
   return (
     <ScrollView>
