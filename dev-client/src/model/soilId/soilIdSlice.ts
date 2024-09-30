@@ -36,14 +36,14 @@ import {
 
 import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
 import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
-import {SoilDataChangeSet} from 'terraso-mobile-client/model/soilId/persistence/soilDataChanges';
-import * as localSoilDataService from 'terraso-mobile-client/model/soilId/persistence/soilDataService';
 import {
   soilIdEntryDataBased,
   soilIdEntryForStatus,
   soilIdEntryLocationBased,
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+import {SoilDataChangeSet} from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
+import * as localSoilDataService from 'terraso-mobile-client/model/soilId/sync/soilDataService';
 import {
   addSyncRecord,
   clearSyncRecords,

@@ -12,8 +12,8 @@ import {
   updateDepthDependentSoilData,
   updateSoilData,
   updateSoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/persistence/localSoilDataMutations';
-import {sync} from 'terraso-mobile-client/model/soilId/persistence/remoteSoilDataSync';
+} from 'terraso-mobile-client/model/soilId/sync/localSoilDataMutations';
+import {sync} from 'terraso-mobile-client/model/soilId/sync/remoteSoilDataSync';
 import {gatherSyncState} from 'terraso-mobile-client/model/sync/syncRecords';
 import {AppState} from 'terraso-mobile-client/store';
 

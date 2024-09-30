@@ -35,7 +35,7 @@ import {
   gatherDepthDependentData,
   gatherDepthIntervals,
   SoilDataChangeSet,
-} from 'terraso-mobile-client/model/soilId/persistence/soilDataChanges';
+} from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
 import {SyncState} from 'terraso-mobile-client/model/sync/syncRecords';
 
 export const sync = async (

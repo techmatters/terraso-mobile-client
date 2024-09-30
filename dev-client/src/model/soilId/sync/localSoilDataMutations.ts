@@ -25,16 +25,16 @@ import {
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
+  compareInterval,
+  sameDepth,
+} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+import {
   DEPTH_DEPENDENT_UPDATE_FIELDS,
   DEPTH_INTERVAL_UPDATE_FIELDS,
   soilDataChangeSet,
   SoilDataChangeSet,
   UPDATE_FIELDS,
-} from 'terraso-mobile-client/model/soilId/persistence/soilDataChanges';
-import {
-  compareInterval,
-  sameDepth,
-} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+} from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
 
 export type MutationResult<R, C, E> = {
   result: R;
