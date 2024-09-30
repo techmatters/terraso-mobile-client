@@ -42,7 +42,10 @@ import {
   soilIdEntryLocationBased,
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
-import {SoilDataChangeSet} from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
+import {
+  SoilDataChangeSet,
+  unifyChanges,
+} from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
 import * as localSoilDataService from 'terraso-mobile-client/model/soilId/sync/soilDataService';
 import {
   addSyncRecord,
@@ -113,41 +116,57 @@ const soilIdSlice = createSlice({
     });
 
     builder.addCase(updateSoilData.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload.result;
+      const siteId = action.meta.arg.siteId;
+      state.soilData[siteId] = action.payload.result;
       addSyncRecord(
         state.soilDataSync,
-        action.meta.arg.siteId,
-        action.payload.changes,
+        siteId,
+        unifyChanges(
+          state.soilDataSync[siteId]?.changes,
+          action.payload.changes,
+        ),
       );
       flushDataBasedMatches(state);
     });
 
     builder.addCase(updateDepthDependentSoilData.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload.result;
+      const siteId = action.meta.arg.siteId;
+      state.soilData[siteId] = action.payload.result;
       addSyncRecord(
         state.soilDataSync,
-        action.meta.arg.siteId,
-        action.payload.changes,
+        siteId,
+        unifyChanges(
+          state.soilDataSync[siteId]?.changes,
+          action.payload.changes,
+        ),
       );
       flushDataBasedMatches(state);
     });
 
     builder.addCase(updateSoilDataDepthInterval.fulfilled, (state, action) => {
+      const siteId = action.meta.arg.siteId;
       state.soilData[action.meta.arg.siteId] = action.payload.result;
       addSyncRecord(
         state.soilDataSync,
         action.meta.arg.siteId,
-        action.payload.changes,
+        unifyChanges(
+          state.soilDataSync[siteId]?.changes,
+          action.payload.changes,
+        ),
       );
       flushDataBasedMatches(state);
     });
 
     builder.addCase(deleteSoilDataDepthInterval.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload.result;
+      const siteId = action.meta.arg.siteId;
+      state.soilData[siteId] = action.payload.result;
       addSyncRecord(
         state.soilDataSync,
-        action.meta.arg.siteId,
-        action.payload.changes,
+        siteId,
+        unifyChanges(
+          state.soilDataSync[siteId]?.changes,
+          action.payload.changes,
+        ),
       );
       flushDataBasedMatches(state);
     });

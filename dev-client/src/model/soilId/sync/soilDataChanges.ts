@@ -49,7 +49,7 @@ export const UPDATE_FIELDS = [
   'waterTableDepthSelect',
 ] as const satisfies (keyof SoilData)[] & (keyof SoilDataUpdateMutationInput)[];
 
-export type UpdateField = typeof UPDATE_FIELDS;
+export type UpdateField = (typeof UPDATE_FIELDS)[number];
 
 export const DEPTH_INTERVAL_UPDATE_FIELDS = [
   'carbonatesEnabled',
@@ -64,7 +64,8 @@ export const DEPTH_INTERVAL_UPDATE_FIELDS = [
 ] as const satisfies (keyof SoilDataDepthInterval)[] &
   (keyof SoilDataUpdateDepthIntervalMutationInput)[];
 
-export type DepthIntervalUpdateField = typeof DEPTH_INTERVAL_UPDATE_FIELDS;
+export type DepthIntervalUpdateField =
+  (typeof DEPTH_INTERVAL_UPDATE_FIELDS)[number];
 
 export const DEPTH_DEPENDENT_UPDATE_FIELDS = [
   'carbonates',
@@ -92,20 +93,149 @@ export const DEPTH_DEPENDENT_UPDATE_FIELDS = [
 ] as const satisfies (keyof DepthDependentSoilData)[] &
   (keyof DepthDependentSoilDataUpdateMutationInput)[];
 
-export type DepthDependentUpdateField = typeof DEPTH_DEPENDENT_UPDATE_FIELDS;
+export type DepthDependentUpdateField =
+  (typeof DEPTH_DEPENDENT_UPDATE_FIELDS)[number];
 
 export type SoilDataChangeSet = {
   fieldChanges: Record<string, FieldChange<UpdateField>>;
   depthIntervalChanges: Record<string, DepthIntervalChange>;
-  depthDependentDataChanges: Record<string, DepthDependentChange>;
+  depthDependentChanges: Record<string, DepthDependentChange>;
 };
 
 export const soilDataChangeSet = (): SoilDataChangeSet => {
   return {
     fieldChanges: {},
     depthIntervalChanges: {},
-    depthDependentDataChanges: {},
+    depthDependentChanges: {},
   };
+};
+
+export const recordUpdateFields = (
+  changes: SoilDataChangeSet,
+  fieldNames: Iterable<UpdateField>,
+) => {
+  for (const fieldName of fieldNames) {
+    changes.fieldChanges[fieldName] = {fieldName};
+  }
+};
+
+export const getDepthIntervalChanges = (
+  changes: SoilDataChangeSet,
+  depthInterval: DepthInterval,
+): DepthIntervalChange => {
+  const key = depthIntervalKey(depthInterval);
+  let depthIntervalChanges = changes.depthIntervalChanges[key];
+  if (!depthIntervalChanges) {
+    depthIntervalChanges = {
+      depthInterval,
+      deleted: false,
+      fieldChanges: {},
+    };
+    changes.depthIntervalChanges[key] = depthIntervalChanges;
+  }
+  return depthIntervalChanges;
+};
+
+export const recordDepthIntervalUpdateFields = (
+  changes: SoilDataChangeSet,
+  depthInterval: DepthInterval,
+  fieldNames: Iterable<DepthIntervalUpdateField>,
+) => {
+  const depthIntervalChanges = getDepthIntervalChanges(changes, depthInterval);
+  for (const fieldName of fieldNames) {
+    depthIntervalChanges.fieldChanges[fieldName] = {fieldName};
+  }
+};
+
+export const recordDepthIntervalDeletion = (
+  changes: SoilDataChangeSet,
+  depthInterval: DepthInterval,
+) => {
+  changes.depthIntervalChanges[depthIntervalKey(depthInterval)] = {
+    depthInterval: depthInterval,
+    deleted: true,
+    fieldChanges: {},
+  };
+};
+
+export const getDepthDependentChanges = (
+  changes: SoilDataChangeSet,
+  depthInterval: DepthInterval,
+): DepthDependentChange => {
+  const key = depthIntervalKey(depthInterval);
+  let depthDependentChanges = changes.depthDependentChanges[key];
+  if (!depthDependentChanges) {
+    depthDependentChanges = {
+      depthInterval,
+      fieldChanges: {},
+    };
+    changes.depthDependentChanges[key] = depthDependentChanges;
+  }
+  return depthDependentChanges;
+};
+
+export const recordDepthDependentUpdateFields = (
+  changes: SoilDataChangeSet,
+  depthInterval: DepthInterval,
+  fieldNames: Iterable<DepthDependentUpdateField>,
+) => {
+  const depthDependentChanges = getDepthDependentChanges(
+    changes,
+    depthInterval,
+  );
+  for (const fieldName of fieldNames) {
+    depthDependentChanges.fieldChanges[fieldName] = {fieldName};
+  }
+};
+
+export const unifyChanges = (
+  a?: SoilDataChangeSet,
+  b?: SoilDataChangeSet,
+): SoilDataChangeSet => {
+  return {
+    fieldChanges: {...a?.fieldChanges, ...b?.fieldChanges},
+    depthIntervalChanges: unifyDepthIntervalChanges(
+      a?.depthIntervalChanges,
+      b?.depthIntervalChanges,
+    ),
+    depthDependentChanges: unifyDepthDependentDataChanges(
+      a?.depthDependentChanges,
+      b?.depthDependentChanges,
+    ),
+  };
+};
+
+export const unifyDepthIntervalChanges = (
+  a?: Record<string, DepthIntervalChange>,
+  b?: Record<string, DepthIntervalChange>,
+): Record<string, DepthIntervalChange> => {
+  const result = {...a};
+  for (const [key, value] of Object.entries(b ?? {})) {
+    if (value.deleted) {
+      result[key] = value;
+    } else {
+      result[key] = {
+        depthInterval: value.depthInterval,
+        deleted: false,
+        fieldChanges: {...result[key]?.fieldChanges, ...value.fieldChanges},
+      };
+    }
+  }
+  return result;
+};
+
+export const unifyDepthDependentDataChanges = (
+  a?: Record<string, DepthDependentChange>,
+  b?: Record<string, DepthDependentChange>,
+): Record<string, DepthDependentChange> => {
+  const result = {...a};
+  for (const [key, value] of Object.entries(b ?? {})) {
+    result[key] = {
+      depthInterval: value.depthInterval,
+      fieldChanges: {...result[key]?.fieldChanges, ...value.fieldChanges},
+    };
+  }
+  return result;
 };
 
 export type FieldChange<T> = {

@@ -36,11 +36,17 @@ import {
   gatherDepthIntervals,
   SoilDataChangeSet,
 } from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
-import {SyncState} from 'terraso-mobile-client/model/sync/syncRecords';
+import {
+  gatherSyncState,
+  SyncRecords,
+} from 'terraso-mobile-client/model/sync/syncRecords';
 
 export const sync = async (
-  syncState: Record<string, SyncState<SoilData | undefined, SoilDataChangeSet>>,
+  siteIds: string[],
+  syncRecords: SyncRecords<SoilDataChangeSet>,
+  soilData: Record<string, SoilData | undefined>,
 ): Promise<Record<string, SoilData>> => {
+  const syncState = gatherSyncState(siteIds, soilData, syncRecords);
   const results: Record<string, SoilData> = {};
   for (const [siteId, entry] of Object.entries(syncState)) {
     if (entry.state) {
@@ -81,7 +87,7 @@ export const syncSoilData = async (
 
   const depthDependentData = gatherDepthDependentData(data);
   for (const [depthInterval, change] of Object.entries(
-    changes.depthDependentDataChanges,
+    changes.depthDependentChanges,
   )) {
     finalResult = await soilDataService.updateDepthDependentSoilData(
       localDataToDepthDependentMutation(

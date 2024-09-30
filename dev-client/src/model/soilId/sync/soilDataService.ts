@@ -14,7 +14,6 @@ import {
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilId/sync/localSoilDataMutations';
 import {sync} from 'terraso-mobile-client/model/soilId/sync/remoteSoilDataSync';
-import {gatherSyncState} from 'terraso-mobile-client/model/sync/syncRecords';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const updateSoilDataThunk = async (
@@ -24,9 +23,6 @@ export const updateSoilDataThunk = async (
 ) => {
   const state = thunkApi.getState() as AppState;
   const soilData = state.soilId.soilData[input.siteId];
-  if (!soilData) {
-    throw new Error('Updating site that no longer exists in store');
-  }
   return updateSoilData(input, soilData);
 };
 
@@ -37,9 +33,6 @@ export const updateSoilDataDepthIntervalThunk = async (
 ) => {
   const state = thunkApi.getState() as AppState;
   const soilData = state.soilId.soilData[input.siteId];
-  if (!soilData) {
-    throw new Error('Updating site that no longer exists in store');
-  }
   return updateSoilDataDepthInterval(input, soilData);
 };
 
@@ -50,9 +43,6 @@ export const deleteSoilDataDepthIntervalThunk = async (
 ) => {
   const state = thunkApi.getState() as AppState;
   const soilData = state.soilId.soilData[input.siteId];
-  if (!soilData) {
-    throw new Error('Updating site that no longer exists in store');
-  }
   return deleteSoilDataDepthInterval(input, soilData!);
 };
 
@@ -63,9 +53,6 @@ export const updateDepthDependentSoilDataThunk = async (
 ) => {
   const state = thunkApi.getState() as AppState;
   const soilData = state.soilId.soilData[input.siteId];
-  if (!soilData) {
-    throw new Error('Updating site that no longer exists in store');
-  }
   return updateDepthDependentSoilData(input, soilData!);
 };
 
@@ -77,6 +64,5 @@ export const syncSoilDataThunk = async (
   const state = thunkApi.getState() as AppState;
   const syncRecords = state.soilId.soilDataSync;
   const soilData = state.soilId.soilData;
-  const syncState = gatherSyncState(siteIds, soilData, syncRecords);
-  return await sync(syncState);
+  return await sync(siteIds, syncRecords, soilData);
 };
