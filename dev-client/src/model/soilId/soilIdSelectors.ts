@@ -24,3 +24,6 @@ export const selectSoilIdMatches =
   (key: SoilIdKey) =>
   (state: AppState): SoilIdEntry | undefined =>
     state.soilId.matches[key];
+
+export const selectUnsyncedSiteIds = (state: AppState): string[] =>
+  Object.keys(state.soilId.soilDataSync);

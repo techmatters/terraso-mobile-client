@@ -50,6 +50,7 @@ import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connect
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {HomeScreenContextProvider} from 'terraso-mobile-client/context/HomeScreenContext';
+import {SyncManager} from 'terraso-mobile-client/model/sync/syncManager';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
@@ -116,9 +117,11 @@ function App(): React.JSX.Element {
                         <Toasts />
                         <HomeScreenContextProvider>
                           <ConnectivityContextProvider>
-                            <ForegroundPermissionsProvider>
-                              <RootNavigator />
-                            </ForegroundPermissionsProvider>
+                            <SyncManager>
+                              <ForegroundPermissionsProvider>
+                                <RootNavigator />
+                              </ForegroundPermissionsProvider>
+                            </SyncManager>
                           </ConnectivityContextProvider>
                         </HomeScreenContextProvider>
                       </GeospatialProvider>
