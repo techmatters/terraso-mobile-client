@@ -25,15 +25,6 @@ type Props = {
 };
 export const SiteDashboardScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
-  // TODO-cknipe: Does it mean anything different if elevation is null vs undefined?
-
-  // TODO-cknipe: Check for if site is gone
-  console.log('-----> SiteDashboardScreen being rendered');
-
-  if (!site) {
-    console.log('       and site is', site);
-    return null;
-  }
 
   return (
     <LocationDashboardContent
