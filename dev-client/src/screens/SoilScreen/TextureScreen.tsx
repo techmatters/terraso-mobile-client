@@ -17,7 +17,7 @@
 
 import {useCallback, useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Image, ImageSourcePropType} from 'react-native';
+import {Image, ImageSourcePropType, ToastAndroid} from 'react-native';
 
 import {Button, ScrollView} from 'native-base';
 
@@ -159,6 +159,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const dependenciesExist = !!name;
   useEffect(() => {
     if (!dependenciesExist) {
+      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
       navigation.navigate('BOTTOM_TABS');
     }
   }, [dependenciesExist, navigation]);

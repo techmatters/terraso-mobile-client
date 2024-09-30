@@ -17,7 +17,7 @@
 
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Keyboard} from 'react-native';
+import {Keyboard, ToastAndroid} from 'react-native';
 
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
@@ -90,7 +90,12 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   }, [dispatch, note]);
 
   // TODO-cknipe: Generalize this
+  const dependenciesExist = !!site && !!note;
   useEffect(() => {
+    if (!dependenciesExist) {
+      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+    }
+
     if (!site) {
       console.log(
         'Close EditSiteNoteScreen; no site\n',
@@ -104,9 +109,8 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
       );
       navigation.pop();
     }
-  }, [navigation, note, site]);
+  }, [navigation, note, site, dependenciesExist]);
 
-  const dependenciesExist = !!site && !!note;
   if (!dependenciesExist) {
     return null;
   }
