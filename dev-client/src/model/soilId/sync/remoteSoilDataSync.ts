@@ -31,11 +31,11 @@ import {
 import {
   DepthDependentChange,
   DepthIntervalChange,
-  gatherChangedFields,
   gatherDepthDependentData,
   gatherDepthIntervals,
-  SoilDataChangeSet,
+  SoilDataChanges,
 } from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
+import {gatherChangedFields} from 'terraso-mobile-client/model/sync/syncChanges';
 import {
   gatherSyncState,
   SyncRecords,
@@ -43,7 +43,7 @@ import {
 
 export const sync = async (
   siteIds: string[],
-  syncRecords: SyncRecords<SoilDataChangeSet>,
+  syncRecords: SyncRecords<SoilDataChanges>,
   soilData: Record<string, SoilData | undefined>,
 ): Promise<Record<string, SoilData>> => {
   const syncState = gatherSyncState(siteIds, soilData, syncRecords);
@@ -60,10 +60,10 @@ export const sync = async (
 export const syncSoilData = async (
   siteId: string,
   data: SoilData,
-  changes: SoilDataChangeSet,
+  changes: SoilDataChanges,
 ): Promise<SoilData> => {
   let finalResult = await soilDataService.updateSoilData(
-    localDataToMutation(siteId, data, changes),
+    makeUpdateMutation(siteId, data, changes),
   );
 
   const depthIntervals = gatherDepthIntervals(data);
@@ -72,11 +72,11 @@ export const syncSoilData = async (
   )) {
     if (change.deleted) {
       finalResult = await soilDataService.deleteSoilDataDepthInterval(
-        localDataToDepthIntervalDeletion(siteId, depthIntervals[depthInterval]),
+        makeDepthIntervalDeletion(siteId, depthIntervals[depthInterval]),
       );
     } else {
       finalResult = await soilDataService.updateSoilDataDepthInterval(
-        localDataToDepthIntervalMutation(
+        makeDepthIntervalMutation(
           siteId,
           depthIntervals[depthInterval],
           change,
@@ -90,7 +90,7 @@ export const syncSoilData = async (
     changes.depthDependentChanges,
   )) {
     finalResult = await soilDataService.updateDepthDependentSoilData(
-      localDataToDepthDependentMutation(
+      makeDepthDependentMutation(
         siteId,
         depthDependentData[depthInterval],
         change,
@@ -100,10 +100,10 @@ export const syncSoilData = async (
   return finalResult;
 };
 
-export const localDataToMutation = (
+export const makeUpdateMutation = (
   siteId: string,
   data: SoilData,
-  changes: SoilDataChangeSet,
+  changes: SoilDataChanges,
 ): SoilDataUpdateMutationInput => {
   return {
     siteId: siteId,
@@ -111,7 +111,7 @@ export const localDataToMutation = (
   };
 };
 
-export const localDataToDepthIntervalDeletion = (
+export const makeDepthIntervalDeletion = (
   siteId: string,
   data: SoilDataDepthInterval,
 ): SoilDataDeleteDepthIntervalMutationInput => {
@@ -121,7 +121,7 @@ export const localDataToDepthIntervalDeletion = (
   };
 };
 
-export const localDataToDepthIntervalMutation = (
+export const makeDepthIntervalMutation = (
   siteId: string,
   data: SoilDataDepthInterval,
   changes: DepthIntervalChange,
@@ -133,7 +133,7 @@ export const localDataToDepthIntervalMutation = (
   };
 };
 
-export const localDataToDepthDependentMutation = (
+export const makeDepthDependentMutation = (
   siteId: string,
   data: DepthDependentSoilData,
   changes: DepthDependentChange,

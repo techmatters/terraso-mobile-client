@@ -16,93 +16,25 @@
  */
 
 import {
-  DepthDependentSoilDataUpdateMutationInput,
-  SoilDataUpdateDepthIntervalMutationInput,
-  SoilDataUpdateMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-
-import {
   DepthDependentSoilData,
   DepthInterval,
   SoilData,
   SoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {
+  DepthDependentUpdateField,
+  DepthIntervalUpdateField,
+  UpdateField,
+} from 'terraso-mobile-client/model/soilId/sync/soilDataFields';
+import {FieldChange} from 'terraso-mobile-client/model/sync/syncChanges';
 
-export const UPDATE_FIELDS = [
-  'bedrock',
-  'crossSlope',
-  'depthIntervalPreset',
-  'downSlope',
-  'floodingSelect',
-  'grazingSelect',
-  'landCoverSelect',
-  'limeRequirementsSelect',
-  'slopeAspect',
-  'slopeLandscapePosition',
-  'slopeSteepnessDegree',
-  'slopeSteepnessPercent',
-  'slopeSteepnessSelect',
-  'soilDepthSelect',
-  'surfaceCracksSelect',
-  'surfaceSaltSelect',
-  'surfaceStoninessSelect',
-  'waterTableDepthSelect',
-] as const satisfies (keyof SoilData)[] & (keyof SoilDataUpdateMutationInput)[];
-
-export type UpdateField = (typeof UPDATE_FIELDS)[number];
-
-export const DEPTH_INTERVAL_UPDATE_FIELDS = [
-  'carbonatesEnabled',
-  'electricalConductivityEnabled',
-  'label',
-  'phEnabled',
-  'sodiumAdsorptionRatioEnabled',
-  'soilColorEnabled',
-  'soilOrganicCarbonMatterEnabled',
-  'soilStructureEnabled',
-  'soilTextureEnabled',
-] as const satisfies (keyof SoilDataDepthInterval)[] &
-  (keyof SoilDataUpdateDepthIntervalMutationInput)[];
-
-export type DepthIntervalUpdateField =
-  (typeof DEPTH_INTERVAL_UPDATE_FIELDS)[number];
-
-export const DEPTH_DEPENDENT_UPDATE_FIELDS = [
-  'carbonates',
-  'clayPercent',
-  'colorChroma',
-  'colorHue',
-  'colorPhotoLightingCondition',
-  'colorPhotoSoilCondition',
-  'colorPhotoUsed',
-  'colorValue',
-  'conductivity',
-  'conductivityTest',
-  'conductivityUnit',
-  'ph',
-  'phTestingMethod',
-  'phTestingSolution',
-  'rockFragmentVolume',
-  'sodiumAbsorptionRatio',
-  'soilOrganicCarbon',
-  'soilOrganicCarbonTesting',
-  'soilOrganicMatter',
-  'soilOrganicMatterTesting',
-  'structure',
-  'texture',
-] as const satisfies (keyof DepthDependentSoilData)[] &
-  (keyof DepthDependentSoilDataUpdateMutationInput)[];
-
-export type DepthDependentUpdateField =
-  (typeof DEPTH_DEPENDENT_UPDATE_FIELDS)[number];
-
-export type SoilDataChangeSet = {
+export type SoilDataChanges = {
   fieldChanges: Record<string, FieldChange<UpdateField>>;
   depthIntervalChanges: Record<string, DepthIntervalChange>;
   depthDependentChanges: Record<string, DepthDependentChange>;
 };
 
-export const soilDataChangeSet = (): SoilDataChangeSet => {
+export const SoilDataChanges = (): SoilDataChanges => {
   return {
     fieldChanges: {},
     depthIntervalChanges: {},
@@ -110,17 +42,8 @@ export const soilDataChangeSet = (): SoilDataChangeSet => {
   };
 };
 
-export const recordUpdateFields = (
-  changes: SoilDataChangeSet,
-  fieldNames: Iterable<UpdateField>,
-) => {
-  for (const fieldName of fieldNames) {
-    changes.fieldChanges[fieldName] = {fieldName};
-  }
-};
-
 export const getDepthIntervalChanges = (
-  changes: SoilDataChangeSet,
+  changes: SoilDataChanges,
   depthInterval: DepthInterval,
 ): DepthIntervalChange => {
   const key = depthIntervalKey(depthInterval);
@@ -136,30 +59,8 @@ export const getDepthIntervalChanges = (
   return depthIntervalChanges;
 };
 
-export const recordDepthIntervalUpdateFields = (
-  changes: SoilDataChangeSet,
-  depthInterval: DepthInterval,
-  fieldNames: Iterable<DepthIntervalUpdateField>,
-) => {
-  const depthIntervalChanges = getDepthIntervalChanges(changes, depthInterval);
-  for (const fieldName of fieldNames) {
-    depthIntervalChanges.fieldChanges[fieldName] = {fieldName};
-  }
-};
-
-export const recordDepthIntervalDeletion = (
-  changes: SoilDataChangeSet,
-  depthInterval: DepthInterval,
-) => {
-  changes.depthIntervalChanges[depthIntervalKey(depthInterval)] = {
-    depthInterval: depthInterval,
-    deleted: true,
-    fieldChanges: {},
-  };
-};
-
 export const getDepthDependentChanges = (
-  changes: SoilDataChangeSet,
+  changes: SoilDataChanges,
   depthInterval: DepthInterval,
 ): DepthDependentChange => {
   const key = depthIntervalKey(depthInterval);
@@ -174,8 +75,39 @@ export const getDepthDependentChanges = (
   return depthDependentChanges;
 };
 
+export const recordUpdateFields = (
+  changes: SoilDataChanges,
+  fieldNames: Iterable<UpdateField>,
+) => {
+  for (const fieldName of fieldNames) {
+    changes.fieldChanges[fieldName] = {fieldName};
+  }
+};
+
+export const recordDepthIntervalUpdateFields = (
+  changes: SoilDataChanges,
+  depthInterval: DepthInterval,
+  fieldNames: Iterable<DepthIntervalUpdateField>,
+) => {
+  const depthIntervalChanges = getDepthIntervalChanges(changes, depthInterval);
+  for (const fieldName of fieldNames) {
+    depthIntervalChanges.fieldChanges[fieldName] = {fieldName};
+  }
+};
+
+export const recordDepthIntervalDeletion = (
+  changes: SoilDataChanges,
+  depthInterval: DepthInterval,
+) => {
+  changes.depthIntervalChanges[depthIntervalKey(depthInterval)] = {
+    depthInterval: depthInterval,
+    deleted: true,
+    fieldChanges: {},
+  };
+};
+
 export const recordDepthDependentUpdateFields = (
-  changes: SoilDataChangeSet,
+  changes: SoilDataChanges,
   depthInterval: DepthInterval,
   fieldNames: Iterable<DepthDependentUpdateField>,
 ) => {
@@ -189,9 +121,9 @@ export const recordDepthDependentUpdateFields = (
 };
 
 export const unifyChanges = (
-  a?: SoilDataChangeSet,
-  b?: SoilDataChangeSet,
-): SoilDataChangeSet => {
+  a?: SoilDataChanges,
+  b?: SoilDataChanges,
+): SoilDataChanges => {
   return {
     fieldChanges: {...a?.fieldChanges, ...b?.fieldChanges},
     depthIntervalChanges: unifyDepthIntervalChanges(
@@ -236,22 +168,6 @@ export const unifyDepthDependentDataChanges = (
     };
   }
   return result;
-};
-
-export type FieldChange<T> = {
-  fieldName: string & T;
-};
-
-export const gatherChangedFields = (
-  fields: Record<string, FieldChange<unknown>>,
-  input: any,
-): Record<string, any> => {
-  const mutatedFields: Record<string, any> = {};
-  for (const field of Object.keys(fields)) {
-    if (field in input && input[field] !== undefined)
-      mutatedFields[field] = input[field];
-  }
-  return mutatedFields;
 };
 
 export type DepthIntervalChange = {

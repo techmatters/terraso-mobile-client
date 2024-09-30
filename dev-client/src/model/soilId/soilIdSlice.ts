@@ -43,7 +43,7 @@ import {
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 import {
-  SoilDataChangeSet,
+  SoilDataChanges,
   unifyChanges,
 } from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
 import * as localSoilDataService from 'terraso-mobile-client/model/soilId/sync/soilDataService';
@@ -62,7 +62,7 @@ export type MethodRequired<
 
 export type SoilState = {
   soilData: Record<string, SoilData | undefined>;
-  soilDataSync: SyncRecords<SoilDataChangeSet>;
+  soilDataSync: SyncRecords<SoilDataChanges>;
 
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
   status: LoadingState;

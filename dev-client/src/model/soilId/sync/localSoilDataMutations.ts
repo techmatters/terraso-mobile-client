@@ -29,15 +29,17 @@ import {
   sameDepth,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 import {
-  DEPTH_DEPENDENT_UPDATE_FIELDS,
-  DEPTH_INTERVAL_UPDATE_FIELDS,
   recordDepthIntervalDeletion,
   recordDepthIntervalUpdateFields,
   recordUpdateFields,
-  soilDataChangeSet,
-  SoilDataChangeSet,
-  UPDATE_FIELDS,
+  SoilDataChanges,
 } from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
+import {
+  DEPTH_DEPENDENT_UPDATE_FIELDS,
+  DEPTH_INTERVAL_UPDATE_FIELDS,
+  UPDATE_FIELDS,
+} from 'terraso-mobile-client/model/soilId/sync/soilDataFields';
+import {mutateFields} from 'terraso-mobile-client/model/sync/syncChanges';
 
 export type MutationResult<R, C> = {
   result: R;
@@ -47,7 +49,7 @@ export type MutationResult<R, C> = {
 export const updateSoilData = (
   input: SoilDataUpdateMutationInput,
   data: SoilData | undefined,
-): MutationResult<SoilData, SoilDataChangeSet> => {
+): MutationResult<SoilData, SoilDataChanges> => {
   const {result, changes} = initializeResult(data);
 
   const mutated = mutateFields(UPDATE_FIELDS, input, result);
@@ -70,7 +72,7 @@ export const updateSoilData = (
 export const deleteSoilDataDepthInterval = (
   input: SoilDataDeleteDepthIntervalMutationInput,
   data: SoilData | undefined,
-): MutationResult<SoilData, SoilDataChangeSet> => {
+): MutationResult<SoilData, SoilDataChanges> => {
   const {result, changes} = initializeResult(data);
 
   const inputDepthFilter = sameDepth(input);
@@ -90,7 +92,7 @@ export const deleteSoilDataDepthInterval = (
 export const updateSoilDataDepthInterval = (
   input: SoilDataUpdateDepthIntervalMutationInput,
   data: SoilData | undefined,
-): MutationResult<SoilData, SoilDataChangeSet> => {
+): MutationResult<SoilData, SoilDataChanges> => {
   const {result, changes} = initializeResult(data);
 
   /* NOTE: apply-to intervals is currently an n^2 traversal! */
@@ -110,7 +112,7 @@ export const updateSoilDataDepthInterval = (
 
 const recordOrUpdateDepthInterval = (
   result: SoilData,
-  changes: SoilDataChangeSet,
+  changes: SoilDataChanges,
   target: DepthInterval,
   input: SoilDataUpdateDepthIntervalMutationInput,
 ) => {
@@ -137,7 +139,7 @@ const recordOrUpdateDepthInterval = (
 export const updateDepthDependentSoilData = (
   input: DepthDependentSoilDataUpdateMutationInput,
   data: SoilData | undefined,
-): MutationResult<SoilData, SoilDataChangeSet> => {
+): MutationResult<SoilData, SoilDataChanges> => {
   const {result, changes} = initializeResult(data);
 
   const inputDepthFilter = sameDepth(input);
@@ -160,8 +162,8 @@ export const updateDepthDependentSoilData = (
 
 export const initializeResult = (
   data: SoilData | undefined,
-): {result: SoilData; changes: SoilDataChangeSet} => {
-  const changes = soilDataChangeSet();
+): {result: SoilData; changes: SoilDataChanges} => {
+  const changes = SoilDataChanges();
   if (data) {
     return {result: {...data}, changes};
   } else {
@@ -175,22 +177,6 @@ export const initializeResult = (
       changes,
     };
   }
-};
-
-export const mutateFields = <T>(
-  fields: T[] & string[],
-  mutationInput: any,
-  mutationTarget: any,
-): Set<T> => {
-  const mutation: Record<string, any> = {};
-  const mutatedFields: Set<T> = new Set<T>();
-  for (const field of fields) {
-    if (field in mutationInput && mutationInput[field] !== undefined)
-      mutation[field] = mutationInput[field];
-    mutatedFields.add(field);
-  }
-  Object.assign(mutationTarget, mutation);
-  return mutatedFields;
 };
 
 export const finalizeResult = (result: SoilData) => {
