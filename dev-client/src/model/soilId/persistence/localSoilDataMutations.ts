@@ -17,6 +17,7 @@
 
 import {
   DepthDependentSoilDataUpdateMutationInput,
+  DepthInterval,
   SoilDataDeleteDepthIntervalMutationInput,
   SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
@@ -30,7 +31,10 @@ import {
   SoilDataChangeSet,
   UPDATE_FIELDS,
 } from 'terraso-mobile-client/model/soilId/persistence/soilDataChanges';
-import {sameDepth} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+import {
+  compareInterval,
+  sameDepth,
+} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
 export type MutationResult<R, C, E> = {
   result: R;
@@ -62,16 +66,17 @@ export const deleteSoilDataDepthInterval = (
   data: SoilData,
 ): MutationResult<SoilData, SoilDataChangeSet, any> => {
   const result = {...data};
+  const changes = soilDataChangeSet();
 
   const inputDepthFilter = sameDepth(input);
-  const depthIntervalIdx = data.depthIntervals.findIndex(candidate =>
+  const depthIntervalIdx = result.depthIntervals.findIndex(candidate =>
     inputDepthFilter(candidate),
   );
   result.depthIntervals.splice(depthIntervalIdx, 1);
 
   return {
     result,
-    changes: soilDataChangeSet(),
+    changes,
     errors: [],
   };
 };
@@ -81,20 +86,41 @@ export const updateSoilDataDepthInterval = (
   data: SoilData,
 ): MutationResult<SoilData, SoilDataChangeSet, any> => {
   const result = {...data};
+  const changes = soilDataChangeSet();
 
-  const inputDepthFilter = sameDepth(input);
-  const depthInterval = data.depthIntervals.find(candidate =>
-    inputDepthFilter(candidate),
-  );
-  if (depthInterval) {
-    mutateFields(DEPTH_INTERVAL_UPDATE_FIELDS, input, depthInterval);
+  /* NOTE: apply-to intervals is currently an n^2 traversal! */
+  addOrUpdateDepthInterval(result, input.depthInterval, input);
+  if (input.applyToIntervals) {
+    for (const depthInterval of input.applyToIntervals) {
+      addOrUpdateDepthInterval(result, depthInterval, input);
+    }
   }
+  sortDepthIntervals(result);
 
   return {
     result,
-    changes: soilDataChangeSet(),
+    changes,
     errors: [],
   };
+};
+
+const addOrUpdateDepthInterval = (
+  result: SoilData,
+  target: DepthInterval,
+  input: SoilDataUpdateDepthIntervalMutationInput,
+) => {
+  const inputDepthFilter = sameDepth({depthInterval: target});
+  let depthInterval = result.depthIntervals.find(inputDepthFilter);
+  if (!depthInterval) {
+    result.depthIntervals.push(
+      (depthInterval = {
+        label: input.label ?? '',
+        depthInterval: target,
+      }),
+    );
+  }
+
+  mutateFields(DEPTH_INTERVAL_UPDATE_FIELDS, input, depthInterval);
 };
 
 export const updateDepthDependentSoilData = (
@@ -102,18 +128,23 @@ export const updateDepthDependentSoilData = (
   data: SoilData,
 ): MutationResult<SoilData, SoilDataChangeSet, any> => {
   const result = {...data};
+  const changes = soilDataChangeSet();
 
   const inputDepthFilter = sameDepth(input);
-  const depthDependent = data.depthDependentData.find(candidate =>
-    inputDepthFilter(candidate),
-  );
-  if (depthDependent) {
-    mutateFields(DEPTH_DEPENDENT_UPDATE_FIELDS, input, depthDependent);
+  let depthDependentData = result.depthDependentData.find(inputDepthFilter);
+  if (!depthDependentData) {
+    result.depthDependentData.push(
+      (depthDependentData = {
+        depthInterval: input.depthInterval,
+      }),
+    );
   }
+  mutateFields(DEPTH_DEPENDENT_UPDATE_FIELDS, input, depthDependentData);
+  sortDepthIntervals(result);
 
   return {
     result,
-    changes: soilDataChangeSet(),
+    changes,
     errors: [],
   };
 };
@@ -130,4 +161,9 @@ export const mutateFields = (
   }
   Object.assign(mutationTarget, mutatedFields);
   return mutatedFields;
+};
+
+const sortDepthIntervals = (result: SoilData) => {
+  result.depthIntervals.sort(compareInterval);
+  result.depthDependentData.sort(compareInterval);
 };
