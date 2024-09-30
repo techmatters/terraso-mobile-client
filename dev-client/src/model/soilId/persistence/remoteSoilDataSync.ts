@@ -17,34 +17,9 @@
 
 import {
   DepthDependentSoilDataUpdateMutationInput,
-  Maybe,
+  SoilDataDeleteDepthIntervalMutationInput,
   SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
-  SoilIdDepthDependentSoilDataCarbonatesChoices,
-  SoilIdDepthDependentSoilDataColorPhotoLightingConditionChoices,
-  SoilIdDepthDependentSoilDataColorPhotoSoilConditionChoices,
-  SoilIdDepthDependentSoilDataConductivityTestChoices,
-  SoilIdDepthDependentSoilDataConductivityUnitChoices,
-  SoilIdDepthDependentSoilDataPhTestingMethodChoices,
-  SoilIdDepthDependentSoilDataPhTestingSolutionChoices,
-  SoilIdDepthDependentSoilDataRockFragmentVolumeChoices,
-  SoilIdDepthDependentSoilDataSoilOrganicCarbonTestingChoices,
-  SoilIdDepthDependentSoilDataSoilOrganicMatterTestingChoices,
-  SoilIdDepthDependentSoilDataStructureChoices,
-  SoilIdDepthDependentSoilDataTextureChoices,
-  SoilIdSoilDataCrossSlopeChoices,
-  SoilIdSoilDataDepthIntervalPresetChoices,
-  SoilIdSoilDataFloodingSelectChoices,
-  SoilIdSoilDataGrazingSelectChoices,
-  SoilIdSoilDataLandCoverSelectChoices,
-  SoilIdSoilDataLimeRequirementsSelectChoices,
-  SoilIdSoilDataSlopeLandscapePositionChoices,
-  SoilIdSoilDataSlopeSteepnessSelectChoices,
-  SoilIdSoilDataSoilDepthSelectChoices,
-  SoilIdSoilDataSurfaceCracksSelectChoices,
-  SoilIdSoilDataSurfaceSaltSelectChoices,
-  SoilIdSoilDataSurfaceStoninessSelectChoices,
-  SoilIdSoilDataWaterTableDepthSelectChoices,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import {
@@ -53,14 +28,28 @@ import {
   SoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
-/* TODO: only transfer fields based on change records */
+import {
+  DepthIntervalChange,
+  FieldChange,
+  gatherDepthDependentData,
+  gatherDepthIntervals,
+  SoilDataChangeSet,
+} from 'terraso-mobile-client/model/soilId/persistence/soilDataChanges';
+import {SyncState} from 'terraso-mobile-client/model/sync/syncRecords';
 
 export const sync = async (
-  dirty: Record<string, SoilData>,
+  syncState: Record<string, SyncState<SoilData | undefined, SoilDataChangeSet>>,
 ): Promise<Record<string, SoilData>> => {
   const results: Record<string, SoilData> = {};
-  for (const [siteId, soilData] of Object.entries(dirty)) {
-    results[siteId] = await syncSoilData(siteId, soilData);
+  for (const [siteId, entry] of Object.entries(syncState)) {
+    if (entry.state) {
+      /* NOTE: what do we do if the state is undefined? when does this happen? */
+      results[siteId] = await syncSoilData(
+        siteId,
+        entry.state,
+        entry.changeData,
+      );
+    }
   }
   return results;
 };
@@ -68,18 +57,41 @@ export const sync = async (
 export const syncSoilData = async (
   siteId: string,
   soilData: SoilData,
+  changeSet: SoilDataChangeSet,
 ): Promise<SoilData> => {
   let finalResult = await soilDataService.updateSoilData(
-    localDataToMutation(siteId, soilData),
+    localDataToMutation(siteId, soilData, changeSet),
   );
-  for (const depthInterval of soilData.depthIntervals) {
-    finalResult = await soilDataService.updateSoilDataDepthInterval(
-      localDataToDepthIntervalMutation(siteId, depthInterval),
-    );
+
+  const depthIntervals = gatherDepthIntervals(soilData);
+  for (const [depthInterval, change] of Object.entries(
+    changeSet.depthIntervalChanges,
+  )) {
+    if (change.deleted) {
+      finalResult = await soilDataService.deleteSoilDataDepthInterval(
+        localDataToDepthIntervalDeletion(siteId, depthIntervals[depthInterval]),
+      );
+    } else {
+      finalResult = await soilDataService.updateSoilDataDepthInterval(
+        localDataToDepthIntervalMutation(
+          siteId,
+          depthIntervals[depthInterval],
+          change,
+        ),
+      );
+    }
   }
-  for (const data of soilData.depthDependentData) {
+
+  const depthDependentData = gatherDepthDependentData(soilData);
+  for (const [depthInterval, change] of Object.entries(
+    changeSet.depthDependentDataChanges,
+  )) {
     finalResult = await soilDataService.updateDepthDependentSoilData(
-      localDataToDepthDependentMutation(siteId, data),
+      localDataToDepthDependentMutation(
+        siteId,
+        depthDependentData[depthInterval],
+        change,
+      ),
     );
   }
   return finalResult;
@@ -88,102 +100,56 @@ export const syncSoilData = async (
 export const localDataToMutation = (
   siteId: string,
   data: SoilData,
+  changeData: SoilDataChangeSet,
 ): SoilDataUpdateMutationInput => {
   return {
     siteId: siteId,
-    bedrock: data.bedrock,
-    crossSlope: data.crossSlope as Maybe<SoilIdSoilDataCrossSlopeChoices>,
-    depthIntervalPreset:
-      data.depthIntervalPreset as Maybe<SoilIdSoilDataDepthIntervalPresetChoices>,
-    downSlope: data.downSlope as Maybe<SoilIdSoilDataCrossSlopeChoices>,
-    floodingSelect:
-      data.floodingSelect as Maybe<SoilIdSoilDataFloodingSelectChoices>,
-    grazingSelect:
-      data.grazingSelect as Maybe<SoilIdSoilDataGrazingSelectChoices>,
-    landCoverSelect:
-      data.landCoverSelect as Maybe<SoilIdSoilDataLandCoverSelectChoices>,
-    limeRequirementsSelect:
-      data.limeRequirementsSelect as Maybe<SoilIdSoilDataLimeRequirementsSelectChoices>,
-    slopeAspect: data.slopeAspect,
-    slopeLandscapePosition:
-      data.slopeLandscapePosition as Maybe<SoilIdSoilDataSlopeLandscapePositionChoices>,
-    slopeSteepnessDegree: data.slopeSteepnessDegree,
-    slopeSteepnessPercent: data.slopeSteepnessPercent,
-    slopeSteepnessSelect:
-      data.slopeSteepnessSelect as Maybe<SoilIdSoilDataSlopeSteepnessSelectChoices>,
-    soilDepthSelect:
-      data.soilDepthSelect as Maybe<SoilIdSoilDataSoilDepthSelectChoices>,
-    surfaceCracksSelect:
-      data.surfaceCracksSelect as Maybe<SoilIdSoilDataSurfaceCracksSelectChoices>,
-    surfaceSaltSelect:
-      data.surfaceSaltSelect as Maybe<SoilIdSoilDataSurfaceSaltSelectChoices>,
-    surfaceStoninessSelect:
-      data.surfaceStoninessSelect as Maybe<SoilIdSoilDataSurfaceStoninessSelectChoices>,
-    waterTableDepthSelect:
-      data.waterTableDepthSelect as Maybe<SoilIdSoilDataWaterTableDepthSelectChoices>,
+    ...gatherFields(changeData.fieldChanges, data),
+  };
+};
+
+export const localDataToDepthIntervalDeletion = (
+  siteId: string,
+  data: SoilDataDepthInterval,
+): SoilDataDeleteDepthIntervalMutationInput => {
+  return {
+    siteId: siteId,
+    depthInterval: data.depthInterval,
   };
 };
 
 export const localDataToDepthIntervalMutation = (
   siteId: string,
   data: SoilDataDepthInterval,
+  changeData: DepthIntervalChange,
 ): SoilDataUpdateDepthIntervalMutationInput => {
   return {
     siteId: siteId,
-
-    carbonatesEnabled: data.carbonatesEnabled,
-    depthInterval: data.depthInterval,
-    electricalConductivityEnabled: data.electricalConductivityEnabled,
-    label: data.label,
-    phEnabled: data.phEnabled,
-    sodiumAdsorptionRatioEnabled: data.sodiumAdsorptionRatioEnabled,
-    soilColorEnabled: data.soilColorEnabled,
-    soilOrganicCarbonMatterEnabled: data.soilOrganicCarbonMatterEnabled,
-    soilStructureEnabled: data.soilStructureEnabled,
-    soilTextureEnabled: data.soilTextureEnabled,
+    depthInterval: changeData.depthInterval,
+    ...gatherFields(changeData.fieldChanges, data),
   };
 };
 
 export const localDataToDepthDependentMutation = (
   siteId: string,
   data: DepthDependentSoilData,
+  changeData: DepthIntervalChange,
 ): DepthDependentSoilDataUpdateMutationInput => {
   return {
     siteId: siteId,
-
-    carbonates:
-      data.carbonates as Maybe<SoilIdDepthDependentSoilDataCarbonatesChoices>,
-    clayPercent: data.clayPercent,
-    colorChroma: data.colorChroma,
-    colorHue: data.colorHue,
-    colorPhotoLightingCondition:
-      data.colorPhotoLightingCondition as Maybe<SoilIdDepthDependentSoilDataColorPhotoLightingConditionChoices>,
-    colorPhotoSoilCondition:
-      data.colorPhotoSoilCondition as Maybe<SoilIdDepthDependentSoilDataColorPhotoSoilConditionChoices>,
-    colorPhotoUsed: data.colorPhotoUsed,
-    colorValue: data.colorValue,
-    conductivity: data.conductivity,
-    conductivityTest:
-      data.conductivityTest as Maybe<SoilIdDepthDependentSoilDataConductivityTestChoices>,
-    conductivityUnit:
-      data.conductivityUnit as Maybe<SoilIdDepthDependentSoilDataConductivityUnitChoices>,
-    depthInterval: data.depthInterval,
-    ph: data.ph,
-    phTestingMethod:
-      data.phTestingMethod as Maybe<SoilIdDepthDependentSoilDataPhTestingMethodChoices>,
-    phTestingSolution:
-      data.phTestingSolution as Maybe<SoilIdDepthDependentSoilDataPhTestingSolutionChoices>,
-    rockFragmentVolume:
-      data.rockFragmentVolume as Maybe<SoilIdDepthDependentSoilDataRockFragmentVolumeChoices>,
-    sodiumAbsorptionRatio: data.sodiumAbsorptionRatio,
-    soilOrganicCarbon: data.soilOrganicCarbon,
-    soilOrganicCarbonTesting:
-      data.soilOrganicCarbonTesting as Maybe<SoilIdDepthDependentSoilDataSoilOrganicCarbonTestingChoices>,
-    soilOrganicMatter: data.soilOrganicMatter,
-    soilOrganicMatterTesting:
-      data.soilOrganicMatterTesting as Maybe<SoilIdDepthDependentSoilDataSoilOrganicMatterTestingChoices>,
-    structure:
-      data.structure as Maybe<SoilIdDepthDependentSoilDataStructureChoices>,
-    texture: data.texture as Maybe<SoilIdDepthDependentSoilDataTextureChoices>,
+    depthInterval: changeData.depthInterval,
+    ...gatherFields(changeData.fieldChanges, data),
   };
+};
+
+export const gatherFields = (
+  fields: Record<string, FieldChange>,
+  mutationInput: any,
+): Record<string, any> => {
+  const mutatedFields: Record<string, any> = {};
+  for (const field of Object.keys(fields)) {
+    if (field in mutationInput && mutationInput[field] !== undefined)
+      mutatedFields[field] = mutationInput[field];
+  }
+  return mutatedFields;
 };

@@ -16,11 +16,13 @@
  */
 
 import {
+  DepthDependentSoilDataUpdateMutationInput,
   SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
+  DepthDependentSoilData,
   DepthInterval,
   SoilData,
   SoilDataDepthInterval,
@@ -61,30 +63,35 @@ export const DEPTH_INTERVAL_UPDATE_FIELDS = [
   (keyof SoilDataUpdateDepthIntervalMutationInput)[];
 
 export const DEPTH_DEPENDENT_UPDATE_FIELDS = [
-  'bedrock',
-  'crossSlope',
-  'depthIntervalPreset',
-  'downSlope',
-  'floodingSelect',
-  'grazingSelect',
-  'landCoverSelect',
-  'limeRequirementsSelect',
-  'slopeAspect',
-  'slopeLandscapePosition',
-  'slopeSteepnessDegree',
-  'slopeSteepnessPercent',
-  'slopeSteepnessSelect',
-  'soilDepthSelect',
-  'surfaceCracksSelect',
-  'surfaceSaltSelect',
-  'surfaceStoninessSelect',
-  'waterTableDepthSelect',
-] as const satisfies (keyof SoilData)[] & (keyof SoilDataUpdateMutationInput)[];
+  'carbonates',
+  'clayPercent',
+  'colorChroma',
+  'colorHue',
+  'colorPhotoLightingCondition',
+  'colorPhotoSoilCondition',
+  'colorPhotoUsed',
+  'colorValue',
+  'conductivity',
+  'conductivityTest',
+  'conductivityUnit',
+  'ph',
+  'phTestingMethod',
+  'phTestingSolution',
+  'rockFragmentVolume',
+  'sodiumAbsorptionRatio',
+  'soilOrganicCarbon',
+  'soilOrganicCarbonTesting',
+  'soilOrganicMatter',
+  'soilOrganicMatterTesting',
+  'structure',
+  'texture',
+] as const satisfies (keyof DepthDependentSoilData)[] &
+  (keyof DepthDependentSoilDataUpdateMutationInput)[];
 
 export type SoilDataChangeSet = {
-  fieldChanges: Record<FieldKey, FieldChange>;
-  depthIntervalChanges: Record<DepthIntervalKey, DepthIntervalChange>;
-  depthDependentDataChanges: Record<DepthIntervalKey, DepthIntervalChange>;
+  fieldChanges: Record<string, FieldChange>;
+  depthIntervalChanges: Record<string, DepthIntervalChange>;
+  depthDependentDataChanges: Record<string, DepthIntervalChange>;
 };
 
 export const soilDataChangeSet = (): SoilDataChangeSet => {
@@ -99,19 +106,36 @@ export type FieldChange = {
   fieldName: string;
 };
 
-export type FieldKey = string;
-
-export const fieldKey = (change: FieldChange): FieldKey => change.fieldName;
-
 export type DepthIntervalChange = {
   depthInterval: DepthInterval;
-  fieldChanges: Record<FieldKey, FieldChange>;
+  fieldChanges: Record<string, FieldChange>;
   deleted: boolean;
 };
 
-export type DepthIntervalKey = `[${number}-${number})`;
+export const depthIntervalKey = (depthInterval: DepthInterval): string =>
+  `[${depthInterval.start}-${depthInterval.end})`;
 
-export const depthIntervalKey = (
-  change: DepthIntervalChange,
-): DepthIntervalKey =>
-  `[${change.depthInterval.start}-${change.depthInterval.end})`;
+export const gatherDepthIntervals = (
+  soilData: SoilData,
+): Record<string, SoilDataDepthInterval> => {
+  const result: Record<string, SoilDataDepthInterval> = {};
+  soilData.depthIntervals.forEach(
+    depthInterval =>
+      (result[depthIntervalKey(depthInterval.depthInterval)] = depthInterval),
+  );
+
+  return result;
+};
+
+export const gatherDepthDependentData = (
+  soilData: SoilData,
+): Record<string, DepthDependentSoilData> => {
+  const result: Record<string, DepthDependentSoilData> = {};
+  soilData.depthDependentData.forEach(
+    depthDependentData =>
+      (result[depthIntervalKey(depthDependentData.depthInterval)] =
+        depthDependentData),
+  );
+
+  return result;
+};

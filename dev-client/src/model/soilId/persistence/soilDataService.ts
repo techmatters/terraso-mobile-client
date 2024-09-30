@@ -14,6 +14,7 @@ import {
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilId/persistence/localSoilDataMutations';
 import {sync} from 'terraso-mobile-client/model/soilId/persistence/remoteSoilDataSync';
+import {gatherSyncState} from 'terraso-mobile-client/model/sync/syncRecords';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const updateSoilDataThunk = async (
@@ -76,12 +77,6 @@ export const syncSoilDataThunk = async (
   const state = thunkApi.getState() as AppState;
   const syncRecords = state.soilId.soilDataSync;
   const soilData = state.soilId.soilData;
-  return await sync(
-    Object.fromEntries(
-      siteIds
-        .filter(siteId => siteId in syncRecords)
-        .map(siteId => [siteId, soilData[siteId]])
-        .filter(([__, data]) => !!data),
-    ),
-  );
+  const syncState = gatherSyncState(siteIds, soilData, syncRecords);
+  return await sync(syncState);
 };
