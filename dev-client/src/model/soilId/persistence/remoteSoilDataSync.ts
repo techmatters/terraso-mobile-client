@@ -29,6 +29,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
+  DepthDependentChange,
   DepthIntervalChange,
   gatherChangedFields,
   gatherDepthDependentData,
@@ -129,7 +130,7 @@ export const localDataToDepthIntervalMutation = (
 export const localDataToDepthDependentMutation = (
   siteId: string,
   data: DepthDependentSoilData,
-  changes: DepthIntervalChange,
+  changes: DepthDependentChange,
 ): DepthDependentSoilDataUpdateMutationInput => {
   return {
     siteId: siteId,

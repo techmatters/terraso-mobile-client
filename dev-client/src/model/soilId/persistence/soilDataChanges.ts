@@ -49,6 +49,8 @@ export const UPDATE_FIELDS = [
   'waterTableDepthSelect',
 ] as const satisfies (keyof SoilData)[] & (keyof SoilDataUpdateMutationInput)[];
 
+export type UpdateField = typeof UPDATE_FIELDS;
+
 export const DEPTH_INTERVAL_UPDATE_FIELDS = [
   'carbonatesEnabled',
   'electricalConductivityEnabled',
@@ -61,6 +63,8 @@ export const DEPTH_INTERVAL_UPDATE_FIELDS = [
   'soilTextureEnabled',
 ] as const satisfies (keyof SoilDataDepthInterval)[] &
   (keyof SoilDataUpdateDepthIntervalMutationInput)[];
+
+export type DepthIntervalUpdateField = typeof DEPTH_INTERVAL_UPDATE_FIELDS;
 
 export const DEPTH_DEPENDENT_UPDATE_FIELDS = [
   'carbonates',
@@ -88,10 +92,12 @@ export const DEPTH_DEPENDENT_UPDATE_FIELDS = [
 ] as const satisfies (keyof DepthDependentSoilData)[] &
   (keyof DepthDependentSoilDataUpdateMutationInput)[];
 
+export type DepthDependentUpdateField = typeof DEPTH_DEPENDENT_UPDATE_FIELDS;
+
 export type SoilDataChangeSet = {
-  fieldChanges: Record<string, FieldChange>;
+  fieldChanges: Record<string, FieldChange<UpdateField>>;
   depthIntervalChanges: Record<string, DepthIntervalChange>;
-  depthDependentDataChanges: Record<string, DepthIntervalChange>;
+  depthDependentDataChanges: Record<string, DepthDependentChange>;
 };
 
 export const soilDataChangeSet = (): SoilDataChangeSet => {
@@ -102,12 +108,12 @@ export const soilDataChangeSet = (): SoilDataChangeSet => {
   };
 };
 
-export type FieldChange = {
-  fieldName: string;
+export type FieldChange<T> = {
+  fieldName: string & T;
 };
 
 export const gatherChangedFields = (
-  fields: Record<string, FieldChange>,
+  fields: Record<string, FieldChange<unknown>>,
   input: any,
 ): Record<string, any> => {
   const mutatedFields: Record<string, any> = {};
@@ -120,8 +126,13 @@ export const gatherChangedFields = (
 
 export type DepthIntervalChange = {
   depthInterval: DepthInterval;
-  fieldChanges: Record<string, FieldChange>;
+  fieldChanges: Record<string, FieldChange<DepthIntervalUpdateField>>;
   deleted: boolean;
+};
+
+export type DepthDependentChange = {
+  depthInterval: DepthInterval;
+  fieldChanges: Record<string, FieldChange<DepthDependentUpdateField>>;
 };
 
 export const depthIntervalKey = (depthInterval: DepthInterval): string =>
