@@ -24,7 +24,9 @@ import i18n from 'i18next';
 import en from 'terraso-mobile-client/translations/en.json';
 import es from 'terraso-mobile-client/translations/es.json';
 
-const fallbackLanguage = 'en';
+export const fallbackLanguage = 'en';
+export const fallbackLocale = 'en-US';
+
 let deviceLanguage = getLocales()[0]?.languageCode;
 
 // getLocales()[0].languageCode can be string|null, and
