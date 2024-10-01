@@ -107,7 +107,7 @@ export const SiteListBottomSheet = memo(
             <Row justifyContent="space-between" alignItems="center" pb="4">
               <Heading variant="h6">{t('site.list_title')}</Heading>
             </Row>
-            {sites.length >= 0 && <SiteFilterModal useDistance={useDistance} />}
+            {sites.length > 0 && <SiteFilterModal useDistance={useDistance} />}
           </Column>
           {isLoadingData ? (
             <ActivityIndicator size="large" />
