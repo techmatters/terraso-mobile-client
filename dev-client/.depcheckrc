@@ -17,6 +17,7 @@
     "expo-crypto",
     "expo-dev-client",
     "expo-modules-core",
+    "intl-pluralrules",
     "metro-react-native-babel-preset",
     "react-devtools",
     "react-native-gradle-plugin",
