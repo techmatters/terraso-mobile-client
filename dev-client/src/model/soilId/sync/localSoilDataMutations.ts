@@ -29,6 +29,7 @@ import {
   sameDepth,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 import {
+  recordDepthDependentUpdateFields,
   recordDepthIntervalDeletion,
   recordDepthIntervalUpdateFields,
   recordUpdateFields,
@@ -151,7 +152,12 @@ export const updateDepthDependentSoilData = (
       }),
     );
   }
-  mutateFields(DEPTH_DEPENDENT_UPDATE_FIELDS, input, depthDependentData);
+  const mutated = mutateFields(
+    DEPTH_DEPENDENT_UPDATE_FIELDS,
+    input,
+    depthDependentData,
+  );
+  recordDepthDependentUpdateFields(changes, input.depthInterval, mutated);
 
   finalizeResult(result);
   return {

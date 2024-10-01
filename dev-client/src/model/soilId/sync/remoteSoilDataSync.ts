@@ -62,6 +62,7 @@ export const syncSoilData = async (
   data: SoilData,
   changes: SoilDataChanges,
 ): Promise<SoilData> => {
+  console.log(JSON.stringify(changes));
   let finalResult = await soilDataService.updateSoilData(
     makeUpdateMutation(siteId, data, changes),
   );

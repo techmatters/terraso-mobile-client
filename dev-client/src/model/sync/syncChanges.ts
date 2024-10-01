@@ -22,9 +22,10 @@ export const mutateFields = <T>(
   const mutation: Record<string, any> = {};
   const mutatedFields: Set<T> = new Set();
   for (const field of fields) {
-    if (field in mutationInput && mutationInput[field] !== undefined)
+    if (field in mutationInput && mutationInput[field] !== undefined) {
       mutation[field] = mutationInput[field];
-    mutatedFields.add(field);
+      mutatedFields.add(field);
+    }
   }
   Object.assign(mutationTarget, mutation);
   return mutatedFields;
