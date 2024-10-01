@@ -1,32 +1,31 @@
-import {useContext, useEffect} from 'react';
+import {useEffect} from 'react';
 
 import {useDebounce} from 'use-debounce';
 
-import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {syncSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const SyncManager = ({children}: React.PropsWithChildren) => {
   const dispatch = useDispatch();
-  const isOffline = useContext(ConnectivityContext);
+  const isOffline = useIsOffline();
   const unsyncedIds = useSelector(selectUnsyncedSiteIds);
 
-  /* Determine the sync situation -- combination of offline state and IDs in need of syncing */
-  const [debouncedSituation] = useDebounce(
-    {
-      isOffline,
-      unsyncedIds,
-    },
-    500,
-  );
+  /* Debounce both offline state and IDs so we don't queue up too many syncs at once */
+  const [debouncedOffline] = useDebounce(isOffline, 500);
+  const [debouncedIds] = useDebounce(unsyncedIds, 500);
 
   useEffect(() => {
+    console.log(`SyncManager isOffline: ${debouncedOffline}`);
+    console.log(`SyncManager unsyncedIds: ${debouncedIds.length}`);
+
     /* If we're not offline and have unsynced site IDs, dispatch a sync all for them */
-    if (!debouncedSituation.isOffline && debouncedSituation.unsyncedIds) {
-      dispatch(syncSoilDataForUser(debouncedSituation.unsyncedIds));
+    if (!debouncedOffline && debouncedIds.length > 0) {
+      console.log('syncing');
+      dispatch(syncSoilDataForUser(debouncedIds));
     }
-  }, [dispatch, debouncedSituation]);
+  }, [dispatch, debouncedOffline, debouncedIds]);
 
   return <>{children}</>;
 };

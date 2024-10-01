@@ -15,9 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {createSelector} from '@reduxjs/toolkit';
+
 import {SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {SoilDataChanges} from 'terraso-mobile-client/model/soilId/sync/soilDataChanges';
+import {SyncRecords} from 'terraso-mobile-client/model/sync/syncRecords';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilIdMatches =
@@ -25,5 +29,11 @@ export const selectSoilIdMatches =
   (state: AppState): SoilIdEntry | undefined =>
     state.soilId.matches[key];
 
-export const selectUnsyncedSiteIds = (state: AppState): string[] =>
-  Object.keys(state.soilId.soilDataSync);
+export const selectSoilDataSync = (
+  state: AppState,
+): SyncRecords<SoilDataChanges> => state.soilId.soilDataSync;
+
+export const selectUnsyncedSiteIds = createSelector(
+  [selectSoilDataSync],
+  sync => Object.keys(sync),
+);
