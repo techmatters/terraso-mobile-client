@@ -3574,7 +3574,7 @@ exports[`renders correctly 1`] = `
                                             }
                                           }
                                         >
-                                          Includes slope steepness, shape, aspect, and landscape position
+                                          Includes slope steepness and shape
                                         </Text>
                                       </View>
                                       <View
@@ -3664,7 +3664,7 @@ exports[`renders correctly 1`] = `
                                             }
                                           }
                                         >
-                                          Soil Texture
+                                          Texture Class
                                         </Text>
                                       </View>
                                       <View
@@ -3690,7 +3690,7 @@ exports[`renders correctly 1`] = `
                                             }
                                           }
                                         >
-                                          Includes texture class, percent clay, and rock fragments
+                                          Includes texture class and rock fragment volume
                                         </Text>
                                       </View>
                                       <View
@@ -3735,7 +3735,7 @@ exports[`renders correctly 1`] = `
                                             }
                                           }
                                         >
-                                          Soil Color
+                                          Color
                                         </Text>
                                       </View>
                                       <View

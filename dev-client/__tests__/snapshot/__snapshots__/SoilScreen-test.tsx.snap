@@ -383,7 +383,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Texture
+                          Texture Class
                         </Text>
                         <View
                           style={
@@ -551,7 +551,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Color
+                          Color
                         </Text>
                         <View
                           style={
@@ -676,7 +676,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Texture
+                          Texture Class
                         </Text>
                         <View
                           style={
@@ -844,7 +844,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Color
+                          Color
                         </Text>
                         <View
                           style={
@@ -969,7 +969,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Texture
+                          Texture Class
                         </Text>
                         <View
                           style={
@@ -1137,7 +1137,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Color
+                          Color
                         </Text>
                         <View
                           style={
@@ -1262,7 +1262,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Texture
+                          Texture Class
                         </Text>
                         <View
                           style={
@@ -1430,7 +1430,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Color
+                          Color
                         </Text>
                         <View
                           style={
@@ -1555,7 +1555,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Texture
+                          Texture Class
                         </Text>
                         <View
                           style={
@@ -1723,7 +1723,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Color
+                          Color
                         </Text>
                         <View
                           style={
@@ -1848,7 +1848,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Texture
+                          Texture Class
                         </Text>
                         <View
                           style={
@@ -2016,7 +2016,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Soil Color
+                          Color
                         </Text>
                         <View
                           style={
