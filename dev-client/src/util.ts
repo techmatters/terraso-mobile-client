@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {NativeModules, Platform} from 'react-native';
+
+import {getLocales} from 'expo-localization';
 
 import {Coords} from 'terraso-client-shared/types';
 import {
@@ -24,20 +25,15 @@ import {
 } from 'terraso-client-shared/utils';
 
 import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
+import {fallbackLocale} from 'terraso-mobile-client/translations';
 
 export const getSystemLocale = () => {
-  let locale;
-  if (Platform.OS === 'ios') {
-    locale =
-      NativeModules.SettingsManager.settings.AppleLocale ||
-      NativeModules.SettingsManager.settings.AppleLanguages[0];
-  } else if (Platform.OS === 'android') {
-    locale = NativeModules.I18nManager.localeIdentifier;
-  } else {
-    locale = 'en-US';
+  let deviceLocale = getLocales()[0]?.languageTag;
+  if (deviceLocale === null) {
+    deviceLocale = fallbackLocale;
   }
 
-  return locale.replace('_', '-');
+  return deviceLocale;
 };
 
 const shortDateFormatters: Record<string, Intl.DateTimeFormat> = {};
