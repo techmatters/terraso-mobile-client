@@ -17,8 +17,9 @@
 
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ScrollView} from 'react-native';
 
-import {Fab, FlatList} from 'native-base';
+import {Fab} from 'native-base';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
@@ -192,64 +193,67 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     <ScreenScaffold
       BottomNavigation={null}
       AppBar={<AppBar title={project.name} />}>
-      <ListHeader query={query} setQuery={setQuery} />
-      <FlatList
-        data={listData}
-        keyExtractor={([projId, _]) => String(projId)}
-        renderItem={({item: [projId, {projectName, sites: projectSites}]}) => (
-          <Accordion
-            Head={
-              <Text
-                variant="body1"
-                fontWeight={700}
-                color="primary.contrast"
-                py="14px">
-                {projectName} ({projectSites.length})
-              </Text>
-            }
-            boxProps={{
-              mb: '2px',
-            }}
-            initiallyOpen={projectSites.length > 0}
-            disableOpen={projectSites.length === 0}>
-            {projectSites.length > 0 ? (
-              <Box px="15px" my="15px">
-                <CheckboxGroup
-                  groupName={projectName}
-                  groupId={projId}
-                  checkboxes={projectSites
-                    .map(({siteId, siteName}) => ({
-                      label: siteName,
-                      id: siteId,
-                      checked:
-                        projState && projState[projId]
-                          ? projState[projId][siteId]
-                          : false,
-                    }))
-                    .sort((a, b) => a.label.localeCompare(b.label))}
-                  onChangeValue={onCheckboxChange}
-                />
-              </Box>
-            ) : undefined}
-          </Accordion>
-        )}
-      />
-      <ConfirmModal
-        trigger={onOpen => (
-          <Fab
-            label={t('projects.sites.transfer')}
-            onPress={onOpen}
-            isDisabled={disabled}
-            _disabled={{
-              shadow: 0,
-            }}
-          />
-        )}
-        title={t('projects.sites.transfer_site_modal.title')}
-        body={t('projects.sites.transfer_site_modal.body')}
-        actionName={t('projects.sites.transfer_site_modal.action_name')}
-        handleConfirm={onSubmit}
-      />
+      <ScrollView>
+        <ListHeader query={query} setQuery={setQuery} />
+        {listData.map(item => {
+          const [projId, {projectName, sites: projectSites}] = item;
+
+          return (
+            <Accordion
+              key={projId.toString()}
+              Head={
+                <Text
+                  variant="body1"
+                  fontWeight={700}
+                  color="primary.contrast"
+                  py="14px">
+                  {projectName} ({projectSites.length})
+                </Text>
+              }
+              boxProps={{
+                mb: '2px',
+              }}
+              initiallyOpen={projectSites.length > 0}
+              disableOpen={projectSites.length === 0}>
+              {projectSites.length > 0 ? (
+                <Box px="15px" my="15px">
+                  <CheckboxGroup
+                    groupName={projectName}
+                    groupId={projId}
+                    checkboxes={projectSites
+                      .map(({siteId, siteName}) => ({
+                        label: siteName,
+                        id: siteId,
+                        checked:
+                          projState && projState[projId]
+                            ? projState[projId][siteId]
+                            : false,
+                      }))
+                      .sort((a, b) => a.label.localeCompare(b.label))}
+                    onChangeValue={onCheckboxChange}
+                  />
+                </Box>
+              ) : undefined}
+            </Accordion>
+          );
+        })}
+        <ConfirmModal
+          trigger={onOpen => (
+            <Fab
+              label={t('projects.sites.transfer')}
+              onPress={onOpen}
+              isDisabled={disabled}
+              _disabled={{
+                shadow: 0,
+              }}
+            />
+          )}
+          title={t('projects.sites.transfer_site_modal.title')}
+          body={t('projects.sites.transfer_site_modal.body')}
+          actionName={t('projects.sites.transfer_site_modal.action_name')}
+          handleConfirm={onSubmit}
+        />
+      </ScrollView>
     </ScreenScaffold>
   );
 };
