@@ -15,8 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {getLocales} from 'expo-localization';
-
 import {Coords} from 'terraso-client-shared/types';
 import {
   isValidLatitude,
@@ -25,16 +23,7 @@ import {
 } from 'terraso-client-shared/utils';
 
 import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
-import {fallbackLocale} from 'terraso-mobile-client/translations';
-
-export const getSystemLocale = () => {
-  let deviceLocale = getLocales()[0]?.languageTag;
-  if (deviceLocale === null) {
-    deviceLocale = fallbackLocale;
-  }
-
-  return deviceLocale;
-};
+import {getSystemLocale} from 'terraso-mobile-client/localization';
 
 const shortDateFormatters: Record<string, Intl.DateTimeFormat> = {};
 export const formatDate = (dateString: string) => {
