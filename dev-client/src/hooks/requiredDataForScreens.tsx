@@ -51,3 +51,14 @@ export const useRequiredData = (
 
   return requirements.every(({data}) => dataExists(data));
 };
+
+type Props = {
+  requiredDataExists: boolean;
+} & React.PropsWithChildren;
+
+export const RenderIfDataExists = ({requiredDataExists, children}: Props) => {
+  if (!requiredDataExists) {
+    return null;
+  }
+  return <>{children}</>;
+};

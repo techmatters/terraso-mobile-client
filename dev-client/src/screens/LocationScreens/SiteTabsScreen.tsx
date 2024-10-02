@@ -20,7 +20,10 @@ import {useTranslation} from 'react-i18next';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {useRequiredData} from 'terraso-mobile-client/hooks/requiredDataForScreens';
+import {
+  RenderIfDataExists,
+  useRequiredData,
+} from 'terraso-mobile-client/hooks/requiredDataForScreens';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -66,22 +69,19 @@ export const SiteTabsScreen = (props: Props) => {
     );
   }, [siteId, navigation, userRole]);
 
-  if (!requiredDataExists) {
-    console.log('    SiteTabsScreen site =', site);
-    return null;
-  }
-
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar
-          RightButton={appBarRightButton}
-          title={site?.name ?? t('site.dashboard.default_title')}
-        />
-      }>
-      <SiteRoleContextProvider siteId={siteId}>
-        <SiteTabNavigator siteId={siteId} initialTab={initialTab} />
-      </SiteRoleContextProvider>
-    </ScreenScaffold>
+    <RenderIfDataExists requiredDataExists={requiredDataExists}>
+      <ScreenScaffold
+        AppBar={
+          <AppBar
+            RightButton={appBarRightButton}
+            title={site?.name ?? t('site.dashboard.default_title')}
+          />
+        }>
+        <SiteRoleContextProvider siteId={siteId}>
+          <SiteTabNavigator siteId={siteId} initialTab={initialTab} />
+        </SiteRoleContextProvider>
+      </ScreenScaffold>
+    </RenderIfDataExists>
   );
 };
