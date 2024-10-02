@@ -51,8 +51,7 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
   const note = site?.notes[noteId];
 
-  // TODO-cknipe: I guess we could also handle the case where the user has been deleted
-  // or no longer has permissions to edit notes?
+  // TODO: Also handle the case where user no longer has permissions to edit notes
   const currentUser = useSelector(state => state.account.currentUser.data);
   const currentUserIsAuthor = note?.authorId === currentUser?.id;
 
@@ -85,7 +84,6 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
     setIsSubmitting(false);
   }, [dispatch, note]);
 
-  // TODO-cknipe: Generalize this
   const requirements = [
     {data: site},
     {
