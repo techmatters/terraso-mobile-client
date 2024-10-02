@@ -1,6 +1,6 @@
 {
   "name": "LandPKS Soil ID",
-  "version": "1.0.2",
+  "version": "1.1",
   "private": true,
   "scripts": {
     "android": "expo run:android",
