@@ -8,6 +8,7 @@
 !jest.unit.config.js
 !metro.config.js
 !react-native.config.js
+!scripts/localization/*.mjs
 !app.config.ts
 !src/**/*.js
 !src/**/*.jsx

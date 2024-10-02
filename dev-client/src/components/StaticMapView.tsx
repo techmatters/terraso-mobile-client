@@ -112,6 +112,7 @@ export const StaticMapView = ({
 
   return (
     <Mapbox.MapView
+      localizeLabels={true}
       style={style}
       styleURL={Mapbox.StyleURL.Satellite}
       scaleBarEnabled={false}

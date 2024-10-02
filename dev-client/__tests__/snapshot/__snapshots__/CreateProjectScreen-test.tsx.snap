@@ -1884,7 +1884,7 @@ exports[`renders correctly 1`] = `
                                   }
                                 }
                               >
-                                SAVE
+                                Save
                               </Text>
                             </View>
                           </View>
