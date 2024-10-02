@@ -1,898 +1,897 @@
 {
-  "welcome": {
-    "title": "Welcome to LandPKS Soil ID",
-    "version_includes": {
-      "title": "This version includes:",
-      "bullet_1": "Soil identification for US locations",
-      "bullet_2": "Slope and soil data collection",
-      "bullet_3": "Site notes",
-      "bullet_4": "Project management"
+    "welcome": {
+        "title": "Welcome to LandPKS Soil ID",
+        "version_includes": {
+            "title": "This version includes:",
+            "bullet_1": "Soil identification for US locations",
+            "bullet_2": "Slope and soil data collection",
+            "bullet_3": "Site notes",
+            "bullet_4": "Project management"
+        },
+        "next": {
+            "title": "What’s next?",
+            "subtitle": "Future versions will include:",
+            "bullet_1": "Offline capabilities",
+            "bullet_2": "Data visualization enhancements",
+            "bullet_3": "Additional soil properties, such as soil structure and soil organic carbon",
+            "bullet_4": "Site photos"
+        },
+        "learn_more": "Learn more and stay updated:",
+        "link_text": "LandPKS from Terraso",
+        "link_url": "https://landpks.terraso.org/",
+        "get_started": "Get started"
     },
-    "next": {
-      "title": "What’s next?",
-      "subtitle": "Future versions will include:",
-      "bullet_1": "Offline capabilities",
-      "bullet_2": "Data visualization enhancements",
-      "bullet_3": "Additional soil properties, such as soil structure and soil organic carbon",
-      "bullet_4": "Site photos"
-    },
-    "learn_more": "Learn more and stay updated:",
-    "link_text": "LandPKS from Terraso",
-    "link_url": "https://landpks.terraso.org/",
-    "get_started": "Get started"
-  },
-  "home": {
-    "info": {
-      "title": "Discover your land’s potential",
-      "intro_image_alt": "",
-      "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.\n\n<2>There are three ways to use the map:</2>",
-      "list1": "Tap the map to drop a pin and get more information about that location.",
-      "list2": "Tap the location icon <icon/> to find your current GPS location.",
-      "list3": "Enter coordinates, address, or search term in the search bar.",
-      "description2": "<bold>Find more information and guides</bold> at:\n<icon />",
-      "link_label": "landpotential.org",
-      "link_url": "https://landpotential.org/"
-    }
-  },
-  "search": {
-    "placeholder": "Search map"
-  },
-  "site": {
-    "list_title": "Sites List",
-    "last_updated": "Last Modified: {{date}} by {{name}}",
-    "progress": "Progress: {{progress}}",
-    "members": "{{members}} Members",
-    "more_info": "Learn more",
-    "your_location": "Your location",
-    "coords": "{{lat}}, {{lng}}",
-    "soil_id_prediction": "Soil ID Top Match",
-    "ecological_site_prediction": "Ecological Site Top Match",
-    "annual_precip_avg": "Annual precipitation avg",
-    "elevation_label": "Elevation",
-    "elevation_value": "{{value}} {{units}}",
-    "elevation_unknown": "unknown",
-    "empty": {
-      "info": "You don’t have any sites yet. A site lets you collect and save data, learn more about your land and its potential, and share with others.\n\n<bold>Use the map to create a site.</bold> There are three ways to use the map to find a location for a site:\n",
-      "bullet_1": "Tap the map to drop a pin and get more information about that location.",
-      "bullet_2": "Tap the location icon <icon/> to find your current GPS location.",
-      "bullet_3": "Enter coordinates, address, or other search term in the search bar."
-    },
-    "create": {
-      "title": "Create Site",
-      "description": "Create a site here to save this location, collect data, and see more detailed reports.",
-      "button_label": "Create Site Here",
-      "gps": "Use my current location (GPS)",
-      "pin": "Use map pin",
-      "manual": "Enter coordinates",
-      "name_label": "Site Name",
-      "location_label": "Site Location",
-      "location_accuracy": "GPS accuracy: {{accuracyM}} m",
-      "latitude": "Latitude",
-      "longitude": "Longitude",
-      "add_to_project_label": "Add to Project",
-      "add_to_project_caption": "Project",
-      "add_to_project_tooltip": "The site will inherit the settings of the project, including data collection requirements and team members. Create new projects using the Projects tab in the bottom navigation.",
-      "privacy_tooltip": "Public projects will sync data to public data portals. ",
-      "privacy_tooltip_link": "Learn more"
-    },
-    "form": {
-      "name_min_length_error": "Site name must be at least {{min}} characters",
-      "name_max_length_error": "Site name must be at most {{max}} characters",
-      "min_latitude_error": "Latitude must be at least {{min}}",
-      "max_latitude_error": "Latitude must be at most {{max}}",
-      "min_longitude_error": "Longitude must be at least {{min}}",
-      "max_longitude_error": "Longitude must be at most {{max}}"
-    },
-    "dashboard": {
-      "privacy": "Data Privacy",
-      "team_button": "Team",
-      "transfer_label": "Transfer to Project",
-      "copy_download_link_button": "Copy site download link",
-      "archive_button": "Archive this site",
-      "archive_button_help_text": "Mark this site read-only",
-      "settings_title": "Site Settings",
-      "delete_button": "Delete this site",
-      "delete_site_modal": {
-        "title": "Delete site?",
-        "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.",
-        "action_name": "Delete"
-      },
-      "location_accuracy": "Location Accuracy",
-      "default_title": "Temporary Pin",
-      "speed_dial": {
-        "note_label": "NOTE",
-        "photo_label": "PHOTO",
-        "bedrock_label": "BEDROCK"
-      }
-    },
-    "soil_id": {
-      "title": "Soil ID",
-      "description": {
-        "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter data and improve the results.",
-        "site": "LandPKS Soil ID uses data from soil maps and data entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties."
-      },
-      "matches": {
-        "title": "Top Soil Matches",
+    "home": {
         "info": {
-          "title": "Top soil matches",
-          "description": {
-            "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil data to improve accuracy of the match scores. When this data is entered, the list will automatically update.",
-            "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended data to improve accuracy of the match scores. "
-          }
-        },
-        "match": "match",
-        "error_generic_title": "Can’t fetch soil map",
-        "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
-        "no_map_data_title": "No soil map data",
-        "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Data can still be collected for this site, and if soil map data becomes available in the future, soil matches will appear here.",
-        "native_lands_intro": "Soil resources for Native lands:",
-        "native_lands_link": "nativeland.info",
-        "native_lands_url": "https://nativeland.info/",
-        "offline_title": "You are offline",
-        "offline_body": "Soil matches will update here when you are online."
-      },
-      "site_data": {
-        "title": "Site Data",
-        "description": "Improve Soil ID results by entering some data for this site using the helpful guides along the way.",
-        "slope": {
-          "title": "Slope Steepness",
-          "add_data": "Add slope"
-        },
-        "soil_properties": {
-          "title": "Soil Properties",
-          "depth": "Depth ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
-          "depth_units_METRIC": "cm",
-          "depth_units_ENGLISH": "”",
-          "texture": "Texture",
-          "color": "Color",
-          "rock_fragment": "Rock Fragment",
-          "add_data": "Add soil data"
+            "title": "Discover your land’s potential",
+            "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.\n\n<2>There are three ways to use the map:</2>",
+            "list1": "Tap the map to drop a pin and get more information about that location.",
+            "list2": "Tap the location icon <icon/> to find your current GPS location.",
+            "list3": "Enter coordinates, address, or search term in the search bar.",
+            "description2": "<bold>Find more information and guides</bold> at:\n<icon />",
+            "link_label": "landpotential.org",
+            "link_url": "https://landpotential.org/"
         }
-      },
-      "soil_info": {
-        "series_descr_url": "Soil Series Full Description",
-        "eco_descr_url": "Ecological Site Full Description",
-        "eco_name_label": "<bold>Ecological Site Name:</bold> {{name}}",
-        "eco_id_label": "<bold>Ecological Site ID:</bold> {{id}}",
-        "land_class_label": "<bold>Land Capability Class:</bold> {{land}}",
-        "data_source_label": "<bold>Data Source:</bold> {{source}}",
-        "location_url": "View location on soil web",
-        "inside_map_label": "In soil map unit",
-        "outside_map_label": "In adjacent map unit, {{distance}} {{units}} distance",
-        "map_units_METRIC": "meters",
-        "properties_header": "Soil Properties"
-      },
-      "location_score_info": {
-        "header": "Location Score",
-        "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account data that has been entered by users at the site.",
-        "p2": "LandPKS Soil ID bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
-        "p3": "The <bold>location score</bold> for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
-      },
-      "soil_properties_score_info": {
-        "header": "Soil Properties Score",
-        "p1": "Soil Properties Score reflects the similarity between the soil match and the data entered for this site.",
-        "p2": "A higher Soil Properties Score means that the user-entered data is similar to the soil match. A low score means the two are less similar, and it is less likely for this match to be the correct soil ID for the site.",
-        "p3": "The more data entered for a site, the more reliable the Soil Properties Score will be.",
-        "p4": "LandPKS Soil ID considers the following properties in calculating Soil Properties Score:",
-        "bullets": {
-          "1": "Soil texture by depth",
-          "2": "Rock fragment by depth",
-          "3": "Soil color by depth",
-          "4": "Site slope",
-          "5": "Surface cracking"
-        }
-      }
-    },
-    "notes": {
-      "add_note_label": "Add Note",
-      "title": "Site Notes",
-      "add_title": "Site Note",
-      "edit_title": "Site Note",
-      "note_attribution": "{{createdAt}} by {{name}}",
-      "confirm_removal_title": "Delete note?",
-      "confirm_removal_body": "This action cannot be undone.",
-      "min_length_error": "Must be at least {{min}} characters",
-      "placeholder_text": "Start typing your note…",
-      "project_instructions": "Pinned Note"
     },
     "search": {
-      "placeholder": "Search sites",
-      "accessibility_label": "Filter sites by site name",
-      "filter_projects": "Filter sites by project",
-      "filter_role": "Filter sites by role",
-      "no_matches": "No sites match the current search and filter options.",
-      "sort": {
-        "label": "Sort sites by",
-        "nameAsc": "Name (A to Z)",
-        "nameDesc": "Name (Z to A)",
-        "lastModAsc": "Last Modified (most recent)",
-        "lastModDesc": "Last Modified (least recent)",
-        "distanceAsc": "Distance (closest)",
-        "distanceDesc": "Distance (furthest)"
-      }
+        "placeholder": "Search map"
     },
-    "tabs": {
-      "SITE": "Site",
-      "SLOPE": "Slope",
-      "SOIL": "Soil",
-      "NOTES": "Notes"
-    }
-  },
-  "projects": {
-    "label": "Project",
-    "title": "Projects",
-    "header": "Projects",
-    "none": {
-      "header": "You don’t have any projects.",
-      "info": "Projects let you group sites, set data needs, and manage team members."
-    },
-    "learn_more": "Learn more about using projects",
-    "create_button": "Create project",
-    "go_to": "Go to Project",
-    "search_label": "Enter text to filter projects by name",
-    "role_filter_label": "Filter projects by role",
-    "create": {
-      "public": "Public",
-      "private": "Private",
-      "name_label": "Project Name",
-      "description_label": "Project Description",
-      "privacy_label": "Data Privacy"
-    },
-    "tabs": {
-      "inputs": "Inputs",
-      "team": "Team",
-      "sites": "Sites",
-      "settings": "Settings"
-    },
-    "inputs": {
-      "units": {
-        "heading": "Units of Measurement",
-        "a11yLabel": "measurement units",
-        "english": "English (in, ft, lb)",
-        "metric": "Metric (cm, m , kg)"
-      },
-      "soil_source": {
-        "heading": "Default Soil Information Source",
-        "survey": "USDA NRCS Soil Survey",
-        "grids": "SoilGrids",
-        "a11yLabel": "default soil information source"
-      },
-      "instructions": {
-        "title": "Pinned Note",
-        "screen_title": "Pinned Note",
-        "description": "This content will display at the top of the Notes section of each site in this project.",
-        "add_label": "Note"
-      },
-      "depths": {
-        "title": "Soil Pit Depths",
-        "preset": {
-          "NRCS": "NRCS/GSP",
-          "BLM": "BLM Monitoring Standard",
-          "CUSTOM": "Custom…",
-          "NONE": "None specified"
+    "site": {
+        "list_title": "Sites List",
+        "last_updated": "Last Modified: {{date}} by {{name}}",
+        "progress": "Progress: {{progress}}",
+        "members": "{{members}} Members",
+        "more_info": "Learn more",
+        "your_location": "Your location",
+        "coords": "{{lat}}, {{lng}}",
+        "soil_id_prediction": "Soil ID Top Match",
+        "ecological_site_prediction": "Ecological Site Top Match",
+        "annual_precip_avg": "Annual precipitation avg",
+        "elevation_label": "Elevation",
+        "elevation_value": "{{value}} {{units}}",
+        "elevation_unknown": "unknown",
+        "empty": {
+            "info": "You don’t have any sites yet. A site lets you collect and save data, learn more about your land and its potential, and share with others.\n\n<bold>Use the map to create a site.</bold> There are three ways to use the map to find a location for a site:\n",
+            "bullet_1": "Tap the map to drop a pin and get more information about that location.",
+            "bullet_2": "Tap the location icon <icon/> to find your current GPS location.",
+            "bullet_3": "Enter coordinates, address, or other search term in the search bar."
         },
-        "confirm_preset": {
-          "title": "Change depths?",
-          "body": "Soil pit data that has been entered will be deleted. This action cannot be undone.",
-          "confirm": "Change"
+        "create": {
+            "title": "Create Site",
+            "description": "Create a site here to save this location, collect data, and see more detailed reports.",
+            "button_label": "Create Site Here",
+            "gps": "Use my current location (GPS)",
+            "pin": "Use map pin",
+            "manual": "Enter coordinates",
+            "name_label": "Site Name",
+            "location_label": "Site Location",
+            "location_accuracy": "GPS accuracy: {{accuracyM}} m",
+            "latitude": "Latitude",
+            "longitude": "Longitude",
+            "add_to_project_label": "Add to Project",
+            "add_to_project_caption": "Project",
+            "add_to_project_tooltip": "The site will inherit the settings of the project, including data collection requirements and team members. Create new projects using the Projects tab in the bottom navigation.",
+            "privacy_tooltip": "Public projects will sync data to public data portals. ",
+            "privacy_tooltip_link": "Learn more"
         },
-        "label": "Label",
-        "depth": "Depth ({{units}})"
-      }
+        "form": {
+            "name_min_length_error": "Site name must be at least {{min}} characters",
+            "name_max_length_error": "Site name must be at most {{max}} characters",
+            "min_latitude_error": "Latitude must be at least {{min}}",
+            "max_latitude_error": "Latitude must be at most {{max}}",
+            "min_longitude_error": "Longitude must be at least {{min}}",
+            "max_longitude_error": "Longitude must be at most {{max}}"
+        },
+        "dashboard": {
+            "privacy": "Data Privacy",
+            "team_button": "Team",
+            "transfer_label": "Transfer to Project",
+            "copy_download_link_button": "Copy site download link",
+            "archive_button": "Archive this site",
+            "archive_button_help_text": "Mark this site read-only",
+            "settings_title": "Site Settings",
+            "delete_button": "Delete this site",
+            "delete_site_modal": {
+                "title": "Delete site?",
+                "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.",
+                "action_name": "Delete"
+            },
+            "location_accuracy": "Location Accuracy",
+            "default_title": "Temporary Pin",
+            "speed_dial": {
+                "note_label": "NOTE",
+                "photo_label": "PHOTO",
+                "bedrock_label": "BEDROCK"
+            }
+        },
+        "soil_id": {
+            "title": "Soil ID",
+            "description": {
+                "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter data and improve the results.",
+                "site": "LandPKS Soil ID uses data from soil maps and data entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties."
+            },
+            "matches": {
+                "title": "Top Soil Matches",
+                "info": {
+                    "title": "Top soil matches",
+                    "description": {
+                        "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil data to improve accuracy of the match scores. When this data is entered, the list will automatically update.",
+                        "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended data to improve accuracy of the match scores."
+                    }
+                },
+                "match": "match",
+                "error_generic_title": "Can’t fetch soil map",
+                "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
+                "no_map_data_title": "No soil map data",
+                "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Data can still be collected for this site, and if soil map data becomes available in the future, soil matches will appear here.",
+                "native_lands_intro": "Soil resources for Native lands:",
+                "native_lands_link": "nativeland.info",
+                "native_lands_url": "https://nativeland.info/",
+                "offline_title": "You are offline",
+                "offline_body": "Soil matches will update here when you are online."
+            },
+            "site_data": {
+                "title": "Site Data",
+                "description": "Improve Soil ID results by entering some data for this site using the helpful guides along the way.",
+                "slope": {
+                    "title": "Slope Steepness",
+                    "add_data": "Add slope"
+                },
+                "soil_properties": {
+                    "title": "Soil Properties",
+                    "depth": "Depth ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
+                    "depth_units_METRIC": "cm",
+                    "depth_units_ENGLISH": "”",
+                    "texture": "Texture",
+                    "color": "Color",
+                    "rock_fragment": "Rock Fragment",
+                    "add_data": "Add soil data"
+                }
+            },
+            "soil_info": {
+                "series_descr_url": "Soil Series Full Description",
+                "eco_descr_url": "Ecological Site Full Description",
+                "eco_name_label": "<bold>Ecological Site Name:</bold> {{name}}",
+                "eco_id_label": "<bold>Ecological Site ID:</bold> {{id}}",
+                "land_class_label": "<bold>Land Capability Class:</bold> {{land}}",
+                "data_source_label": "<bold>Data Source:</bold> {{source}}",
+                "location_url": "View location on soil web",
+                "inside_map_label": "In soil map unit",
+                "outside_map_label": "In adjacent map unit, {{distance}} {{units}} distance",
+                "map_units_METRIC": "meters",
+                "properties_header": "Soil Properties"
+            },
+            "location_score_info": {
+                "header": "Location Score",
+                "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account data that has been entered by users at the site.",
+                "p2": "LandPKS Soil ID bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p3": "The <bold>location score</bold> for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
+            },
+            "soil_properties_score_info": {
+                "header": "Soil Properties Score",
+                "p1": "Soil Properties Score reflects the similarity between the soil match and the data entered for this site.",
+                "p2": "A higher Soil Properties Score means that the user-entered data is similar to the soil match. A low score means the two are less similar, and it is less likely for this match to be the correct soil ID for the site.",
+                "p3": "The more data entered for a site, the more reliable the Soil Properties Score will be.",
+                "p4": "LandPKS Soil ID considers the following properties in calculating Soil Properties Score:",
+                "bullets": {
+                    "1": "Soil texture by depth",
+                    "2": "Rock fragment by depth",
+                    "3": "Soil color by depth",
+                    "4": "Site slope",
+                    "5": "Surface cracking"
+                }
+            }
+        },
+        "notes": {
+            "add_note_label": "Add Note",
+            "title": "Site Notes",
+            "add_title": "Site Note",
+            "edit_title": "Site Note",
+            "note_attribution": "{{createdAt}} by {{name}}",
+            "confirm_removal_title": "Delete note?",
+            "confirm_removal_body": "This action cannot be undone.",
+            "min_length_error": "Must be at least {{min}} characters",
+            "placeholder_text": "Start typing your note…",
+            "project_instructions": "Pinned Note"
+        },
+        "search": {
+            "placeholder": "Search sites",
+            "accessibility_label": "Filter sites by site name",
+            "filter_projects": "Filter sites by project",
+            "filter_role": "Filter sites by role",
+            "no_matches": "No sites match the current search and filter options.",
+            "sort": {
+                "label": "Sort sites by",
+                "nameAsc": "Name (A to Z)",
+                "nameDesc": "Name (Z to A)",
+                "lastModAsc": "Last Modified (most recent)",
+                "lastModDesc": "Last Modified (least recent)",
+                "distanceAsc": "Distance (closest)",
+                "distanceDesc": "Distance (furthest)"
+            }
+        },
+        "tabs": {
+            "SITE": "Site",
+            "SLOPE": "Slope",
+            "SOIL": "Soil",
+            "NOTES": "Notes"
+        }
     },
-    "team": {
-      "add": "Add team member",
-      "manage_team": "Manage Team",
-      "leave_project_modal": {
-        "trigger": "LEAVE PROJECT",
-        "title": "Leave Project?",
-        "body": "This will remove your access to the project, but data you have contributed will remain with the project.",
-        "action_name": "Leave"
-      }
-    },
-    "edit": {
-      "input_header": "General Project Settings"
+    "projects": {
+        "label": "Project",
+        "title": "Projects",
+        "header": "Projects",
+        "none": {
+            "header": "You don’t have any projects.",
+            "info": "Projects let you group sites, set data needs, and manage team members."
+        },
+        "learn_more": "Learn more about using projects",
+        "create_button": "Create project",
+        "go_to": "Go to Project",
+        "search_label": "Enter text to filter projects by name",
+        "role_filter_label": "Filter projects by role",
+        "create": {
+            "public": "Public",
+            "private": "Private",
+            "name_label": "Project Name",
+            "description_label": "Project Description",
+            "privacy_label": "Data Privacy"
+        },
+        "tabs": {
+            "inputs": "Inputs",
+            "team": "Team",
+            "sites": "Sites",
+            "settings": "Settings"
+        },
+        "inputs": {
+            "units": {
+                "heading": "Units of Measurement",
+                "a11yLabel": "measurement units",
+                "english": "English (in, ft, lb)",
+                "metric": "Metric (cm, m , kg)"
+            },
+            "soil_source": {
+                "heading": "Default Soil Information Source",
+                "survey": "USDA NRCS Soil Survey",
+                "grids": "SoilGrids",
+                "a11yLabel": "default soil information source"
+            },
+            "instructions": {
+                "title": "Pinned Note",
+                "screen_title": "Pinned Note",
+                "description": "This content will display at the top of the Notes section of each site in this project.",
+                "add_label": "Note"
+            },
+            "depths": {
+                "title": "Soil Pit Depths",
+                "preset": {
+                    "NRCS": "NRCS/GSP",
+                    "BLM": "BLM Monitoring Standard",
+                    "CUSTOM": "Custom…",
+                    "NONE": "None specified"
+                },
+                "confirm_preset": {
+                    "title": "Change depths?",
+                    "body": "Soil pit data that has been entered will be deleted. This action cannot be undone.",
+                    "confirm": "Change"
+                },
+                "label": "Label",
+                "depth": "Depth ({{units}})"
+            }
+        },
+        "team": {
+            "add": "Add team member",
+            "manage_team": "Manage Team",
+            "leave_project_modal": {
+                "trigger": "Leave Project",
+                "title": "Leave Project?",
+                "body": "This will remove your access to the project, but data you have contributed will remain with the project.",
+                "action_name": "Leave"
+            }
+        },
+        "edit": {
+            "input_header": "General Project Settings"
+        },
+        "settings": {
+            "copy_download_link": "Copy project download link",
+            "download_link_description": "A zipped file of all the project’s assets including a .csv file of site data, field notes, audit logs, and photos. Anyone with this link can view all the assets.",
+            "cancel": "Cancel",
+            "archive": "Archive this project",
+            "archive_button": "Archive",
+            "archive_button_prompt": "Archive Project?",
+            "archive_description": "The project will be moved to Archived Projects, making it read-only. Team members can access the data, and project managers can restore it at any time. Public projects that are archived will remain viewable on data portals.",
+            "delete": "Delete this project",
+            "delete_button": "Delete",
+            "delete_button_prompt": "Delete project?",
+            "delete_description": "This will permanently delete the project and its sites’ data. This can’t be undone.\n\nProject managers have the option to transfer sites from this project to keep site data."
+        },
+        "sites": {
+            "empty_viewer": "This project has no sites yet.",
+            "empty_contributor": "You can transfer existing LandPKS Soil ID sites to this project. You can also create new sites on the Sites tab and add them to this project.",
+            "add": "Add sites",
+            "transfer": "Transfer Sites",
+            "create": "Create Sites",
+            "go_to": "Go to Site",
+            "audit_log": "Audit Log",
+            "remove_site": "Remove from Project",
+            "delete_site": "Delete Site",
+            "delete_site_modal": {
+                "title": "Delete site?",
+                "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.\n\nProject managers can remove the site from this project to retain its data.",
+                "action_name": "Delete"
+            },
+            "remove_site_modal": {
+                "title": "Remove site from project?",
+                "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
+                "action_name": "Remove Site"
+            },
+            "transfer_site_modal": {
+                "title": "Transfer sites?",
+                "body": "Transferred sites will use the data settings and team member roles from this project.\n\nIf sites have data entered at different depths than what is specified in this project, that data will be deleted. This can’t be undone.",
+                "action_name": "Transfer"
+            },
+            "search": {
+                "placeholder": "Search",
+                "accessility_label": "Search for sites"
+            },
+            "sort": {
+                "label": "Sort sites by:",
+                "nameAsc": "Site name (A to Z)",
+                "updatedAtAsc": "Date modified (most recent)",
+                "distanceAsc": "Distance (nearest to me)"
+            }
+        },
+        "add_user": {
+            "heading": "Add Team Member",
+            "help_text": "Enter the email address of the person’s Terraso account. A Terraso account can be created by installing the LandPKS Soil ID app and signing in.",
+            "user_does_not_exist": "No Terraso account found",
+            "user_in_project": "Already a team member",
+            "invalid_email": "Enter a valid email address"
+        },
+        "manage_member": {
+            "title": "Manage Team Member",
+            "project_role": "Project Role",
+            "manager_help": "Can view and edit all aspects of the project and its affiliated sites",
+            "contributor_help": "Can view, add, and edit site data",
+            "viewer_help": "Can view site data",
+            "remove": "Remove from project",
+            "remove_help": "Remove the team member’s access to this project, retaining any data contributed to sites",
+            "confirm_removal_title": "Remove from Project?",
+            "confirm_removal_body": "This will remove the team member from the project, but will retain their contributed site data.",
+            "confirm_removal_action": "Remove"
+        },
+        "transfer_sites": {
+            "heading": "Transfer Sites to this Project",
+            "description": "Transfer LandPKS Soil ID sites you manage to this project. When you transfer sites, they will use the data settings and team member roles from this project.",
+            "unaffiliated": "Unaffiliated"
+        },
+        "form": {
+            "name_min_length_error": "Project name must be at least {{min}} characters",
+            "name_max_length_error": "Project name must be at most {{max}} characters",
+            "description_min_length_error": "Project description must be at least {{min}} characters",
+            "description_max_length_error": "Project description must be at most {{max}} characters"
+        },
+        "sort_label": "Sort projects by:",
+        "search": {
+            "placeholder": "Search projects",
+            "no_matches": "No projects match the current search and filter options.",
+            "nameAsc": "Sort (A to Z)",
+            "nameDesc": "Sort (Z to A)"
+        }
     },
     "settings": {
-      "copy_download_link": "Copy project download link",
-      "download_link_description": "A zipped file of all the project’s assets including a .csv file of site data, field notes, audit logs, and photos. Anyone with this link can view all the assets.",
-      "cancel": "Cancel",
-      "archive": "Archive this project",
-      "archive_button": "Archive",
-      "archive_button_prompt": "Archive Project?",
-      "archive_description": "The project will be moved to Archived Projects, making it read-only. Team members can access the data, and project managers can restore it at any time. Public projects that are archived will remain viewable on data portals.",
-      "delete": "Delete this project",
-      "delete_button": "Delete",
-      "delete_button_prompt": "Delete project?",
-      "delete_description": "This will permanently delete the project and its sites’ data. This can’t be undone.\n\nProject managers have the option to transfer sites from this project to keep site data."
+        "unknown_user": "Unknown user",
+        "sign_out": "Sign Out",
+        "delete_account": "Delete Account",
+        "delete_account_pending": "Pending",
+        "unknown_version": "Untagged application version {{environment}}",
+        "beta": "beta",
+        "version": "Version {{version}} ({{build}}) {{environment}}"
     },
-    "sites": {
-      "empty_viewer": "This project has no sites yet.",
-      "empty_contributor": "You can transfer existing LandPKS Soil ID sites to this project. You can also create new sites on the Sites tab and add them to this project.",
-      "add": "Add sites",
-      "transfer": "Transfer Sites",
-      "create": "Create Sites",
-      "go_to": "Go to Site",
-      "audit_log": "Audit Log",
-      "remove_site": "Remove from Project",
-      "delete_site": "Delete Site",
-      "delete_site_modal": {
-        "title": "Delete site?",
-        "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.\n\nProject managers can remove the site from this project to retain its data.",
-        "action_name": "Delete"
-      },
-      "remove_site_modal": {
-        "title": "Remove site from project?",
-        "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
-        "action_name": "Remove Site"
-      },
-      "transfer_site_modal": {
-        "title": "Transfer sites?",
-        "body": "Transferred sites will use the data settings and team member roles from this project.\n\nIf sites have data entered at different depths than what is specified in this project, that data will be deleted. This can’t be undone.",
-        "action_name": "Transfer"
-      },
-      "search": {
-        "placeholder": "Search",
-        "accessility_label": "Search for sites"
-      },
-      "sort": {
-        "label": "Sort sites by:",
-        "nameAsc": "Site name (A to Z)",
-        "updatedAtAsc": "Date modified (most recent)",
-        "distanceAsc": "Distance (nearest to me)"
-      }
+    "badge": {
+        "new": "New"
     },
-    "add_user": {
-      "heading": "Add Team Member",
-      "help_text": "Enter the email address of the person’s Terraso account. A Terraso account can be created by installing the LandPKS Soil ID app and signing in.",
-      "user_does_not_exist": "No Terraso account found",
-      "user_in_project": "Already a team member",
-      "invalid_email": "Enter a valid email address"
-    },
-    "manage_member": {
-      "title": "Manage Team Member",
-      "project_role": "Project Role",
-      "manager_help": "Can view and edit all aspects of the project and its affiliated sites",
-      "contributor_help": "Can view, add, and edit site data",
-      "viewer_help": "Can view site data",
-      "remove": "Remove from project",
-      "remove_help": "Remove the team member’s access to this project, retaining any data contributed to sites",
-      "confirm_removal_title": "Remove from Project?",
-      "confirm_removal_body": "This will remove the team member from the project, but will retain their contributed site data.",
-      "confirm_removal_action": "Remove"
-    },
-    "transfer_sites": {
-      "heading": "Transfer Sites to this Project",
-      "description": "Transfer LandPKS Soil ID sites you manage to this project. When you transfer sites, they will use the data settings and team member roles from this project.",
-      "unaffiliated": "Unaffiliated"
-    },
-    "form": {
-      "name_min_length_error": "Project name must be at least {{min}} characters",
-      "name_max_length_error": "Project name must be at most {{max}} characters",
-      "description_min_length_error": "Project description must be at least {{min}} characters",
-      "description_max_length_error": "Project description must be at most {{max}} characters"
-    },
-    "sort_label": "Sort projects by:",
-    "search": {
-      "placeholder": "Search projects",
-      "no_matches": "No projects match the current search and filter options.",
-      "nameAsc": "Sort (A to Z)",
-      "nameDesc": "Sort (Z to A)"
-    }
-  },
-  "settings": {
-    "unknown_user": "Unknown user",
-    "sign_out": "Sign Out",
-    "delete_account": "Delete Account",
-    "delete_account_pending": "Pending",
-    "unknown_version": "Untagged application version {{environment}}",
-    "beta": "beta",
-    "version": "Version {{version}} ({{build}}) {{environment}}"
-  },
-  "badge": {
-    "new": "New"
-  },
-  "general": {
-    "last_modified": "Last Modified",
-    "sites": "sites",
-    "users": "users",
-    "save": "Save",
-    "save_fab": "SAVE",
-    "use": "Use",
-    "last_modified_by": "last modified {{user}}, {{date}}",
-    "select_all": "Select All",
-    "you_name": "{{name}} (you)",
-    "details": "Details",
-    "apply": "Apply",
-    "email_placeholder": "name@domain.com",
-    "email_label": "Email address",
-    "profile_image_alt": "Profile image",
-    "role": {
-      "MANAGER": "Manager",
-      "CONTRIBUTOR": "Contributor",
-      "VIEWER": "Viewer"
-    },
-    "measurement_units": {
-      "METRIC": "Metric",
-      "ENGLISH": "English"
-    },
-    "cancel": "Cancel",
-    "add": "Add",
-    "submit": "submit",
-    "change": "Change",
-    "cancel_fab": "Cancel",
-    "delete_fab": "Delete",
-    "done": "Done",
-    "close_fab": "Close",
-    "filter": {
-      "no_sort": "None",
-      "no_role": "None",
-      "no_project": "None"
-    },
-    "nullable_option": "None",
-    "info": {
-      "privacy_title": "LandPKS Data Privacy",
-      "privacy_item1": "<bold>Public sites</bold> are visible to anyone on the LandPKS data portal.",
-      "privacy_item2": "All data entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII).",
-      "privacy_item3": "<bold>A private site</bold> not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. ",
-      "privacy_item4": "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. ",
-      "data_portal_link_url": "https://landpks.terraso.org/portal",
-      "data_portal_link_text": "LandPKS Data Portal",
-      "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
-      "privacy_policy_link_text": "Read more about our data privacy policy."
-    },
-    "required": "Required",
-    "character_limit": "{{current}} / {{limit}} characters",
-    "open_settings": "Go to settings",
-    "yes": "Yes",
-    "no": "No",
-    "next": "Next",
-    "proceed": "Proceed"
-  },
-  "permissions": {
-    "camera_title": "LandPKS Soil ID needs to access your camera",
-    "camera_body": "To use {{feature}}, grant LandPKS Soil ID access to your camera in device settings.",
-    "gallery_title": "LandPKS Soil ID needs to access your photo gallery",
-    "gallery_body": "To use {{feature}}, grant LandPKS Soil ID access to your photo gallery in device settings.",
-    "location_title": "LandPKS Soil ID needs to access your location",
-    "location_body": "For the best map experience, grant LandPKS Soil ID access to your location in device settings."
-  },
-  "errors": {
-    "generic": "Error saving soil ID information."
-  },
-  "screens": {
-    "HOME": "LandPKS Soil ID",
-    "PROJECT_LIST": "Projects",
-    "PROJECT_VIEW": "Project #{{id}}",
-    "LOGIN": "Login",
-    "CREATE_PROJECT": "Create Project",
-    "SITE_TRANSFER_PROJECT": "Project #{{id}}",
-    "CREATE_SITE": "Create Site",
-    "COLOR_GUIDE": "Soil Color Guide",
-    "COLOR_ANALYSIS_HOME": "Photo Analysis",
-    "SETTINGS": "Settings",
-    "DELETE_ACCOUNT": "Settings"
-  },
-  "login": {
-    "title": "LandPKS Soil ID",
-    "subtitle": "Discover your land’s potential",
-    "from": "from"
-  },
-  "delete_account": {
-    "title": "Delete Account",
-    "confirm": {
-      "p0": "<bold>{{email}}</bold>",
-      "p1": "The LandPKS account associated with this email address will be deleted. This removes:",
-      "p2": {
-        "b0": "your unaffiliated sites",
-        "b1": "projects for which you are the only manager, and their affiliated sites"
-      },
-      "p3": "The following won’t be deleted:",
-      "p4": {
-        "b0": "data you contributed to a project for which you aren’t the only manager",
-        "b1": "your Terraso account (including groups, landscapes, and story maps)"
-      },
-      "p5": "<bold>Type your email address to confirm deletion:</bold>",
-      "cancel": "Cancel",
-      "delete": "Delete"
-    },
-    "pending": {
-      "p0": "<bold>{{email}}</bold>",
-      "p1": "Your account deletion request has been sent. The account for {{email}} will be deleted within five business days.",
-      "p2": "You will receive an email confirmation when your account has been deleted."
-    }
-  },
-  "sign_out": {
-    "confirm_body": "Are you sure you want to sign out?",
-    "confirm_action": "Sign out"
-  },
-  "account": {
-    "google_login": "Sign in with Google",
-    "apple_login": "Sign in with Apple",
-    "microsoft_login": "Sign in with Microsoft"
-  },
-  "privacy": {
-    "label": "Data Privacy",
-    "public": {
-      "inline": "public",
-      "title": "Public"
-    },
-    "private": {
-      "inline": "private",
-      "title": "Private"
-    }
-  },
-  "bottom_navigation": {
-    "sites": "Sites",
-    "projects": "Projects",
-    "settings": "Settings"
-  },
-  "geo": {
-    "latitude": {
-      "inline": "latitude",
-      "title": "Latitude"
-    },
-    "longitude": {
-      "inline": "longitude",
-      "title": "Longitude"
-    },
-    "elevation": {
-      "inline": "elevation",
-      "title": "Elevation"
-    }
-  },
-  "listfilter": {
-    "open_modal_label": "Update list filters",
-    "num_filters_label": "Number of filters applied",
-    "clear_search_label": "Clear search filter",
-    "text_input_label": "Filter list by search input"
-  },
-  "soil": {
-    "bedrock": "Bedrock",
-    "top_match": "Top Match",
-    "ecological_site_name": "Ecological Site Name",
-    "loading": "Loading…",
-    "no_matches": "No matches",
-    "error": "Error",
-    "explore_data": "Explore the data",
-    "soil_id": "Soil ID",
-    "surface": "Soil Surface",
-    "pit": "Soil Pit",
-    "add_depth_label": "Add Depth",
-    "project_settings": {
-      "pit_required_label": "Soil pit required",
-      "required_data_title": "Data Collection Requirements"
-    },
-    "required_method": "{{method}} (required)",
-    "collection_method": {
-      "slope": "Slope and Landscape",
-      "soilTexture": "Soil Texture",
-      "rockFragmentVolume": "Rock Fragment",
-      "soilColor": "Soil Color",
-      "verticalCracking": "Vertical Cracks",
-      "carbonates": "Carbonates",
-      "ph": "pH",
-      "soilOrganicCarbonMatter": "SOC/SOM",
-      "electricalConductivity": "Electrical Conductivity",
-      "sodiumAdsorptionRatio": "SAR",
-      "soilStructure": "Structure",
-      "landUseLandCover": "Land Use/Land Cover",
-      "soilLimitations": "Limitations",
-      "photos": "Photos",
-      "notes": "Notes"
-    },
-    "collection_method_description": {
-      "slope": "Includes slope steepness, shape, aspect, and landscape position",
-      "soilTexture": "Includes texture class, percent clay, and rock fragments"
-    },
-    "vertical_cracking": {
-      "description": "Vertical cracks may appear on the soil surface when some soils experience changes in moisture or temperature. The cracks may be permanent, or they may disappear after some time.\n\nVertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks.",
-      "description_width_METRIC": "5 mm",
-      "description_width_ENGLISH": "3/16”",
-      "description_depth_METRIC": "25 cm",
-      "description_depth_ENGLISH": "10”",
-      "value": {
-        "NO_CRACKING": "No Cracking",
-        "SURFACE_CRACKING_ONLY": "Surface Cracking Only",
-        "DEEP_VERTICAL_CRACKS": "Deep Vertical Cracks"
-      }
-    },
-    "data": {
-      "rockFragmentVolume": "Rock fragment",
-      "texture": "Texture",
-      "colorValue": "Color"
-    },
-    "soil_preset": {
-      "header": "Change soil pit depths",
-      "info": "Data already entered for a depth will be deleted when the depth is changed.",
-      "label": "Depths",
-      "NRCS": "NRCS/GSP (default)",
-      "BLM": "BLM Monitoring Standard",
-      "CUSTOM": "Custom"
-    },
-    "depth": {
-      "add_title": "Add depth",
-      "edit_title": "Depth",
-      "data_inputs_title": "Soil Data Inputs",
-      "label_help": "{{max}} characters max",
-      "label_placeholder": "Label",
-      "apply_to_all_label": "Apply to all depths",
-      "start_label": "From ({{units}})",
-      "end_label": "To ({{units}})",
-      "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) must be a number",
-      "depth_start": "depth start",
-      "depth_end": "depth end",
-      "update_modal": {
-        "title": "Change depth?",
-        "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
-        "action": "Change"
-      },
-      "delete_modal": {
-        "title": "Delete depth?",
-        "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
-        "action": "Delete"
-      },
-      "error": {
-        "overlaps": "Overlaps existing",
-        "ordering": "Depth bounds error"
-      },
-      "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
-      "bounds_unitless": "{{start}}–{{end}}",
-      "bounds": "{{start}}–{{end}}{{units}}",
-      "delete_button": "Delete depth"
-    },
-    "texture": {
-      "title": "Soil Texture",
-      "label": "Texture",
-      "info": {
-        "title": "Soil Texture",
-        "description": "Soil is made up of particles of different sizes. Once you remove all large particles (anything over $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter), what is left is a mixture of sand, silt, and clay.\n\n<bold>Soil texture</bold> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.\n\nSoil texture determines many important characteristics of your land, including:\n\n<bullets />\nKnowing the soil texture also helps you more accurately identify your soil.",
-        "description_diameter_METRIC": "2mm",
-        "description_diameter_ENGLISH": "1/16”",
-        "point1": "How much water the soil can hold",
-        "point2": "How quickly water can be absorbed into and percolate through the soil",
-        "point3": "How easily soil erodes when exposed to wind or water",
-        "point4": "How soil responds to management activities (for example, compaction from tillage operations)"
-      },
-      "guide": {
-        "title": "Texture Guide",
-        "ball_help": "Does the soil form a ball?",
-        "ribbon_help": "Does the soil form a ribbon?",
-        "ribbon_length_help": "How long is the ribbon?",
-        "grittyness_help": "How does the soil feel?",
-        "result": "Soil Texture: {{result}}",
-        "use_label": "Use This Texture",
-        "ribbon_length": {
-          "SM": "<2.5cm",
-          "MD": "2.5–5cm",
-          "LG": ">5cm"
+    "general": {
+        "last_modified": "Last Modified",
+        "sites": "sites",
+        "users": "users",
+        "save": "Save",
+        "save_fab": "Save",
+        "use": "Use",
+        "last_modified_by": "last modified {{user}}, {{date}}",
+        "select_all": "Select All",
+        "you_name": "{{name}} (you)",
+        "details": "Details",
+        "apply": "Apply",
+        "email_placeholder": "name@domain.com",
+        "email_label": "Email address",
+        "profile_image_alt": "Profile image",
+        "role": {
+            "MANAGER": "Manager",
+            "CONTRIBUTOR": "Contributor",
+            "VIEWER": "Viewer"
         },
-        "grittyness_type": {
-          "GRITTY": "Gritty",
-          "NEITHER": "Not gritty or smooth",
-          "SMOOTH": "Smooth"
+        "measurement_units": {
+            "METRIC": "Metric",
+            "ENGLISH": "English"
         },
-        "prepare": "Prepare the soil:",
-        "prepare_details_1": "Get a soil sample of at least a few handfuls.",
-        "prepare_details_2": "Remove all rock fragments larger than 2mm. Use a sieve if you have one.",
-        "prepare_details_3": "Crush clumps of soil (if possible).",
-        "wet": "Wet the soil:",
-        "wet_details_1": "Pick up a handful of soil the size of a golf ball (≈25 g).",
-        "wet_details_2": "Use a spray bottle to slowly apply water to the sample.",
-        "wet_details_3": "Work the water uniformly into the soil with your hands.",
-        "wet_details_4": "The soil should be thoroughly damp, but not glistening, with a texture like putty. If the soil is too wet, add more dry soil from your sample.",
-        "wet_details_5": "Avoid working the soil with your hands for longer than 2 minutes. If you go beyond 2 minutes, discard the soil and start with a new sample.",
-        "ball": "Form a ball:",
-        "ball_details_1": "Roll the soil in your hands to see if it forms a ball.",
-        "ball_details_2": "If it crumbles when you apply slight pressure to roll it, the soil does not form a ball.",
-        "ribbon": "Form a ribbon",
-        "ribbon_details_1": "Grip the soil with your fingers (not your thumb).",
-        "ribbon_details_2": "Use the inside of your thumb knuckle (the flat part) to push the soil upwards over the edge of your index finger. Do not use the tip of your thumb to press the soil.",
-        "ribbon_details_3": "The ribbon should be parallel to the floor, not pointing upward or downwards.",
-        "ribbon_details_4": "If the soil crumbles instead of holding together when you press to form a ribbon, then it does not form a ribbon.",
-        "ribbon_details_5": "Let the ribbon fall naturally due to gravity. Measure the length of the segment, ignoring ragged edges.",
-        "grittyness": "Feel the soil:",
-        "grittyness_details_1": "<0>Gritty</0> means you can feel individual grains in the soil.",
-        "grittyness_details_2": "<0>Smooth</0> means that the wetted soil is slippery or soapy in feel.",
-        "grittyness_details_3": "<0>Not gritty or smooth</0> means that neither of those two textures dominates. You may still feel some sand grains or some soapiness, but the feel of the soil is not predominantly one or the other."
-      },
-      "guide_intro": "Don’t know your soil texture? Use the step-by-step guide.",
-      "use_guide_label": "Use Guide",
-      "clay_title": "Percent Clay",
-      "clay_label": "Percent clay",
-      "clay_help": "0–100%",
-      "fragment_title": "Rock Fragment Volume",
-      "fragment": {
+        "cancel": "Cancel",
+        "add": "Add",
+        "submit": "submit",
+        "change": "Change",
+        "cancel_fab": "Cancel",
+        "delete_fab": "Delete",
+        "done": "Done",
+        "close_fab": "Close",
+        "filter": {
+            "no_sort": "None",
+            "no_role": "None",
+            "no_project": "None"
+        },
+        "nullable_option": "None",
         "info": {
-          "title": "Rock Fragment Volume",
-          "description": "Rock fragment volume is a measurement of how much of the soil volume is taken up by rocks, which is defined as anything larger than $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter.\n\nThis can be estimated visually by comparing the volume of the soil before and after removing the rocks, as well as by comparing the volume of rocks removed to the volume of the remaining soil.\n\nAlternatively, for a more precise measurement, you can place the rocks from the sample in a bucket with a known volume of water and measure the change in volume. Then divide that volume by the volume of the original soil sample to get a percentage.",
-          "description_diameter_METRIC": "2mm",
-          "description_diameter_ENGLISH": "1/16”"
+            "privacy_title": "LandPKS Data Privacy",
+            "privacy_item1": "<bold>Public sites</bold> are visible to anyone on the LandPKS data portal.",
+            "privacy_item2": "All data entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII).",
+            "privacy_item3": "<bold>A private site</bold> not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. ",
+            "privacy_item4": "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. ",
+            "data_portal_link_url": "https://landpks.terraso.org/portal",
+            "data_portal_link_text": "LandPKS Data Portal",
+            "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+            "privacy_policy_link_text": "Read more about our data privacy policy."
+        },
+        "required": "Required",
+        "character_limit": "{{current}} / {{limit}} characters",
+        "open_settings": "Go to settings",
+        "yes": "Yes",
+        "no": "No",
+        "next": "Next",
+        "proceed": "Proceed"
+    },
+    "permissions": {
+        "camera_title": "LandPKS Soil ID needs to access your camera",
+        "camera_body": "To use {{feature}}, grant LandPKS Soil ID access to your camera in device settings.",
+        "gallery_title": "LandPKS Soil ID needs to access your photo gallery",
+        "gallery_body": "To use {{feature}}, grant LandPKS Soil ID access to your photo gallery in device settings.",
+        "location_title": "LandPKS Soil ID needs to access your location",
+        "location_body": "For the best map experience, grant LandPKS Soil ID access to your location in device settings."
+    },
+    "errors": {
+        "generic": "Error saving soil ID information."
+    },
+    "screens": {
+        "HOME": "LandPKS Soil ID",
+        "PROJECT_LIST": "Projects",
+        "PROJECT_VIEW": "Project #{{id}}",
+        "LOGIN": "Login",
+        "CREATE_PROJECT": "Create Project",
+        "SITE_TRANSFER_PROJECT": "Project #{{id}}",
+        "CREATE_SITE": "Create Site",
+        "COLOR_GUIDE": "Soil Color Guide",
+        "COLOR_ANALYSIS_HOME": "Photo Analysis",
+        "SETTINGS": "Settings",
+        "DELETE_ACCOUNT": "Settings"
+    },
+    "login": {
+        "title": "LandPKS Soil ID",
+        "subtitle": "Discover your land’s potential",
+        "from": "from"
+    },
+    "delete_account": {
+        "title": "Delete Account",
+        "confirm": {
+            "p0": "<bold>{{email}}</bold>",
+            "p1": "The LandPKS account associated with this email address will be deleted. This removes:",
+            "p2": {
+                "b0": "your unaffiliated sites",
+                "b1": "projects for which you are the only manager, and their affiliated sites"
+            },
+            "p3": "The following won’t be deleted:",
+            "p4": {
+                "b0": "data you contributed to a project for which you aren’t the only manager",
+                "b1": "your Terraso account (including groups, landscapes, and story maps)"
+            },
+            "p5": "<bold>Type your email address to confirm deletion:</bold>",
+            "cancel": "Cancel",
+            "delete": "Delete"
+        },
+        "pending": {
+            "p0": "<bold>{{email}}</bold>",
+            "p1": "Your account deletion request has been sent. The account for {{email}} will be deleted within five business days.",
+            "p2": "You will receive an email confirmation when your account has been deleted."
         }
-      },
-      "class": {
-        "CLAY": "Clay",
-        "CLAY_LOAM": "Clay Loam",
-        "LOAM": "Loam",
-        "LOAMY_SAND": "Loamy Sand",
-        "SAND": "Sand",
-        "SANDY_CLAY": "Sandy Clay",
-        "SANDY_CLAY_LOAM": "Sandy Clay Loam",
-        "SANDY_LOAM": "Sandy Loam",
-        "SILT": "Silt",
-        "SILTY_CLAY": "Silty Clay",
-        "SILTY_CLAY_LOAM": "Silty Clay Loam",
-        "SILT_LOAM": "Silt Loam"
-      },
-      "rockfragment": {
-        "VOLUME_0_1": "0–1%",
-        "VOLUME_1_15": "1–15%",
-        "VOLUME_15_35": "15–35%",
-        "VOLUME_35_60": "35–60%",
-        "VOLUME_60": ">60%"
-      }
     },
-    "color": {
-      "title": "Soil Color",
-      "featureName": "Soil Color",
-      "info": {
-        "p1": "Soil color can tell you a lot about soil, including:",
-        "bullet1": "Which minerals are present",
-        "bullet2": "How much organic matter is present",
-        "bullet3": "And much more",
-        "p2": "Soil color can be measured using a Munsell book or spectrometer.",
-        "p3": "In this app, you can also take a photo with a reference card like a Post-it Note to determine your soil color."
-      },
-      "confirm_delete": {
-        "title": "Delete data?",
-        "body": "This will delete the soil color data associated with this depth.",
-        "action_name": "Delete"
-      },
-      "unexpected_color": {
-        "title": "Unexpected soil color",
-        "body": "This is not a typical soil color. Do you want to proceed anyway, or use the closest suggested color?",
-        "suggestion": "Suggestion",
-        "your_result": "Your result",
-        "use_suggestion": "Use suggestion"
-      },
-      "hue": "Hue",
-      "value": "Value",
-      "chroma": "Chroma",
-      "workflow": {
-        "MANUAL": "Enter Values",
-        "CAMERA": "Use Photo"
-      },
-      "guide": {
-        "step1": {
-          "title": "1. Gather Post-it Notes.",
-          "content": "To ensure accurate color analysis you must use 3M Canary Yellow Post-it Notes for your reference card, with these guidelines:",
-          "bullets": {
-            "1": "Only use new Post-it Notes.",
-            "2": "Stack at least 3 Post-it Notes on top of each other.",
-            "3": "Make sure each Post-it note lays flat, isn’t written on, and isn’t dirty.",
-            "4": "Make sure each Post-it note isn’t degraded by sunlight, as considerable variation can exist depending on sun exposure.",
-            "5": "Store Post-it notes in dark envelopes to avoid sun exposure."
-          }
+    "sign_out": {
+        "confirm_body": "Are you sure you want to sign out?",
+        "confirm_action": "Sign out"
+    },
+    "account": {
+        "google_login": "Sign in with Google",
+        "apple_login": "Sign in with Apple",
+        "microsoft_login": "Sign in with Microsoft"
+    },
+    "privacy": {
+        "label": "Data Privacy",
+        "public": {
+            "inline": "public",
+            "title": "Public"
         },
-        "step2": {
-          "title": "2. Prepare Soil Sample.",
-          "content": "Use dry soil whenever possible. The app does have a way to indicate if your soil is wet, but dry soil color estimates are more accurate.\n\nIf your soil layer has multiple colors (i.e. mottles, redoximorphic features, or carbonates), isolate the dominant matrix color from the pile.\n\nRun soil through a $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) sieve to create a pile of homogenous soil, or use your hands to pick out anything larger than $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n\nFlatten the pile of soil to minimize shadows within the soil sample.",
-          "content_size_METRIC": "2mm",
-          "content_size_ENGLISH": "1/16”"
+        "private": {
+            "inline": "private",
+            "title": "Private"
+        }
+    },
+    "bottom_navigation": {
+        "sites": "Sites",
+        "projects": "Projects",
+        "settings": "Settings"
+    },
+    "geo": {
+        "latitude": {
+            "inline": "latitude",
+            "title": "Latitude"
         },
-        "step3": {
-          "title": "3. Prepare lighting.",
-          "content": "The soil color photo needs to be taken in even lighting conditions and shaded from direct sun.\n\nTry to have an overhead light source rather than side lighting."
+        "longitude": {
+            "inline": "longitude",
+            "title": "Longitude"
         },
-        "step4": {
-          "title": "4. Place reference card next to soil.",
-          "content": "Place the Post-it note next to the prepared soil sample, in the proper lighting conditions."
+        "elevation": {
+            "inline": "elevation",
+            "title": "Elevation"
+        }
+    },
+    "listfilter": {
+        "open_modal_label": "Update list filters",
+        "num_filters_label": "Number of filters applied",
+        "clear_search_label": "Clear search filter",
+        "text_input_label": "Filter list by search input"
+    },
+    "soil": {
+        "bedrock": "Bedrock",
+        "top_match": "Top Match",
+        "ecological_site_name": "Ecological Site Name",
+        "loading": "Loading…",
+        "no_matches": "No matches",
+        "error": "Error",
+        "explore_data": "Explore the data",
+        "soil_id": "Soil ID",
+        "surface": "Soil Surface",
+        "pit": "Soil Pit",
+        "add_depth_label": "Add Depth",
+        "project_settings": {
+            "pit_required_label": "Soil pit required",
+            "required_data_title": "Data Collection Requirements"
         },
-        "step5": {
-          "title": "5. Compose photo.",
-          "content": "Place the camera as close to the soil and Post-It note as you can without creating shadows or blurriness."
+        "required_method": "{{method}} (required)",
+        "collection_method": {
+            "slope": "Slope and Landscape",
+            "soilTexture": "Soil Texture",
+            "rockFragmentVolume": "Rock Fragment",
+            "soilColor": "Soil Color",
+            "verticalCracking": "Vertical Cracks",
+            "carbonates": "Carbonates",
+            "ph": "pH",
+            "soilOrganicCarbonMatter": "SOC/SOM",
+            "electricalConductivity": "Electrical Conductivity",
+            "sodiumAdsorptionRatio": "SAR",
+            "soilStructure": "Structure",
+            "landUseLandCover": "Land Use/Land Cover",
+            "soilLimitations": "Limitations",
+            "photos": "Photos",
+            "notes": "Notes"
         },
-        "step6": {
-          "title": "6. Ready to take the photo?",
-          "content": "If you’ve followed the instructions above, you’re ready! You can take a photo with your device’s camera, or go back to upload a photo."
+        "collection_method_description": {
+            "slope": "Includes slope steepness, shape, aspect, and landscape position",
+            "soilTexture": "Includes texture class, percent clay, and rock fragments"
         },
-        "go_back": "Go back",
-        "take_photo": "Take Photo"
-      },
-      "reference": "Reference",
-      "crop_reference": "Crop image to show only the 3M Canary Yellow Post-it Note. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
-      "soil": "Soil",
-      "crop_soil": "Crop image to show only the soil sample. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
-      "soil_condition": "Soil condition:",
-      "lighting_condition": "Photo has even lighting and no shadows:",
-      "analyze": "Analyze",
-      "use_photo_instead": "Don’t know the soil color values? Use a photo instead (guide included.)",
-      "photo_need_help": "To use a photo to determine soil color, you’ll need a 3M Canary Yellow Post-it Note for color reference and a properly prepared soil sample. Need help? Use the step-by-step guide.",
-      "use_guide_label": "Use Guide",
-      "color_photo_soil_condition": {
-        "MOIST": "Moist",
-        "DRY": "Dry"
-      },
-      "color_photo_lighting_condition": {
-        "EVEN": "Yes",
-        "UNEVEN": "No"
-      }
+        "vertical_cracking": {
+            "description": "Vertical cracks may appear on the soil surface when some soils experience changes in moisture or temperature. The cracks may be permanent, or they may disappear after some time.\n\nVertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks.",
+            "description_width_METRIC": "5 mm",
+            "description_width_ENGLISH": "3/16”",
+            "description_depth_METRIC": "25 cm",
+            "description_depth_ENGLISH": "10”",
+            "value": {
+                "NO_CRACKING": "No Cracking",
+                "SURFACE_CRACKING_ONLY": "Surface Cracking Only",
+                "DEEP_VERTICAL_CRACKS": "Deep Vertical Cracks"
+            }
+        },
+        "data": {
+            "rockFragmentVolume": "Rock fragment",
+            "texture": "Texture",
+            "colorValue": "Color"
+        },
+        "soil_preset": {
+            "header": "Change soil pit depths",
+            "info": "Data already entered for a depth will be deleted when the depth is changed.",
+            "label": "Depths",
+            "NRCS": "NRCS/GSP (default)",
+            "BLM": "BLM Monitoring Standard",
+            "CUSTOM": "Custom"
+        },
+        "depth": {
+            "add_title": "Add depth",
+            "edit_title": "Depth",
+            "data_inputs_title": "Soil Data Inputs",
+            "label_help": "{{max}} characters max",
+            "label_placeholder": "Label",
+            "apply_to_all_label": "Apply to all depths",
+            "start_label": "From ({{units}})",
+            "end_label": "To ({{units}})",
+            "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) must be a number",
+            "depth_start": "depth start",
+            "depth_end": "depth end",
+            "update_modal": {
+                "title": "Change depth?",
+                "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
+                "action": "Change"
+            },
+            "delete_modal": {
+                "title": "Delete depth?",
+                "body": "Data that has been entered at this depth will be deleted. This action cannot be undone.",
+                "action": "Delete"
+            },
+            "error": {
+                "overlaps": "Overlaps existing",
+                "ordering": "Depth bounds error"
+            },
+            "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
+            "bounds_unitless": "{{start}}–{{end}}",
+            "bounds": "{{start}}–{{end}}{{units}}",
+            "delete_button": "Delete depth"
+        },
+        "texture": {
+            "title": "Soil Texture",
+            "label": "Texture",
+            "info": {
+                "title": "Soil Texture",
+                "description": "Soil is made up of particles of different sizes. Once you remove all large particles (anything over $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter), what is left is a mixture of sand, silt, and clay.\n\n<bold>Soil texture</bold> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.\n\nSoil texture determines many important characteristics of your land, including:\n\n<bullets />\nKnowing the soil texture also helps you more accurately identify your soil.",
+                "description_diameter_METRIC": "2mm",
+                "description_diameter_ENGLISH": "1/16”",
+                "point1": "How much water the soil can hold",
+                "point2": "How quickly water can be absorbed into and percolate through the soil",
+                "point3": "How easily soil erodes when exposed to wind or water",
+                "point4": "How soil responds to management activities (for example, compaction from tillage operations)"
+            },
+            "guide": {
+                "title": "Texture Guide",
+                "ball_help": "Does the soil form a ball?",
+                "ribbon_help": "Does the soil form a ribbon?",
+                "ribbon_length_help": "How long is the ribbon?",
+                "grittyness_help": "How does the soil feel?",
+                "result": "Soil Texture: {{result}}",
+                "use_label": "Use This Texture",
+                "ribbon_length": {
+                    "SM": "<2.5cm",
+                    "MD": "2.5–5cm",
+                    "LG": ">5cm"
+                },
+                "grittyness_type": {
+                    "GRITTY": "Gritty",
+                    "NEITHER": "Not gritty or smooth",
+                    "SMOOTH": "Smooth"
+                },
+                "prepare": "Prepare the soil:",
+                "prepare_details_1": "Get a soil sample of at least a few handfuls.",
+                "prepare_details_2": "Remove all rock fragments larger than 2mm. Use a sieve if you have one.",
+                "prepare_details_3": "Crush clumps of soil (if possible).",
+                "wet": "Wet the soil:",
+                "wet_details_1": "Pick up a handful of soil the size of a golf ball (≈25 g).",
+                "wet_details_2": "Use a spray bottle to slowly apply water to the sample.",
+                "wet_details_3": "Work the water uniformly into the soil with your hands.",
+                "wet_details_4": "The soil should be thoroughly damp, but not glistening, with a texture like putty. If the soil is too wet, add more dry soil from your sample.",
+                "wet_details_5": "Avoid working the soil with your hands for longer than 2 minutes. If you go beyond 2 minutes, discard the soil and start with a new sample.",
+                "ball": "Form a ball:",
+                "ball_details_1": "Roll the soil in your hands to see if it forms a ball.",
+                "ball_details_2": "If it crumbles when you apply slight pressure to roll it, the soil does not form a ball.",
+                "ribbon": "Form a ribbon",
+                "ribbon_details_1": "Grip the soil with your fingers (not your thumb).",
+                "ribbon_details_2": "Use the inside of your thumb knuckle (the flat part) to push the soil upwards over the edge of your index finger. Do not use the tip of your thumb to press the soil.",
+                "ribbon_details_3": "The ribbon should be parallel to the floor, not pointing upward or downwards.",
+                "ribbon_details_4": "If the soil crumbles instead of holding together when you press to form a ribbon, then it does not form a ribbon.",
+                "ribbon_details_5": "Let the ribbon fall naturally due to gravity. Measure the length of the segment, ignoring ragged edges.",
+                "grittyness": "Feel the soil:",
+                "grittyness_details_1": "<0>Gritty</0> means you can feel individual grains in the soil.",
+                "grittyness_details_2": "<0>Smooth</0> means that the wetted soil is slippery or soapy in feel.",
+                "grittyness_details_3": "<0>Not gritty or smooth</0> means that neither of those two textures dominates. You may still feel some sand grains or some soapiness, but the feel of the soil is not predominantly one or the other."
+            },
+            "guide_intro": "Don’t know your soil texture? Use the step-by-step guide.",
+            "use_guide_label": "Use Guide",
+            "clay_title": "Percent Clay",
+            "clay_label": "Percent clay",
+            "clay_help": "0–100%",
+            "fragment_title": "Rock Fragment Volume",
+            "fragment": {
+                "info": {
+                    "title": "Rock Fragment Volume",
+                    "description": "Rock fragment volume is a measurement of how much of the soil volume is taken up by rocks, which is defined as anything larger than $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter.\n\nThis can be estimated visually by comparing the volume of the soil before and after removing the rocks, as well as by comparing the volume of rocks removed to the volume of the remaining soil.\n\nAlternatively, for a more precise measurement, you can place the rocks from the sample in a bucket with a known volume of water and measure the change in volume. Then divide that volume by the volume of the original soil sample to get a percentage.",
+                    "description_diameter_METRIC": "2mm",
+                    "description_diameter_ENGLISH": "1/16”"
+                }
+            },
+            "class": {
+                "CLAY": "Clay",
+                "CLAY_LOAM": "Clay Loam",
+                "LOAM": "Loam",
+                "LOAMY_SAND": "Loamy Sand",
+                "SAND": "Sand",
+                "SANDY_CLAY": "Sandy Clay",
+                "SANDY_CLAY_LOAM": "Sandy Clay Loam",
+                "SANDY_LOAM": "Sandy Loam",
+                "SILT": "Silt",
+                "SILTY_CLAY": "Silty Clay",
+                "SILTY_CLAY_LOAM": "Silty Clay Loam",
+                "SILT_LOAM": "Silt Loam"
+            },
+            "rockfragment": {
+                "VOLUME_0_1": "0–1%",
+                "VOLUME_1_15": "1–15%",
+                "VOLUME_15_35": "15–35%",
+                "VOLUME_35_60": "35–60%",
+                "VOLUME_60": ">60%"
+            }
+        },
+        "color": {
+            "title": "Soil Color",
+            "featureName": "Soil Color",
+            "info": {
+                "p1": "Soil color can tell you a lot about soil, including:",
+                "bullet1": "Which minerals are present",
+                "bullet2": "How much organic matter is present",
+                "bullet3": "And much more",
+                "p2": "Soil color can be measured using a Munsell book or spectrometer.",
+                "p3": "In this app, you can also take a photo with a reference card like a Post-it Note to determine your soil color."
+            },
+            "confirm_delete": {
+                "title": "Delete data?",
+                "body": "This will delete the soil color data associated with this depth.",
+                "action_name": "Delete"
+            },
+            "unexpected_color": {
+                "title": "Unexpected soil color",
+                "body": "This is not a typical soil color. Do you want to proceed anyway, or use the closest suggested color?",
+                "suggestion": "Suggestion",
+                "your_result": "Your result",
+                "use_suggestion": "Use suggestion"
+            },
+            "hue": "Hue",
+            "value": "Value",
+            "chroma": "Chroma",
+            "workflow": {
+                "MANUAL": "Enter Values",
+                "CAMERA": "Use Photo"
+            },
+            "guide": {
+                "step1": {
+                    "title": "1. Gather Post-it Notes.",
+                    "content": "To ensure accurate color analysis you must use 3M Canary Yellow Post-it Notes for your reference card, with these guidelines:",
+                    "bullets": {
+                        "1": "Only use new Post-it Notes.",
+                        "2": "Stack at least 3 Post-it Notes on top of each other.",
+                        "3": "Make sure each Post-it note lays flat, isn’t written on, and isn’t dirty.",
+                        "4": "Make sure each Post-it note isn’t degraded by sunlight, as considerable variation can exist depending on sun exposure.",
+                        "5": "Store Post-it notes in dark envelopes to avoid sun exposure."
+                    }
+                },
+                "step2": {
+                    "title": "2. Prepare Soil Sample.",
+                    "content": "Use dry soil whenever possible. The app does have a way to indicate if your soil is wet, but dry soil color estimates are more accurate.\n\nIf your soil layer has multiple colors (i.e. mottles, redoximorphic features, or carbonates), isolate the dominant matrix color from the pile.\n\nRun soil through a $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) sieve to create a pile of homogenous soil, or use your hands to pick out anything larger than $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n\nFlatten the pile of soil to minimize shadows within the soil sample.",
+                    "content_size_METRIC": "2mm",
+                    "content_size_ENGLISH": "1/16”"
+                },
+                "step3": {
+                    "title": "3. Prepare lighting.",
+                    "content": "The soil color photo needs to be taken in even lighting conditions and shaded from direct sun.\n\nTry to have an overhead light source rather than side lighting."
+                },
+                "step4": {
+                    "title": "4. Place reference card next to soil.",
+                    "content": "Place the Post-it note next to the prepared soil sample, in the proper lighting conditions."
+                },
+                "step5": {
+                    "title": "5. Compose photo.",
+                    "content": "Place the camera as close to the soil and Post-It note as you can without creating shadows or blurriness."
+                },
+                "step6": {
+                    "title": "6. Ready to take the photo?",
+                    "content": "If you’ve followed the instructions above, you’re ready! You can take a photo with your device’s camera, or go back to upload a photo."
+                },
+                "go_back": "Go back",
+                "take_photo": "Take Photo"
+            },
+            "reference": "Reference",
+            "crop_reference": "Crop image to show only the 3M Canary Yellow Post-it Note. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
+            "soil": "Soil",
+            "crop_soil": "Crop image to show only the soil sample. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
+            "soil_condition": "Soil condition:",
+            "lighting_condition": "Photo has even lighting and no shadows:",
+            "analyze": "Analyze",
+            "use_photo_instead": "Don’t know the soil color values? Use a photo instead (guide included.)",
+            "photo_need_help": "To use a photo to determine soil color, you’ll need a 3M Canary Yellow Post-it Note for color reference and a properly prepared soil sample. Need help? Use the step-by-step guide.",
+            "use_guide_label": "Use Guide",
+            "color_photo_soil_condition": {
+                "MOIST": "Moist",
+                "DRY": "Dry"
+            },
+            "color_photo_lighting_condition": {
+                "EVEN": "Yes",
+                "UNEVEN": "No"
+            }
+        }
+    },
+    "slope": {
+        "title": "Slope",
+        "info": {
+            "title": "Slope",
+            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each data input are available by tapping on the input name.\n\nSlope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
+        },
+        "steepness": {
+            "short_title": "Steepness",
+            "long_title": "Slope Steepness",
+            "description": "Enter steepness manually, using the slope meter, or selecting from the images below.",
+            "manual_label": "Manual",
+            "manual_help": "Enter steepness percentage or degree:",
+            "confirm_title": "Change slope?",
+            "confirm_body": "Are you sure you want to override the slope data?",
+            "percentage_placeholder": "Percentage",
+            "percentage_help": "0%–999%",
+            "degree": "{{value}}°",
+            "degree_help": "0°–89°",
+            "degree_placeholder": "Degree",
+            "slope_meter": "Slope Meter",
+            "camera_grant": "Grant Camera Permission",
+            "no_camera": "No Camera Access",
+            "no_camera_explanation": "For best results, allow LandPKS Soil ID to use your camera in Settings",
+            "info": {
+                "title": "How to use Slope Meter",
+                "description": "Stand facing the site from at least $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) away.\n\nIdentify the direction of the predominant slope at the site.\n\nStand so that you can see the ridge or silhouette of that predominant slope (although you may need to get close to the ground to see it.)\n\nThe direction you are facing should be perpendicular to the direction of the slope. If you hold your arms out to your sides, the line they make should be parallel to the direction of the slope.\n\nPosition your phone so that the solid white line is lined up with the land’s slope; try to place the white line along the slope’s edge. You may need to crouch down if the silhouette of the slope is not easy to see while standing.\n\n<bold>Alternate Method</bold>: If the land shape is not too curved or bumpy, you can place a yard stick on the ground at the site and then align your phone on the stick to get the angle of the slope.",
+                "description_distance_METRIC": "4 meters",
+                "description_distance_ENGLISH": "15 feet"
+            },
+            "select_labels": {
+                "FLAT": "Flat",
+                "FLAT_PERCENT": "0–2%",
+                "GENTLE": "Gentle",
+                "GENTLE_PERCENT": "2–5%",
+                "MODERATE": "Moderate",
+                "MODERATE_PERCENT": "5–10%",
+                "ROLLING": "Rolling",
+                "ROLLING_PERCENT": "10–15%",
+                "HILLY": "Hilly",
+                "HILLY_PERCENT": "15–30%",
+                "STEEP": "Steep",
+                "STEEP_PERCENT": "30–50%",
+                "MODERATELY_STEEP": "Moderately Steep",
+                "MODERATELY_STEEP_PERCENT": "50–60%",
+                "VERY_STEEP": "Very Steep",
+                "VERY_STEEP_PERCENT": "60–100%",
+                "STEEPEST": "Steepest",
+                "STEEPEST_PERCENT": "100%+"
+            },
+            "select_display": "{{steepness_name}} {{steepness_percent}}"
+        },
+        "shape": {
+            "title": "Shape",
+            "long_title": "Slope Shape",
+            "info": {
+                "title": "Slope Shape",
+                "description": "Slope shape refers to the way the land curves in the area surrounding your site point.\n\nSlope shape is determined in two directions: <bold>downslope</bold> and <bold>cross-slope</bold>.\n\nFirst, determine the primary direction of the slope at the site. Ignore small bumps or ditches; look about $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) in all directions.\n\nIf it rained, in which general direction would water flow downhill? This is called the <bold>downslope</bold> direction.\n\nThe cross-slope direction can be found by looking at a right angle (90 degrees) from the downslope direction.\n\nIf you walk away from the site while staying at the same elevation, this is the <bold>cross-slope</bold> direction.\n\nSecond, determine the shape of the slope for each direction.\n\n<bold>Concave</bold> means that the land slopes increasingly upward as you move away from your point along the cross-slope or downslope. For example, the downslope is often concave at the foot of a hill as it changes from a steep slope to a more shallow one.\n\n<bold>Convex</bold> means that the land slopes increasingly downward as you move away from your point along a particular direction. For example, the downslope is often convex at the top of a hill as it changes from a shallow slope to a steeper one.\n\n<bold>Linear</bold> means the slope is consistent along the entirety of a particular direction. It does not necessarily mean the land is flat; it just means that the slope does not change.",
+                "description_distance_METRIC": "20–30 meters",
+                "description_distance_ENGLISH": "60–90 feet",
+                "down_slope": "Down Slope",
+                "cross_slope": "Cross Slope",
+                "concave": "Concave",
+                "convex": "Convex",
+                "linear": "Linear"
+            },
+            "select_labels": {
+                "CONCAVE": "Concave",
+                "CONVEX": "Convex",
+                "LINEAR": "Linear"
+            }
+        }
+    },
+    "image": {
+        "use_camera": "Take Photo",
+        "choose_from_gallery": "Photo Library"
     }
-  },
-  "slope": {
-    "title": "Slope",
-    "info": {
-      "title": "Slope",
-      "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each data input are available by tapping on the input name.\n\nSlope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
-    },
-    "steepness": {
-      "short_title": "Steepness",
-      "long_title": "Slope Steepness",
-      "description": "Enter steepness manually, using the slope meter, or selecting from the images below.",
-      "manual_label": "Manual",
-      "manual_help": "Enter steepness percentage or degree:",
-      "confirm_title": "Change slope?",
-      "confirm_body": "Are you sure you want to override the slope data?",
-      "percentage_placeholder": "Percentage",
-      "percentage_help": "0%–999%",
-      "degree": "{{value}}°",
-      "degree_help": "0°–89°",
-      "degree_placeholder": "Degree",
-      "slope_meter": "Slope Meter",
-      "camera_grant": "Grant Camera Permission",
-      "no_camera": "No Camera Access",
-      "no_camera_explanation": "For best results, allow LandPKS Soil ID to use your camera in Settings",
-      "info": {
-        "title": "How to use Slope Meter",
-        "description": "Stand facing the site from at least $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) away.\n\nIdentify the direction of the predominant slope at the site.\n\nStand so that you can see the ridge or silhouette of that predominant slope (although you may need to get close to the ground to see it.)\n\nThe direction you are facing should be perpendicular to the direction of the slope. If you hold your arms out to your sides, the line they make should be parallel to the direction of the slope.\n\nPosition your phone so that the solid white line is lined up with the land’s slope; try to place the white line along the slope’s edge. You may need to crouch down if the silhouette of the slope is not easy to see while standing.\n\n<bold>Alternate Method</bold>: If the land shape is not too curved or bumpy, you can place a yard stick on the ground at the site and then align your phone on the stick to get the angle of the slope.",
-        "description_distance_METRIC": "4 meters",
-        "description_distance_ENGLISH": "15 feet"
-      },
-      "select_labels": {
-        "FLAT": "Flat",
-        "FLAT_PERCENT": "0–2%",
-        "GENTLE": "Gentle",
-        "GENTLE_PERCENT": "2–5%",
-        "MODERATE": "Moderate",
-        "MODERATE_PERCENT": "5–10%",
-        "ROLLING": "Rolling",
-        "ROLLING_PERCENT": "10–15%",
-        "HILLY": "Hilly",
-        "HILLY_PERCENT": "15–30%",
-        "STEEP": "Steep",
-        "STEEP_PERCENT": "30–50%",
-        "MODERATELY_STEEP": "Moderately Steep",
-        "MODERATELY_STEEP_PERCENT": "50–60%",
-        "VERY_STEEP": "Very Steep",
-        "VERY_STEEP_PERCENT": "60–100%",
-        "STEEPEST": "Steepest",
-        "STEEPEST_PERCENT": "100%+"
-      },
-      "select_display": "{{steepness_name}} {{steepness_percent}}"
-    },
-    "shape": {
-      "title": "Shape",
-      "long_title": "Slope Shape",
-      "info": {
-        "title": "Slope Shape",
-        "description": "Slope shape refers to the way the land curves in the area surrounding your site point.\n\nSlope shape is determined in two directions: <bold>downslope</bold> and <bold>cross-slope</bold>.\n\nFirst, determine the primary direction of the slope at the site. Ignore small bumps or ditches; look about $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) in all directions.\n\nIf it rained, in which general direction would water flow downhill? This is called the <bold>downslope</bold> direction.\n\nThe cross-slope direction can be found by looking at a right angle (90 degrees) from the downslope direction.\n\nIf you walk away from the site while staying at the same elevation, this is the <bold>cross-slope</bold> direction.\n\nSecond, determine the shape of the slope for each direction.\n\n<bold>Concave</bold> means that the land slopes increasingly upward as you move away from your point along the cross-slope or downslope. For example, the downslope is often concave at the foot of a hill as it changes from a steep slope to a more shallow one.\n\n<bold>Convex</bold> means that the land slopes increasingly downward as you move away from your point along a particular direction. For example, the downslope is often convex at the top of a hill as it changes from a shallow slope to a steeper one.\n\n<bold>Linear</bold> means the slope is consistent along the entirety of a particular direction. It does not necessarily mean the land is flat; it just means that the slope does not change.",
-        "description_distance_METRIC": "20–30 meters",
-        "description_distance_ENGLISH": "60–90 feet",
-        "down_slope": "Down Slope",
-        "cross_slope": "Cross Slope",
-        "concave": "Concave",
-        "convex": "Convex",
-        "linear": "Linear"
-      },
-      "select_labels": {
-        "CONCAVE": "Concave",
-        "CONVEX": "Convex",
-        "LINEAR": "Linear"
-      }
-    }
-  },
-  "image": {
-    "use_camera": "Take Photo",
-    "choose_from_gallery": "Photo Library"
-  }
 }

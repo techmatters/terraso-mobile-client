@@ -275,6 +275,7 @@ export const SiteMap = memo(
 
       return (
         <Mapbox.MapView
+          localizeLabels={true}
           ref={mapRef}
           style={styles.mapView}
           scaleBarEnabled={false}

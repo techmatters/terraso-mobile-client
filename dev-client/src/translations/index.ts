@@ -19,20 +19,30 @@ import {initReactI18next} from 'react-i18next';
 
 import i18n from 'i18next';
 
+import {
+  fallbackLanguage,
+  getDeviceLanguage,
+} from 'terraso-mobile-client/localization';
 import en from 'terraso-mobile-client/translations/en.json';
+import es from 'terraso-mobile-client/translations/es.json';
 
 i18n.use(initReactI18next).init({
-  compatibilityJSON: 'v3',
+  compatibilityJSON: 'v4',
   resources: {
     en: {
       translation: {
         ...en,
       },
     },
+    es: {
+      translation: {
+        ...es,
+      },
+    },
   },
-  lng: 'en',
   debug: __DEV__ && process.env.NODE_ENV !== 'test',
-  fallbackLng: 'en',
+  lng: getDeviceLanguage(),
+  fallbackLng: fallbackLanguage,
   interpolation: {
     // react already escapes HTML tags by default
     escapeValue: false,
