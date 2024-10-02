@@ -19,11 +19,8 @@ import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
+import {RenderIfDataExistsAndHandleIfNot} from 'terraso-mobile-client/components/RenderIfDataExistsAndHandleIfNot';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {
-  RenderIfDataExists,
-  useRequiredData,
-} from 'terraso-mobile-client/hooks/requiredDataForScreens';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -50,10 +47,6 @@ export const SiteTabsScreen = (props: Props) => {
   const site = useSelector(state => selectSite(siteId)(state)); // TODO-cknipe: What if site was deleted?
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  const requiredDataExists = useRequiredData([{data: site}]);
-
-  console.log('--> SiteTabsScreen being rendered');
-
   const appBarRightButton = useMemo(() => {
     // display nothing if user does not own the site / is not manager
     if (userRole === null || !isSiteManager(userRole)) {
@@ -70,7 +63,7 @@ export const SiteTabsScreen = (props: Props) => {
   }, [siteId, navigation, userRole]);
 
   return (
-    <RenderIfDataExists requiredDataExists={requiredDataExists}>
+    <RenderIfDataExistsAndHandleIfNot requirements={[{data: site}]}>
       <ScreenScaffold
         AppBar={
           <AppBar
@@ -82,6 +75,6 @@ export const SiteTabsScreen = (props: Props) => {
           <SiteTabNavigator siteId={siteId} initialTab={initialTab} />
         </SiteRoleContextProvider>
       </ScreenScaffold>
-    </RenderIfDataExists>
+    </RenderIfDataExistsAndHandleIfNot>
   );
 };
