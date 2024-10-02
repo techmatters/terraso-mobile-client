@@ -15,12 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useEffect, useMemo} from 'react';
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ToastAndroid} from 'react-native';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {useRequiredData} from 'terraso-mobile-client/hooks/requiredDataForScreens';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -47,18 +47,9 @@ export const SiteTabsScreen = (props: Props) => {
   const site = useSelector(state => selectSite(siteId)(state)); // TODO-cknipe: What if site was deleted?
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  console.log('--> SiteTabsScreen being rendered');
+  const requiredDataExists = useRequiredData([{data: site}]);
 
-  // TODO-cknipe: Generalize this
-  const dependenciesExist = !!site;
-  useEffect(() => {
-    if (!dependenciesExist) {
-      console.log('    We should close the SiteTabs screen');
-      // TODO: Decide design / Decide how to show toasts?
-      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
-      navigation.navigate('BOTTOM_TABS');
-    }
-  }, [dependenciesExist, navigation]);
+  console.log('--> SiteTabsScreen being rendered');
 
   const appBarRightButton = useMemo(() => {
     // display nothing if user does not own the site / is not manager
@@ -75,7 +66,7 @@ export const SiteTabsScreen = (props: Props) => {
     );
   }, [siteId, navigation, userRole]);
 
-  if (!dependenciesExist) {
+  if (!requiredDataExists) {
     console.log('    SiteTabsScreen site =', site);
     return null;
   }
