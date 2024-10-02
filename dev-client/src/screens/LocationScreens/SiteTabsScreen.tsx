@@ -44,7 +44,7 @@ export const SiteTabsScreen = (props: Props) => {
   const initialTab = props.initialTab === undefined ? 'SITE' : props.initialTab;
 
   const siteId = props.siteId;
-  const site = useSelector(state => selectSite(siteId)(state)); // TODO-cknipe: What if site was deleted?
+  const site = useSelector(state => selectSite(siteId)(state));
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
   const appBarRightButton = useMemo(() => {
