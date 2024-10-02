@@ -80,9 +80,10 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
 
   const handleDelete = useCallback(async () => {
     setIsSubmitting(true);
+    navigation.pop();
     await dispatch(deleteSiteNote(note));
     setIsSubmitting(false);
-  }, [dispatch, note]);
+  }, [navigation, dispatch, note]);
 
   const requirements = [
     {data: site},
