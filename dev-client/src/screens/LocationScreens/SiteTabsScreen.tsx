@@ -64,17 +64,19 @@ export const SiteTabsScreen = (props: Props) => {
 
   return (
     <RenderIfDataExistsAndHandleIfNot requirements={[{data: site}]}>
-      <ScreenScaffold
-        AppBar={
-          <AppBar
-            RightButton={appBarRightButton}
-            title={site?.name ?? t('site.dashboard.default_title')}
-          />
-        }>
-        <SiteRoleContextProvider siteId={siteId}>
-          <SiteTabNavigator siteId={siteId} initialTab={initialTab} />
-        </SiteRoleContextProvider>
-      </ScreenScaffold>
+      {() => (
+        <ScreenScaffold
+          AppBar={
+            <AppBar
+              RightButton={appBarRightButton}
+              title={site?.name ?? t('site.dashboard.default_title')}
+            />
+          }>
+          <SiteRoleContextProvider siteId={siteId}>
+            <SiteTabNavigator siteId={siteId} initialTab={initialTab} />
+          </SiteRoleContextProvider>
+        </ScreenScaffold>
+      )}
     </RenderIfDataExistsAndHandleIfNot>
   );
 };

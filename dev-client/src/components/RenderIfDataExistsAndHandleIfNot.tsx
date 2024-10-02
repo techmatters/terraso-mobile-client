@@ -55,7 +55,9 @@ const useRequiredData = (requirements: RequiredDataAndWhatToDoIfMissing[]) => {
 
 type Props = {
   requirements: RequiredDataAndWhatToDoIfMissing[];
-} & React.PropsWithChildren;
+  // Use "Function as Child" pattern to defer evaluation of children's props, so they may expect required data
+  children: () => React.ReactNode;
+};
 
 export const RenderIfDataExistsAndHandleIfNot = ({
   requirements,
@@ -66,5 +68,5 @@ export const RenderIfDataExistsAndHandleIfNot = ({
   if (!requiredDataExists) {
     return null;
   }
-  return <>{children}</>;
+  return <>{children()}</>;
 };

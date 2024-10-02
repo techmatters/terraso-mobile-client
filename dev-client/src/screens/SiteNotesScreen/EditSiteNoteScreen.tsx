@@ -96,26 +96,28 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
 
   return (
     <RenderIfDataExistsAndHandleIfNot requirements={requirements}>
-      <ScreenFormWrapper
-        ref={formWrapperRef}
-        initialValues={{content: note.content}}
-        onSubmit={handleUpdateNote}
-        onDelete={handleDelete}
-        isSubmitting={isSubmitting}>
-        {formikProps => (
-          <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
-            <Heading variant="h6" pb={7}>
-              {t('site.notes.edit_title')}
-            </Heading>
-            <Box flexGrow={1}>
-              <SiteNoteForm
-                content={formikProps.values.content}
-                editDisabled={!currentUserIsAuthor}
-              />
-            </Box>
-          </Column>
-        )}
-      </ScreenFormWrapper>
+      {() => (
+        <ScreenFormWrapper
+          ref={formWrapperRef}
+          initialValues={{content: note.content}}
+          onSubmit={handleUpdateNote}
+          onDelete={handleDelete}
+          isSubmitting={isSubmitting}>
+          {formikProps => (
+            <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
+              <Heading variant="h6" pb={7}>
+                {t('site.notes.edit_title')}
+              </Heading>
+              <Box flexGrow={1}>
+                <SiteNoteForm
+                  content={formikProps.values.content}
+                  editDisabled={!currentUserIsAuthor}
+                />
+              </Box>
+            </Column>
+          )}
+        </ScreenFormWrapper>
+      )}
     </RenderIfDataExistsAndHandleIfNot>
   );
 };
