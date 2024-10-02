@@ -27,11 +27,11 @@ type RequiredDataAndWhatToDoIfMissing = {
 };
 
 const dataExists = (data: any) => {
-  // TODO-cknipe: Is this the right check?
   return data !== null && data !== undefined;
 };
 // First item should be the entity with the largest scope
-// Example: if EditSiteNoteScreen is missing the site and the site note, the missing site takes precedence so should come first
+// Example: if EditSiteNoteScreen is missing the site and the site note,
+// the missing site takes precedence so should come first
 const useRequiredData = (requirements: RequiredDataAndWhatToDoIfMissing[]) => {
   const navigation = useNavigation();
 
@@ -57,7 +57,6 @@ type Props = {
   requirements: RequiredDataAndWhatToDoIfMissing[];
 } & React.PropsWithChildren;
 
-// TODO-cknipe: Gotta be a better name for this :)
 export const RenderIfDataExistsAndHandleIfNot = ({
   requirements,
   children,
