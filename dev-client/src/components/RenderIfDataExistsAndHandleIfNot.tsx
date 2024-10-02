@@ -18,6 +18,7 @@
 import {useEffect} from 'react';
 import {ToastAndroid} from 'react-native';
 
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type RequiredDataAndWhatToDoIfMissing = {
@@ -41,7 +42,9 @@ const useRequiredData = (requirements: RequiredDataAndWhatToDoIfMissing[]) => {
           ? navigation.navigate('BOTTOM_TABS')
           : doIfMissing();
         // TODO: Decide design / Decide how to show toasts?
-        ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+        if (isFlagEnabled('FF_offline')) {
+          ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+        }
         return;
       }
     }
