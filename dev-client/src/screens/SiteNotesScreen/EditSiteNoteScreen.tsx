@@ -15,9 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Keyboard, ToastAndroid} from 'react-native';
+import {Keyboard} from 'react-native';
 
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
@@ -26,6 +26,7 @@ import {
   Column,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RenderIfDataExistsAndHandleIfNot} from 'terraso-mobile-client/components/RenderIfDataExistsAndHandleIfNot';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {
   deleteSiteNote,
@@ -57,7 +58,6 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
 
   const handleUpdateNote = async ({content}: {content: string}) => {
     if (!currentUserIsAuthor) {
-      // TODO-cknipe: Is this ok?
       navigation.pop();
       return;
     } else if (!content.trim()) {
@@ -75,66 +75,49 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
       console.error('Failed to update note:', error);
     } finally {
       setIsSubmitting(false);
-      // TODO-cknipe: Is this ok?
       navigation.pop();
     }
   };
 
   const handleDelete = useCallback(async () => {
     setIsSubmitting(true);
-    await dispatch(deleteSiteNote(note)).then(() => {
-      // TODO-cknipe: This would conflict with the pop in the useEffect. Figure out how to reconcile.
-      // navigation.pop();
-    });
+    await dispatch(deleteSiteNote(note));
     setIsSubmitting(false);
   }, [dispatch, note]);
 
   // TODO-cknipe: Generalize this
-  const dependenciesExist = !!site && !!note;
-  useEffect(() => {
-    if (!dependenciesExist) {
-      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
-    }
-
-    if (!site) {
-      console.log(
-        'Close EditSiteNoteScreen; no site\n',
-        navigation.getState().routes,
-      );
-      navigation.navigate('BOTTOM_TABS');
-    } else if (!note) {
-      console.log(
-        'Close EditSiteNoteScreen; no note\n',
-        navigation.getState().routes,
-      );
-      navigation.pop();
-    }
-  }, [navigation, note, site, dependenciesExist]);
-
-  if (!dependenciesExist) {
-    return null;
-  }
+  const requirements = [
+    {data: site},
+    {
+      data: note,
+      doIfMissing: () => {
+        navigation.pop();
+      },
+    },
+  ];
 
   return (
-    <ScreenFormWrapper
-      ref={formWrapperRef}
-      initialValues={{content: note.content}}
-      onSubmit={handleUpdateNote}
-      onDelete={handleDelete}
-      isSubmitting={isSubmitting}>
-      {formikProps => (
-        <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
-          <Heading variant="h6" pb={7}>
-            {t('site.notes.edit_title')}
-          </Heading>
-          <Box flexGrow={1}>
-            <SiteNoteForm
-              content={formikProps.values.content}
-              editDisabled={!currentUserIsAuthor}
-            />
-          </Box>
-        </Column>
-      )}
-    </ScreenFormWrapper>
+    <RenderIfDataExistsAndHandleIfNot requirements={requirements}>
+      <ScreenFormWrapper
+        ref={formWrapperRef}
+        initialValues={{content: note.content}}
+        onSubmit={handleUpdateNote}
+        onDelete={handleDelete}
+        isSubmitting={isSubmitting}>
+        {formikProps => (
+          <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
+            <Heading variant="h6" pb={7}>
+              {t('site.notes.edit_title')}
+            </Heading>
+            <Box flexGrow={1}>
+              <SiteNoteForm
+                content={formikProps.values.content}
+                editDisabled={!currentUserIsAuthor}
+              />
+            </Box>
+          </Column>
+        )}
+      </ScreenFormWrapper>
+    </RenderIfDataExistsAndHandleIfNot>
   );
 };

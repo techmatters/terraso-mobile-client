@@ -30,7 +30,6 @@ export const SyncButton = () => {
   );
 
   const onSync = useCallback(() => {
-    console.log('\n\nSyncing');
     if (currentUserID !== undefined) {
       dispatch(fetchSoilDataForUser(currentUserID));
     }

@@ -31,9 +31,7 @@ const dataExists = (data: any) => {
 };
 // First item should be the entity with the largest scope
 // Example: if EditSiteNoteScreen is missing the site and the site note, the missing site takes precedence so should come first
-export const useRequiredData = (
-  requirements: RequiredDataAndWhatToDoIfMissing[],
-) => {
+const useRequiredData = (requirements: RequiredDataAndWhatToDoIfMissing[]) => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -53,10 +51,16 @@ export const useRequiredData = (
 };
 
 type Props = {
-  requiredDataExists: boolean;
+  requirements: RequiredDataAndWhatToDoIfMissing[];
 } & React.PropsWithChildren;
 
-export const RenderIfDataExists = ({requiredDataExists, children}: Props) => {
+// TODO-cknipe: Gotta be a better name for this :)
+export const RenderIfDataExistsAndHandleIfNot = ({
+  requirements,
+  children,
+}: Props) => {
+  const requiredDataExists = useRequiredData(requirements);
+
   if (!requiredDataExists) {
     return null;
   }

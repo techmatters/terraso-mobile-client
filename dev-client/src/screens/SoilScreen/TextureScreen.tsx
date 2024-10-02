@@ -15,9 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Image, ImageSourcePropType, ToastAndroid} from 'react-native';
+import {Image, ImageSourcePropType} from 'react-native';
 
 import {Button, ScrollView} from 'native-base';
 
@@ -40,6 +40,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RenderIfDataExistsAndHandleIfNot} from 'terraso-mobile-client/components/RenderIfDataExistsAndHandleIfNot';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
@@ -154,85 +155,76 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
     [dispatch, siteId, depthInterval],
   );
 
-  // TODO-cknipe: How to make this less ad-hoc? Since we'll want something similar on most screens
   const name = useSelector(state => state.site.sites[siteId]?.name);
-  const dependenciesExist = !!name;
-  useEffect(() => {
-    if (!dependenciesExist) {
-      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
-      navigation.navigate('BOTTOM_TABS');
-    }
-  }, [dependenciesExist, navigation]);
-
-  if (!dependenciesExist) {
-    return null;
-  }
+  const requirements = [{data: name}];
 
   return (
-    <SoilPitInputScreenScaffold {...props}>
-      <SiteRoleContextProvider siteId={siteId}>
-        <ScrollView>
-          <Column p="15px" bg="primary.contrast">
-            <Row alignItems="center">
-              <Heading variant="h6">{t('soil.texture.title')}</Heading>
-              <HelpContentSpacer />
-              <InfoButton
-                sheetHeading={
-                  <TranslatedHeading i18nKey="soil.texture.info.title" />
-                }>
-                <TextureInfoContent />
-              </InfoButton>
-            </Row>
-            <Box height="sm" />
-            <Select
-              disabled={isViewer}
-              nullable
-              label={t('soil.texture.label')}
-              options={textures}
-              value={depthData?.texture ?? null}
-              onValueChange={onTextureChange}
-              renderValue={renderTexture}
-            />
-          </Column>
-          <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-            <Column p="15px" alignItems="flex-start" bg="grey.300">
-              <Text variant="body1">{t('soil.texture.guide_intro')}</Text>
-              <Box height="10px" />
-              <Button
-                onPress={onGuide}
-                rightIcon={<Icon name="chevron-right" />}
-                _text={{textTransform: 'uppercase'}}>
-                {t('soil.texture.use_guide_label')}
-              </Button>
+    <RenderIfDataExistsAndHandleIfNot requirements={requirements}>
+      <SoilPitInputScreenScaffold {...props}>
+        <SiteRoleContextProvider siteId={siteId}>
+          <ScrollView>
+            <Column p="15px" bg="primary.contrast">
+              <Row alignItems="center">
+                <Heading variant="h6">{t('soil.texture.title')}</Heading>
+                <HelpContentSpacer />
+                <InfoButton
+                  sheetHeading={
+                    <TranslatedHeading i18nKey="soil.texture.info.title" />
+                  }>
+                  <TextureInfoContent />
+                </InfoButton>
+              </Row>
+              <Box height="sm" />
+              <Select
+                disabled={isViewer}
+                nullable
+                label={t('soil.texture.label')}
+                options={textures}
+                value={depthData?.texture ?? null}
+                onValueChange={onTextureChange}
+                renderValue={renderTexture}
+              />
             </Column>
-          </RestrictBySiteRole>
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+              <Column p="15px" alignItems="flex-start" bg="grey.300">
+                <Text variant="body1">{t('soil.texture.guide_intro')}</Text>
+                <Box height="10px" />
+                <Button
+                  onPress={onGuide}
+                  rightIcon={<Icon name="chevron-right" />}
+                  _text={{textTransform: 'uppercase'}}>
+                  {t('soil.texture.use_guide_label')}
+                </Button>
+              </Column>
+            </RestrictBySiteRole>
 
-          <Column p="15px" bg="primary.contrast">
-            <Row alignItems="center">
-              <Text variant="body1-strong">
-                {t('soil.texture.fragment_title')}
-              </Text>
-              <HelpContentSpacer />
-              <InfoButton
-                sheetHeading={
-                  <TranslatedHeading i18nKey="soil.texture.fragment.info.title" />
-                }>
-                <RockFragmentVolumeInfoContent />
-              </InfoButton>
-            </Row>
-            <Box height="10px" />
-            <ImageRadio
-              value={depthData?.rockFragmentVolume}
-              options={fragmentOptions}
-              minimumPerRow={2}
-              onChange={isViewer ? () => {} : onFragmentChange}
-            />
-          </Column>
-        </ScrollView>
-        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-          <DoneButton />
-        </RestrictBySiteRole>
-      </SiteRoleContextProvider>
-    </SoilPitInputScreenScaffold>
+            <Column p="15px" bg="primary.contrast">
+              <Row alignItems="center">
+                <Text variant="body1-strong">
+                  {t('soil.texture.fragment_title')}
+                </Text>
+                <HelpContentSpacer />
+                <InfoButton
+                  sheetHeading={
+                    <TranslatedHeading i18nKey="soil.texture.fragment.info.title" />
+                  }>
+                  <RockFragmentVolumeInfoContent />
+                </InfoButton>
+              </Row>
+              <Box height="10px" />
+              <ImageRadio
+                value={depthData?.rockFragmentVolume}
+                options={fragmentOptions}
+                minimumPerRow={2}
+                onChange={isViewer ? () => {} : onFragmentChange}
+              />
+            </Column>
+          </ScrollView>
+          <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+            <DoneButton />
+          </RestrictBySiteRole>
+        </SiteRoleContextProvider>
+      </SoilPitInputScreenScaffold>
+    </RenderIfDataExistsAndHandleIfNot>
   );
 };
