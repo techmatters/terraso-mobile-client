@@ -83,6 +83,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
             onValueChange={onUpdate}
             options={surfaceCracks}
             renderValue={renderSurfaceCrack}
+            label={t('soil.collection_method.verticalCracking')}
           />
           <Box height="lg" />
 
