@@ -178,7 +178,7 @@
                     "2": "Rock fragment by depth",
                     "3": "Soil color by depth",
                     "4": "Site slope",
-                    "5": "Surface cracking"
+                    "5": "Soil cracks"
                 }
             }
         },
@@ -568,7 +568,7 @@
             "soilTexture": "Soil Texture",
             "rockFragmentVolume": "Rock Fragment",
             "soilColor": "Soil Color",
-            "verticalCracking": "Vertical Cracks",
+            "verticalCracking": "Soil Cracks",
             "carbonates": "Carbonates",
             "ph": "pH",
             "soilOrganicCarbonMatter": "SOC/SOM",
@@ -591,9 +591,9 @@
             "description_depth_METRIC": "25 cm",
             "description_depth_ENGLISH": "10”",
             "value": {
-                "NO_CRACKING": "No Cracking",
-                "SURFACE_CRACKING_ONLY": "Surface Cracking Only",
-                "DEEP_VERTICAL_CRACKS": "Deep Vertical Cracks"
+                "NO_CRACKING": "No cracks",
+                "SURFACE_CRACKING_ONLY": "Surface cracks only",
+                "DEEP_VERTICAL_CRACKS": "Deep vertical cracks"
             }
         },
         "data": {
