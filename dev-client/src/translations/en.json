@@ -568,7 +568,7 @@
             "soilTexture": "Soil Texture",
             "rockFragmentVolume": "Rock Fragment",
             "soilColor": "Soil Color",
-            "verticalCracking": "Cracks",
+            "verticalCracking": "Soil Cracks",
             "carbonates": "Carbonates",
             "ph": "pH",
             "soilOrganicCarbonMatter": "SOC/SOM",
