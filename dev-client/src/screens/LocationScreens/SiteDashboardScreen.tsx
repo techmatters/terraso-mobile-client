@@ -14,16 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/integration/data';
-import {render} from '@testing/integration/utils';
 
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
+import {Coords} from 'terraso-client-shared/types';
 
-test('renders correctly', () => {
-  const screen = render(<LocationDashboardScreen siteId="1" />, {
-    route: 'LOCATION_DASHBOARD',
-    initialState: testState,
-  }).toJSON();
+import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
+import {useSelector} from 'terraso-mobile-client/store';
 
-  expect(screen).toMatchSnapshot();
-});
+type Props = {
+  siteId: string;
+};
+export const SiteDashboardScreen = ({siteId}: Props) => {
+  const site = useSelector(state => state.site.sites[siteId]);
+
+  return (
+    <LocationDashboardContent
+      site={site}
+      coords={site as Coords}
+      elevation={site?.elevation ?? undefined}
+    />
+  );
+};

@@ -73,7 +73,7 @@ export const TemporaryLocationCallout = ({
   }, [closeCallout, navigation, coords, elevation]);
 
   const onLearnMore = useCallback(() => {
-    navigation.navigate('LOCATION_DASHBOARD', {
+    navigation.navigate('TEMP_LOCATION', {
       coords,
       elevation: elevation.value,
     });

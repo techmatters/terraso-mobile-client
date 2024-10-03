@@ -29,8 +29,9 @@ import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/C
 import {DeleteAccountScreen} from 'terraso-mobile-client/screens/DeleteAccountScreen/DeleteAccountScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
 import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
-import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 import {LocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationSoilIdScreen';
+import {SiteTabsScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteTabsScreen';
+import {TemporaryLocationScreen} from 'terraso-mobile-client/screens/LocationScreens/TemporaryLocationScreen';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
@@ -72,7 +73,8 @@ export const screenDefinitions = {
   CREATE_PROJECT: CreateProjectScreen,
   SITE_TRANSFER_PROJECT: SiteTransferProjectScreen,
   CREATE_SITE: CreateSiteScreen,
-  LOCATION_DASHBOARD: LocationDashboardScreen,
+  TEMP_LOCATION: TemporaryLocationScreen,
+  SITE_TABS: SiteTabsScreen,
   LOCATION_SOIL_ID: LocationSoilIdScreen,
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,

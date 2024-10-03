@@ -20,13 +20,13 @@ import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {
   Box,
   Column,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RenderIfDataExistsAndHandleIfNot} from 'terraso-mobile-client/components/RenderIfDataExistsAndHandleIfNot';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {
   deleteSiteNote,
@@ -37,18 +37,23 @@ import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/compon
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
-  note: SiteNote;
+  noteId: string;
+  siteId: string;
 };
 
-export const EditSiteNoteScreen = ({note}: Props) => {
+export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const site = useSelector(state => state.site.sites[siteId]);
+  const note = site?.notes[noteId];
+
+  // TODO: Also handle the case where user no longer has permissions to edit notes
   const currentUser = useSelector(state => state.account.currentUser.data);
-  const currentUserIsAuthor = note.authorId === currentUser?.id;
+  const currentUserIsAuthor = note?.authorId === currentUser?.id;
 
   const handleUpdateNote = async ({content}: {content: string}) => {
     if (!currentUserIsAuthor) {
@@ -75,30 +80,45 @@ export const EditSiteNoteScreen = ({note}: Props) => {
 
   const handleDelete = useCallback(async () => {
     setIsSubmitting(true);
-    await dispatch(deleteSiteNote(note)).then(() => navigation.pop());
+    navigation.pop();
+    await dispatch(deleteSiteNote(note));
     setIsSubmitting(false);
   }, [navigation, dispatch, note]);
 
+  const requirements = [
+    {data: site},
+    {
+      data: note,
+      doIfMissing: () => {
+        navigation.pop();
+      },
+    },
+  ];
+
   return (
-    <ScreenFormWrapper
-      ref={formWrapperRef}
-      initialValues={{content: note.content}}
-      onSubmit={handleUpdateNote}
-      onDelete={handleDelete}
-      isSubmitting={isSubmitting}>
-      {formikProps => (
-        <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
-          <Heading variant="h6" pb={7}>
-            {t('site.notes.edit_title')}
-          </Heading>
-          <Box flexGrow={1}>
-            <SiteNoteForm
-              content={formikProps.values.content}
-              editDisabled={!currentUserIsAuthor}
-            />
-          </Box>
-        </Column>
+    <RenderIfDataExistsAndHandleIfNot requirements={requirements}>
+      {() => (
+        <ScreenFormWrapper
+          ref={formWrapperRef}
+          initialValues={{content: note.content}}
+          onSubmit={handleUpdateNote}
+          onDelete={handleDelete}
+          isSubmitting={isSubmitting}>
+          {formikProps => (
+            <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
+              <Heading variant="h6" pb={7}>
+                {t('site.notes.edit_title')}
+              </Heading>
+              <Box flexGrow={1}>
+                <SiteNoteForm
+                  content={formikProps.values.content}
+                  editDisabled={!currentUserIsAuthor}
+                />
+              </Box>
+            </Column>
+          )}
+        </ScreenFormWrapper>
       )}
-    </ScreenFormWrapper>
+    </RenderIfDataExistsAndHandleIfNot>
   );
 };

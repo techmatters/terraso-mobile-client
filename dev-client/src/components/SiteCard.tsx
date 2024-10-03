@@ -54,7 +54,7 @@ export const SiteCard = ({
   );
 
   const onCardPress = useCallback(
-    () => navigation.navigate('LOCATION_DASHBOARD', {siteId: site.id}),
+    () => navigation.navigate('SITE_TABS', {siteId: site.id}),
     [navigation, site.id],
   );
 

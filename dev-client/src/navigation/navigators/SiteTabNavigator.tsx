@@ -25,7 +25,7 @@ import {
   ParamList,
   ScreenDefinitions,
 } from 'terraso-mobile-client/navigation/types';
-import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
+import {SiteDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteDashboardScreen';
 import {SiteNotesScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/SiteNotesScreen';
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
@@ -33,7 +33,7 @@ import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
 type TabsParamList = ParamList<typeof tabDefinitions>;
 export type SiteTabName = keyof TabsParamList;
 const tabDefinitions = {
-  SITE: LocationDashboardContent,
+  SITE: SiteDashboardScreen,
   SLOPE: SlopeScreen,
   SOIL: SoilScreen,
   NOTES: SiteNotesScreen,
@@ -45,26 +45,22 @@ type Props = {
   siteId: string;
   initialTab: SiteTabName;
 };
-export const SiteLocationDashboardTabNavigator = memo(
-  ({siteId, initialTab}: Props) => {
-    const {t} = useTranslation();
-    const defaultOptions = useDefaultTabOptions();
-    const tabs = useMemo(
-      () =>
-        Object.entries(tabDefinitions).map(([name, View]) => (
-          <Tab.Screen
-            name={name as SiteTabName}
-            key={name}
-            initialParams={{siteId}}
-            options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
-            children={props => (
-              <View {...((props.route.params ?? {}) as any)} />
-            )}
-          />
-        )),
-      [siteId, t, defaultOptions],
-    );
+export const SiteTabNavigator = memo(({siteId, initialTab}: Props) => {
+  const {t} = useTranslation();
+  const defaultOptions = useDefaultTabOptions();
+  const tabs = useMemo(
+    () =>
+      Object.entries(tabDefinitions).map(([name, View]) => (
+        <Tab.Screen
+          name={name as SiteTabName}
+          key={name}
+          initialParams={{siteId}}
+          options={{...defaultOptions, tabBarLabel: t(`site.tabs.${name}`)}}
+          children={props => <View {...((props.route.params ?? {}) as any)} />}
+        />
+      )),
+    [siteId, t, defaultOptions],
+  );
 
-    return <Tab.Navigator initialRouteName={initialTab}>{tabs}</Tab.Navigator>;
-  },
-);
+  return <Tab.Navigator initialRouteName={initialTab}>{tabs}</Tab.Navigator>;
+});
