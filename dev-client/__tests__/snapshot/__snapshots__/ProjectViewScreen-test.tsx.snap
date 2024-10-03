@@ -3664,7 +3664,7 @@ exports[`renders correctly 1`] = `
                                             }
                                           }
                                         >
-                                          Texture Class
+                                          Soil Texture
                                         </Text>
                                       </View>
                                       <View
@@ -3735,7 +3735,7 @@ exports[`renders correctly 1`] = `
                                             }
                                           }
                                         >
-                                          Color
+                                          Soil Color
                                         </Text>
                                       </View>
                                       <View
