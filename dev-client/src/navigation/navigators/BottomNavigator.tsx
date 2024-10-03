@@ -53,7 +53,7 @@ export const BottomNavigator = memo(
 
     useEffect(() => {
       if (!loggedIn) {
-        stackNavigation.navigate('LOGIN');
+        stackNavigation.replace('LOGIN');
       }
     }, [loggedIn, stackNavigation]);
 
