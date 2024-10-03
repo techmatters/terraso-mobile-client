@@ -19,9 +19,12 @@ import {useCallback} from 'react';
 
 import {Button} from 'native-base';
 
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
+// TODO: I expect this will move or be removed by the time we actually release the offline feature,
+// but is helpful for manually testing
 export const SyncButton = () => {
   const dispatch = useDispatch();
 
@@ -35,5 +38,12 @@ export const SyncButton = () => {
     }
   }, [currentUserID, dispatch]);
 
-  return <Button onPress={onSync}>SYNC</Button>;
+  return (
+    // TODO-offline: Create string in en.json if we actually want this button for reals
+    <>
+      {isFlagEnabled('FF_offline') && (
+        <Button onPress={onSync}>SYNC: pull</Button>
+      )}
+    </>
+  );
 };
