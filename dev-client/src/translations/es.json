@@ -374,9 +374,11 @@
         "sort_label": "Ordenar proyectos por",
         "search": {
             "placeholder": "Buscar proyectos",
-            "nameAsc": "Ordenar (A - Z)",
-            "nameDesc": "Ordenar (Z - A)",
-            "no_matches": "Ningún proyecto coincide con las opciones actuales de búsqueda y filtro."
+            "no_matches": "Ningún proyecto coincide con las opciones actuales de búsqueda y filtro.",
+            "nameAsc": "Nombre (A - Z)",
+            "nameDesc": "Nombre (Z - A)",
+            "lastModAsc": "Última modificación (más reciente)",
+            "lastModDesc": "Última modificación (menos reciente)"
         }
     },
     "settings": {
