@@ -42,7 +42,7 @@ import {useSelector} from 'terraso-mobile-client/store';
 import {selectProjectUserRolesMap} from 'terraso-mobile-client/store/selectors';
 import {equals, searchText} from 'terraso-mobile-client/util';
 
-const SORT_OPTIONS = ['nameAsc', 'nameDesc'];
+const SORT_OPTIONS = ['nameAsc', 'nameDesc', 'lastModAsc', 'lastModDesc'];
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
@@ -121,6 +121,14 @@ export const ProjectListScreen = () => {
                   },
                   nameDesc: {
                     key: 'name',
+                    order: 'descending',
+                  },
+                  lastModAsc: {
+                    key: 'updatedAt',
+                    order: 'ascending',
+                  },
+                  lastModDesc: {
+                    key: 'updatedAt',
                     order: 'descending',
                   },
                 },
