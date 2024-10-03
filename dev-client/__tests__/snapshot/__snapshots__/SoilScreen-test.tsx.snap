@@ -222,7 +222,7 @@ exports[`renders correctly 1`] = `
                             }
                           }
                         >
-                          Cracks
+                          Soil Cracks
                         </Text>
                         <View
                           style={
