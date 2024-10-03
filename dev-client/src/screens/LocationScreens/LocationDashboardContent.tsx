@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {ReactNode, useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 
@@ -50,11 +50,20 @@ type Props = {
   elevation?: number;
 };
 
-const LocationDetail = ({label, value}: {label: string; value: string}) => (
-  <Text variant="body1" mb={1}>
+const LocationDetail = ({
+  label,
+  value,
+  affix,
+}: {
+  label: string;
+  value: string;
+  affix?: ReactNode;
+}) => (
+  <Box mb={1} style={styles.detailView}>
     <Text bold>{label}: </Text>
     <Text>{value}</Text>
-  </Text>
+    {affix}
+  </Box>
 );
 
 export const LocationDashboardContent = ({
@@ -125,6 +134,12 @@ export const LocationDashboardContent = ({
           <LocationDetail
             label={t('site.dashboard.privacy')}
             value={t(`privacy.${project.privacy.toLowerCase()}.title`)}
+            affix={
+              <Box>
+                <HelpContentSpacer />
+                <DataPrivacyInfoButton />
+              </Box>
+            }
           />
         )}
         {site && !project && (
@@ -173,4 +188,10 @@ export const LocationDashboardContent = ({
   );
 };
 
-const styles = StyleSheet.create({mapView: {height: 170}});
+const styles = StyleSheet.create({
+  mapView: {height: 170},
+  detailView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
