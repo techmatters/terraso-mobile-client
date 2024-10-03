@@ -371,7 +371,7 @@
             "description_min_length_error": "La descripción del proyecto debe tener un mínimo de {{min}} caracteres",
             "description_max_length_error": "La descripción del proyecto debe tener un máximo de {{max}} caracteres"
         },
-        "sort_label": "Ordenar proyectos por:",
+        "sort_label": "Ordenar proyectos por",
         "search": {
             "placeholder": "Buscar proyectos",
             "nameAsc": "Ordenar (A - Z)",
