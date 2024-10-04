@@ -1,28 +1,40 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "dev-client" # Location of package manifests
+  - package-ecosystem: 'npm'
+    directory: 'dev-client'
+    target-branch: 'dependencies'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
+      day: 'sunday'
     open-pull-requests-limit: 20
     allow:
-      - dependency-type: "all"
+      - dependency-type: 'all'
+    groups:
+      babel:
+        patterns:
+          - '@babel/*'
+      types:
+        patterns:
+          - '@types/*'
+      expo:
+        patterns:
+          - '@expo/*'
+          - 'expo*'
+      react-native:
+        patterns:
+          - '@react-native/*'
+          - 'react-native*'
 
-  - package-ecosystem: "bundler" # See documentation for possible values
-    directory: "dev-client" # Location of package manifests
+  - package-ecosystem: 'bundler'
+    directory: 'dev-client'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     allow:
-      - dependency-type: "all"
+      - dependency-type: 'all'
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     allow:
-      - dependency-type: "all"
+      - dependency-type: 'all'
