@@ -37,7 +37,7 @@ updates:
           - 'typescript'
       testing:
         patterns:
-          -'@testing-library/*'
+          - '@testing-library/*'
           - 'jest*'
 
   - package-ecosystem: 'bundler' # See documentation for possible values
