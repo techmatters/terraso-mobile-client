@@ -24,6 +24,9 @@ updates:
         patterns:
           - '@react-native/*'
           - 'react-native*'
+      react:
+        patterns:
+          - '@react-*'
 
   - package-ecosystem: 'bundler'
     directory: 'dev-client'
