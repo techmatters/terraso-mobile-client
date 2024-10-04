@@ -147,7 +147,7 @@ export const ProjectListScreen = () => {
                 label={t('projects.sort_label')}
                 options={SORT_OPTIONS}
                 renderValue={renderSortOption}
-                unselectedLabel={t('general.filter.no_sort')}
+                nullable={false}
               />
               <SelectFilter
                 name="role"

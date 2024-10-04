@@ -79,11 +79,11 @@ export const SiteFilterModal = ({useDistance}: Props) => {
         />
       }>
       <SelectFilter
+        name="sort"
         label={t('site.search.sort.label')}
         options={sortOptions}
-        name="sort"
         renderValue={renderSortOption}
-        unselectedLabel={t('general.filter.no_sort')}
+        nullable={false}
       />
       <SelectFilter
         label={t('site.search.filter_projects')}
