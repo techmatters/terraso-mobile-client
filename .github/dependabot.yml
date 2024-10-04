@@ -5,24 +5,42 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "dev-client" # Location of package manifests
+  - package-ecosystem: 'npm' # See documentation for possible values
+    directory: 'dev-client' # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 20
     allow:
-      - dependency-type: "all"
+      - dependency-type: 'all'
+    groups:
+      babel:
+        patterns:
+          - '@babel/*'
+      types:
+        patterns:
+          - '@types/*'
+      expo:
+        patterns:
+          - '@expo/*'
+          - 'expo*'
+      react-native:
+        patterns:
+          - '@react-native/*'
+          - 'react-native*'
+      react:
+        patterns:
+          - '@react-*'
 
-  - package-ecosystem: "bundler" # See documentation for possible values
-    directory: "dev-client" # Location of package manifests
+  - package-ecosystem: 'bundler' # See documentation for possible values
+    directory: 'dev-client' # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     allow:
-      - dependency-type: "all"
+      - dependency-type: 'all'
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     allow:
-      - dependency-type: "all"
+      - dependency-type: 'all'
