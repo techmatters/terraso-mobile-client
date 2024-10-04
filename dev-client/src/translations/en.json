@@ -581,8 +581,8 @@
             "notes": "Notes"
         },
         "collection_method_description": {
-            "slope": "Includes slope steepness, shape, aspect, and landscape position",
-            "soilTexture": "Includes texture class, percent clay, and rock fragments"
+            "slope": "Includes slope steepness and shape",
+            "soilTexture": "Includes texture class and rock fragment volume"
         },
         "vertical_cracking": {
             "description": "Vertical cracks may appear on the soil surface when some soils experience changes in moisture or temperature. The cracks may be permanent, or they may disappear after some time.\n\nVertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks.",
@@ -642,7 +642,7 @@
         },
         "texture": {
             "title": "Soil Texture",
-            "label": "Texture",
+            "label": "Texture Class",
             "info": {
                 "title": "Soil Texture",
                 "description": "Soil is made up of particles of different sizes. Once you remove all large particles (anything over $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter), what is left is a mixture of sand, silt, and clay.\n\n<bold>Soil texture</bold> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.\n\nSoil texture determines many important characteristics of your land, including:\n\n<bullets />\nKnowing the soil texture also helps you more accurately identify your soil.",

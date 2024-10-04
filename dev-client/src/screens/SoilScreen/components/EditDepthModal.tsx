@@ -43,6 +43,7 @@ import {
   Column,
   Heading,
   Row,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
@@ -59,7 +60,10 @@ import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
-import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
+import {
+  SWITCH_PADDING,
+  SWITCH_VERTICAL_PADDING,
+} from 'terraso-mobile-client/theme';
 
 type EditDepthFormInput = DepthFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
@@ -79,7 +83,7 @@ export const EditDepthModal = ({
   requiredInputs,
   mutable,
 }: Props) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const modalRef = useRef<ModalHandle>(null);
   const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
@@ -202,15 +206,31 @@ export const EditDepthModal = ({
                 </Heading>
               </>
             )}
-            <Column space="20px" mb="12px">
-              {soilPitMethods.map(method => (
-                <InputFormSwitch
-                  method={method}
-                  isRequired={requiredInputs.includes(method)}
-                  updateEnabled={updateSwitch(method)}
-                  key={method}
-                />
-              ))}
+            <Column space="10px" mb="12px">
+              {soilPitMethods.map(method => {
+                const descriptionExists = i18n.exists(
+                  `soil.collection_method_description.${method}`,
+                );
+                const description = descriptionExists
+                  ? t(`soil.collection_method_description.${method}`)
+                  : '';
+
+                return (
+                  <>
+                    <InputFormSwitch
+                      method={method}
+                      isRequired={requiredInputs.includes(method)}
+                      updateEnabled={updateSwitch(method)}
+                      key={method}
+                    />
+                    {description && (
+                      <Text mb={SWITCH_VERTICAL_PADDING} variant="body2">
+                        {description}
+                      </Text>
+                    )}
+                  </>
+                );
+              })}
             </Column>
 
             <Row mb="12px">
