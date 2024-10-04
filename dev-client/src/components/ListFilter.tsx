@@ -296,12 +296,14 @@ type Props = Omit<
   'value' | 'onValueChange' | 'nullable'
 > & {
   name: string;
+  nullable?: boolean;
 };
 
 export const SelectFilter = ({
   name,
   options,
   label,
+  nullable = true,
   renderValue,
   ...selectProps
 }: Props) => {
@@ -317,7 +319,7 @@ export const SelectFilter = ({
   return (
     <FormControl>
       <Select
-        nullable
+        nullable={nullable}
         value={value ?? null}
         options={options}
         renderValue={renderValue}
