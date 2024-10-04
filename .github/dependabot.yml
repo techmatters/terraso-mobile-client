@@ -13,6 +13,7 @@ updates:
       babel:
         patterns:
           - '@babel/*'
+          - 'babel*'
       types:
         patterns:
           - '@types/*'
@@ -27,6 +28,14 @@ updates:
       react:
         patterns:
           - '@react-*'
+      typescript:
+        patterns:
+          - 'ts-*'
+          - 'typescript'
+      testing:
+        patterns:
+          -'@testing-library/*'
+          - 'jest*'
 
   - package-ecosystem: 'bundler'
     directory: 'dev-client'
