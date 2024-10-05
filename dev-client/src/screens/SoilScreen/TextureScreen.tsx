@@ -40,7 +40,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RenderIfDataExistsAndHandleIfNot} from 'terraso-mobile-client/components/RenderIfDataExistsAndHandleIfNot';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/RestrictByRequirements';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
@@ -159,7 +159,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const requirements = [{data: name}];
 
   return (
-    <RenderIfDataExistsAndHandleIfNot requirements={requirements}>
+    <RestrictByRequirements requirements={requirements}>
       {() => (
         <SoilPitInputScreenScaffold {...props}>
           <SiteRoleContextProvider siteId={siteId}>
@@ -227,6 +227,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
           </SiteRoleContextProvider>
         </SoilPitInputScreenScaffold>
       )}
-    </RenderIfDataExistsAndHandleIfNot>
+    </RestrictByRequirements>
   );
 };

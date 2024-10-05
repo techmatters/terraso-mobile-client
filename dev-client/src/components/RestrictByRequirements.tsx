@@ -21,7 +21,7 @@ import {ToastAndroid} from 'react-native';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-type RequiredDataAndWhatToDoIfMissing = {
+type Requirements = {
   data: any;
   doIfMissing?: () => void;
 };
@@ -32,7 +32,7 @@ const dataExists = (data: any) => {
 // First item should be the entity with the largest scope
 // Example: if EditSiteNoteScreen is missing the site and the site note,
 // the missing site takes precedence so should come first
-const useRequiredData = (requirements: RequiredDataAndWhatToDoIfMissing[]) => {
+const useRequiredData = (requirements: Requirements[]) => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -54,15 +54,12 @@ const useRequiredData = (requirements: RequiredDataAndWhatToDoIfMissing[]) => {
 };
 
 type Props = {
-  requirements: RequiredDataAndWhatToDoIfMissing[];
+  requirements: Requirements[];
   // Use "Function as Child" pattern to defer evaluation of children's props, so they may expect required data
   children: () => React.ReactNode;
 };
 
-export const RenderIfDataExistsAndHandleIfNot = ({
-  requirements,
-  children,
-}: Props) => {
+export const RestrictByRequirements = ({requirements, children}: Props) => {
   const requiredDataExists = useRequiredData(requirements);
 
   if (!requiredDataExists) {

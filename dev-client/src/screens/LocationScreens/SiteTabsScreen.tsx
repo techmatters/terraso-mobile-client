@@ -19,7 +19,7 @@ import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
-import {RenderIfDataExistsAndHandleIfNot} from 'terraso-mobile-client/components/RenderIfDataExistsAndHandleIfNot';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/RestrictByRequirements';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -63,7 +63,7 @@ export const SiteTabsScreen = (props: Props) => {
   }, [siteId, navigation, userRole]);
 
   return (
-    <RenderIfDataExistsAndHandleIfNot requirements={[{data: site}]}>
+    <RestrictByRequirements requirements={[{data: site}]}>
       {() => (
         <ScreenScaffold
           AppBar={
@@ -77,6 +77,6 @@ export const SiteTabsScreen = (props: Props) => {
           </SiteRoleContextProvider>
         </ScreenScaffold>
       )}
-    </RenderIfDataExistsAndHandleIfNot>
+    </RestrictByRequirements>
   );
 };
