@@ -26,7 +26,7 @@ import {
   Column,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RenderIfDataExistsAndHandleIfNot} from 'terraso-mobile-client/components/RenderIfDataExistsAndHandleIfNot';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/RestrictByRequirements';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {
   deleteSiteNote,
@@ -96,7 +96,7 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   ];
 
   return (
-    <RenderIfDataExistsAndHandleIfNot requirements={requirements}>
+    <RestrictByRequirements requirements={requirements}>
       {() => (
         <ScreenFormWrapper
           ref={formWrapperRef}
@@ -119,6 +119,6 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
           )}
         </ScreenFormWrapper>
       )}
-    </RenderIfDataExistsAndHandleIfNot>
+    </RestrictByRequirements>
   );
 };
