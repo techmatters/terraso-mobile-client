@@ -21,7 +21,7 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {SyncButton} from 'terraso-mobile-client/components/buttons/SyncButton';
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {theme} from 'terraso-mobile-client/theme';
@@ -65,7 +65,9 @@ export const ScreenScaffold = ({
       />
       <Column backgroundColor="primary.contrast" flex={1}>
         <View onLayout={onLayout}>{PropsAppBar}</View>
-        {isFlagEnabled('FF_offline') && <SyncButton />}
+        <RestrictByFlag flag="FF_offline">
+          <SyncButton />
+        </RestrictByFlag>
         <Box flex={1}>{children}</Box>
       </Column>
     </SafeAreaView>
