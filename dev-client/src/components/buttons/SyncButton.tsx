@@ -19,7 +19,7 @@ import {useCallback} from 'react';
 
 import {Button} from 'native-base';
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -40,10 +40,8 @@ export const SyncButton = () => {
 
   return (
     // TODO-offline: Create string in en.json if we actually want this button for reals
-    <>
-      {isFlagEnabled('FF_offline') && (
-        <Button onPress={onSync}>SYNC: pull</Button>
-      )}
-    </>
+    <RestrictByFlag flag="FF_offline">
+      <Button onPress={onSync}>SYNC: pull</Button>
+    </RestrictByFlag>
   );
 };
