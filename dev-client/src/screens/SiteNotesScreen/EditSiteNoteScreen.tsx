@@ -21,12 +21,13 @@ import {Keyboard} from 'react-native';
 
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {
   Box,
   Column,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/RestrictByRequirements';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {
   deleteSiteNote,
@@ -54,6 +55,17 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   // TODO: Also handle the case where user no longer has permissions to edit notes
   const currentUser = useSelector(state => state.account.currentUser.data);
   const currentUserIsAuthor = note?.authorId === currentUser?.id;
+
+  const handleMissingSite = useHandleMissingSite();
+  const requirements = [
+    {data: site, doIfMissing: handleMissingSite},
+    {
+      data: note,
+      doIfMissing: () => {
+        navigation.pop();
+      },
+    },
+  ];
 
   const handleUpdateNote = async ({content}: {content: string}) => {
     if (!currentUserIsAuthor) {
@@ -84,16 +96,6 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
     await dispatch(deleteSiteNote(note));
     setIsSubmitting(false);
   }, [navigation, dispatch, note]);
-
-  const requirements = [
-    {data: site},
-    {
-      data: note,
-      doIfMissing: () => {
-        navigation.pop();
-      },
-    },
-  ];
 
   return (
     <RestrictByRequirements requirements={requirements}>

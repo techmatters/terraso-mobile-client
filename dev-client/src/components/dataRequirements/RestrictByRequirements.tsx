@@ -16,10 +16,6 @@
  */
 
 import {useEffect} from 'react';
-import {ToastAndroid} from 'react-native';
-
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Requirements = {
   data: any;
@@ -33,22 +29,16 @@ const dataExists = (data: any) => {
 // Example: if EditSiteNoteScreen is missing the site and the site note,
 // the missing site takes precedence so should come first
 const useRequiredData = (requirements: Requirements[]) => {
-  const navigation = useNavigation();
-
   useEffect(() => {
     for (let {data, doIfMissing} of requirements) {
       if (!dataExists(data)) {
-        doIfMissing === undefined
-          ? navigation.navigate('BOTTOM_TABS')
-          : doIfMissing();
-        // TODO: Decide design / Decide how to show toasts?
-        if (isFlagEnabled('FF_offline')) {
-          ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+        if (doIfMissing !== undefined) {
+          doIfMissing();
         }
         return;
       }
     }
-  }, [requirements, navigation]);
+  }, [requirements]);
 
   return requirements.every(({data}) => dataExists(data));
 };

@@ -27,6 +27,8 @@ import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
+import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
@@ -40,7 +42,6 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/RestrictByRequirements';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
@@ -63,6 +64,7 @@ import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/compo
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   selectDepthDependentData,
+  selectSite,
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
 
@@ -88,6 +90,10 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
   const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
+
+  const site = useSelector(state => selectSite(siteId)(state));
+  const handleMissingSite = useHandleMissingSite();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   const onTextureChange = useCallback(
     (texture: SoilTexture | null) => {
@@ -154,9 +160,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
     },
     [dispatch, siteId, depthInterval],
   );
-
-  const name = useSelector(state => state.site.sites[siteId]?.name);
-  const requirements = [{data: name}];
 
   return (
     <RestrictByRequirements requirements={requirements}>
