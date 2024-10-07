@@ -19,7 +19,8 @@ import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/RestrictByRequirements';
+import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -47,6 +48,9 @@ export const SiteTabsScreen = (props: Props) => {
   const site = useSelector(state => selectSite(siteId)(state));
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
+  const handleMissingSite = useHandleMissingSite();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+
   const appBarRightButton = useMemo(() => {
     // display nothing if user does not own the site / is not manager
     if (userRole === null || !isSiteManager(userRole)) {
@@ -63,7 +67,7 @@ export const SiteTabsScreen = (props: Props) => {
   }, [siteId, navigation, userRole]);
 
   return (
-    <RestrictByRequirements requirements={[{data: site}]}>
+    <RestrictByRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
           AppBar={
