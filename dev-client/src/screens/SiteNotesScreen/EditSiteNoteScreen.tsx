@@ -36,6 +36,7 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   noteId: string;
@@ -49,7 +50,7 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const site = useSelector(state => state.site.sites[siteId]);
+  const site = useSelector(state => selectSite(siteId)(state));
   const note = site?.notes[noteId];
 
   // TODO: Also handle the case where user no longer has permissions to edit notes
