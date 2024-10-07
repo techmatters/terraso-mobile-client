@@ -37,7 +37,7 @@ export const BottomNavigator = memo(
     );
 
     const onSites = useCallback(
-      () => navigation.navigate('HOME'),
+      () => navigation.navigate('SITES'),
       [navigation],
     );
 

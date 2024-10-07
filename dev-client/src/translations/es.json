@@ -462,7 +462,7 @@
         "generic": "Error al guardar la informacion de la identificación del suelo."
     },
     "screens": {
-        "HOME": "LandPKS Soil ID",
+        "SITES": "LandPKS Soil ID",
         "LOGIN": "Iniciar sesión",
         "SETTINGS": "Configuraciones",
         "PROJECT_LIST": "Proyectos",

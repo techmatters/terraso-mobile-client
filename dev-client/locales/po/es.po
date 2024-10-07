@@ -1163,7 +1163,7 @@ msgstr ""
 msgid "errors##generic"
 msgstr "Error al guardar la informacion de la identificación del suelo."
 
-msgid "screens##HOME"
+msgid "screens##SITES"
 msgstr "LandPKS Soil ID"
 
 msgid "screens##LOGIN"

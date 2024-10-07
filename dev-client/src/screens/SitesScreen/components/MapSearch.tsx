@@ -36,7 +36,7 @@ import {
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
-import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
+import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
 
@@ -75,13 +75,13 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const {coords, suggestions, querySuggestions, lookupFeature} =
     useMapSuggestions();
   const [hideResults, setHideResults] = useState(false);
-  const homeScreen = useHomeScreenContext();
+  const sitesScreen = useSitesScreenContext();
 
   useEffect(() => {
     if (query.length >= MAP_QUERY_MIN_LENGTH) {
-      homeScreen?.collapseBottomSheet();
+      sitesScreen?.collapseBottomSheet();
     }
-  }, [homeScreen, query]);
+  }, [sitesScreen, query]);
 
   useEffect(() => {
     if (zoomTo && coords) {

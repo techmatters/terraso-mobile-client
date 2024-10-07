@@ -28,7 +28,6 @@ import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectSc
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
 import {DeleteAccountScreen} from 'terraso-mobile-client/screens/DeleteAccountScreen/DeleteAccountScreen';
 import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
-import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {LocationDashboardScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardScreen';
 import {LocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationSoilIdScreen';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
@@ -39,6 +38,7 @@ import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/A
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/EditSiteNoteScreen';
 import {ReadNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/ReadNoteScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
+import {SitesScreen} from 'terraso-mobile-client/screens/SitesScreen/SitesScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
 import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
@@ -60,7 +60,7 @@ import {WelcomeScreen} from 'terraso-mobile-client/screens/WelcomeScreen';
 
 export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,
-  HOME: HomeScreen,
+  SITES: SitesScreen,
   SETTINGS: UserSettingsScreen,
 } satisfies ScreenDefinitions;
 

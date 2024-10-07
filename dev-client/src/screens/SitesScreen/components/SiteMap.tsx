@@ -37,9 +37,9 @@ import {
   coordsToPosition,
   positionToCoords,
 } from 'terraso-mobile-client/components/StaticMapView';
-import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
-import {CustomUserLocation} from 'terraso-mobile-client/screens/HomeScreen/components/CustomUserLocation';
-import {SiteMapCallout} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMapCallout';
+import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
+import {CustomUserLocation} from 'terraso-mobile-client/screens/SitesScreen/components/CustomUserLocation';
+import {SiteMapCallout} from 'terraso-mobile-client/screens/SitesScreen/components/SiteMapCallout';
 import {
   CalloutState,
   getCalloutSite,
@@ -47,9 +47,9 @@ import {
   noneCallout,
   siteCallout,
   siteClusterCallout,
-} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
-import {repositionCamera} from 'terraso-mobile-client/screens/HomeScreen/utils/repositionCamera';
-import {siteFeatureCollection} from 'terraso-mobile-client/screens/HomeScreen/utils/siteFeatureCollection';
+} from 'terraso-mobile-client/screens/SitesScreen/SitesScreenCallout';
+import {repositionCamera} from 'terraso-mobile-client/screens/SitesScreen/utils/repositionCamera';
+import {siteFeatureCollection} from 'terraso-mobile-client/screens/SitesScreen/utils/siteFeatureCollection';
 
 const DEFAULT_LOCATION = [-98.0, 38.5];
 const MAX_EXPANSION_ZOOM = 15;
@@ -91,7 +91,7 @@ export const SiteMap = memo(
           });
         },
       }));
-      const homeScreen = useHomeScreenContext();
+      const sitesScreen = useSitesScreenContext();
 
       const {filteredItems: filteredSites} = useListFilter<Site>();
       const sites = Object.fromEntries(
@@ -191,10 +191,10 @@ export const SiteMap = memo(
               cameraRef: cameraRef,
             });
             setCalloutState(siteCallout(feature.id as string));
-            homeScreen?.collapseBottomSheet();
+            sitesScreen?.collapseBottomSheet();
           }
         },
-        [setCalloutState, handleClusterPress, homeScreen],
+        [setCalloutState, handleClusterPress, sitesScreen],
       );
 
       const onPress = useCallback(

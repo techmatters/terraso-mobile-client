@@ -49,7 +49,7 @@ import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPe
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
-import {HomeScreenContextProvider} from 'terraso-mobile-client/context/HomeScreenContext';
+import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScreenContext';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
@@ -114,13 +114,13 @@ function App(): React.JSX.Element {
                     <BottomSheetModalProvider>
                       <GeospatialProvider>
                         <Toasts />
-                        <HomeScreenContextProvider>
+                        <SitesScreenContextProvider>
                           <ConnectivityContextProvider>
                             <ForegroundPermissionsProvider>
                               <RootNavigator />
                             </ForegroundPermissionsProvider>
                           </ConnectivityContextProvider>
-                        </HomeScreenContextProvider>
+                        </SitesScreenContextProvider>
                       </GeospatialProvider>
                     </BottomSheetModalProvider>
                   </Portal.Host>

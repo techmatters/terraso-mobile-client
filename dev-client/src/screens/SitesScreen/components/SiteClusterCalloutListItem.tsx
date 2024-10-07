@@ -28,7 +28,7 @@ import {
 import {
   CalloutState,
   siteCallout,
-} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
+} from 'terraso-mobile-client/screens/SitesScreen/SitesScreenCallout';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type SiteClusterCalloutListItemProps = {

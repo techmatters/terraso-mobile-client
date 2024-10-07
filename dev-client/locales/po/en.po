@@ -1125,7 +1125,7 @@ msgstr ""
 msgid "errors##generic"
 msgstr "Error saving soil ID information."
 
-msgid "screens##HOME"
+msgid "screens##SITES"
 msgstr "LandPKS Soil ID"
 
 msgid "screens##PROJECT_LIST"
