@@ -35,13 +35,13 @@ export const LandPKSInfoContent = () => {
   return (
     <Column space={3} pb="65%" pt={5} px={5}>
       <Heading w="full" textAlign="center">
-        {t('home.info.title')}
+        {t('info.title')}
       </Heading>
       <Box width={157} height={128} alignSelf="center" mb={1}>
         <InfoSVG />
       </Box>
       <Text variant="body1">
-        <Trans i18nKey="home.info.description">
+        <Trans i18nKey="info.description">
           <Text bold>first</Text>
           <Text>second</Text>
           <Text bold>third</Text>
@@ -55,7 +55,7 @@ export const LandPKSInfoContent = () => {
             </Text>
             <Text variant="body1" mr={numberedListMargin * 2}>
               <Trans
-                i18nKey={`home.info.list${index}`}
+                i18nKey={`info.list${index}`}
                 components={{icon: <LocationIcon />}}
               />
             </Text>
@@ -64,13 +64,13 @@ export const LandPKSInfoContent = () => {
       </Column>
       <Text variant="body1">
         <Trans
-          i18nKey="home.info.description2"
+          i18nKey="info.description2"
           components={{
             bold: <Text bold />,
             icon: (
               <ExternalLink
-                label={t('home.info.link_label')}
-                url={t('home.info.link_url')}
+                label={t('info.link_label')}
+                url={t('info.link_url')}
               />
             ),
           }}>

@@ -58,10 +58,10 @@ msgstr "https://landpks.terraso.org/"
 msgid "welcome##get_started"
 msgstr "Comenzar"
 
-msgid "home##info##title"
+msgid "info##title"
 msgstr "Descubre el potencial de tu paisaje"
 
-msgid "home##info##description"
+msgid "info##description"
 msgstr ""
 "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con "
 "precisión el tipo de suelo y otras características de tu paisaje. Obtiene "
@@ -70,28 +70,28 @@ msgstr ""
 "\n"
 "<2>Hay tres formas de utilizar el mapa:</2>"
 
-msgid "home##info##list1"
+msgid "info##list1"
 msgstr ""
 "Toca el mapa para marcar un punto en el mapa y obtener más información "
 "sobre la ubicación."
 
-msgid "home##info##list2"
+msgid "info##list2"
 msgstr "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual."
 
-msgid "home##info##list3"
+msgid "info##list3"
 msgstr ""
 "Ingresa las coordenadas, la dirección, o el término que buscas en la barra "
 "de búsqueda."
 
-msgid "home##info##description2"
+msgid "info##description2"
 msgstr ""
 "<bold>Encuentra más información y guías</bold> en:\n"
 "<icon />"
 
-msgid "home##info##link_label"
+msgid "info##link_label"
 msgstr "landpotential.org"
 
-msgid "home##info##link_url"
+msgid "info##link_url"
 msgstr "https://landpotential.org/"
 
 msgid "search##placeholder"
