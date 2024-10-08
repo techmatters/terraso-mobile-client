@@ -15,15 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 // When you add a new flag:
 // 1) Add it to featureFlags here
-// 2) Set it in APP_CONFIG
-// 3) Add a FeatureFlagControl for it
+// 2) Add a FeatureFlagControl for it
 export const featureFlags = {
   FF_offline: {
     defaultIsEnabled: false,
+    defaultIsEnabledInDevelopment: true,
     description: 'Enables support for offline mode',
   },
 };
@@ -34,11 +35,17 @@ export const isFlagEnabled = (flag: FeatureFlagName) => {
   return ENABLED_FLAGS[flag];
 };
 
-export const willFlagBeEnabledOnReload = (flag: FeatureFlagName) => {
-  return kvStorage.getBool(flag) ?? featureFlags[flag].defaultIsEnabled;
+const isFlagDefaultEnabled = (flag: FeatureFlagName) => {
+  return APP_CONFIG.environment === 'development'
+    ? featureFlags[flag].defaultIsEnabledInDevelopment
+    : featureFlags[flag].defaultIsEnabled;
 };
 
-export const setFlagEnabledOnReload = (
+export const willFlagBeEnabledOnReload = (flag: FeatureFlagName) => {
+  return kvStorage.getBool(flag) ?? isFlagDefaultEnabled(flag);
+};
+
+export const setFlagWillBeEnabledOnReload = (
   flag: FeatureFlagName,
   isEnabled: boolean,
 ) => {
