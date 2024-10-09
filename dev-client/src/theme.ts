@@ -430,6 +430,12 @@ export const theme = extendTheme({
           adjustsFontSizeToFit: true,
           numberOfLines: 1,
         },
+        'chip-text': {
+          fontWeight: 400,
+          fontSize: '13px',
+          lineHeight: '18px',
+          letterSpacing: '0.16px',
+        },
       },
     },
     Heading: {

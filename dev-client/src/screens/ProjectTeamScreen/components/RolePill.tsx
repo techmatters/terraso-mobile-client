@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 
 import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
-import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Chip} from 'terraso-mobile-client/components/Chip';
 
 type RolePillProps = {
   membership: ProjectMembership;
@@ -27,16 +27,5 @@ type RolePillProps = {
 
 export const RolePill = ({membership}: RolePillProps) => {
   const {t} = useTranslation();
-  return (
-    <Badge
-      _text={{
-        fontSize: '14px',
-      }}
-      variant="chip"
-      bg="primary.lighter"
-      py="10px"
-      px="15px">
-      {t(`general.role.${membership.userRole}`)}
-    </Badge>
-  );
+  return <Chip label={t(`general.role.${membership.userRole}`)} />;
 };

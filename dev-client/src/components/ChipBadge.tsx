@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
-import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Chip} from 'terraso-mobile-client/components/Chip';
+import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 
 type Props = {
   count: number;
@@ -24,9 +24,5 @@ type Props = {
 };
 
 export const ChipBadge = ({count, iconName}: Props) => {
-  return (
-    <Badge variant="chip" startIcon={<Icon name={iconName} />}>
-      {count}
-    </Badge>
-  );
+  return <Chip label={count.toString()} iconName={iconName} />;
 };
