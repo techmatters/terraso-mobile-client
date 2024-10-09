@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Chip} from 'terraso-mobile-client/components/Chip';
+import {Chip} from 'terraso-mobile-client/components/chips/Chip';
 
 type Props = {
   count: number;

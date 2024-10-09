@@ -19,13 +19,13 @@ import {useCallback} from 'react';
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {Card} from 'terraso-mobile-client/components/Card';
+import {PeopleChip} from 'terraso-mobile-client/components/chips/PeopleChip';
+import {SiteChip} from 'terraso-mobile-client/components/chips/SiteChip';
 import {
   Heading,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {PeopleChip} from 'terraso-mobile-client/components/PeopleChip';
-import {SiteChip} from 'terraso-mobile-client/components/SiteChip';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {

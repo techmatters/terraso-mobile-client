@@ -15,12 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Chip} from 'terraso-mobile-client/components/Chip';
+import {useTranslation} from 'react-i18next';
 
-type Props = {
-  count: number;
+import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
+
+import {Chip} from 'terraso-mobile-client/components/chips/Chip';
+
+type RoleChipProps = {
+  membership: ProjectMembership;
 };
 
-export const SiteChip = ({count}: Props) => {
-  return <Chip label={count.toString()} iconName="location-on" />;
+export const RoleChip = ({membership}: RoleChipProps) => {
+  const {t} = useTranslation();
+  return <Chip label={t(`general.role.${membership.userRole}`)} />;
 };

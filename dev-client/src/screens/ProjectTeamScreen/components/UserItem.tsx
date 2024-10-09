@@ -23,10 +23,10 @@ import {Button} from 'native-base';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
+import {RoleChip} from 'terraso-mobile-client/components/chips/RoleChip';
 import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {RoleChip} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/RoleChip';
 import {formatName} from 'terraso-mobile-client/util';
 
 type TriggerProps = {
