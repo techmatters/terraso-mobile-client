@@ -88,7 +88,7 @@ export const UserItem = ({
     <MenuItem
       icon={<ProfilePic user={user} />}
       label={userLabel}
-      pill={<RoleChip membership={membership} />}
+      chip={<RoleChip membership={membership} />}
       onPress={isForCurrentUser ? undefined : memberAction}>
       {userCanLeaveProject && (
         <ConfirmModal
