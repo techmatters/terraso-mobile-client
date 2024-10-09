@@ -17,14 +17,9 @@
 
 import {StyleSheet, View} from 'react-native';
 
-import MaterialIcon from '@expo/vector-icons/MaterialIcons';
-
-import {IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {
-  convertColorProp,
-  convertIconSize,
-} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 type Props = {
   label: string;
@@ -35,9 +30,10 @@ export const Chip = ({label, iconName}: Props) => {
   return (
     <View style={styles.container}>
       {iconName && (
-        <MaterialIcon
+        <Icon
           name={iconName}
-          size={convertIconSize('md')}
+          size="md"
+          color="action.active"
           style={styles.icon}
         />
       )}
@@ -60,7 +56,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 4,
-    color: convertColorProp('action.active'),
   },
   text: {
     paddingHorizontal: 6,
