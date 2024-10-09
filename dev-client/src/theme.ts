@@ -123,14 +123,6 @@ export const theme = extendTheme({
     },
     Badge: {
       variants: {
-        chip: {
-          borderRadius: '100px',
-          padding: '4px',
-          bg: 'primary.lighter',
-          _icon: {
-            color: 'action.active',
-          },
-        },
         notification: {
           bg: 'primary.lighter',
           _text: {
