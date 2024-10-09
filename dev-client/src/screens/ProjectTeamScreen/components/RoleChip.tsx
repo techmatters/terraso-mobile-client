@@ -21,11 +21,11 @@ import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
 import {Chip} from 'terraso-mobile-client/components/Chip';
 
-type RolePillProps = {
+type RoleChipProps = {
   membership: ProjectMembership;
 };
 
-export const RolePill = ({membership}: RolePillProps) => {
+export const RoleChip = ({membership}: RoleChipProps) => {
   const {t} = useTranslation();
   return <Chip label={t(`general.role.${membership.userRole}`)} />;
 };
