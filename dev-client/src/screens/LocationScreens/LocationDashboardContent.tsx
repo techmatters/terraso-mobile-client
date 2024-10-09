@@ -32,7 +32,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
+import {PeopleChip} from 'terraso-mobile-client/components/PeopleChip';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
@@ -169,7 +169,7 @@ export const LocationDashboardContent = ({
         )}
         {project && (
           <Row space={4} alignItems="baseline">
-            <PeopleBadge count={Object.keys(project.memberships).length} />
+            <PeopleChip count={Object.keys(project.memberships).length} />
             {project?.siteInstructions && (
               <ProjectInstructionsButton project={project} />
             )}

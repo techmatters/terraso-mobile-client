@@ -21,6 +21,6 @@ type Props = {
   count: number;
 };
 
-export const PeopleBadge = ({count}: Props) => {
+export const PeopleChip = ({count}: Props) => {
   return <Chip label={count.toString()} iconName="people-alt" />;
 };

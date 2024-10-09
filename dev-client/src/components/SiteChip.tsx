@@ -21,6 +21,6 @@ type Props = {
   count: number;
 };
 
-export const SiteBadge = ({count}: Props) => {
+export const SiteChip = ({count}: Props) => {
   return <Chip label={count.toString()} iconName="location-on" />;
 };
