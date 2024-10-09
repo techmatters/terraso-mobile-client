@@ -24,16 +24,22 @@
 
 test('feature flags can be enabled', () => {
   jest.isolateModules(() => {
+    jest.mock('terraso-mobile-client/config/index', () => ({
+      APP_CONFIG: {
+        environment: 'production',
+      },
+    }));
+
     const {
       isFlagEnabled,
       willFlagBeEnabledOnReload,
-      setFlagEnabledOnReload,
+      setFlagWillBeEnabledOnReload,
     } = require('terraso-mobile-client/config/featureFlags');
 
     expect(isFlagEnabled('FF_offline')).toBe(false);
     expect(willFlagBeEnabledOnReload('FF_offline')).toBe(false);
 
-    setFlagEnabledOnReload('FF_offline', true);
+    setFlagWillBeEnabledOnReload('FF_offline', true);
 
     expect(isFlagEnabled('FF_offline')).toBe(false);
     expect(willFlagBeEnabledOnReload('FF_offline')).toBe(true);
@@ -42,21 +48,55 @@ test('feature flags can be enabled', () => {
 
 test('feature flags can be disabled', () => {
   jest.isolateModules(() => {
+    jest.mock('terraso-mobile-client/config/index', () => ({
+      APP_CONFIG: {
+        environment: 'production',
+      },
+    }));
+
     const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
     kvStorage.setBool('FF_offline', true);
 
     const {
       isFlagEnabled,
       willFlagBeEnabledOnReload,
-      setFlagEnabledOnReload,
+      setFlagWillBeEnabledOnReload,
     } = require('terraso-mobile-client/config/featureFlags');
 
     expect(isFlagEnabled('FF_offline')).toBe(true);
     expect(willFlagBeEnabledOnReload('FF_offline')).toBe(true);
 
-    setFlagEnabledOnReload('FF_offline', false);
+    setFlagWillBeEnabledOnReload('FF_offline', false);
 
     expect(isFlagEnabled('FF_offline')).toBe(true);
     expect(willFlagBeEnabledOnReload('FF_offline')).toBe(false);
+  });
+});
+
+test('offline feature flag starts on in dev mode and can be disabled', () => {
+  jest.isolateModules(() => {
+    jest.mock('terraso-mobile-client/config/index', () => ({
+      APP_CONFIG: {
+        environment: 'development',
+      },
+    }));
+
+    const {
+      isFlagEnabled,
+      willFlagBeEnabledOnReload,
+      setFlagWillBeEnabledOnReload,
+    } = require('terraso-mobile-client/config/featureFlags');
+
+    expect(isFlagEnabled('FF_offline')).toBe(true);
+    expect(willFlagBeEnabledOnReload('FF_offline')).toBe(true);
+
+    setFlagWillBeEnabledOnReload('FF_offline', false);
+
+    expect(isFlagEnabled('FF_offline')).toBe(true);
+
+    // This assertion fails due to a bug in the react-native-mmkv-storage library
+    // It can be commented back in when this is fixed:
+    // https://github.com/ammarahm-ed/react-native-mmkv-storage/issues/360
+    // expect(willFlagBeEnabledOnReload('FF_offline')).toBe(false);
   });
 });
