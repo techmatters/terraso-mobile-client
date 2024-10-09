@@ -27,7 +27,7 @@ import {
   FeatureFlagName,
   featureFlags,
   isFlagEnabled,
-  setFlagEnabledOnReload,
+  setFlagWillBeEnabledOnReload,
   willFlagBeEnabledOnReload,
 } from 'terraso-mobile-client/config/featureFlags';
 
@@ -61,7 +61,7 @@ const FeatureFlagControl = ({flag}: FeatureFlagControlProps) => {
 
   // nextFlagState and onReload state should be kept in sync. This could be refactored better.
   const onToggle = () => {
-    setFlagEnabledOnReload(flag, !nextFlagState);
+    setFlagWillBeEnabledOnReload(flag, !nextFlagState);
     setNextFlagState(!nextFlagState);
   };
 

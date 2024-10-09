@@ -28,6 +28,12 @@ const {
   },
 });
 
+jest.mock('terraso-mobile-client/config/index', () => ({
+  APP_CONFIG: {
+    environment: 'production',
+  },
+}));
+
 test('persistence middleware saves state to disk', () => {
   jest.isolateModules(() => {
     const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
