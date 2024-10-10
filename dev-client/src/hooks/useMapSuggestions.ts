@@ -32,7 +32,7 @@ import {
 import {isValidCoordinates} from 'terraso-mobile-client/util';
 
 /*
- * Logic extracted from screens/HomeScreen/components/MapSearch.tsx; see its revisions
+ * Logic extracted from screens/SitesScreen/components/MapSearch.tsx; see its revisions
  * for history of original implementation / TODOs etc
  */
 

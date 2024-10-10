@@ -24,7 +24,7 @@ import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql'
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
-import {useHomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
+import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {
@@ -53,7 +53,7 @@ export const CreateSiteView = ({
   const defaultProject = useSelector(state =>
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
-  const homeScreen = useHomeScreenContext();
+  const sitesScreen = useSitesScreenContext();
 
   const navigation = useNavigation();
 
@@ -62,11 +62,11 @@ export const CreateSiteView = ({
       const {...site} = validationSchema.cast(form);
       const createdSite = await createSiteCallback({...site, elevation});
       if (createdSite !== undefined) {
-        homeScreen?.showSiteOnMap(createdSite);
+        sitesScreen?.showSiteOnMap(createdSite);
         navigation.navigate('BOTTOM_TABS');
       }
     },
-    [createSiteCallback, navigation, validationSchema, homeScreen, elevation],
+    [createSiteCallback, navigation, validationSchema, sitesScreen, elevation],
   );
 
   return (

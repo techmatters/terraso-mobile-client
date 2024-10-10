@@ -43,8 +43,8 @@ import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {CalloutDetail} from 'terraso-mobile-client/screens/HomeScreen/components/CalloutDetail';
-import {LatLngDetail} from 'terraso-mobile-client/screens/HomeScreen/components/LatLngDetail';
+import {CalloutDetail} from 'terraso-mobile-client/screens/SitesScreen/components/CalloutDetail';
+import {LatLngDetail} from 'terraso-mobile-client/screens/SitesScreen/components/LatLngDetail';
 
 type Props = {
   coords: Coords;

@@ -19,22 +19,21 @@ import {createContext, memo, RefObject, useContext, useRef} from 'react';
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
 
-type HomeScreenRef = {
+type SitesScreenRef = {
   showSiteOnMap: (site: Site) => void;
   collapseBottomSheet: () => void;
 };
 
-export const HomeScreenContext = createContext<RefObject<HomeScreenRef> | null>(
-  null,
-);
+export const SitesScreenContext =
+  createContext<RefObject<SitesScreenRef> | null>(null);
 
-export const HomeScreenContextProvider = memo(
+export const SitesScreenContextProvider = memo(
   ({children}: React.PropsWithChildren<{}>) => (
-    <HomeScreenContext.Provider value={useRef<HomeScreenRef>(null)}>
+    <SitesScreenContext.Provider value={useRef<SitesScreenRef>(null)}>
       {children}
-    </HomeScreenContext.Provider>
+    </SitesScreenContext.Provider>
   ),
 );
 
-export const useHomeScreenContext = () =>
-  useContext(HomeScreenContext)?.current ?? undefined;
+export const useSitesScreenContext = () =>
+  useContext(SitesScreenContext)?.current ?? undefined;
