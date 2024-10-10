@@ -1,27 +1,35 @@
-const {getDefaultConfig} = require('expo/metro-config');
-const {mergeConfig} = require('@react-native/metro-config');
-const {withSentryConfig} = require('@sentry/react-native/metro');
-
-const defaultConfig = getDefaultConfig(__dirname);
-const {assetExts, sourceExts} = defaultConfig.resolver;
-/**
- * Metro configuration
- * https://facebook.github.io/metro/docs/configuration
+/*
+ * Copyright © 2024 Technology Matters
  *
- * @type {import('metro-config').MetroConfig}
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-const config = {
-  transformer: {
-    babelTransformerPath: require.resolve('react-native-svg-transformer'),
-  },
 
-  resolver: {
-    assetExts: assetExts.filter(ext => ext !== 'svg'),
-    sourceExts: [...sourceExts, 'svg'],
-  },
-};
+const {getSentryExpoConfig} = require('@sentry/react-native/metro');
 
-const m = mergeConfig(defaultConfig, config);
-module.exports = withSentryConfig(m, {
+const config = getSentryExpoConfig(__dirname, {
   annotateReactComponents: true,
 });
+
+config.transformer = config.transformer || {};
+config.transformer.babelTransformerPath = require.resolve(
+  'react-native-svg-transformer',
+);
+
+config.resolver = config.resolver || {};
+config.resolver.assetExts = config.resolver.assetExts.filter(
+  ext => ext !== 'svg',
+);
+config.resolver.sourceExts = [...config.resolver.sourceExts, 'svg'];
+
+module.exports = config;
