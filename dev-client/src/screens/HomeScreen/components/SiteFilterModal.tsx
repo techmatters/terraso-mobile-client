@@ -79,11 +79,10 @@ export const SiteFilterModal = ({useDistance}: Props) => {
         />
       }>
       <SelectFilter
+        name="sort"
         label={t('site.search.sort.label')}
         options={sortOptions}
-        name="sort"
         renderValue={renderSortOption}
-        unselectedLabel={t('general.filter.no_sort')}
       />
       <SelectFilter
         label={t('site.search.filter_projects')}
@@ -92,6 +91,7 @@ export const SiteFilterModal = ({useDistance}: Props) => {
         renderValue={renderProject}
         name="project"
         unselectedLabel={t('general.filter.no_project')}
+        nullable={true}
       />
       <SelectFilter
         label={t('site.search.filter_role')}
@@ -99,6 +99,7 @@ export const SiteFilterModal = ({useDistance}: Props) => {
         renderValue={renderRole}
         name="role"
         unselectedLabel={t('general.filter.no_role')}
+        nullable={true}
       />
     </ListFilterModal>
   );
