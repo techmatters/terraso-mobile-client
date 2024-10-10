@@ -15,12 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ChipBadge} from 'terraso-mobile-client/components/ChipBadge';
+import {Chip} from 'terraso-mobile-client/components/chips/Chip';
 
 type Props = {
   count: number;
 };
 
-export const SiteBadge = ({count}: Props) => {
-  return <ChipBadge count={count} iconName="location-on" />;
+export const PeopleChip = ({count}: Props) => {
+  return <Chip label={count.toString()} iconName="people-alt" />;
 };

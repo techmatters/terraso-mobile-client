@@ -1770,44 +1770,45 @@ exports[`renders correctly 1`] = `
                                   >
                                     <View
                                       style={
-                                        [
-                                          {
-                                            "alignItems": "center",
-                                            "columnGap": 4,
-                                            "flexDirection": "row",
-                                            "justifyContent": "center",
-                                            "paddingHorizontal": 8,
-                                            "paddingVertical": 2,
-                                          },
-                                          {
-                                            "alignItems": "center",
-                                            "backgroundColor": "#93E39B",
-                                            "borderRadius": 100,
-                                            "columnGap": 4,
-                                            "flexDirection": "row",
-                                            "justifyContent": "center",
-                                            "padding": 4,
-                                            "paddingHorizontal": 8,
-                                            "paddingVertical": 2,
-                                          },
-                                        ]
+                                        {
+                                          "alignItems": "center",
+                                          "backgroundColor": "#93E39B",
+                                          "borderRadius": 100,
+                                          "flexDirection": "row",
+                                          "justifyContent": "center",
+                                          "minWidth": 30,
+                                          "padding": 4,
+                                        }
                                       }
                                     >
                                       <Icon
                                         color="#1A202C"
                                         name="people-alt"
                                         size={24}
-                                        style={{}}
+                                        style={
+                                          [
+                                            {
+                                              "marginLeft": 4,
+                                            },
+                                            {},
+                                          ]
+                                        }
                                       />
                                       <Text
-                                        letterSpacing="0.15px"
-                                        lineHeight="24px"
+                                        letterSpacing="0.16px"
+                                        lineHeight="18px"
                                         style={
-                                          {
-                                            "color": "#1A202C",
-                                            "fontSize": 12,
-                                            "fontWeight": "medium",
-                                          }
+                                          [
+                                            {
+                                              "paddingHorizontal": 6,
+                                              "paddingVertical": 3,
+                                            },
+                                            {
+                                              "color": "#1A202C",
+                                              "fontSize": 13,
+                                              "fontWeight": "400",
+                                            },
+                                          ]
                                         }
                                       >
                                         0

@@ -30,7 +30,7 @@ export type MenuItemProps = {
   label: string;
   subLabel?: string;
   icon?: IconName | React.ReactElement;
-  pill?: React.ReactNode;
+  chip?: React.ReactNode;
   selected?: boolean;
   disabled?: boolean;
   onPress?: PressableProps['onPress'];
@@ -42,7 +42,7 @@ export const MenuItem = ({
   icon,
   label,
   subLabel,
-  pill,
+  chip,
   selected,
   disabled,
   onPress,
@@ -101,8 +101,8 @@ export const MenuItem = ({
               )}
             </View>
           </View>
-          {pill && (
-            <View style={[styles.section, styles.pillSection]}>{pill}</View>
+          {chip && (
+            <View style={[styles.section, styles.chipSection]}>{chip}</View>
           )}
         </View>
       </TouchableRipple>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   disabled: {
     color: convertColorProp('text.disabled'),
   },
-  pillSection: {
+  chipSection: {
     marginLeft: 'auto',
   },
 });

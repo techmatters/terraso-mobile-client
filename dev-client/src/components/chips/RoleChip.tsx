@@ -19,24 +19,13 @@ import {useTranslation} from 'react-i18next';
 
 import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
-import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Chip} from 'terraso-mobile-client/components/chips/Chip';
 
-type RolePillProps = {
+type RoleChipProps = {
   membership: ProjectMembership;
 };
 
-export const RolePill = ({membership}: RolePillProps) => {
+export const RoleChip = ({membership}: RoleChipProps) => {
   const {t} = useTranslation();
-  return (
-    <Badge
-      _text={{
-        fontSize: '14px',
-      }}
-      variant="chip"
-      bg="primary.lighter"
-      py="10px"
-      px="15px">
-      {t(`general.role.${membership.userRole}`)}
-    </Badge>
-  );
+  return <Chip label={t(`general.role.${membership.userRole}`)} />;
 };

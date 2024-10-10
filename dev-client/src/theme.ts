@@ -123,14 +123,6 @@ export const theme = extendTheme({
     },
     Badge: {
       variants: {
-        chip: {
-          borderRadius: '100px',
-          padding: '4px',
-          bg: 'primary.lighter',
-          _icon: {
-            color: 'action.active',
-          },
-        },
         notification: {
           bg: 'primary.lighter',
           _text: {
@@ -429,6 +421,12 @@ export const theme = extendTheme({
           lineHeight: '36px',
           adjustsFontSizeToFit: true,
           numberOfLines: 1,
+        },
+        'chip-text': {
+          fontWeight: 400,
+          fontSize: '13px',
+          lineHeight: '18px',
+          letterSpacing: '0.16px',
         },
       },
     },
