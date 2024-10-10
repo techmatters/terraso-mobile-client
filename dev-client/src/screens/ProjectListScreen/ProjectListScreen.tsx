@@ -42,7 +42,7 @@ import {useSelector} from 'terraso-mobile-client/store';
 import {selectProjectUserRolesMap} from 'terraso-mobile-client/store/selectors';
 import {equals, searchText} from 'terraso-mobile-client/util';
 
-const SORT_OPTIONS = ['nameAsc', 'nameDesc'];
+const SORT_OPTIONS = ['nameAsc', 'nameDesc', 'lastModAsc', 'lastModDesc'];
 
 export const ProjectListScreen = () => {
   const allProjects = useSelector(state => state.project.projects);
@@ -123,6 +123,14 @@ export const ProjectListScreen = () => {
                     key: 'name',
                     order: 'descending',
                   },
+                  lastModAsc: {
+                    key: 'updatedAt',
+                    order: 'ascending',
+                  },
+                  lastModDesc: {
+                    key: 'updatedAt',
+                    order: 'descending',
+                  },
                 },
               },
             }}>
@@ -139,7 +147,6 @@ export const ProjectListScreen = () => {
                 label={t('projects.sort_label')}
                 options={SORT_OPTIONS}
                 renderValue={renderSortOption}
-                unselectedLabel={t('general.filter.no_sort')}
               />
               <SelectFilter
                 name="role"
@@ -147,6 +154,7 @@ export const ProjectListScreen = () => {
                 renderValue={renderRole}
                 options={PROJECT_ROLES}
                 unselectedLabel={t('general.filter.no_role')}
+                nullable={true}
               />
             </ListFilterModal>
             <ProjectList />
