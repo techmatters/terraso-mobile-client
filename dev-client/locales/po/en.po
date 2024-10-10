@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-09-26T19:04:41.107Z\n"
-"PO-Revision-Date: 2024-09-26T19:04:41.108Z\n"
+"POT-Creation-Date: 2024-10-10T21:38:39.284Z\n"
+"PO-Revision-Date: 2024-10-10T21:38:39.285Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -475,7 +475,7 @@ msgid "site##soil_id##soil_properties_score_info##bullets##4"
 msgstr "Site slope"
 
 msgid "site##soil_id##soil_properties_score_info##bullets##5"
-msgstr "Surface cracking"
+msgstr "Soil cracks"
 
 msgid "site##notes##add_note_label"
 msgstr "Add Note"
@@ -1337,7 +1337,7 @@ msgid "soil##collection_method##soilColor"
 msgstr "Soil Color"
 
 msgid "soil##collection_method##verticalCracking"
-msgstr "Vertical Cracks"
+msgstr "Soil Cracks"
 
 msgid "soil##collection_method##carbonates"
 msgstr "Carbonates"
@@ -1370,10 +1370,10 @@ msgid "soil##collection_method##notes"
 msgstr "Notes"
 
 msgid "soil##collection_method_description##slope"
-msgstr "Includes slope steepness, shape, aspect, and landscape position"
+msgstr "Includes slope steepness and shape"
 
 msgid "soil##collection_method_description##soilTexture"
-msgstr "Includes texture class, percent clay, and rock fragments"
+msgstr "Includes texture class and rock fragment volume"
 
 msgid "soil##vertical_cracking##description"
 msgstr ""
@@ -1399,13 +1399,13 @@ msgid "soil##vertical_cracking##description_depth_ENGLISH"
 msgstr "10”"
 
 msgid "soil##vertical_cracking##value##NO_CRACKING"
-msgstr "No Cracking"
+msgstr "No cracks"
 
 msgid "soil##vertical_cracking##value##SURFACE_CRACKING_ONLY"
-msgstr "Surface Cracking Only"
+msgstr "Surface cracks only"
 
 msgid "soil##vertical_cracking##value##DEEP_VERTICAL_CRACKS"
-msgstr "Deep Vertical Cracks"
+msgstr "Deep vertical cracks"
 
 msgid "soil##data##rockFragmentVolume"
 msgstr "Rock fragment"
@@ -1511,7 +1511,7 @@ msgid "soil##texture##title"
 msgstr "Soil Texture"
 
 msgid "soil##texture##label"
-msgstr "Texture"
+msgstr "Texture Class"
 
 msgid "soil##texture##info##title"
 msgstr "Soil Texture"
