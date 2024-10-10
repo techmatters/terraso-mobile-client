@@ -19,13 +19,13 @@ import {useCallback} from 'react';
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {Card} from 'terraso-mobile-client/components/Card';
+import {PeopleChip} from 'terraso-mobile-client/components/chips/PeopleChip';
+import {SiteChip} from 'terraso-mobile-client/components/chips/SiteChip';
 import {
   Heading,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
-import {SiteBadge} from 'terraso-mobile-client/components/SiteBadge';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
@@ -48,8 +48,8 @@ export const ProjectPreviewCard = ({project}: Props) => {
       </Row>
       {project.description.length > 0 && <Text>{project.description}</Text>}
       <Row space={2} pt={4} alignItems="center">
-        <SiteBadge count={Object.keys(project.sites).length} />
-        <PeopleBadge count={Object.keys(project.memberships).length} />
+        <SiteChip count={Object.keys(project.sites).length} />
+        <PeopleChip count={Object.keys(project.memberships).length} />
       </Row>
     </Card>
   );

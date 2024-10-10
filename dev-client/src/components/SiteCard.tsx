@@ -22,13 +22,13 @@ import {Site} from 'terraso-client-shared/site/siteTypes';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Card} from 'terraso-mobile-client/components/Card';
+import {PeopleChip} from 'terraso-mobile-client/components/chips/PeopleChip';
 import {
   Box,
   Heading,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {PeopleBadge} from 'terraso-mobile-client/components/PeopleBadge';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -73,7 +73,7 @@ export const SiteCard = ({
       <Row alignItems="center" pt="md" justifyContent="space-between">
         <StaticMapView coords={site} style={styles.mapView} />
         {project && (
-          <PeopleBadge count={Object.keys(project.memberships).length} />
+          <PeopleChip count={Object.keys(project.memberships).length} />
         )}
         <Box flexGrow={1} />
         {onShowSiteOnMap && (
