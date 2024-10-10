@@ -303,7 +303,7 @@ export const SelectFilter = ({
   name,
   options,
   label,
-  nullable = true,
+  nullable = false,
   renderValue,
   ...selectProps
 }: Props) => {
