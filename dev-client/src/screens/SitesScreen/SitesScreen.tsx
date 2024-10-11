@@ -36,27 +36,27 @@ import {LandPKSInfoButton} from 'terraso-mobile-client/components/content/info/l
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {HomeScreenContext} from 'terraso-mobile-client/context/HomeScreenContext';
+import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import MapSearch from 'terraso-mobile-client/screens/HomeScreen/components/MapSearch';
-import {SiteListBottomSheet} from 'terraso-mobile-client/screens/HomeScreen/components/SiteListBottomSheet';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import MapSearch from 'terraso-mobile-client/screens/SitesScreen/components/MapSearch';
+import {SiteListBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/components/SiteListBottomSheet';
 import {
   MapRef,
   SiteMap,
-} from 'terraso-mobile-client/screens/HomeScreen/components/SiteMap';
+} from 'terraso-mobile-client/screens/SitesScreen/components/SiteMap';
 import {
   CalloutState,
   locationCallout,
   noneCallout,
   siteCallout,
-} from 'terraso-mobile-client/screens/HomeScreen/HomeScreenCallout';
-import {getHomeScreenFilters} from 'terraso-mobile-client/screens/HomeScreen/utils/homeScreenFilters';
-import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+} from 'terraso-mobile-client/screens/SitesScreen/SitesScreenCallout';
+import {getSitesScreenFilters} from 'terraso-mobile-client/screens/SitesScreen/utils/sitesScreenFilters';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectSitesAndUserRoles} from 'terraso-mobile-client/store/selectors';
 
-export const HomeScreen = memo(() => {
+export const SitesScreen = memo(() => {
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>(noneCallout());
@@ -68,7 +68,7 @@ export const HomeScreen = memo(() => {
   const dispatch = useDispatch();
   const mapRef = useRef<MapRef>(null);
   const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
-  const homeScreenContext = useContext(HomeScreenContext);
+  const sitesScreenContext = useContext(SitesScreenContext);
 
   const showSiteOnMap = useCallback(
     (targetSite: Site) => {
@@ -84,7 +84,7 @@ export const HomeScreen = memo(() => {
   }, []);
 
   useImperativeHandle(
-    homeScreenContext,
+    sitesScreenContext,
     () => ({
       showSiteOnMap,
       collapseBottomSheet,
@@ -146,7 +146,7 @@ export const HomeScreen = memo(() => {
   const {siteDistances} = useGeospatialContext();
 
   const filters = useMemo(
-    () => getHomeScreenFilters(siteDistances, siteProjectRoles),
+    () => getSitesScreenFilters(siteDistances, siteProjectRoles),
     [siteDistances, siteProjectRoles],
   );
 
