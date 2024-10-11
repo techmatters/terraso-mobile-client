@@ -29,8 +29,8 @@ import {
   BottomTabs,
 } from 'terraso-mobile-client/navigation/navigators/BottomNavigator';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
-import {HomeScreen} from 'terraso-mobile-client/screens/HomeScreen/HomeScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
+import {SitesScreen} from 'terraso-mobile-client/screens/SitesScreen/SitesScreen';
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 import {useDispatch} from 'terraso-mobile-client/store';
 
@@ -95,7 +95,7 @@ export const BottomTabsScreen = memo(() => {
         )
       }
       screenOptions={{headerShown: false, tabBarHideOnKeyboard: true}}>
-      <BottomTabs.Screen name="HOME" component={HomeScreen} />
+      <BottomTabs.Screen name="SITES" component={SitesScreen} />
       <BottomTabs.Screen name="PROJECT_LIST" component={ProjectListScreen} />
       <BottomTabs.Screen name="SETTINGS" component={UserSettingsScreen} />
     </BottomTabs.Navigator>

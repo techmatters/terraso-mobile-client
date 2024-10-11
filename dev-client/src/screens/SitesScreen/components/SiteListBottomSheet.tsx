@@ -36,9 +36,9 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {EmptySiteMessage} from 'terraso-mobile-client/screens/HomeScreen/components/EmptySiteMessage';
-import {SiteFilterModal} from 'terraso-mobile-client/screens/HomeScreen/components/SiteFilterModal';
-import {getStartingSnapValue} from 'terraso-mobile-client/screens/HomeScreen/utils/getStartingSnapValue';
+import {EmptySiteMessage} from 'terraso-mobile-client/screens/SitesScreen/components/EmptySiteMessage';
+import {SiteFilterModal} from 'terraso-mobile-client/screens/SitesScreen/components/SiteFilterModal';
+import {getStartingSnapValue} from 'terraso-mobile-client/screens/SitesScreen/utils/getStartingSnapValue';
 import {useSelector} from 'terraso-mobile-client/store';
 
 const WINDOW_SIZE = 3;

@@ -22,7 +22,7 @@ import {normalizeText} from 'terraso-client-shared/utils';
 import {SortingOption} from 'terraso-mobile-client/components/ListFilter';
 import {equals, searchText} from 'terraso-mobile-client/util';
 
-export const getHomeScreenFilters = (
+export const getSitesScreenFilters = (
   siteDistances: Record<string, number> | null,
   siteProjectRoles: {
     [k: string]: ProjectMembershipProjectRoleChoices | undefined;
