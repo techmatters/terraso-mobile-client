@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - dependencies
   pull_request:
     branches:
       - main
+      - dependencies
     types:
       - opened
       - edited
