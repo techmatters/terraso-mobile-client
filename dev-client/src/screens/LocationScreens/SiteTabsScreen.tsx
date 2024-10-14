@@ -18,19 +18,17 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Coords} from 'terraso-client-shared/types';
-
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
+import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
-import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
-  SiteLocationDashboardTabNavigator,
   SiteTabName,
-} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
-import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
+  SiteTabNavigator,
+} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
@@ -38,34 +36,24 @@ import {
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
 
-type Props = ({siteId: string} | {coords: Coords} | {elevation: number}) & {
-  initialTab?: SiteTabName;
-};
+type Props = {siteId: string; elevation?: number; initialTab?: SiteTabName};
 
 // A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with only coords)
-export const LocationDashboardScreen = (props: Props) => {
+export const SiteTabsScreen = (props: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const initialTab = props.initialTab === undefined ? 'SITE' : props.initialTab;
 
-  const siteId = 'siteId' in props ? props.siteId : undefined;
-  const site = useSelector(state =>
-    siteId === undefined ? undefined : selectSite(siteId)(state),
-  );
-  const coords = 'coords' in props ? props.coords : site!;
+  const siteId = props.siteId;
+  const site = useSelector(state => selectSite(siteId)(state));
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  const elevation = 'elevation' in props ? props.elevation : undefined;
-
-  const userRole = useSelector(state =>
-    siteId === undefined ? null : selectUserRoleSite(state, siteId),
-  );
-
-  useSoilIdData(coords, siteId);
+  const handleMissingSite = useHandleMissingSite();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   const appBarRightButton = useMemo(() => {
-    // display nothing if no site associated with location or
-    // user does not own the site / is not manager
-    if (!siteId || userRole === null || !isSiteManager(userRole)) {
+    // display nothing if user does not own the site / is not manager
+    if (userRole === null || !isSiteManager(userRole)) {
       return undefined;
     }
 
@@ -79,27 +67,20 @@ export const LocationDashboardScreen = (props: Props) => {
   }, [siteId, navigation, userRole]);
 
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar
-          RightButton={appBarRightButton}
-          title={site?.name ?? t('site.dashboard.default_title')}
-        />
-      }>
-      {siteId ? (
-        <SiteRoleContextProvider siteId={siteId}>
-          <SiteLocationDashboardTabNavigator
-            siteId={siteId}
-            initialTab={initialTab}
-          />
-        </SiteRoleContextProvider>
-      ) : (
-        <LocationDashboardContent
-          siteId={siteId}
-          coords={coords}
-          elevation={elevation}
-        />
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold
+          AppBar={
+            <AppBar
+              RightButton={appBarRightButton}
+              title={site?.name ?? t('site.dashboard.default_title')}
+            />
+          }>
+          <SiteRoleContextProvider siteId={siteId}>
+            <SiteTabNavigator siteId={siteId} initialTab={initialTab} />
+          </SiteRoleContextProvider>
+        </ScreenScaffold>
       )}
-    </ScreenScaffold>
+    </RestrictByRequirements>
   );
 };

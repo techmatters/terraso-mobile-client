@@ -17,10 +17,10 @@
 import {testState} from '@testing/integration/data';
 import {render} from '@testing/integration/utils';
 
-import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
+import {SiteTabsScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteTabsScreen';
 
 test('renders correctly', () => {
-  const screen = render(<SoilScreen siteId="1" />, {
+  const screen = render(<SiteTabsScreen siteId="1" />, {
     route: 'SITE_TABS',
     initialState: testState,
   }).toJSON();
