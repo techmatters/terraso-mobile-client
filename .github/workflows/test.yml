@@ -1,12 +1,15 @@
 name: Test
 
 on:
+  merge_group:
   push:
     branches:
       - main
+      - dependencies
   pull_request:
     branches:
       - main
+      - dependencies
     types:
       - opened
       - edited
