@@ -22,7 +22,7 @@ type Requirement = {
   doIfMissing?: () => void;
 };
 
-const dataExists = (data: any) => {
+const dataExists = (data: object | undefined | null) => {
   return data !== null && data !== undefined;
 };
 // First item should be the entity with the largest scope
