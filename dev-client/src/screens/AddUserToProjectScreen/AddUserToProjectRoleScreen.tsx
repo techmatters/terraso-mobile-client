@@ -29,7 +29,7 @@ import {
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {addUserToProject} from 'terraso-mobile-client/model/project/projectSlice';
+import {addUserToProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {TabRoutes} from 'terraso-mobile-client/navigation/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
