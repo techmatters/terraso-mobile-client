@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
 
 import {setUsers} from 'terraso-client-shared/account/accountSlice';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
@@ -92,10 +92,7 @@ const soilIdSlice = createSlice({
     ) => {
       Object.assign(state.projectSettings, action.payload);
     },
-    setSoilIdStatus: (
-      state,
-      action: PayloadAction<'loading' | 'error' | 'ready'>,
-    ) => {
+    setSoilIdStatus: (state, action: PayloadAction<LoadingState>) => {
       state.status = action.payload;
     },
   },
@@ -187,7 +184,7 @@ const soilIdSlice = createSlice({
   },
 });
 
-const flushDataBasedMatches = (state: SoilState) => {
+const flushDataBasedMatches = (state: Draft<SoilState>) => {
   /*
    * When soil ID input data changes (e.g. samples, intervals), we clear any
    * cached entries that are data-based since they aren't valid anymore.

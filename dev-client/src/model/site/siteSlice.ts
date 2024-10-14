@@ -19,13 +19,11 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 import {
   SiteAddMutationInput,
-  SiteNoteAddMutationInput,
-  SiteNoteUpdateMutationInput,
   SiteTransferMutationInput,
   SiteUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import * as siteService from 'terraso-client-shared/site/siteService';
-import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 import {
@@ -101,29 +99,20 @@ export const transferSites = createAsyncThunk<
   return result;
 });
 
-export const addSiteNote = createAsyncThunk<SiteNote, SiteNoteAddMutationInput>(
+export const addSiteNote = createAsyncThunk(
   'site/addSiteNote',
-  async (siteNote, _) => {
-    let result = await siteService.addSiteNote(siteNote);
-    return siteService.collapseSiteNote(result);
-  },
+  siteService.addSiteNote,
 );
 
-export const deleteSiteNote = createAsyncThunk<SiteNote, SiteNote>(
+export const deleteSiteNote = createAsyncThunk(
   'site/deleteSiteNote',
-  async siteNote => {
-    let result = await siteService.deleteSiteNote(siteNote);
-    return result;
-  },
+  siteService.deleteSiteNote,
 );
 
-export const updateSiteNote = createAsyncThunk<
-  SiteNote,
-  SiteNoteUpdateMutationInput
->('site/updateSiteNote', async (siteNote, _) => {
-  let result = await siteService.updateSiteNote(siteNote);
-  return siteService.collapseSiteNote(result);
-});
+export const updateSiteNote = createAsyncThunk(
+  'site/updateSiteNote',
+  siteService.updateSiteNote,
+);
 
 const siteSlice = createSlice({
   name: 'site',
