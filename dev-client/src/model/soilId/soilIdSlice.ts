@@ -15,9 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
 
-import {setUsers} from 'terraso-client-shared/account/accountSlice';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import * as soilIdService from 'terraso-client-shared/soilId/soilIdService';
 import {
@@ -29,13 +28,8 @@ import {
   SoilIdEntry,
   SoilIdKey,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {
-  createAsyncThunk,
-  dispatchByKeys,
-} from 'terraso-client-shared/store/utils';
+import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
-import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
-import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
 import {
   soilIdEntryDataBased,
   soilIdEntryForStatus,
@@ -66,36 +60,40 @@ const initialState: SoilState = {
   matches: {},
 };
 
+export const setProjectSettings = (
+  state: Draft<SoilState>,
+  settings: Record<string, ProjectSoilSettings>,
+) => {
+  state.projectSettings = settings;
+};
+
+export const updateProjectSettings = (
+  state: Draft<SoilState>,
+  settings: Record<string, ProjectSoilSettings>,
+) => {
+  Object.assign(state.projectSettings, settings);
+};
+
+export const updateSoilIdStatus = (
+  state: Draft<SoilState>,
+  status: LoadingState,
+) => {
+  state.status = status;
+};
+
+export const setSoilData = (
+  state: Draft<SoilState>,
+  soilData: Record<string, SoilData>,
+) => {
+  state.soilData = soilData;
+  state.matches = {};
+};
+
 const soilIdSlice = createSlice({
   name: 'soilId',
   initialState,
   reducers: {
-    setSoilData: (state, action: PayloadAction<Record<string, SoilData>>) => {
-      state.soilData = action.payload;
-      state.matches = {};
-    },
-    updateSoilData: (
-      state,
-      action: PayloadAction<Record<string, SoilData>>,
-    ) => {
-      Object.assign(state.soilData, action.payload);
-    },
-    setProjectSettings: (
-      state,
-      action: PayloadAction<Record<string, ProjectSoilSettings>>,
-    ) => {
-      state.projectSettings = action.payload;
-    },
-    updateProjectSettings: (
-      state,
-      action: PayloadAction<Record<string, ProjectSoilSettings>>,
-    ) => {
-      Object.assign(state.projectSettings, action.payload);
-    },
-    setSoilIdStatus: (
-      state,
-      action: PayloadAction<'loading' | 'error' | 'ready'>,
-    ) => {
+    setSoilIdStatus: (state, action: PayloadAction<LoadingState>) => {
       state.status = action.payload;
     },
   },
@@ -130,18 +128,6 @@ const soilIdSlice = createSlice({
 
     builder.addCase(deleteProjectDepthInterval.fulfilled, (state, action) => {
       state.projectSettings[action.meta.arg.projectId] = action.payload;
-    });
-
-    builder.addCase(fetchSoilDataForUser.pending, state => {
-      state.status = 'loading';
-    });
-
-    builder.addCase(fetchSoilDataForUser.rejected, state => {
-      state.status = 'error';
-    });
-
-    builder.addCase(fetchSoilDataForUser.fulfilled, state => {
-      state.status = 'ready';
     });
 
     builder.addCase(fetchLocationBasedSoilMatches.pending, (state, action) => {
@@ -187,7 +173,7 @@ const soilIdSlice = createSlice({
   },
 });
 
-const flushDataBasedMatches = (state: SoilState) => {
+const flushDataBasedMatches = (state: Draft<SoilState>) => {
   /*
    * When soil ID input data changes (e.g. samples, intervals), we clear any
    * cached entries that are data-based since they aren't valid anymore.
@@ -197,23 +183,7 @@ const flushDataBasedMatches = (state: SoilState) => {
     .forEach(key => delete state.matches[key as SoilIdKey]);
 };
 
-export const {
-  setProjectSettings,
-  setSoilData,
-  setSoilIdStatus,
-  updateProjectSettings,
-} = soilIdSlice.actions;
-
-export const fetchSoilDataForUser = createAsyncThunk(
-  'soilId/fetchSoilDataForUser',
-  dispatchByKeys(soilDataService.fetchSoilDataForUser, () => ({
-    projects: setProjects,
-    sites: setSites,
-    projectSoilSettings: setProjectSettings,
-    soilData: setSoilData,
-    users: setUsers,
-  })),
-);
+export const {setSoilIdStatus} = soilIdSlice.actions;
 
 export const updateSoilData = createAsyncThunk(
   'soilId/updateSoilData',

@@ -48,11 +48,10 @@ import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
-import {removeSiteFromAllProjects} from 'terraso-mobile-client/model/project/projectSlice';
 import {
   deleteSite,
   updateSite,
-} from 'terraso-mobile-client/model/site/siteSlice';
+} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {
   TabRoutes,
   TabStackParamList,
@@ -75,7 +74,6 @@ const SiteMenu = ({site}: SiteProps) => {
 
   const deleteSiteCallback = async () => {
     await dispatch(deleteSite(site));
-    dispatch(removeSiteFromAllProjects(site.id));
   };
 
   const removeSiteFromProjectCallback = async () => {
