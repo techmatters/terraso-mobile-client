@@ -51,7 +51,7 @@ import {PROJECT_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/perm
 import {
   deleteSite,
   updateSite,
-} from 'terraso-mobile-client/model/site/siteSlice';
+} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {
   TabRoutes,
   TabStackParamList,
