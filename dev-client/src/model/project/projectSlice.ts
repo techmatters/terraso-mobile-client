@@ -24,10 +24,7 @@ import {
 } from 'terraso-client-shared/account/accountSlice';
 import {ProjectAddUserMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as projectService from 'terraso-client-shared/project/projectService';
-import {
-  Project,
-  ProjectMembership,
-} from 'terraso-client-shared/project/projectTypes';
+import {Project} from 'terraso-client-shared/project/projectTypes';
 import {
   createAsyncThunk,
   dispatchByKeys,
@@ -38,11 +35,6 @@ import {
   updateSites,
 } from 'terraso-mobile-client/model/site/siteSlice';
 import {updateProjectSettings} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
-interface MembershipKey {
-  projectId: string;
-  membershipId: string;
-}
 
 interface SiteKey {
   projectId: string;
@@ -69,13 +61,6 @@ const projectSlice = createSlice({
       addSiteToProject,
       (state, {payload: {siteId, projectId}}) => {
         state.projects[projectId].sites[siteId] = true;
-      },
-    );
-
-    builder.addCase(
-      removeMembershipFromProject,
-      (state, {payload: {membershipId, projectId}}) => {
-        delete state.projects[projectId].memberships[membershipId];
       },
     );
 
@@ -134,14 +119,6 @@ const projectSlice = createSlice({
 
 export const {setProjects, updateProjects} = projectSlice.actions;
 
-export const removeMembershipFromProject = createAction<MembershipKey>(
-  'project/removeMembershipFromProject',
-);
-
-export const addMembershipToProject = createAction<MembershipKey>(
-  'project/addMembershipToProject',
-);
-
 export const addSiteToProject = createAction<SiteKey>(
   'project/addSiteToProject',
 );
@@ -196,23 +173,14 @@ export const archiveProject = createAsyncThunk(
   projectService.archiveProject,
 );
 
-export const addUserToProject = createAsyncThunk<
-  ProjectMembership,
-  ProjectAddUserMutationInput
->('project/addUser', async (input, _, {dispatch}) => {
-  const res = await projectService.addUserToProject(input);
-  // TODO: Should make user required in future!
-  // https://github.com/techmatters/terraso-backend/issues/859
-  if (res.membership.user === undefined || res.membership.user === null) {
-    throw Error(`Membership ${res.membership.id} created without user!`);
-  }
-  dispatch(addUser(res.membership.user));
-  return {
-    userId: res.membership.user.id,
-    userRole: res.membership.userRole,
-    id: res.membership.id,
-  };
-});
+export const addUserToProject = createAsyncThunk(
+  'project/addUser',
+  async (input: ProjectAddUserMutationInput, _, {dispatch}) => {
+    const res = await projectService.addUserToProject(input);
+    dispatch(addUser(res.user));
+    return res.membership;
+  },
+);
 
 export const updateUserRole = createAsyncThunk(
   'project/updateUserRole',
