@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft} from '@reduxjs/toolkit';
 
 import {
   SiteAddMutationInput,
@@ -35,6 +35,8 @@ import {
 const initialState = {
   sites: {} as Record<string, Site>,
 };
+
+type SiteState = typeof initialState;
 
 export const fetchSite = createAsyncThunk(
   'site/fetchSite',
@@ -114,17 +116,37 @@ export const updateSiteNote = createAsyncThunk(
   siteService.updateSiteNote,
 );
 
+export const setSites = (
+  state: Draft<SiteState>,
+  sites: Record<string, Site>,
+) => {
+  state.sites = sites;
+};
+
+export const updateSites = (
+  state: Draft<SiteState>,
+  sites: Record<string, Site>,
+) => {
+  Object.assign(state.sites, sites);
+};
+
+export const updateProjectOfSite = (
+  state: Draft<SiteState>,
+  args: {siteId: string; projectId: string},
+) => {
+  state.sites[args.siteId].projectId = args.projectId;
+};
+
+export const deleteSites = (state: Draft<SiteState>, siteIds: string[]) => {
+  for (const siteId of siteIds) {
+    delete state.sites[siteId];
+  }
+};
+
 const siteSlice = createSlice({
   name: 'site',
   initialState,
-  reducers: {
-    setSites: (state, {payload}: PayloadAction<Record<string, Site>>) => {
-      state.sites = payload;
-    },
-    updateSites: (state, {payload}: PayloadAction<Record<string, Site>>) => {
-      Object.assign(state.sites, payload.sites);
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     // TODO: add case to delete site if not found
     builder.addCase(fetchSite.fulfilled, (state, {payload: site}) => {
@@ -186,5 +208,4 @@ const siteSlice = createSlice({
   },
 });
 
-export const {setSites, updateSites} = siteSlice.actions;
 export default siteSlice.reducer;

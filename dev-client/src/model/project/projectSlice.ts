@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft} from '@reduxjs/toolkit';
 
 import {
   addUser,
@@ -45,40 +45,61 @@ const initialState = {
   projects: {} as Record<string, Project>,
 };
 
+type State = typeof initialState;
+
+export const setProjects = (
+  state: Draft<State>,
+  projects: Record<string, Project>,
+) => {
+  state.projects = projects;
+};
+
+export const updateProjects = (
+  state: Draft<State>,
+  projects: Record<string, Project>,
+) => {
+  Object.assign(state.projects, projects);
+};
+
+export const updateMembership = (
+  state: Draft<State>,
+  args: {projectId: string; membership: ProjectMembership},
+) => {
+  state.projects[args.projectId].memberships[args.membership.id] =
+    args.membership;
+};
+
+export const addSiteToProject = (
+  state: Draft<State>,
+  args: {siteId: string; projectId: string},
+) => {
+  state.projects[args.projectId].sites[args.siteId] = true;
+};
+
+export const removeSiteFromProject = (
+  state: Draft<State>,
+
+  args: {siteId: string; projectId: string},
+) => {
+  delete state.projects[args.projectId].sites[args.siteId];
+};
+
+export const removeSiteFromAllProjects = (
+  state: Draft<State>,
+  siteId: string,
+) => {
+  for (const project of Object.values(state.projects)) {
+    if (siteId in project.sites) {
+      delete project.sites[siteId];
+    }
+  }
+};
+
 const projectSlice = createSlice({
   name: 'project',
   initialState,
-  reducers: {
-    setProjects: (state, action: PayloadAction<Record<string, Project>>) => {
-      state.projects = action.payload;
-    },
-    updateProjects: (state, action: PayloadAction<Record<string, Project>>) => {
-      Object.assign(state.projects, action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
-    builder.addCase(
-      addSiteToProject,
-      (state, {payload: {siteId, projectId}}) => {
-        state.projects[projectId].sites[siteId] = true;
-      },
-    );
-
-    builder.addCase(
-      removeSiteFromProject,
-      (state, {payload: {siteId, projectId}}) => {
-        delete state.projects[projectId].sites[siteId];
-      },
-    );
-
-    builder.addCase(removeSiteFromAllProjects, (state, {payload: siteId}) => {
-      for (let project of Object.values(state.projects)) {
-        if (siteId in project.sites) {
-          delete project.sites[siteId];
-        }
-      }
-    });
-
     builder.addCase(deleteProject.fulfilled, (state, {meta}) => {
       delete state.projects[meta.arg.id];
     });
@@ -116,20 +137,6 @@ const projectSlice = createSlice({
     );
   },
 });
-
-export const {setProjects, updateProjects} = projectSlice.actions;
-
-export const addSiteToProject = createAction<SiteKey>(
-  'project/addSiteToProject',
-);
-
-export const removeSiteFromProject = createAction<SiteKey>(
-  'project/removeSiteFromProject',
-);
-
-export const removeSiteFromAllProjects = createAction<string>(
-  'project/removeSiteFromAllProjects',
-);
 
 const updateDispatchMap = () => ({
   project: (project: Project) => updateProjects({[project.id]: project}),
