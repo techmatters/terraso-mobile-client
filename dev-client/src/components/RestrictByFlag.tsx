@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/integration/data';
-import {render} from '@testing/integration/utils';
+import {useMemo} from 'react';
 
-import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
+import {
+  FeatureFlagName,
+  isFlagEnabled,
+} from 'terraso-mobile-client/config/featureFlags';
 
-test('renders correctly', () => {
-  const screen = render(<SoilScreen siteId="1" />, {
-    route: 'SITE_TABS',
-    initialState: testState,
-  }).toJSON();
+type Props = {flag: FeatureFlagName} & React.PropsWithChildren;
 
-  expect(screen).toMatchSnapshot();
-});
+export const RestrictByFlag = ({flag, children}: Props) => {
+  const flagEnabled = useMemo(() => isFlagEnabled(flag), [flag]);
+  return flagEnabled ? <>{children}</> : <></>;
+};

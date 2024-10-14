@@ -14,16 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/integration/data';
-import {render} from '@testing/integration/utils';
 
-import {SoilScreen} from 'terraso-mobile-client/screens/SoilScreen/SoilScreen';
+import {useCallback} from 'react';
+import {ToastAndroid} from 'react-native';
 
-test('renders correctly', () => {
-  const screen = render(<SoilScreen siteId="1" />, {
-    route: 'SITE_TABS',
-    initialState: testState,
-  }).toJSON();
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-  expect(screen).toMatchSnapshot();
-});
+export const useHandleMissingSite = () => {
+  const navigation = useNavigation();
+
+  return useCallback(() => {
+    navigation.navigate('BOTTOM_TABS');
+    // TODO: Decide design / how to show toasts / use en.json string
+    if (isFlagEnabled('FF_offline')) {
+      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+    }
+  }, [navigation]);
+};

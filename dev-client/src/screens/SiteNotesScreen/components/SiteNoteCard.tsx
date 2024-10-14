@@ -48,7 +48,10 @@ export const SiteNoteCard = ({note}: Props) => {
 
   const onEditNote = useCallback(() => {
     if (canViewEditScreen) {
-      navigation.navigate('EDIT_SITE_NOTE', {note: note});
+      navigation.navigate('EDIT_SITE_NOTE', {
+        noteId: note.id,
+        siteId: note.siteId,
+      });
     }
   }, [navigation, canViewEditScreen, note]);
 

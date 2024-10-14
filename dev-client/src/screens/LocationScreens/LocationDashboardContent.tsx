@@ -21,7 +21,7 @@ import {StyleSheet} from 'react-native';
 
 import {ScrollView} from 'native-base';
 
-import {SitePrivacy} from 'terraso-client-shared/site/siteTypes';
+import {Site, SitePrivacy} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {PeopleChip} from 'terraso-mobile-client/components/chips/PeopleChip';
@@ -37,6 +37,7 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {updateSite} from 'terraso-mobile-client/model/site/siteSlice';
+import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {LocationPrediction} from 'terraso-mobile-client/screens/LocationScreens/components/LocationPrediction';
@@ -45,9 +46,9 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {formatCoordinate} from 'terraso-mobile-client/util';
 
 type Props = {
-  siteId?: string;
-  coords?: Coords;
-  elevation?: number;
+  coords: Coords;
+  elevation: number | undefined;
+  site?: Site;
 };
 
 const LocationDetail = ({
@@ -66,24 +67,11 @@ const LocationDetail = ({
   </Box>
 );
 
-export const LocationDashboardContent = ({
-  siteId,
-  coords,
-  elevation,
-}: Props) => {
+export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const site = useSelector(state =>
-    siteId === undefined ? undefined : state.site.sites[siteId],
-  );
-  if (coords === undefined) {
-    coords = site!;
-  }
-  if (elevation === undefined) {
-    elevation = site?.elevation ?? undefined;
-  }
   const project = useSelector(state =>
     site?.projectId === undefined
       ? undefined
@@ -91,13 +79,15 @@ export const LocationDashboardContent = ({
   );
 
   const onExploreDataPress = useCallback(() => {
-    navigation.navigate('LOCATION_SOIL_ID', {siteId, coords});
-  }, [navigation, siteId, coords]);
+    navigation.navigate('LOCATION_SOIL_ID', {siteId: site?.id, coords});
+  }, [navigation, site, coords]);
 
   const onSitePrivacyChanged = useCallback(
     (privacy: SitePrivacy) => dispatch(updateSite({id: site!.id, privacy})),
     [site, dispatch],
   );
+
+  useSoilIdData(coords, site?.id);
 
   return (
     <ScrollView backgroundColor="background.default">
@@ -180,7 +170,7 @@ export const LocationDashboardContent = ({
         <LocationPrediction
           label={t('soil.soil_id')}
           coords={coords}
-          siteId={siteId}
+          siteId={site?.id}
           onExploreDataPress={onExploreDataPress}
         />
       </Column>
