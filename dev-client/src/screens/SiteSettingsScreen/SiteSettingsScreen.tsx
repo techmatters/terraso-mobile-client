@@ -31,7 +31,7 @@ import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {
   deleteSite,
   updateSite,
-} from 'terraso-mobile-client/model/site/siteSlice';
+} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
