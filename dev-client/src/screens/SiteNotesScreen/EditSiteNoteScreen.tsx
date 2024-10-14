@@ -15,9 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
+import {ToastAndroid} from 'react-native';
+
 import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {EditSiteNoteContent} from 'terraso-mobile-client/screens/SiteNotesScreen/components/EditSiteNoteContent';
 import {useSelector} from 'terraso-mobile-client/store';
 import {selectSite} from 'terraso-mobile-client/store/selectors';
@@ -35,14 +40,19 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   // TODO: Also handle the case where user no longer has permissions to edit notes
 
   const handleMissingSite = useHandleMissingSite();
+  const handleMissingSiteNote = useCallback(() => {
+    navigation.navigate('SITE_TABS', {
+      siteId: siteId,
+      initialTab: 'NOTES' as SiteTabName,
+    });
+    // TODO: Decide design / how to show toasts / use en.json string
+    if (isFlagEnabled('FF_offline')) {
+      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+    }
+  }, [navigation, siteId]);
   const requirements = [
     {data: site, doIfMissing: handleMissingSite},
-    {
-      data: note,
-      doIfMissing: () => {
-        navigation.pop();
-      },
-    },
+    {data: note, doIfMissing: handleMissingSiteNote},
   ];
 
   return (
