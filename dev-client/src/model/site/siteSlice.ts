@@ -17,20 +17,9 @@
 
 import {createSlice, Draft} from '@reduxjs/toolkit';
 
-import {
-  SiteAddMutationInput,
-  SiteTransferMutationInput,
-  SiteUpdateMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
-
-import {
-  addSiteToProject,
-  removeSiteFromAllProjects,
-  removeSiteFromProject,
-} from 'terraso-mobile-client/model/project/projectSlice';
 
 const initialState = {
   sites: {} as Record<string, Site>,
@@ -52,54 +41,6 @@ export const fetchSitesForUser = createAsyncThunk(
   'site/fetchSitesForUser',
   siteService.fetchSitesForUser,
 );
-
-export const addSite = createAsyncThunk<Site, SiteAddMutationInput>(
-  'site/addSite',
-  async (site, _, {dispatch}) => {
-    let res = await siteService.addSite(site);
-    if (site.projectId) {
-      dispatch(addSiteToProject({siteId: res.id, projectId: site.projectId}));
-    }
-    return res;
-  },
-);
-
-export const updateSite = createAsyncThunk<Site, SiteUpdateMutationInput>(
-  'site/updateSite',
-  async (input, _currentUser, {dispatch}) => {
-    const result = await siteService.updateSite(input);
-    dispatch(removeSiteFromAllProjects(result.id));
-    if (result.projectId) {
-      dispatch(
-        addSiteToProject({projectId: result.projectId, siteId: input.id}),
-      );
-    }
-    return result;
-  },
-);
-
-export const deleteSite = createAsyncThunk<string, Site>(
-  'site/deleteSite',
-  async (site, _currentUser, {dispatch}) => {
-    const result = await siteService.deleteSite(site);
-    dispatch(removeSiteFromAllProjects(site.id));
-    return result;
-  },
-);
-
-export const transferSites = createAsyncThunk<
-  Awaited<ReturnType<typeof siteService.transferSitesToProject>>,
-  SiteTransferMutationInput
->('site/transferSites', async (input, _currentUser, {dispatch}) => {
-  const result = await siteService.transferSitesToProject(input);
-  for (const {siteId, oldProjectId} of result.updated) {
-    if (oldProjectId !== undefined) {
-      dispatch(removeSiteFromProject({siteId, projectId: oldProjectId}));
-    }
-    dispatch(addSiteToProject({siteId, projectId: result.projectId}));
-  }
-  return result;
-});
 
 export const addSiteNote = createAsyncThunk(
   'site/addSiteNote',
@@ -172,27 +113,6 @@ const siteSlice = createSlice({
     builder.addCase(fetchSitesForUser.fulfilled, (state, {payload: sites}) => {
       state.sites = Object.fromEntries(sites.map(site => [site.id, site]));
     });
-
-    builder.addCase(addSite.fulfilled, (state, {payload: site}) => {
-      state.sites[site.id] = site;
-    });
-
-    builder.addCase(updateSite.fulfilled, (state, {payload: site}) => {
-      state.sites[site.id] = site;
-    });
-
-    builder.addCase(deleteSite.fulfilled, (state, {meta}) => {
-      delete state.sites[meta.arg.id];
-    });
-
-    builder.addCase(
-      transferSites.fulfilled,
-      (state, {payload: {projectId, updated}}) => {
-        for (const {siteId} of updated) {
-          state.sites[siteId].projectId = projectId;
-        }
-      },
-    );
 
     builder.addCase(addSiteNote.fulfilled, (state, {payload: siteNote}) => {
       state.sites[siteNote.siteId].notes[siteNote.id] = siteNote;

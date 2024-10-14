@@ -17,7 +17,6 @@
 
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
 
-import {setUsers} from 'terraso-client-shared/account/accountSlice';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import * as soilIdService from 'terraso-client-shared/soilId/soilIdService';
 import {
@@ -29,13 +28,8 @@ import {
   SoilIdEntry,
   SoilIdKey,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {
-  createAsyncThunk,
-  dispatchByKeys,
-} from 'terraso-client-shared/store/utils';
+import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
-import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
-import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
 import * as soilDataActions from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
 import {
   soilIdEntryDataBased,
@@ -151,18 +145,6 @@ const soilIdSlice = createSlice({
       state.projectSettings[action.meta.arg.projectId] = action.payload;
     });
 
-    builder.addCase(fetchSoilDataForUser.pending, state => {
-      state.status = 'loading';
-    });
-
-    builder.addCase(fetchSoilDataForUser.rejected, state => {
-      state.status = 'error';
-    });
-
-    builder.addCase(fetchSoilDataForUser.fulfilled, state => {
-      state.status = 'ready';
-    });
-
     builder.addCase(fetchLocationBasedSoilMatches.pending, (state, action) => {
       const key = soilIdKey(action.meta.arg);
       state.matches[key] = soilIdEntryForStatus('loading');
@@ -217,17 +199,6 @@ const flushDataBasedMatches = (state: Draft<SoilState>) => {
 };
 
 export const {setSoilIdStatus} = soilIdSlice.actions;
-
-export const fetchSoilDataForUser = createAsyncThunk(
-  'soilId/fetchSoilDataForUser',
-  dispatchByKeys(soilDataService.fetchSoilDataForUser, () => ({
-    projects: setProjects,
-    sites: setSites,
-    projectSoilSettings: setProjectSettings,
-    soilData: setSoilData,
-    users: setUsers,
-  })),
-);
 
 export const updateSoilData = createAsyncThunk(
   'soilId/updateSoilData',

@@ -29,6 +29,9 @@ import {
   handleAbortMiddleware,
 } from 'terraso-client-shared/store/store';
 
+import {projectGlobalReducer} from 'terraso-mobile-client/model/project/projectGlobalReducer';
+import {siteGlobalReducer} from 'terraso-mobile-client/model/site/siteGlobalReducer';
+import {soilIdGlobalReducer} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
 import {persistenceMiddleware} from 'terraso-mobile-client/store/persistence';
 import {AppState, rootReducer} from 'terraso-mobile-client/store/reducers';
 
@@ -38,7 +41,11 @@ export type AppDispatch = DispatchFromStoreFactory<typeof createStore>;
 export const useSelector: TypedUseSelectorHook<AppState> = reduxUseSelector;
 export const useDispatch: () => AppDispatch = reduxUseDispatch;
 
-const globalReducers = [];
+const globalReducers = [
+  soilIdGlobalReducer,
+  siteGlobalReducer,
+  projectGlobalReducer,
+];
 
 export const createStore = (intialState?: Partial<AppState>) =>
   configureStore({
