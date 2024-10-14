@@ -76,38 +76,40 @@ export const initialState: SoilState = {
   matches: {},
 };
 
+export const setProjectSettings = (
+  state: Draft<SoilState>,
+  settings: Record<string, ProjectSoilSettings>,
+) => {
+  state.projectSettings = settings;
+};
+
+export const updateProjectSettings = (
+  state: Draft<SoilState>,
+  settings: Record<string, ProjectSoilSettings>,
+) => {
+  Object.assign(state.projectSettings, settings);
+};
+
+export const updateSoilIdStatus = (
+  state: Draft<SoilState>,
+  status: LoadingState,
+) => {
+  state.status = status;
+};
+
+export const setSoilData = (
+  state: Draft<SoilState>,
+  soilData: Record<string, SoilData>,
+) => {
+  state.soilData = soilData;
+  state.matches = {};
+  state.soilChanges = {};
+};
+
 const soilIdSlice = createSlice({
   name: 'soilId',
   initialState,
   reducers: {
-    setSoilData: (state, action: PayloadAction<Record<string, SoilData>>) => {
-      state.soilData = action.payload;
-      state.soilChanges = {};
-      state.matches = {};
-    },
-    updateSoilData: (
-      state,
-      action: PayloadAction<Record<string, SoilData>>,
-    ) => {
-      Object.assign(state.soilData, action.payload);
-      markAllChanged(
-        state.soilChanges,
-        Object.keys(action.payload),
-        Date.now(),
-      );
-    },
-    setProjectSettings: (
-      state,
-      action: PayloadAction<Record<string, ProjectSoilSettings>>,
-    ) => {
-      state.projectSettings = action.payload;
-    },
-    updateProjectSettings: (
-      state,
-      action: PayloadAction<Record<string, ProjectSoilSettings>>,
-    ) => {
-      Object.assign(state.projectSettings, action.payload);
-    },
     setSoilIdStatus: (state, action: PayloadAction<LoadingState>) => {
       state.status = action.payload;
     },
@@ -214,12 +216,7 @@ const flushDataBasedMatches = (state: Draft<SoilState>) => {
     .forEach(key => delete state.matches[key as SoilIdKey]);
 };
 
-export const {
-  setProjectSettings,
-  setSoilData,
-  setSoilIdStatus,
-  updateProjectSettings,
-} = soilIdSlice.actions;
+export const {setSoilIdStatus} = soilIdSlice.actions;
 
 export const fetchSoilDataForUser = createAsyncThunk(
   'soilId/fetchSoilDataForUser',
