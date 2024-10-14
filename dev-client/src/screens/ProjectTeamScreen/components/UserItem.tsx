@@ -17,6 +17,7 @@
 
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {StyleSheet, View} from 'react-native';
 
 import {Button} from 'native-base';
 
@@ -88,7 +89,11 @@ export const UserItem = ({
     <MenuItem
       icon={<ProfilePic user={user} />}
       label={userLabel}
-      chip={<RoleChip membership={membership} />}
+      chip={
+        <View style={styles.chipSection}>
+          <RoleChip membership={membership} />
+        </View>
+      }
       onPress={isForCurrentUser ? undefined : memberAction}>
       {userCanLeaveProject && (
         <ConfirmModal
@@ -107,3 +112,9 @@ export const UserItem = ({
     </MenuItem>
   );
 };
+
+const styles = StyleSheet.create({
+  chipSection: {
+    maxWidth: 150,
+  },
+});
