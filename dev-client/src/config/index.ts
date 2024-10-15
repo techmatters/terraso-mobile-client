@@ -72,6 +72,7 @@ export const APP_CONFIG = {
   appleClientId: Constants.expoConfig!.ios?.bundleIdentifier!,
   microsoftClientId: ENV_CONFIG.MICROSOFT_OAUTH_CLIENT_ID,
   mapboxAccessToken: ENV_CONFIG.PUBLIC_MAPBOX_TOKEN,
+  terrasoApiHostname: ENV_CONFIG.TERRASO_BACKEND.replace('https://', ''),
   sentryDsn: ENV_CONFIG.SENTRY_DSN,
   sentryEnabled: sentryEnabled === 'true',
   environment: ENV_CONFIG.ENV,
