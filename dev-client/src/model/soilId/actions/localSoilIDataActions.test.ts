@@ -23,17 +23,17 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
-  DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
-  DEPTH_INTERVAL_UPDATE_FIELDS,
-  SOIL_DATA_UPDATE_FIELDS,
-} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
-import {
   deleteSoilDataDepthInterval,
   initializeResult,
   updateDepthDependentSoilData,
   updateSoilData,
   updateSoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
+} from 'terraso-mobile-client/model/soilId/actions/localSoilDataActions';
+import {
+  DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
+  DEPTH_INTERVAL_UPDATE_FIELDS,
+  SOIL_DATA_UPDATE_FIELDS,
+} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
 import {
   DepthDependentSoilData,
   SoilData,
