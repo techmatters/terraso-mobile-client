@@ -16,18 +16,21 @@
  */
 
 import {
+  DepthDependentSoilDataUpdateMutationInput,
   SoilDataDeleteDepthIntervalMutationInput,
   SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
+  DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
   DEPTH_INTERVAL_UPDATE_FIELDS,
   SOIL_DATA_UPDATE_FIELDS,
 } from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
 import {
   deleteSoilDataDepthInterval,
   initializeResult,
+  updateDepthDependentSoilData,
   updateSoilData,
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
@@ -196,6 +199,26 @@ describe('updateSoilDataDepthInterval', () => {
     }
   });
 
+  test('only assigns defined properties', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 1, end: 2},
+      carbonatesEnabled: undefined,
+    };
+    const data = soilData({
+      depthIntervals: [
+        soilDataDepthInterval({
+          depthInterval: {start: 1, end: 2},
+          carbonatesEnabled: true,
+        }),
+      ],
+    });
+    const result = updateSoilDataDepthInterval(input, data);
+
+    expect(result.depthIntervals).toHaveLength(1);
+    expect(result.depthIntervals[0].carbonatesEnabled).toBe(true);
+  });
+
   test('adds a new depth interval if missing', () => {
     const input: SoilDataUpdateDepthIntervalMutationInput = {
       siteId: '',
@@ -304,6 +327,110 @@ describe('updateSoilDataDepthInterval', () => {
     expect(result.depthIntervals[0].depthInterval).toEqual({start: 1, end: 2});
     expect(result.depthIntervals[1].depthInterval).toEqual({start: 2, end: 3});
     expect(result.depthIntervals[2].depthInterval).toEqual({start: 4, end: 5});
+  });
+});
+
+describe('updateDepthDependentSoilData', () => {
+  test('assigns all specified properties', () => {
+    const input: DepthDependentSoilDataUpdateMutationInput = {
+      siteId: '',
+      depthInterval: {start: 1, end: 2},
+      carbonates: 'NONEFFERVESCENT',
+      clayPercent: 1,
+      colorChroma: 0.1,
+      colorHue: 0.1,
+      colorPhotoLightingCondition: 'EVEN',
+      colorPhotoSoilCondition: 'DRY',
+      colorPhotoUsed: true,
+      colorValue: 1,
+      conductivity: 0.1,
+      conductivityTest: 'OTHER',
+      conductivityUnit: 'DECISIEMENS_METER',
+      ph: 0.5,
+      phTestingMethod: 'INDICATOR_SOLUTION',
+      phTestingSolution: 'OTHER',
+      rockFragmentVolume: 'VOLUME_0_1',
+      sodiumAbsorptionRatio: 0.1,
+      soilOrganicCarbon: 0.1,
+      soilOrganicCarbonTesting: 'DRY_COMBUSTION',
+      soilOrganicMatter: 0.1,
+      soilOrganicMatterTesting: 'DRY_COMBUSTION',
+      structure: 'ANGULAR_BLOCKY',
+      texture: 'CLAY',
+    };
+    const data = soilData({
+      depthDependentData: [
+        depthDependentSoilData({depthInterval: {start: 1, end: 2}}),
+      ],
+    });
+    const result = updateDepthDependentSoilData(input, data);
+
+    expect(result.depthDependentData).toHaveLength(1);
+    for (const field of DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS) {
+      expect(result.depthDependentData[0][field]).toEqual(input[field]);
+    }
+  });
+
+  test('only assigns defined properties', () => {
+    const input: DepthDependentSoilDataUpdateMutationInput = {
+      siteId: '',
+      depthInterval: {start: 1, end: 2},
+      carbonates: undefined,
+    };
+    const data = soilData({
+      depthDependentData: [
+        depthDependentSoilData({
+          depthInterval: {start: 1, end: 2},
+          carbonates: 'NONEFFERVESCENT',
+        }),
+      ],
+    });
+    const result = updateDepthDependentSoilData(input, data);
+
+    expect(result.depthDependentData).toHaveLength(1);
+    expect(result.depthDependentData[0].carbonates).toEqual('NONEFFERVESCENT');
+  });
+
+  test('adds a new depth interval if missing', () => {
+    const input: DepthDependentSoilDataUpdateMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+      carbonates: 'NONEFFERVESCENT',
+    };
+    const data = soilData({
+      depthDependentData: [],
+    });
+    const result = updateDepthDependentSoilData(input, data);
+
+    expect(result.depthDependentData).toHaveLength(1);
+    expect(result.depthDependentData[0].depthInterval).toEqual({
+      start: 2,
+      end: 3,
+    });
+    expect(result.depthDependentData[0].carbonates).toEqual('NONEFFERVESCENT');
+  });
+
+  test('sorts newly-created intervals', () => {
+    const input: DepthDependentSoilDataUpdateMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+    };
+    const data = soilData({
+      depthDependentData: [
+        depthDependentSoilData({depthInterval: {start: 4, end: 5}}),
+      ],
+    });
+    const result = updateDepthDependentSoilData(input, data);
+
+    expect(result.depthDependentData).toHaveLength(2);
+    expect(result.depthDependentData[0].depthInterval).toEqual({
+      start: 2,
+      end: 3,
+    });
+    expect(result.depthDependentData[1].depthInterval).toEqual({
+      start: 4,
+      end: 5,
+    });
   });
 });
 

@@ -27,6 +27,7 @@ import {
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
+  DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
   DEPTH_INTERVAL_UPDATE_FIELDS,
   SOIL_DATA_UPDATE_FIELDS,
 } from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
@@ -111,6 +112,22 @@ export const updateDepthDependentSoilData = (
   data: SoilData,
 ): SoilData => {
   const result = initializeResult(data);
+
+  let depthDependentData = result.depthDependentData.find(
+    sameDepth({depthInterval: input.depthInterval}),
+  );
+  if (!depthDependentData) {
+    depthDependentData = {
+      depthInterval: input.depthInterval,
+    };
+    result.depthDependentData.push(depthDependentData);
+  }
+  updateFields(
+    input,
+    depthDependentData,
+    DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
+  );
+  result.depthDependentData.sort(compareInterval);
 
   return result;
 };
