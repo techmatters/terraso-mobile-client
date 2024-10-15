@@ -1,15 +1,621 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Terraso\n"
-"mime-version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-10-10T21:38:39.289Z\n"
-"PO-Revision-Date: 2024-10-10T21:38:39.289Z\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: LandPKS\n"
+"Language: es\n"
 
 msgid "welcome##title"
 msgstr "Bienvenido a LandPKS Soil ID"
+
+msgid "welcome##next##title"
+msgstr "¿Qué sigue?"
+
+msgid "welcome##next##subtitle"
+msgstr "Versiones futuras incluirán:"
+
+msgid "search##placeholder"
+msgstr "Buscar en mapa"
+
+msgid "site##progress"
+msgstr "Progreso: {{progress}}"
+
+msgid "site##members"
+msgstr "{{members}} Miembros"
+
+msgid "site##coords"
+msgstr "{{lat}}, {{lng}}"
+
+msgid "site##empty##info"
+msgstr "No tiene aún ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu suelo y su potencial, y compartir con otros.\n"
+"\n"
+"<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de utilizar el mapa para encontrar una ubicación para un sitio:"
+
+msgid "site##create##title"
+msgstr "Crear sitio"
+
+msgid "site##create##description"
+msgstr "Crea un sitio aquí para guardar esta ubicación, recopilar datos y ver informes más detallados."
+
+msgid "site##create##gps"
+msgstr "Usar mi ubicación actual (GPS)"
+
+msgid "site##create##pin"
+msgstr "Usar ubicacion marcada en el mapa"
+
+msgid "site##create##manual"
+msgstr "Introducir coordenadas"
+
+msgid "site##create##latitude"
+msgstr "Latitud"
+
+msgid "site##create##longitude"
+msgstr "Longitud"
+
+msgid "site##dashboard##privacy"
+msgstr "Privacidad de datos"
+
+msgid "site##notes##title"
+msgstr "Notas del sitio"
+
+msgid "site##search##placeholder"
+msgstr "Buscar sitios"
+
+msgid "site##search##sort##label"
+msgstr "Ordenar sitios por"
+
+msgid "site##search##sort##nameAsc"
+msgstr "Nombre (A - Z)"
+
+msgid "site##search##sort##nameDesc"
+msgstr "Nombre (Z - A)"
+
+msgid "site##search##sort##lastModAsc"
+msgstr "Última modificación (más reciente)"
+
+msgid "site##search##sort##lastModDesc"
+msgstr "Última modificación (menos reciente)"
+
+msgid "site##search##sort##distanceAsc"
+msgstr "Distancia (más cercana)"
+
+msgid "site##search##sort##distanceDesc"
+msgstr "Distance (más lejana)"
+
+msgid "site##tabs##SITE"
+msgstr "Sitio"
+
+msgid "site##tabs##SLOPE"
+msgstr "Pendiente"
+
+msgid "site##tabs##SOIL"
+msgstr "Suelo"
+
+msgid "site##tabs##NOTES"
+msgstr "Notas"
+
+msgid "projects##label"
+msgstr "Proyecto"
+
+msgid "projects##title"
+msgstr "Proyectos"
+
+msgid "projects##header"
+msgstr "Proyectos"
+
+msgid "projects##none##header"
+msgstr "No tienes ningún proyecto."
+
+msgid "projects##none##info"
+msgstr "Los proyectos te permiten agrupar sitios, establecer necesidades de datos y administrar a los miembros del equipo."
+
+msgid "projects##create##public"
+msgstr "Público"
+
+msgid "projects##create##private"
+msgstr "Privado"
+
+msgid "projects##tabs##inputs"
+msgstr "Importes"
+
+msgid "projects##tabs##team"
+msgstr "Equipo"
+
+msgid "projects##tabs##sites"
+msgstr "Sitios"
+
+msgid "projects##tabs##settings"
+msgstr "Configuraciones"
+
+msgid "projects##inputs##units##heading"
+msgstr "Unidades de medida"
+
+msgid "projects##inputs##units##a11yLabel"
+msgstr "unidades de medida"
+
+msgid "projects##inputs##units##english"
+msgstr "Inglés (pulgadas, pies, libras)"
+
+msgid "projects##inputs##units##metric"
+msgstr "Métrico (cm, m, kg)"
+
+msgid "projects##inputs##instructions##title"
+msgstr "Nota fija"
+
+msgid "projects##inputs##instructions##description"
+msgstr "Este contenido se mostrará en la parte superior de la sección Notas de cada sitio de este proyecto."
+
+msgid "projects##inputs##depths##title"
+msgstr "Profundidades de los pozos de suelo"
+
+msgid "projects##inputs##depths##preset##NRCS"
+msgstr "NRCS/GSP"
+
+msgid "projects##inputs##depths##preset##BLM"
+msgstr "Norma de seguimiento del BLM"
+
+msgid "projects##inputs##depths##preset##CUSTOM"
+msgstr "A medida…"
+
+msgid "projects##inputs##depths##preset##NONE"
+msgstr "Sin especificar"
+
+#. Is in context 'to label' as a verb or just referring to a 'label'?
+#. If the latter then "Etiqueta" would be more appropriate.
+msgid "projects##inputs##depths##label"
+msgstr "Etiqueta"
+
+msgid "projects##inputs##depths##depth"
+msgstr "Profundidad ({{unidades}})"
+
+msgid "projects##team##add"
+msgstr "Añadir miembro de equipo"
+
+msgid "projects##settings##cancel"
+msgstr "Cancelar"
+
+msgid "projects##settings##archive"
+msgstr "Archivar este proyecto"
+
+msgid "projects##settings##delete"
+msgstr "Eliminar este proyecto"
+
+msgid "projects##sites##add"
+msgstr "Añadir sitios"
+
+msgid "projects##sites##transfer"
+msgstr "Transferir sitios"
+
+msgid "projects##sites##create"
+msgstr "Crear sitios"
+
+msgid "projects##sites##search##placeholder"
+msgstr "Buscar"
+
+msgid "projects##sites##sort##label"
+msgstr "Ordenar sitios por:"
+
+msgid "projects##sites##sort##nameAsc"
+msgstr "Nombre del sitio (A - Z)"
+
+msgid "projects##sites##sort##updatedAtAsc"
+msgstr "Fecha de modificación (más reciente)"
+
+msgid "projects##sites##sort##distanceAsc"
+msgstr "Distancia (más cercana)"
+
+msgid "projects##search##placeholder"
+msgstr "Buscar proyectos"
+
+msgid "projects##search##nameAsc"
+msgstr "Ordenar (A - Z)"
+
+msgid "projects##search##nameDesc"
+msgstr "Ordenar (Z - A)"
+
+msgid "settings##beta"
+msgstr "beta"
+
+msgid "settings##version"
+msgstr "Versión {{version}} ({{build}}) {{environment}}"
+
+msgid "badge##new"
+msgstr "Nuevo"
+
+msgid "general##sites"
+msgstr "sitios"
+
+msgid "general##users"
+msgstr "usuarios"
+
+msgid "general##save"
+msgstr "Guardar"
+
+msgid "general##use"
+msgstr "Usar"
+
+msgid "general##details"
+msgstr "Detalles"
+
+msgid "general##apply"
+msgstr "Aplicar"
+
+msgid "general##role##MANAGER"
+msgstr "Administrador"
+
+msgid "general##role##CONTRIBUTOR"
+msgstr "Contribuidor"
+
+msgid "general##role##VIEWER"
+msgstr "Espectador"
+
+msgid "general##cancel"
+msgstr "Cancelar"
+
+msgid "general##add"
+msgstr "Añadir"
+
+msgid "general##submit"
+msgstr "enviar"
+
+msgid "general##change"
+msgstr "Cambiar"
+
+msgid "general##done"
+msgstr "Realizado"
+
+msgid "general##required"
+msgstr "Obligatorio"
+
+msgid "general##yes"
+msgstr "Sí"
+
+msgid "general##no"
+msgstr "No"
+
+msgid "general##next"
+msgstr "Siguiente"
+
+msgid "general##proceed"
+msgstr "Proceder"
+
+msgid "errors##generic"
+msgstr "Error al guardar la informacion de la identificación del suelo."
+
+msgid "screens##LOGIN"
+msgstr "Iniciar sesión"
+
+msgid "screens##SETTINGS"
+msgstr "Configuraciones"
+
+msgid "login##title"
+msgstr "LandPKS Soil ID"
+
+msgid "login##subtitle"
+msgstr "Descrubre el potencial de tu suelo"
+
+msgid "login##from"
+msgstr "de"
+
+msgid "privacy##label"
+msgstr "Privacidad de datos"
+
+msgid "privacy##public##inline"
+msgstr "público"
+
+msgid "privacy##public##title"
+msgstr "Público"
+
+msgid "privacy##private##inline"
+msgstr "privado"
+
+msgid "privacy##private##title"
+msgstr "Privado"
+
+msgid "geo##latitude##inline"
+msgstr "latitud"
+
+msgid "geo##latitude##title"
+msgstr "Latitud"
+
+msgid "geo##longitude##inline"
+msgstr "Longitud"
+
+msgid "geo##longitude##title"
+msgstr "Longitud"
+
+msgid "geo##elevation##inline"
+msgstr "elevación"
+
+msgid "geo##elevation##title"
+msgstr "Elevación"
+
+msgid "soil##bedrock"
+msgstr "Roca de fondo"
+
+msgid "soil##loading"
+msgstr "Cargando…"
+
+msgid "soil##error"
+msgstr "Error"
+
+msgid "soil##surface"
+msgstr "Superficie del suelo"
+
+msgid "soil##pit"
+msgstr "Pozo de suelo"
+
+msgid "soil##data##rockFragmentVolume"
+msgstr "Fragmento de roca"
+
+msgid "soil##data##texture"
+msgstr "Textura"
+
+msgid "soil##data##colorValue"
+msgstr "Color"
+
+msgid "soil##depth##error##overlaps"
+msgstr "Superposiciones existentes"
+
+msgid "soil##depth##error##ordering"
+msgstr "Error de límites de profundidad"
+
+msgid "soil##depth##bounds"
+msgstr "{{start}}–{{end}}{{units}}"
+
+msgid "soil##texture##title"
+msgstr "Textura del suelo"
+
+msgid "soil##texture##label"
+msgstr "Clase de textura"
+
+msgid "soil##texture##info##title"
+msgstr "Textura del suelo"
+
+msgid "soil##texture##info##description"
+msgstr "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n"
+"\n"
+"<bold>La textura del suelo</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener un gran impacto en el potencial del suelo.\n"
+"\n"
+"La textura del suelo determina muchas características importantes de tu terreno, incluyendo:\n"
+"\n"
+"<bullets />\n"
+"Conocer la textura del suelo también te ayuda a identificar tu suelo con mayor precisión."
+
+msgid "soil##texture##info##point1"
+msgstr "Cuánta agua puede retener el suelo"
+
+msgid "soil##texture##info##point2"
+msgstr "La rapidez con la que el agua puede ser absorbida y filtrada a través del suelo."
+
+msgid "soil##texture##info##point3"
+msgstr "La facilidad con la que el suelo se erosiona cuando se expone al viento o al agua."
+
+msgid "soil##texture##info##point4"
+msgstr "Cómo responde el suelo a las actividades de gestión (por ejemplo, la compactación por operaciones de labranza)."
+
+msgid "soil##texture##guide##title"
+msgstr "Guía de texturas"
+
+msgid "soil##texture##guide##result"
+msgstr "Textura de suelo: {{result}}"
+
+msgid "soil##texture##guide##prepare"
+msgstr "Prepara el suelo:"
+
+msgid "soil##texture##guide##wet"
+msgstr "Humedece el suelo:"
+
+msgid "soil##texture##guide##ball"
+msgstr "Forma una bola:"
+
+msgid "soil##texture##guide##ribbon"
+msgstr "Forma una cinta"
+
+msgid "soil##texture##guide##grittyness"
+msgstr "Toca el suelo:"
+
+msgid "soil##texture##fragment##info##title"
+msgstr "Volumen de fragmentos de roca"
+
+msgid "soil##texture##fragment##info##description"
+msgstr "El volumen de fragmentos de roca es una medida de cuánto volumen del suelo está ocupado por rocas, lo cual se define como cualquier cosa mayor a $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro.\n"
+"\n"
+"Esto puede estimarse visualmente comparando el volumen del suelo antes y después de retirar las rocas o comparando el volumen de rocas retiradas con el volumen del suelo restante.\n"
+"\n"
+"Alternativamente, para una medición más precisa, puedes colocar las rocas de la muestra en un cubo con un volumen conocido de agua y medir el cambio de volumen. A continuación, divide ese volumen por el volumen de la muestra de suelo original para obtener un porcentaje."
+
+msgid "soil##texture##class##CLAY"
+msgstr "Arcilla"
+
+msgid "soil##texture##class##LOAM"
+msgstr "Franco"
+
+#. Not sure if "Arena" instead.
+msgid "soil##texture##class##SAND"
+msgstr "Arenoso"
+
+#. Not sure if "Limo" instead
+msgid "soil##texture##class##SILT"
+msgstr "Limoso"
+
+msgid "soil##color##title"
+msgstr "Color del suelo"
+
+msgid "soil##color##featureName"
+msgstr "Color de suelo"
+
+msgid "soil##color##info##p1"
+msgstr "El color del suelo puede decir mucho sobre él, entre otras cosas:"
+
+msgid "soil##color##info##bullet1"
+msgstr "Qué minerales están presentes"
+
+msgid "soil##color##info##bullet2"
+msgstr "Cuánta materia orgánica presenta"
+
+msgid "soil##color##info##bullet3"
+msgstr "Y mucho más"
+
+msgid "soil##color##info##p2"
+msgstr "El color del suelo puede medirse con un libro Munsell o con un espectrómetro."
+
+msgid "soil##color##info##p3"
+msgstr "En esta aplicación, también puedes tomar una foto con una tarjeta de referencia, como una nota Post-it, para determinar el color de tu suelo."
+
+msgid "soil##color##hue"
+msgstr "Tonalidad"
+
+msgid "soil##color##value"
+msgstr "Valor"
+
+msgid "soil##color##chroma"
+msgstr "Croma"
+
+msgid "soil##color##workflow##MANUAL"
+msgstr "Introducir valores"
+
+msgid "soil##color##workflow##CAMERA"
+msgstr "Usar foto"
+
+msgid "soil##color##guide##step1##title"
+msgstr "1. Junta las notas Post-it."
+
+msgid "soil##color##guide##step1##content"
+msgstr "Para garantizar un análisis de color preciso, debes utilizar notas Post-it de color amarillo canario de 3M para su tarjeta de referencia, siguiendo las siguientes pautas:"
+
+msgid "soil##color##guide##step1##bullets##1"
+msgstr "Usar solo notas Post-it nuevas."
+
+msgid "soil##color##guide##step1##bullets##2"
+msgstr "Apila al menos 3 notas Post-it una encima de otra."
+
+msgid "soil##color##guide##step1##bullets##3"
+msgstr "Asegúrate de que todas las notas Post-it están planas, sin escritura, y sin suciedad."
+
+msgid "soil##color##guide##step1##bullets##4"
+msgstr "Asegúrate de que cada nota Post-it no se está degradada con la luz solar, ya que puede existir una variación considerable en función de la exposición al sol."
+
+msgid "soil##color##guide##step1##bullets##5"
+msgstr "Guarda las notas Post-it en sobres oscuros para evitar la exposición al sol."
+
+msgid "soil##color##guide##step2##title"
+msgstr "2. Prepara la muestra de suelo."
+
+msgid "soil##color##guide##step2##content"
+msgstr "Utiliza tierra seca siempre que sea posible. La aplicación permite indicar si el suelo está húmedo, pero las estimaciones del color del suelo seco son más precisas.\n"
+"\n"
+"Si su capa de suelo tiene múltiples colores (es decir, motas, características redoximórficas, o carbonatos), aisla el color dominante de la matriz de la pila.\n"
+"\n"
+"Pasa el suelo a través de un $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) tamiz para crear una pila de suelo homogéneo, o usa tus manos para recoger cualquier cosa más grande que $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n"
+"\n"
+"Aplana la pila de tierra para minimizar las sombras dentro de la muestra de tierra."
+
+msgid "soil##color##guide##step3##title"
+msgstr "3. Prepara la iluminación."
+
+msgid "soil##color##guide##step3##content"
+msgstr "El foto del color del suelo debe tomarse en condiciones de iluminación uniforme y a la sombra del sol directo."
+
+msgid "soil##color##guide##step4##title"
+msgstr "4. Coloca la tarjeta de referencia al lado del suelo."
+
+msgid "soil##color##guide##step4##content"
+msgstr "Coloca la nota Post-it junto a la muestra de suelo preparada, con las condiciones de iluminación adecuadas."
+
+msgid "soil##color##guide##step5##title"
+msgstr "5. Compón la foto."
+
+msgid "soil##color##guide##step5##content"
+msgstr "Coloca la cámara lo más cerca posible del suelo y de la nota adhesiva sin crear sombras ni desenfoques."
+
+msgid "soil##color##guide##step6##title"
+msgstr "6. ¿Estás listo para tomar una foto?"
+
+msgid "soil##color##guide##step6##content"
+msgstr "Si has seguido las instrucciones anteriores, ¡ya estás listo! Puedes tomar una foto con la cámara de tu dispositivo o volver atrás para subir una foto."
+
+msgid "soil##color##reference"
+msgstr "Referencia"
+
+msgid "soil##color##soil"
+msgstr "Suelo"
+
+msgid "soil##color##analyze"
+msgstr "Analizar"
+
+msgid "slope##title"
+msgstr "Pendiente"
+
+msgid "slope##info##title"
+msgstr "Pendiente"
+
+msgid "slope##info##description"
+msgstr "Describe las características de la pendiente del terreno en el que se encuentra el sitio.\n"
+"\n"
+"Las instrucciones sobre cómo recoger cada dato están disponibles pulsando sobre el nombre del dato.\n"
+"\n"
+"La pendiente es importante para identificar el suelo. También ayuda a determinar el potencial de erosión del suelo, su capacidad para retener agua, etc."
+
+msgid "slope##steepness##description"
+msgstr "Introduce la inclinación manualmente utilizando el medidor de inclinación o seleccionando una de las siguiente imágenes."
+
+msgid "slope##steepness##degree"
+msgstr "{{value}}°"
+
+msgid "slope##steepness##info##title"
+msgstr "Cómo usar el medidor de pendiente"
+
+msgid "slope##steepness##info##description"
+msgstr "Colócate frente al lugar a una distancia mínima de $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}).\n"
+"\n"
+"Identifica la dirección de la pendiente predominante en el lugar.\n"
+"\n"
+"Sitúate de forma que puedas ver la cresta o silueta de esa pendiente predominante (puede que necesites acercarte al suelo para verla).\n"
+"\n"
+"La dirección en la que miras debe ser perpendicular a la dirección de la pendiente. Si extiendes los brazos a los lados, la línea que forman debe ser paralela a la dirección de la pendiente.\n"
+"\n"
+"Coloca el teléfono de modo que la línea blanca sólida se alinee con la pendiente del terreno; intenta colocar la línea blanca a lo largo del borde de la pendiente. Es posible que tenga que agacharse si la silueta de la pendiente no es fácil de ver estando de pie.\n"
+"\n"
+"<bold>Método alternativo</bold>: Si la forma del terreno no es demasiado curvada o irregular, puedes colocar una vara de medir en el suelo del lugar y luego alinear tu teléfono sobre la vara para obtener el ángulo de la pendiente."
+
+msgid "slope##shape##title"
+msgstr "Forma"
+
+msgid "slope##shape##info##title"
+msgstr "Forma de pendiente"
+
+msgid "slope##shape##info##description"
+msgstr "La forma de la pendiente se refiere a la forma en que se curva el terreno en la zona que rodea el punto de tu emplazamiento.\n"
+"\n"
+"La forma de la pendiente se determina en dos direcciones: <bold>pendiente descendente</bold> y <bold>pendiente transversal</bold>.\n"
+"\n"
+"En primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(pendiente.forma.info.descripcion_distancia, {\"contexto\": \"{{unidades}}\"}\"}) en todas las direcciones.\n"
+"\n"
+"Si lloviera, ¿en qué dirección general fluiría el agua cuesta abajo? Esto se denomina la dirección <bold>pendiente abajo</bold>.\n"
+"\n"
+"La dirección de la pendiente transversal se puede encontrar mirando en ángulo recto (90 grados) desde la dirección de la pendiente descendente.\n"
+"\n"
+"Si te alejas del lugar manteniendo la misma elevación, ésta es la dirección de la <bold>pendiente transversal</bold>.\n"
+"\n"
+"En segundo lugar, determine la forma de la pendiente para cada dirección.\n"
+"\n"
+"<bold>Cóncava</bold> significa que el terreno se inclina cada vez más hacia arriba a medida que te alejas de tu punto a lo largo de la <bold>pendiente transversal</bold> o de la <bold>pendiente descendente</bold>. Por ejemplo, la pendiente descendente suele ser cóncava al pie de una colina, ya que pasa de una pendiente pronunciada a otra más superficial.\n"
+"\n"
+"<bold>Convexa</bold> significa que el terreno se inclina cada vez más hacia abajo a medida que se aleja de su punto a lo largo de una dirección determinada. Por ejemplo, la pendiente descendente suele ser convexa en la cima de una colina al pasar de una pendiente poco profunda a otra más pronunciada.\n"
+"\n"
+"<bold>Lineal</bold> significa que la pendiente es constante a lo largo de toda una dirección determinada. No significa necesariamente que el terreno sea llano; sólo significa que la pendiente no cambia."
+
+msgid "slope##shape##info##concave"
+msgstr "Cóncava"
+
+msgid "slope##shape##info##convex"
+msgstr "Conveza"
+
+msgid "slope##shape##info##linear"
+msgstr "Lineal"
 
 msgid "welcome##version_includes##title"
 msgstr "Esta version incluye:"
@@ -26,12 +632,6 @@ msgstr "Notas acerca del sitio"
 msgid "welcome##version_includes##bullet_4"
 msgstr "El manejo de projectos"
 
-msgid "welcome##next##title"
-msgstr "¿Qué sigue?"
-
-msgid "welcome##next##subtitle"
-msgstr "Versiones futuras incluirán:"
-
 msgid "welcome##next##bullet_1"
 msgstr "Capacidades sin conexión"
 
@@ -39,9 +639,7 @@ msgid "welcome##next##bullet_2"
 msgstr "Mejoras en la visualización de datos"
 
 msgid "welcome##next##bullet_3"
-msgstr ""
-"Propiedades adicionales del suelo, como la estructura y el carbono orgánico "
-"del suelo"
+msgstr "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo"
 
 msgid "welcome##next##bullet_4"
 msgstr "Fotos del sitio"
@@ -58,65 +656,17 @@ msgstr "https://landpks.terraso.org/"
 msgid "welcome##get_started"
 msgstr "Comenzar"
 
-msgid "info##title"
-msgstr "Descubre el potencial de tu paisaje"
-
-msgid "info##description"
-msgstr ""
-"<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con "
-"precisión el tipo de suelo y otras características de tu paisaje. Obtiene "
-"información sobre opciones de pastoreo y agricultura, secuestro de carbono "
-"y mucho más.\n"
-"\n"
-"<2>Hay tres formas de utilizar el mapa:</2>"
-
-msgid "info##list1"
-msgstr ""
-"Toca el mapa para marcar un punto en el mapa y obtener más información "
-"sobre la ubicación."
-
-msgid "info##list2"
-msgstr "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual."
-
-msgid "info##list3"
-msgstr ""
-"Ingresa las coordenadas, la dirección, o el término que buscas en la barra "
-"de búsqueda."
-
-msgid "info##description2"
-msgstr ""
-"<bold>Encuentra más información y guías</bold> en:\n"
-"<icon />"
-
-msgid "info##link_label"
-msgstr "landpotential.org"
-
-msgid "info##link_url"
-msgstr "https://landpotential.org/"
-
-msgid "search##placeholder"
-msgstr "Buscar en mapa"
-
 msgid "site##list_title"
 msgstr "Lista de sitios"
 
 msgid "site##last_updated"
-msgstr "Ultima modificaión: {{date}} por {{name}}"
-
-msgid "site##progress"
-msgstr "Progreso: {{progress}}"
-
-msgid "site##members"
-msgstr "{{members}} Miembros"
+msgstr "Última modificaión: {{date}} por {{name}}"
 
 msgid "site##more_info"
 msgstr "Aprende más"
 
 msgid "site##your_location"
 msgstr "Tu ubicación"
-
-msgid "site##coords"
-msgstr "{{lat}}, {{lng}}"
 
 msgid "site##soil_id_prediction"
 msgstr "Identificación de suelo de mejor coincidencia"
@@ -136,43 +686,17 @@ msgstr "{{value}} {{units}}"
 msgid "site##elevation_unknown"
 msgstr "desconocido"
 
-msgid "site##empty##info"
-msgstr ""
-"Aún no tienes ningún sitio. Un sitio te permite recopilar y guardar datos, "
-"aprender más sobre tu paisaje y su potencial, y compartir con otros.\n"
-"\n"
-"<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de "
-"utilizar el mapa para encontrar una ubicación para un sitio:"
-
 msgid "site##empty##bullet_1"
-msgstr ""
-"Toca el mapa para marcar una ubicación y obtener más imformacion acerca del "
-"lugar."
+msgstr "Toca el mapa para marcar una ubicación y obtener más imformacion acerca del lugar."
 
 msgid "site##empty##bullet_2"
 msgstr "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual."
 
 msgid "site##empty##bullet_3"
-msgstr ""
-"Introduce las coordenadas, la dirección u otro término de búsqueda en la "
-"barra de búsqueda."
+msgstr "Introduce las coordenadas, la dirección u otro término de búsqueda en la barra de búsqueda."
 
-msgid "site##create##title"
-msgstr "Crear sitio"
-
-msgid "site##create##description"
-msgstr ""
-"Crea un sitio aquí para guardar esta ubicación, recopilar datos y ver "
-"informes más detallados."
-
-msgid "site##create##gps"
-msgstr "Usar mi ubicación actual (GPS)"
-
-msgid "site##create##pin"
-msgstr "Usar ubicacion marcada en el mapa"
-
-msgid "site##create##manual"
-msgstr "Introducir coordenadas"
+msgid "site##create##button_label"
+msgstr "Crear sitio aquí"
 
 msgid "site##create##name_label"
 msgstr "Nombre del sitio"
@@ -183,15 +707,6 @@ msgstr "Ubicación del sitio"
 msgid "site##create##location_accuracy"
 msgstr "Precisión GPS: {{accuracyM}} m"
 
-msgid "site##create##latitude"
-msgstr "Latitud"
-
-msgid "site##create##longitude"
-msgstr "Longitud"
-
-msgid "site##create##button_label"
-msgstr "Crear sitio aquí"
-
 msgid "site##create##add_to_project_label"
 msgstr "Anadir al proyecto"
 
@@ -199,15 +714,10 @@ msgid "site##create##add_to_project_caption"
 msgstr "Proyecto"
 
 msgid "site##create##add_to_project_tooltip"
-msgstr ""
-"El sitio heredará la configuración del proyecto, incluyendo los requisitos "
-"de recopilación de datos y los miembros del equipo. Cree nuevos proyectos "
-"utilizando la pestaña Proyectos en la navegación inferior."
+msgstr "El sitio heredará la configuración del proyecto, incluyendo los requisitos de recopilación de datos y los miembros del equipo. Cree nuevos proyectos utilizando la pestaña Proyectos en la navegación inferior."
 
 msgid "site##create##privacy_tooltip"
-msgstr ""
-"Los proyectos públicos sincronizarán los datos con portales de datos "
-"públicos."
+msgstr "Los proyectos públicos sincronizarán los datos con portales de datos públicos."
 
 msgid "site##create##privacy_tooltip_link"
 msgstr "Aprende más"
@@ -229,9 +739,6 @@ msgstr "La longitud mínima es {{max}}"
 
 msgid "site##form##max_longitude_error"
 msgstr "La longitud máxima es {{max}}"
-
-msgid "site##dashboard##privacy"
-msgstr "Privacidad de datos"
 
 msgid "site##dashboard##team_button"
 msgstr "Equipo"
@@ -258,9 +765,7 @@ msgid "site##dashboard##delete_site_modal##title"
 msgstr "¿Eliminar sitio?"
 
 msgid "site##dashboard##delete_site_modal##body"
-msgstr ""
-"Esto eliminará el sitio {{siteName}} y todos sus datos de manera "
-"permanente. Esto no se puede deshacer."
+msgstr "Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer."
 
 msgid "site##dashboard##delete_site_modal##action_name"
 msgstr "Eliminar"
@@ -284,17 +789,10 @@ msgid "site##soil_id##title"
 msgstr "Identificación de suelos"
 
 msgid "site##soil_id##description##temp_location"
-msgstr ""
-"LandPKS Soil ID utiliza datos de mapas de suelos para calcular predicciones "
-"para el suelo en esta ubicación. Crea un sitio en esta ubicación para "
-"introducir datos y mejorar los resultados."
+msgstr "LandPKS Soil ID utiliza datos de mapas de suelos para calcular predicciones para el suelo en esta ubicación. Crea un sitio en esta ubicación para introducir datos y mejorar los resultados."
 
 msgid "site##soil_id##description##site"
-msgstr ""
-"LankPKS Soil ID usa datos de mapas de suelos y datos ingresados acerca del "
-"sitio para calcular las mejores coincidencias para el suelo del sitio. "
-"Elige la mejor coincidencia de suelo para esta ubicación para aprender "
-"acerca de su sitio ecológico y otras propiedades."
+msgstr "LankPKS Soil ID usa datos de mapas de suelos y datos ingresados acerca del sitio para calcular las mejores coincidencias para el suelo del sitio. Elige la mejor coincidencia de suelo para esta ubicación para aprender acerca de su sitio ecológico y otras propiedades."
 
 msgid "site##soil_id##matches##title"
 msgstr "Mejores coincidencias de suelo"
@@ -303,22 +801,16 @@ msgid "site##soil_id##matches##info##title"
 msgstr "Mejores coincidencias de suelo"
 
 msgid "site##soil_id##matches##info##description##site"
-msgstr ""
-"Los suelos enumerados son los más propensos de encontrarse en el lugar "
-"según los mapas de suelos del USDA NRCS para esta ubicación.\n"
+msgstr "Los suelos enumerados son los más propensos de encontrarse en el lugar según los mapas de suelos del USDA NRCS para esta ubicación.\n"
 "\n"
-"Introduce el pendiente y los datos del suelo recomendados para mejorar la "
-"precisión de las puntuaciones de coincidencia. Al introductir estos datos,  "
-"la lista se actualizará automáticamente."
+"Introduce el pendiente y los datos del suelo recomendados para mejorar la precisión de las puntuaciones de coincidencia. Al introductir estos datos,  la lista se actualizará automáticamente."
 
 msgid "site##soil_id##matches##info##description##temp_location"
-msgstr ""
-"Los suelos enumerados son los más propensos de encontrarse en esta "
-"ubicación según los mapas de suelos del USDA NRCS.\n"
+msgstr "Los suelos enumerados son los más propensos de encontrarse en esta ubicación según los mapas de suelos del USDA NRCS.\n"
 "\n"
-"Crea un sitio aquí e introduce los datos recomendados para mejorar la "
-"precisión de las puntuaciones de coincidencia."
+"Crea un sitio aquí e introduce los datos recomendados para mejorar la precisión de las puntuaciones de coincidencia."
 
+#. Not sure if "empareja"
 msgid "site##soil_id##matches##match"
 msgstr "coincidencia"
 
@@ -326,20 +818,13 @@ msgid "site##soil_id##matches##error_generic_title"
 msgstr "No se puede obtener el mapa del suelo"
 
 msgid "site##soil_id##matches##error_generic_body"
-msgstr ""
-"LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Vuelve a "
-"intentarlo más tarde."
+msgstr "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Vuelve a intentarlo más tarde."
 
 msgid "site##soil_id##matches##no_map_data_title"
 msgstr "Sin datos en el mapa de suelos"
 
 msgid "site##soil_id##matches##no_map_data_body"
-msgstr ""
-"No hay datos de mapas de suelos disponibles para este sitio, por lo que "
-"LandPKS no puede generar coincidencias de suelo para este sitio. De todos "
-"modos, se pueden recopilar datos para este sitio, y si los datos del mapa "
-"de suelos están disponibles en el futuro, las coincidencias de suelo "
-"aparecerán aquí."
+msgstr "No hay datos de mapas de suelos disponibles para este sitio, por lo que LandPKS no puede generar coincidencias de suelo para este sitio. De todos modos, se pueden recopilar datos para este sitio, y si los datos del mapa de suelos están disponibles en el futuro, las coincidencias de suelo aparecerán aquí."
 
 msgid "site##soil_id##matches##native_lands_intro"
 msgstr "Recursos de suelos para las tierras indígenas:"
@@ -360,9 +845,7 @@ msgid "site##soil_id##site_data##title"
 msgstr "Datos del sitio"
 
 msgid "site##soil_id##site_data##description"
-msgstr ""
-"Mejora los resultados de Soil ID al introducir algunos datos para esta "
-"ubicación a sobre la marcha utilizando las guías útiles."
+msgstr "Mejora los resultados de Soil ID al introducir algunos datos para esta ubicación a sobre la marcha utilizando las guías útiles."
 
 msgid "site##soil_id##site_data##slope##title"
 msgstr "Inclinación de pendiente"
@@ -374,9 +857,7 @@ msgid "site##soil_id##site_data##soil_properties##title"
 msgstr "Propiedades del suelo"
 
 msgid "site##soil_id##site_data##soil_properties##depth"
-msgstr ""
-"Profundidad ($t(site.soil_id.site_data.soil_properties.depth_units, "
-"{\\\"context\\\": \\\"{{units}}\\\"}))"
+msgstr "Profundidad ($t(site.soil_id.site_data.soil_properties.depth_units, {\\\"context\\\": \\\"{{units}}\\\"}))"
 
 msgid "site##soil_id##site_data##soil_properties##depth_units_METRIC"
 msgstr "cm"
@@ -433,57 +914,28 @@ msgid "site##soil_id##location_score_info##header"
 msgstr "Calificación de ubicación"
 
 msgid "site##soil_id##location_score_info##p1"
-msgstr ""
-"La calificación de la ubicación se basa únicamente en los mapas del suelos "
-"y en la ubicación del lugar. No tiene en cuenta los datos que han "
-"introducido los usuarios en el lugar."
+msgstr "La calificación de la ubicación se basa únicamente en los mapas del suelos y en la ubicación del lugar. No tiene en cuenta los datos que han introducido los usuarios en el lugar."
 
 msgid "site##soil_id##location_score_info##p2"
-msgstr ""
-"LandPKS Soil ID basa las coincidencias de suelo en los mapas de suelos "
-"creados por el USDA NRCS. Los mapas de suelos tradicionales no predicen un "
-"único suelo para cada ubicación, sino que se organizan en “unidades "
-"cartográficas de suelos” que contienen múltiples suelos posibles. Se estima "
-"que cada posible suelo de una unidad cartográfica cubre un determinado "
-"porcentaje de la unidad."
+msgstr "LandPKS Soil ID basa las coincidencias de suelo en los mapas de suelos creados por el USDA NRCS. Los mapas de suelos tradicionales no predicen un único suelo para cada ubicación, sino que se organizan en “unidades cartográficas de suelos” que contienen múltiples suelos posibles. Se estima que cada posible suelo de una unidad cartográfica cubre un determinado porcentaje de la unidad."
 
 msgid "site##soil_id##location_score_info##p3"
-msgstr ""
-"La <bold>calificación de ubicación</bold> de una coincidencia de suelo se "
-"basa en el porcentaje de la unidad cartográfica que cubre el suelo. A "
-"continuación, se le resta un valor proporcional a la distancia de la unidad "
-"cartográfica del sitio. En otras palabras, los suelos de la unidad "
-"cartográfica del sitio reciben generalmente una puntuación de ubicación más "
-"alta que los suelos de una unidad cartográfica vecina. Del mismo modo, los "
-"suelos que constituyen un porcentaje mayor de la unidad cartográfica "
-"reciben una puntuación de ubicación más alta que los suelos que constituyen "
-"un porcentaje menor de la unidad cartográfica."
+msgstr "La <bold>calificación de ubicación</bold> de una coincidencia de suelo se basa en el porcentaje de la unidad cartográfica que cubre el suelo. A continuación, se le resta un valor proporcional a la distancia de la unidad cartográfica del sitio. En otras palabras, los suelos de la unidad cartográfica del sitio reciben generalmente una puntuación de ubicación más alta que los suelos de una unidad cartográfica vecina. Del mismo modo, los suelos que constituyen un porcentaje mayor de la unidad cartográfica reciben una puntuación de ubicación más alta que los suelos que constituyen un porcentaje menor de la unidad cartográfica."
 
 msgid "site##soil_id##soil_properties_score_info##header"
 msgstr "Puntuación de las propiedades del suelo"
 
 msgid "site##soil_id##soil_properties_score_info##p1"
-msgstr ""
-"La puntuación de las propiedades del suelo refleja la similitud entre el "
-"suelo compatible y los datos introducidos para este sitio."
+msgstr "La puntuación de las propiedades del suelo refleja la similitud entre el suelo compatible y los datos introducidos para este sitio."
 
 msgid "site##soil_id##soil_properties_score_info##p2"
-msgstr ""
-"Una puntuación más alta de las propiedades del suelo significa que los "
-"datos introducidos por el usuario son similares a la coincidencia del "
-"suelo. Una puntuación baja significa que los dos son menos similares y es "
-"menos probable que esta coincidencia sea la identificación de suelo "
-"correcta para el desplazamiento."
+msgstr "Una puntuación más alta de las propiedades del suelo significa que los datos introducidos por el usuario son similares a la coincidencia del suelo. Una puntuación baja significa que los dos son menos similares y es menos probable que esta coincidencia sea la identificación de suelo correcta para el desplazamiento."
 
 msgid "site##soil_id##soil_properties_score_info##p3"
-msgstr ""
-"Cuantos más datos se introduzcan para un sitio, más fiable será la "
-"puntuación de las propiedades del suelo."
+msgstr "Cuantos más datos se introduzcan para un sitio, más fiable será la puntuación de las propiedades del suelo."
 
 msgid "site##soil_id##soil_properties_score_info##p4"
-msgstr ""
-"LandPKS Soil ID considera las siguientes propiedades en el cálculo de la "
-"puntuación de las propiedades del suelo:"
+msgstr "LandPKS Soil ID considera las siguientes propiedades en el cálculo de la puntuación de las propiedades del suelo:"
 
 msgid "site##soil_id##soil_properties_score_info##bullets##1"
 msgstr "Textura del suelo por profundidad"
@@ -498,10 +950,7 @@ msgid "site##soil_id##soil_properties_score_info##bullets##4"
 msgstr "Pendiente del sitio"
 
 msgid "site##soil_id##soil_properties_score_info##bullets##5"
-msgstr "Agrietamiento de la superficie"
-
-msgid "site##notes##title"
-msgstr "Notas acerca del sitio"
+msgstr "Grietas del suelo"
 
 msgid "site##notes##add_note_label"
 msgstr "Agregar nota"
@@ -530,9 +979,6 @@ msgstr "Empieza a escribir tu nota…"
 msgid "site##notes##project_instructions"
 msgstr "Nota destacada"
 
-msgid "site##search##placeholder"
-msgstr "Buscar sitios"
-
 msgid "site##search##accessibility_label"
 msgstr "Ordenar sitios por nombre"
 
@@ -544,56 +990,6 @@ msgstr "Ordenar sitios por rol"
 
 msgid "site##search##no_matches"
 msgstr "Ningún sitio coincide con las opciones de búsqueda y filtro actuales."
-
-msgid "site##search##sort##label"
-msgstr "Ordenar sitios por"
-
-msgid "site##search##sort##nameAsc"
-msgstr "Nombre (A - Z)"
-
-msgid "site##search##sort##nameDesc"
-msgstr "Nombre (Z - A)"
-
-msgid "site##search##sort##lastModAsc"
-msgstr "Última modificación (más reciente)"
-
-msgid "site##search##sort##lastModDesc"
-msgstr "Última modificación (menos reciente)"
-
-msgid "site##search##sort##distanceAsc"
-msgstr "Distancia (más cercana)"
-
-msgid "site##search##sort##distanceDesc"
-msgstr "Distance (más lejana)"
-
-msgid "site##tabs##SITE"
-msgstr "Sitio"
-
-msgid "site##tabs##SLOPE"
-msgstr "Pendiente"
-
-msgid "site##tabs##SOIL"
-msgstr "Suelo"
-
-msgid "site##tabs##NOTES"
-msgstr "Notas"
-
-msgid "projects##label"
-msgstr "Proyecto"
-
-msgid "projects##title"
-msgstr "Proyectos"
-
-msgid "projects##header"
-msgstr "Proyectos"
-
-msgid "projects##none##header"
-msgstr "No tienes ningún proyecto."
-
-msgid "projects##none##info"
-msgstr ""
-"Los proyectos te permiten agrupar sitios, establecer necesidades de datos y "
-"administrar a los miembros del equipo."
 
 msgid "projects##learn_more"
 msgstr "Aprende más acerca del uso de proyectos"
@@ -610,12 +1006,6 @@ msgstr "Introduce texto para filtar proyectos por nombre"
 msgid "projects##role_filter_label"
 msgstr "Ordenar proyectos por rol"
 
-msgid "projects##create##public"
-msgstr "Público"
-
-msgid "projects##create##private"
-msgstr "Privado"
-
 msgid "projects##create##name_label"
 msgstr "Nombre del proyecto"
 
@@ -624,30 +1014,6 @@ msgstr "Descripción del proyecto"
 
 msgid "projects##create##privacy_label"
 msgstr "Privacidad de datos"
-
-msgid "projects##tabs##inputs"
-msgstr "Importes"
-
-msgid "projects##tabs##team"
-msgstr "Equipo"
-
-msgid "projects##tabs##sites"
-msgstr "Sitios"
-
-msgid "projects##tabs##settings"
-msgstr "Configuraciones"
-
-msgid "projects##inputs##units##heading"
-msgstr "Unidades de medida"
-
-msgid "projects##inputs##units##a11yLabel"
-msgstr "unidades de medida"
-
-msgid "projects##inputs##units##english"
-msgstr "Inglés (pulgadas, pies, libras)"
-
-msgid "projects##inputs##units##metric"
-msgstr "Métrico (cm, m, kg)"
 
 msgid "projects##inputs##soil_source##heading"
 msgstr "Fuente de información sobre el suelo por defecto"
@@ -661,54 +1027,20 @@ msgstr "SoilGrids (cuadrículas del suelo)"
 msgid "projects##inputs##soil_source##a11yLabel"
 msgstr "fuente de información sobre el suelo por defecto"
 
-msgid "projects##inputs##instructions##title"
-msgstr "Nota destacada"
-
-msgid "projects##inputs##instructions##description"
-msgstr ""
-"Este contenido se mostrará en la parte superior de la sección Notas de cada "
-"sitio de este proyecto."
-
 msgid "projects##inputs##instructions##screen_title"
 msgstr "Nota destacada"
 
 msgid "projects##inputs##instructions##add_label"
 msgstr "Nota"
 
-msgid "projects##inputs##depths##title"
-msgstr "Profundidades de los pozos de suelo"
-
-msgid "projects##inputs##depths##preset##NRCS"
-msgstr "NRCS/GSP"
-
-msgid "projects##inputs##depths##preset##BLM"
-msgstr "Norma de seguimiento del BLM"
-
-msgid "projects##inputs##depths##preset##CUSTOM"
-msgstr "A medida…"
-
-msgid "projects##inputs##depths##preset##NONE"
-msgstr "Sin especificar"
-
-msgid "projects##inputs##depths##label"
-msgstr "Etiquetar"
-
-msgid "projects##inputs##depths##depth"
-msgstr "Profundidad ({{unidades}})"
-
 msgid "projects##inputs##depths##confirm_preset##title"
 msgstr "¿Cambiar profundidades?"
 
 msgid "projects##inputs##depths##confirm_preset##body"
-msgstr ""
-"Se borrarán los datos del pozo de suelo que se hayan introducido. Esta "
-"acción no se puede deshacer."
+msgstr "Se borrarán los datos del pozo de suelo que se hayan introducido. Esta acción no se puede deshacer."
 
 msgid "projects##inputs##depths##confirm_preset##confirm"
 msgstr "Cambiar"
-
-msgid "projects##team##add"
-msgstr "Añadir miembro de equipo"
 
 msgid "projects##team##manage_team"
 msgstr "Administrar equipo"
@@ -720,9 +1052,7 @@ msgid "projects##team##leave_project_modal##title"
 msgstr "¿Abandonar proyecto?"
 
 msgid "projects##team##leave_project_modal##body"
-msgstr ""
-"Esto eliminará tu acceso al proyecto, pero los datos que hayas aportado "
-"permanecerán en el proyecto."
+msgstr "Esto eliminará tu acceso al proyecto, pero los datos que hayas aportado permanecerán en el proyecto."
 
 msgid "projects##team##leave_project_modal##action_name"
 msgstr "Abandonar"
@@ -730,24 +1060,11 @@ msgstr "Abandonar"
 msgid "projects##edit##input_header"
 msgstr "Configuraciones generales del proyecto"
 
-msgid "projects##settings##cancel"
-msgstr "Cancelar"
-
-msgid "projects##settings##archive"
-msgstr "Archivar este proyecto"
-
-msgid "projects##settings##delete"
-msgstr "Eliminar este proyecto"
-
 msgid "projects##settings##copy_download_link"
 msgstr "Copiar enlace de descarga del proyecto"
 
 msgid "projects##settings##download_link_description"
-msgstr ""
-"Un archivo comprimido con todos los contenidos del proyecto, incluyendo un "
-"archivo .csv de datos del emplazamiento, notas de campo, registros de "
-"auditoría y fotos. Cualquier persona con este enlace puede ver todos los "
-"activos."
+msgstr "Un archivo comprimido con todos los contenidos del proyecto, incluyendo un archivo .csv de datos del emplazamiento, notas de campo, registros de auditoría y fotos. Cualquier persona con este enlace puede ver todos los activos."
 
 msgid "projects##settings##archive_button"
 msgstr "Archivar"
@@ -756,12 +1073,7 @@ msgid "projects##settings##archive_button_prompt"
 msgstr "¿Archivar proyecto?"
 
 msgid "projects##settings##archive_description"
-msgstr ""
-"El proyecto se moverá a Proyectos archivados, por lo que será de sólo "
-"lectura. Los miembros del equipo podrán acceder a los datos, y los "
-"administradores del proyecto podrán restaurarlo en cualquier momento. Los "
-"proyectos públicos archivados seguirán siendo visibles en los portales de "
-"datos."
+msgstr "El proyecto se moverá a Proyectos archivados, por lo que será de sólo lectura. Los miembros del equipo podrán acceder a los datos, y los administradores del proyecto podrán restaurarlo en cualquier momento. Los proyectos públicos archivados seguirán siendo visibles en los portales de datos."
 
 msgid "projects##settings##delete_button"
 msgstr "Eliminar"
@@ -770,30 +1082,15 @@ msgid "projects##settings##delete_button_prompt"
 msgstr "¿Eliminar proyecto?"
 
 msgid "projects##settings##delete_description"
-msgstr ""
-"Esto borrará el proyecto y los datos de sus sitios de manera permanente. "
-"Esto no se puede deshacer.\n"
+msgstr "Esto borrará el proyecto y los datos de sus sitios de manera permanente. Esto no se puede deshacer.\n"
 "\n"
-"Los administradores del proyectos tienen la opción de transferir sitios de "
-"este proyecto para mantener los datos del sitio."
+"Los administradores del proyectos tienen la opción de transferir sitios de este proyecto para mantener los datos del sitio."
 
 msgid "projects##sites##empty_viewer"
 msgstr "El proyecto aun no tiene sitios."
 
 msgid "projects##sites##empty_contributor"
-msgstr ""
-"Puedes transferir sitios LandPKS Soil ID existentes a este proyecto. "
-"También puede crear nuevos sitios en la pestaña Sitios y añadirlos a este "
-"proyecto."
-
-msgid "projects##sites##add"
-msgstr "Añadir sitios"
-
-msgid "projects##sites##transfer"
-msgstr "Transferir sitios"
-
-msgid "projects##sites##create"
-msgstr "Crear sitios"
+msgstr "Puedes transferir sitios LandPKS Soil ID existentes a este proyecto. También puede crear nuevos sitios en la pestaña Sitios y añadirlos a este proyecto."
 
 msgid "projects##sites##go_to"
 msgstr "Ir al sitio"
@@ -811,12 +1108,9 @@ msgid "projects##sites##delete_site_modal##title"
 msgstr "¿Eliminar sitio?"
 
 msgid "projects##sites##delete_site_modal##body"
-msgstr ""
-"Esto eliminará el sitio {{siteName}} y todos sus datos de manera "
-"permanente. Esto no se puede deshacer.\n"
+msgstr "Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer.\n"
 "\n"
-"Los administradores del proyecto pueden eliminar el sitio de este proyecto "
-"para conservar sus datos."
+"Los administradores del proyecto pueden eliminar el sitio de este proyecto para conservar sus datos."
 
 msgid "projects##sites##delete_site_modal##action_name"
 msgstr "Eliminar"
@@ -825,9 +1119,7 @@ msgid "projects##sites##remove_site_modal##title"
 msgstr "¿Eliminar sitio de este proyecto?"
 
 msgid "projects##sites##remove_site_modal##body"
-msgstr ""
-"Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros del "
-"equipo del proyecto dejarán de tener acceso."
+msgstr "Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros del equipo del proyecto dejarán de tener acceso."
 
 msgid "projects##sites##remove_site_modal##action_name"
 msgstr "Eliminar sitio."
@@ -836,43 +1128,21 @@ msgid "projects##sites##transfer_site_modal##title"
 msgstr "¿Transferir sitios?"
 
 msgid "projects##sites##transfer_site_modal##body"
-msgstr ""
-"Los sitios transferidos utilizarán la configuración de datos y los roles de "
-"los miembros del equipo de este proyecto.\n"
+msgstr "Los sitios transferidos utilizarán la configuración de datos y los roles de los miembros del equipo de este proyecto.\n"
 "\n"
-"Si los sitios tienen datos ingresados con profundidades diferentes a lo "
-"especificado en este proyecto, esos datos se eliminarán. Esto no se puede "
-"deshacer."
+"Si los sitios tienen datos ingresados con profundidades diferentes a lo especificado en este proyecto, esos datos se eliminarán. Esto no se puede deshacer."
 
 msgid "projects##sites##transfer_site_modal##action_name"
 msgstr "Transferir"
 
-msgid "projects##sites##search##placeholder"
-msgstr "Buscar"
-
 msgid "projects##sites##search##accessility_label"
 msgstr "Buscar sitios"
-
-msgid "projects##sites##sort##label"
-msgstr "Ordenar sitios por:"
-
-msgid "projects##sites##sort##nameAsc"
-msgstr "Nombre del sitio (A - Z)"
-
-msgid "projects##sites##sort##updatedAtAsc"
-msgstr "Fecha de modificación (más reciente)"
-
-msgid "projects##sites##sort##distanceAsc"
-msgstr "Distancia (más cercana)"
 
 msgid "projects##add_user##heading"
 msgstr "Añadir miembro de equipo"
 
 msgid "projects##add_user##help_text"
-msgstr ""
-"Introduce la dirección de email de la cuenta Terraso de la persona. Puede "
-"crear una cuenta Terraso instalando la aplicación LandPKS Soil ID e "
-"iniciando sesión."
+msgstr "Introduce la dirección de email de la cuenta Terraso de la persona. Puede crear una cuenta Terraso instalando la aplicación LandPKS Soil ID e iniciando sesión."
 
 msgid "projects##add_user##user_does_not_exist"
 msgstr "No se ha encontrado ninguna cuenta Terraso"
@@ -890,9 +1160,7 @@ msgid "projects##manage_member##project_role"
 msgstr "Rol en el proyecto"
 
 msgid "projects##manage_member##manager_help"
-msgstr ""
-"Puede visualizar y editar todos los aspectos del proyecto y sus sitios "
-"afiliados"
+msgstr "Puede visualizar y editar todos los aspectos del proyecto y sus sitios afiliados"
 
 msgid "projects##manage_member##contributor_help"
 msgstr "Puede visualizar, añadir y editar datos del sitio"
@@ -904,17 +1172,13 @@ msgid "projects##manage_member##remove"
 msgstr "Eliminar del proyecto"
 
 msgid "projects##manage_member##remove_help"
-msgstr ""
-"Quitarle acceso al miembro del equipo a este proyecto, manteniendo "
-"cualquier dato que haya contribuido a los sitios"
+msgstr "Quitarle acceso al miembro del equipo a este proyecto, manteniendo cualquier dato que haya contribuido a los sitios"
 
 msgid "projects##manage_member##confirm_removal_title"
 msgstr "¿Eliminar del proyecto?"
 
 msgid "projects##manage_member##confirm_removal_body"
-msgstr ""
-"Esto eliminará al miembro del equipo del proyecto, pero conservará los "
-"datos que haya aportado sobre el sitio."
+msgstr "Esto eliminará al miembro del equipo del proyecto, pero conservará los datos que haya aportado sobre el sitio."
 
 msgid "projects##manage_member##confirm_removal_action"
 msgstr "Eliminar"
@@ -923,10 +1187,7 @@ msgid "projects##transfer_sites##heading"
 msgstr "Transferir sitios a este proyecto"
 
 msgid "projects##transfer_sites##description"
-msgstr ""
-"Transfiere los sitios LandPKS Soil ID que administras a este proyecto. "
-"Cuando transfieres sitios, se utilizarán la configuración de datos y los "
-"roles de los miembros del equipo de este proyecto."
+msgstr "Transfiere los sitios LandPKS Soil ID que administras a este proyecto. Cuando transfieres sitios, se utilizarán la configuración de datos y los roles de los miembros del equipo de este proyecto."
 
 msgid "projects##transfer_sites##unaffiliated"
 msgstr "No afiliado"
@@ -946,23 +1207,8 @@ msgstr "La descripción del proyecto debe tener un máximo de {{max}} caracteres
 msgid "projects##sort_label"
 msgstr "Ordenar proyectos por:"
 
-msgid "projects##search##placeholder"
-msgstr "Buscar proyectos"
-
-msgid "projects##search##nameAsc"
-msgstr "Ordenar (A - Z)"
-
-msgid "projects##search##nameDesc"
-msgstr "Ordenar (Z - A)"
-
 msgid "projects##search##no_matches"
 msgstr "Ningún proyecto coincide con las opciones actuales de búsqueda y filtro."
-
-msgid "settings##beta"
-msgstr "beta"
-
-msgid "settings##version"
-msgstr "Versión {{version}} ({{build}}) {{environment}}"
 
 msgid "settings##unknown_user"
 msgstr "Usuario desconocido"
@@ -979,26 +1225,11 @@ msgstr "Pendiente"
 msgid "settings##unknown_version"
 msgstr "Versión de la aplicación sin etiquetar {{environment}}"
 
-msgid "badge##new"
-msgstr "Nuevo"
-
 msgid "general##last_modified"
 msgstr "Última modificación"
 
-msgid "general##sites"
-msgstr "sitios"
-
-msgid "general##users"
-msgstr "usuarios"
-
-msgid "general##save"
-msgstr "Guardar"
-
 msgid "general##save_fab"
 msgstr "Guardar"
-
-msgid "general##use"
-msgstr "Usar"
 
 msgid "general##last_modified_by"
 msgstr "última modificación {{user}}, {{date}}"
@@ -1009,12 +1240,6 @@ msgstr "Seleccionar todo"
 msgid "general##you_name"
 msgstr "{{name}} (tú)"
 
-msgid "general##details"
-msgstr "Detalles"
-
-msgid "general##apply"
-msgstr "Aplicar"
-
 msgid "general##email_placeholder"
 msgstr "nombre@dominio.com"
 
@@ -1024,41 +1249,17 @@ msgstr "Dirección de email"
 msgid "general##profile_image_alt"
 msgstr "Imagen de perfil"
 
-msgid "general##role##MANAGER"
-msgstr "Administrador"
-
-msgid "general##role##CONTRIBUTOR"
-msgstr "Contribuidor"
-
-msgid "general##role##VIEWER"
-msgstr "Espectador"
-
 msgid "general##measurement_units##METRIC"
 msgstr "Métrico"
 
 msgid "general##measurement_units##ENGLISH"
 msgstr "Inglés"
 
-msgid "general##cancel"
-msgstr "Cancelar"
-
-msgid "general##add"
-msgstr "Añadir"
-
-msgid "general##submit"
-msgstr "enviar"
-
-msgid "general##change"
-msgstr "Cambiar"
-
 msgid "general##cancel_fab"
 msgstr "Cancelar"
 
 msgid "general##delete_fab"
 msgstr "Eliminar"
-
-msgid "general##done"
-msgstr "Realizado"
 
 msgid "general##close_fab"
 msgstr "Cerrar"
@@ -1079,31 +1280,19 @@ msgid "general##info##privacy_title"
 msgstr "Privacidad de datos LandPKS"
 
 msgid "general##info##privacy_item1"
-msgstr ""
-"<bold>Sitios públicos</bold> son visibles para cualquier persona en el "
-"portal de datos LandPKS."
+msgstr "<bold>Sitios públicos</bold> son visibles para cualquier persona en el portal de datos LandPKS."
 
 msgid "general##info##privacy_item2"
-msgstr ""
-"Se incluyen todos los datos ingresados en la aplicación móvil LandPKS Soil "
-"ID, excepto la información de identificación personal (IIP)."
+msgstr "Se incluyen todos los datos ingresados en la aplicación móvil LandPKS Soil ID, excepto la información de identificación personal (IIP)."
 
 msgid "general##info##privacy_item3"
-msgstr ""
-"<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo "
-"para la persona quien lo creó. Esa persona puede cambiar la privacidad en "
-"cualquier momento."
+msgstr "<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo para la persona quien lo creó. Esa persona puede cambiar la privacidad en cualquier momento."
 
 msgid "general##info##privacy_item4"
-msgstr ""
-"La configuración de privacidad de un proyecto determina la privacidad de "
-"sus sitios afiliados.</bold> Los sitios que pertenecen a un proyecto "
-"privado son visibles para los miembros del equipo del proyecto. Un "
-"administrador de proyectos puede cambiar la privacidad en cualquier momento."
+msgstr "La configuración de privacidad de un proyecto determina la privacidad de sus sitios afiliados.</bold> Los sitios que pertenecen a un proyecto privado son visibles para los miembros del equipo del proyecto. Un administrador de proyectos puede cambiar la privacidad en cualquier momento."
 
 msgid "general##info##data_portal_link_url"
-msgstr ""
-"\n"
+msgstr "\n"
 "https://landpks.terraso.org/portal"
 
 msgid "general##info##data_portal_link_text"
@@ -1115,62 +1304,29 @@ msgstr "https://techmatters.org/privacy-policy/"
 msgid "general##info##privacy_policy_link_text"
 msgstr "Lee más acerca de nuestras políticas de privacidad de datos."
 
-msgid "general##required"
-msgstr "Obligatorio"
-
 msgid "general##character_limit"
 msgstr "{{current}} / {{limit}} caracteres"
 
 msgid "general##open_settings"
 msgstr "Ir a configuraciones"
 
-msgid "general##yes"
-msgstr "Sí"
-
-msgid "general##no"
-msgstr "No"
-
-msgid "general##next"
-msgstr "Siguiente"
-
-msgid "general##proceed"
-msgstr "Proceder"
-
 msgid "permissions##camera_title"
 msgstr "LandPKS Soil ID requiere acceso a tu cámara"
 
 msgid "permissions##camera_body"
-msgstr ""
-"Para usar {{feature}}, concede a LandPKS Soil ID acceso a tu cámara en los "
-"ajustes del dispositivo."
+msgstr "Para usar {{feature}}, concede a LandPKS Soil ID acceso a tu cámara en los ajustes del dispositivo."
 
 msgid "permissions##gallery_title"
 msgstr "LandPKS Soil ID requiere acceso a tu galería de fotos"
 
 msgid "permissions##gallery_body"
-msgstr ""
-"Para usar {{feature}}, concede a LandPKS Soil ID acceso a a tu galería de "
-"fotos en los ajustes del dispositivo."
+msgstr "Para usar {{feature}}, concede a LandPKS Soil ID acceso a a tu galería de fotos en los ajustes del dispositivo."
 
 msgid "permissions##location_title"
 msgstr "LandPKS Soil ID requiere acceso a tu ubicación"
 
 msgid "permissions##location_body"
-msgstr ""
-"Para disfrutar de la mejor experiencia cartográfica, concede a LandPKS Soil "
-"ID acceso a a tu ubicación en los ajustes del dispositivo."
-
-msgid "errors##generic"
-msgstr "Error al guardar la informacion de la identificación del suelo."
-
-msgid "screens##SITES"
-msgstr "LandPKS Soil ID"
-
-msgid "screens##LOGIN"
-msgstr "Iniciar sesión"
-
-msgid "screens##SETTINGS"
-msgstr "Configuraciones"
+msgstr "Para disfrutar de la mejor experiencia cartográfica, concede a LandPKS Soil ID acceso a a tu ubicación en los ajustes del dispositivo."
 
 msgid "screens##PROJECT_LIST"
 msgstr "Proyectos"
@@ -1196,15 +1352,6 @@ msgstr "Análisis fotográfico"
 msgid "screens##DELETE_ACCOUNT"
 msgstr "Configuraciones"
 
-msgid "login##title"
-msgstr "LandPKS Soil ID"
-
-msgid "login##subtitle"
-msgstr "Descrubre el potencial de tu paisaje"
-
-msgid "login##from"
-msgstr "de"
-
 msgid "delete_account##title"
 msgstr "Eliminar cuenta"
 
@@ -1212,9 +1359,7 @@ msgid "delete_account##confirm##p0"
 msgstr "<bold>{{email}}</bold>"
 
 msgid "delete_account##confirm##p1"
-msgstr ""
-"Se eliminará la cuenta de LandPKS asociada a esta dirección email. Esto "
-"elimina:"
+msgstr "Se eliminará la cuenta de LandPKS asociada a esta dirección email. Esto elimina:"
 
 msgid "delete_account##confirm##p2##b0"
 msgstr "tus sitios no afiliados"
@@ -1229,7 +1374,7 @@ msgid "delete_account##confirm##p4##b0"
 msgstr "datos que contribuiste a un proyecto del que no eres el único responsable"
 
 msgid "delete_account##confirm##p4##b1"
-msgstr "tu cuenta Terraso (incluye grupos, paisajes, y mapas de historias"
+msgstr "tu cuenta Terraso (incluye grupos, suelo, y mapas de historias"
 
 msgid "delete_account##confirm##p5"
 msgstr "<bold>Introduce tu direccion de email para confirmar la eliminación:</bold>"
@@ -1244,14 +1389,10 @@ msgid "delete_account##pending##p0"
 msgstr "<bold>{{email}}</bold>"
 
 msgid "delete_account##pending##p1"
-msgstr ""
-"Tu solicitud de eliminación de cuenta ha sido enviada. La cuenta de "
-"{{email}} se eliminará en un plazo de cinco días hábiles."
+msgstr "Tu solicitud de eliminación de cuenta ha sido enviada. La cuenta de {{email}} se eliminará en un plazo de cinco días hábiles."
 
 msgid "delete_account##pending##p2"
-msgstr ""
-"Recibirás una confirmación por email una vez que tu cuenta haya sido "
-"eliminada."
+msgstr "Recibirás una confirmación por email una vez que tu cuenta haya sido eliminada."
 
 msgid "sign_out##confirm_body"
 msgstr "¿Seguro que quieres cerrar la sesión?"
@@ -1268,21 +1409,6 @@ msgstr "Ingresar con Apple"
 msgid "account##microsoft_login"
 msgstr "Ingresar con Microsoft"
 
-msgid "privacy##label"
-msgstr "Privacidad de datos"
-
-msgid "privacy##public##inline"
-msgstr "público"
-
-msgid "privacy##public##title"
-msgstr "Público"
-
-msgid "privacy##private##inline"
-msgstr "privado"
-
-msgid "privacy##private##title"
-msgstr "Privado"
-
 msgid "bottom_navigation##sites"
 msgstr "Sitios"
 
@@ -1291,24 +1417,6 @@ msgstr "Proyectos"
 
 msgid "bottom_navigation##settings"
 msgstr "Configuraciones"
-
-msgid "geo##latitude##inline"
-msgstr "latitud"
-
-msgid "geo##latitude##title"
-msgstr "Latitud"
-
-msgid "geo##longitude##inline"
-msgstr "Longitud"
-
-msgid "geo##longitude##title"
-msgstr "Longitud"
-
-msgid "geo##elevation##inline"
-msgstr "elevación"
-
-msgid "geo##elevation##title"
-msgstr "Elevación"
 
 msgid "listfilter##open_modal_label"
 msgstr "Actualizar lista de filtros"
@@ -1322,35 +1430,20 @@ msgstr "Limpiar filtro de búsqueda"
 msgid "listfilter##text_input_label"
 msgstr "Filtrar lista por entrada de búsqueda"
 
-msgid "soil##bedrock"
-msgstr "Roca de fondo"
-
 msgid "soil##top_match"
 msgstr "Mejor coincidencia"
 
 msgid "soil##ecological_site_name"
 msgstr "Nombre del sitio ecológico"
 
-msgid "soil##loading"
-msgstr "Cargando…"
-
 msgid "soil##no_matches"
 msgstr "No hay coincidencias"
-
-msgid "soil##error"
-msgstr "Error"
 
 msgid "soil##explore_data"
 msgstr "Explorar datos"
 
 msgid "soil##soil_id"
 msgstr "Identificación del suelo"
-
-msgid "soil##surface"
-msgstr "Superficie del suelo"
-
-msgid "soil##pit"
-msgstr "Pozo de suelo"
 
 msgid "soil##add_depth_label"
 msgstr "Añadir profundidad"
@@ -1365,7 +1458,7 @@ msgid "soil##required_method"
 msgstr "{{method}} (obligatorio)"
 
 msgid "soil##collection_method##slope"
-msgstr "Incluye la inclinación, forma, aspecto y posición del pendiente del paisaje."
+msgstr "Incluye la inclinación, forma, aspecto y posición del pendiente del suelo."
 
 msgid "soil##collection_method##soilTexture"
 msgstr "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca"
@@ -1377,7 +1470,7 @@ msgid "soil##collection_method##soilColor"
 msgstr "Color de suelo"
 
 msgid "soil##collection_method##verticalCracking"
-msgstr "Grietas verticales"
+msgstr "Grietas del suelo"
 
 msgid "soil##collection_method##carbonates"
 msgstr "Carbonatos"
@@ -1410,22 +1503,15 @@ msgid "soil##collection_method##notes"
 msgstr "Notas"
 
 msgid "soil##collection_method_description##slope"
-msgstr "Incluye la inclinación, forma, aspecto y posición del pendiente del paisaje"
+msgstr "Incluye la inclinación y la forma de la pendiente"
 
 msgid "soil##collection_method_description##soilTexture"
-msgstr "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca"
+msgstr "Incluye clase de textura y volumen de fragmentos de roca"
 
 msgid "soil##vertical_cracking##description"
-msgstr ""
-"Pueden aparecer grietas verticales en la superficie cuando algunos suelos "
-"experimentan cambios de humedad o temperatura. Las grietas pueden ser "
-"permanentes o desaparecer con el tiempo.\n"
+msgstr "Pueden aparecer grietas verticales en la superficie cuando algunos suelos experimentan cambios de humedad o temperatura. Las grietas pueden ser permanentes o desaparecer con el tiempo.\n"
 "\n"
-"Las grietas verticales tienen al menos "
-"$t(soil.vertical_cracking.description_width, {\\\"context\\\": "
-"\\\"{{units}}\\\"}) de ancho y $t(soil.vertical_cracking.description_depth, "
-"{\\\"context\\\": \\\"{{units}}\\\"}) de profundidad. Deberías poder "
-"colocar un lápiz dentro de las grietas."
+"Las grietas verticales tienen al menos $t(soil.vertical_cracking.description_width, {\\\"context\\\": \\\"{{units}}\\\"}) de ancho y $t(soil.vertical_cracking.description_depth, {\\\"context\\\": \\\"{{units}}\\\"}) de profundidad. Deberías poder colocar un lápiz dentro de las grietas."
 
 msgid "soil##vertical_cracking##description_width_METRIC"
 msgstr "5 mm"
@@ -1448,22 +1534,11 @@ msgstr "Sólo grietas superficiales"
 msgid "soil##vertical_cracking##value##DEEP_VERTICAL_CRACKS"
 msgstr "Grietas verticales profundas"
 
-msgid "soil##data##rockFragmentVolume"
-msgstr "Fragmento de roca"
-
-msgid "soil##data##texture"
-msgstr "Textura"
-
-msgid "soil##data##colorValue"
-msgstr "Color"
-
 msgid "soil##soil_preset##header"
 msgstr "Cambiar profundidades del pozo"
 
 msgid "soil##soil_preset##info"
-msgstr ""
-"Los datos ya introducidos para una profundidad se borrarán cuando se cambie "
-"la profundidad."
+msgstr "Los datos ya introducidos para una profundidad se borrarán cuando se cambie la profundidad."
 
 msgid "soil##soil_preset##label"
 msgstr "Profundidades"
@@ -1514,9 +1589,7 @@ msgid "soil##depth##update_modal##title"
 msgstr "¿Cambiar profunidad?"
 
 msgid "soil##depth##update_modal##body"
-msgstr ""
-"Los datos que se hayan introducido a esta profundidad se borrarán. Esta "
-"acción no se puede deshacer."
+msgstr "Los datos que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer."
 
 msgid "soil##depth##update_modal##action"
 msgstr "Cambiar"
@@ -1525,18 +1598,10 @@ msgid "soil##depth##delete_modal##title"
 msgstr "¿Eliminar profundad?"
 
 msgid "soil##depth##delete_modal##body"
-msgstr ""
-"Los datos que se hayan introducido a esta profundidad se borrarán. Esta "
-"acción no se puede deshacer."
+msgstr "Los datos que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer."
 
 msgid "soil##depth##delete_modal##action"
 msgstr "Eliminar"
-
-msgid "soil##depth##error##overlaps"
-msgstr "Superposiciones existentes"
-
-msgid "soil##depth##error##ordering"
-msgstr "Error de límites de profundidad"
 
 msgid "soil##depth##bounds_labelled"
 msgstr "{{label}}: {{start}}–{{end}}{{units}}"
@@ -1544,65 +1609,14 @@ msgstr "{{label}}: {{start}}–{{end}}{{units}}"
 msgid "soil##depth##bounds_unitless"
 msgstr "{{start}}–{{end}}"
 
-msgid "soil##depth##bounds"
-msgstr "{{start}}–{{end}}{{units}}"
-
 msgid "soil##depth##delete_button"
 msgstr "Eliminar profundidad"
-
-msgid "soil##texture##title"
-msgstr "Textura del suelo"
-
-msgid "soil##texture##label"
-msgstr "Textura"
-
-msgid "soil##texture##info##title"
-msgstr "Textura del suelo"
-
-msgid "soil##texture##info##description"
-msgstr ""
-"El suelo se compone de partículas de diferentes tamaños. Una vez que "
-"eliminas todas las partículas grandes (cualquier cosa de más de "
-"$t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de "
-"diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n"
-"\n"
-"<bold>La textura del suelo</bold> viene determinada por el porcentaje de "
-"arena, limo y arcilla del suelo. Los cambios en esta proporción pueden "
-"tener un gran impacto en el potencial del suelo.\n"
-"\n"
-"La textura del suelo determina muchas características importantes de tu "
-"tierra, incluyendo:\n"
-"\n"
-"<bullets />\n"
-"Conocer la textura del suelo también te ayuda a identificar tu suelo con "
-"mayor precisión."
-
-msgid "soil##texture##info##point1"
-msgstr "Cuánta agua puede retener el suelo"
-
-msgid "soil##texture##info##point2"
-msgstr ""
-"La rapidez con la que el agua puede ser absorbida y filtrada a través del "
-"suelo."
-
-msgid "soil##texture##info##point3"
-msgstr ""
-"La facilidad con la que el suelo se erosiona cuando se expone al viento o "
-"al agua."
-
-msgid "soil##texture##info##point4"
-msgstr ""
-"Cómo responde el suelo a las actividades de gestión (por ejemplo, la "
-"compactación por operaciones de labranza)."
 
 msgid "soil##texture##info##description_diameter_METRIC"
 msgstr "2mm"
 
 msgid "soil##texture##info##description_diameter_ENGLISH"
 msgstr "1/16”"
-
-msgid "soil##texture##guide##title"
-msgstr "Guía de texturas"
 
 msgid "soil##texture##guide##ball_help"
 msgstr "Se puede formar una bola con el suelo?"
@@ -1615,9 +1629,6 @@ msgstr "¿Cuánto mide la cinta de largo?"
 
 msgid "soil##texture##guide##grittyness_help"
 msgstr "¿Cómo se siente el suelo?"
-
-msgid "soil##texture##guide##result"
-msgstr "Textura de suelo: {{result}}"
 
 msgid "soil##texture##guide##use_label"
 msgstr "Usar esta textura"
@@ -1640,27 +1651,17 @@ msgstr "Ni granulado ni suave"
 msgid "soil##texture##guide##grittyness_type##SMOOTH"
 msgstr "Suave"
 
-msgid "soil##texture##guide##prepare"
-msgstr "Prepara el suelo:"
-
 msgid "soil##texture##guide##prepare_details_1"
 msgstr "Obtén una muestra de tierra de al menos unos puñados."
 
 msgid "soil##texture##guide##prepare_details_2"
-msgstr ""
-"Retira todos los fragmentos de roca mayores de 2 mm. Si es posible, utiliza "
-"un tamiz."
+msgstr "Retira todos los fragmentos de roca mayores de 2 mm. Si es posible, utiliza un tamiz."
 
 msgid "soil##texture##guide##prepare_details_3"
 msgstr "Aplasta los grumos de tierra (si es posible)."
 
-msgid "soil##texture##guide##wet"
-msgstr "Humedece el suelo:"
-
 msgid "soil##texture##guide##wet_details_1"
-msgstr ""
-"Recoge un puñado de tierra del tamaño de una pelota de golf (más o menos 25 "
-"g)."
+msgstr "Recoge un puñado de tierra del tamaño de una pelota de golf (más o menos 25 g)."
 
 msgid "soil##texture##guide##wet_details_2"
 msgstr "Utiliza una botella pulverizadora para aplicar lentamente agua a la muestra."
@@ -1669,72 +1670,40 @@ msgid "soil##texture##guide##wet_details_3"
 msgstr "Integre el agua y el suelo uniformemente con las manos."
 
 msgid "soil##texture##guide##wet_details_4"
-msgstr ""
-"La tierra debe estar completamente húmeda, pero no brillante, con una "
-"textura parecida a la masilla. Si la tierra está demasiado húmeda, añade "
-"más tierra seca de tu muestra."
+msgstr "La tierra debe estar completamente húmeda, pero no brillante, con una textura parecida a la masilla. Si la tierra está demasiado húmeda, añade más tierra seca de tu muestra."
 
 msgid "soil##texture##guide##wet_details_5"
-msgstr ""
-"Evita trabajar la tierra con las manos durante más de 2 minutos. Si "
-"sobrepasa los 2 minutos, desecha la tierra y empieza con una nueva muestra."
-
-msgid "soil##texture##guide##ball"
-msgstr "Forma una bola:"
+msgstr "Evita trabajar la tierra con las manos durante más de 2 minutos. Si sobrepasa los 2 minutos, desecha la tierra y empieza con una nueva muestra."
 
 msgid "soil##texture##guide##ball_details_1"
 msgstr "Haz rodar la tierra entre tus manos para ver si se forma una bola."
 
 msgid "soil##texture##guide##ball_details_2"
-msgstr ""
-"Si se desmorona al ejercer una ligera presión para hacerla rodar, la tierra "
-"no forma una bola."
-
-msgid "soil##texture##guide##ribbon"
-msgstr "Forma una cinta"
+msgstr "Si se desmorona al ejercer una ligera presión para hacerla rodar, la tierra no forma una bola."
 
 msgid "soil##texture##guide##ribbon_details_1"
 msgstr "Agarra la tierra con los dedos (no con el pulgar)."
 
 msgid "soil##texture##guide##ribbon_details_2"
-msgstr ""
-"Utiliza la parte interior del nudillo del pulgar (la parte plana) para "
-"empujar la tierra hacia arriba por encima del borde del dedo índice. No "
-"utilices la punta del pulgar para presionar la tierra."
+msgstr "Utiliza la parte interior del nudillo del pulgar (la parte plana) para empujar la tierra hacia arriba por encima del borde del dedo índice. No utilices la punta del pulgar para presionar la tierra."
 
 msgid "soil##texture##guide##ribbon_details_3"
-msgstr ""
-"La cinta debe estar paralela al suelo, sin apuntar hacia arriba ni hacia "
-"abajo."
+msgstr "La cinta debe estar paralela al suelo, sin apuntar hacia arriba ni hacia abajo."
 
 msgid "soil##texture##guide##ribbon_details_4"
-msgstr ""
-"Si la tierra se desmorona en lugar de mantenerse unida cuando se presiona "
-"para formar una cinta, entonces no forma una cinta."
+msgstr "Si la tierra se desmorona en lugar de mantenerse unida cuando se presiona para formar una cinta, entonces no forma una cinta."
 
 msgid "soil##texture##guide##ribbon_details_5"
-msgstr ""
-"Deja que la cinta caiga naturalmente por efecto de la gravedad. Mide la "
-"longitud del segmento, sin tener en cuenta los bordes irregulares."
-
-msgid "soil##texture##guide##grittyness"
-msgstr "Toca el suelo:"
+msgstr "Deja que la cinta caiga naturalmente por efecto de la gravedad. Mide la longitud del segmento, sin tener en cuenta los bordes irregulares."
 
 msgid "soil##texture##guide##grittyness_details_1"
-msgstr ""
-"<0>Granulado</0> significa que se pueden sentir granos individuales en el "
-"suelo."
+msgstr "<0>Granulado</0> significa que se pueden sentir granos individuales en el suelo."
 
 msgid "soil##texture##guide##grittyness_details_2"
-msgstr ""
-"<0>Liso</0> significa que el suelo mojado se siente resbaladizo o jabonoso "
-"al tacto."
+msgstr "<0>Liso</0> significa que el suelo mojado se siente resbaladizo o jabonoso al tacto."
 
 msgid "soil##texture##guide##grittyness_details_3"
-msgstr ""
-"<0>Ni granulado ni suave</0> significa que no predomina ninguna de esas dos "
-"texturas. Es posible que aún se perciban algunos granos de arena o algo "
-"jabonoso pero al tacto, pero ninguna predomina."
+msgstr "<0>Ni granulado ni suave</0> significa que no predomina ninguna de esas dos texturas. Es posible que aún se perciban algunos granos de arena o algo jabonoso pero al tacto, pero ninguna predomina."
 
 msgid "soil##texture##guide_intro"
 msgstr "¿No conoce la textura de su suelo? Utiliza la guía paso a paso."
@@ -1754,42 +1723,11 @@ msgstr "0–100%"
 msgid "soil##texture##fragment_title"
 msgstr "Volumen de fragmentos de roca"
 
-msgid "soil##texture##fragment##info##title"
-msgstr "Volumen de fragmentos de roca"
-
-msgid "soil##texture##fragment##info##description"
-msgstr ""
-"El volumen de fragmentos de roca es una medida de cuánto volumen del suelo "
-"está ocupado por rocas, lo cual se define como cualquier cosa mayor a "
-"$t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\""
-"}) de diámetro.\n"
-"\n"
-"Esto puede estimarse visualmente comparando el volumen del suelo antes y "
-"después de retirar las rocas o comparando el volumen de rocas retiradas con "
-"el volumen del suelo restante.\n"
-"\n"
-"Alternativamente, para una medición más precisa, puedes colocar las rocas "
-"de la muestra en un cubo con un volumen conocido de agua y medir el cambio "
-"de volumen. A continuación, divide ese volumen por el volumen de la muestra "
-"de suelo original para obtener un porcentaje."
-
 msgid "soil##texture##fragment##info##description_diameter_METRIC"
 msgstr "2mm"
 
 msgid "soil##texture##fragment##info##description_diameter_ENGLISH"
 msgstr "1/16”"
-
-msgid "soil##texture##class##CLAY"
-msgstr "Arcilla"
-
-msgid "soil##texture##class##LOAM"
-msgstr "Franco"
-
-msgid "soil##texture##class##SAND"
-msgstr "Arenoso"
-
-msgid "soil##texture##class##SILT"
-msgstr "Limoso"
 
 msgid "soil##texture##class##CLAY_LOAM"
 msgstr "Franco arcilloso"
@@ -1830,34 +1768,6 @@ msgstr "35–60%"
 msgid "soil##texture##rockfragment##VOLUME_60"
 msgstr ">60%"
 
-msgid "soil##color##title"
-msgstr "Color del suelo"
-
-msgid "soil##color##featureName"
-msgstr "Color de suelo"
-
-msgid "soil##color##info##p1"
-msgstr "El color del suelo puede decir mucho sobre él, entre otras cosas:"
-
-msgid "soil##color##info##bullet1"
-msgstr "Qué minerales están presentes"
-
-msgid "soil##color##info##bullet2"
-msgstr "Cuánta materia orgánica presenta"
-
-msgid "soil##color##info##bullet3"
-msgstr "Y mucho más"
-
-msgid "soil##color##info##p2"
-msgstr ""
-"El color del suelo puede medirse con un libro Munsell o con un "
-"espectrómetro."
-
-msgid "soil##color##info##p3"
-msgstr ""
-"En esta aplicación, también puedes tomar una foto con una tarjeta de "
-"referencia, como una nota Post-it, para determinar el color de tu suelo."
-
 msgid "soil##color##confirm_delete##title"
 msgstr "¿Eliminar datos?"
 
@@ -1871,9 +1781,7 @@ msgid "soil##color##unexpected_color##title"
 msgstr "Color de suelo inesperado"
 
 msgid "soil##color##unexpected_color##body"
-msgstr ""
-"Este no es un color típico de suelo. Deseas proceder de todos modos o "
-"utilizar el color sugerido más cercano?"
+msgstr "Este no es un color típico de suelo. Deseas proceder de todos modos o utilizar el color sugerido más cercano?"
 
 msgid "soil##color##unexpected_color##suggestion"
 msgstr "Sugerencia"
@@ -1884,109 +1792,11 @@ msgstr "Tu resultado"
 msgid "soil##color##unexpected_color##use_suggestion"
 msgstr "Usar sugerencia"
 
-msgid "soil##color##hue"
-msgstr "Tonalidad"
-
-msgid "soil##color##value"
-msgstr "Valor"
-
-msgid "soil##color##chroma"
-msgstr "Croma"
-
-msgid "soil##color##workflow##MANUAL"
-msgstr "Introducir valores"
-
-msgid "soil##color##workflow##CAMERA"
-msgstr "Usar foto"
-
-msgid "soil##color##guide##step1##title"
-msgstr "1. Junta las notas Post-it."
-
-msgid "soil##color##guide##step1##content"
-msgstr ""
-"Para garantizar un análisis de color preciso, debes utilizar notas Post-it "
-"de color amarillo canario de 3M para su tarjeta de referencia, siguiendo "
-"las siguientes pautas:"
-
-msgid "soil##color##guide##step1##bullets##1"
-msgstr "Usar solo notas Post-it nuevas."
-
-msgid "soil##color##guide##step1##bullets##2"
-msgstr "Apila al menos 3 notas Post-it una encima de otra."
-
-msgid "soil##color##guide##step1##bullets##3"
-msgstr ""
-"Asegúrate de que todas las notas Post-it están planas, sin escritura, y sin "
-"suciedad."
-
-msgid "soil##color##guide##step1##bullets##4"
-msgstr ""
-"Asegúrate de que cada nota Post-it no se está degradada con la luz solar, "
-"ya que puede existir una variación considerable en función de la exposición "
-"al sol."
-
-msgid "soil##color##guide##step1##bullets##5"
-msgstr "Guarda las notas Post-it en sobres oscuros para evitar la exposición al sol."
-
-msgid "soil##color##guide##step2##title"
-msgstr "2. Prepara la muestra de suelo."
-
-msgid "soil##color##guide##step2##content"
-msgstr ""
-"Utiliza tierra seca siempre que sea posible. La aplicación permite indicar "
-"si el suelo está húmedo, pero las estimaciones del color del suelo seco son "
-"más precisas.\n"
-"\n"
-"Si su capa de suelo tiene múltiples colores (es decir, motas, "
-"características redoximórficas, o carbonatos), aisla el color dominante de "
-"la matriz de la pila.\n"
-"\n"
-"Pasa el suelo a través de un "
-"$t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) tamiz "
-"para crear una pila de suelo homogéneo, o usa tus manos para recoger "
-"cualquier cosa más grande que "
-"$t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n"
-"\n"
-"Aplana la pila de tierra para minimizar las sombras dentro de la muestra de "
-"tierra."
-
 msgid "soil##color##guide##step2##content_size_METRIC"
 msgstr "2mm"
 
 msgid "soil##color##guide##step2##content_size_ENGLISH"
 msgstr "1/16\""
-
-msgid "soil##color##guide##step3##title"
-msgstr "3. Prepara la iluminación."
-
-msgid "soil##color##guide##step3##content"
-msgstr ""
-"El foto del color del suele debe tomarse en condiciones de iluminación "
-"uniforme y a la sombra del sol directo."
-
-msgid "soil##color##guide##step4##title"
-msgstr "4. Coloca la tarjeta de referencia al lado del suelo."
-
-msgid "soil##color##guide##step4##content"
-msgstr ""
-"Coloca la nota Post-it junto a la muestra de suelo preparada, con las "
-"condiciones de iluminación adecuadas."
-
-msgid "soil##color##guide##step5##title"
-msgstr "5. Compón la foto."
-
-msgid "soil##color##guide##step5##content"
-msgstr ""
-"Coloca la cámara lo más cerca posible del suelo y de la nota adhesiva sin "
-"crear sombras ni desenfoques."
-
-msgid "soil##color##guide##step6##title"
-msgstr "6. ¿Estás listo para tomar una foto?"
-
-msgid "soil##color##guide##step6##content"
-msgstr ""
-"Si has seguido las instrucciones anteriores, ¡ya estás listo! Puedes tomar "
-"una foto con la cámara de tu dispositivo o volver atrás para subir una foto."
 
 msgid "soil##color##guide##go_back"
 msgstr "Atrás"
@@ -1994,25 +1804,11 @@ msgstr "Atrás"
 msgid "soil##color##guide##take_photo"
 msgstr "Tomar foto"
 
-msgid "soil##color##reference"
-msgstr "Referencia"
-
 msgid "soil##color##crop_reference"
-msgstr ""
-"Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo "
-"canario. Pellizca la imagen con el pulgar y el índice para acercarla "
-"(pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la "
-"imagen en el recuadro deslizando con un dedo."
-
-msgid "soil##color##soil"
-msgstr "Suelo"
+msgstr "Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo canario. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo."
 
 msgid "soil##color##crop_soil"
-msgstr ""
-"Recorta la imagen para mostrar sólo la muestra de suelo. Pellizca la imagen "
-"con el pulgar y el índice para acercarla (pellizcando hacia dentro) o "
-"alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro "
-"deslizando con un dedo."
+msgstr "Recorta la imagen para mostrar sólo la muestra de suelo. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo."
 
 msgid "soil##color##soil_condition"
 msgstr "Condición del suelo:"
@@ -2020,20 +1816,11 @@ msgstr "Condición del suelo:"
 msgid "soil##color##lighting_condition"
 msgstr "La foto tiene una iluminación uniforme y sin sombras:"
 
-msgid "soil##color##analyze"
-msgstr "Analizar"
-
 msgid "soil##color##use_photo_instead"
-msgstr ""
-"¿No conoces los valores de color del suelo? Utiliza una foto en su lugar "
-"(guía incluida.)"
+msgstr "¿No conoces los valores de color del suelo? Utiliza una foto en su lugar (guía incluida.)"
 
 msgid "soil##color##photo_need_help"
-msgstr ""
-"Para utilizar una foto para determinar el color del suelo, necesitará una "
-"nota Post-it color amarilla canaria de 3M como referencia de color y una "
-"muestra de suelo debidamente preparada. ¿Necesitas ayuda? Utiliza la guía "
-"paso a paso."
+msgstr "Para utilizar una foto para determinar el color del suelo, necesitará una nota Post-it color amarilla canaria de 3M como referencia de color y una muestra de suelo debidamente preparada. ¿Necesitas ayuda? Utiliza la guía paso a paso."
 
 msgid "soil##color##use_guide_label"
 msgstr "Usar guía"
@@ -2050,34 +1837,11 @@ msgstr "Sí"
 msgid "soil##color##color_photo_lighting_condition##UNEVEN"
 msgstr "No"
 
-msgid "slope##title"
-msgstr "Pendiente"
-
-msgid "slope##info##title"
-msgstr "Pendiente"
-
-msgid "slope##info##description"
-msgstr ""
-"Describe las características de la pendiente del terreno en el que se "
-"encuentra el sitio.\n"
-"\n"
-"Las instrucciones sobre cómo recoger cada dato están disponibles pulsando "
-"sobre el nombre del dato.\n"
-"\n"
-"La pendiente es importante para identificar el suelo. También ayuda a "
-"determinar el potencial de erosión del suelo, su capacidad para retener "
-"agua, etc."
-
 msgid "slope##steepness##short_title"
 msgstr "Nivel de inclinación"
 
 msgid "slope##steepness##long_title"
 msgstr "Nivel de inclinación de la pendiente"
-
-msgid "slope##steepness##description"
-msgstr ""
-"Introduce la inclinación manualmente utilizando el medidor de inclinación o "
-"seleccionando una de las siguiente imágenes."
 
 msgid "slope##steepness##manual_label"
 msgstr "Manual"
@@ -2097,11 +1861,9 @@ msgstr "Porcentaje"
 msgid "slope##steepness##percentage_help"
 msgstr "0%–999%"
 
-msgid "slope##steepness##degree"
-msgstr "{{value}}°"
-
 msgid "slope##steepness##degree_help"
 msgstr "0°–89°\n"
+""
 
 msgid "slope##steepness##degree_placeholder"
 msgstr "Grado"
@@ -2116,37 +1878,7 @@ msgid "slope##steepness##no_camera"
 msgstr "Sin acceso a la cámara"
 
 msgid "slope##steepness##no_camera_explanation"
-msgstr ""
-"Para el mejor resultado, concede a LandPKS Soil ID acceso tu cámara desde "
-"configuraciones."
-
-msgid "slope##steepness##info##title"
-msgstr "Cómo usar el medidor de pendiente"
-
-msgid "slope##steepness##info##description"
-msgstr ""
-"Colócate frente al lugar a una distancia mínima de "
-"$t(slope.steepness.info.description_distance, {\"context\": "
-"\"{{units}}\"}).\n"
-"\n"
-"Identifica la dirección de la pendiente predominante en el lugar.\n"
-"\n"
-"Sitúate de forma que puedas ver la cresta o silueta de esa pendiente "
-"predominante (puede que necesites acercarte al suelo para verla).\n"
-"\n"
-"La dirección en la que miras debe ser perpendicular a la dirección de la "
-"pendiente. Si extiendes los brazos a los lados, la línea que forman debe "
-"ser paralela a la dirección de la pendiente.\n"
-"\n"
-"Coloca el teléfono de modo que la línea blanca sólida se alinee con la "
-"pendiente del terreno; intenta colocar la línea blanca a lo largo del borde "
-"de la pendiente. Es posible que tenga que agacharse si la silueta de la "
-"pendiente no es fácil de ver estando de pie.\n"
-"\n"
-"<bold>Método alternativo</bold>: Si la forma del terreno no es demasiado "
-"curvada o irregular, puedes colocar una vara de medir en el suelo del lugar "
-"y luego alinear tu teléfono sobre la vara para obtener el ángulo de la "
-"pendiente."
+msgstr "Para el mejor resultado, concede a LandPKS Soil ID acceso tu cámara desde configuraciones."
 
 msgid "slope##steepness##info##description_distance_METRIC"
 msgstr "4 metros"
@@ -2211,54 +1943,8 @@ msgstr "100%+"
 msgid "slope##steepness##select_display"
 msgstr "{{steepness_name}} {{steepness_percent}}"
 
-msgid "slope##shape##title"
-msgstr "Forma"
-
 msgid "slope##shape##long_title"
 msgstr "Forma de pendiente"
-
-msgid "slope##shape##info##title"
-msgstr "Forma de pendiente"
-
-msgid "slope##shape##info##description"
-msgstr ""
-"La forma de la pendiente se refiere a la forma en que se curva el terreno "
-"en la zona que rodea el punto de tu emplazamiento.\n"
-"\n"
-"La forma de la pendiente se determina en dos direcciones: <bold>pendiente "
-"descendente</bold> y <bold>pendiente transversal</bold>.\n"
-"\n"
-"En primer lugar, determina la dirección principal de la pendiente en el "
-"lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de "
-"$t(pendiente.forma.info.descripcion_distancia, {\"contexto\": "
-"\"{{unidades}}\"}\"}) en todas las direcciones.\n"
-"\n"
-"Si lloviera, ¿en qué dirección general fluiría el agua cuesta abajo? Esto "
-"se denomina la dirección <bold>pendiente abajo</bold>.\n"
-"\n"
-"La dirección de la pendiente transversal se puede encontrar mirando en "
-"ángulo recto (90 grados) desde la dirección de la pendiente descendente.\n"
-"\n"
-"Si te alejas del lugar manteniendo la misma elevación, ésta es la dirección "
-"de la <bold>pendiente transversal</bold>.\n"
-"\n"
-"En segundo lugar, determine la forma de la pendiente para cada dirección.\n"
-"\n"
-"<bold>Cóncava</bold> significa que el terreno se inclina cada vez más hacia "
-"arriba a medida que te alejas de tu punto a lo largo de la <bold>pendiente "
-"transversal</bold> o de la <bold>pendiente descendente</bold>. Por ejemplo, "
-"la pendiente descendente suele ser cóncava al pie de una colina, ya que "
-"pasa de una pendiente pronunciada a otra más superficial.\n"
-"\n"
-"<bold>Convexa</bold> significa que el terreno se inclina cada vez más hacia "
-"abajo a medida que se aleja de su punto a lo largo de una dirección "
-"determinada. Por ejemplo, la pendiente descendente suele ser convexa en la "
-"cima de una colina al pasar de una pendiente poco profunda a otra más "
-"pronunciada.\n"
-"\n"
-"<bold>Lineal</bold> significa que la pendiente es constante a lo largo de "
-"toda una dirección determinada. No significa necesariamente que el terreno "
-"sea llano; sólo significa que la pendiente no cambia."
 
 msgid "slope##shape##info##description_distance_METRIC"
 msgstr "20-30 metros"
@@ -2271,15 +1957,6 @@ msgstr "Cuesta abajo"
 
 msgid "slope##shape##info##cross_slope"
 msgstr "Pendiente transversal"
-
-msgid "slope##shape##info##concave"
-msgstr "Cóncava"
-
-msgid "slope##shape##info##convex"
-msgstr "Conveza"
-
-msgid "slope##shape##info##linear"
-msgstr "Lineal"
 
 msgid "slope##shape##select_labels##CONCAVE"
 msgstr "Cóncava"
@@ -2295,3 +1972,39 @@ msgstr "Sacar foto"
 
 msgid "image##choose_from_gallery"
 msgstr "Biblioteca de fotos"
+
+msgid "info##title"
+msgstr "Descubre el potencial de tu paisaje"
+
+msgid "info##description"
+msgstr "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.\n"
+"\n"
+"<2>Hay tres formas de utilizar el mapa:</2>"
+
+msgid "info##list1"
+msgstr "Toca el mapa para marcar un punto en el mapa y obtener más información sobre la ubicación."
+
+msgid "info##list2"
+msgstr "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual."
+
+msgid "info##list3"
+msgstr "Ingresa las coordenadas, la dirección, o el término que buscas en la barra de búsqueda."
+
+msgid "info##description2"
+msgstr "<bold>Encuentra más información y guías</bold> en:\n"
+"<icon />"
+
+msgid "info##link_label"
+msgstr "landpotential.org"
+
+msgid "info##link_url"
+msgstr "https://landpotential.org/"
+
+msgid "projects##search##lastModAsc"
+msgstr "Última modificación (más reciente)"
+
+msgid "projects##search##lastModDesc"
+msgstr "Última modificación (menos reciente)"
+
+msgid "screens##SITES"
+msgstr "LandPKS Soil ID"

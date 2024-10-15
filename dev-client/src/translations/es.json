@@ -1,13 +1,6 @@
 {
     "welcome": {
         "title": "Bienvenido a LandPKS Soil ID",
-        "version_includes": {
-            "title": "Esta version incluye:",
-            "bullet_1": "Identificación de suelos dentro de los EEUU",
-            "bullet_2": "Recogida de datos sobre pendientes y suelos",
-            "bullet_3": "Notas acerca del sitio",
-            "bullet_4": "El manejo de projectos"
-        },
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
@@ -16,40 +9,27 @@
             "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
             "bullet_4": "Fotos del sitio"
         },
+        "version_includes": {
+            "title": "Esta version incluye:",
+            "bullet_1": "Identificación de suelos dentro de los EEUU",
+            "bullet_2": "Recogida de datos sobre pendientes y suelos",
+            "bullet_3": "Notas acerca del sitio",
+            "bullet_4": "El manejo de projectos"
+        },
         "learn_more": "Aprende más acerca del uso de proyectos",
         "link_text": "LandPKS de Terraso",
         "link_url": "https://landpks.terraso.org/",
         "get_started": "Comenzar"
     },
-    "info": {
-        "title": "Descubre el potencial de tu paisaje",
-        "description": "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.\n\n<2>Hay tres formas de utilizar el mapa:</2>",
-        "list1": "Toca el mapa para marcar un punto en el mapa y obtener más información sobre la ubicación.",
-        "list2": "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual.",
-        "list3": "Ingresa las coordenadas, la dirección, o el término que buscas en la barra de búsqueda.",
-        "description2": "<bold>Encuentra más información y guías</bold> en:\n<icon />",
-        "link_label": "landpotential.org",
-        "link_url": "https://landpotential.org/"
-    },
     "search": {
         "placeholder": "Buscar en mapa"
     },
     "site": {
-        "list_title": "Lista de sitios",
-        "last_updated": "Ultima modificaión: {{date}} por {{name}}",
         "progress": "Progreso: {{progress}}",
         "members": "{{members}} Miembros",
-        "more_info": "Aprende más",
-        "your_location": "Tu ubicación",
         "coords": "{{lat}}, {{lng}}",
-        "soil_id_prediction": "Identificación de suelo de mejor coincidencia",
-        "ecological_site_prediction": "Sitio ecológico de mejor coincidencia",
-        "annual_precip_avg": "Precipitación media anual",
-        "elevation_label": "Elevación",
-        "elevation_value": "{{value}} {{units}}",
-        "elevation_unknown": "desconocido",
         "empty": {
-            "info": "Aún no tienes ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu paisaje y su potencial, y compartir con otros.\n\n<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de utilizar el mapa para encontrar una ubicación para un sitio:",
+            "info": "No tiene aún ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu suelo y su potencial, y compartir con otros.\n\n<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de utilizar el mapa para encontrar una ubicación para un sitio:",
             "bullet_1": "Toca el mapa para marcar una ubicación y obtener más imformacion acerca del lugar.",
             "bullet_2": "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual.",
             "bullet_3": "Introduce las coordenadas, la dirección u otro término de búsqueda en la barra de búsqueda."
@@ -60,25 +40,17 @@
             "gps": "Usar mi ubicación actual (GPS)",
             "pin": "Usar ubicacion marcada en el mapa",
             "manual": "Introducir coordenadas",
-            "name_label": "Nombre del sitio",
-            "location_label": "Ubicación del sitio",
-            "location_accuracy": "Precisión GPS: {{accuracyM}} m",
             "latitude": "Latitud",
             "longitude": "Longitud",
             "button_label": "Crear sitio aquí",
+            "name_label": "Nombre del sitio",
+            "location_label": "Ubicación del sitio",
+            "location_accuracy": "Precisión GPS: {{accuracyM}} m",
             "add_to_project_label": "Anadir al proyecto",
             "add_to_project_caption": "Proyecto",
             "add_to_project_tooltip": "El sitio heredará la configuración del proyecto, incluyendo los requisitos de recopilación de datos y los miembros del equipo. Cree nuevos proyectos utilizando la pestaña Proyectos en la navegación inferior.",
             "privacy_tooltip": "Los proyectos públicos sincronizarán los datos con portales de datos públicos.",
             "privacy_tooltip_link": "Aprende más"
-        },
-        "form": {
-            "name_min_length_error": "El nombre del sitio debe tener un mínimo de {{min}} caracteres",
-            "name_max_length_error": "El nombre del sitio debe tener un máximo de {{max}} caracteres",
-            "min_latitude_error": "La latitud mínima es {{max}}",
-            "max_latitude_error": "La latitud máxima es {{max}}",
-            "min_longitude_error": "La longitud mínima es {{max}}",
-            "max_longitude_error": "La longitud máxima es {{max}}"
         },
         "dashboard": {
             "privacy": "Privacidad de datos",
@@ -101,6 +73,58 @@
                 "photo_label": "FOTO",
                 "bedrock_label": "ROCA DE FONDO"
             }
+        },
+        "notes": {
+            "title": "Notas del sitio",
+            "add_note_label": "Agregar nota",
+            "add_title": "Nota acerca del sitio",
+            "edit_title": "Nota acerca del sitio",
+            "note_attribution": "{{createdAt}} por {{name}}",
+            "confirm_removal_title": "¿Eliminar nota?",
+            "confirm_removal_body": "Esta acción no se puede deshacer.",
+            "min_length_error": "Debe tener al menos {{min}} caracteres",
+            "placeholder_text": "Empieza a escribir tu nota…",
+            "project_instructions": "Nota destacada"
+        },
+        "search": {
+            "placeholder": "Buscar sitios",
+            "sort": {
+                "label": "Ordenar sitios por",
+                "nameAsc": "Nombre (A - Z)",
+                "nameDesc": "Nombre (Z - A)",
+                "lastModAsc": "Última modificación (más reciente)",
+                "lastModDesc": "Última modificación (menos reciente)",
+                "distanceAsc": "Distancia (más cercana)",
+                "distanceDesc": "Distance (más lejana)"
+            },
+            "accessibility_label": "Ordenar sitios por nombre",
+            "filter_projects": "Ordenar sitios por proyecto",
+            "filter_role": "Ordenar sitios por rol",
+            "no_matches": "Ningún sitio coincide con las opciones de búsqueda y filtro actuales."
+        },
+        "tabs": {
+            "SITE": "Sitio",
+            "SLOPE": "Pendiente",
+            "SOIL": "Suelo",
+            "NOTES": "Notas"
+        },
+        "list_title": "Lista de sitios",
+        "last_updated": "Última modificaión: {{date}} por {{name}}",
+        "more_info": "Aprende más",
+        "your_location": "Tu ubicación",
+        "soil_id_prediction": "Identificación de suelo de mejor coincidencia",
+        "ecological_site_prediction": "Sitio ecológico de mejor coincidencia",
+        "annual_precip_avg": "Precipitación media anual",
+        "elevation_label": "Elevación",
+        "elevation_value": "{{value}} {{units}}",
+        "elevation_unknown": "desconocido",
+        "form": {
+            "name_min_length_error": "El nombre del sitio debe tener un mínimo de {{min}} caracteres",
+            "name_max_length_error": "El nombre del sitio debe tener un máximo de {{max}} caracteres",
+            "min_latitude_error": "La latitud mínima es {{max}}",
+            "max_latitude_error": "La latitud máxima es {{max}}",
+            "min_longitude_error": "La longitud mínima es {{max}}",
+            "max_longitude_error": "La longitud máxima es {{max}}"
         },
         "soil_id": {
             "title": "Identificación de suelos",
@@ -176,43 +200,9 @@
                     "2": "Fragmento de roca por profundidad",
                     "3": "Color de suelo por profundidad",
                     "4": "Pendiente del sitio",
-                    "5": "Agrietamiento de la superficie"
+                    "5": "Grietas del suelo"
                 }
             }
-        },
-        "notes": {
-            "title": "Notas acerca del sitio",
-            "add_note_label": "Agregar nota",
-            "add_title": "Nota acerca del sitio",
-            "edit_title": "Nota acerca del sitio",
-            "note_attribution": "{{createdAt}} por {{name}}",
-            "confirm_removal_title": "¿Eliminar nota?",
-            "confirm_removal_body": "Esta acción no se puede deshacer.",
-            "min_length_error": "Debe tener al menos {{min}} caracteres",
-            "placeholder_text": "Empieza a escribir tu nota…",
-            "project_instructions": "Nota destacada"
-        },
-        "search": {
-            "placeholder": "Buscar sitios",
-            "accessibility_label": "Ordenar sitios por nombre",
-            "filter_projects": "Ordenar sitios por proyecto",
-            "filter_role": "Ordenar sitios por rol",
-            "no_matches": "Ningún sitio coincide con las opciones de búsqueda y filtro actuales.",
-            "sort": {
-                "label": "Ordenar sitios por",
-                "nameAsc": "Nombre (A - Z)",
-                "nameDesc": "Nombre (Z - A)",
-                "lastModAsc": "Última modificación (más reciente)",
-                "lastModDesc": "Última modificación (menos reciente)",
-                "distanceAsc": "Distancia (más cercana)",
-                "distanceDesc": "Distance (más lejana)"
-            }
-        },
-        "tabs": {
-            "SITE": "Sitio",
-            "SLOPE": "Pendiente",
-            "SOIL": "Suelo",
-            "NOTES": "Notas"
         }
     },
     "projects": {
@@ -223,11 +213,6 @@
             "header": "No tienes ningún proyecto.",
             "info": "Los proyectos te permiten agrupar sitios, establecer necesidades de datos y administrar a los miembros del equipo."
         },
-        "learn_more": "Aprende más acerca del uso de proyectos",
-        "create_button": "Crear proyecto",
-        "go_to": "Ir al proyecto",
-        "search_label": "Introduce texto para filtar proyectos por nombre",
-        "role_filter_label": "Ordenar proyectos por rol",
         "create": {
             "public": "Público",
             "private": "Privado",
@@ -248,14 +233,8 @@
                 "english": "Inglés (pulgadas, pies, libras)",
                 "metric": "Métrico (cm, m, kg)"
             },
-            "soil_source": {
-                "heading": "Fuente de información sobre el suelo por defecto",
-                "survey": "USDA NRCS Estudio del suelo",
-                "grids": "SoilGrids (cuadrículas del suelo)",
-                "a11yLabel": "fuente de información sobre el suelo por defecto"
-            },
             "instructions": {
-                "title": "Nota destacada",
+                "title": "Nota fija",
                 "description": "Este contenido se mostrará en la parte superior de la sección Notas de cada sitio de este proyecto.",
                 "screen_title": "Nota destacada",
                 "add_label": "Nota"
@@ -268,13 +247,19 @@
                     "CUSTOM": "A medida…",
                     "NONE": "Sin especificar"
                 },
-                "label": "Etiquetar",
+                "label": "Etiqueta",
                 "depth": "Profundidad ({{unidades}})",
                 "confirm_preset": {
                     "title": "¿Cambiar profundidades?",
                     "body": "Se borrarán los datos del pozo de suelo que se hayan introducido. Esta acción no se puede deshacer.",
                     "confirm": "Cambiar"
                 }
+            },
+            "soil_source": {
+                "heading": "Fuente de información sobre el suelo por defecto",
+                "survey": "USDA NRCS Estudio del suelo",
+                "grids": "SoilGrids (cuadrículas del suelo)",
+                "a11yLabel": "fuente de información sobre el suelo por defecto"
             }
         },
         "team": {
@@ -286,9 +271,6 @@
                 "body": "Esto eliminará tu acceso al proyecto, pero los datos que hayas aportado permanecerán en el proyecto.",
                 "action_name": "Abandonar"
             }
-        },
-        "edit": {
-            "input_header": "Configuraciones generales del proyecto"
         },
         "settings": {
             "cancel": "Cancelar",
@@ -304,11 +286,21 @@
             "delete_description": "Esto borrará el proyecto y los datos de sus sitios de manera permanente. Esto no se puede deshacer.\n\nLos administradores del proyectos tienen la opción de transferir sitios de este proyecto para mantener los datos del sitio."
         },
         "sites": {
-            "empty_viewer": "El proyecto aun no tiene sitios.",
-            "empty_contributor": "Puedes transferir sitios LandPKS Soil ID existentes a este proyecto. También puede crear nuevos sitios en la pestaña Sitios y añadirlos a este proyecto.",
             "add": "Añadir sitios",
             "transfer": "Transferir sitios",
             "create": "Crear sitios",
+            "search": {
+                "placeholder": "Buscar",
+                "accessility_label": "Buscar sitios"
+            },
+            "sort": {
+                "label": "Ordenar sitios por:",
+                "nameAsc": "Nombre del sitio (A - Z)",
+                "updatedAtAsc": "Fecha de modificación (más reciente)",
+                "distanceAsc": "Distancia (más cercana)"
+            },
+            "empty_viewer": "El proyecto aun no tiene sitios.",
+            "empty_contributor": "Puedes transferir sitios LandPKS Soil ID existentes a este proyecto. También puede crear nuevos sitios en la pestaña Sitios y añadirlos a este proyecto.",
             "go_to": "Ir al sitio",
             "audit_log": "Registro de auditoría",
             "remove_site": "Eliminar del proyecto",
@@ -327,17 +319,23 @@
                 "title": "¿Transferir sitios?",
                 "body": "Los sitios transferidos utilizarán la configuración de datos y los roles de los miembros del equipo de este proyecto.\n\nSi los sitios tienen datos ingresados con profundidades diferentes a lo especificado en este proyecto, esos datos se eliminarán. Esto no se puede deshacer.",
                 "action_name": "Transferir"
-            },
-            "search": {
-                "placeholder": "Buscar",
-                "accessility_label": "Buscar sitios"
-            },
-            "sort": {
-                "label": "Ordenar sitios por:",
-                "nameAsc": "Nombre del sitio (A - Z)",
-                "updatedAtAsc": "Fecha de modificación (más reciente)",
-                "distanceAsc": "Distancia (más cercana)"
             }
+        },
+        "search": {
+            "placeholder": "Buscar proyectos",
+            "nameAsc": "Ordenar (A - Z)",
+            "nameDesc": "Ordenar (Z - A)",
+            "no_matches": "Ningún proyecto coincide con las opciones actuales de búsqueda y filtro.",
+            "lastModAsc": "Última modificación (más reciente)",
+            "lastModDesc": "Última modificación (menos reciente)"
+        },
+        "learn_more": "Aprende más acerca del uso de proyectos",
+        "create_button": "Crear proyecto",
+        "go_to": "Ir al proyecto",
+        "search_label": "Introduce texto para filtar proyectos por nombre",
+        "role_filter_label": "Ordenar proyectos por rol",
+        "edit": {
+            "input_header": "Configuraciones generales del proyecto"
         },
         "add_user": {
             "heading": "Añadir miembro de equipo",
@@ -369,15 +367,7 @@
             "description_min_length_error": "La descripción del proyecto debe tener un mínimo de {{min}} caracteres",
             "description_max_length_error": "La descripción del proyecto debe tener un máximo de {{max}} caracteres"
         },
-        "sort_label": "Ordenar proyectos por",
-        "search": {
-            "placeholder": "Buscar proyectos",
-            "no_matches": "Ningún proyecto coincide con las opciones actuales de búsqueda y filtro.",
-            "nameAsc": "Nombre (A - Z)",
-            "nameDesc": "Nombre (Z - A)",
-            "lastModAsc": "Última modificación (más reciente)",
-            "lastModDesc": "Última modificación (menos reciente)"
-        }
+        "sort_label": "Ordenar proyectos por:"
     },
     "settings": {
         "beta": "beta",
@@ -392,36 +382,41 @@
         "new": "Nuevo"
     },
     "general": {
-        "last_modified": "Última modificación",
         "sites": "sitios",
         "users": "usuarios",
         "save": "Guardar",
-        "save_fab": "Guardar",
         "use": "Usar",
-        "last_modified_by": "última modificación {{user}}, {{date}}",
-        "select_all": "Seleccionar todo",
-        "you_name": "{{name}} (tú)",
         "details": "Detalles",
         "apply": "Aplicar",
-        "email_placeholder": "nombre@dominio.com",
-        "email_label": "Dirección de email",
-        "profile_image_alt": "Imagen de perfil",
         "role": {
             "MANAGER": "Administrador",
             "CONTRIBUTOR": "Contribuidor",
             "VIEWER": "Espectador"
         },
-        "measurement_units": {
-            "METRIC": "Métrico",
-            "ENGLISH": "Inglés"
-        },
         "cancel": "Cancelar",
         "add": "Añadir",
         "submit": "enviar",
         "change": "Cambiar",
+        "done": "Realizado",
+        "required": "Obligatorio",
+        "yes": "Sí",
+        "no": "No",
+        "next": "Siguiente",
+        "proceed": "Proceder",
+        "last_modified": "Última modificación",
+        "save_fab": "Guardar",
+        "last_modified_by": "última modificación {{user}}, {{date}}",
+        "select_all": "Seleccionar todo",
+        "you_name": "{{name}} (tú)",
+        "email_placeholder": "nombre@dominio.com",
+        "email_label": "Dirección de email",
+        "profile_image_alt": "Imagen de perfil",
+        "measurement_units": {
+            "METRIC": "Métrico",
+            "ENGLISH": "Inglés"
+        },
         "cancel_fab": "Cancelar",
         "delete_fab": "Eliminar",
-        "done": "Realizado",
         "close_fab": "Cerrar",
         "filter": {
             "no_sort": "Ninguno",
@@ -440,27 +435,13 @@
             "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
             "privacy_policy_link_text": "Lee más acerca de nuestras políticas de privacidad de datos."
         },
-        "required": "Obligatorio",
         "character_limit": "{{current}} / {{limit}} caracteres",
-        "open_settings": "Ir a configuraciones",
-        "yes": "Sí",
-        "no": "No",
-        "next": "Siguiente",
-        "proceed": "Proceder"
-    },
-    "permissions": {
-        "camera_title": "LandPKS Soil ID requiere acceso a tu cámara",
-        "camera_body": "Para usar {{feature}}, concede a LandPKS Soil ID acceso a tu cámara en los ajustes del dispositivo.",
-        "gallery_title": "LandPKS Soil ID requiere acceso a tu galería de fotos",
-        "gallery_body": "Para usar {{feature}}, concede a LandPKS Soil ID acceso a a tu galería de fotos en los ajustes del dispositivo.",
-        "location_title": "LandPKS Soil ID requiere acceso a tu ubicación",
-        "location_body": "Para disfrutar de la mejor experiencia cartográfica, concede a LandPKS Soil ID acceso a a tu ubicación en los ajustes del dispositivo."
+        "open_settings": "Ir a configuraciones"
     },
     "errors": {
         "generic": "Error al guardar la informacion de la identificación del suelo."
     },
     "screens": {
-        "SITES": "LandPKS Soil ID",
         "LOGIN": "Iniciar sesión",
         "SETTINGS": "Configuraciones",
         "PROJECT_LIST": "Proyectos",
@@ -470,45 +451,13 @@
         "CREATE_SITE": "Crear sitio",
         "COLOR_GUIDE": "Guía de colores de suelo",
         "COLOR_ANALYSIS_HOME": "Análisis fotográfico",
-        "DELETE_ACCOUNT": "Configuraciones"
+        "DELETE_ACCOUNT": "Configuraciones",
+        "SITES": "LandPKS Soil ID"
     },
     "login": {
         "title": "LandPKS Soil ID",
-        "subtitle": "Descrubre el potencial de tu paisaje",
+        "subtitle": "Descrubre el potencial de tu suelo",
         "from": "de"
-    },
-    "delete_account": {
-        "title": "Eliminar cuenta",
-        "confirm": {
-            "p0": "<bold>{{email}}</bold>",
-            "p1": "Se eliminará la cuenta de LandPKS asociada a esta dirección email. Esto elimina:",
-            "p2": {
-                "b0": "tus sitios no afiliados",
-                "b1": "ectos de los cuales eres el único administrador, y sus sitios afiliados"
-            },
-            "p3": "Lo siguiente no se borrará:",
-            "p4": {
-                "b0": "datos que contribuiste a un proyecto del que no eres el único responsable",
-                "b1": "tu cuenta Terraso (incluye grupos, paisajes, y mapas de historias"
-            },
-            "p5": "<bold>Introduce tu direccion de email para confirmar la eliminación:</bold>",
-            "cancel": "Cancelar",
-            "delete": "Eliminar"
-        },
-        "pending": {
-            "p0": "<bold>{{email}}</bold>",
-            "p1": "Tu solicitud de eliminación de cuenta ha sido enviada. La cuenta de {{email}} se eliminará en un plazo de cinco días hábiles.",
-            "p2": "Recibirás una confirmación por email una vez que tu cuenta haya sido eliminada."
-        }
-    },
-    "sign_out": {
-        "confirm_body": "¿Seguro que quieres cerrar la sesión?",
-        "confirm_action": "Cerrar sesión"
-    },
-    "account": {
-        "google_login": "Ingresar con Google",
-        "apple_login": "Ingresar con Apple",
-        "microsoft_login": "Ingresar con Microsoft"
     },
     "privacy": {
         "label": "Privacidad de datos",
@@ -520,11 +469,6 @@
             "inline": "privado",
             "title": "Privado"
         }
-    },
-    "bottom_navigation": {
-        "sites": "Sitios",
-        "projects": "Proyectos",
-        "settings": "Configuraciones"
     },
     "geo": {
         "latitude": {
@@ -540,76 +484,23 @@
             "title": "Elevación"
         }
     },
-    "listfilter": {
-        "open_modal_label": "Actualizar lista de filtros",
-        "num_filters_label": "Número de filtros aplicados",
-        "clear_search_label": "Limpiar filtro de búsqueda",
-        "text_input_label": "Filtrar lista por entrada de búsqueda"
-    },
     "soil": {
         "bedrock": "Roca de fondo",
-        "top_match": "Mejor coincidencia",
-        "ecological_site_name": "Nombre del sitio ecológico",
         "loading": "Cargando…",
-        "no_matches": "No hay coincidencias",
         "error": "Error",
-        "explore_data": "Explorar datos",
-        "soil_id": "Identificación del suelo",
         "surface": "Superficie del suelo",
         "pit": "Pozo de suelo",
-        "add_depth_label": "Añadir profundidad",
-        "project_settings": {
-            "pit_required_label": "Pozo de tierra requerido",
-            "required_data_title": "Requisitos para la recogida de datos"
-        },
-        "required_method": "{{method}} (obligatorio)",
-        "collection_method": {
-            "slope": "Incluye la inclinación, forma, aspecto y posición del pendiente del paisaje.",
-            "soilTexture": "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca",
-            "rockFragmentVolume": "Fragmento de roca",
-            "soilColor": "Color de suelo",
-            "verticalCracking": "Grietas verticales",
-            "carbonates": "Carbonatos",
-            "ph": "pH",
-            "soilOrganicCarbonMatter": "COS/MOS",
-            "electricalConductivity": "Conductividad eléctrica",
-            "sodiumAdsorptionRatio": "RAS",
-            "soilStructure": "Estructura",
-            "landUseLandCover": "Uso del suelo/Cubierta vegetal",
-            "soilLimitations": "Limitaciones",
-            "photos": "Fotos",
-            "notes": "Notas"
-        },
-        "collection_method_description": {
-            "slope": "Incluye la inclinación, forma, aspecto y posición del pendiente del paisaje",
-            "soilTexture": "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca"
-        },
-        "vertical_cracking": {
-            "description": "Pueden aparecer grietas verticales en la superficie cuando algunos suelos experimentan cambios de humedad o temperatura. Las grietas pueden ser permanentes o desaparecer con el tiempo.\n\nLas grietas verticales tienen al menos $t(soil.vertical_cracking.description_width, {\\\"context\\\": \\\"{{units}}\\\"}) de ancho y $t(soil.vertical_cracking.description_depth, {\\\"context\\\": \\\"{{units}}\\\"}) de profundidad. Deberías poder colocar un lápiz dentro de las grietas.",
-            "description_width_METRIC": "5 mm",
-            "description_width_ENGLISH": "3/16”",
-            "description_depth_METRIC": "25 cm",
-            "description_depth_ENGLISH": "10”",
-            "value": {
-                "NO_CRACKING": "Sin grietas",
-                "SURFACE_CRACKING_ONLY": "Sólo grietas superficiales",
-                "DEEP_VERTICAL_CRACKS": "Grietas verticales profundas"
-            }
-        },
         "data": {
             "rockFragmentVolume": "Fragmento de roca",
             "texture": "Textura",
             "colorValue": "Color"
         },
-        "soil_preset": {
-            "header": "Cambiar profundidades del pozo",
-            "info": "Los datos ya introducidos para una profundidad se borrarán cuando se cambie la profundidad.",
-            "label": "Profundidades",
-            "NRCS": "NRCS/GSP (predeterminado)",
-            "BLM": "Norma de supervisión de BLM",
-            "CUSTOM": "A medida"
-        },
         "depth": {
+            "error": {
+                "overlaps": "Superposiciones existentes",
+                "ordering": "Error de límites de profundidad"
+            },
+            "bounds": "{{start}}–{{end}}{{units}}",
             "add_title": "Añadir produndidad",
             "edit_title": "Profundidad",
             "data_inputs_title": "Entradas de datos sobre el suelo",
@@ -631,21 +522,16 @@
                 "body": "Los datos que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
                 "action": "Eliminar"
             },
-            "error": {
-                "overlaps": "Superposiciones existentes",
-                "ordering": "Error de límites de profundidad"
-            },
             "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
             "bounds_unitless": "{{start}}–{{end}}",
-            "bounds": "{{start}}–{{end}}{{units}}",
             "delete_button": "Eliminar profundidad"
         },
         "texture": {
             "title": "Textura del suelo",
-            "label": "Textura",
+            "label": "Clase de textura",
             "info": {
                 "title": "Textura del suelo",
-                "description": "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n\n<bold>La textura del suelo</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener un gran impacto en el potencial del suelo.\n\nLa textura del suelo determina muchas características importantes de tu tierra, incluyendo:\n\n<bullets />\nConocer la textura del suelo también te ayuda a identificar tu suelo con mayor precisión.",
+                "description": "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n\n<bold>La textura del suelo</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener un gran impacto en el potencial del suelo.\n\nLa textura del suelo determina muchas características importantes de tu terreno, incluyendo:\n\n<bullets />\nConocer la textura del suelo también te ayuda a identificar tu suelo con mayor precisión.",
                 "point1": "Cuánta agua puede retener el suelo",
                 "point2": "La rapidez con la que el agua puede ser absorbida y filtrada a través del suelo.",
                 "point3": "La facilidad con la que el suelo se erosiona cuando se expone al viento o al agua.",
@@ -655,11 +541,16 @@
             },
             "guide": {
                 "title": "Guía de texturas",
+                "result": "Textura de suelo: {{result}}",
+                "prepare": "Prepara el suelo:",
+                "wet": "Humedece el suelo:",
+                "ball": "Forma una bola:",
+                "ribbon": "Forma una cinta",
+                "grittyness": "Toca el suelo:",
                 "ball_help": "Se puede formar una bola con el suelo?",
                 "ribbon_help": "¿Se puede formar una cinta con el suelo?",
                 "ribbon_length_help": "¿Cuánto mide la cinta de largo?",
                 "grittyness_help": "¿Cómo se siente el suelo?",
-                "result": "Textura de suelo: {{result}}",
                 "use_label": "Usar esta textura",
                 "ribbon_length": {
                     "SM": "<2.5cm",
@@ -671,36 +562,25 @@
                     "NEITHER": "Ni granulado ni suave",
                     "SMOOTH": "Suave"
                 },
-                "prepare": "Prepara el suelo:",
                 "prepare_details_1": "Obtén una muestra de tierra de al menos unos puñados.",
                 "prepare_details_2": "Retira todos los fragmentos de roca mayores de 2 mm. Si es posible, utiliza un tamiz.",
                 "prepare_details_3": "Aplasta los grumos de tierra (si es posible).",
-                "wet": "Humedece el suelo:",
                 "wet_details_1": "Recoge un puñado de tierra del tamaño de una pelota de golf (más o menos 25 g).",
                 "wet_details_2": "Utiliza una botella pulverizadora para aplicar lentamente agua a la muestra.",
                 "wet_details_3": "Integre el agua y el suelo uniformemente con las manos.",
                 "wet_details_4": "La tierra debe estar completamente húmeda, pero no brillante, con una textura parecida a la masilla. Si la tierra está demasiado húmeda, añade más tierra seca de tu muestra.",
                 "wet_details_5": "Evita trabajar la tierra con las manos durante más de 2 minutos. Si sobrepasa los 2 minutos, desecha la tierra y empieza con una nueva muestra.",
-                "ball": "Forma una bola:",
                 "ball_details_1": "Haz rodar la tierra entre tus manos para ver si se forma una bola.",
                 "ball_details_2": "Si se desmorona al ejercer una ligera presión para hacerla rodar, la tierra no forma una bola.",
-                "ribbon": "Forma una cinta",
                 "ribbon_details_1": "Agarra la tierra con los dedos (no con el pulgar).",
                 "ribbon_details_2": "Utiliza la parte interior del nudillo del pulgar (la parte plana) para empujar la tierra hacia arriba por encima del borde del dedo índice. No utilices la punta del pulgar para presionar la tierra.",
                 "ribbon_details_3": "La cinta debe estar paralela al suelo, sin apuntar hacia arriba ni hacia abajo.",
                 "ribbon_details_4": "Si la tierra se desmorona en lugar de mantenerse unida cuando se presiona para formar una cinta, entonces no forma una cinta.",
                 "ribbon_details_5": "Deja que la cinta caiga naturalmente por efecto de la gravedad. Mide la longitud del segmento, sin tener en cuenta los bordes irregulares.",
-                "grittyness": "Toca el suelo:",
                 "grittyness_details_1": "<0>Granulado</0> significa que se pueden sentir granos individuales en el suelo.",
                 "grittyness_details_2": "<0>Liso</0> significa que el suelo mojado se siente resbaladizo o jabonoso al tacto.",
                 "grittyness_details_3": "<0>Ni granulado ni suave</0> significa que no predomina ninguna de esas dos texturas. Es posible que aún se perciban algunos granos de arena o algo jabonoso pero al tacto, pero ninguna predomina."
             },
-            "guide_intro": "¿No conoce la textura de su suelo? Utiliza la guía paso a paso.",
-            "use_guide_label": "Usar guía",
-            "clay_title": "Porcentaje arcilla",
-            "clay_label": "Porcentaje arcilla",
-            "clay_help": "0–100%",
-            "fragment_title": "Volumen de fragmentos de roca",
             "fragment": {
                 "info": {
                     "title": "Volumen de fragmentos de roca",
@@ -723,6 +603,12 @@
                 "SILTY_CLAY_LOAM": "Franco arcillo limoso",
                 "SILT_LOAM": "Franco limoso"
             },
+            "guide_intro": "¿No conoce la textura de su suelo? Utiliza la guía paso a paso.",
+            "use_guide_label": "Usar guía",
+            "clay_title": "Porcentaje arcilla",
+            "clay_label": "Porcentaje arcilla",
+            "clay_help": "0–100%",
+            "fragment_title": "Volumen de fragmentos de roca",
             "rockfragment": {
                 "VOLUME_0_1": "0–1%",
                 "VOLUME_1_15": "1–15%",
@@ -741,18 +627,6 @@
                 "bullet3": "Y mucho más",
                 "p2": "El color del suelo puede medirse con un libro Munsell o con un espectrómetro.",
                 "p3": "En esta aplicación, también puedes tomar una foto con una tarjeta de referencia, como una nota Post-it, para determinar el color de tu suelo."
-            },
-            "confirm_delete": {
-                "title": "¿Eliminar datos?",
-                "body": "Esto eliminará los datos del color del suelo asociados con esta profundidad.",
-                "action_name": "Eliminar"
-            },
-            "unexpected_color": {
-                "title": "Color de suelo inesperado",
-                "body": "Este no es un color típico de suelo. Deseas proceder de todos modos o utilizar el color sugerido más cercano?",
-                "suggestion": "Sugerencia",
-                "your_result": "Tu resultado",
-                "use_suggestion": "Usar sugerencia"
             },
             "hue": "Tonalidad",
             "value": "Valor",
@@ -781,7 +655,7 @@
                 },
                 "step3": {
                     "title": "3. Prepara la iluminación.",
-                    "content": "El foto del color del suele debe tomarse en condiciones de iluminación uniforme y a la sombra del sol directo."
+                    "content": "El foto del color del suelo debe tomarse en condiciones de iluminación uniforme y a la sombra del sol directo."
                 },
                 "step4": {
                     "title": "4. Coloca la tarjeta de referencia al lado del suelo.",
@@ -799,12 +673,24 @@
                 "take_photo": "Tomar foto"
             },
             "reference": "Referencia",
-            "crop_reference": "Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo canario. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "soil": "Suelo",
+            "analyze": "Analizar",
+            "confirm_delete": {
+                "title": "¿Eliminar datos?",
+                "body": "Esto eliminará los datos del color del suelo asociados con esta profundidad.",
+                "action_name": "Eliminar"
+            },
+            "unexpected_color": {
+                "title": "Color de suelo inesperado",
+                "body": "Este no es un color típico de suelo. Deseas proceder de todos modos o utilizar el color sugerido más cercano?",
+                "suggestion": "Sugerencia",
+                "your_result": "Tu resultado",
+                "use_suggestion": "Usar sugerencia"
+            },
+            "crop_reference": "Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo canario. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "crop_soil": "Recorta la imagen para mostrar sólo la muestra de suelo. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "soil_condition": "Condición del suelo:",
             "lighting_condition": "La foto tiene una iluminación uniforme y sin sombras:",
-            "analyze": "Analizar",
             "use_photo_instead": "¿No conoces los valores de color del suelo? Utiliza una foto en su lugar (guía incluida.)",
             "photo_need_help": "Para utilizar una foto para determinar el color del suelo, necesitará una nota Post-it color amarilla canaria de 3M como referencia de color y una muestra de suelo debidamente preparada. ¿Necesitas ayuda? Utiliza la guía paso a paso.",
             "use_guide_label": "Usar guía",
@@ -816,6 +702,58 @@
                 "EVEN": "Sí",
                 "UNEVEN": "No"
             }
+        },
+        "top_match": "Mejor coincidencia",
+        "ecological_site_name": "Nombre del sitio ecológico",
+        "no_matches": "No hay coincidencias",
+        "explore_data": "Explorar datos",
+        "soil_id": "Identificación del suelo",
+        "add_depth_label": "Añadir profundidad",
+        "project_settings": {
+            "pit_required_label": "Pozo de tierra requerido",
+            "required_data_title": "Requisitos para la recogida de datos"
+        },
+        "required_method": "{{method}} (obligatorio)",
+        "collection_method": {
+            "slope": "Incluye la inclinación, forma, aspecto y posición del pendiente del suelo.",
+            "soilTexture": "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca",
+            "rockFragmentVolume": "Fragmento de roca",
+            "soilColor": "Color de suelo",
+            "verticalCracking": "Grietas del suelo",
+            "carbonates": "Carbonatos",
+            "ph": "pH",
+            "soilOrganicCarbonMatter": "COS/MOS",
+            "electricalConductivity": "Conductividad eléctrica",
+            "sodiumAdsorptionRatio": "RAS",
+            "soilStructure": "Estructura",
+            "landUseLandCover": "Uso del suelo/Cubierta vegetal",
+            "soilLimitations": "Limitaciones",
+            "photos": "Fotos",
+            "notes": "Notas"
+        },
+        "collection_method_description": {
+            "slope": "Incluye la inclinación y la forma de la pendiente",
+            "soilTexture": "Incluye clase de textura y volumen de fragmentos de roca"
+        },
+        "vertical_cracking": {
+            "description": "Pueden aparecer grietas verticales en la superficie cuando algunos suelos experimentan cambios de humedad o temperatura. Las grietas pueden ser permanentes o desaparecer con el tiempo.\n\nLas grietas verticales tienen al menos $t(soil.vertical_cracking.description_width, {\\\"context\\\": \\\"{{units}}\\\"}) de ancho y $t(soil.vertical_cracking.description_depth, {\\\"context\\\": \\\"{{units}}\\\"}) de profundidad. Deberías poder colocar un lápiz dentro de las grietas.",
+            "description_width_METRIC": "5 mm",
+            "description_width_ENGLISH": "3/16”",
+            "description_depth_METRIC": "25 cm",
+            "description_depth_ENGLISH": "10”",
+            "value": {
+                "NO_CRACKING": "Sin grietas",
+                "SURFACE_CRACKING_ONLY": "Sólo grietas superficiales",
+                "DEEP_VERTICAL_CRACKS": "Grietas verticales profundas"
+            }
+        },
+        "soil_preset": {
+            "header": "Cambiar profundidades del pozo",
+            "info": "Los datos ya introducidos para una profundidad se borrarán cuando se cambie la profundidad.",
+            "label": "Profundidades",
+            "NRCS": "NRCS/GSP (predeterminado)",
+            "BLM": "Norma de supervisión de BLM",
+            "CUSTOM": "A medida"
         }
     },
     "slope": {
@@ -825,28 +763,28 @@
             "description": "Describe las características de la pendiente del terreno en el que se encuentra el sitio.\n\nLas instrucciones sobre cómo recoger cada dato están disponibles pulsando sobre el nombre del dato.\n\nLa pendiente es importante para identificar el suelo. También ayuda a determinar el potencial de erosión del suelo, su capacidad para retener agua, etc."
         },
         "steepness": {
-            "short_title": "Nivel de inclinación",
-            "long_title": "Nivel de inclinación de la pendiente",
             "description": "Introduce la inclinación manualmente utilizando el medidor de inclinación o seleccionando una de las siguiente imágenes.",
-            "manual_label": "Manual",
-            "manual_help": "Introduce el porcentaje o grado de inclinación",
-            "confirm_title": "¿Cambiar pendiente?",
-            "confirm_body": "¿Estás seguro de que quieres anular los datos de la pendiente?",
-            "percentage_placeholder": "Porcentaje",
-            "percentage_help": "0%–999%",
             "degree": "{{value}}°",
-            "degree_help": "0°–89°\n",
-            "degree_placeholder": "Grado",
-            "slope_meter": "Medidor de pendiente",
-            "camera_grant": "Permitir el uso de la cámara",
-            "no_camera": "Sin acceso a la cámara",
-            "no_camera_explanation": "Para el mejor resultado, concede a LandPKS Soil ID acceso tu cámara desde configuraciones.",
             "info": {
                 "title": "Cómo usar el medidor de pendiente",
                 "description": "Colócate frente al lugar a una distancia mínima de $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}).\n\nIdentifica la dirección de la pendiente predominante en el lugar.\n\nSitúate de forma que puedas ver la cresta o silueta de esa pendiente predominante (puede que necesites acercarte al suelo para verla).\n\nLa dirección en la que miras debe ser perpendicular a la dirección de la pendiente. Si extiendes los brazos a los lados, la línea que forman debe ser paralela a la dirección de la pendiente.\n\nColoca el teléfono de modo que la línea blanca sólida se alinee con la pendiente del terreno; intenta colocar la línea blanca a lo largo del borde de la pendiente. Es posible que tenga que agacharse si la silueta de la pendiente no es fácil de ver estando de pie.\n\n<bold>Método alternativo</bold>: Si la forma del terreno no es demasiado curvada o irregular, puedes colocar una vara de medir en el suelo del lugar y luego alinear tu teléfono sobre la vara para obtener el ángulo de la pendiente.",
                 "description_distance_METRIC": "4 metros",
                 "description_distance_ENGLISH": "15 pies"
             },
+            "short_title": "Nivel de inclinación",
+            "long_title": "Nivel de inclinación de la pendiente",
+            "manual_label": "Manual",
+            "manual_help": "Introduce el porcentaje o grado de inclinación",
+            "confirm_title": "¿Cambiar pendiente?",
+            "confirm_body": "¿Estás seguro de que quieres anular los datos de la pendiente?",
+            "percentage_placeholder": "Porcentaje",
+            "percentage_help": "0%–999%",
+            "degree_help": "0°–89°\n",
+            "degree_placeholder": "Grado",
+            "slope_meter": "Medidor de pendiente",
+            "camera_grant": "Permitir el uso de la cámara",
+            "no_camera": "Sin acceso a la cámara",
+            "no_camera_explanation": "Para el mejor resultado, concede a LandPKS Soil ID acceso tu cámara desde configuraciones.",
             "select_labels": {
                 "FLAT": "Plano",
                 "FLAT_PERCENT": "0–2%",
@@ -871,18 +809,18 @@
         },
         "shape": {
             "title": "Forma",
-            "long_title": "Forma de pendiente",
             "info": {
                 "title": "Forma de pendiente",
                 "description": "La forma de la pendiente se refiere a la forma en que se curva el terreno en la zona que rodea el punto de tu emplazamiento.\n\nLa forma de la pendiente se determina en dos direcciones: <bold>pendiente descendente</bold> y <bold>pendiente transversal</bold>.\n\nEn primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(pendiente.forma.info.descripcion_distancia, {\"contexto\": \"{{unidades}}\"}\"}) en todas las direcciones.\n\nSi lloviera, ¿en qué dirección general fluiría el agua cuesta abajo? Esto se denomina la dirección <bold>pendiente abajo</bold>.\n\nLa dirección de la pendiente transversal se puede encontrar mirando en ángulo recto (90 grados) desde la dirección de la pendiente descendente.\n\nSi te alejas del lugar manteniendo la misma elevación, ésta es la dirección de la <bold>pendiente transversal</bold>.\n\nEn segundo lugar, determine la forma de la pendiente para cada dirección.\n\n<bold>Cóncava</bold> significa que el terreno se inclina cada vez más hacia arriba a medida que te alejas de tu punto a lo largo de la <bold>pendiente transversal</bold> o de la <bold>pendiente descendente</bold>. Por ejemplo, la pendiente descendente suele ser cóncava al pie de una colina, ya que pasa de una pendiente pronunciada a otra más superficial.\n\n<bold>Convexa</bold> significa que el terreno se inclina cada vez más hacia abajo a medida que se aleja de su punto a lo largo de una dirección determinada. Por ejemplo, la pendiente descendente suele ser convexa en la cima de una colina al pasar de una pendiente poco profunda a otra más pronunciada.\n\n<bold>Lineal</bold> significa que la pendiente es constante a lo largo de toda una dirección determinada. No significa necesariamente que el terreno sea llano; sólo significa que la pendiente no cambia.",
+                "concave": "Cóncava",
+                "convex": "Conveza",
+                "linear": "Lineal",
                 "description_distance_METRIC": "20-30 metros",
                 "description_distance_ENGLISH": "60-90 pies",
                 "down_slope": "Cuesta abajo",
-                "cross_slope": "Pendiente transversal",
-                "concave": "Cóncava",
-                "convex": "Conveza",
-                "linear": "Lineal"
+                "cross_slope": "Pendiente transversal"
             },
+            "long_title": "Forma de pendiente",
             "select_labels": {
                 "CONCAVE": "Cóncava",
                 "CONVEX": "Conveza",
@@ -890,8 +828,70 @@
             }
         }
     },
+    "permissions": {
+        "camera_title": "LandPKS Soil ID requiere acceso a tu cámara",
+        "camera_body": "Para usar {{feature}}, concede a LandPKS Soil ID acceso a tu cámara en los ajustes del dispositivo.",
+        "gallery_title": "LandPKS Soil ID requiere acceso a tu galería de fotos",
+        "gallery_body": "Para usar {{feature}}, concede a LandPKS Soil ID acceso a a tu galería de fotos en los ajustes del dispositivo.",
+        "location_title": "LandPKS Soil ID requiere acceso a tu ubicación",
+        "location_body": "Para disfrutar de la mejor experiencia cartográfica, concede a LandPKS Soil ID acceso a a tu ubicación en los ajustes del dispositivo."
+    },
+    "delete_account": {
+        "title": "Eliminar cuenta",
+        "confirm": {
+            "p0": "<bold>{{email}}</bold>",
+            "p1": "Se eliminará la cuenta de LandPKS asociada a esta dirección email. Esto elimina:",
+            "p2": {
+                "b0": "tus sitios no afiliados",
+                "b1": "ectos de los cuales eres el único administrador, y sus sitios afiliados"
+            },
+            "p3": "Lo siguiente no se borrará:",
+            "p4": {
+                "b0": "datos que contribuiste a un proyecto del que no eres el único responsable",
+                "b1": "tu cuenta Terraso (incluye grupos, suelo, y mapas de historias"
+            },
+            "p5": "<bold>Introduce tu direccion de email para confirmar la eliminación:</bold>",
+            "cancel": "Cancelar",
+            "delete": "Eliminar"
+        },
+        "pending": {
+            "p0": "<bold>{{email}}</bold>",
+            "p1": "Tu solicitud de eliminación de cuenta ha sido enviada. La cuenta de {{email}} se eliminará en un plazo de cinco días hábiles.",
+            "p2": "Recibirás una confirmación por email una vez que tu cuenta haya sido eliminada."
+        }
+    },
+    "sign_out": {
+        "confirm_body": "¿Seguro que quieres cerrar la sesión?",
+        "confirm_action": "Cerrar sesión"
+    },
+    "account": {
+        "google_login": "Ingresar con Google",
+        "apple_login": "Ingresar con Apple",
+        "microsoft_login": "Ingresar con Microsoft"
+    },
+    "bottom_navigation": {
+        "sites": "Sitios",
+        "projects": "Proyectos",
+        "settings": "Configuraciones"
+    },
+    "listfilter": {
+        "open_modal_label": "Actualizar lista de filtros",
+        "num_filters_label": "Número de filtros aplicados",
+        "clear_search_label": "Limpiar filtro de búsqueda",
+        "text_input_label": "Filtrar lista por entrada de búsqueda"
+    },
     "image": {
         "use_camera": "Sacar foto",
         "choose_from_gallery": "Biblioteca de fotos"
+    },
+    "info": {
+        "title": "Descubre el potencial de tu paisaje",
+        "description": "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.\n\n<2>Hay tres formas de utilizar el mapa:</2>",
+        "list1": "Toca el mapa para marcar un punto en el mapa y obtener más información sobre la ubicación.",
+        "list2": "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual.",
+        "list3": "Ingresa las coordenadas, la dirección, o el término que buscas en la barra de búsqueda.",
+        "description2": "<bold>Encuentra más información y guías</bold> en:\n<icon />",
+        "link_label": "landpotential.org",
+        "link_url": "https://landpotential.org/"
     }
 }
