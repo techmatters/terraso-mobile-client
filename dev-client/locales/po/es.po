@@ -368,9 +368,8 @@ msgstr "{{start}}–{{end}}{{units}}"
 msgid "soil##texture##title"
 msgstr "Textura del suelo"
 
-#, fuzzy
 msgid "soil##texture##label"
-msgstr "Textura"
+msgstr "Clase de textura"
 
 msgid "soil##texture##info##title"
 msgstr "Textura del suelo"
@@ -950,9 +949,8 @@ msgstr "Color de suelo por profundidad"
 msgid "site##soil_id##soil_properties_score_info##bullets##4"
 msgstr "Pendiente del sitio"
 
-#, fuzzy
 msgid "site##soil_id##soil_properties_score_info##bullets##5"
-msgstr "Agrietamiento de la superficie"
+msgstr "Grietas del suelo"
 
 msgid "site##notes##add_note_label"
 msgstr "Agregar nota"
@@ -1206,7 +1204,6 @@ msgstr "La descripción del proyecto debe tener un mínimo de {{min}} caracteres
 msgid "projects##form##description_max_length_error"
 msgstr "La descripción del proyecto debe tener un máximo de {{max}} caracteres"
 
-#, fuzzy
 msgid "projects##sort_label"
 msgstr "Ordenar proyectos por:"
 
@@ -1472,9 +1469,8 @@ msgstr "Fragmento de roca"
 msgid "soil##collection_method##soilColor"
 msgstr "Color de suelo"
 
-#, fuzzy
 msgid "soil##collection_method##verticalCracking"
-msgstr "Grietas verticales"
+msgstr "Grietas del suelo"
 
 msgid "soil##collection_method##carbonates"
 msgstr "Carbonatos"
@@ -1506,13 +1502,11 @@ msgstr "Fotos"
 msgid "soil##collection_method##notes"
 msgstr "Notas"
 
-#, fuzzy
 msgid "soil##collection_method_description##slope"
-msgstr "Incluye la inclinación, forma, aspecto y posición del pendiente del paisaje"
+msgstr "Incluye la inclinación y la forma de la pendiente"
 
-#, fuzzy
 msgid "soil##collection_method_description##soilTexture"
-msgstr "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca"
+msgstr "Incluye clase de textura y volumen de fragmentos de roca"
 
 msgid "soil##vertical_cracking##description"
 msgstr "Pueden aparecer grietas verticales en la superficie cuando algunos suelos experimentan cambios de humedad o temperatura. Las grietas pueden ser permanentes o desaparecer con el tiempo.\n"
@@ -1531,11 +1525,9 @@ msgstr "25 cm"
 msgid "soil##vertical_cracking##description_depth_ENGLISH"
 msgstr "10”"
 
-#, fuzzy
 msgid "soil##vertical_cracking##value##NO_CRACKING"
 msgstr "Sin grietas"
 
-#, fuzzy
 msgid "soil##vertical_cracking##value##SURFACE_CRACKING_ONLY"
 msgstr "Sólo grietas superficiales"
 
