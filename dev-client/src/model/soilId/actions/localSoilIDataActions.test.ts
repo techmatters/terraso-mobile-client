@@ -135,6 +135,19 @@ describe('updateSoilData', () => {
     expect(result.depthIntervalPreset).toEqual('NRCS');
     expect(result.depthIntervals).toHaveLength(1);
   });
+
+  test('initializes soil data with default properties if it does not exist', () => {
+    const input: SoilDataUpdateMutationInput = {
+      siteId: '',
+    };
+    const data = undefined;
+
+    const result = updateSoilData(input, data);
+    expect(result).toBeDefined();
+    expect(result.depthIntervalPreset).toEqual('NRCS');
+    expect(result.depthIntervals).toHaveLength(0);
+    expect(result.depthDependentData).toHaveLength(0);
+  });
 });
 
 describe('deleteSoilDataDepthInterval', () => {
@@ -154,6 +167,16 @@ describe('deleteSoilDataDepthInterval', () => {
     const result = deleteSoilDataDepthInterval(input, data);
     expect(result.depthIntervals).toHaveLength(2);
     expect(result.depthIntervals[1].depthInterval).toEqual({start: 2, end: 3});
+  });
+
+  test('fails if soil data does not exist', () => {
+    const input: SoilDataDeleteDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 1, end: 2},
+    };
+    const data = undefined;
+
+    expect(() => deleteSoilDataDepthInterval(input, data)).toThrow();
   });
 
   test('fails if a match not found', () => {
@@ -328,6 +351,20 @@ describe('updateSoilDataDepthInterval', () => {
     expect(result.depthIntervals[1].depthInterval).toEqual({start: 2, end: 3});
     expect(result.depthIntervals[2].depthInterval).toEqual({start: 4, end: 5});
   });
+
+  test('initializes soil data with default properties if it does not exist', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+    };
+    const data = undefined;
+
+    const result = updateSoilDataDepthInterval(input, data);
+    expect(result).toBeDefined();
+    expect(result.depthIntervalPreset).toEqual('NRCS');
+    expect(result.depthIntervals).toHaveLength(1);
+    expect(result.depthDependentData).toHaveLength(0);
+  });
 });
 
 describe('updateDepthDependentSoilData', () => {
@@ -431,6 +468,20 @@ describe('updateDepthDependentSoilData', () => {
       start: 4,
       end: 5,
     });
+  });
+
+  test('initializes soil data with default properties if it does not exist', () => {
+    const input: DepthDependentSoilDataUpdateMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+    };
+    const data = undefined;
+
+    const result = updateDepthDependentSoilData(input, data);
+    expect(result).toBeDefined();
+    expect(result.depthIntervalPreset).toEqual('NRCS');
+    expect(result.depthIntervals).toHaveLength(0);
+    expect(result.depthDependentData).toHaveLength(1);
   });
 });
 

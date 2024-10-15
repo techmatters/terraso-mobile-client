@@ -31,6 +31,7 @@ import {
   DEPTH_INTERVAL_UPDATE_FIELDS,
   SOIL_DATA_UPDATE_FIELDS,
 } from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
+import {DEFAULT_DEPTH_INTERVAL_PRESET} from 'terraso-mobile-client/model/soilId/soilDataConstants';
 import {
   compareInterval,
   sameDepth,
@@ -38,7 +39,7 @@ import {
 
 export const updateSoilData = (
   input: SoilDataUpdateMutationInput,
-  data: SoilData,
+  data?: SoilData,
 ): SoilData => {
   const result = initializeResult(data);
   updateFields(input, result, SOIL_DATA_UPDATE_FIELDS);
@@ -46,7 +47,7 @@ export const updateSoilData = (
   /* Specifying a depth interval preset clears all existing depth intervals */
   if (
     input.depthIntervalPreset !== undefined &&
-    input.depthIntervalPreset !== data.depthIntervalPreset
+    input.depthIntervalPreset !== data?.depthIntervalPreset
   ) {
     result.depthIntervals = [];
   }
@@ -56,13 +57,16 @@ export const updateSoilData = (
 
 export const deleteSoilDataDepthInterval = (
   input: SoilDataDeleteDepthIntervalMutationInput,
-  data: SoilData,
+  data?: SoilData,
 ): SoilData => {
-  const result = initializeResult(data);
+  if (!data) {
+    throw new Error('Soil data not found');
+  }
 
-  const idx = result.depthIntervals.findIndex(sameDepth(input));
-  if (idx >= 0) {
-    result.depthIntervals.splice(idx, 1);
+  const result = initializeResult(data);
+  const removeIdx = result.depthIntervals.findIndex(sameDepth(input));
+  if (removeIdx >= 0) {
+    result.depthIntervals.splice(removeIdx, 1);
   } else {
     throw new Error('Depth interval not found');
   }
@@ -72,7 +76,7 @@ export const deleteSoilDataDepthInterval = (
 
 export const updateSoilDataDepthInterval = (
   input: SoilDataUpdateDepthIntervalMutationInput,
-  data: SoilData,
+  data?: SoilData,
 ): SoilData => {
   const result = initializeResult(data);
   createOrUpdateDepthInterval(input.depthInterval, input, result);
@@ -109,10 +113,9 @@ const createOrUpdateDepthInterval = (
 
 export const updateDepthDependentSoilData = (
   input: DepthDependentSoilDataUpdateMutationInput,
-  data: SoilData,
+  data?: SoilData,
 ): SoilData => {
   const result = initializeResult(data);
-
   let depthDependentData = result.depthDependentData.find(
     sameDepth({depthInterval: input.depthInterval}),
   );
@@ -132,8 +135,16 @@ export const updateDepthDependentSoilData = (
   return result;
 };
 
-export const initializeResult = (data: SoilData): SoilData => {
-  return cloneDeep(data);
+export const initializeResult = (data?: SoilData): SoilData => {
+  if (data) {
+    return cloneDeep(data);
+  } else {
+    return {
+      depthIntervalPreset: DEFAULT_DEPTH_INTERVAL_PRESET,
+      depthIntervals: [],
+      depthDependentData: [],
+    };
+  }
 };
 
 export const updateFields = <I, D extends object>(
