@@ -26,6 +26,7 @@ import {
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {SOIL_DATA_UPDATE_FIELDS} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
+import {sameDepth} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
 export const updateSoilData = (
   input: SoilDataUpdateMutationInput,
@@ -50,6 +51,13 @@ export const deleteSoilDataDepthInterval = (
   data: SoilData,
 ): SoilData => {
   const result = initializeResult(data);
+
+  const idx = result.depthIntervals.findIndex(sameDepth(input));
+  if (idx >= 0) {
+    result.depthIntervals.splice(idx, 1);
+  } else {
+    throw new Error('Depth interval not found');
+  }
 
   return result;
 };

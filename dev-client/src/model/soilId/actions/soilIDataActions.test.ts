@@ -15,10 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilDataUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  SoilDataDeleteDepthIntervalMutationInput,
+  SoilDataUpdateMutationInput,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {SOIL_DATA_UPDATE_FIELDS} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
 import {
+  deleteSoilDataDepthInterval,
   initializeResult,
   updateSoilData,
 } from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
@@ -54,7 +58,6 @@ describe('updateSoilData', () => {
   test('assigns all specified properties', () => {
     const input: SoilDataUpdateMutationInput = {
       siteId: '',
-
       bedrock: 10,
       crossSlope: 'CONCAVE',
       depthIntervalPreset: 'BLM',
@@ -85,7 +88,6 @@ describe('updateSoilData', () => {
   test('only assigns defined properties', () => {
     const input: SoilDataUpdateMutationInput = {
       siteId: '',
-
       crossSlope: undefined,
     };
     const data = soilData({
@@ -99,7 +101,6 @@ describe('updateSoilData', () => {
   test('assigns null properties', () => {
     const input: SoilDataUpdateMutationInput = {
       siteId: '',
-
       bedrock: 10,
       crossSlope: null,
     };
@@ -115,7 +116,6 @@ describe('updateSoilData', () => {
   test('assigning a depth interval preset clears depth intervals', () => {
     const input: SoilDataUpdateMutationInput = {
       siteId: '',
-
       depthIntervalPreset: 'NRCS',
     };
     const data = soilData({
@@ -131,7 +131,6 @@ describe('updateSoilData', () => {
   test('does not clear depth intervals when the preset is unchanged', () => {
     const input: SoilDataUpdateMutationInput = {
       siteId: '',
-
       depthIntervalPreset: 'NRCS',
     };
     const data = soilData({
@@ -142,6 +141,40 @@ describe('updateSoilData', () => {
 
     expect(result.depthIntervalPreset).toEqual('NRCS');
     expect(result.depthIntervals).toHaveLength(1);
+  });
+});
+
+describe('deleteSoilDataDepthInterval', () => {
+  test('deletes the specified depth interval', () => {
+    const input: SoilDataDeleteDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 1, end: 2},
+    };
+    const data = soilData({
+      depthIntervals: [
+        soilDataDepthInterval({depthInterval: {start: 0, end: 1}}),
+        soilDataDepthInterval({depthInterval: {start: 1, end: 2}}),
+        soilDataDepthInterval({depthInterval: {start: 2, end: 3}}),
+      ],
+    });
+
+    const result = deleteSoilDataDepthInterval(input, data);
+    expect(result.depthIntervals).toHaveLength(2);
+    expect(result.depthIntervals[1].depthInterval).toEqual({start: 2, end: 3});
+  });
+
+  test('fails if a match not found', () => {
+    const input: SoilDataDeleteDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 1, end: 2},
+    };
+    const data = soilData({
+      depthIntervals: [
+        soilDataDepthInterval({depthInterval: {start: 0, end: 1}}),
+      ],
+    });
+
+    expect(() => deleteSoilDataDepthInterval(input, data)).toThrow();
   });
 });
 
