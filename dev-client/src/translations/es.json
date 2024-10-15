@@ -1,13 +1,6 @@
 {
     "welcome": {
         "title": "Bienvenido a LandPKS Soil ID",
-        "version_includes": {
-            "title": "Esta version incluye:",
-            "bullet_1": "Identificación de suelos dentro de los EEUU",
-            "bullet_2": "Recogida de datos sobre pendientes y suelos",
-            "bullet_3": "Notas acerca del sitio",
-            "bullet_4": "El manejo de projectos"
-        },
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
@@ -15,6 +8,13 @@
             "bullet_2": "Mejoras en la visualización de datos",
             "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
             "bullet_4": "Fotos del sitio"
+        },
+        "version_includes": {
+            "title": "Esta version incluye:",
+            "bullet_1": "Identificación de suelos dentro de los EEUU",
+            "bullet_2": "Recogida de datos sobre pendientes y suelos",
+            "bullet_3": "Notas acerca del sitio",
+            "bullet_4": "El manejo de projectos"
         },
         "learn_more": "Aprende más acerca del uso de proyectos",
         "link_text": "LandPKS de Terraso",
@@ -199,7 +199,8 @@
                     "1": "Textura del suelo por profundidad",
                     "2": "Fragmento de roca por profundidad",
                     "3": "Color de suelo por profundidad",
-                    "4": "Pendiente del sitio"
+                    "4": "Pendiente del sitio",
+                    "5": "Grietas del suelo"
                 }
             }
         }
@@ -365,7 +366,8 @@
             "name_max_length_error": "El nombre del proyecto debe tener un máximo de {{max}} caracteres",
             "description_min_length_error": "La descripción del proyecto debe tener un mínimo de {{min}} caracteres",
             "description_max_length_error": "La descripción del proyecto debe tener un máximo de {{max}} caracteres"
-        }
+        },
+        "sort_label": "Ordenar proyectos por:"
     },
     "settings": {
         "beta": "beta",
@@ -526,6 +528,7 @@
         },
         "texture": {
             "title": "Textura del suelo",
+            "label": "Clase de textura",
             "info": {
                 "title": "Textura del suelo",
                 "description": "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n\n<bold>La textura del suelo</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener un gran impacto en el potencial del suelo.\n\nLa textura del suelo determina muchas características importantes de tu terreno, incluyendo:\n\n<bullets />\nConocer la textura del suelo también te ayuda a identificar tu suelo con mayor precisión.",
@@ -716,6 +719,7 @@
             "soilTexture": "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca",
             "rockFragmentVolume": "Fragmento de roca",
             "soilColor": "Color de suelo",
+            "verticalCracking": "Grietas del suelo",
             "carbonates": "Carbonatos",
             "ph": "pH",
             "soilOrganicCarbonMatter": "COS/MOS",
@@ -727,6 +731,10 @@
             "photos": "Fotos",
             "notes": "Notas"
         },
+        "collection_method_description": {
+            "slope": "Incluye la inclinación y la forma de la pendiente",
+            "soilTexture": "Incluye clase de textura y volumen de fragmentos de roca"
+        },
         "vertical_cracking": {
             "description": "Pueden aparecer grietas verticales en la superficie cuando algunos suelos experimentan cambios de humedad o temperatura. Las grietas pueden ser permanentes o desaparecer con el tiempo.\n\nLas grietas verticales tienen al menos $t(soil.vertical_cracking.description_width, {\\\"context\\\": \\\"{{units}}\\\"}) de ancho y $t(soil.vertical_cracking.description_depth, {\\\"context\\\": \\\"{{units}}\\\"}) de profundidad. Deberías poder colocar un lápiz dentro de las grietas.",
             "description_width_METRIC": "5 mm",
@@ -734,6 +742,8 @@
             "description_depth_METRIC": "25 cm",
             "description_depth_ENGLISH": "10”",
             "value": {
+                "NO_CRACKING": "Sin grietas",
+                "SURFACE_CRACKING_ONLY": "Sólo grietas superficiales",
                 "DEEP_VERTICAL_CRACKS": "Grietas verticales profundas"
             }
         },
