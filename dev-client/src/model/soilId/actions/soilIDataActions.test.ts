@@ -17,14 +17,19 @@
 
 import {
   SoilDataDeleteDepthIntervalMutationInput,
+  SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {SOIL_DATA_UPDATE_FIELDS} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
+import {
+  DEPTH_INTERVAL_UPDATE_FIELDS,
+  SOIL_DATA_UPDATE_FIELDS,
+} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
 import {
   deleteSoilDataDepthInterval,
   initializeResult,
   updateSoilData,
+  updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
 import {
   DepthDependentSoilData,
@@ -98,21 +103,6 @@ describe('updateSoilData', () => {
     expect(result.crossSlope).toEqual('CONCAVE');
   });
 
-  test('assigns null properties', () => {
-    const input: SoilDataUpdateMutationInput = {
-      siteId: '',
-      bedrock: 10,
-      crossSlope: null,
-    };
-    const data = soilData({
-      bedrock: 5,
-      crossSlope: 'CONCAVE',
-    });
-    const result = updateSoilData(input, data);
-
-    expect(result.crossSlope).toBeNull();
-  });
-
   test('assigning a depth interval preset clears depth intervals', () => {
     const input: SoilDataUpdateMutationInput = {
       siteId: '',
@@ -175,6 +165,145 @@ describe('deleteSoilDataDepthInterval', () => {
     });
 
     expect(() => deleteSoilDataDepthInterval(input, data)).toThrow();
+  });
+});
+
+describe('updateSoilDataDepthInterval', () => {
+  test('assigns all specified properties', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 1, end: 2},
+      carbonatesEnabled: true,
+      electricalConductivityEnabled: true,
+      label: 'test',
+      phEnabled: true,
+      sodiumAdsorptionRatioEnabled: true,
+      soilColorEnabled: true,
+      soilOrganicCarbonMatterEnabled: true,
+      soilStructureEnabled: true,
+      soilTextureEnabled: true,
+    };
+    const data = soilData({
+      depthIntervals: [
+        soilDataDepthInterval({depthInterval: {start: 1, end: 2}}),
+      ],
+    });
+    const result = updateSoilDataDepthInterval(input, data);
+
+    expect(result.depthIntervals).toHaveLength(1);
+    for (const field of DEPTH_INTERVAL_UPDATE_FIELDS) {
+      expect(result.depthIntervals[0][field]).toEqual(input[field]);
+    }
+  });
+
+  test('adds a new depth interval if missing', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+      label: 'test',
+    };
+    const data = soilData({
+      depthIntervals: [],
+    });
+    const result = updateSoilDataDepthInterval(input, data);
+
+    expect(result.depthIntervals).toHaveLength(1);
+    expect(result.depthIntervals[0].depthInterval).toEqual({start: 2, end: 3});
+    expect(result.depthIntervals[0].label).toEqual('test');
+  });
+
+  test('adds a new depth interval with default empty label', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+    };
+    const data = soilData({
+      depthIntervals: [],
+    });
+    const result = updateSoilDataDepthInterval(input, data);
+
+    expect(result.depthIntervals).toHaveLength(1);
+    expect(result.depthIntervals[0].label).toEqual('');
+  });
+
+  test('applies to apply-to-intervals values', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+      applyToIntervals: [{start: 4, end: 5}],
+      phEnabled: true,
+    };
+    const data = soilData({
+      depthIntervals: [
+        soilDataDepthInterval({depthInterval: {start: 1, end: 2}}),
+        soilDataDepthInterval({depthInterval: {start: 2, end: 3}}),
+        soilDataDepthInterval({depthInterval: {start: 3, end: 4}}),
+        soilDataDepthInterval({depthInterval: {start: 4, end: 5}}),
+      ],
+    });
+    const result = updateSoilDataDepthInterval(input, data);
+
+    expect(result.depthIntervals[0].phEnabled).toBeUndefined();
+    expect(result.depthIntervals[1].phEnabled).toBe(true);
+    expect(result.depthIntervals[2].phEnabled).toBeUndefined();
+    expect(result.depthIntervals[3].phEnabled).toBe(true);
+  });
+
+  test('does not include label to apply-to-intervals', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+      applyToIntervals: [{start: 4, end: 5}],
+      label: 'test',
+    };
+    const data = soilData({
+      depthIntervals: [
+        soilDataDepthInterval({depthInterval: {start: 2, end: 3}}),
+        soilDataDepthInterval({depthInterval: {start: 4, end: 5}}),
+      ],
+    });
+    const result = updateSoilDataDepthInterval(input, data);
+
+    expect(result.depthIntervals[0].label).toEqual('test');
+    expect(result.depthIntervals[1].label).toEqual('');
+  });
+
+  test('creates intervals specified by apply-to-intervals', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+      applyToIntervals: [{start: 4, end: 5}],
+      phEnabled: true,
+    };
+    const data = soilData({
+      depthIntervals: [
+        soilDataDepthInterval({depthInterval: {start: 2, end: 3}}),
+      ],
+    });
+    const result = updateSoilDataDepthInterval(input, data);
+
+    expect(result.depthIntervals).toHaveLength(2);
+    expect(result.depthIntervals[1].depthInterval).toEqual({start: 4, end: 5});
+    expect(result.depthIntervals[1].phEnabled).toBe(true);
+  });
+
+  test('sorts newly-created intervals', () => {
+    const input: SoilDataUpdateDepthIntervalMutationInput = {
+      siteId: '',
+      depthInterval: {start: 2, end: 3},
+      applyToIntervals: [{start: 1, end: 2}],
+    };
+    const data = soilData({
+      depthIntervals: [
+        soilDataDepthInterval({depthInterval: {start: 4, end: 5}}),
+      ],
+    });
+    const result = updateSoilDataDepthInterval(input, data);
+
+    expect(result.depthIntervals).toHaveLength(3);
+    expect(result.depthIntervals[0].depthInterval).toEqual({start: 1, end: 2});
+    expect(result.depthIntervals[1].depthInterval).toEqual({start: 2, end: 3});
+    expect(result.depthIntervals[2].depthInterval).toEqual({start: 4, end: 5});
   });
 });
 

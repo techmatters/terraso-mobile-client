@@ -19,14 +19,21 @@ import {cloneDeep} from 'lodash';
 
 import {
   DepthDependentSoilDataUpdateMutationInput,
+  DepthInterval,
   SoilDataDeleteDepthIntervalMutationInput,
   SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {SOIL_DATA_UPDATE_FIELDS} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
-import {sameDepth} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+import {
+  DEPTH_INTERVAL_UPDATE_FIELDS,
+  SOIL_DATA_UPDATE_FIELDS,
+} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
+import {
+  compareInterval,
+  sameDepth,
+} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
 export const updateSoilData = (
   input: SoilDataUpdateMutationInput,
@@ -67,8 +74,36 @@ export const updateSoilDataDepthInterval = (
   data: SoilData,
 ): SoilData => {
   const result = initializeResult(data);
+  createOrUpdateDepthInterval(input.depthInterval, input, result);
+  if (input.applyToIntervals) {
+    /* apply-to-intervals excludes the label from the input */
+    const applyToIntervalsInput = {...input};
+    applyToIntervalsInput.label = undefined;
+    for (const interval of input.applyToIntervals) {
+      createOrUpdateDepthInterval(interval, applyToIntervalsInput, result);
+    }
+  }
+  result.depthIntervals.sort(compareInterval);
 
   return result;
+};
+
+const createOrUpdateDepthInterval = (
+  interval: DepthInterval,
+  input: SoilDataUpdateDepthIntervalMutationInput,
+  result: SoilData,
+) => {
+  let depthInterval = result.depthIntervals.find(
+    sameDepth({depthInterval: interval}),
+  );
+  if (!depthInterval) {
+    depthInterval = {
+      depthInterval: interval,
+      label: input.label ?? '',
+    };
+    result.depthIntervals.push(depthInterval);
+  }
+  updateFields(input, depthInterval, DEPTH_INTERVAL_UPDATE_FIELDS);
 };
 
 export const updateDepthDependentSoilData = (
@@ -89,10 +124,9 @@ export const updateFields = <I, D extends object>(
   result: D,
   fields: (keyof I)[] & (keyof D)[],
 ) => {
+  const updatedFields = fields.filter(field => input[field] !== undefined);
   const update = Object.fromEntries(
-    fields
-      .filter(field => input[field] !== undefined)
-      .map(field => [field, input[field]]),
+    updatedFields.map(field => [field, input[field]]),
   );
   Object.assign(result, update);
 };
