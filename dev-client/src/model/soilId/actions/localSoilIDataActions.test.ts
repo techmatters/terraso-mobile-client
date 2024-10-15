@@ -26,6 +26,7 @@ import {
   deleteSoilDataDepthInterval,
   initializeResult,
   updateDepthDependentSoilData,
+  updateFields,
   updateSoilData,
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilId/actions/localSoilDataActions';
@@ -62,6 +63,62 @@ describe('initializeResult', () => {
   });
 });
 
+describe('updateFields', () => {
+  test('assigns specified properties', () => {
+    const data = soilData();
+    updateFields(
+      {
+        downSlope: 'CONCAVE',
+        somethingElse: 'totalGarbage',
+      },
+      data,
+      ['downSlope'],
+    );
+
+    expect(data.downSlope).toEqual('CONCAVE');
+  });
+
+  test('only assigns listed properties', () => {
+    const data = soilData();
+    updateFields(
+      {
+        downSlope: 'CONCAVE',
+        somethingElse: 'totalGarbage',
+      },
+      data,
+      ['downSlope'],
+    );
+
+    expect((data as any).somethingElse).toBeUndefined();
+  });
+
+  test('only assigns defined properties', () => {
+    const data = soilData({downSlope: 'CONCAVE'});
+    updateFields(
+      {
+        downSlope: undefined,
+      },
+      data,
+      ['downSlope'],
+    );
+
+    expect(data.downSlope).toEqual('CONCAVE');
+  });
+
+  test('assigns defined null properties', () => {
+    const data = soilData();
+    updateFields(
+      {
+        downSlope: null,
+      },
+      data,
+      ['downSlope'],
+    );
+
+    expect(data.downSlope).toBeNull();
+  });
+});
+
 describe('updateSoilData', () => {
   test('assigns all specified properties', () => {
     const input: SoilDataUpdateMutationInput = {
@@ -91,19 +148,6 @@ describe('updateSoilData', () => {
     for (const field of SOIL_DATA_UPDATE_FIELDS) {
       expect(result[field]).toEqual(input[field]);
     }
-  });
-
-  test('only assigns defined properties', () => {
-    const input: SoilDataUpdateMutationInput = {
-      siteId: '',
-      crossSlope: undefined,
-    };
-    const data = soilData({
-      crossSlope: 'CONCAVE',
-    });
-    const result = updateSoilData(input, data);
-
-    expect(result.crossSlope).toEqual('CONCAVE');
   });
 
   test('assigning a depth interval preset clears depth intervals', () => {
@@ -220,26 +264,6 @@ describe('updateSoilDataDepthInterval', () => {
     for (const field of DEPTH_INTERVAL_UPDATE_FIELDS) {
       expect(result.depthIntervals[0][field]).toEqual(input[field]);
     }
-  });
-
-  test('only assigns defined properties', () => {
-    const input: SoilDataUpdateDepthIntervalMutationInput = {
-      siteId: '',
-      depthInterval: {start: 1, end: 2},
-      carbonatesEnabled: undefined,
-    };
-    const data = soilData({
-      depthIntervals: [
-        soilDataDepthInterval({
-          depthInterval: {start: 1, end: 2},
-          carbonatesEnabled: true,
-        }),
-      ],
-    });
-    const result = updateSoilDataDepthInterval(input, data);
-
-    expect(result.depthIntervals).toHaveLength(1);
-    expect(result.depthIntervals[0].carbonatesEnabled).toBe(true);
   });
 
   test('adds a new depth interval if missing', () => {
@@ -406,26 +430,6 @@ describe('updateDepthDependentSoilData', () => {
     for (const field of DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS) {
       expect(result.depthDependentData[0][field]).toEqual(input[field]);
     }
-  });
-
-  test('only assigns defined properties', () => {
-    const input: DepthDependentSoilDataUpdateMutationInput = {
-      siteId: '',
-      depthInterval: {start: 1, end: 2},
-      carbonates: undefined,
-    };
-    const data = soilData({
-      depthDependentData: [
-        depthDependentSoilData({
-          depthInterval: {start: 1, end: 2},
-          carbonates: 'NONEFFERVESCENT',
-        }),
-      ],
-    });
-    const result = updateDepthDependentSoilData(input, data);
-
-    expect(result.depthDependentData).toHaveLength(1);
-    expect(result.depthDependentData[0].carbonates).toEqual('NONEFFERVESCENT');
   });
 
   test('adds a new depth interval if missing', () => {
