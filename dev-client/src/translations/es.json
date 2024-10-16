@@ -161,7 +161,7 @@
                 },
                 "soil_properties": {
                     "title": "Propiedades del suelo",
-                    "depth": "Profundidad ($t(site.soil_id.site_data.soil_properties.depth_units, {\\\"context\\\": \\\"{{units}}\\\"}))",
+                    "depth": "Profundidad ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
                     "depth_units_METRIC": "cm",
                     "depth_units_ENGLISH": "”",
                     "texture": "Textura",
@@ -248,7 +248,7 @@
                     "NONE": "Sin especificar"
                 },
                 "label": "Etiqueta",
-                "depth": "Profundidad ({{unidades}})",
+                "depth": "Profundidad ({{units}})",
                 "confirm_preset": {
                     "title": "¿Cambiar profundidades?",
                     "body": "Se borrarán los datos del pozo de suelo que se hayan introducido. Esta acción no se puede deshacer.",
@@ -736,7 +736,7 @@
             "soilTexture": "Incluye clase de textura y volumen de fragmentos de roca"
         },
         "vertical_cracking": {
-            "description": "Pueden aparecer grietas verticales en la superficie cuando algunos suelos experimentan cambios de humedad o temperatura. Las grietas pueden ser permanentes o desaparecer con el tiempo.\n\nLas grietas verticales tienen al menos $t(soil.vertical_cracking.description_width, {\\\"context\\\": \\\"{{units}}\\\"}) de ancho y $t(soil.vertical_cracking.description_depth, {\\\"context\\\": \\\"{{units}}\\\"}) de profundidad. Deberías poder colocar un lápiz dentro de las grietas.",
+            "description": "Pueden aparecer grietas verticales en la superficie cuando algunos suelos experimentan cambios de humedad o temperatura. Las grietas pueden ser permanentes o desaparecer con el tiempo.\n\nLas grietas verticales tienen al menos $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) de ancho y $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) de profundidad. Deberías poder colocar un lápiz dentro de las grietas.",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "25 cm",
@@ -811,7 +811,7 @@
             "title": "Forma",
             "info": {
                 "title": "Forma de pendiente",
-                "description": "La forma de la pendiente se refiere a la forma en que se curva el terreno en la zona que rodea el punto de tu emplazamiento.\n\nLa forma de la pendiente se determina en dos direcciones: <bold>pendiente descendente</bold> y <bold>pendiente transversal</bold>.\n\nEn primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(pendiente.forma.info.descripcion_distancia, {\"contexto\": \"{{unidades}}\"}\"}) en todas las direcciones.\n\nSi lloviera, ¿en qué dirección general fluiría el agua cuesta abajo? Esto se denomina la dirección <bold>pendiente abajo</bold>.\n\nLa dirección de la pendiente transversal se puede encontrar mirando en ángulo recto (90 grados) desde la dirección de la pendiente descendente.\n\nSi te alejas del lugar manteniendo la misma elevación, ésta es la dirección de la <bold>pendiente transversal</bold>.\n\nEn segundo lugar, determine la forma de la pendiente para cada dirección.\n\n<bold>Cóncava</bold> significa que el terreno se inclina cada vez más hacia arriba a medida que te alejas de tu punto a lo largo de la <bold>pendiente transversal</bold> o de la <bold>pendiente descendente</bold>. Por ejemplo, la pendiente descendente suele ser cóncava al pie de una colina, ya que pasa de una pendiente pronunciada a otra más superficial.\n\n<bold>Convexa</bold> significa que el terreno se inclina cada vez más hacia abajo a medida que se aleja de su punto a lo largo de una dirección determinada. Por ejemplo, la pendiente descendente suele ser convexa en la cima de una colina al pasar de una pendiente poco profunda a otra más pronunciada.\n\n<bold>Lineal</bold> significa que la pendiente es constante a lo largo de toda una dirección determinada. No significa necesariamente que el terreno sea llano; sólo significa que la pendiente no cambia.",
+                "description": "La forma de la pendiente se refiere a la forma en que se curva el terreno en la zona que rodea el punto de tu emplazamiento.\n\nLa forma de la pendiente se determina en dos direcciones: <bold>pendiente descendente</bold> y <bold>pendiente transversal</bold>.\n\nEn primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(pendiente.forma.info.descripcion_distancia, {\"context\": \"{{units}}\"}\"}) en todas las direcciones.\n\nSi lloviera, ¿en qué dirección general fluiría el agua cuesta abajo? Esto se denomina la dirección <bold>pendiente abajo</bold>.\n\nLa dirección de la pendiente transversal se puede encontrar mirando en ángulo recto (90 grados) desde la dirección de la pendiente descendente.\n\nSi te alejas del lugar manteniendo la misma elevación, ésta es la dirección de la <bold>pendiente transversal</bold>.\n\nEn segundo lugar, determine la forma de la pendiente para cada dirección.\n\n<bold>Cóncava</bold> significa que el terreno se inclina cada vez más hacia arriba a medida que te alejas de tu punto a lo largo de la <bold>pendiente transversal</bold> o de la <bold>pendiente descendente</bold>. Por ejemplo, la pendiente descendente suele ser cóncava al pie de una colina, ya que pasa de una pendiente pronunciada a otra más superficial.\n\n<bold>Convexa</bold> significa que el terreno se inclina cada vez más hacia abajo a medida que se aleja de su punto a lo largo de una dirección determinada. Por ejemplo, la pendiente descendente suele ser convexa en la cima de una colina al pasar de una pendiente poco profunda a otra más pronunciada.\n\n<bold>Lineal</bold> significa que la pendiente es constante a lo largo de toda una dirección determinada. No significa necesariamente que el terreno sea llano; sólo significa que la pendiente no cambia.",
                 "concave": "Cóncava",
                 "convex": "Conveza",
                 "linear": "Lineal",
