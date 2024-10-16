@@ -73,6 +73,7 @@ if (APP_CONFIG.sentryEnabled) {
         maskAllText: maskReplays,
       }),
     ],
+    tracePropagationTargets: [APP_CONFIG.terrasoApiHostname],
     _experiments: {
       replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
