@@ -84,6 +84,7 @@ const toPoOptions = {
   project: 'Terraso',
   ctxSeparator: '',
   compatibilityJSON: 'v4',
+  foldLength: 0,
 };
 const toPo = () =>
   transform('PO', '../../src/translations/', (locale, filePath) =>
