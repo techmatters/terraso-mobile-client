@@ -37,6 +37,10 @@ import {
   sameDepth,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
+/*
+ * Logic ported from `apps/soil_id/graphql/soil_data.py` in backend project
+ */
+
 export const updateSoilData = (
   input: SoilDataUpdateMutationInput,
   data?: SoilData,
