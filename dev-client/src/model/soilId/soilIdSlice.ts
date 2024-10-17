@@ -36,6 +36,7 @@ import {
 
 import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
 import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
+import * as soilDataActions from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
 import {
   soilIdEntryDataBased,
   soilIdEntryForStatus,
@@ -217,22 +218,22 @@ export const fetchSoilDataForUser = createAsyncThunk(
 
 export const updateSoilData = createAsyncThunk(
   'soilId/updateSoilData',
-  soilDataService.updateSoilData,
+  soilDataActions.updateSoilDataThunk,
 );
 
 export const updateDepthDependentSoilData = createAsyncThunk(
   'soilId/updateDepthDependentSoilData',
-  soilDataService.updateDepthDependentSoilData,
+  soilDataActions.updateDepthDependentSoilDataThunk,
 );
 
 export const updateSoilDataDepthInterval = createAsyncThunk(
   'soilId/updateSoilDataDepthInterval',
-  soilDataService.updateSoilDataDepthInterval,
+  soilDataActions.updateSoilDataDepthIntervalThunk,
 );
 
 export const deleteSoilDataDepthInterval = createAsyncThunk(
   'soilId/deleteSoilDataDepthInterval',
-  soilDataService.deleteSoilDataDepthInterval,
+  soilDataActions.deleteSoilDataDepthIntervalThunk,
 );
 
 export const updateProjectSoilSettings = createAsyncThunk(
