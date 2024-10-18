@@ -531,7 +531,8 @@
             "label": "Clase de textura",
             "info": {
                 "title": "Textura del suelo",
-                "description": "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n\n<bold>La textura del suelo</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener un gran impacto en el potencial del suelo.\n\nLa textura del suelo determina muchas características importantes de tu terreno, incluyendo:\n\n<bullets />\nConocer la textura del suelo también te ayuda a identificar tu suelo con mayor precisión.",
+                "description": "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n\n<bold>La textura del suelo</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener un gran impacto en el potencial del suelo.\n\nLa textura del suelo determina muchas características importantes de tu terreno, incluyendo:",
+                "description_end": "Conocer la textura del suelo también te ayuda a identificar tu suelo con mayor precisión.",
                 "point1": "Cuánta agua puede retener el suelo",
                 "point2": "La rapidez con la que el agua puede ser absorbida y filtrada a través del suelo.",
                 "point3": "La facilidad con la que el suelo se erosiona cuando se expone al viento o al agua.",

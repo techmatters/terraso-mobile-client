@@ -17,30 +17,34 @@
 import {Trans, useTranslation} from 'react-i18next';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const TextureInfoContent = () => {
   const {t} = useTranslation();
 
   return (
-    <Text>
-      <Trans
-        i18nKey="soil.texture.info.description"
-        values={{units: 'METRIC'}}
-        components={{
-          bold: <Text bold />,
-          bullets: (
-            <BulletList
-              data={[1, 2, 3, 4]}
-              renderItem={i => (
-                <Text variant="body1" color="text.primary">
-                  {t(`soil.texture.info.point${i}`)}
-                </Text>
-              )}
-            />
-          ),
-        }}
+    <>
+      <Text>
+        <Trans
+          i18nKey="soil.texture.info.description"
+          values={{units: 'METRIC'}}
+          components={{
+            bold: <Text bold />,
+          }}
+        />
+      </Text>
+
+      <BulletList
+        data={[1, 2, 3, 4]}
+        renderItem={i => (
+          <Text variant="body1" color="text.primary">
+            {t(`soil.texture.info.point${i}`)}
+          </Text>
+        )}
       />
-    </Text>
+
+      <TranslatedParagraph i18nKey="soil.texture.info.description_end" />
+    </>
   );
 };
