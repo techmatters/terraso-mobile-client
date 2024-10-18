@@ -60,9 +60,11 @@ enableFreeze(true);
 
 // Mask user data on production environment
 const maskReplays = APP_CONFIG.environment === 'production';
+const sentryDebug = APP_CONFIG.environment !== 'production';
 
 if (APP_CONFIG.sentryEnabled) {
   Sentry.init({
+    debug: sentryDebug,
     dsn: APP_CONFIG.sentryDsn,
     environment: APP_CONFIG.environment,
     integrations: [
