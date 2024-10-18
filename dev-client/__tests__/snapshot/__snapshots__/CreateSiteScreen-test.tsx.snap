@@ -1197,6 +1197,7 @@ exports[`renders correctly 1`] = `
                                         <View
                                           style={
                                             {
+                                              "flex": 1,
                                               "marginRight": "auto",
                                             }
                                           }

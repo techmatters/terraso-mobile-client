@@ -87,5 +87,6 @@ const styles = StyleSheet.create({
   },
   headingContent: {
     marginRight: 'auto',
+    flex: 1,
   },
 });
