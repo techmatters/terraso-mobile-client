@@ -76,6 +76,7 @@ if (APP_CONFIG.sentryEnabled) {
       }),
     ],
     tracePropagationTargets: [APP_CONFIG.terrasoApiHostname],
+    enableUserInteractionTracing: true,
     _experiments: {
       replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
