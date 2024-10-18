@@ -58,21 +58,23 @@ import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
 
-// Mask user data on production environment
-const maskReplays = APP_CONFIG.environment === 'production';
-const sentryDebug = APP_CONFIG.environment !== 'production';
+// On production environment:
+// - mask user data
+// - use a 10% sample rate
+// - disable Sentry debugging
+const isProduction = APP_CONFIG.environment === 'production';
 
 if (APP_CONFIG.sentryEnabled) {
   Sentry.init({
-    debug: sentryDebug,
+    debug: !isProduction,
     dsn: APP_CONFIG.sentryDsn,
     environment: APP_CONFIG.environment,
     integrations: [
       captureConsoleIntegration({levels: ['warn', 'error']}),
       Sentry.mobileReplayIntegration({
-        maskAllImages: maskReplays,
-        maskAllVectors: maskReplays,
-        maskAllText: maskReplays,
+        maskAllImages: isProduction,
+        maskAllVectors: isProduction,
+        maskAllText: isProduction,
       }),
     ],
     tracePropagationTargets: [APP_CONFIG.terrasoApiHostname],
