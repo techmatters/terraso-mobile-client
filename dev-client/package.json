@@ -36,6 +36,7 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "@rnmapbox/maps": "^10.1.31",
+    "@sentry/core": "^8.34.0",
     "@sentry/react-native": "^6.0.0",
     "base-64": "^1.0.0",
     "delta-e": "^0.0.8",
