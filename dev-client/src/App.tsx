@@ -41,7 +41,7 @@ import {PaperProvider, Portal} from 'react-native-paper';
 import {enableFreeze} from 'react-native-screens';
 
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {captureConsoleIntegration} from '@sentry/integrations';
+import {captureConsoleIntegration} from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
 import {APP_CONFIG} from 'terraso-mobile-client/config';
