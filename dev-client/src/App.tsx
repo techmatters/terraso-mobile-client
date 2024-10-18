@@ -77,6 +77,7 @@ if (APP_CONFIG.sentryEnabled) {
         maskAllText: isProduction,
       }),
     ],
+    enableCaptureFailedRequests: true,
     tracePropagationTargets: [APP_CONFIG.terrasoApiHostname],
     enableUserInteractionTracing: true,
     tracesSampleRate: isProduction ? 0.1 : 1.0,
