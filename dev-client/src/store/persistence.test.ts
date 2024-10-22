@@ -17,16 +17,7 @@
 
 import {configureStore, createSlice} from '@reduxjs/toolkit';
 
-const {
-  reducer,
-  actions: {increment},
-} = createSlice({
-  name: 'test',
-  initialState: {counter: 0},
-  reducers: {
-    increment: ({counter}) => ({counter: counter + 1}),
-  },
-});
+import {patchPersistedReduxState} from 'terraso-mobile-client/store/persistence';
 
 jest.mock('terraso-mobile-client/config/index', () => ({
   APP_CONFIG: {
@@ -34,73 +25,106 @@ jest.mock('terraso-mobile-client/config/index', () => ({
   },
 }));
 
-test('persistence middleware saves state to disk', () => {
-  jest.isolateModules(() => {
-    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
-    kvStorage.setBool('FF_offline', true);
+describe('persistence middleware', () => {
+  const {
+    reducer,
+    actions: {increment},
+  } = createSlice({
+    name: 'test',
+    initialState: {counter: 0},
+    reducers: {
+      increment: ({counter}) => ({counter: counter + 1}),
+    },
+  });
 
-    const {
-      persistenceMiddleware,
-      loadPersistedReduxState,
-    } = require('terraso-mobile-client/store/persistence');
+  test('persistence middleware saves state to disk', () => {
+    jest.isolateModules(() => {
+      const {
+        kvStorage,
+      } = require('terraso-mobile-client/persistence/kvStorage');
+      kvStorage.setBool('FF_offline', true);
 
-    const store = configureStore({
-      middleware: [persistenceMiddleware],
-      reducer,
+      const {
+        persistenceMiddleware,
+        loadPersistedReduxState,
+      } = require('terraso-mobile-client/store/persistence');
+
+      const store = configureStore({
+        middleware: [persistenceMiddleware],
+        reducer,
+      });
+
+      expect(loadPersistedReduxState()).toBe(undefined);
+
+      store.dispatch(increment());
+
+      expect(loadPersistedReduxState()).toEqual({counter: 1});
     });
+  });
 
-    expect(loadPersistedReduxState()).toBe(undefined);
+  test('can initialize store with persisted state', () => {
+    jest.isolateModules(() => {
+      const {
+        kvStorage,
+      } = require('terraso-mobile-client/persistence/kvStorage');
+      kvStorage.setBool('FF_offline', true);
 
-    store.dispatch(increment());
+      const {
+        persistenceMiddleware,
+        loadPersistedReduxState,
+      } = require('terraso-mobile-client/store/persistence');
 
-    expect(loadPersistedReduxState()).toEqual({counter: 1});
+      kvStorage.setMap('persisted-redux-state', {counter: 1});
+      const store = configureStore({
+        middleware: [persistenceMiddleware],
+        reducer,
+        preloadedState: loadPersistedReduxState(),
+      });
+
+      expect(store.getState()).toEqual({counter: 1});
+
+      store.dispatch(increment());
+
+      expect(loadPersistedReduxState()).toEqual({counter: 2});
+    });
+  });
+
+  test('persistence middleware does nothing without feature flag', () => {
+    jest.isolateModules(() => {
+      const {
+        kvStorage,
+      } = require('terraso-mobile-client/persistence/kvStorage');
+      kvStorage.setBool('FF_offline', false);
+
+      const {
+        persistenceMiddleware,
+        loadPersistedReduxState,
+      } = require('terraso-mobile-client/store/persistence');
+
+      const store = configureStore({
+        middleware: [persistenceMiddleware],
+        reducer,
+      });
+
+      expect(loadPersistedReduxState()).toBe(undefined);
+
+      store.dispatch(increment());
+
+      expect(loadPersistedReduxState()).toBe(undefined);
+    });
   });
 });
 
-test('can initialize store with persisted state', () => {
-  jest.isolateModules(() => {
-    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
-    kvStorage.setBool('FF_offline', true);
-
-    const {
-      persistenceMiddleware,
-      loadPersistedReduxState,
-    } = require('terraso-mobile-client/store/persistence');
-
-    kvStorage.setMap('persisted-redux-state', {counter: 1});
-    const store = configureStore({
-      middleware: [persistenceMiddleware],
-      reducer,
-      preloadedState: loadPersistedReduxState(),
-    });
-
-    expect(store.getState()).toEqual({counter: 1});
-
-    store.dispatch(increment());
-
-    expect(loadPersistedReduxState()).toEqual({counter: 2});
+describe('patchPersistedReduxState', () => {
+  test('adds changes if absent', () => {
+    const state: any = {soilId: {soilChanges: undefined}};
+    patchPersistedReduxState(state);
+    expect(state.soilId.soilChanges).toEqual({});
   });
-});
 
-test('persistence middleware does nothing without feature flag', () => {
-  jest.isolateModules(() => {
-    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
-    kvStorage.setBool('FF_offline', false);
-
-    const {
-      persistenceMiddleware,
-      loadPersistedReduxState,
-    } = require('terraso-mobile-client/store/persistence');
-
-    const store = configureStore({
-      middleware: [persistenceMiddleware],
-      reducer,
-    });
-
-    expect(loadPersistedReduxState()).toBe(undefined);
-
-    store.dispatch(increment());
-
-    expect(loadPersistedReduxState()).toBe(undefined);
+  test('retains changes if present', () => {
+    const state: any = {soilId: {soilChanges: {a: {}}}};
+    patchPersistedReduxState(state);
+    expect(state.soilId.soilChanges).toEqual({a: {}});
   });
 });
