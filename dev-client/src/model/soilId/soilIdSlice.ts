@@ -100,6 +100,13 @@ export const setSoilData = (
   state.soilChanges = {};
 };
 
+export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {
+  for (const siteId of siteIds) {
+    delete state.soilData[siteId];
+  }
+  flushDataBasedMatches(state);
+};
+
 const soilIdSlice = createSlice({
   name: 'soilId',
   initialState,
