@@ -132,8 +132,8 @@ export const isUnsynced = <T>(record: ChangeRecord<T>): boolean => {
     record.lastSyncedRevisionId === undefined &&
     record.revisionId === undefined
   ) {
-    /* Unsynced changes for empty records */
-    return true;
+    /* Never-synced never-changed records have no need for syncing */
+    return false;
   } else if (record.lastSyncedRevisionId === undefined) {
     /* Unsynced changes if the record has changes but no last-synced id */
     return true;

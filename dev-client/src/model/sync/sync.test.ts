@@ -164,6 +164,10 @@ describe('sync', () => {
   });
 
   describe('isUnsynced', () => {
+    test('returns synced for empty records', () => {
+      expect(isUnsynced({})).toBeFalsy();
+    });
+
     test('returns synced for records with matching revision ids', () => {
       expect(
         isUnsynced({
@@ -180,10 +184,6 @@ describe('sync', () => {
           lastSyncedRevisionId: 9,
         }),
       ).toBeTruthy();
-    });
-
-    test('returns unsynced for empty records', () => {
-      expect(isUnsynced({})).toBeTruthy();
     });
 
     test('returns unsynced for never-synced records', () => {
