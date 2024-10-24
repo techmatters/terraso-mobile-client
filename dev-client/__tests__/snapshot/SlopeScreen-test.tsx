@@ -39,6 +39,7 @@ test('renders correctly', () => {
             slopeSteepnessSelect: 'FLAT',
           },
         },
+        soilChanges: {},
         projectSettings: {
           '1': {
             ...fromEntries(
