@@ -45,16 +45,10 @@ export type SyncResult<T> = {
 
 export const INITIAL_REVISION_ID = 0;
 
-export const getRevisionId = <T>(
-  record?: ChangeRecord<T>,
-): ChangeRevisionId => {
-  return record?.revisionId ?? INITIAL_REVISION_ID;
-};
-
 export const nextRevisionId = (
-  revisionId: ChangeRevisionId,
+  revisionId?: ChangeRevisionId,
 ): ChangeRevisionId => {
-  return revisionId + 1;
+  return (revisionId ?? INITIAL_REVISION_ID) + 1;
 };
 
 export const getChanges = <T>(
@@ -87,15 +81,14 @@ export const markChanged = <T>(
   at: ChangeTimestamp,
 ) => {
   const prevRecord = getChange(records, id);
-  const prevRevisionId = getRevisionId(prevRecord);
-  const revisionId = nextRevisionId(prevRevisionId);
+  const revisionId = nextRevisionId(prevRecord.revisionId);
   records[id] = {
     revisionId: revisionId,
     lastModifiedAt: at,
 
-    lastSyncedRevisionId: prevRecord?.lastSyncedRevisionId,
-    lastSyncedData: prevRecord?.lastSyncedData,
-    lastSyncedAt: prevRecord?.lastSyncedAt,
+    lastSyncedRevisionId: prevRecord.lastSyncedRevisionId,
+    lastSyncedData: prevRecord.lastSyncedData,
+    lastSyncedAt: prevRecord.lastSyncedAt,
   };
 };
 
@@ -116,10 +109,9 @@ export const markSynced = <T>(
   at: ChangeTimestamp,
 ) => {
   const prevRecord = getChange(records, id);
-  const prevRevisionId = getRevisionId(prevRecord);
   records[id] = {
-    revisionId: prevRevisionId,
-    lastModifiedAt: prevRecord?.lastModifiedAt,
+    revisionId: prevRecord.revisionId,
+    lastModifiedAt: prevRecord.lastModifiedAt,
     lastSyncedAt: at,
     lastSyncedRevisionId: result.revisionId,
     lastSyncedData: result.data,
@@ -146,7 +138,7 @@ export const isUnsynced = <T>(record: ChangeRecord<T>): boolean => {
     return true;
   } else {
     /* Unsynced changes if the record's current revision is not the last-synced one */
-    return getRevisionId(record) !== record.lastSyncedRevisionId;
+    return record.revisionId !== record.lastSyncedRevisionId;
   }
 };
 
@@ -156,14 +148,14 @@ export const getUpToDateResults = <T>(
 ): SyncResults<T> => {
   return Object.fromEntries(
     Object.entries(results).filter(([id, result]) =>
-      isUpToDate(records[id], result),
+      isUpToDate(getChange(records, id), result),
     ),
   );
 };
 
 export const isUpToDate = <T>(
-  record: ChangeRecord<T> | undefined,
+  record: ChangeRecord<T>,
   result: SyncResult<T>,
 ): boolean => {
-  return getRevisionId(record) === result.revisionId;
+  return record.revisionId === result.revisionId;
 };

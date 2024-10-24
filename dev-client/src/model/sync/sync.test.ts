@@ -18,7 +18,6 @@
 import {
   ChangeRecords,
   getChanges,
-  getRevisionId,
   getUnsyncedRecords,
   getUpToDateResults,
   isUnsynced,
@@ -32,21 +31,11 @@ describe('sync', () => {
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
   });
 
-  describe('getRevisionId', () => {
-    test('zero for undefined revision', () => {
-      expect(getRevisionId(undefined)).toEqual(0);
-    });
-
-    test('zero for empty revision', () => {
-      expect(getRevisionId({})).toEqual(0);
-    });
-
-    test('value for revision', () => {
-      expect(getRevisionId({revisionId: 123})).toEqual(123);
-    });
-  });
-
   describe('nextRevisionId', () => {
+    test('assumes zero initial value', () => {
+      expect(nextRevisionId(undefined)).toEqual(1);
+    });
+
     test('increments by one', () => {
       expect(nextRevisionId(1)).toEqual(2);
     });
@@ -202,8 +191,11 @@ describe('sync', () => {
 
     test('handles results with no change records', () => {
       expect(
-        getUpToDateResults({}, {a: {revisionId: 0}, b: {revisionId: 1}}),
-      ).toEqual({a: {revisionId: 0}});
+        getUpToDateResults(
+          {},
+          {a: {revisionId: undefined}, b: {revisionId: 1}},
+        ),
+      ).toEqual({a: {revisionId: undefined}});
     });
   });
 });
