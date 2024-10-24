@@ -46,7 +46,6 @@ import {
 import {
   ChangeRecords,
   markAllChanged,
-  markAllSynced,
   markChanged,
 } from 'terraso-mobile-client/model/sync/sync';
 
@@ -83,9 +82,8 @@ const soilIdSlice = createSlice({
   reducers: {
     setSoilData: (state, action: PayloadAction<Record<string, SoilData>>) => {
       state.soilData = action.payload;
+      state.soilChanges = {};
       state.matches = {};
-
-      markAllSynced(state.soilChanges, action.payload, Date.now());
     },
     updateSoilData: (
       state,

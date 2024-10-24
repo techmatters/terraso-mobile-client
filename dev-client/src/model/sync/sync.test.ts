@@ -20,6 +20,7 @@ import {
   getChanges,
   getRevisionId,
   getUnsyncedRecords,
+  getUpToDateResults,
   isUnsynced,
   markChanged,
   markSynced,
@@ -114,39 +115,33 @@ describe('sync', () => {
     });
 
     test('initializes change record if not present', () => {
-      markSynced(changes, 'a', 'data', Date.now());
+      markSynced(changes, 'a', {}, Date.now());
       expect(changes.a).toBeDefined();
     });
 
-    test('initializes revision id if not present', () => {
-      markSynced(changes, 'a', 'data', Date.now());
-      expect(changes.a.revisionId).toEqual(0);
-      expect(changes.a.lastSyncedRevisionId).toEqual(0);
-    });
-
     test('records synced revision id', () => {
-      changes.a = {revisionId: 123};
-      markSynced(changes, 'a', 'data', Date.now());
-      expect(changes.a.revisionId).toEqual(123);
+      markSynced(changes, 'a', {revisionId: 123}, Date.now());
       expect(changes.a.lastSyncedRevisionId).toEqual(123);
     });
 
     test('records synced data', () => {
-      markSynced(changes, 'a', 'data', Date.now());
+      markSynced(changes, 'a', {data: 'data'}, Date.now());
       expect(changes.a.lastSyncedData).toEqual('data');
     });
 
     test('records synced date', () => {
       const at = Date.now();
-      markSynced(changes, 'a', 'data', at);
+      markSynced(changes, 'a', {}, at);
       expect(changes.a.lastSyncedAt).toEqual(at);
     });
 
     test('preserves other properties', () => {
       changes.a = {
+        revisionId: 100,
         lastModifiedAt: 10000,
       };
-      markSynced(changes, 'a', 'data', Date.now());
+      markSynced(changes, 'a', {}, Date.now());
+      expect(changes.a.revisionId).toEqual(100);
       expect(changes.a.lastModifiedAt).toEqual(10000);
     });
   });
@@ -192,6 +187,23 @@ describe('sync', () => {
           revisionId: 10,
         }),
       ).toBeTruthy();
+    });
+  });
+
+  describe('getUpToDateResults', () => {
+    test('returns results with matching revision IDs', () => {
+      expect(
+        getUpToDateResults(
+          {a: {revisionId: 1}, b: {revisionId: 1}, c: {revisionId: 2}},
+          {a: {revisionId: 2}, b: {revisionId: 1}, c: {revisionId: 1}},
+        ),
+      ).toEqual({b: {revisionId: 1}});
+    });
+
+    test('handles results with no change records', () => {
+      expect(
+        getUpToDateResults({}, {a: {revisionId: 0}, b: {revisionId: 1}}),
+      ).toEqual({a: {revisionId: 0}});
     });
   });
 });

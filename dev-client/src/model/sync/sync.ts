@@ -23,10 +23,10 @@ export type ChangeRevisionId = number;
 
 export type ChangeRecord<T> = {
   /**
-   * Unique ID for the current state since the last sync, monotonically increasing for each change.
-   * Can be used to determine whether sync responses reflect stale data.
-   * Cleared for a successful sync.
-   * Default to zero for uninitialized records.
+   * Unique ID for the entity's current state since the last sync, monotonically increasing for each change.
+   * A record is considered to be un-synced if its revision ID and last-synced revision ID do not match.
+   * Allows code to determine which entities need to be synced, but also allows entites to determine whether
+   * a sync result is stale (if it declares that it is for a revision ID that no longer matches the entity).
    */
   revisionId?: ChangeRevisionId;
   lastModifiedAt?: ChangeTimestamp;
@@ -34,6 +34,13 @@ export type ChangeRecord<T> = {
   lastSyncedRevisionId?: ChangeRevisionId;
   lastSyncedData?: T;
   lastSyncedAt?: ChangeTimestamp;
+};
+
+export type SyncResults<T> = Record<string, SyncResult<T>>;
+
+export type SyncResult<T> = {
+  data?: T;
+  revisionId?: ChangeRevisionId;
 };
 
 export const INITIAL_REVISION_ID = 0;
@@ -94,18 +101,18 @@ export const markChanged = <T>(
 
 export const markAllSynced = <T>(
   records: ChangeRecords<T>,
-  synced: Record<string, T>,
+  results: SyncResults<T>,
   at: ChangeTimestamp,
 ) => {
-  for (const [id, data] of Object.entries(synced)) {
-    markSynced(records, id, data, at);
+  for (const [id, result] of Object.entries(results)) {
+    markSynced(records, id, result, at);
   }
 };
 
 export const markSynced = <T>(
   records: ChangeRecords<T>,
   id: string,
-  data: T,
+  result: SyncResult<T>,
   at: ChangeTimestamp,
 ) => {
   const prevRecord = getChange(records, id);
@@ -114,8 +121,8 @@ export const markSynced = <T>(
     revisionId: prevRevisionId,
     lastModifiedAt: prevRecord?.lastModifiedAt,
     lastSyncedAt: at,
-    lastSyncedRevisionId: prevRevisionId,
-    lastSyncedData: data,
+    lastSyncedRevisionId: result.revisionId,
+    lastSyncedData: result.data,
   };
 };
 
@@ -141,4 +148,22 @@ export const isUnsynced = <T>(record: ChangeRecord<T>): boolean => {
     /* Unsynced changes if the record's current revision is not the last-synced one */
     return getRevisionId(record) !== record.lastSyncedRevisionId;
   }
+};
+
+export const getUpToDateResults = <T>(
+  records: ChangeRecords<T>,
+  results: SyncResults<T>,
+): SyncResults<T> => {
+  return Object.fromEntries(
+    Object.entries(results).filter(([id, result]) =>
+      isUpToDate(records[id], result),
+    ),
+  );
+};
+
+export const isUpToDate = <T>(
+  record: ChangeRecord<T> | undefined,
+  result: SyncResult<T>,
+): boolean => {
+  return getRevisionId(record) === result.revisionId;
 };
