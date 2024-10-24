@@ -45,6 +45,10 @@ export type AppState = StateFromReducersMapObject<typeof sliceReducers>;
 
 export const rootReducer = combineReducers(sliceReducers);
 
+// createGlobalReducer creates a reducer which is defined separately from
+// any slice, and which doesn't define any new state, but instead acts on
+// the combined state of all of the slices. actions handlers defined in a
+// global reducer can therefore mutate state in multiple slices at once.
 export const createGlobalReducer = (
   builderCallback: (builder: ActionReducerMapBuilder<AppState>) => void,
 ) => createReducer(() => rootReducer(undefined, {type: ''}), builderCallback);

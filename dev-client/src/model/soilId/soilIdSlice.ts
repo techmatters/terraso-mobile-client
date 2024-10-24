@@ -39,7 +39,6 @@ import {
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 import {
   ChangeRecords,
-  markAllChanged,
   markChanged,
 } from 'terraso-mobile-client/model/sync/sync';
 
