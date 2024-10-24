@@ -19,7 +19,9 @@ import {useCallback} from 'react';
 
 import {Button} from 'native-base';
 
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
+import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -31,6 +33,7 @@ export const SyncButton = () => {
   const currentUserID = useSelector(
     state => state.account.currentUser?.data?.id,
   );
+  const unsyncedIds = useSelector(selectUnsyncedSiteIds);
 
   const onSync = useCallback(() => {
     if (currentUserID !== undefined) {
@@ -42,6 +45,7 @@ export const SyncButton = () => {
     // TODO-offline: Create string in en.json if we actually want this button for reals
     <RestrictByFlag flag="FF_offline">
       <Button onPress={onSync}>SYNC: pull</Button>
+      <Text>({unsyncedIds.length} changed sites)</Text>
     </RestrictByFlag>
   );
 };
