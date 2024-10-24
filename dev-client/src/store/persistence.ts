@@ -16,7 +16,7 @@
  */
 
 import {Middleware} from '@reduxjs/toolkit';
-import {merge} from 'lodash';
+import {merge} from 'lodash/fp';
 
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
@@ -40,8 +40,8 @@ export const loadPersistedReduxState = () => {
   }
 };
 
-export const patchPersistedReduxState = (state?: Partial<AppState>) => {
-  if (state) {
-    merge(state, {soilId: {soilChanges: {}}});
-  }
+export const patchPersistedReduxState = (
+  state: Partial<AppState>,
+): Partial<AppState> => {
+  return merge(state, {soilId: {soilChanges: {}}});
 };

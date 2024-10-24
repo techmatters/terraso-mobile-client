@@ -118,13 +118,13 @@ describe('persistence middleware', () => {
 describe('patchPersistedReduxState', () => {
   test('adds changes if absent', () => {
     const state: any = {soilId: {soilChanges: undefined}};
-    patchPersistedReduxState(state);
-    expect(state.soilId.soilChanges).toEqual({});
+    const result = patchPersistedReduxState(state);
+    expect(result.soilId!.soilChanges).toEqual({});
   });
 
   test('retains changes if present', () => {
     const state: any = {soilId: {soilChanges: {a: {}}}};
-    patchPersistedReduxState(state);
-    expect(state.soilId.soilChanges).toEqual({a: {}});
+    const result = patchPersistedReduxState(state);
+    expect(result.soilId!.soilChanges).toEqual({a: {}});
   });
 });

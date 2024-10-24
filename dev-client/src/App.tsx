@@ -90,8 +90,10 @@ LogBox.ignoreLogs([
   'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
 ]);
 
-const persistedReduxState = loadPersistedReduxState();
-patchPersistedReduxState(persistedReduxState);
+let persistedReduxState = loadPersistedReduxState();
+if (persistedReduxState) {
+  persistedReduxState = patchPersistedReduxState(persistedReduxState);
+}
 const store = createStore(persistedReduxState);
 
 function App(): React.JSX.Element {
