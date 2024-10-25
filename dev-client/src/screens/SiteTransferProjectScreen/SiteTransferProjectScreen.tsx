@@ -25,7 +25,7 @@ import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
-import {transferSites} from 'terraso-mobile-client/model/site/siteSlice';
+import {transferSites} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';

@@ -22,7 +22,7 @@ import {Formik, FormikProps} from 'formik';
 import {Button, KeyboardAvoidingView, ScrollView} from 'native-base';
 
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {addProject} from 'terraso-mobile-client/model/project/projectSlice';
+import {addProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import ProjectForm, {
   ProjectFormValues,
