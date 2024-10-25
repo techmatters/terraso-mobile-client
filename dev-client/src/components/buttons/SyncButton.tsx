@@ -21,8 +21,8 @@ import {Button} from 'native-base';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
+import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 // TODO: I expect this will move or be removed by the time we actually release the offline feature,

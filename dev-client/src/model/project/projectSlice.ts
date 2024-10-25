@@ -15,85 +15,74 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft} from '@reduxjs/toolkit';
 
-import {
-  addUser,
-  setUsers,
-  updateUsers,
-} from 'terraso-client-shared/account/accountSlice';
-import {ProjectAddUserMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as projectService from 'terraso-client-shared/project/projectService';
 import {
   Project,
   ProjectMembership,
 } from 'terraso-client-shared/project/projectTypes';
-import {
-  createAsyncThunk,
-  dispatchByKeys,
-} from 'terraso-client-shared/store/utils';
-
-import {
-  setSites,
-  updateSites,
-} from 'terraso-mobile-client/model/site/siteSlice';
-import {updateProjectSettings} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-
-interface MembershipKey {
-  projectId: string;
-  membershipId: string;
-}
-
-interface SiteKey {
-  projectId: string;
-  siteId: string;
-}
+import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 const initialState = {
   projects: {} as Record<string, Project>,
 };
 
+type State = typeof initialState;
+
+export const setProjects = (
+  state: Draft<State>,
+  projects: Record<string, Project>,
+) => {
+  state.projects = projects;
+};
+
+export const updateProjects = (
+  state: Draft<State>,
+  projects: Record<string, Project>,
+) => {
+  Object.assign(state.projects, projects);
+};
+
+export const updateMembership = (
+  state: Draft<State>,
+  args: {projectId: string; membership: ProjectMembership},
+) => {
+  state.projects[args.projectId].memberships[args.membership.id] =
+    args.membership;
+};
+
+export const addSiteToProject = (
+  state: Draft<State>,
+  args: {siteId: string; projectId: string},
+) => {
+  state.projects[args.projectId].sites[args.siteId] = true;
+};
+
+export const removeSiteFromProject = (
+  state: Draft<State>,
+
+  args: {siteId: string; projectId: string},
+) => {
+  delete state.projects[args.projectId].sites[args.siteId];
+};
+
+export const removeSiteFromAllProjects = (
+  state: Draft<State>,
+  siteId: string,
+) => {
+  for (const project of Object.values(state.projects)) {
+    if (siteId in project.sites) {
+      delete project.sites[siteId];
+    }
+  }
+};
+
 const projectSlice = createSlice({
   name: 'project',
   initialState,
-  reducers: {
-    setProjects: (state, action: PayloadAction<Record<string, Project>>) => {
-      state.projects = action.payload;
-    },
-    updateProjects: (state, action: PayloadAction<Record<string, Project>>) => {
-      Object.assign(state.projects, action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
-    builder.addCase(
-      addSiteToProject,
-      (state, {payload: {siteId, projectId}}) => {
-        state.projects[projectId].sites[siteId] = true;
-      },
-    );
-
-    builder.addCase(
-      removeMembershipFromProject,
-      (state, {payload: {membershipId, projectId}}) => {
-        delete state.projects[projectId].memberships[membershipId];
-      },
-    );
-
-    builder.addCase(
-      removeSiteFromProject,
-      (state, {payload: {siteId, projectId}}) => {
-        delete state.projects[projectId].sites[siteId];
-      },
-    );
-
-    builder.addCase(removeSiteFromAllProjects, (state, {payload: siteId}) => {
-      for (let project of Object.values(state.projects)) {
-        if (siteId in project.sites) {
-          delete project.sites[siteId];
-        }
-      }
-    });
-
     builder.addCase(deleteProject.fulfilled, (state, {meta}) => {
       delete state.projects[meta.arg.id];
     });
@@ -102,17 +91,6 @@ const projectSlice = createSlice({
       archiveProject.fulfilled,
       (state, {meta, payload: archived}) => {
         state.projects[meta.arg.id].archived = archived;
-      },
-    );
-
-    builder.addCase(
-      addUserToProject.fulfilled,
-      (state, {meta, payload: {id: membershipId, userRole, userId}}) => {
-        state.projects[meta.arg.projectId].memberships[membershipId] = {
-          id: membershipId,
-          userRole,
-          userId,
-        };
       },
     );
 
@@ -132,60 +110,6 @@ const projectSlice = createSlice({
   },
 });
 
-export const {setProjects, updateProjects} = projectSlice.actions;
-
-export const removeMembershipFromProject = createAction<MembershipKey>(
-  'project/removeMembershipFromProject',
-);
-
-export const addMembershipToProject = createAction<MembershipKey>(
-  'project/addMembershipToProject',
-);
-
-export const addSiteToProject = createAction<SiteKey>(
-  'project/addSiteToProject',
-);
-
-export const removeSiteFromProject = createAction<SiteKey>(
-  'project/removeSiteFromProject',
-);
-
-export const removeSiteFromAllProjects = createAction<string>(
-  'project/removeSiteFromAllProjects',
-);
-
-const updateDispatchMap = () => ({
-  project: (project: Project) => updateProjects({[project.id]: project}),
-  sites: updateSites,
-  users: updateUsers,
-  soilSettings: updateProjectSettings,
-});
-
-export const fetchProject = createAsyncThunk(
-  'project/fetchProject',
-  dispatchByKeys(projectService.fetchProject, updateDispatchMap),
-);
-
-export const fetchProjectsForUser = createAsyncThunk(
-  'project/fetchProjectsForUser',
-  dispatchByKeys(projectService.fetchProjectsForUser, () => ({
-    projects: setProjects,
-    sites: setSites,
-    users: setUsers,
-    soilSettings: updateProjectSettings,
-  })),
-);
-
-export const addProject = createAsyncThunk(
-  'project/addProject',
-  dispatchByKeys(projectService.addProject, updateDispatchMap),
-);
-
-export const updateProject = createAsyncThunk(
-  'project/updateProject',
-  dispatchByKeys(projectService.updateProject, updateDispatchMap),
-);
-
 export const deleteProject = createAsyncThunk(
   'project/deleteProject',
   projectService.deleteProject,
@@ -195,24 +119,6 @@ export const archiveProject = createAsyncThunk(
   'project/archiveProject',
   projectService.archiveProject,
 );
-
-export const addUserToProject = createAsyncThunk<
-  ProjectMembership,
-  ProjectAddUserMutationInput
->('project/addUser', async (input, _, {dispatch}) => {
-  const res = await projectService.addUserToProject(input);
-  // TODO: Should make user required in future!
-  // https://github.com/techmatters/terraso-backend/issues/859
-  if (res.membership.user === undefined || res.membership.user === null) {
-    throw Error(`Membership ${res.membership.id} created without user!`);
-  }
-  dispatch(addUser(res.membership.user));
-  return {
-    userId: res.membership.user.id,
-    userRole: res.membership.userRole,
-    id: res.membership.id,
-  };
-});
 
 export const updateUserRole = createAsyncThunk(
   'project/updateUserRole',

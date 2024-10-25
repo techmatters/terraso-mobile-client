@@ -36,7 +36,7 @@ import {
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
-import {updateSite} from 'terraso-mobile-client/model/site/siteSlice';
+import {updateSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';

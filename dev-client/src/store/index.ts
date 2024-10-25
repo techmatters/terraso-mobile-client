@@ -21,37 +21,31 @@ import {
   TypedUseSelectorHook,
 } from 'react-redux';
 
-import {configureStore, StateFromReducersMapObject} from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
+import reduceReducers from 'reduce-reducers';
 
 import {
   DispatchFromStoreFactory,
   handleAbortMiddleware,
-  sharedReducers,
 } from 'terraso-client-shared/store/store';
 
-import {reducer as elevationReducer} from 'terraso-mobile-client/model/elevation/elevationSlice';
-import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
-import {reducer as preferencesReducer} from 'terraso-mobile-client/model/preferences/preferencesSlice';
-import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
-import siteReducer from 'terraso-mobile-client/model/site/siteSlice';
-import soilIdReducer from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {projectGlobalReducer} from 'terraso-mobile-client/model/project/projectGlobalReducer';
+import {siteGlobalReducer} from 'terraso-mobile-client/model/site/siteGlobalReducer';
+import {soilIdGlobalReducer} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
 import {persistenceMiddleware} from 'terraso-mobile-client/store/persistence';
+import {AppState, rootReducer} from 'terraso-mobile-client/store/reducers';
 
-const reducers = {
-  ...sharedReducers,
-  map: mapReducer,
-  preferences: preferencesReducer,
-  elevation: elevationReducer,
-  site: siteReducer,
-  project: projectReducer,
-  soilId: soilIdReducer,
-};
-
-export type AppState = StateFromReducersMapObject<typeof reducers>;
+export type {AppState} from 'terraso-mobile-client/store/reducers';
 export type AppDispatch = DispatchFromStoreFactory<typeof createStore>;
 
 export const useSelector: TypedUseSelectorHook<AppState> = reduxUseSelector;
 export const useDispatch: () => AppDispatch = reduxUseDispatch;
+
+const globalReducers = [
+  soilIdGlobalReducer,
+  siteGlobalReducer,
+  projectGlobalReducer,
+];
 
 export const createStore = (intialState?: Partial<AppState>) =>
   configureStore({
@@ -59,6 +53,6 @@ export const createStore = (intialState?: Partial<AppState>) =>
       getDefaultMiddleware()
         .concat(handleAbortMiddleware)
         .concat(persistenceMiddleware),
-    reducer: reducers,
+    reducer: reduceReducers(rootReducer, ...globalReducers),
     preloadedState: intialState,
   });
