@@ -29,7 +29,7 @@ import {
 } from 'terraso-mobile-client/model/sync/sync';
 
 export const pushSoilData = async (
-  unsyncedChanges: ChangeRecords<SoilData>,
+  unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>,
   unsyncedData: Record<string, SoilData>,
 ): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
   const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
@@ -38,7 +38,7 @@ export const pushSoilData = async (
 };
 
 export const unsyncedDataToMutationInput = (
-  _: ChangeRecords<SoilData>,
+  _: ChangeRecords<SoilData, SoilDataPushFailureReason>,
   __: Record<string, SoilData>,
 ): SoilDataPushInput => {
   throw new Error('Function not implemented.');

@@ -40,7 +40,6 @@ test('renders correctly', () => {
           },
         },
         soilChanges: {},
-        soilPushErrors: {},
         projectSettings: {
           '1': {
             ...fromEntries(

@@ -53,8 +53,7 @@ export type MethodRequired<
 
 export type SoilState = {
   soilData: Record<string, SoilData | undefined>;
-  soilPushErrors: Record<string, SoilDataPushFailureReason>;
-  soilChanges: ChangeRecords<SoilData>;
+  soilChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>;
 
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
   status: LoadingState;
@@ -64,7 +63,6 @@ export type SoilState = {
 
 export const initialState: SoilState = {
   soilData: {},
-  soilPushErrors: {},
   soilChanges: {},
 
   projectSettings: {},
@@ -100,7 +98,6 @@ export const setSoilData = (
 ) => {
   state.soilData = soilData;
   state.matches = {};
-  state.soilPushErrors = {};
   state.soilChanges = {};
 };
 
@@ -128,7 +125,6 @@ const soilIdSlice = createSlice({
          * the prior data.
          */
         state.soilData as Record<string, SoilData>,
-        state.soilPushErrors,
         state.soilChanges,
         action.payload,
         Date.now(),

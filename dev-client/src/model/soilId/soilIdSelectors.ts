@@ -17,6 +17,7 @@
 
 import {createSelector} from '@reduxjs/toolkit';
 
+import {SoilDataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilData, SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
@@ -31,7 +32,9 @@ export const selectSoilIdMatches =
   (state: AppState): SoilIdEntry | undefined =>
     state.soilId.matches[key];
 
-export const selectUnsyncedSites = (state: AppState): ChangeRecords<SoilData> =>
+export const selectUnsyncedSites = (
+  state: AppState,
+): ChangeRecords<SoilData, SoilDataPushFailureReason> =>
   getUnsyncedRecords(state.soilId.soilChanges);
 
 export const selectUnsyncedSiteIds = createSelector(

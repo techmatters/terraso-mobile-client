@@ -31,7 +31,7 @@ import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import * as localSoilData from 'terraso-mobile-client/model/soilId/actions/localSoilDataActions';
 import * as remoteSoilData from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
 import {
-  getChanges,
+  getRecords,
   getUnsyncedRecords,
   SyncActionResults,
 } from 'terraso-mobile-client/model/sync/sync';
@@ -48,7 +48,7 @@ export const pushSoilData = async (
   state: AppState,
 ): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
   const unsyncedChanges = getUnsyncedRecords(
-    getChanges(state.soilId.soilChanges, input),
+    getRecords(state.soilId.soilChanges, input),
   );
   const unsyncedData = Object.fromEntries(
     Object.keys(unsyncedChanges).map(id => [id, state.soilId.soilData[id]!]),
