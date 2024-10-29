@@ -36,10 +36,15 @@ export type ChangeRecord<T> = {
   lastSyncedAt?: ChangeTimestamp;
 };
 
+export type SyncActionResults<T, E> = {
+  data: SyncResults<T>;
+  errors: SyncResults<E>;
+};
+
 export type SyncResults<T> = Record<string, SyncResult<T>>;
 
 export type SyncResult<T> = {
-  data?: T;
+  data: T;
   revisionId?: ChangeRevisionId;
 };
 
@@ -118,6 +123,14 @@ export const markSynced = <T>(
   };
 };
 
+export const getSyncedRecords = <T>(
+  records: ChangeRecords<T>,
+): ChangeRecords<T> => {
+  return Object.fromEntries(
+    Object.entries(records).filter(([_, record]) => !isUnsynced(record)),
+  );
+};
+
 export const getUnsyncedRecords = <T>(
   records: ChangeRecords<T>,
 ): ChangeRecords<T> => {
@@ -142,20 +155,64 @@ export const isUnsynced = <T>(record: ChangeRecord<T>): boolean => {
   }
 };
 
-export const getUpToDateResults = <T>(
+export const applySyncActionResults = <T, E>(
+  data: Record<string, T>,
+  errors: Record<string, E>,
   records: ChangeRecords<T>,
+  results: SyncActionResults<T, E>,
+  at: ChangeTimestamp,
+) => {
+  /* Get results for revisions which match the current change records */
+  const upToDateData = getResultsForCurrentRevisions(records, results.data);
+  const upToDateErrors = getResultsForCurrentRevisions(records, results.errors);
+
+  /* Mark the successes as synced, record their data, and clear previous errors */
+  markAllSynced(records, upToDateData, at);
+  applySyncResultsData(data, upToDateData);
+  removeResultsKeys(errors, upToDateData);
+
+  /* Record any new errors */
+  applySyncResultsData(errors, upToDateErrors);
+};
+
+export const getResultsForCurrentRevisions = <T>(
+  records: ChangeRecords<unknown>,
   results: SyncResults<T>,
 ): SyncResults<T> => {
   return Object.fromEntries(
     Object.entries(results).filter(([id, result]) =>
-      isUpToDate(getChange(records, id), result),
+      isResultForCurrentRevision(getChange(records, id), result),
     ),
   );
 };
 
-export const isUpToDate = <T>(
+export const isResultForCurrentRevision = <T>(
   record: ChangeRecord<T>,
   result: SyncResult<T>,
 ): boolean => {
   return record.revisionId === result.revisionId;
+};
+
+export const applySyncResultsData = <T>(
+  data: Record<string, T>,
+  results: SyncResults<T>,
+) => {
+  Object.assign(data, getSyncResultsData(results));
+};
+
+export const getSyncResultsData = <T>(
+  results: SyncResults<T>,
+): Record<string, T> => {
+  return Object.fromEntries(
+    Object.entries(results).map(([id, record]) => [id, record.data]),
+  );
+};
+
+export const removeResultsKeys = (
+  data: Record<string, unknown>,
+  results: SyncResults<unknown>,
+) => {
+  for (const id of Object.keys(results)) {
+    delete data[id];
+  }
 };

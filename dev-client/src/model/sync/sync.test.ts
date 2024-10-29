@@ -16,14 +16,21 @@
  */
 
 import {
+  applySyncActionResults,
+  applySyncResultsData,
   ChangeRecords,
+  ChangeTimestamp,
   getChanges,
+  getResultsForCurrentRevisions,
+  getSyncedRecords,
+  getSyncResultsData,
   getUnsyncedRecords,
-  getUpToDateResults,
   isUnsynced,
   markChanged,
   markSynced,
   nextRevisionId,
+  removeResultsKeys,
+  SyncActionResults,
 } from 'terraso-mobile-client/model/sync/sync';
 
 describe('sync', () => {
@@ -104,12 +111,12 @@ describe('sync', () => {
     });
 
     test('initializes change record if not present', () => {
-      markSynced(changes, 'a', {}, Date.now());
+      markSynced(changes, 'a', {data: 'data'}, Date.now());
       expect(changes.a).toBeDefined();
     });
 
     test('records synced revision id', () => {
-      markSynced(changes, 'a', {revisionId: 123}, Date.now());
+      markSynced(changes, 'a', {revisionId: 123, data: 'data'}, Date.now());
       expect(changes.a.lastSyncedRevisionId).toEqual(123);
     });
 
@@ -120,7 +127,7 @@ describe('sync', () => {
 
     test('records synced date', () => {
       const at = Date.now();
-      markSynced(changes, 'a', {}, at);
+      markSynced(changes, 'a', {data: 'data'}, at);
       expect(changes.a.lastSyncedAt).toEqual(at);
     });
 
@@ -129,9 +136,21 @@ describe('sync', () => {
         revisionId: 100,
         lastModifiedAt: 10000,
       };
-      markSynced(changes, 'a', {}, Date.now());
+      markSynced(changes, 'a', {data: 'data'}, Date.now());
       expect(changes.a.revisionId).toEqual(100);
       expect(changes.a.lastModifiedAt).toEqual(10000);
+    });
+  });
+
+  describe('getSyncedRecords', () => {
+    test('returns synced records', () => {
+      const changes = {
+        a: {revisionId: 1, lastSyncedRevisionId: 0},
+        b: {revisionId: 1, lastSyncedRevisionId: 1},
+      };
+      expect(getSyncedRecords(changes)).toEqual({
+        b: {revisionId: 1, lastSyncedRevisionId: 1},
+      });
     });
   });
 
@@ -179,23 +198,144 @@ describe('sync', () => {
     });
   });
 
-  describe('getUpToDateResults', () => {
+  describe('applySyncActionResults', () => {
+    let data: Record<string, any>;
+    let errors: Record<string, any>;
+    let records: ChangeRecords<any>;
+    let results: SyncActionResults<any, any>;
+    let at: ChangeTimestamp;
+
+    beforeEach(() => {
+      data = {};
+      errors = {};
+      records = {};
+      results = {
+        data: {},
+        errors: {},
+      };
+      at = Date.now();
+    });
+
+    test('marks records as synced', () => {
+      records.a = {
+        revisionId: 1,
+        lastSyncedRevisionId: 0,
+      };
+      results.data.a = {revisionId: 1, data: 'new data'};
+      applySyncActionResults(data, errors, records, results, at);
+      expect(isUnsynced(records.a)).toBeFalsy();
+    });
+
+    test('does not mark stale records as synced', () => {
+      records.a = {
+        revisionId: 2,
+        lastSyncedRevisionId: 0,
+      };
+      results.data.a = {revisionId: 1, data: 'new data'};
+      applySyncActionResults(data, errors, records, results, at);
+      expect(isUnsynced(records.a)).toBeTruthy();
+    });
+
+    test('records new data', () => {
+      results.data.a = {data: 'new data'};
+      applySyncActionResults(data, errors, records, results, at);
+      expect(data.a).toEqual('new data');
+    });
+
+    test('does not record stale data', () => {
+      data.a = 'existing data';
+      results.data.a = {revisionId: 1, data: 'new error'};
+      records.a = {revisionId: 2};
+      applySyncActionResults(data, errors, records, results, at);
+      expect(data.a).toEqual('existing data');
+    });
+
+    test('clears old errors on success', () => {
+      results.data.a = {data: 'new data'};
+      errors.a = 'existing error';
+      applySyncActionResults(data, errors, records, results, at);
+      expect(errors.a).toBeUndefined();
+    });
+
+    test('records new errors', () => {
+      results.errors.a = {data: 'new error'};
+      applySyncActionResults(data, errors, records, results, at);
+      expect(errors.a).toEqual('new error');
+    });
+
+    test('does not record stale errors', () => {
+      errors.a = 'existing error';
+      results.errors.a = {revisionId: 1, data: 'new error'};
+      records.a = {revisionId: 2};
+      applySyncActionResults(data, errors, records, results, at);
+      expect(errors.a).toEqual('existing error');
+    });
+  });
+
+  describe('getResultsForCurrentRevisions', () => {
     test('returns results with matching revision IDs', () => {
       expect(
-        getUpToDateResults(
+        getResultsForCurrentRevisions(
           {a: {revisionId: 1}, b: {revisionId: 1}, c: {revisionId: 2}},
-          {a: {revisionId: 2}, b: {revisionId: 1}, c: {revisionId: 1}},
+          {
+            a: {revisionId: 2, data: 'data'},
+            b: {revisionId: 1, data: 'data'},
+            c: {revisionId: 1, data: 'data'},
+          },
         ),
-      ).toEqual({b: {revisionId: 1}});
+      ).toEqual({b: {revisionId: 1, data: 'data'}});
     });
 
     test('handles results with no change records', () => {
       expect(
-        getUpToDateResults(
+        getResultsForCurrentRevisions(
           {},
-          {a: {revisionId: undefined}, b: {revisionId: 1}},
+          {
+            a: {revisionId: undefined, data: 'data'},
+            b: {revisionId: 1, data: 'data'},
+          },
         ),
-      ).toEqual({a: {revisionId: undefined}});
+      ).toEqual({a: {revisionId: undefined, data: 'data'}});
+    });
+  });
+
+  describe('applySyncResultsData', () => {
+    test('assigns data from sync results', () => {
+      const data = {a: 'old data', b: 'other data'};
+      applySyncResultsData(data, {
+        a: {
+          data: 'data',
+        },
+      });
+      expect(data).toEqual({a: 'data', b: 'other data'});
+    });
+  });
+
+  describe('getSyncResultsData', () => {
+    test('returns data from sync results', () => {
+      expect(
+        getSyncResultsData({
+          a: {
+            data: 'data',
+          },
+        }),
+      ).toEqual({a: 'data'});
+    });
+  });
+
+  describe('removeResults', () => {
+    test('removes specified ids', () => {
+      const data = {a: 1, b: 2};
+      const results = {a: {data: 'something'}};
+      removeResultsKeys(data, results);
+      expect(Object.keys(data)).toEqual(['b']);
+    });
+
+    test('handles missing ids', () => {
+      const data = {b: 2};
+      const results = {a: {data: 'something'}};
+      removeResultsKeys(data, results);
+      expect(Object.keys(data)).toEqual(['b']);
     });
   });
 });
