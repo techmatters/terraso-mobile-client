@@ -19,16 +19,42 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   DepthDependentSoilDataUpdateMutationInput,
   SoilDataDeleteDepthIntervalMutationInput,
+  SoilDataPushFailureReason,
   SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import * as remoteSoilData from 'terraso-client-shared/soilId/soilDataService';
+import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 import {ThunkAPI} from 'terraso-client-shared/store/utils';
 
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import * as localSoilData from 'terraso-mobile-client/model/soilId/actions/localSoilDataActions';
+import * as remoteSoilData from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
+import {
+  getChanges,
+  getUnsyncedRecords,
+  SyncActionResults,
+} from 'terraso-mobile-client/model/sync/sync';
 import {AppState} from 'terraso-mobile-client/store';
+
+export const pushSoilDataThunk = async (
+  input: string[],
+  _: User | null,
+  thunkApi: ThunkAPI,
+) => pushSoilData(input, thunkApi.getState() as AppState);
+
+export const pushSoilData = async (
+  input: string[],
+  state: AppState,
+): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
+  const unsyncedChanges = getUnsyncedRecords(
+    getChanges(state.soilId.soilChanges, input),
+  );
+  const unsyncedData = Object.fromEntries(
+    Object.keys(unsyncedChanges).map(id => [id, state.soilId.soilData[id]!]),
+  );
+  return remoteSoilData.pushSoilData(unsyncedChanges, unsyncedData);
+};
 
 export const updateSoilDataThunk = async (
   input: SoilDataUpdateMutationInput,
@@ -44,7 +70,7 @@ export const updateSoilData = async (
     const data = state.soilId.soilData[input.siteId];
     return Promise.resolve(localSoilData.updateSoilData(input, data));
   } else {
-    return remoteSoilData.updateSoilData(input);
+    return soilDataService.updateSoilData(input);
   }
 };
 
@@ -64,7 +90,7 @@ export const deleteSoilDataDepthInterval = async (
       localSoilData.deleteSoilDataDepthInterval(input, data),
     );
   } else {
-    return remoteSoilData.deleteSoilDataDepthInterval(input);
+    return soilDataService.deleteSoilDataDepthInterval(input);
   }
 };
 
@@ -84,7 +110,7 @@ export const updateSoilDataDepthInterval = async (
       localSoilData.updateSoilDataDepthInterval(input, data),
     );
   } else {
-    return remoteSoilData.updateSoilDataDepthInterval(input);
+    return soilDataService.updateSoilDataDepthInterval(input);
   }
 };
 
@@ -104,6 +130,6 @@ export const updateDepthDependentSoilData = async (
       localSoilData.updateDepthDependentSoilData(input, data),
     );
   } else {
-    return remoteSoilData.updateDepthDependentSoilData(input);
+    return soilDataService.updateDepthDependentSoilData(input);
   }
 };

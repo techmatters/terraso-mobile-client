@@ -17,6 +17,7 @@
 
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
 
+import {SoilDataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import * as soilIdService from 'terraso-client-shared/soilId/soilIdService';
 import {
@@ -38,6 +39,7 @@ import {
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 import {
+  applySyncActionResults,
   ChangeRecords,
   markChanged,
 } from 'terraso-mobile-client/model/sync/sync';
@@ -51,6 +53,7 @@ export type MethodRequired<
 
 export type SoilState = {
   soilData: Record<string, SoilData | undefined>;
+  soilPushErrors: Record<string, SoilDataPushFailureReason>;
   soilChanges: ChangeRecords<SoilData>;
 
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
@@ -61,6 +64,7 @@ export type SoilState = {
 
 export const initialState: SoilState = {
   soilData: {},
+  soilPushErrors: {},
   soilChanges: {},
 
   projectSettings: {},
@@ -96,6 +100,7 @@ export const setSoilData = (
 ) => {
   state.soilData = soilData;
   state.matches = {};
+  state.soilPushErrors = {};
   state.soilChanges = {};
 };
 
@@ -115,6 +120,23 @@ const soilIdSlice = createSlice({
     },
   },
   extraReducers: builder => {
+    builder.addCase(pushSoilData.fulfilled, (state, action) => {
+      applySyncActionResults(
+        /*
+         * type-cast here bc the soilData field is more permissive than the results object
+         * (it allows undefined values). this is safe since we aren't reading anything from
+         * the prior data.
+         */
+        state.soilData as Record<string, SoilData>,
+        state.soilPushErrors,
+        state.soilChanges,
+        action.payload,
+        Date.now(),
+      );
+
+      flushDataBasedMatches(state);
+    });
+
     builder.addCase(updateSoilData.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
       markChanged(state.soilChanges, action.meta.arg.siteId, Date.now());
@@ -205,6 +227,11 @@ const flushDataBasedMatches = (state: Draft<SoilState>) => {
 };
 
 export const {setSoilIdStatus} = soilIdSlice.actions;
+
+export const pushSoilData = createAsyncThunk(
+  'soilId/pushSoilData',
+  soilDataActions.pushSoilDataThunk,
+);
 
 export const updateSoilData = createAsyncThunk(
   'soilId/updateSoilData',
