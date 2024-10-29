@@ -22,9 +22,96 @@ import {
   SoilDataPushFailureReason,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {mutationResponseToResults} from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
+import {
+  mutationResponseToResults,
+  unsyncedDataToMutationInput,
+  unsyncedDataToMutationInputEntry,
+} from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
 import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {ChangeRecords} from 'terraso-mobile-client/model/sync/sync';
+import {
+  ChangeRecord,
+  ChangeRecords,
+} from 'terraso-mobile-client/model/sync/sync';
+
+describe('unsyncedDataToMutationInput', () => {
+  let unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>;
+  let unsyncedData: Record<string, SoilData>;
+
+  beforeEach(() => {
+    unsyncedChanges = {};
+    unsyncedData = {};
+  });
+
+  it('populates input with soil data entries', () => {
+    unsyncedData = {
+      a: {
+        depthIntervalPreset: 'CUSTOM',
+        depthIntervals: [],
+        depthDependentData: [],
+      },
+      b: {
+        depthIntervalPreset: 'CUSTOM',
+        depthIntervals: [],
+        depthDependentData: [],
+      },
+    };
+
+    const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
+    expect(input.soilDataEntries).toHaveLength(2);
+  });
+});
+
+describe('unsyncedDataToMutationInputEntry', () => {
+  let unsyncedChanges: ChangeRecord<SoilData, SoilDataPushFailureReason>;
+  let unsyncedData: SoilData;
+
+  beforeEach(() => {
+    unsyncedChanges = {};
+    unsyncedData = {
+      depthIntervalPreset: 'CUSTOM',
+      depthIntervals: [],
+      depthDependentData: [],
+    };
+  });
+
+  it('populates input with site id', () => {
+    const input = unsyncedDataToMutationInputEntry(
+      'siteId',
+      unsyncedChanges,
+      unsyncedData,
+    );
+    expect(input.siteId).toEqual('siteId');
+  });
+
+  it('populates input with soil properties', () => {
+    unsyncedData.bedrock = 1;
+
+    const input = unsyncedDataToMutationInputEntry(
+      'siteId',
+      unsyncedChanges,
+      unsyncedData,
+    );
+    expect(input.soilData.bedrock).toEqual(1);
+  });
+
+  it('populates input with deleted depth intervals', () => {
+    unsyncedData.depthIntervals = [
+      {label: '', depthInterval: {start: 1, end: 2}},
+    ];
+    unsyncedChanges.lastSyncedData = {
+      depthIntervalPreset: 'CUSTOM',
+      depthIntervals: [{label: '', depthInterval: {start: 2, end: 3}}],
+      depthDependentData: [],
+    };
+
+    const input = unsyncedDataToMutationInputEntry(
+      'siteId',
+      unsyncedChanges,
+      unsyncedData,
+    );
+    expect(input.soilData.deletedDepthIntervals).toEqual([{start: 2, end: 3}]);
+  });
+});
 
 describe('mutationResponseToResults', () => {
   let unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>;

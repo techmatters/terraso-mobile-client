@@ -19,11 +19,14 @@ import {
   SoilDataPushEntry,
   SoilDataPushFailureReason,
   SoilDataPushInput,
+  SoilDataPushInputEntry,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import * as remoteSoilData from 'terraso-client-shared/soilId/soilDataService';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
+import {getDeletedDepthIntervals} from 'terraso-mobile-client/model/soilId/actions/soilDataDiff';
 import {
+  ChangeRecord,
   ChangeRecords,
   getRecord,
   SyncActionResults,
@@ -42,14 +45,39 @@ export const pushSoilData = async (
 };
 
 export const unsyncedDataToMutationInput = (
-  _: ChangeRecords<SoilData, SoilDataPushFailureReason>,
-  __: Record<string, SoilData>,
+  unsyncedChanges: ChangeRecords<SoilData, unknown>,
+  unsyncedData: Record<string, SoilData>,
 ): SoilDataPushInput => {
-  throw new Error('Function not implemented.');
+  return {
+    soilDataEntries: Object.entries(unsyncedData).map(([siteId, soilData]) =>
+      unsyncedDataToMutationInputEntry(
+        siteId,
+        getRecord(unsyncedChanges, siteId),
+        soilData,
+      ),
+    ),
+  };
+};
+
+export const unsyncedDataToMutationInputEntry = (
+  siteId: string,
+  record: ChangeRecord<SoilData, unknown>,
+  soilData: SoilData,
+): SoilDataPushInputEntry => {
+  return {
+    siteId,
+    soilData: {
+      ...soilData,
+      deletedDepthIntervals: getDeletedDepthIntervals(
+        soilData,
+        record.lastSyncedData,
+      ),
+    },
+  };
 };
 
 export const mutationResponseToResults = (
-  unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>,
+  unsyncedChanges: ChangeRecords<SoilData, unknown>,
   response: SoilDataPushEntry[],
 ): SyncActionResults<SoilData, SoilDataPushFailureReason> => {
   const results: SyncActionResults<SoilData, SoilDataPushFailureReason> = {
