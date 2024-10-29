@@ -25,6 +25,7 @@ import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
   ChangeRecords,
+  getRecord,
   SyncActionResults,
 } from 'terraso-mobile-client/model/sync/sync';
 
@@ -33,8 +34,11 @@ export const pushSoilData = async (
   unsyncedData: Record<string, SoilData>,
 ): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
   const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
-  const results = await remoteSoilData.pushSoilData(input);
-  return mutationResponseToResults(results as SoilDataPushEntry[]);
+  const response = await remoteSoilData.pushSoilData(input);
+  return mutationResponseToResults(
+    unsyncedChanges,
+    response as SoilDataPushEntry[],
+  );
 };
 
 export const unsyncedDataToMutationInput = (
@@ -45,7 +49,27 @@ export const unsyncedDataToMutationInput = (
 };
 
 export const mutationResponseToResults = (
-  _: SoilDataPushEntry[],
+  unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>,
+  response: SoilDataPushEntry[],
 ): SyncActionResults<SoilData, SoilDataPushFailureReason> => {
-  throw new Error('Function not implemented.');
+  const results: SyncActionResults<SoilData, SoilDataPushFailureReason> = {
+    data: {},
+    errors: {},
+  };
+  for (const responseEntry of response) {
+    const siteId = responseEntry.siteId;
+    const revisionId = getRecord(unsyncedChanges, siteId).revisionId;
+    if ('site' in responseEntry.result) {
+      results.data[siteId] = {
+        revisionId,
+        data: responseEntry.result.site.soilData,
+      };
+    } else {
+      results.errors[siteId] = {
+        revisionId,
+        data: responseEntry.result.reason,
+      };
+    }
+  }
+  return results;
 };
