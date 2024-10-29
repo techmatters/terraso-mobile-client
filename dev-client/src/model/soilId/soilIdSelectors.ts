@@ -39,5 +39,13 @@ export const selectUnsyncedSites = (
 
 export const selectUnsyncedSiteIds = createSelector(
   selectUnsyncedSites,
-  changes => Object.keys(changes),
+  records => Object.keys(records),
+);
+
+export const selectHasSyncErrors = createSelector(
+  selectUnsyncedSites,
+  records =>
+    !!Object.values(records).find(
+      record => record.lastSyncedError !== undefined,
+    ),
 );
