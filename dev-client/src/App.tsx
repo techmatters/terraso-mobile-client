@@ -44,6 +44,7 @@ import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {captureConsoleIntegration} from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
+import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
@@ -133,7 +134,9 @@ function App(): React.JSX.Element {
                         <SitesScreenContextProvider>
                           <ConnectivityContextProvider>
                             <ForegroundPermissionsProvider>
-                              <SyncManager />
+                              <RestrictByFlag flag="FF_offline">
+                                <SyncManager />
+                              </RestrictByFlag>
                               <RootNavigator />
                             </ForegroundPermissionsProvider>
                           </ConnectivityContextProvider>
