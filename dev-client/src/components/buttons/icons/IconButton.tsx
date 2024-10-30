@@ -40,6 +40,7 @@ export type IconButtonVariant =
 export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
   type: IconButtonType;
   name: IconName;
+  disabled?: boolean;
   variant?: IconButtonVariant;
   accessibilityLabel?: string;
   onPress?: PressableProps['onPress'];
@@ -50,6 +51,7 @@ export const IconButton = forwardRef<View, IconButtonProps>(
     {
       type,
       name,
+      disabled,
       variant = 'normal',
       accessibilityLabel,
       onPress,
@@ -61,15 +63,21 @@ export const IconButton = forwardRef<View, IconButtonProps>(
         ref={ref}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
-        style={[containerStyleForType(type), containerStyleForVariant(variant)]}
+        accessibilityState={{disabled: disabled}}
+        disabled={disabled}
+        style={[
+          containerStyleForType(type),
+          containerStyleForVariant(variant, disabled),
+        ]}
         onPress={onPress}>
         <MaterialIcon
           name={name}
+          disabled={disabled}
           size={convertIconSize(type === 'sq' ? 'md' : type)}
           style={[
             styles.icon,
             iconStyleForType(type),
-            iconStyleForVariant(variant),
+            iconStyleForVariant(variant, disabled),
           ]}
         />
       </Pressable>
@@ -99,7 +107,14 @@ const iconStyleForType = (type: IconButtonType) => {
   }
 };
 
-const containerStyleForVariant = (variant: IconButtonVariant) => {
+const containerStyleForVariant = (
+  variant: IconButtonVariant,
+  disabled?: boolean,
+) => {
+  if (disabled) {
+    return styles.containerDisabled;
+  }
+
   switch (variant) {
     case 'normal-filled':
       return styles.containerNormalFilled;
@@ -114,7 +129,14 @@ const containerStyleForVariant = (variant: IconButtonVariant) => {
   }
 };
 
-const iconStyleForVariant = (variant: IconButtonVariant) => {
+const iconStyleForVariant = (
+  variant: IconButtonVariant,
+  disabled?: boolean,
+) => {
+  if (disabled) {
+    return styles.iconDisabled;
+  }
+
   switch (variant) {
     case 'normal-filled':
       return styles.iconNormalFilled;
@@ -151,6 +173,12 @@ const styles = StyleSheet.create({
   },
   iconSq: {
     padding: 8,
+  },
+  containerDisabled: {
+    backgroundColor: convertColorProp('transparent'),
+  },
+  iconDisabled: {
+    color: convertColorProp('action.disabled'),
   },
   containerNormal: {
     backgroundColor: convertColorProp('transparent'),
