@@ -162,11 +162,8 @@ export const isUnsynced = (record: ChangeRecord<unknown, unknown>): boolean => {
   ) {
     /* Never-synced never-changed records have no need for syncing */
     return false;
-  } else if (record.lastSyncedRevisionId === undefined) {
-    /* Unsynced changes if the record has changes but no last-synced id */
-    return true;
   } else {
-    /* Unsynced changes if the record's current revision is not the last-synced one */
+    /* Unsynced if the record's current revision is not the last-synced one */
     return record.revisionId !== record.lastSyncedRevisionId;
   }
 };
