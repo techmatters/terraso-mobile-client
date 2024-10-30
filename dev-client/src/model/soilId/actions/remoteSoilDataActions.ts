@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {cloneDeep} from 'lodash';
+
 import {
   SoilDataPushEntry,
   SoilDataPushFailureReason,
@@ -68,6 +70,8 @@ export const unsyncedDataToMutationInputEntry = (
     siteId,
     soilData: {
       ...soilData,
+      depthIntervals: soilData.depthIntervals.map(di => cloneDeep(di)),
+      depthDependentData: soilData.depthDependentData.map(dd => cloneDeep(dd)),
       deletedDepthIntervals: getDeletedDepthIntervals(
         soilData,
         record.lastSyncedData,

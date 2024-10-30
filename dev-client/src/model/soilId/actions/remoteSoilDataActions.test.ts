@@ -85,6 +85,17 @@ describe('unsyncedDataToMutationInputEntry', () => {
 
   it('populates input with soil properties', () => {
     unsyncedData.bedrock = 1;
+    unsyncedData.depthIntervals = [
+      {
+        label: 'test',
+        depthInterval: {start: 1, end: 2},
+      },
+    ];
+    unsyncedData.depthDependentData = [
+      {
+        depthInterval: {start: 1, end: 2},
+      },
+    ];
 
     const input = unsyncedDataToMutationInputEntry(
       'siteId',
@@ -92,6 +103,22 @@ describe('unsyncedDataToMutationInputEntry', () => {
       unsyncedData,
     );
     expect(input.soilData.bedrock).toEqual(1);
+    expect(input.soilData.depthIntervals).toEqual(unsyncedData.depthIntervals);
+    expect(input.soilData.depthDependentData).toEqual(
+      unsyncedData.depthDependentData,
+    );
+    expect(input.soilData.depthIntervals[0]).not.toBe(
+      unsyncedData.depthIntervals[0],
+    );
+    expect(input.soilData.depthDependentData[0]).not.toBe(
+      unsyncedData.depthDependentData[0],
+    );
+    expect(input.soilData.depthIntervals[0].depthInterval).not.toBe(
+      unsyncedData.depthIntervals[0].depthInterval,
+    );
+    expect(input.soilData.depthDependentData[0].depthInterval).not.toBe(
+      unsyncedData.depthDependentData[0].depthInterval,
+    );
   });
 
   it('populates input with deleted depth intervals', () => {
