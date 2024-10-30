@@ -30,7 +30,7 @@ import {getDeletedDepthIntervals} from 'terraso-mobile-client/model/soilId/actio
 import {
   ChangeRecord,
   ChangeRecords,
-  getRecord,
+  getChangeRecord,
   SyncActionResults,
 } from 'terraso-mobile-client/model/sync/sync';
 
@@ -54,7 +54,7 @@ export const unsyncedDataToMutationInput = (
     soilDataEntries: Object.entries(unsyncedData).map(([siteId, soilData]) =>
       unsyncedDataToMutationInputEntry(
         siteId,
-        getRecord(unsyncedChanges, siteId),
+        getChangeRecord(unsyncedChanges, siteId),
         soilData,
       ),
     ),
@@ -90,7 +90,7 @@ export const mutationResponseToResults = (
   };
   for (const responseEntry of response) {
     const siteId = responseEntry.siteId;
-    const revisionId = getRecord(unsyncedChanges, siteId).revisionId;
+    const revisionId = getChangeRecord(unsyncedChanges, siteId).revisionId;
     if ('site' in responseEntry.result) {
       results.data[siteId] = {
         revisionId,

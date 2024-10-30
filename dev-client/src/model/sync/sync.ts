@@ -57,14 +57,14 @@ export const nextRevisionId = (
   return (revisionId ?? INITIAL_REVISION_ID) + 1;
 };
 
-export const getRecords = <T, E>(
+export const getChangeRecords = <T, E>(
   records: ChangeRecords<T, E>,
   ids: string[],
 ): ChangeRecords<T, E> => {
-  return Object.fromEntries(ids.map(id => [id, getRecord(records, id)]));
+  return Object.fromEntries(ids.map(id => [id, getChangeRecord(records, id)]));
 };
 
-export const getRecord = <T, E>(
+export const getChangeRecord = <T, E>(
   records: ChangeRecords<T, E>,
   id: string,
 ): ChangeRecord<T, E> => {
@@ -86,7 +86,7 @@ export const markChanged = <T>(
   id: string,
   at: ChangeTimestamp,
 ) => {
-  const prevRecord = getRecord(records, id);
+  const prevRecord = getChangeRecord(records, id);
   const revisionId = nextRevisionId(prevRecord.revisionId);
   records[id] = {
     ...prevRecord,
@@ -111,7 +111,7 @@ export const markSynced = <T>(
   result: SyncResult<T>,
   at: ChangeTimestamp,
 ) => {
-  const prevRecord = getRecord(records, id);
+  const prevRecord = getChangeRecord(records, id);
   records[id] = {
     ...prevRecord,
     lastSyncedRevisionId: result.revisionId,
@@ -135,7 +135,7 @@ export const markError = <E>(
   id: string,
   error: E,
 ) => {
-  const prevRecord = getRecord(records, id);
+  const prevRecord = getChangeRecord(records, id);
   records[id] = {...prevRecord, lastSyncedError: error};
 };
 
@@ -193,7 +193,7 @@ export const getResultsForCurrentRevisions = <T>(
 ): SyncResults<T> => {
   return Object.fromEntries(
     Object.entries(results).filter(([id, result]) =>
-      isResultForCurrentRevision(getRecord(records, id), result),
+      isResultForCurrentRevision(getChangeRecord(records, id), result),
     ),
   );
 };

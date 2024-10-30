@@ -20,7 +20,7 @@ import {
   applySyncResultsData,
   ChangeRecords,
   ChangeTimestamp,
-  getRecords,
+  getChangeRecords,
   getResultsForCurrentRevisions,
   getSyncedRecords,
   getSyncResultsData,
@@ -48,15 +48,15 @@ describe('sync', () => {
     });
   });
 
-  describe('getRecords', () => {
+  describe('getChangeRecords', () => {
     test('returns changes for ids', () => {
       const changes = {a: {revisionId: 1}, b: {revisionId: 2}};
-      expect(getRecords(changes, ['a'])).toEqual({a: {revisionId: 1}});
+      expect(getChangeRecords(changes, ['a'])).toEqual({a: {revisionId: 1}});
     });
 
     test('returns empty changes when missing', () => {
       const changes = {};
-      expect(getRecords(changes, ['a'])).toEqual({a: {}});
+      expect(getChangeRecords(changes, ['a'])).toEqual({a: {}});
     });
   });
 
