@@ -53,6 +53,7 @@ import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScr
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
+import {SyncManager} from 'terraso-mobile-client/store/components/syncManager';
 import {
   loadPersistedReduxState,
   patchPersistedReduxState,
@@ -132,6 +133,7 @@ function App(): React.JSX.Element {
                         <SitesScreenContextProvider>
                           <ConnectivityContextProvider>
                             <ForegroundPermissionsProvider>
+                              <SyncManager />
                               <RootNavigator />
                             </ForegroundPermissionsProvider>
                           </ConnectivityContextProvider>
