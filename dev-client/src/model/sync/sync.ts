@@ -139,14 +139,6 @@ export const markError = <E>(
   records[id] = {...prevRecord, lastSyncedError: error};
 };
 
-export const getSyncedRecords = <T, E>(
-  records: ChangeRecords<T, E>,
-): ChangeRecords<T, E> => {
-  return Object.fromEntries(
-    Object.entries(records).filter(([_, record]) => !isUnsynced(record)),
-  );
-};
-
 export const getUnsyncedRecords = <T, E>(
   records: ChangeRecords<T, E>,
 ): ChangeRecords<T, E> => {

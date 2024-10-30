@@ -22,7 +22,6 @@ import {
   ChangeTimestamp,
   getChangeRecords,
   getResultsForCurrentRevisions,
-  getSyncedRecords,
   getSyncResultsData,
   getUnsyncedRecords,
   isUnsynced,
@@ -182,18 +181,6 @@ describe('sync', () => {
       expect(changes.a.lastSyncedRevisionId).toEqual(100);
       expect(changes.a.lastSyncedData).toEqual('data');
       expect(changes.a.lastSyncedAt).toEqual(10000);
-    });
-  });
-
-  describe('getSyncedRecords', () => {
-    test('returns synced records', () => {
-      const changes = {
-        a: {revisionId: 1, lastSyncedRevisionId: 0},
-        b: {revisionId: 1, lastSyncedRevisionId: 1},
-      };
-      expect(getSyncedRecords(changes)).toEqual({
-        b: {revisionId: 1, lastSyncedRevisionId: 1},
-      });
     });
   });
 
