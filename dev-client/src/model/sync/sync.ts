@@ -219,12 +219,3 @@ export const getSyncResultsData = <T>(
     Object.entries(results).map(([id, record]) => [id, record.data]),
   );
 };
-
-export const removeResultsKeys = (
-  data: Record<string, unknown>,
-  results: SyncResults<unknown>,
-) => {
-  for (const id of Object.keys(results)) {
-    delete data[id];
-  }
-};
