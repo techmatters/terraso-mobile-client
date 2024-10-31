@@ -16,11 +16,33 @@
  */
 
 import {
+  DepthDependentSoilData,
   DepthInterval,
   SoilData,
+  SoilDataDepthInterval,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
+import {
+  DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
+  DEPTH_INTERVAL_UPDATE_FIELDS,
+  DepthDependentUpdateField,
+  DepthIntervalUpdateField,
+  SOIL_DATA_UPDATE_FIELDS,
+  SoilDataUpdateField,
+} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
 import {depthIntervalKey} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+
+export const getChangedSoilDataFields = (
+  curr: SoilData,
+  prev?: SoilData,
+): Record<SoilDataUpdateField, any> => {
+  return diffFields(SOIL_DATA_UPDATE_FIELDS, curr, prev);
+};
+
+export type DepthIntervalChanges<F extends string> = {
+  depthInterval: DepthInterval;
+  changedFields: Record<F, any>;
+};
 
 export const getDeletedDepthIntervals = (
   curr: SoilData,
@@ -37,3 +59,76 @@ export const getDeletedDepthIntervals = (
     .filter(di => !currIntervals.has(depthIntervalKey(di.depthInterval)))
     .map(di => di.depthInterval);
 };
+
+export const getChangedDepthIntervals = (
+  curr: SoilData,
+  prev?: SoilData,
+): DepthIntervalChanges<DepthIntervalUpdateField>[] => {
+  const prevIntervals = indexDepthIntervals(prev?.depthIntervals ?? []);
+  const diffs = curr.depthIntervals.map(di => {
+    return {
+      depthInterval: di.depthInterval,
+      changedFields: getChangedDepthIntervalFields(
+        di,
+        prevIntervals[depthIntervalKey(di.depthInterval)],
+      ),
+    };
+  });
+
+  return diffs.filter(di => Object.keys(di.changedFields).length > 0);
+};
+
+export const getChangedDepthIntervalFields = (
+  curr: SoilDataDepthInterval,
+  prev?: SoilDataDepthInterval,
+): Record<DepthIntervalUpdateField, any> => {
+  return diffFields(DEPTH_INTERVAL_UPDATE_FIELDS, curr, prev);
+};
+
+export const getChangedDepthDependentData = (
+  curr: SoilData,
+  prev?: SoilData,
+): DepthIntervalChanges<DepthDependentUpdateField>[] => {
+  const prevData = indexDepthIntervals(prev?.depthDependentData ?? []);
+  const diffs = curr.depthDependentData.map(dd => {
+    return {
+      depthInterval: dd.depthInterval,
+      changedFields: getChangedDepthDependentFields(
+        dd,
+        prevData[depthIntervalKey(dd.depthInterval)],
+      ),
+    };
+  });
+  return diffs.filter(di => Object.keys(di.changedFields).length > 0);
+};
+
+export const getChangedDepthDependentFields = (
+  curr: DepthDependentSoilData,
+  prev?: DepthDependentSoilData,
+): Record<DepthDependentUpdateField, any> => {
+  return diffFields(DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS, curr, prev);
+};
+
+export const diffFields = <F extends keyof T, T>(
+  fields: F[],
+  curr: T,
+  prev?: T,
+): Record<F, any> => {
+  let changedFields: (keyof T)[];
+  if (!prev) {
+    changedFields = fields;
+  } else {
+    changedFields = fields.filter(field => curr[field] !== prev[field]);
+  }
+
+  return Object.fromEntries(
+    changedFields.map(field => [field, curr[field]]),
+  ) as Record<F, any>;
+};
+
+export const indexDepthIntervals = <T>(
+  items: (T & {depthInterval: DepthInterval})[],
+): Record<string, T> =>
+  Object.fromEntries(
+    items.map(item => [depthIntervalKey(item.depthInterval), item]),
+  );
