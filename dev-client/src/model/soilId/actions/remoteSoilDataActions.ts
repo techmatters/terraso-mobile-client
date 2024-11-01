@@ -91,10 +91,10 @@ export const mutationResponseToResults = (
   for (const responseEntry of response) {
     const siteId = responseEntry.siteId;
     const revisionId = getChangeRecord(unsyncedChanges, siteId).revisionId;
-    if ('site' in responseEntry.result) {
+    if ('soilData' in responseEntry.result) {
       results.data[siteId] = {
         revisionId,
-        data: responseEntry.result.site.soilData,
+        data: responseEntry.result.soilData,
       };
     } else {
       results.errors[siteId] = {

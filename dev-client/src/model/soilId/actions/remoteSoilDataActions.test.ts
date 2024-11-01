@@ -16,7 +16,6 @@
  */
 
 import {
-  SiteNode,
   SoilDataNode,
   SoilDataPushEntry,
   SoilDataPushFailureReason,
@@ -155,11 +154,9 @@ describe('mutationResponseToResults', () => {
       {
         siteId: 'a',
         result: {
-          site: {
-            soilData: {
-              crossSlope: 'CONCAVE',
-            } as SoilDataNode,
-          } as SiteNode,
+          soilData: {
+            crossSlope: 'CONCAVE',
+          } as SoilDataNode,
         },
       },
     ];
