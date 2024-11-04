@@ -160,27 +160,34 @@ describe('sync', () => {
     });
 
     test('initializes change record if not present', () => {
-      markError(changes, 'a', 'error');
+      markError(changes, 'a', {data: 'error'}, Date.now());
       expect(changes.a).toBeDefined();
     });
 
+    test('records synced revision id', () => {
+      markError(changes, 'a', {revisionId: 123, data: 'data'}, Date.now());
+      expect(changes.a.lastSyncedRevisionId).toEqual(123);
+    });
+
     test('records error', () => {
-      markError(changes, 'a', 'error');
+      markError(changes, 'a', {data: 'error'}, Date.now());
       expect(changes.a.lastSyncedError).toEqual('error');
+    });
+
+    test('records synced date', () => {
+      const at = Date.now();
+      markError(changes, 'a', {data: 'data'}, at);
+      expect(changes.a.lastSyncedAt).toEqual(at);
     });
 
     test('preserves other properties', () => {
       changes.a = {
         revisionId: 101,
-        lastSyncedRevisionId: 100,
         lastSyncedData: 'data',
-        lastSyncedAt: 10000,
       };
-      markError(changes, 'a', 'error');
+      markError(changes, 'a', {data: 'error'}, Date.now());
       expect(changes.a.revisionId).toEqual(101);
-      expect(changes.a.lastSyncedRevisionId).toEqual(100);
       expect(changes.a.lastSyncedData).toEqual('data');
-      expect(changes.a.lastSyncedAt).toEqual(10000);
     });
   });
 
@@ -249,9 +256,15 @@ describe('sync', () => {
         revisionId: 1,
         lastSyncedRevisionId: 0,
       };
+      records.b = {
+        revisionId: 1,
+        lastSyncedRevisionId: 0,
+      };
       results.data.a = {revisionId: 1, data: 'new data'};
+      results.errors.b = {revisionId: 1, data: 'new error'};
       applySyncActionResults(data, records, results, at);
       expect(isUnsynced(records.a)).toBeFalsy();
+      expect(isUnsynced(records.b)).toBeFalsy();
     });
 
     test('does not mark stale records as synced', () => {

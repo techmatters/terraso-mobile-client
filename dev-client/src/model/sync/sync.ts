@@ -123,20 +123,28 @@ export const markSynced = <T>(
 
 export const markErrors = <E>(
   records: ChangeRecords<unknown, E>,
-  errors: Record<string, E>,
+  errors: SyncResults<E>,
+  at: ChangeTimestamp,
 ) => {
   for (const [id, error] of Object.entries(errors)) {
-    markError(records, id, error);
+    markError(records, id, error, at);
   }
 };
 
 export const markError = <E>(
   records: ChangeRecords<unknown, E>,
   id: string,
-  error: E,
+  error: SyncResult<E>,
+  at: ChangeTimestamp,
 ) => {
   const prevRecord = getChangeRecord(records, id);
-  records[id] = {...prevRecord, lastSyncedError: error};
+  records[id] = {
+    ...prevRecord,
+
+    lastSyncedRevisionId: error.revisionId,
+    lastSyncedError: error.data,
+    lastSyncedAt: at,
+  };
 };
 
 export const getUnsyncedRecords = <T, E>(
@@ -170,10 +178,12 @@ export const applySyncActionResults = <T, E>(
   const upToDateData = getResultsForCurrentRevisions(records, results.data);
   const upToDateErrors = getResultsForCurrentRevisions(records, results.errors);
 
-  /* Mark the successes as synced, record their data, mark any errors */
+  /* Mark the successes as synced, record their data */
   markAllSynced(records, upToDateData, at);
   applySyncResultsData(data, upToDateData);
-  markErrors(records, getSyncResultsData(upToDateErrors));
+
+  /* Mark errors that occurred */
+  markErrors(records, upToDateErrors, at);
 };
 
 export const getResultsForCurrentRevisions = <T>(
@@ -207,4 +217,24 @@ export const getSyncResultsData = <T>(
   return Object.fromEntries(
     Object.entries(results).map(([id, record]) => [id, record.data]),
   );
+};
+
+export const discardChanges = <T>(
+  records: ChangeRecords<T, unknown>,
+  ids: string[],
+) => {
+  ids.forEach(id => discardChange(records, id));
+};
+
+export const discardChange = <T>(
+  records: ChangeRecords<T, unknown>,
+  id: string,
+) => {
+  const prevRecord = getChangeRecord(records, id);
+
+  records[id] = {
+    ...prevRecord,
+    lastModifiedAt: prevRecord.lastSyncedAt,
+    revisionId: prevRecord.lastSyncedRevisionId,
+  };
 };
