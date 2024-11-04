@@ -32,8 +32,16 @@ export type ChangeRecord<T, E> = {
   lastModifiedAt?: ChangeTimestamp;
 
   lastSyncedRevisionId?: ChangeRevisionId;
+
+  /**
+   * The last successfully-synced data for this record.
+   */
   lastSyncedData?: T;
+  /**
+   * The last sync error for this record (cleared on sync success).
+   */
   lastSyncedError?: E;
+
   lastSyncedAt?: ChangeTimestamp;
 };
 
