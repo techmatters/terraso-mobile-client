@@ -54,7 +54,7 @@ import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScr
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
-import {SyncManager} from 'terraso-mobile-client/store/components/syncManager';
+import {PushDispatcher} from 'terraso-mobile-client/store/components/PushDispatcher';
 import {
   loadPersistedReduxState,
   patchPersistedReduxState,
@@ -135,7 +135,7 @@ function App(): React.JSX.Element {
                           <ConnectivityContextProvider>
                             <ForegroundPermissionsProvider>
                               <RestrictByFlag flag="FF_offline">
-                                <SyncManager />
+                                <PushDispatcher />
                               </RestrictByFlag>
                               <RootNavigator />
                             </ForegroundPermissionsProvider>

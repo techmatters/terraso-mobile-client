@@ -17,29 +17,29 @@
 
 import {useEffect} from 'react';
 
-import {useDispatch, useSelector} from '..';
 import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {pushSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
-export const SyncManager = () => {
+export const PushDispatcher = () => {
   const dispatch = useDispatch();
-  const currentUser = useSelector(state => state.account.currentUser.data);
-  const isOffline = useIsOffline();
-  const unsyncedSiteIds = useSelector(selectUnsyncedSiteIds);
 
-  /* Debounce both offline state and IDs so we have a stable state before queuing up a sync */
-  const [debouncedIsOffline] = useDebounce(isOffline, 500);
-  const [debouncedSiteIds] = useDebounce(unsyncedSiteIds, 500);
+  /* Debounce both offline state and IDs so we have a stable state before queuing up a push */
+  const [isOffline] = useDebounce(useIsOffline(), 500);
+  const [siteIds] = useDebounce(useSelector(selectUnsyncedSiteIds), 500);
+
+  /* We need to push if there is a logged-in user, we are online, and we have unsynced site IDs */
+  const currentUser = useSelector(state => state.account.currentUser.data);
+  const needsPush = currentUser && !isOffline && siteIds.length > 0;
 
   useEffect(() => {
-    /* If we're not offline and have unsynced site IDs, dispatch a sync all for them */
-    if (currentUser && !debouncedIsOffline && debouncedSiteIds.length > 0) {
-      dispatch(pushSoilData(debouncedSiteIds));
+    if (needsPush) {
+      dispatch(pushSoilData(siteIds));
     }
-  }, [dispatch, currentUser, debouncedIsOffline, debouncedSiteIds]);
+  }, [dispatch, needsPush, siteIds]);
 
   return <></>;
 };
