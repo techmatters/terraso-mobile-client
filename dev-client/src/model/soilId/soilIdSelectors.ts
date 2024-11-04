@@ -17,14 +17,10 @@
 
 import {createSelector} from '@reduxjs/toolkit';
 
-import {SoilDataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
-import {SoilData, SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {
-  ChangeRecords,
-  getUnsyncedRecords,
-} from 'terraso-mobile-client/model/sync/sync';
+import {getUnsyncedRecords} from 'terraso-mobile-client/model/sync/sync';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilIdMatches =

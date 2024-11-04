@@ -26,6 +26,7 @@ import {pushSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 
 export const SyncManager = () => {
   const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.account.currentUser.data);
   const isOffline = useIsOffline();
   const unsyncedSiteIds = useSelector(selectUnsyncedSiteIds);
 
@@ -35,10 +36,10 @@ export const SyncManager = () => {
 
   useEffect(() => {
     /* If we're not offline and have unsynced site IDs, dispatch a sync all for them */
-    if (!debouncedIsOffline && debouncedSiteIds.length > 0) {
+    if (currentUser && !debouncedIsOffline && debouncedSiteIds.length > 0) {
       dispatch(pushSoilData(debouncedSiteIds));
     }
-  }, [dispatch, debouncedIsOffline, debouncedSiteIds]);
+  }, [dispatch, currentUser, debouncedIsOffline, debouncedSiteIds]);
 
   return <></>;
 };
