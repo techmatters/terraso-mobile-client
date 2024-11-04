@@ -32,14 +32,15 @@ export const selectSoilIdMatches =
   (state: AppState): SoilIdEntry | undefined =>
     state.soilId.matches[key];
 
-export const selectUnsyncedSites = (
-  state: AppState,
-): ChangeRecords<SoilData, SoilDataPushFailureReason> =>
-  getUnsyncedRecords(state.soilId.soilChanges);
+export const selectSoilChanges = (state: AppState) => state.soilId.soilChanges;
+
+export const selectUnsyncedSites = createSelector(selectSoilChanges, records =>
+  getUnsyncedRecords(records),
+);
 
 export const selectUnsyncedSiteIds = createSelector(
   selectUnsyncedSites,
-  records => Object.keys(records),
+  records => Object.keys(records).sort(),
 );
 
 export const selectHasSyncErrors = createSelector(
