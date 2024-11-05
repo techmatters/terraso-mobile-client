@@ -36,7 +36,7 @@ import {
 
 export const pushSoilData = async (
   unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>,
-  unsyncedData: Record<string, SoilData>,
+  unsyncedData: Record<string, SoilData | undefined>,
 ): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
   const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
   const response = await remoteSoilData.pushSoilData(input);
@@ -48,16 +48,18 @@ export const pushSoilData = async (
 
 export const unsyncedDataToMutationInput = (
   unsyncedChanges: ChangeRecords<SoilData, unknown>,
-  unsyncedData: Record<string, SoilData>,
+  unsyncedData: Record<string, SoilData | undefined>,
 ): SoilDataPushInput => {
   return {
-    soilDataEntries: Object.entries(unsyncedData).map(([siteId, soilData]) =>
-      unsyncedDataToMutationInputEntry(
-        siteId,
-        getChangeRecord(unsyncedChanges, siteId),
-        soilData,
+    soilDataEntries: Object.entries(unsyncedData)
+      .filter(([_, soilData]) => soilData !== undefined)
+      .map(([siteId, soilData]) =>
+        unsyncedDataToMutationInputEntry(
+          siteId,
+          getChangeRecord(unsyncedChanges, siteId),
+          soilData! /* Safe to use ! here bc of above filter() call */,
+        ),
       ),
-    ),
   };
 };
 

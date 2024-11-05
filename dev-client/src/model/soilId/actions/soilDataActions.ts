@@ -51,7 +51,7 @@ export const pushSoilData = async (
     getChangeRecords(state.soilId.soilChanges, input),
   );
   const unsyncedData = Object.fromEntries(
-    Object.keys(unsyncedChanges).map(id => [id, state.soilId.soilData[id]!]),
+    Object.keys(unsyncedChanges).map(id => [id, state.soilId.soilData[id]]),
   );
   return remoteSoilData.pushSoilData(unsyncedChanges, unsyncedData);
 };

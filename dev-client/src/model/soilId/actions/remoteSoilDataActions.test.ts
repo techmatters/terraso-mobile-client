@@ -34,7 +34,7 @@ import {
 
 describe('unsyncedDataToMutationInput', () => {
   let unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>;
-  let unsyncedData: Record<string, SoilData>;
+  let unsyncedData: Record<string, SoilData | undefined>;
 
   beforeEach(() => {
     unsyncedChanges = {};
@@ -57,6 +57,20 @@ describe('unsyncedDataToMutationInput', () => {
 
     const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
     expect(input.soilDataEntries).toHaveLength(2);
+  });
+
+  it('excludes entires that have no soil data', () => {
+    unsyncedData = {
+      a: {
+        depthIntervalPreset: 'CUSTOM',
+        depthIntervals: [],
+        depthDependentData: [],
+      },
+      b: undefined,
+    };
+
+    const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
+    expect(input.soilDataEntries).toHaveLength(1);
   });
 });
 
