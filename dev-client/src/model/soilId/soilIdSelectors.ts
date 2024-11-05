@@ -42,7 +42,7 @@ export const selectUnsyncedSiteIds = createSelector(
   records => Object.keys(records).sort(),
 );
 
-export const selectHasSyncErrors = createSelector(
+export const selectSyncErrorSites = createSelector(
   selectUnsyncedSites,
   getErrorRecords,
 );
