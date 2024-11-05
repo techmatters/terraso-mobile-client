@@ -41,10 +41,9 @@ export const ProjectInstructionsButton = ({project}: Props) => {
   const onShowNote = useCallback(() => {
     return () =>
       navigation.navigate('READ_NOTE', {
-        content: project.siteInstructions || '',
-        isSiteInstructions: true,
+        projectId: project.id,
       });
-  }, [navigation, project.siteInstructions]);
+  }, [navigation, project]);
 
   return (
     <Box pt={4} pb={4} alignItems="flex-start">

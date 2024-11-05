@@ -18,25 +18,26 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {Project} from 'terraso-client-shared/project/projectTypes';
+
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
-  siteInstructions: string;
+  project: Project;
 };
 
-export const SiteInstructionsCard = ({siteInstructions}: Props) => {
+export const SiteInstructionsCard = ({project}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
   const onShowNote = useCallback(() => {
     navigation.navigate('READ_NOTE', {
-      content: siteInstructions,
-      isSiteInstructions: true,
+      projectId: project.id,
     });
-  }, [navigation, siteInstructions]);
+  }, [navigation, project]);
 
   return (
     <Card
@@ -53,7 +54,7 @@ export const SiteInstructionsCard = ({siteInstructions}: Props) => {
         </Text>
       </Row>
       <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">
-        {siteInstructions}
+        {project.siteInstructions}
       </Text>
     </Card>
   );

@@ -27,15 +27,18 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {useSelector} from 'terraso-mobile-client/store';
+import {selectProject} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
-  content: string;
-  isSiteInstructions?: boolean;
+  projectId: string;
 };
 
-export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
+export const ReadNoteScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const project = useSelector(selectProject(projectId));
+  const content = project?.siteInstructions;
 
   const handleClose = () => {
     navigation.pop();
@@ -45,9 +48,7 @@ export const ReadNoteScreen = ({content, isSiteInstructions}: Props) => {
     <ScreenScaffold BottomNavigation={null} AppBar={null}>
       <Column pt={10} pl={5} pr={5} pb={10} flexGrow={1}>
         <Heading variant="h6" pb={7}>
-          {isSiteInstructions
-            ? t('projects.inputs.instructions.screen_title')
-            : t('site.notes.add_title')}
+          {t('projects.inputs.instructions.screen_title')}
         </Heading>
         <ScrollView flex={1}>
           <Text>{content}</Text>

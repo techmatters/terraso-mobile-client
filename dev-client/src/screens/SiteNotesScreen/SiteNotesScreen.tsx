@@ -56,7 +56,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
         </Row>
         <Box height="16px" />
         {project?.siteInstructions && (
-          <SiteInstructionsCard siteInstructions={project?.siteInstructions} />
+          <SiteInstructionsCard project={project} />
         )}
         <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <Box pl={4} pb={4} alignItems="flex-start">
