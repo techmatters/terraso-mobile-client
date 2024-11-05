@@ -41,6 +41,7 @@ import {
 import {
   applySyncActionResults,
   ChangeRecords,
+  initializeChangeRecords,
   markChanged,
 } from 'terraso-mobile-client/model/sync/sync';
 
@@ -97,8 +98,8 @@ export const setSoilData = (
   soilData: Record<string, SoilData>,
 ) => {
   state.soilData = soilData;
+  state.soilChanges = initializeChangeRecords(soilData);
   state.matches = {};
-  state.soilChanges = {};
 };
 
 export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {

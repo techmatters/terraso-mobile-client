@@ -65,6 +65,17 @@ export const nextRevisionId = (
   return (revisionId ?? INITIAL_REVISION_ID) + 1;
 };
 
+export const initializeChangeRecords = <T, E>(
+  initialData: Record<string, T>,
+): ChangeRecords<T, E> => {
+  return Object.fromEntries(
+    Object.entries(initialData).map(([id, data]) => [
+      id,
+      {lastSyncedData: data},
+    ]),
+  );
+};
+
 export const getChangeRecords = <T, E>(
   records: ChangeRecords<T, E>,
   ids: string[],

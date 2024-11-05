@@ -25,6 +25,7 @@ import {
   getResultsForCurrentRevisions,
   getSyncResultsData,
   getUnsyncedRecords,
+  initializeChangeRecords,
   isError,
   isUnsynced,
   markChanged,
@@ -42,6 +43,29 @@ describe('sync', () => {
   describe('nextRevisionId', () => {
     test('assumes zero initial value', () => {
       expect(nextRevisionId(undefined)).toEqual(1);
+    });
+
+    test('increments by one', () => {
+      expect(nextRevisionId(1)).toEqual(2);
+    });
+  });
+
+  describe('initializeChangeRecords', () => {
+    test('populates with initial known data', () => {
+      const data = {
+        a: 'data',
+        b: 'more data',
+      };
+      const records = initializeChangeRecords(data);
+
+      expect(records).toEqual({
+        a: {
+          lastSyncedData: 'data',
+        },
+        b: {
+          lastSyncedData: 'more data',
+        },
+      });
     });
 
     test('increments by one', () => {
