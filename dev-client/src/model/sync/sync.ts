@@ -176,6 +176,18 @@ export const isUnsynced = (record: ChangeRecord<unknown, unknown>): boolean => {
   }
 };
 
+export const getErrorRecords = <T, E>(
+  records: ChangeRecords<T, E>,
+): ChangeRecords<T, E> => {
+  return Object.fromEntries(
+    Object.entries(records).filter(([_, record]) => isError(record)),
+  );
+};
+
+export const isError = (record: ChangeRecord<unknown, unknown>): boolean => {
+  return record.lastSyncedError !== undefined;
+};
+
 export const applySyncActionResults = <T, E>(
   data: Record<string, T>,
   records: ChangeRecords<T, E>,

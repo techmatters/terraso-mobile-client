@@ -21,9 +21,11 @@ import {
   ChangeRecords,
   ChangeTimestamp,
   getChangeRecords,
+  getErrorRecords,
   getResultsForCurrentRevisions,
   getSyncResultsData,
   getUnsyncedRecords,
+  isError,
   isUnsynced,
   markChanged,
   markError,
@@ -232,6 +234,32 @@ describe('sync', () => {
           revisionId: 10,
         }),
       ).toBeTruthy();
+    });
+  });
+
+  describe('getErrorRecords', () => {
+    test('returns un-synced records', () => {
+      const changes = {
+        a: {lastSyncedError: 'error'},
+        b: {lastSyncedError: undefined},
+      };
+      expect(getErrorRecords(changes)).toEqual({
+        a: {lastSyncedError: 'error'},
+      });
+    });
+  });
+
+  describe('isError', () => {
+    test('returns non error for empty records', () => {
+      expect(isError({})).toBeFalsy();
+    });
+
+    test('returns error for records with an error value', () => {
+      expect(isError({lastSyncedError: 'error'})).toBeTruthy();
+    });
+
+    test('returns non error for records without an error value', () => {
+      expect(isError({lastSyncedError: undefined})).toBeFalsy();
     });
   });
 

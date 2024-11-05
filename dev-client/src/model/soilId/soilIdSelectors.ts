@@ -20,7 +20,10 @@ import {createSelector} from '@reduxjs/toolkit';
 import {SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {getUnsyncedRecords} from 'terraso-mobile-client/model/sync/sync';
+import {
+  getErrorRecords,
+  getUnsyncedRecords,
+} from 'terraso-mobile-client/model/sync/sync';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilIdMatches =
@@ -41,8 +44,5 @@ export const selectUnsyncedSiteIds = createSelector(
 
 export const selectHasSyncErrors = createSelector(
   selectUnsyncedSites,
-  records =>
-    !!Object.values(records).find(
-      record => record.lastSyncedError !== undefined,
-    ),
+  getErrorRecords,
 );
