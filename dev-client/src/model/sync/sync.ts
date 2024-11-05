@@ -226,23 +226,3 @@ export const getSyncResultsData = <T>(
     Object.entries(results).map(([id, record]) => [id, record.data]),
   );
 };
-
-export const discardChanges = <T>(
-  records: ChangeRecords<T, unknown>,
-  ids: string[],
-) => {
-  ids.forEach(id => discardChange(records, id));
-};
-
-export const discardChange = <T>(
-  records: ChangeRecords<T, unknown>,
-  id: string,
-) => {
-  const prevRecord = getChangeRecord(records, id);
-
-  records[id] = {
-    ...prevRecord,
-    lastModifiedAt: prevRecord.lastSyncedAt,
-    revisionId: prevRecord.lastSyncedRevisionId,
-  };
-};
