@@ -43,6 +43,6 @@ export const selectUnsyncedSiteIds = createSelector(
 );
 
 export const selectSyncErrorSites = createSelector(
-  selectUnsyncedSites,
+  selectSoilChanges,
   getErrorRecords,
 );
