@@ -33,6 +33,11 @@ export const selectSoilIdMatches =
 
 export const selectSoilChanges = (state: AppState) => state.soilId.soilChanges;
 
+/*
+ * Note: selectors that derive new values from change records are memoized to ensure
+ * stable values between renders. (If derived values are not stable, we can have unexpected
+ * results for downstream consumers, in particular for side-effect dependencies.)
+ */
 export const selectUnsyncedSites = createSelector(selectSoilChanges, records =>
   getUnsyncedRecords(records),
 );
