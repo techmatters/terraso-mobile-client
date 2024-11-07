@@ -55,7 +55,13 @@ export const PushDispatcher = () => {
   const [isOffline] = useDebounce(useIsOffline(), PUSH_DEBOUNCE_MS);
   const needsPush = currentUser && !isOffline && unsyncedSiteIds.length > 0;
 
-  /* Set up retry mechanism (an Interval handle + callbacks to begin and clear it) */
+  /*
+   * Set up retry mechanism (an Interval handle + callbacks to begin and clear it)
+   *
+   * Note that we are using a React ref to keep a stable input value to side-effects.
+   * (If we just used a state, we'd have extra re-renders when clearing or initializing
+   * a retry, which would complicate the logic needed to cancel retries.)
+   */
   const retryIntervalHandle = useRef(undefined as number | undefined);
   const clearRetry = useCallback(() => {
     if (retryIntervalHandle.current !== undefined) {
