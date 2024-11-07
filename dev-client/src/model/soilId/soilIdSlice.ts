@@ -41,8 +41,8 @@ import {
 import {
   applySyncActionResults,
   ChangeRecords,
-  initializeChangeRecords,
   markChanged,
+  reinitializeChangeRecordsAndData,
 } from 'terraso-mobile-client/model/sync/sync';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
@@ -97,8 +97,13 @@ export const setSoilData = (
   state: Draft<SoilState>,
   soilData: Record<string, SoilData>,
 ) => {
-  state.soilData = soilData;
-  state.soilChanges = initializeChangeRecords(soilData);
+  const {newRecords, newData} = reinitializeChangeRecordsAndData(
+    state.soilChanges,
+    state.soilData as Record<string, SoilData>,
+    soilData,
+  );
+  state.soilData = newData;
+  state.soilChanges = newRecords;
   state.matches = {};
 };
 

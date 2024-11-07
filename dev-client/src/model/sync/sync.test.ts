@@ -32,6 +32,7 @@ import {
   markError,
   markSynced,
   nextRevisionId,
+  reinitializeChangeRecordsAndData,
   SyncActionResults,
 } from 'terraso-mobile-client/model/sync/sync';
 
@@ -43,29 +44,6 @@ describe('sync', () => {
   describe('nextRevisionId', () => {
     test('assumes zero initial value', () => {
       expect(nextRevisionId(undefined)).toEqual(1);
-    });
-
-    test('increments by one', () => {
-      expect(nextRevisionId(1)).toEqual(2);
-    });
-  });
-
-  describe('initializeChangeRecords', () => {
-    test('populates with initial known data', () => {
-      const data = {
-        a: 'data',
-        b: 'more data',
-      };
-      const records = initializeChangeRecords(data);
-
-      expect(records).toEqual({
-        a: {
-          lastSyncedData: 'data',
-        },
-        b: {
-          lastSyncedData: 'more data',
-        },
-      });
     });
 
     test('increments by one', () => {
@@ -412,6 +390,101 @@ describe('sync', () => {
           },
         }),
       ).toEqual({a: 'data'});
+    });
+  });
+
+  describe('reinitializeChangeRecordsAndData', () => {
+    let records: ChangeRecords<any, any>;
+    let data: Record<string, any>;
+    let initialData: Record<string, any>;
+
+    beforeEach(() => {
+      records = {};
+      data = {};
+      initialData = {};
+    });
+
+    test('populates with initial data', () => {
+      initialData.a = 'data';
+      initialData.b = 'more data';
+      const {newRecords, newData} = reinitializeChangeRecordsAndData(
+        records,
+        data,
+        initialData,
+      );
+
+      expect(newData).toEqual(initialData);
+      expect(newRecords).toEqual({
+        a: {
+          lastSyncedData: 'data',
+        },
+        b: {
+          lastSyncedData: 'more data',
+        },
+      });
+    });
+
+    test('overwrites existing synced data', () => {
+      data.a = 'old data';
+      records.a = {lastSyncedRevisionId: 100, revisionId: 100};
+      initialData.a = 'new data';
+      const {newRecords, newData} = reinitializeChangeRecordsAndData(
+        records,
+        data,
+        initialData,
+      );
+
+      expect(newData.a).toEqual('new data');
+      expect(newRecords.a).toEqual({lastSyncedData: 'new data'});
+    });
+
+    test('removes deleted synced data', () => {
+      data.a = 'old data';
+      records.a = {lastSyncedRevisionId: 100, revisionId: 100};
+      const {newRecords, newData} = reinitializeChangeRecordsAndData(
+        records,
+        data,
+        initialData,
+      );
+
+      expect(newData).toEqual({});
+      expect(newRecords).toEqual({});
+    });
+
+    test('preserves existing unsynced data', () => {
+      data.a = 'old data';
+      records.a = {lastSyncedRevisionId: 99, revisionId: 100};
+      initialData.a = 'new data';
+      const {newRecords, newData} = reinitializeChangeRecordsAndData(
+        records,
+        data,
+        initialData,
+      );
+
+      expect(newData.a).toEqual('old data');
+      expect(newRecords.a).toEqual({
+        lastSyncedRevisionId: 99,
+        revisionId: 100,
+      });
+    });
+  });
+
+  describe('initializeChangeRecords', () => {
+    test('populates with initial data', () => {
+      const data = {
+        a: 'data',
+        b: 'more data',
+      };
+      const records = initializeChangeRecords(data);
+
+      expect(records).toEqual({
+        a: {
+          lastSyncedData: 'data',
+        },
+        b: {
+          lastSyncedData: 'more data',
+        },
+      });
     });
   });
 });

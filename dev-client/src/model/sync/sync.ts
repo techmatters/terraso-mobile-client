@@ -65,17 +65,6 @@ export const nextRevisionId = (
   return (revisionId ?? INITIAL_REVISION_ID) + 1;
 };
 
-export const initializeChangeRecords = <D, E>(
-  initialData: Record<string, D>,
-): ChangeRecords<D, E> => {
-  return Object.fromEntries(
-    Object.entries(initialData).map(([id, data]) => [
-      id,
-      {lastSyncedData: data},
-    ]),
-  );
-};
-
 export const getChangeRecords = <D, E>(
   records: ChangeRecords<D, E>,
   ids: string[],
@@ -247,5 +236,41 @@ export const getSyncResultsData = <D>(
 ): Record<string, D> => {
   return Object.fromEntries(
     Object.entries(results).map(([id, record]) => [id, record.data]),
+  );
+};
+
+export const reinitializeChangeRecordsAndData = <D, E>(
+  records: ChangeRecords<D, E>,
+  data: Record<string, D>,
+  initialData: Record<string, D>,
+): {
+  newRecords: ChangeRecords<D, E>;
+  newData: Record<string, D>;
+} => {
+  const unsyncedRecords = getUnsyncedRecords(records);
+  const unsyncedData = Object.fromEntries(
+    Object.keys(unsyncedRecords).map(id => [id, data[id]]),
+  );
+
+  const newData = {...initialData};
+  const newRecords = initializeChangeRecords<D, E>(newData);
+
+  Object.assign(newRecords, unsyncedRecords);
+  Object.assign(newData, unsyncedData);
+
+  return {
+    newRecords,
+    newData,
+  };
+};
+
+export const initializeChangeRecords = <D, E>(
+  initialData: Record<string, D>,
+): ChangeRecords<D, E> => {
+  return Object.fromEntries(
+    Object.entries(initialData).map(([id, data]) => [
+      id,
+      {lastSyncedData: data},
+    ]),
   );
 };
