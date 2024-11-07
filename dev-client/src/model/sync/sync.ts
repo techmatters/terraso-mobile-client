@@ -15,13 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-export type ChangeRecords<T, E> = Record<string, ChangeRecord<T, E>>;
+export type ChangeRecords<D, E> = Record<string, ChangeRecord<D, E>>;
 
 export type ChangeTimestamp = number;
 
 export type ChangeRevisionId = number;
 
-export type ChangeRecord<T, E> = {
+export type ChangeRecord<D, E> = {
   /**
    * Unique ID for the entity's current state since the last sync, monotonically increasing for each change.
    * A record is considered to be un-synced if its revision ID and last-synced revision ID do not match.
@@ -36,7 +36,7 @@ export type ChangeRecord<T, E> = {
   /**
    * The last successfully-synced data for this record.
    */
-  lastSyncedData?: T;
+  lastSyncedData?: D;
   /**
    * The last sync error for this record (cleared on sync success).
    */
@@ -45,15 +45,15 @@ export type ChangeRecord<T, E> = {
   lastSyncedAt?: ChangeTimestamp;
 };
 
-export type SyncActionResults<T, E> = {
-  data: SyncResults<T>;
+export type SyncActionResults<D, E> = {
+  data: SyncResults<D>;
   errors: SyncResults<E>;
 };
 
-export type SyncResults<T> = Record<string, SyncResult<T>>;
+export type SyncResults<D> = Record<string, SyncResult<D>>;
 
-export type SyncResult<T> = {
-  data: T;
+export type SyncResult<D> = {
+  data: D;
   revisionId?: ChangeRevisionId;
 };
 
@@ -65,9 +65,9 @@ export const nextRevisionId = (
   return (revisionId ?? INITIAL_REVISION_ID) + 1;
 };
 
-export const initializeChangeRecords = <T, E>(
-  initialData: Record<string, T>,
-): ChangeRecords<T, E> => {
+export const initializeChangeRecords = <D, E>(
+  initialData: Record<string, D>,
+): ChangeRecords<D, E> => {
   return Object.fromEntries(
     Object.entries(initialData).map(([id, data]) => [
       id,
@@ -76,22 +76,22 @@ export const initializeChangeRecords = <T, E>(
   );
 };
 
-export const getChangeRecords = <T, E>(
-  records: ChangeRecords<T, E>,
+export const getChangeRecords = <D, E>(
+  records: ChangeRecords<D, E>,
   ids: string[],
-): ChangeRecords<T, E> => {
+): ChangeRecords<D, E> => {
   return Object.fromEntries(ids.map(id => [id, getChangeRecord(records, id)]));
 };
 
-export const getChangeRecord = <T, E>(
-  records: ChangeRecords<T, E>,
+export const getChangeRecord = <D, E>(
+  records: ChangeRecords<D, E>,
   id: string,
-): ChangeRecord<T, E> => {
+): ChangeRecord<D, E> => {
   return records[id] ?? {};
 };
 
-export const markAllChanged = <T>(
-  records: ChangeRecords<T, unknown>,
+export const markAllChanged = <D>(
+  records: ChangeRecords<D, unknown>,
   ids: string[],
   at: ChangeTimestamp,
 ) => {
@@ -100,8 +100,8 @@ export const markAllChanged = <T>(
   }
 };
 
-export const markChanged = <T>(
-  records: ChangeRecords<T, unknown>,
+export const markChanged = <D>(
+  records: ChangeRecords<D, unknown>,
   id: string,
   at: ChangeTimestamp,
 ) => {
@@ -114,9 +114,9 @@ export const markChanged = <T>(
   };
 };
 
-export const markAllSynced = <T>(
-  records: ChangeRecords<T, unknown>,
-  results: SyncResults<T>,
+export const markAllSynced = <D>(
+  records: ChangeRecords<D, unknown>,
+  results: SyncResults<D>,
   at: ChangeTimestamp,
 ) => {
   for (const [id, result] of Object.entries(results)) {
@@ -124,10 +124,10 @@ export const markAllSynced = <T>(
   }
 };
 
-export const markSynced = <T>(
-  records: ChangeRecords<T, unknown>,
+export const markSynced = <D>(
+  records: ChangeRecords<D, unknown>,
   id: string,
-  result: SyncResult<T>,
+  result: SyncResult<D>,
   at: ChangeTimestamp,
 ) => {
   const prevRecord = getChangeRecord(records, id);
@@ -166,9 +166,9 @@ export const markError = <E>(
   };
 };
 
-export const getUnsyncedRecords = <T, E>(
-  records: ChangeRecords<T, E>,
-): ChangeRecords<T, E> => {
+export const getUnsyncedRecords = <D, E>(
+  records: ChangeRecords<D, E>,
+): ChangeRecords<D, E> => {
   return Object.fromEntries(
     Object.entries(records).filter(([_, record]) => isUnsynced(record)),
   );
@@ -187,9 +187,9 @@ export const isUnsynced = (record: ChangeRecord<unknown, unknown>): boolean => {
   }
 };
 
-export const getErrorRecords = <T, E>(
-  records: ChangeRecords<T, E>,
-): ChangeRecords<T, E> => {
+export const getErrorRecords = <D, E>(
+  records: ChangeRecords<D, E>,
+): ChangeRecords<D, E> => {
   return Object.fromEntries(
     Object.entries(records).filter(([_, record]) => isError(record)),
   );
@@ -199,10 +199,10 @@ export const isError = (record: ChangeRecord<unknown, unknown>): boolean => {
   return record.lastSyncedError !== undefined;
 };
 
-export const applySyncActionResults = <T, E>(
-  data: Record<string, T>,
-  records: ChangeRecords<T, E>,
-  results: SyncActionResults<T, E>,
+export const applySyncActionResults = <D, E>(
+  data: Record<string, D>,
+  records: ChangeRecords<D, E>,
+  results: SyncActionResults<D, E>,
   at: ChangeTimestamp,
 ) => {
   /* Get results for revisions which match the current change records */
@@ -217,10 +217,10 @@ export const applySyncActionResults = <T, E>(
   markErrors(records, upToDateErrors, at);
 };
 
-export const getResultsForCurrentRevisions = <T>(
+export const getResultsForCurrentRevisions = <D>(
   records: ChangeRecords<unknown, unknown>,
-  results: SyncResults<T>,
-): SyncResults<T> => {
+  results: SyncResults<D>,
+): SyncResults<D> => {
   return Object.fromEntries(
     Object.entries(results).filter(([id, result]) =>
       isResultForCurrentRevision(getChangeRecord(records, id), result),
@@ -235,16 +235,16 @@ export const isResultForCurrentRevision = (
   return record.revisionId === result.revisionId;
 };
 
-export const applySyncResultsData = <T>(
-  data: Record<string, T>,
-  results: SyncResults<T>,
+export const applySyncResultsData = <D>(
+  data: Record<string, D>,
+  results: SyncResults<D>,
 ) => {
   Object.assign(data, getSyncResultsData(results));
 };
 
-export const getSyncResultsData = <T>(
-  results: SyncResults<T>,
-): Record<string, T> => {
+export const getSyncResultsData = <D>(
+  results: SyncResults<D>,
+): Record<string, D> => {
   return Object.fromEntries(
     Object.entries(results).map(([id, record]) => [id, record.data]),
   );
