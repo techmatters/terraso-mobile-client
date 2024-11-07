@@ -239,7 +239,7 @@ export const getSyncResultsData = <D>(
   );
 };
 
-export const reinitializeChangeRecordsAndData = <D, E>(
+export const mergeUnsyncedRecordsWithData = <D, E>(
   records: ChangeRecords<D, E>,
   data: Record<string, D>,
   initialData: Record<string, D>,

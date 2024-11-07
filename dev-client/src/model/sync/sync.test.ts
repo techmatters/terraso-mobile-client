@@ -31,8 +31,8 @@ import {
   markChanged,
   markError,
   markSynced,
+  mergeUnsyncedRecordsWithData,
   nextRevisionId,
-  reinitializeChangeRecordsAndData,
   SyncActionResults,
 } from 'terraso-mobile-client/model/sync/sync';
 
@@ -407,7 +407,7 @@ describe('sync', () => {
     test('populates with initial data', () => {
       initialData.a = 'data';
       initialData.b = 'more data';
-      const {newRecords, newData} = reinitializeChangeRecordsAndData(
+      const {newRecords, newData} = mergeUnsyncedRecordsWithData(
         records,
         data,
         initialData,
@@ -428,7 +428,7 @@ describe('sync', () => {
       data.a = 'old data';
       records.a = {lastSyncedRevisionId: 100, revisionId: 100};
       initialData.a = 'new data';
-      const {newRecords, newData} = reinitializeChangeRecordsAndData(
+      const {newRecords, newData} = mergeUnsyncedRecordsWithData(
         records,
         data,
         initialData,
@@ -441,7 +441,7 @@ describe('sync', () => {
     test('removes deleted synced data', () => {
       data.a = 'old data';
       records.a = {lastSyncedRevisionId: 100, revisionId: 100};
-      const {newRecords, newData} = reinitializeChangeRecordsAndData(
+      const {newRecords, newData} = mergeUnsyncedRecordsWithData(
         records,
         data,
         initialData,
@@ -455,7 +455,7 @@ describe('sync', () => {
       data.a = 'old data';
       records.a = {lastSyncedRevisionId: 99, revisionId: 100};
       initialData.a = 'new data';
-      const {newRecords, newData} = reinitializeChangeRecordsAndData(
+      const {newRecords, newData} = mergeUnsyncedRecordsWithData(
         records,
         data,
         initialData,

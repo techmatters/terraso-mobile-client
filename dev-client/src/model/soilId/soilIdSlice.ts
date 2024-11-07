@@ -42,7 +42,7 @@ import {
   applySyncActionResults,
   ChangeRecords,
   markChanged,
-  reinitializeChangeRecordsAndData,
+  mergeUnsyncedRecordsWithData,
 } from 'terraso-mobile-client/model/sync/sync';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
@@ -97,7 +97,7 @@ export const setSoilData = (
   state: Draft<SoilState>,
   soilData: Record<string, SoilData>,
 ) => {
-  const {newRecords, newData} = reinitializeChangeRecordsAndData(
+  const {newRecords, newData} = mergeUnsyncedRecordsWithData(
     state.soilChanges,
     state.soilData as Record<string, SoilData>,
     soilData,
