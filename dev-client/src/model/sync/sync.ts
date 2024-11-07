@@ -15,11 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {
+  ChangeRevisionId,
+  nextRevisionId,
+  revisionIdsMatch,
+} from 'terraso-mobile-client/model/sync/revisions';
+
 export type ChangeRecords<D, E> = Record<string, ChangeRecord<D, E>>;
 
 export type ChangeTimestamp = number;
-
-export type ChangeRevisionId = number;
 
 export type ChangeRecord<D, E> = {
   /**
@@ -55,14 +59,6 @@ export type SyncResults<D> = Record<string, SyncResult<D>>;
 export type SyncResult<D> = {
   data: D;
   revisionId?: ChangeRevisionId;
-};
-
-export const INITIAL_REVISION_ID = 0;
-
-export const nextRevisionId = (
-  revisionId?: ChangeRevisionId,
-): ChangeRevisionId => {
-  return (revisionId ?? INITIAL_REVISION_ID) + 1;
 };
 
 export const getChangeRecords = <D, E>(
@@ -164,16 +160,7 @@ export const getUnsyncedRecords = <D, E>(
 };
 
 export const isUnsynced = (record: ChangeRecord<unknown, unknown>): boolean => {
-  if (
-    record.lastSyncedRevisionId === undefined &&
-    record.revisionId === undefined
-  ) {
-    /* Never-synced never-changed records have no need for syncing */
-    return false;
-  } else {
-    /* Unsynced if the record's current revision is not the last-synced one */
-    return record.revisionId !== record.lastSyncedRevisionId;
-  }
+  return !revisionIdsMatch(record.revisionId, record.lastSyncedRevisionId);
 };
 
 export const getErrorRecords = <D, E>(
@@ -221,7 +208,7 @@ export const isResultForCurrentRevision = (
   record: ChangeRecord<unknown, unknown>,
   result: SyncResult<unknown>,
 ): boolean => {
-  return record.revisionId === result.revisionId;
+  return revisionIdsMatch(record.revisionId, result.revisionId);
 };
 
 export const applySyncResultsData = <D>(

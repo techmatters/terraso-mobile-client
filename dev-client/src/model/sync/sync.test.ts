@@ -32,25 +32,10 @@ import {
   markError,
   markSynced,
   mergeUnsyncedRecordsWithData,
-  nextRevisionId,
   SyncActionResults,
 } from 'terraso-mobile-client/model/sync/sync';
 
 describe('sync', () => {
-  beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
-  });
-
-  describe('nextRevisionId', () => {
-    test('assumes zero initial value', () => {
-      expect(nextRevisionId(undefined)).toEqual(1);
-    });
-
-    test('increments by one', () => {
-      expect(nextRevisionId(1)).toEqual(2);
-    });
-  });
-
   describe('getChangeRecords', () => {
     test('returns changes for ids', () => {
       const changes = {a: {revisionId: 1}, b: {revisionId: 2}};
