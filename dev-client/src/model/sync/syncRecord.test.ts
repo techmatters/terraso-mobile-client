@@ -24,7 +24,7 @@ import {
   syncedRecord,
 } from 'terraso-mobile-client/model/sync/syncRecord';
 
-describe('sync', () => {
+describe('sync record', () => {
   describe('initialRecord', () => {
     test('populates with initial data', () => {
       const result = initialRecord('data');
