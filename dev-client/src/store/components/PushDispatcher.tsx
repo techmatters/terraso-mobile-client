@@ -36,50 +36,26 @@ export const PUSH_RETRY_INTERVAL_MS = 1000 * 60;
  * (i.e., the set of unsynced data changes due to a success or new user-made changes.)
  */
 export const PushDispatcher = () => {
-  const dispatch = useDispatch();
+  /* Determined whether the user is logged in before doing anything. */
+  const isLoggedIn = useIsLoggedIn();
 
-  /* Debounce unsynced IDs so we have a stable state before queuing up a push */
-  const [unsyncedSiteIds] = useDebounce(
-    useSelector(selectUnsyncedSiteIds),
-    PUSH_DEBOUNCE_MS,
-  );
-  const dispatchPush = useCallback(() => {
-    return dispatch(pushSoilData(unsyncedSiteIds));
-  }, [dispatch, unsyncedSiteIds]);
+  /* Debounce unsynced IDs so we have a stable state when queuing up a push */
+  const unsyncedSiteIds = useDebouncedUnsyncedSiteIds();
 
-  /*
-   * Also debounce offline state so we know when it's safe to attempt a push
-   * (We need to push if there is a logged-in user, we are online, and we have unsynced site IDs)
-   */
-  const currentUser = useSelector(state => state.account.currentUser.data);
-  const [isOffline] = useDebounce(useIsOffline(), PUSH_DEBOUNCE_MS);
-  const needsPush = currentUser && !isOffline && unsyncedSiteIds.length > 0;
+  /* Also debounce offline state so we know when it's safe to attempt a push. */
+  const isOffline = useDebouncedIsOffline();
 
-  /*
-   * Set up retry mechanism (an Interval handle + callbacks to begin and clear it)
-   *
-   * Note that we are using a React ref to keep a stable input value to side-effects.
-   * (If we just used a state, we'd have extra re-renders when clearing or initializing
-   * a retry, which would complicate the logic needed to cancel retries.)
-   */
-  const retryIntervalHandle = useRef(undefined as number | undefined);
-  const clearRetry = useCallback(() => {
-    if (retryIntervalHandle.current !== undefined) {
-      clearInterval(retryIntervalHandle.current);
-      retryIntervalHandle.current = undefined;
-    }
-  }, [retryIntervalHandle]);
-  const beginRetry = useCallback(() => {
-    /* Clear any ongoing retry cycles before beginning a new one */
-    clearRetry();
-    retryIntervalHandle.current = setInterval(
-      dispatchPush,
-      PUSH_RETRY_INTERVAL_MS,
-    );
-  }, [clearRetry, retryIntervalHandle, dispatchPush]);
+  /*A push is needed when the user is logged in, not offline, and has unsynced data. */
+  const needsPush = isLoggedIn && !isOffline && unsyncedSiteIds.length > 0;
+
+  /* Set up a callback for the dispatcher to use when it determines a push is required. */
+  const dispatchPush = usePushDispatch(unsyncedSiteIds);
+
+  /* Set up retry mechanism (an Interval handle + callbacks to begin and clear it) */
+  const {beginRetry, clearRetry} = useRetryInterval(dispatchPush);
 
   useEffect(() => {
-    /* Dispatch an initial push if needed */
+    /* Dispatch a push if needed */
     if (needsPush) {
       dispatchPush()
         /* If the initial push failed, begin a retry cycle */
@@ -96,4 +72,52 @@ export const PushDispatcher = () => {
   }, [needsPush, dispatchPush, beginRetry, clearRetry]);
 
   return <></>;
+};
+
+export const usePushDispatch = (siteIds: string[]) => {
+  const dispatch = useDispatch();
+  return useCallback(() => {
+    return dispatch(pushSoilData(siteIds));
+  }, [dispatch, siteIds]);
+};
+
+export const useIsLoggedIn = () => {
+  return useSelector(state => !!state.account.currentUser.data);
+};
+
+export const useDebouncedIsOffline = () => {
+  const [isOffline] = useDebounce(useIsOffline(), PUSH_DEBOUNCE_MS);
+  return isOffline;
+};
+
+export const useDebouncedUnsyncedSiteIds = () => {
+  const [unsyncedSiteIds] = useDebounce(
+    useSelector(selectUnsyncedSiteIds),
+    PUSH_DEBOUNCE_MS,
+  );
+  return unsyncedSiteIds;
+};
+
+export const useRetryInterval = (action: () => void) => {
+  /*
+   * Note that we are using a React ref to keep a stable input value for other hooks.
+   * (If we just used a state, we'd have extra re-renders when clearing or initializing
+   * a retry, which would complicate the logic needed to cancel retries.)
+   */
+  const handle = useRef(undefined as number | undefined);
+
+  const clearRetry = useCallback(() => {
+    if (handle.current !== undefined) {
+      clearInterval(handle.current);
+      handle.current = undefined;
+    }
+  }, [handle]);
+
+  const beginRetry = useCallback(() => {
+    /* Clear any ongoing retry cycles before beginning a new one */
+    clearRetry();
+    handle.current = setInterval(action, PUSH_RETRY_INTERVAL_MS);
+  }, [clearRetry, handle, action]);
+
+  return {beginRetry, clearRetry};
 };
