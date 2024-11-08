@@ -26,13 +26,13 @@ import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {getDeletedDepthIntervals} from 'terraso-mobile-client/model/soilId/actions/soilDataDiff';
 import {
-  SyncActionResults,
-  SyncRecords,
-} from 'terraso-mobile-client/model/sync/sync';
-import {
   getEntityRecord,
   SyncRecord,
-} from 'terraso-mobile-client/model/sync/syncRecord';
+} from 'terraso-mobile-client/model/sync/syncRecords';
+import {
+  SyncActionResults,
+  SyncRecords,
+} from 'terraso-mobile-client/model/sync/syncResults';
 
 export const pushSoilData = async (
   unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,

@@ -38,12 +38,12 @@ import {
   soilIdEntryLocationBased,
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
-import {applyActionResults} from 'terraso-mobile-client/model/sync/sync';
 import {
   markEntityModified,
   mergeUnsyncedEntities,
   SyncRecords,
-} from 'terraso-mobile-client/model/sync/syncRecord';
+} from 'terraso-mobile-client/model/sync/syncRecords';
+import {applyActionResults} from 'terraso-mobile-client/model/sync/syncResults';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';

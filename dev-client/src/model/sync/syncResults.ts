@@ -25,7 +25,7 @@ import {
   syncedRecord,
   SyncRecord,
   SyncTimestamp,
-} from 'terraso-mobile-client/model/sync/syncRecord';
+} from 'terraso-mobile-client/model/sync/syncRecords';
 
 export type SyncRecords<D, E> = Record<string, SyncRecord<D, E>>;
 

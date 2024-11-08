@@ -30,12 +30,12 @@ import {ThunkAPI} from 'terraso-client-shared/store/utils';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import * as localSoilData from 'terraso-mobile-client/model/soilId/actions/localSoilDataActions';
 import * as remoteSoilData from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
-import {SyncActionResults} from 'terraso-mobile-client/model/sync/sync';
 import {
   getDataForRecords,
   getEntityRecords,
   getUnsyncedRecords,
-} from 'terraso-mobile-client/model/sync/syncRecord';
+} from 'terraso-mobile-client/model/sync/syncRecords';
+import {SyncActionResults} from 'terraso-mobile-client/model/sync/syncResults';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const pushSoilDataThunk = async (

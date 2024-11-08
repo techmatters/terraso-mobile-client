@@ -16,6 +16,10 @@
  */
 
 import {
+  isUnsynced,
+  SyncTimestamp,
+} from 'terraso-mobile-client/model/sync/syncRecords';
+import {
   applyActionResults,
   applyErrorResult,
   applyResult,
@@ -24,11 +28,7 @@ import {
   getSyncResultsData,
   SyncActionResults,
   SyncRecords,
-} from 'terraso-mobile-client/model/sync/sync';
-import {
-  isUnsynced,
-  SyncTimestamp,
-} from 'terraso-mobile-client/model/sync/syncRecord';
+} from 'terraso-mobile-client/model/sync/syncResults';
 
 describe('sync', () => {
   describe('applyResult', () => {
