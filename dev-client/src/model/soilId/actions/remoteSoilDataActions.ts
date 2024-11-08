@@ -15,8 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {cloneDeep} from 'lodash';
-
 import {
   SoilDataPushEntry,
   SoilDataPushFailureReason,
@@ -28,11 +26,13 @@ import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {getDeletedDepthIntervals} from 'terraso-mobile-client/model/soilId/actions/soilDataDiff';
 import {
-  getSyncRecord,
   SyncActionResults,
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/sync';
-import {SyncRecord} from 'terraso-mobile-client/model/sync/syncRecord';
+import {
+  getEntityRecord,
+  SyncRecord,
+} from 'terraso-mobile-client/model/sync/syncRecord';
 
 export const pushSoilData = async (
   unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,
@@ -56,7 +56,7 @@ export const unsyncedDataToMutationInput = (
       .map(([siteId, soilData]) =>
         unsyncedDataToMutationInputEntry(
           siteId,
-          getSyncRecord(unsyncedChanges, siteId),
+          getEntityRecord(unsyncedChanges, siteId),
           soilData! /* Safe to use ! here bc of above filter() call */,
         ),
       ),
@@ -72,8 +72,8 @@ export const unsyncedDataToMutationInputEntry = (
     siteId,
     soilData: {
       ...soilData,
-      depthIntervals: soilData.depthIntervals.map(di => cloneDeep(di)),
-      depthDependentData: soilData.depthDependentData.map(dd => cloneDeep(dd)),
+      depthIntervals: soilData.depthIntervals,
+      depthDependentData: soilData.depthDependentData,
       deletedDepthIntervals: getDeletedDepthIntervals(
         soilData,
         record.lastSyncedData,
@@ -92,7 +92,7 @@ export const mutationResponseToResults = (
   };
   for (const responseEntry of response) {
     const siteId = responseEntry.siteId;
-    const revisionId = getSyncRecord(unsyncedChanges, siteId).revisionId;
+    const revisionId = getEntityRecord(unsyncedChanges, siteId).revisionId;
     if ('soilData' in responseEntry.result) {
       results.data[siteId] = {
         revisionId,

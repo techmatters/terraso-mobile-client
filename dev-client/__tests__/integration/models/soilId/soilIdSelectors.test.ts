@@ -27,9 +27,9 @@ import {
   selectUnsyncedSites,
 } from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {
-  markError,
+  applyErrorResult,
+  applyResult,
   markModified,
-  markSynced,
 } from 'terraso-mobile-client/model/sync/sync';
 import {AppState, useSelector} from 'terraso-mobile-client/store';
 
@@ -64,7 +64,7 @@ describe('selectUnsyncedSites', () => {
   test('selects unsynced sites only', () => {
     const state = appState();
     const now = Date.now();
-    markSynced(state.soilId.soilSync, 'a', {data: soilData()}, now);
+    applyResult(state.soilId.soilSync, 'a', {data: soilData()}, now);
     markModified(state.soilId.soilSync, 'b', now);
 
     const selected = renderSelectorHook(
@@ -108,7 +108,7 @@ describe('selectUnsyncedSiteIds', () => {
   test('selects unsynced site IDs only, sorted', () => {
     const state = appState();
     const now = Date.now();
-    markSynced(state.soilId.soilSync, 'a', {data: soilData()}, now);
+    applyResult(state.soilId.soilSync, 'a', {data: soilData()}, now);
 
     markModified(state.soilId.soilSync, 'c', now);
     markModified(state.soilId.soilSync, 'b', now);
@@ -152,8 +152,8 @@ describe('selectSyncErrorSites', () => {
   test('selects sync error sites only', () => {
     const state = appState();
     const now = Date.now();
-    markSynced(state.soilId.soilSync, 'a', {data: soilData()}, now);
-    markError(
+    applyResult(state.soilId.soilSync, 'a', {data: soilData()}, now);
+    applyErrorResult(
       state.soilId.soilSync,
       'b',
       {revisionId: 1, data: 'DOES_NOT_EXIST'},
@@ -176,7 +176,7 @@ describe('selectSyncErrorSites', () => {
 
   test('returns stable values for input states', () => {
     const stateA = appState();
-    markError(
+    applyErrorResult(
       stateA.soilId.soilSync,
       'a',
       {data: 'DOES_NOT_EXIST'},
@@ -193,7 +193,7 @@ describe('selectSyncErrorSites', () => {
     );
 
     const stateB = cloneDeep(stateA);
-    markError(
+    applyErrorResult(
       stateB.soilId.soilSync,
       'b',
       {revisionId: 1, data: 'DOES_NOT_EXIST'},

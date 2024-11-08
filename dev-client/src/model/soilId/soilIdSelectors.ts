@@ -23,7 +23,7 @@ import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
   getErrorRecords,
   getUnsyncedRecords,
-} from 'terraso-mobile-client/model/sync/sync';
+} from 'terraso-mobile-client/model/sync/syncRecord';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilIdMatches =
@@ -37,6 +37,8 @@ export const selectSoilChanges = (state: AppState) => state.soilId.soilSync;
  * Note: selectors that derive new values from change records are memoized to ensure
  * stable values between renders. (If derived values are not stable, we can have unexpected
  * results for downstream consumers, in particular for side-effect dependencies.)
+ *
+ * TODO: url to redux manual
  */
 export const selectUnsyncedSites = createSelector(selectSoilChanges, records =>
   getUnsyncedRecords(records),

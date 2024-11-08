@@ -21,6 +21,9 @@ import {
   revisionIdsMatch,
 } from 'terraso-mobile-client/model/sync/revisions';
 
+/** The timestamp format used by the sync system (just Date.now()). */
+export type SyncTimestamp = number;
+
 /**
  * A record of the sync state of some piece of data.
  *
@@ -57,7 +60,10 @@ export type SyncRecord<D, E> = {
   lastSyncedError?: E;
 };
 
-export type SyncTimestamp = number;
+/**
+ * A collection of sync records keyed by their associated entity IDs.
+ */
+export type SyncRecords<D, E> = Record<string, SyncRecord<D, E>>;
 
 export const initialRecord = <D, E>(
   initialData: D | undefined,
@@ -115,4 +121,117 @@ export const isUnsynced = (record: SyncRecord<unknown, unknown>): boolean => {
 
 export const isError = (record: SyncRecord<unknown, unknown>): boolean => {
   return record.lastSyncedError !== undefined;
+};
+
+export const initializeEntityRecords = <D, E>(
+  data: Record<string, D>,
+): SyncRecords<D, E> => {
+  return Object.fromEntries(
+    Object.entries(data).map(([id, entityData]) => [
+      id,
+      initialRecord(entityData),
+    ]),
+  );
+};
+
+export const mergeUnsyncedEntities = <D, E>(
+  records: SyncRecords<D, E>,
+  data: Record<string, D>,
+  newData: Record<string, D>,
+): {
+  mergedRecords: SyncRecords<D, E>;
+  mergedData: Record<string, D>;
+} => {
+  const unsyncedRecords = getUnsyncedRecords(records);
+  const unsyncedData = getDataForRecords(unsyncedRecords, data);
+
+  const mergedData = {...newData};
+  const mergedRecords = initializeEntityRecords<D, E>(newData);
+
+  Object.assign(mergedRecords, unsyncedRecords);
+  Object.assign(mergedData, unsyncedData);
+
+  return {
+    mergedRecords,
+    mergedData,
+  };
+};
+
+export const getEntityRecords = <D, E>(
+  records: SyncRecords<D, E>,
+  ids: string[],
+): SyncRecords<D, E> => {
+  return Object.fromEntries(ids.map(id => [id, getEntityRecord(records, id)]));
+};
+
+export const getEntityRecord = <D, E>(
+  records: SyncRecords<D, E>,
+  id: string,
+): SyncRecord<D, E> => {
+  return records[id] ?? initialRecord(undefined);
+};
+
+export const getDataForRecords = <D, E>(
+  records: SyncRecords<D, E>,
+  data: Record<string, D>,
+): Record<string, D> => {
+  return Object.fromEntries(
+    Object.keys(records)
+      .filter(([key, _]) => key in data)
+      .map(id => [id, data[id]!]),
+  );
+};
+
+export const getUnsyncedRecords = <D, E>(
+  records: SyncRecords<D, E>,
+): SyncRecords<D, E> => {
+  return Object.fromEntries(
+    Object.entries(records).filter(([_, record]) => isUnsynced(record)),
+  );
+};
+
+export const getErrorRecords = <D, E>(
+  records: SyncRecords<D, E>,
+): SyncRecords<D, E> => {
+  return Object.fromEntries(
+    Object.entries(records).filter(([_, record]) => isError(record)),
+  );
+};
+
+export const markEntityModified = <D>(
+  records: SyncRecords<D, unknown>,
+  id: string,
+  at: SyncTimestamp,
+) => {
+  records[id] = modifiedRecord(getEntityRecord(records, id), at);
+};
+
+export const markEntitySynced = <D>(
+  records: SyncRecords<D, unknown>,
+  id: string,
+  data: D,
+  revisionId: RevisionId | undefined,
+  at: SyncTimestamp,
+) => {
+  records[id] = syncedRecord(
+    getEntityRecord(records, id),
+    data,
+    revisionId,
+    at,
+  );
+};
+
+export const markEntityError = <E>(
+  records: SyncRecords<unknown, E>,
+  id: string,
+  error: E,
+  revisionId: RevisionId | undefined,
+  at: SyncTimestamp,
+) => {
+  records[id] = errorRecord(
+    getEntityRecord(records, id),
+    error,
+    revisionId,
+    at,
+  );
 };

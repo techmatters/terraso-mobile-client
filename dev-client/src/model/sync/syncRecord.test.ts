@@ -17,11 +17,21 @@
 
 import {
   errorRecord,
+  getDataForRecords,
+  getEntityRecords,
+  getErrorRecords,
+  getUnsyncedRecords,
+  initializeEntityRecords,
   initialRecord,
   isError,
   isUnsynced,
+  markEntityError,
+  markEntityModified,
+  markEntitySynced,
+  mergeUnsyncedEntities,
   modifiedRecord,
   syncedRecord,
+  SyncRecords,
 } from 'terraso-mobile-client/model/sync/syncRecord';
 
 describe('sync record', () => {
@@ -171,6 +181,243 @@ describe('sync record', () => {
 
     test('returns non error for record without an error value', () => {
       expect(isError({lastSyncedError: undefined})).toBeFalsy();
+    });
+  });
+
+  describe('initializeEntityRecords', () => {
+    test('populates with initial data', () => {
+      const data = {
+        a: 'data',
+        b: 'more data',
+      };
+      const records = initializeEntityRecords(data);
+
+      expect(records).toEqual({
+        a: {
+          lastSyncedData: 'data',
+        },
+        b: {
+          lastSyncedData: 'more data',
+        },
+      });
+    });
+  });
+
+  describe('mergeUnsyncedEntities', () => {
+    let records: SyncRecords<any, any>;
+    let data: Record<string, any>;
+    let newData: Record<string, any>;
+
+    beforeEach(() => {
+      records = {};
+      data = {};
+      newData = {};
+    });
+
+    test('adds new data', () => {
+      newData.a = 'data';
+      newData.b = 'more data';
+      const {mergedRecords, mergedData} = mergeUnsyncedEntities(
+        records,
+        data,
+        newData,
+      );
+
+      expect(mergedData).toEqual(newData);
+      expect(mergedRecords).toEqual({
+        a: {lastSyncedData: 'data'},
+        b: {lastSyncedData: 'more data'},
+      });
+    });
+
+    test('overwrites existing synced data', () => {
+      data.a = 'old data';
+      records.a = {lastSyncedRevisionId: 100, revisionId: 100};
+      newData.a = 'new data';
+      const {mergedRecords, mergedData} = mergeUnsyncedEntities(
+        records,
+        data,
+        newData,
+      );
+
+      expect(mergedData.a).toEqual('new data');
+      expect(mergedRecords.a).toEqual({lastSyncedData: 'new data'});
+    });
+
+    test('removes deleted synced data', () => {
+      data.a = 'old data';
+      records.a = {lastSyncedRevisionId: 100, revisionId: 100};
+      const {mergedRecords, mergedData} = mergeUnsyncedEntities(
+        records,
+        data,
+        newData,
+      );
+
+      expect(mergedData).toEqual({});
+      expect(mergedRecords).toEqual({});
+    });
+
+    test('preserves existing unsynced data', () => {
+      data.a = 'old data';
+      records.a = {lastSyncedRevisionId: 99, revisionId: 100};
+      newData.a = 'new data';
+      const {mergedRecords, mergedData} = mergeUnsyncedEntities(
+        records,
+        data,
+        newData,
+      );
+
+      expect(mergedData.a).toEqual('old data');
+      expect(mergedRecords.a).toEqual({
+        lastSyncedRevisionId: 99,
+        revisionId: 100,
+      });
+    });
+  });
+
+  describe('getEntityRecords', () => {
+    test('returns records for ids', () => {
+      const records = {a: {revisionId: 1}, b: {revisionId: 2}};
+      expect(getEntityRecords(records, ['a'])).toEqual({a: {revisionId: 1}});
+    });
+
+    test('returns empty records when missing', () => {
+      const records = {};
+      expect(getEntityRecords(records, ['a'])).toEqual({a: {}});
+    });
+  });
+
+  describe('getDataForRecords', () => {
+    test('returns data for records by id', () => {
+      const records = {
+        a: {},
+      };
+      const data = {
+        a: 'data 1',
+        b: 'data 2',
+      };
+      const result = getDataForRecords(records, data);
+      expect(result).toEqual({a: 'data 1'});
+    });
+
+    test('excludes missing ids', () => {
+      const records = {
+        a: {},
+      };
+      const data = {};
+      const result = getDataForRecords(records, data);
+      expect(result).toEqual({});
+    });
+  });
+
+  describe('getUnsyncedRecords', () => {
+    test('returns un-synced records', () => {
+      const records = {
+        a: {revisionId: 1, lastSyncedRevisionId: 0},
+        b: {revisionId: 1, lastSyncedRevisionId: 1},
+      };
+      expect(getUnsyncedRecords(records)).toEqual({
+        a: {revisionId: 1, lastSyncedRevisionId: 0},
+      });
+    });
+  });
+
+  describe('getErrorRecords', () => {
+    test('returns un-synced records', () => {
+      const records = {
+        a: {lastSyncedError: 'error'},
+        b: {lastSyncedError: undefined},
+      };
+      expect(getErrorRecords(records)).toEqual({
+        a: {lastSyncedError: 'error'},
+      });
+    });
+  });
+
+  describe('markEntityModified', () => {
+    let records: SyncRecords<any, any>;
+
+    beforeEach(() => {
+      records = {};
+    });
+
+    test('initializes sync record if not present', () => {
+      markEntityModified(records, 'a', Date.now());
+      expect(records.a).toBeDefined();
+    });
+
+    test('initializes revision id if not present', () => {
+      records.a = {};
+      markEntityModified(records, 'a', Date.now());
+      expect(records.a.revisionId).toEqual(1);
+    });
+
+    test('increments revision id', () => {
+      records.a = {revisionId: 122};
+      markEntityModified(records, 'a', Date.now());
+      expect(records.a.revisionId).toEqual(123);
+    });
+
+    test('records modified date', () => {
+      const at = Date.now();
+      markEntityModified(records, 'a', at);
+      expect(records.a.lastModifiedAt).toEqual(at);
+    });
+
+    test('preserves other properties', () => {
+      records.a = {
+        lastSyncedRevisionId: 100,
+        lastSyncedData: 'data',
+        lastSyncedError: 'error',
+        lastSyncedAt: 10000,
+      };
+      markEntityModified(records, 'a', Date.now());
+      expect(records.a.lastSyncedRevisionId).toEqual(100);
+      expect(records.a.lastSyncedData).toEqual('data');
+      expect(records.a.lastSyncedError).toEqual('error');
+      expect(records.a.lastSyncedAt).toEqual(10000);
+    });
+  });
+
+  describe('markEntitySynced', () => {
+    let records: SyncRecords<any, any>;
+
+    beforeEach(() => {
+      records = {};
+    });
+
+    test('initializes sync record if not present', () => {
+      markEntitySynced(records, 'a', 'data', 0, Date.now());
+      expect(records.a).toBeDefined();
+    });
+
+    test('records synced state', () => {
+      const at = Date.now();
+      markEntitySynced(records, 'a', 'data', 123, at);
+      expect(records.a.lastSyncedData).toEqual('data');
+      expect(records.a.lastSyncedRevisionId).toEqual(123);
+      expect(records.a.lastSyncedAt).toEqual(at);
+    });
+  });
+
+  describe('markError', () => {
+    let records: SyncRecords<any, any>;
+
+    beforeEach(() => {
+      records = {};
+    });
+
+    test('initializes sync record if not present', () => {
+      markEntityError(records, 'a', 'error', 123, Date.now());
+      expect(records.a).toBeDefined();
+    });
+
+    test('records error state', () => {
+      const at = Date.now();
+      markEntityError(records, 'a', 'error', 123, Date.now());
+      expect(records.a.lastSyncedError).toEqual('error');
+      expect(records.a.lastSyncedRevisionId).toEqual(123);
+      expect(records.a.lastSyncedAt).toEqual(at);
     });
   });
 });

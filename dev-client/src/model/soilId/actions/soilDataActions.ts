@@ -30,11 +30,12 @@ import {ThunkAPI} from 'terraso-client-shared/store/utils';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import * as localSoilData from 'terraso-mobile-client/model/soilId/actions/localSoilDataActions';
 import * as remoteSoilData from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
+import {SyncActionResults} from 'terraso-mobile-client/model/sync/sync';
 import {
-  getSyncRecords,
+  getDataForRecords,
+  getEntityRecords,
   getUnsyncedRecords,
-  SyncActionResults,
-} from 'terraso-mobile-client/model/sync/sync';
+} from 'terraso-mobile-client/model/sync/syncRecord';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const pushSoilDataThunk = async (
@@ -48,10 +49,11 @@ export const pushSoilData = async (
   state: AppState,
 ): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
   const unsyncedChanges = getUnsyncedRecords(
-    getSyncRecords(state.soilId.soilSync, input),
+    getEntityRecords(state.soilId.soilSync, input),
   );
-  const unsyncedData = Object.fromEntries(
-    Object.keys(unsyncedChanges).map(id => [id, state.soilId.soilData[id]]),
+  const unsyncedData = getDataForRecords(
+    unsyncedChanges,
+    state.soilId.soilData,
   );
   return remoteSoilData.pushSoilData(unsyncedChanges, unsyncedData);
 };

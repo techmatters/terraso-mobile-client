@@ -118,18 +118,6 @@ describe('unsyncedDataToMutationInputEntry', () => {
     expect(input.soilData.depthDependentData).toEqual(
       unsyncedData.depthDependentData,
     );
-    expect(input.soilData.depthIntervals[0]).not.toBe(
-      unsyncedData.depthIntervals[0],
-    );
-    expect(input.soilData.depthDependentData[0]).not.toBe(
-      unsyncedData.depthDependentData[0],
-    );
-    expect(input.soilData.depthIntervals[0].depthInterval).not.toBe(
-      unsyncedData.depthIntervals[0].depthInterval,
-    );
-    expect(input.soilData.depthDependentData[0].depthInterval).not.toBe(
-      unsyncedData.depthDependentData[0].depthInterval,
-    );
   });
 
   it('populates input with deleted depth intervals', () => {

@@ -38,12 +38,12 @@ import {
   soilIdEntryLocationBased,
   soilIdKey,
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+import {applyActionResults} from 'terraso-mobile-client/model/sync/sync';
 import {
-  applySyncActionResults,
-  markModified,
-  mergeUnsyncedRecordsWithData,
+  markEntityModified,
+  mergeUnsyncedEntities,
   SyncRecords,
-} from 'terraso-mobile-client/model/sync/sync';
+} from 'terraso-mobile-client/model/sync/syncRecord';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';
@@ -97,13 +97,13 @@ export const setSoilData = (
   state: Draft<SoilState>,
   soilData: Record<string, SoilData>,
 ) => {
-  const {newRecords, newData} = mergeUnsyncedRecordsWithData(
+  const {mergedRecords, mergedData} = mergeUnsyncedEntities(
     state.soilSync,
     state.soilData as Record<string, SoilData>,
     soilData,
   );
-  state.soilData = newData;
-  state.soilSync = newRecords;
+  state.soilData = mergedData;
+  state.soilSync = mergedRecords;
   state.matches = {};
 };
 
@@ -124,7 +124,7 @@ const soilIdSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(pushSoilData.fulfilled, (state, action) => {
-      applySyncActionResults(
+      applyActionResults(
         /*
          * type-cast here bc the soilData field is more permissive than the results object
          * (it allows undefined values). this is safe since we aren't reading anything from
@@ -141,25 +141,25 @@ const soilIdSlice = createSlice({
 
     builder.addCase(updateSoilData.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
-      markModified(state.soilSync, action.meta.arg.siteId, Date.now());
+      markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
       flushDataBasedMatches(state);
     });
 
     builder.addCase(updateDepthDependentSoilData.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
-      markModified(state.soilSync, action.meta.arg.siteId, Date.now());
+      markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
       flushDataBasedMatches(state);
     });
 
     builder.addCase(updateSoilDataDepthInterval.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
-      markModified(state.soilSync, action.meta.arg.siteId, Date.now());
+      markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
       flushDataBasedMatches(state);
     });
 
     builder.addCase(deleteSoilDataDepthInterval.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
-      markModified(state.soilSync, action.meta.arg.siteId, Date.now());
+      markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
       flushDataBasedMatches(state);
     });
 
