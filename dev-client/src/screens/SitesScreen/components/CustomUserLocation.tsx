@@ -14,9 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {CircleLayer, Location, UserLocation} from '@rnmapbox/maps';
+import {useMemo} from 'react';
 
-import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
+import Mapbox, {CircleLayer} from '@rnmapbox/maps';
+
+import {useSelector} from 'terraso-mobile-client/store';
 
 const mapboxBlue = 'rgba(51, 181, 229, 100)';
 
@@ -41,40 +43,59 @@ const layerStyles = {
 
 type CustomUserLocationProps = {
   onUserLocationPress: (event?: GeoJSON.GeoJsonProperties) => void;
-  updateUserLocation?: (location: Location) => void;
 };
 
 export const CustomUserLocation = ({
   onUserLocationPress,
-  updateUserLocation,
 }: CustomUserLocationProps) => {
   const handleUserLocationPress = (event?: GeoJSON.GeoJsonProperties) => {
     onUserLocationPress(event);
   };
 
+  const userLocation = useSelector(state => state.map.userLocation);
+
+  const feature = useMemo(() => {
+    if (userLocation.coords === null) {
+      return null;
+    }
+
+    return {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          userLocation.coords.longitude,
+          userLocation.coords.latitude,
+        ],
+      },
+    } as GeoJSON.Feature;
+  }, [userLocation.coords]);
+
   return (
-    <UserLocation
-      onUpdate={updateUserLocation}
-      onPress={handleUserLocationPress}
-      minDisplacement={USER_DISPLACEMENT_MIN_DISTANCE_M}>
-      <CircleLayer
-        key="mapboxUserLocationPulseCircle"
-        id="mapboxUserLocationPulseCircle"
-        belowLayerID="sitesLayer"
-        style={layerStyles.pulse}
-      />
-      <CircleLayer
-        key="mapboxUserLocationWhiteCircle"
-        id="mapboxUserLocationWhiteCircle"
-        belowLayerID="sitesLayer"
-        style={layerStyles.background}
-      />
-      <CircleLayer
-        key="mapboxUserLocationBlueCircle"
-        id="mapboxUserLocationBlueCircle"
-        aboveLayerID="mapboxUserLocationWhiteCircle"
-        style={layerStyles.foreground}
-      />
-    </UserLocation>
+    feature && (
+      <Mapbox.ShapeSource
+        id="userLocationSource"
+        shape={feature}
+        onPress={handleUserLocationPress}>
+        <CircleLayer
+          key="mapboxUserLocationPulseCircle"
+          id="mapboxUserLocationPulseCircle"
+          belowLayerID="sitesLayer"
+          style={layerStyles.pulse}
+        />
+        <CircleLayer
+          key="mapboxUserLocationWhiteCircle"
+          id="mapboxUserLocationWhiteCircle"
+          belowLayerID="sitesLayer"
+          style={layerStyles.background}
+        />
+        <CircleLayer
+          key="mapboxUserLocationBlueCircle"
+          id="mapboxUserLocationBlueCircle"
+          aboveLayerID="mapboxUserLocationWhiteCircle"
+          style={layerStyles.foreground}
+        />
+      </Mapbox.ShapeSource>
+    )
   );
 };

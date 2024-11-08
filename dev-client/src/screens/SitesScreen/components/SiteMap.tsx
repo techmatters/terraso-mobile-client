@@ -25,7 +25,7 @@ import {
 } from 'react';
 import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
 
-import Mapbox, {Camera, Location} from '@rnmapbox/maps';
+import Mapbox, {Camera} from '@rnmapbox/maps';
 import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {useTheme} from 'native-base';
 
@@ -56,7 +56,6 @@ const MAX_EXPANSION_ZOOM = 15;
 const STARTING_ZOOM_LEVEL = 12;
 
 type Props = {
-  updateUserLocation?: (location: Location) => void;
   calloutState: CalloutState;
   setCalloutState: (state: CalloutState) => void;
   styleURL?: string;
@@ -70,13 +69,7 @@ export type MapRef = {
 export const SiteMap = memo(
   forwardRef<MapRef, Props>(
     (
-      {
-        updateUserLocation,
-        setCalloutState,
-        calloutState,
-        styleURL,
-        onMapFinishedLoading,
-      },
+      {setCalloutState, calloutState, styleURL, onMapFinishedLoading},
       forwardedRef,
     ): React.JSX.Element => {
       const mapRef = useRef<Mapbox.MapView>(null);
@@ -331,10 +324,7 @@ export const SiteMap = memo(
               style={mapStyles.temporarySiteLayer}
             />
           </Mapbox.ShapeSource>
-          <CustomUserLocation
-            onUserLocationPress={onUserLocationPress}
-            updateUserLocation={updateUserLocation}
-          />
+          <CustomUserLocation onUserLocationPress={onUserLocationPress} />
           <SiteMapCallout
             sites={sites}
             state={calloutState}
