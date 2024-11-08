@@ -27,7 +27,8 @@ import {
   unsyncedDataToMutationInputEntry,
 } from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
 import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {SyncRecord, SyncRecords} from 'terraso-mobile-client/model/sync/sync';
+import {SyncRecords} from 'terraso-mobile-client/model/sync/sync';
+import {SyncRecord} from 'terraso-mobile-client/model/sync/syncRecord';
 
 describe('unsyncedDataToMutationInput', () => {
   let unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>;

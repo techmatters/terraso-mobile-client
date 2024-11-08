@@ -30,9 +30,9 @@ import {getDeletedDepthIntervals} from 'terraso-mobile-client/model/soilId/actio
 import {
   getSyncRecord,
   SyncActionResults,
-  SyncRecord,
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/sync';
+import {SyncRecord} from 'terraso-mobile-client/model/sync/syncRecord';
 
 export const pushSoilData = async (
   unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,

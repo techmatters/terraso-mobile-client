@@ -24,18 +24,38 @@ import {
   getSyncResultsData,
   getUnsyncedRecords,
   initializeSyncRecords,
-  isError,
-  isUnsynced,
   markError,
   markModified,
   markSynced,
   mergeUnsyncedRecordsWithData,
   SyncActionResults,
   SyncRecords,
-  SyncTimestamp,
 } from 'terraso-mobile-client/model/sync/sync';
+import {
+  isUnsynced,
+  SyncTimestamp,
+} from 'terraso-mobile-client/model/sync/syncRecord';
 
 describe('sync', () => {
+  describe('initializeSyncRecords', () => {
+    test('populates with initial data', () => {
+      const data = {
+        a: 'data',
+        b: 'more data',
+      };
+      const records = initializeSyncRecords(data);
+
+      expect(records).toEqual({
+        a: {
+          lastSyncedData: 'data',
+        },
+        b: {
+          lastSyncedData: 'more data',
+        },
+      });
+    });
+  });
+
   describe('getSyncRecords', () => {
     test('returns records for ids', () => {
       const records = {a: {revisionId: 1}, b: {revisionId: 2}};
@@ -192,38 +212,6 @@ describe('sync', () => {
     });
   });
 
-  describe('isUnsynced', () => {
-    test('returns synced for empty records', () => {
-      expect(isUnsynced({})).toBeFalsy();
-    });
-
-    test('returns synced for records with matching revision ids', () => {
-      expect(
-        isUnsynced({
-          revisionId: 10,
-          lastSyncedRevisionId: 10,
-        }),
-      ).toBeFalsy();
-    });
-
-    test('returns unsynced for records without matching revision ids', () => {
-      expect(
-        isUnsynced({
-          revisionId: 10,
-          lastSyncedRevisionId: 9,
-        }),
-      ).toBeTruthy();
-    });
-
-    test('returns unsynced for never-synced records', () => {
-      expect(
-        isUnsynced({
-          revisionId: 10,
-        }),
-      ).toBeTruthy();
-    });
-  });
-
   describe('getErrorRecords', () => {
     test('returns un-synced records', () => {
       const records = {
@@ -233,20 +221,6 @@ describe('sync', () => {
       expect(getErrorRecords(records)).toEqual({
         a: {lastSyncedError: 'error'},
       });
-    });
-  });
-
-  describe('isError', () => {
-    test('returns non error for empty records', () => {
-      expect(isError({})).toBeFalsy();
-    });
-
-    test('returns error for records with an error value', () => {
-      expect(isError({lastSyncedError: 'error'})).toBeTruthy();
-    });
-
-    test('returns non error for records without an error value', () => {
-      expect(isError({lastSyncedError: undefined})).toBeFalsy();
     });
   });
 
@@ -450,25 +424,6 @@ describe('sync', () => {
       expect(newRecords.a).toEqual({
         lastSyncedRevisionId: 99,
         revisionId: 100,
-      });
-    });
-  });
-
-  describe('initializeSyncRecords', () => {
-    test('populates with initial data', () => {
-      const data = {
-        a: 'data',
-        b: 'more data',
-      };
-      const records = initializeSyncRecords(data);
-
-      expect(records).toEqual({
-        a: {
-          lastSyncedData: 'data',
-        },
-        b: {
-          lastSyncedData: 'more data',
-        },
       });
     });
   });
