@@ -291,13 +291,15 @@ describe('record', () => {
     test('returns data for records by id', () => {
       const records = {
         a: {},
+        b: {},
       };
       const data = {
         a: 'data 1',
         b: 'data 2',
+        c: 'data 3',
       };
       const result = getDataForRecords(records, data);
-      expect(result).toEqual({a: 'data 1'});
+      expect(result).toEqual({a: 'data 1', b: 'data 2'});
     });
 
     test('excludes missing ids', () => {

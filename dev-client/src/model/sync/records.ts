@@ -177,7 +177,7 @@ export const getDataForRecords = <D, E>(
 ): Record<string, D> => {
   return Object.fromEntries(
     Object.keys(records)
-      .filter(([key, _]) => key in data)
+      .filter(key => key in data)
       .map(id => [id, data[id]!]),
   );
 };
