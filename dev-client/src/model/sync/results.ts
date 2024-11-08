@@ -16,17 +16,17 @@
  */
 
 import {
-  RevisionId,
-  revisionIdsMatch,
-} from 'terraso-mobile-client/model/sync/revisions';
-import {
   getEntityRecord,
   markEntityError,
   markEntitySynced,
   SyncRecord,
   SyncRecords,
   SyncTimestamp,
-} from 'terraso-mobile-client/model/sync/syncRecords';
+} from 'terraso-mobile-client/model/sync/records';
+import {
+  RevisionId,
+  revisionIdsMatch,
+} from 'terraso-mobile-client/model/sync/revisions';
 
 /**
  * A value that is the result of syncing some data at a specified revision ID.

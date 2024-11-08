@@ -34,8 +34,8 @@ import {
   getDataForRecords,
   getEntityRecords,
   getUnsyncedRecords,
-} from 'terraso-mobile-client/model/sync/syncRecords';
-import {SyncResults} from 'terraso-mobile-client/model/sync/syncResults';
+} from 'terraso-mobile-client/model/sync/records';
+import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const pushSoilDataThunk = async (

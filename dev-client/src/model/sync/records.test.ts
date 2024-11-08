@@ -32,9 +32,9 @@ import {
   modifiedRecord,
   syncedRecord,
   SyncRecords,
-} from 'terraso-mobile-client/model/sync/syncRecords';
+} from 'terraso-mobile-client/model/sync/records';
 
-describe('sync record', () => {
+describe('record', () => {
   describe('initialRecord', () => {
     test('populates with initial data', () => {
       const result = initialRecord('data');

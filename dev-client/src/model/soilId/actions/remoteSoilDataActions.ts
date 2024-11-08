@@ -29,8 +29,8 @@ import {
   getEntityRecord,
   SyncRecord,
   SyncRecords,
-} from 'terraso-mobile-client/model/sync/syncRecords';
-import {SyncResults} from 'terraso-mobile-client/model/sync/syncResults';
+} from 'terraso-mobile-client/model/sync/records';
+import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 
 export const pushSoilData = async (
   unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,

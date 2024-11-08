@@ -19,7 +19,7 @@ import {
   isUnsynced,
   SyncRecords,
   SyncTimestamp,
-} from 'terraso-mobile-client/model/sync/syncRecords';
+} from 'terraso-mobile-client/model/sync/records';
 import {
   applySyncedDatum,
   applySyncedError,
@@ -29,9 +29,9 @@ import {
   getValuesForCurrentRevisions,
   isValueForCurrentRevision,
   SyncResults,
-} from 'terraso-mobile-client/model/sync/syncResults';
+} from 'terraso-mobile-client/model/sync/results';
 
-describe('sync results', () => {
+describe('results', () => {
   describe('applySyncResults', () => {
     let data: Record<string, any>;
     let records: SyncRecords<any, any>;

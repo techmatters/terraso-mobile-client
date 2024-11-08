@@ -23,7 +23,7 @@ import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
   getErrorRecords,
   getUnsyncedRecords,
-} from 'terraso-mobile-client/model/sync/syncRecords';
+} from 'terraso-mobile-client/model/sync/records';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilIdMatches =

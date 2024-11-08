@@ -26,11 +26,11 @@ import {
   selectUnsyncedSiteIds,
   selectUnsyncedSites,
 } from 'terraso-mobile-client/model/soilId/soilIdSelectors';
-import {markEntityModified} from 'terraso-mobile-client/model/sync/syncRecords';
+import {markEntityModified} from 'terraso-mobile-client/model/sync/records';
 import {
   applySyncedDatum,
   applySyncedError,
-} from 'terraso-mobile-client/model/sync/syncResults';
+} from 'terraso-mobile-client/model/sync/results';
 import {AppState, useSelector} from 'terraso-mobile-client/store';
 
 const appState = (): AppState => {

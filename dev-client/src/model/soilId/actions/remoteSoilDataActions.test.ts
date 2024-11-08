@@ -30,7 +30,7 @@ import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
   SyncRecord,
   SyncRecords,
-} from 'terraso-mobile-client/model/sync/syncRecords';
+} from 'terraso-mobile-client/model/sync/records';
 
 describe('unsyncedDataToMutationInput', () => {
   let unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>;

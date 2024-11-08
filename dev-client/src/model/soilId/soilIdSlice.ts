@@ -42,8 +42,8 @@ import {
   markEntityModified,
   mergeUnsyncedEntities,
   SyncRecords,
-} from 'terraso-mobile-client/model/sync/syncRecords';
-import {applySyncResults} from 'terraso-mobile-client/model/sync/syncResults';
+} from 'terraso-mobile-client/model/sync/records';
+import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';
