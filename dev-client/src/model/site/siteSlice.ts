@@ -15,28 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft} from '@reduxjs/toolkit';
 
-import {
-  SiteAddMutationInput,
-  SiteNoteAddMutationInput,
-  SiteNoteUpdateMutationInput,
-  SiteTransferMutationInput,
-  SiteUpdateMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as siteService from 'terraso-client-shared/site/siteService';
-import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
-
-import {
-  addSiteToProject,
-  removeSiteFromAllProjects,
-  removeSiteFromProject,
-} from 'terraso-mobile-client/model/project/projectSlice';
 
 const initialState = {
   sites: {} as Record<string, Site>,
 };
+
+type SiteState = typeof initialState;
 
 export const fetchSite = createAsyncThunk(
   'site/fetchSite',
@@ -53,89 +42,52 @@ export const fetchSitesForUser = createAsyncThunk(
   siteService.fetchSitesForUser,
 );
 
-export const addSite = createAsyncThunk<Site, SiteAddMutationInput>(
-  'site/addSite',
-  async (site, _, {dispatch}) => {
-    let res = await siteService.addSite(site);
-    if (site.projectId) {
-      dispatch(addSiteToProject({siteId: res.id, projectId: site.projectId}));
-    }
-    return res;
-  },
-);
-
-export const updateSite = createAsyncThunk<Site, SiteUpdateMutationInput>(
-  'site/updateSite',
-  async (input, _currentUser, {dispatch}) => {
-    const result = await siteService.updateSite(input);
-    dispatch(removeSiteFromAllProjects(result.id));
-    if (result.projectId) {
-      dispatch(
-        addSiteToProject({projectId: result.projectId, siteId: input.id}),
-      );
-    }
-    return result;
-  },
-);
-
-export const deleteSite = createAsyncThunk<string, Site>(
-  'site/deleteSite',
-  async (site, _currentUser, {dispatch}) => {
-    const result = await siteService.deleteSite(site);
-    dispatch(removeSiteFromAllProjects(site.id));
-    return result;
-  },
-);
-
-export const transferSites = createAsyncThunk<
-  Awaited<ReturnType<typeof siteService.transferSitesToProject>>,
-  SiteTransferMutationInput
->('site/transferSites', async (input, _currentUser, {dispatch}) => {
-  const result = await siteService.transferSitesToProject(input);
-  for (const {siteId, oldProjectId} of result.updated) {
-    if (oldProjectId !== undefined) {
-      dispatch(removeSiteFromProject({siteId, projectId: oldProjectId}));
-    }
-    dispatch(addSiteToProject({siteId, projectId: result.projectId}));
-  }
-  return result;
-});
-
-export const addSiteNote = createAsyncThunk<SiteNote, SiteNoteAddMutationInput>(
+export const addSiteNote = createAsyncThunk(
   'site/addSiteNote',
-  async (siteNote, _) => {
-    let result = await siteService.addSiteNote(siteNote);
-    return siteService.collapseSiteNote(result);
-  },
+  siteService.addSiteNote,
 );
 
-export const deleteSiteNote = createAsyncThunk<SiteNote, SiteNote>(
+export const deleteSiteNote = createAsyncThunk(
   'site/deleteSiteNote',
-  async siteNote => {
-    let result = await siteService.deleteSiteNote(siteNote);
-    return result;
-  },
+  siteService.deleteSiteNote,
 );
 
-export const updateSiteNote = createAsyncThunk<
-  SiteNote,
-  SiteNoteUpdateMutationInput
->('site/updateSiteNote', async (siteNote, _) => {
-  let result = await siteService.updateSiteNote(siteNote);
-  return siteService.collapseSiteNote(result);
-});
+export const updateSiteNote = createAsyncThunk(
+  'site/updateSiteNote',
+  siteService.updateSiteNote,
+);
+
+export const setSites = (
+  state: Draft<SiteState>,
+  sites: Record<string, Site>,
+) => {
+  state.sites = sites;
+};
+
+export const updateSites = (
+  state: Draft<SiteState>,
+  sites: Record<string, Site>,
+) => {
+  Object.assign(state.sites, sites);
+};
+
+export const updateProjectOfSite = (
+  state: Draft<SiteState>,
+  args: {siteId: string; projectId: string},
+) => {
+  state.sites[args.siteId].projectId = args.projectId;
+};
+
+export const deleteSites = (state: Draft<SiteState>, siteIds: string[]) => {
+  for (const siteId of siteIds) {
+    delete state.sites[siteId];
+  }
+};
 
 const siteSlice = createSlice({
   name: 'site',
   initialState,
-  reducers: {
-    setSites: (state, {payload}: PayloadAction<Record<string, Site>>) => {
-      state.sites = payload;
-    },
-    updateSites: (state, {payload}: PayloadAction<Record<string, Site>>) => {
-      Object.assign(state.sites, payload.sites);
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     // TODO: add case to delete site if not found
     builder.addCase(fetchSite.fulfilled, (state, {payload: site}) => {
@@ -162,27 +114,6 @@ const siteSlice = createSlice({
       state.sites = Object.fromEntries(sites.map(site => [site.id, site]));
     });
 
-    builder.addCase(addSite.fulfilled, (state, {payload: site}) => {
-      state.sites[site.id] = site;
-    });
-
-    builder.addCase(updateSite.fulfilled, (state, {payload: site}) => {
-      state.sites[site.id] = site;
-    });
-
-    builder.addCase(deleteSite.fulfilled, (state, {meta}) => {
-      delete state.sites[meta.arg.id];
-    });
-
-    builder.addCase(
-      transferSites.fulfilled,
-      (state, {payload: {projectId, updated}}) => {
-        for (const {siteId} of updated) {
-          state.sites[siteId].projectId = projectId;
-        }
-      },
-    );
-
     builder.addCase(addSiteNote.fulfilled, (state, {payload: siteNote}) => {
       state.sites[siteNote.siteId].notes[siteNote.id] = siteNote;
     });
@@ -197,5 +128,4 @@ const siteSlice = createSlice({
   },
 });
 
-export const {setSites, updateSites} = siteSlice.actions;
 export default siteSlice.reducer;

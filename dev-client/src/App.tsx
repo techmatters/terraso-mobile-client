@@ -41,7 +41,7 @@ import {PaperProvider, Portal} from 'react-native-paper';
 import {enableFreeze} from 'react-native-screens';
 
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {captureConsoleIntegration} from '@sentry/integrations';
+import {captureConsoleIntegration} from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
 import {APP_CONFIG} from 'terraso-mobile-client/config';
@@ -53,26 +53,37 @@ import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScr
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
-import {loadPersistedReduxState} from 'terraso-mobile-client/store/persistence';
+import {
+  loadPersistedReduxState,
+  patchPersistedReduxState,
+} from 'terraso-mobile-client/store/persistence';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
 
-// Mask user data on production environment
-const maskReplays = APP_CONFIG.environment === 'production';
+// On production environment:
+// - mask user data
+// - use a 10% sample rate
+// - disable Sentry debugging
+const isProduction = APP_CONFIG.environment === 'production';
 
 if (APP_CONFIG.sentryEnabled) {
   Sentry.init({
+    debug: !isProduction,
     dsn: APP_CONFIG.sentryDsn,
     environment: APP_CONFIG.environment,
     integrations: [
       captureConsoleIntegration({levels: ['warn', 'error']}),
       Sentry.mobileReplayIntegration({
-        maskAllImages: maskReplays,
-        maskAllVectors: maskReplays,
-        maskAllText: maskReplays,
+        maskAllImages: isProduction,
+        maskAllVectors: isProduction,
+        maskAllText: isProduction,
       }),
     ],
+    enableCaptureFailedRequests: true,
+    tracePropagationTargets: [APP_CONFIG.terrasoApiHostname],
+    enableUserInteractionTracing: true,
+    tracesSampleRate: isProduction ? 0.1 : 1.0,
     _experiments: {
       replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
@@ -86,7 +97,11 @@ LogBox.ignoreLogs([
   'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
 ]);
 
-const store = createStore(loadPersistedReduxState());
+let persistedReduxState = loadPersistedReduxState();
+if (persistedReduxState) {
+  persistedReduxState = patchPersistedReduxState(persistedReduxState);
+}
+const store = createStore(persistedReduxState);
 
 function App(): React.JSX.Element {
   const [headerHeight, setHeaderHeight] = useState(0);

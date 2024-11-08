@@ -1462,6 +1462,7 @@ exports[`renders correctly 1`] = `
                                               <View
                                                 style={
                                                   {
+                                                    "flex": 1,
                                                     "marginRight": "auto",
                                                   }
                                                 }
@@ -2183,7 +2184,7 @@ exports[`renders correctly 1`] = `
             hidden={false}
             hideBackButton={false}
             largeTitleHideShadow={false}
-            title="LOCATION_DASHBOARD"
+            title="SITE_TABS"
             titleColor="rgb(28, 28, 30)"
             topInsetEnabled={false}
             translucent={false}

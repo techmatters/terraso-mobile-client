@@ -18,15 +18,15 @@
 import {testState} from '@testing/integration/data';
 import {render} from '@testing/integration/utils';
 
-import {methodRequired} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {collectionMethods} from 'terraso-client-shared/soilId/soilIdTypes';
 import {fromEntries} from 'terraso-client-shared/utils';
 
+import {methodRequired} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 
 test('renders correctly', () => {
   const screen = render(<SlopeScreen siteId="1" />, {
-    route: 'LOCATION_DASHBOARD',
+    route: 'SITE_TABS',
     initialState: {
       ...testState,
       soilId: {
@@ -39,6 +39,7 @@ test('renders correctly', () => {
             slopeSteepnessSelect: 'FLAT',
           },
         },
+        soilChanges: {},
         projectSettings: {
           '1': {
             ...fromEntries(

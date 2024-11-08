@@ -30,7 +30,7 @@ import {rowsFromSiteSoilData} from 'terraso-mobile-client/components/tables/soil
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteLocationDashboardTabNavigator';
+import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
   selectSoilData,
@@ -48,7 +48,7 @@ export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const dataTableRows = rowsFromSiteSoilData(soilData, allDepths);
 
   const onAddSoilDataPress = useCallback(() => {
-    navigation.push('LOCATION_DASHBOARD', {
+    navigation.push('SITE_TABS', {
       siteId: siteId,
       initialTab: 'SOIL' as SiteTabName,
     });

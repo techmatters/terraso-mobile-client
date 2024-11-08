@@ -238,6 +238,7 @@ exports[`renders correctly 1`] = `
                             <View
                               style={
                                 {
+                                  "flex": 1,
                                   "marginRight": "auto",
                                 }
                               }
@@ -562,7 +563,7 @@ Slope is important in identifying the soil. It also helps determine the soil’s
             hidden={false}
             hideBackButton={false}
             largeTitleHideShadow={false}
-            title="LOCATION_DASHBOARD"
+            title="SITE_TABS"
             titleColor="rgb(28, 28, 30)"
             topInsetEnabled={false}
             translucent={false}
