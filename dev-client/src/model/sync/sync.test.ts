@@ -26,8 +26,8 @@ import {
   initializeSyncRecords,
   isError,
   isUnsynced,
-  markChanged,
   markError,
+  markModified,
   markSynced,
   mergeUnsyncedRecordsWithData,
   SyncActionResults,
@@ -48,7 +48,7 @@ describe('sync', () => {
     });
   });
 
-  describe('markChanged', () => {
+  describe('markModified', () => {
     let records: SyncRecords<any, any>;
 
     beforeEach(() => {
@@ -56,25 +56,25 @@ describe('sync', () => {
     });
 
     test('initializes sync record if not present', () => {
-      markChanged(records, 'a', Date.now());
+      markModified(records, 'a', Date.now());
       expect(records.a).toBeDefined();
     });
 
     test('initializes revision id if not present', () => {
       records.a = {};
-      markChanged(records, 'a', Date.now());
+      markModified(records, 'a', Date.now());
       expect(records.a.revisionId).toEqual(1);
     });
 
     test('increments revision id', () => {
       records.a = {revisionId: 122};
-      markChanged(records, 'a', Date.now());
+      markModified(records, 'a', Date.now());
       expect(records.a.revisionId).toEqual(123);
     });
 
     test('records modified date', () => {
       const at = Date.now();
-      markChanged(records, 'a', at);
+      markModified(records, 'a', at);
       expect(records.a.lastModifiedAt).toEqual(at);
     });
 
@@ -85,7 +85,7 @@ describe('sync', () => {
         lastSyncedError: 'error',
         lastSyncedAt: 10000,
       };
-      markChanged(records, 'a', Date.now());
+      markModified(records, 'a', Date.now());
       expect(records.a.lastSyncedRevisionId).toEqual(100);
       expect(records.a.lastSyncedData).toEqual('data');
       expect(records.a.lastSyncedError).toEqual('error');

@@ -75,17 +75,17 @@ export const getSyncRecord = <D, E>(
   return records[id] ?? {};
 };
 
-export const markAllChanged = <D>(
+export const markAllModified = <D>(
   records: SyncRecords<D, unknown>,
   ids: string[],
   at: SyncTimestamp,
 ) => {
   for (const id of ids) {
-    markChanged(records, id, at);
+    markModified(records, id, at);
   }
 };
 
-export const markChanged = <D>(
+export const markModified = <D>(
   records: SyncRecords<D, unknown>,
   id: string,
   at: SyncTimestamp,

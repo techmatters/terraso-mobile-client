@@ -27,8 +27,8 @@ import {
   selectUnsyncedSites,
 } from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {
-  markChanged,
   markError,
+  markModified,
   markSynced,
 } from 'terraso-mobile-client/model/sync/sync';
 import {AppState, useSelector} from 'terraso-mobile-client/store';
@@ -65,7 +65,7 @@ describe('selectUnsyncedSites', () => {
     const state = appState();
     const now = Date.now();
     markSynced(state.soilId.soilSync, 'a', {data: soilData()}, now);
-    markChanged(state.soilId.soilSync, 'b', now);
+    markModified(state.soilId.soilSync, 'b', now);
 
     const selected = renderSelectorHook(
       () => useSelector(selectUnsyncedSites),
@@ -79,7 +79,7 @@ describe('selectUnsyncedSites', () => {
 
   test('returns stable values for input states only', () => {
     const stateA = appState();
-    markChanged(stateA.soilId.soilSync, 'a', Date.now());
+    markModified(stateA.soilId.soilSync, 'a', Date.now());
 
     const selectedA1 = renderSelectorHook(
       () => useSelector(selectUnsyncedSites),
@@ -91,7 +91,7 @@ describe('selectUnsyncedSites', () => {
     );
 
     const stateB = cloneDeep(stateA);
-    markChanged(stateB.soilId.soilSync, 'b', Date.now());
+    markModified(stateB.soilId.soilSync, 'b', Date.now());
 
     const selectedB = renderSelectorHook(
       () => useSelector(selectUnsyncedSites),
@@ -110,8 +110,8 @@ describe('selectUnsyncedSiteIds', () => {
     const now = Date.now();
     markSynced(state.soilId.soilSync, 'a', {data: soilData()}, now);
 
-    markChanged(state.soilId.soilSync, 'c', now);
-    markChanged(state.soilId.soilSync, 'b', now);
+    markModified(state.soilId.soilSync, 'c', now);
+    markModified(state.soilId.soilSync, 'b', now);
 
     const selected = renderSelectorHook(
       () => useSelector(selectUnsyncedSiteIds),
@@ -123,7 +123,7 @@ describe('selectUnsyncedSiteIds', () => {
 
   test('returns stable values for input states', () => {
     const stateA = appState();
-    markChanged(stateA.soilId.soilSync, 'a', Date.now());
+    markModified(stateA.soilId.soilSync, 'a', Date.now());
 
     const selectedA1 = renderSelectorHook(
       () => useSelector(selectUnsyncedSiteIds),
@@ -135,7 +135,7 @@ describe('selectUnsyncedSiteIds', () => {
     );
 
     const stateB = cloneDeep(stateA);
-    markChanged(stateB.soilId.soilSync, 'b', Date.now());
+    markModified(stateB.soilId.soilSync, 'b', Date.now());
 
     const selectedB = renderSelectorHook(
       () => useSelector(selectUnsyncedSiteIds),
