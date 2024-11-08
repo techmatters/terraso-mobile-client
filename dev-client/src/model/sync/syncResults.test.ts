@@ -17,116 +17,25 @@
 
 import {
   isUnsynced,
+  SyncRecords,
   SyncTimestamp,
 } from 'terraso-mobile-client/model/sync/syncRecords';
 import {
-  applyActionResults,
-  applyErrorResult,
-  applyResult,
-  applyResultsData,
-  getResultsForCurrentRevisions,
-  getSyncResultsData,
-  SyncActionResults,
-  SyncRecords,
+  applySyncedDatum,
+  applySyncedError,
+  applySyncedValuesToData,
+  applySyncResults,
+  getValues,
+  getValuesForCurrentRevisions,
+  isValueForCurrentRevision,
+  SyncResults,
 } from 'terraso-mobile-client/model/sync/syncResults';
 
-describe('sync', () => {
-  describe('applyResult', () => {
-    let records: SyncRecords<any, any>;
-
-    beforeEach(() => {
-      records = {};
-    });
-
-    test('initializes sync record if not present', () => {
-      applyResult(records, 'a', {data: 'data'}, Date.now());
-      expect(records.a).toBeDefined();
-    });
-
-    test('records synced revision id', () => {
-      applyResult(records, 'a', {revisionId: 123, data: 'data'}, Date.now());
-      expect(records.a.lastSyncedRevisionId).toEqual(123);
-    });
-
-    test('records synced data', () => {
-      applyResult(records, 'a', {data: 'data'}, Date.now());
-      expect(records.a.lastSyncedData).toEqual('data');
-    });
-
-    test('records synced date', () => {
-      const at = Date.now();
-      applyResult(records, 'a', {data: 'data'}, at);
-      expect(records.a.lastSyncedAt).toEqual(at);
-    });
-
-    test('clears sync error', () => {
-      records.a = {
-        lastSyncedError: 'error',
-      };
-      const at = Date.now();
-      applyResult(records, 'a', {data: 'data'}, at);
-      expect(records.a.lastSyncedError).toBeUndefined();
-    });
-
-    test('preserves other properties', () => {
-      records.a = {
-        revisionId: 100,
-        lastModifiedAt: 10000,
-      };
-      applyResult(records, 'a', {data: 'data'}, Date.now());
-      expect(records.a.revisionId).toEqual(100);
-      expect(records.a.lastModifiedAt).toEqual(10000);
-    });
-  });
-
-  describe('applyErrorResult', () => {
-    let records: SyncRecords<any, any>;
-
-    beforeEach(() => {
-      records = {};
-    });
-
-    test('initializes sync record if not present', () => {
-      applyErrorResult(records, 'a', {data: 'error'}, Date.now());
-      expect(records.a).toBeDefined();
-    });
-
-    test('records synced revision id', () => {
-      applyErrorResult(
-        records,
-        'a',
-        {revisionId: 123, data: 'data'},
-        Date.now(),
-      );
-      expect(records.a.lastSyncedRevisionId).toEqual(123);
-    });
-
-    test('records error', () => {
-      applyErrorResult(records, 'a', {data: 'error'}, Date.now());
-      expect(records.a.lastSyncedError).toEqual('error');
-    });
-
-    test('records synced date', () => {
-      const at = Date.now();
-      applyErrorResult(records, 'a', {data: 'data'}, at);
-      expect(records.a.lastSyncedAt).toEqual(at);
-    });
-
-    test('preserves other properties', () => {
-      records.a = {
-        revisionId: 101,
-        lastSyncedData: 'data',
-      };
-      applyErrorResult(records, 'a', {data: 'error'}, Date.now());
-      expect(records.a.revisionId).toEqual(101);
-      expect(records.a.lastSyncedData).toEqual('data');
-    });
-  });
-
-  describe('applyActionResults', () => {
+describe('sync results', () => {
+  describe('applySyncResults', () => {
     let data: Record<string, any>;
     let records: SyncRecords<any, any>;
-    let results: SyncActionResults<any, any>;
+    let results: SyncResults<any, any>;
     let at: SyncTimestamp;
 
     beforeEach(() => {
@@ -148,9 +57,9 @@ describe('sync', () => {
         revisionId: 1,
         lastSyncedRevisionId: 0,
       };
-      results.data.a = {revisionId: 1, data: 'new data'};
-      results.errors.b = {revisionId: 1, data: 'new error'};
-      applyActionResults(data, records, results, at);
+      results.data.a = {revisionId: 1, value: 'new data'};
+      results.errors.b = {revisionId: 1, value: 'new error'};
+      applySyncResults(data, records, results, at);
       expect(isUnsynced(records.a)).toBeFalsy();
       expect(isUnsynced(records.b)).toBeFalsy();
     });
@@ -160,91 +69,208 @@ describe('sync', () => {
         revisionId: 2,
         lastSyncedRevisionId: 0,
       };
-      results.data.a = {revisionId: 1, data: 'new data'};
-      applyActionResults(data, records, results, at);
+      results.data.a = {revisionId: 1, value: 'new data'};
+      applySyncResults(data, records, results, at);
       expect(isUnsynced(records.a)).toBeTruthy();
     });
 
     test('records new data', () => {
-      results.data.a = {data: 'new data'};
-      applyActionResults(data, records, results, at);
+      results.data.a = {value: 'new data'};
+      applySyncResults(data, records, results, at);
       expect(data.a).toEqual('new data');
     });
 
     test('does not record stale data', () => {
       data.a = 'existing data';
-      results.data.a = {revisionId: 1, data: 'new data'};
+      results.data.a = {revisionId: 1, value: 'new data'};
       records.a = {revisionId: 2};
-      applyActionResults(data, records, results, at);
+      applySyncResults(data, records, results, at);
       expect(data.a).toEqual('existing data');
     });
 
     test('clears old errors on success', () => {
-      results.data.a = {data: 'new data'};
+      results.data.a = {value: 'new data'};
       records.a = {lastSyncedError: 'existing error'};
-      applyActionResults(data, records, results, at);
+      applySyncResults(data, records, results, at);
       expect(records.a.lastSyncedError).toBeUndefined();
     });
 
     test('records new errors', () => {
-      results.errors.a = {data: 'new error'};
-      applyActionResults(data, records, results, at);
+      results.errors.a = {value: 'new error'};
+      applySyncResults(data, records, results, at);
       expect(records.a.lastSyncedError).toEqual('new error');
     });
 
     test('does not record stale errors', () => {
-      results.errors.a = {revisionId: 1, data: 'new error'};
+      results.errors.a = {revisionId: 1, value: 'new error'};
       records.a = {revisionId: 2, lastSyncedError: 'existing error'};
-      applyActionResults(data, records, results, at);
+      applySyncResults(data, records, results, at);
       expect(records.a.lastSyncedError).toEqual('existing error');
     });
   });
 
-  describe('getResultsForCurrentRevisions', () => {
+  describe('getValuesForCurrentRevisions', () => {
     test('returns results with matching revision IDs', () => {
       expect(
-        getResultsForCurrentRevisions(
+        getValuesForCurrentRevisions(
           {a: {revisionId: 1}, b: {revisionId: 1}, c: {revisionId: 2}},
           {
-            a: {revisionId: 2, data: 'data'},
-            b: {revisionId: 1, data: 'data'},
-            c: {revisionId: 1, data: 'data'},
+            a: {revisionId: 2, value: 'data'},
+            b: {revisionId: 1, value: 'data'},
+            c: {revisionId: 1, value: 'data'},
           },
         ),
-      ).toEqual({b: {revisionId: 1, data: 'data'}});
+      ).toEqual({b: {revisionId: 1, value: 'data'}});
     });
 
     test('handles results with no sync records', () => {
       expect(
-        getResultsForCurrentRevisions(
+        getValuesForCurrentRevisions(
           {},
           {
-            a: {revisionId: undefined, data: 'data'},
-            b: {revisionId: 1, data: 'data'},
+            a: {revisionId: undefined, value: 'data'},
+            b: {revisionId: 1, value: 'data'},
           },
         ),
-      ).toEqual({a: {revisionId: undefined, data: 'data'}});
+      ).toEqual({a: {revisionId: undefined, value: 'data'}});
     });
   });
 
-  describe('applyResultsData', () => {
+  describe('isValueForCurrentRevision', () => {
+    test('returns true with matching revision IDs', () => {
+      expect(
+        isValueForCurrentRevision(
+          {revisionId: 1},
+          {revisionId: 1, value: 'data'},
+        ),
+      ).toBeTruthy();
+    });
+
+    test('handles false with no matching revision IDs', () => {
+      expect(
+        isValueForCurrentRevision(
+          {revisionId: 1},
+          {revisionId: 2, value: 'data'},
+        ),
+      ).toBeFalsy();
+    });
+  });
+
+  describe('applySyncedDatum', () => {
+    let records: SyncRecords<any, any>;
+
+    beforeEach(() => {
+      records = {};
+    });
+
+    test('initializes sync record if not present', () => {
+      applySyncedDatum(records, 'a', {value: 'data'}, Date.now());
+      expect(records.a).toBeDefined();
+    });
+
+    test('records synced revision id', () => {
+      applySyncedDatum(
+        records,
+        'a',
+        {revisionId: 123, value: 'data'},
+        Date.now(),
+      );
+      expect(records.a.lastSyncedRevisionId).toEqual(123);
+    });
+
+    test('records synced data', () => {
+      applySyncedDatum(records, 'a', {value: 'data'}, Date.now());
+      expect(records.a.lastSyncedData).toEqual('data');
+    });
+
+    test('records synced date', () => {
+      const at = Date.now();
+      applySyncedDatum(records, 'a', {value: 'data'}, at);
+      expect(records.a.lastSyncedAt).toEqual(at);
+    });
+
+    test('clears sync error', () => {
+      records.a = {
+        lastSyncedError: 'error',
+      };
+      const at = Date.now();
+      applySyncedDatum(records, 'a', {value: 'data'}, at);
+      expect(records.a.lastSyncedError).toBeUndefined();
+    });
+
+    test('preserves other properties', () => {
+      records.a = {
+        revisionId: 100,
+        lastModifiedAt: 10000,
+      };
+      applySyncedDatum(records, 'a', {value: 'data'}, Date.now());
+      expect(records.a.revisionId).toEqual(100);
+      expect(records.a.lastModifiedAt).toEqual(10000);
+    });
+  });
+
+  describe('applySyncedError', () => {
+    let records: SyncRecords<any, any>;
+
+    beforeEach(() => {
+      records = {};
+    });
+
+    test('initializes sync record if not present', () => {
+      applySyncedError(records, 'a', {value: 'error'}, Date.now());
+      expect(records.a).toBeDefined();
+    });
+
+    test('records synced revision id', () => {
+      applySyncedError(
+        records,
+        'a',
+        {revisionId: 123, value: 'data'},
+        Date.now(),
+      );
+      expect(records.a.lastSyncedRevisionId).toEqual(123);
+    });
+
+    test('records error', () => {
+      applySyncedError(records, 'a', {value: 'error'}, Date.now());
+      expect(records.a.lastSyncedError).toEqual('error');
+    });
+
+    test('records synced date', () => {
+      const at = Date.now();
+      applySyncedError(records, 'a', {value: 'data'}, at);
+      expect(records.a.lastSyncedAt).toEqual(at);
+    });
+
+    test('preserves other properties', () => {
+      records.a = {
+        revisionId: 101,
+        lastSyncedData: 'data',
+      };
+      applySyncedError(records, 'a', {value: 'error'}, Date.now());
+      expect(records.a.revisionId).toEqual(101);
+      expect(records.a.lastSyncedData).toEqual('data');
+    });
+  });
+
+  describe('applySyncedValuesToData', () => {
     test('assigns data from sync results', () => {
       const data = {a: 'old data', b: 'other data'};
-      applyResultsData(data, {
+      applySyncedValuesToData(data, {
         a: {
-          data: 'data',
+          value: 'data',
         },
       });
       expect(data).toEqual({a: 'data', b: 'other data'});
     });
   });
 
-  describe('getSyncResultsData', () => {
+  describe('getValues', () => {
     test('returns data from sync results', () => {
       expect(
-        getSyncResultsData({
+        getValues({
           a: {
-            data: 'data',
+            value: 'data',
           },
         }),
       ).toEqual({a: 'data'});

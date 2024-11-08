@@ -27,8 +27,10 @@ import {
   unsyncedDataToMutationInputEntry,
 } from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
 import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {SyncRecord} from 'terraso-mobile-client/model/sync/syncRecords';
-import {SyncRecords} from 'terraso-mobile-client/model/sync/syncResults';
+import {
+  SyncRecord,
+  SyncRecords,
+} from 'terraso-mobile-client/model/sync/syncRecords';
 
 describe('unsyncedDataToMutationInput', () => {
   let unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>;
@@ -164,7 +166,7 @@ describe('mutationResponseToResults', () => {
     const results = mutationResponseToResults(unsyncedChanges, response);
     expect(results.data.a).toEqual({
       revisionId: 10,
-      data: {
+      value: {
         crossSlope: 'CONCAVE',
       },
     });
@@ -183,6 +185,6 @@ describe('mutationResponseToResults', () => {
     ];
     const results = mutationResponseToResults(unsyncedChanges, response);
     expect(results.data).toEqual({});
-    expect(results.errors.a).toEqual({revisionId: 10, data: 'DOES_NOT_EXIST'});
+    expect(results.errors.a).toEqual({revisionId: 10, value: 'DOES_NOT_EXIST'});
   });
 });

@@ -28,16 +28,14 @@ import {getDeletedDepthIntervals} from 'terraso-mobile-client/model/soilId/actio
 import {
   getEntityRecord,
   SyncRecord,
-} from 'terraso-mobile-client/model/sync/syncRecords';
-import {
-  SyncActionResults,
   SyncRecords,
-} from 'terraso-mobile-client/model/sync/syncResults';
+} from 'terraso-mobile-client/model/sync/syncRecords';
+import {SyncResults} from 'terraso-mobile-client/model/sync/syncResults';
 
 export const pushSoilData = async (
   unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,
   unsyncedData: Record<string, SoilData | undefined>,
-): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
+): Promise<SyncResults<SoilData, SoilDataPushFailureReason>> => {
   const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
   const response = await remoteSoilData.pushSoilData(input);
   return mutationResponseToResults(
@@ -85,8 +83,8 @@ export const unsyncedDataToMutationInputEntry = (
 export const mutationResponseToResults = (
   unsyncedChanges: SyncRecords<SoilData, unknown>,
   response: SoilDataPushEntry[],
-): SyncActionResults<SoilData, SoilDataPushFailureReason> => {
-  const results: SyncActionResults<SoilData, SoilDataPushFailureReason> = {
+): SyncResults<SoilData, SoilDataPushFailureReason> => {
+  const results: SyncResults<SoilData, SoilDataPushFailureReason> = {
     data: {},
     errors: {},
   };
@@ -96,12 +94,12 @@ export const mutationResponseToResults = (
     if ('soilData' in responseEntry.result) {
       results.data[siteId] = {
         revisionId,
-        data: responseEntry.result.soilData,
+        value: responseEntry.result.soilData,
       };
     } else {
       results.errors[siteId] = {
         revisionId,
-        data: responseEntry.result.reason,
+        value: responseEntry.result.reason,
       };
     }
   }

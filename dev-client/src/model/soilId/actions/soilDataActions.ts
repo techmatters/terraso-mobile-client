@@ -35,7 +35,7 @@ import {
   getEntityRecords,
   getUnsyncedRecords,
 } from 'terraso-mobile-client/model/sync/syncRecords';
-import {SyncActionResults} from 'terraso-mobile-client/model/sync/syncResults';
+import {SyncResults} from 'terraso-mobile-client/model/sync/syncResults';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const pushSoilDataThunk = async (
@@ -47,7 +47,7 @@ export const pushSoilDataThunk = async (
 export const pushSoilData = async (
   input: string[],
   state: AppState,
-): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
+): Promise<SyncResults<SoilData, SoilDataPushFailureReason>> => {
   const unsyncedChanges = getUnsyncedRecords(
     getEntityRecords(state.soilId.soilSync, input),
   );

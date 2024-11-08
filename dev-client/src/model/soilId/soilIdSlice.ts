@@ -43,7 +43,7 @@ import {
   mergeUnsyncedEntities,
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/syncRecords';
-import {applyActionResults} from 'terraso-mobile-client/model/sync/syncResults';
+import {applySyncResults} from 'terraso-mobile-client/model/sync/syncResults';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';
@@ -124,7 +124,7 @@ const soilIdSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(pushSoilData.fulfilled, (state, action) => {
-      applyActionResults(
+      applySyncResults(
         /*
          * type-cast here bc the soilData field is more permissive than the results object
          * (it allows undefined values). this is safe since we aren't reading anything from
