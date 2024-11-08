@@ -17,19 +17,17 @@
 
 /* Types and methods for manipulating monotonically-increasing revision IDs used by the sync system. */
 
-export type ChangeRevisionId = number;
+export type RevisionId = number;
 
 export const INITIAL_REVISION_ID = 0;
 
-export const nextRevisionId = (
-  revisionId?: ChangeRevisionId,
-): ChangeRevisionId => {
+export const nextRevisionId = (revisionId?: RevisionId): RevisionId => {
   return (revisionId ?? INITIAL_REVISION_ID) + 1;
 };
 
 export const revisionIdsMatch = (
-  revisionIdA?: ChangeRevisionId,
-  revisionIdB?: ChangeRevisionId,
+  revisionIdA?: RevisionId,
+  revisionIdB?: RevisionId,
 ): boolean => {
   if (revisionIdA === undefined && revisionIdB === undefined) {
     /*

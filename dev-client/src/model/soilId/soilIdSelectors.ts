@@ -31,7 +31,7 @@ export const selectSoilIdMatches =
   (state: AppState): SoilIdEntry | undefined =>
     state.soilId.matches[key];
 
-export const selectSoilChanges = (state: AppState) => state.soilId.soilChanges;
+export const selectSoilChanges = (state: AppState) => state.soilId.soilSync;
 
 /*
  * Note: selectors that derive new values from change records are memoized to ensure

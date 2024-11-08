@@ -16,26 +16,26 @@
  */
 
 import {
-  ChangeRevisionId,
   nextRevisionId,
+  RevisionId,
   revisionIdsMatch,
 } from 'terraso-mobile-client/model/sync/revisions';
 
-export type ChangeRecords<D, E> = Record<string, ChangeRecord<D, E>>;
+export type SyncRecords<D, E> = Record<string, SyncRecord<D, E>>;
 
-export type ChangeTimestamp = number;
+export type SyncTimestamp = number;
 
-export type ChangeRecord<D, E> = {
+export type SyncRecord<D, E> = {
   /**
    * Unique ID for the entity's current state since the last sync, monotonically increasing for each change.
    * A record is considered to be un-synced if its revision ID and last-synced revision ID do not match.
    * Allows code to determine which entities need to be synced, but also allows entites to determine whether
    * a sync result is stale (if it declares that it is for a revision ID that no longer matches the entity).
    */
-  revisionId?: ChangeRevisionId;
-  lastModifiedAt?: ChangeTimestamp;
+  revisionId?: RevisionId;
+  lastModifiedAt?: SyncTimestamp;
 
-  lastSyncedRevisionId?: ChangeRevisionId;
+  lastSyncedRevisionId?: RevisionId;
 
   /**
    * The last successfully-synced data for this record.
@@ -46,7 +46,7 @@ export type ChangeRecord<D, E> = {
    */
   lastSyncedError?: E;
 
-  lastSyncedAt?: ChangeTimestamp;
+  lastSyncedAt?: SyncTimestamp;
 };
 
 export type SyncActionResults<D, E> = {
@@ -58,27 +58,27 @@ export type SyncResults<D> = Record<string, SyncResult<D>>;
 
 export type SyncResult<D> = {
   data: D;
-  revisionId?: ChangeRevisionId;
+  revisionId?: RevisionId;
 };
 
-export const getChangeRecords = <D, E>(
-  records: ChangeRecords<D, E>,
+export const getSyncRecords = <D, E>(
+  records: SyncRecords<D, E>,
   ids: string[],
-): ChangeRecords<D, E> => {
-  return Object.fromEntries(ids.map(id => [id, getChangeRecord(records, id)]));
+): SyncRecords<D, E> => {
+  return Object.fromEntries(ids.map(id => [id, getSyncRecord(records, id)]));
 };
 
-export const getChangeRecord = <D, E>(
-  records: ChangeRecords<D, E>,
+export const getSyncRecord = <D, E>(
+  records: SyncRecords<D, E>,
   id: string,
-): ChangeRecord<D, E> => {
+): SyncRecord<D, E> => {
   return records[id] ?? {};
 };
 
 export const markAllChanged = <D>(
-  records: ChangeRecords<D, unknown>,
+  records: SyncRecords<D, unknown>,
   ids: string[],
-  at: ChangeTimestamp,
+  at: SyncTimestamp,
 ) => {
   for (const id of ids) {
     markChanged(records, id, at);
@@ -86,11 +86,11 @@ export const markAllChanged = <D>(
 };
 
 export const markChanged = <D>(
-  records: ChangeRecords<D, unknown>,
+  records: SyncRecords<D, unknown>,
   id: string,
-  at: ChangeTimestamp,
+  at: SyncTimestamp,
 ) => {
-  const prevRecord = getChangeRecord(records, id);
+  const prevRecord = getSyncRecord(records, id);
   const revisionId = nextRevisionId(prevRecord.revisionId);
   records[id] = {
     ...prevRecord,
@@ -100,9 +100,9 @@ export const markChanged = <D>(
 };
 
 export const markAllSynced = <D>(
-  records: ChangeRecords<D, unknown>,
+  records: SyncRecords<D, unknown>,
   results: SyncResults<D>,
-  at: ChangeTimestamp,
+  at: SyncTimestamp,
 ) => {
   for (const [id, result] of Object.entries(results)) {
     markSynced(records, id, result, at);
@@ -110,12 +110,12 @@ export const markAllSynced = <D>(
 };
 
 export const markSynced = <D>(
-  records: ChangeRecords<D, unknown>,
+  records: SyncRecords<D, unknown>,
   id: string,
   result: SyncResult<D>,
-  at: ChangeTimestamp,
+  at: SyncTimestamp,
 ) => {
-  const prevRecord = getChangeRecord(records, id);
+  const prevRecord = getSyncRecord(records, id);
   records[id] = {
     ...prevRecord,
     lastSyncedRevisionId: result.revisionId,
@@ -126,9 +126,9 @@ export const markSynced = <D>(
 };
 
 export const markErrors = <E>(
-  records: ChangeRecords<unknown, E>,
+  records: SyncRecords<unknown, E>,
   errors: SyncResults<E>,
-  at: ChangeTimestamp,
+  at: SyncTimestamp,
 ) => {
   for (const [id, error] of Object.entries(errors)) {
     markError(records, id, error, at);
@@ -136,12 +136,12 @@ export const markErrors = <E>(
 };
 
 export const markError = <E>(
-  records: ChangeRecords<unknown, E>,
+  records: SyncRecords<unknown, E>,
   id: string,
   error: SyncResult<E>,
-  at: ChangeTimestamp,
+  at: SyncTimestamp,
 ) => {
-  const prevRecord = getChangeRecord(records, id);
+  const prevRecord = getSyncRecord(records, id);
   records[id] = {
     ...prevRecord,
 
@@ -152,34 +152,34 @@ export const markError = <E>(
 };
 
 export const getUnsyncedRecords = <D, E>(
-  records: ChangeRecords<D, E>,
-): ChangeRecords<D, E> => {
+  records: SyncRecords<D, E>,
+): SyncRecords<D, E> => {
   return Object.fromEntries(
     Object.entries(records).filter(([_, record]) => isUnsynced(record)),
   );
 };
 
-export const isUnsynced = (record: ChangeRecord<unknown, unknown>): boolean => {
+export const isUnsynced = (record: SyncRecord<unknown, unknown>): boolean => {
   return !revisionIdsMatch(record.revisionId, record.lastSyncedRevisionId);
 };
 
 export const getErrorRecords = <D, E>(
-  records: ChangeRecords<D, E>,
-): ChangeRecords<D, E> => {
+  records: SyncRecords<D, E>,
+): SyncRecords<D, E> => {
   return Object.fromEntries(
     Object.entries(records).filter(([_, record]) => isError(record)),
   );
 };
 
-export const isError = (record: ChangeRecord<unknown, unknown>): boolean => {
+export const isError = (record: SyncRecord<unknown, unknown>): boolean => {
   return record.lastSyncedError !== undefined;
 };
 
 export const applySyncActionResults = <D, E>(
   data: Record<string, D>,
-  records: ChangeRecords<D, E>,
+  records: SyncRecords<D, E>,
   results: SyncActionResults<D, E>,
-  at: ChangeTimestamp,
+  at: SyncTimestamp,
 ) => {
   /* Get results for revisions which match the current change records */
   const upToDateData = getResultsForCurrentRevisions(records, results.data);
@@ -194,18 +194,18 @@ export const applySyncActionResults = <D, E>(
 };
 
 export const getResultsForCurrentRevisions = <D>(
-  records: ChangeRecords<unknown, unknown>,
+  records: SyncRecords<unknown, unknown>,
   results: SyncResults<D>,
 ): SyncResults<D> => {
   return Object.fromEntries(
     Object.entries(results).filter(([id, result]) =>
-      isResultForCurrentRevision(getChangeRecord(records, id), result),
+      isResultForCurrentRevision(getSyncRecord(records, id), result),
     ),
   );
 };
 
 export const isResultForCurrentRevision = (
-  record: ChangeRecord<unknown, unknown>,
+  record: SyncRecord<unknown, unknown>,
   result: SyncResult<unknown>,
 ): boolean => {
   return revisionIdsMatch(record.revisionId, result.revisionId);
@@ -227,11 +227,11 @@ export const getSyncResultsData = <D>(
 };
 
 export const mergeUnsyncedRecordsWithData = <D, E>(
-  records: ChangeRecords<D, E>,
+  records: SyncRecords<D, E>,
   data: Record<string, D>,
   initialData: Record<string, D>,
 ): {
-  newRecords: ChangeRecords<D, E>;
+  newRecords: SyncRecords<D, E>;
   newData: Record<string, D>;
 } => {
   const unsyncedRecords = getUnsyncedRecords(records);
@@ -240,7 +240,7 @@ export const mergeUnsyncedRecordsWithData = <D, E>(
   );
 
   const newData = {...initialData};
-  const newRecords = initializeChangeRecords<D, E>(newData);
+  const newRecords = initializeSyncRecords<D, E>(newData);
 
   Object.assign(newRecords, unsyncedRecords);
   Object.assign(newData, unsyncedData);
@@ -251,9 +251,9 @@ export const mergeUnsyncedRecordsWithData = <D, E>(
   };
 };
 
-export const initializeChangeRecords = <D, E>(
+export const initializeSyncRecords = <D, E>(
   initialData: Record<string, D>,
-): ChangeRecords<D, E> => {
+): SyncRecords<D, E> => {
   return Object.fromEntries(
     Object.entries(initialData).map(([id, data]) => [
       id,

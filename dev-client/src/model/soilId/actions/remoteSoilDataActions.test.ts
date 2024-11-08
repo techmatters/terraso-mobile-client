@@ -27,13 +27,10 @@ import {
   unsyncedDataToMutationInputEntry,
 } from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
 import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {
-  ChangeRecord,
-  ChangeRecords,
-} from 'terraso-mobile-client/model/sync/sync';
+import {SyncRecord, SyncRecords} from 'terraso-mobile-client/model/sync/sync';
 
 describe('unsyncedDataToMutationInput', () => {
-  let unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>;
+  let unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>;
   let unsyncedData: Record<string, SoilData | undefined>;
 
   beforeEach(() => {
@@ -75,7 +72,7 @@ describe('unsyncedDataToMutationInput', () => {
 });
 
 describe('unsyncedDataToMutationInputEntry', () => {
-  let unsyncedChanges: ChangeRecord<SoilData, SoilDataPushFailureReason>;
+  let unsyncedChanges: SyncRecord<SoilData, SoilDataPushFailureReason>;
   let unsyncedData: SoilData;
 
   beforeEach(() => {
@@ -154,7 +151,7 @@ describe('unsyncedDataToMutationInputEntry', () => {
 });
 
 describe('mutationResponseToResults', () => {
-  let unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>;
+  let unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>;
   let response: SoilDataPushEntry[];
 
   beforeEach(() => {

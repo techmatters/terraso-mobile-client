@@ -40,9 +40,9 @@ import {
 } from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 import {
   applySyncActionResults,
-  ChangeRecords,
   markChanged,
   mergeUnsyncedRecordsWithData,
+  SyncRecords,
 } from 'terraso-mobile-client/model/sync/sync';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
@@ -54,7 +54,7 @@ export type MethodRequired<
 
 export type SoilState = {
   soilData: Record<string, SoilData | undefined>;
-  soilChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>;
+  soilSync: SyncRecords<SoilData, SoilDataPushFailureReason>;
 
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
   status: LoadingState;
@@ -64,7 +64,7 @@ export type SoilState = {
 
 export const initialState: SoilState = {
   soilData: {},
-  soilChanges: {},
+  soilSync: {},
 
   projectSettings: {},
   status: 'loading',
@@ -98,12 +98,12 @@ export const setSoilData = (
   soilData: Record<string, SoilData>,
 ) => {
   const {newRecords, newData} = mergeUnsyncedRecordsWithData(
-    state.soilChanges,
+    state.soilSync,
     state.soilData as Record<string, SoilData>,
     soilData,
   );
   state.soilData = newData;
-  state.soilChanges = newRecords;
+  state.soilSync = newRecords;
   state.matches = {};
 };
 
@@ -131,7 +131,7 @@ const soilIdSlice = createSlice({
          * the prior data.
          */
         state.soilData as Record<string, SoilData>,
-        state.soilChanges,
+        state.soilSync,
         action.payload,
         Date.now(),
       );
@@ -141,25 +141,25 @@ const soilIdSlice = createSlice({
 
     builder.addCase(updateSoilData.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
-      markChanged(state.soilChanges, action.meta.arg.siteId, Date.now());
+      markChanged(state.soilSync, action.meta.arg.siteId, Date.now());
       flushDataBasedMatches(state);
     });
 
     builder.addCase(updateDepthDependentSoilData.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
-      markChanged(state.soilChanges, action.meta.arg.siteId, Date.now());
+      markChanged(state.soilSync, action.meta.arg.siteId, Date.now());
       flushDataBasedMatches(state);
     });
 
     builder.addCase(updateSoilDataDepthInterval.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
-      markChanged(state.soilChanges, action.meta.arg.siteId, Date.now());
+      markChanged(state.soilSync, action.meta.arg.siteId, Date.now());
       flushDataBasedMatches(state);
     });
 
     builder.addCase(deleteSoilDataDepthInterval.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
-      markChanged(state.soilChanges, action.meta.arg.siteId, Date.now());
+      markChanged(state.soilSync, action.meta.arg.siteId, Date.now());
       flushDataBasedMatches(state);
     });
 

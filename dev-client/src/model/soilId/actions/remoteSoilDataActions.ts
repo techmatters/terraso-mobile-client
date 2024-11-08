@@ -28,14 +28,14 @@ import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {getDeletedDepthIntervals} from 'terraso-mobile-client/model/soilId/actions/soilDataDiff';
 import {
-  ChangeRecord,
-  ChangeRecords,
-  getChangeRecord,
+  getSyncRecord,
   SyncActionResults,
+  SyncRecord,
+  SyncRecords,
 } from 'terraso-mobile-client/model/sync/sync';
 
 export const pushSoilData = async (
-  unsyncedChanges: ChangeRecords<SoilData, SoilDataPushFailureReason>,
+  unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,
   unsyncedData: Record<string, SoilData | undefined>,
 ): Promise<SyncActionResults<SoilData, SoilDataPushFailureReason>> => {
   const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
@@ -47,7 +47,7 @@ export const pushSoilData = async (
 };
 
 export const unsyncedDataToMutationInput = (
-  unsyncedChanges: ChangeRecords<SoilData, unknown>,
+  unsyncedChanges: SyncRecords<SoilData, unknown>,
   unsyncedData: Record<string, SoilData | undefined>,
 ): SoilDataPushInput => {
   return {
@@ -56,7 +56,7 @@ export const unsyncedDataToMutationInput = (
       .map(([siteId, soilData]) =>
         unsyncedDataToMutationInputEntry(
           siteId,
-          getChangeRecord(unsyncedChanges, siteId),
+          getSyncRecord(unsyncedChanges, siteId),
           soilData! /* Safe to use ! here bc of above filter() call */,
         ),
       ),
@@ -65,7 +65,7 @@ export const unsyncedDataToMutationInput = (
 
 export const unsyncedDataToMutationInputEntry = (
   siteId: string,
-  record: ChangeRecord<SoilData, unknown>,
+  record: SyncRecord<SoilData, unknown>,
   soilData: SoilData,
 ): SoilDataPushInputEntry => {
   return {
@@ -83,7 +83,7 @@ export const unsyncedDataToMutationInputEntry = (
 };
 
 export const mutationResponseToResults = (
-  unsyncedChanges: ChangeRecords<SoilData, unknown>,
+  unsyncedChanges: SyncRecords<SoilData, unknown>,
   response: SoilDataPushEntry[],
 ): SyncActionResults<SoilData, SoilDataPushFailureReason> => {
   const results: SyncActionResults<SoilData, SoilDataPushFailureReason> = {
@@ -92,7 +92,7 @@ export const mutationResponseToResults = (
   };
   for (const responseEntry of response) {
     const siteId = responseEntry.siteId;
-    const revisionId = getChangeRecord(unsyncedChanges, siteId).revisionId;
+    const revisionId = getSyncRecord(unsyncedChanges, siteId).revisionId;
     if ('soilData' in responseEntry.result) {
       results.data[siteId] = {
         revisionId,
