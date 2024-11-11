@@ -65,6 +65,19 @@ export type SyncRecord<D, E> = {
  */
 export type SyncRecords<D, E> = Record<string, SyncRecord<D, E>>;
 
+/**
+ * A value that is the result of syncing some data at a specified revision ID.
+ */
+export type SyncedValue<T> = {
+  value: T;
+  revisionId?: RevisionId;
+};
+
+/**
+ * A collection of synced values keyed by their associated entity IDs.
+ */
+export type SyncedValues<T> = Record<string, SyncedValue<T>>;
+
 export const initialRecord = <D, E>(
   initialData: D | undefined,
 ): SyncRecord<D, E> => {
@@ -86,15 +99,14 @@ export const modifiedRecord = <D, E>(
 
 export const syncedRecord = <D, E>(
   prevRecord: SyncRecord<D, E>,
-  data: D,
-  revisionId: RevisionId | undefined,
+  data: SyncedValue<D>,
   at: SyncTimestamp,
 ): SyncRecord<D, E> => {
   return {
     ...prevRecord,
 
-    lastSyncedRevisionId: revisionId,
-    lastSyncedData: data,
+    lastSyncedRevisionId: data.revisionId,
+    lastSyncedData: data.value,
     lastSyncedError: undefined,
     lastSyncedAt: at,
   };
@@ -102,15 +114,14 @@ export const syncedRecord = <D, E>(
 
 export const errorRecord = <D, E>(
   precRecord: SyncRecord<D, E>,
-  error: E,
-  revisionId: RevisionId | undefined,
+  error: SyncedValue<E>,
   at: SyncTimestamp,
 ) => {
   return {
     ...precRecord,
 
-    lastSyncedRevisionId: revisionId,
-    lastSyncedError: error,
+    lastSyncedRevisionId: error.revisionId,
+    lastSyncedError: error.value,
     lastSyncedAt: at,
   };
 };
@@ -198,6 +209,14 @@ export const getErrorRecords = <D, E>(
   );
 };
 
+export const markEntitiesModified = <D>(
+  records: SyncRecords<D, unknown>,
+  ids: string[],
+  at: SyncTimestamp,
+) => {
+  ids.forEach(id => markEntityModified(records, id, at));
+};
+
 export const markEntityModified = <D>(
   records: SyncRecords<D, unknown>,
   id: string,
@@ -206,32 +225,40 @@ export const markEntityModified = <D>(
   records[id] = modifiedRecord(getEntityRecord(records, id), at);
 };
 
+export const markEntitesSynced = <D>(
+  records: SyncRecords<D, unknown>,
+  data: SyncedValues<D>,
+  at: SyncTimestamp,
+) => {
+  Object.entries(data).forEach(([id, value]) =>
+    markEntitySynced(records, id, value, at),
+  );
+};
+
 export const markEntitySynced = <D>(
   records: SyncRecords<D, unknown>,
   id: string,
-  data: D,
-  revisionId: RevisionId | undefined,
+  data: SyncedValue<D>,
   at: SyncTimestamp,
 ) => {
-  records[id] = syncedRecord(
-    getEntityRecord(records, id),
-    data,
-    revisionId,
-    at,
+  records[id] = syncedRecord(getEntityRecord(records, id), data, at);
+};
+
+export const markEntitiesError = <E>(
+  records: SyncRecords<unknown, E>,
+  errors: SyncedValues<E>,
+  at: SyncTimestamp,
+) => {
+  Object.entries(errors).forEach(([id, error]) =>
+    markEntityError(records, id, error, at),
   );
 };
 
 export const markEntityError = <E>(
   records: SyncRecords<unknown, E>,
   id: string,
-  error: E,
-  revisionId: RevisionId | undefined,
+  error: SyncedValue<E>,
   at: SyncTimestamp,
 ) => {
-  records[id] = errorRecord(
-    getEntityRecord(records, id),
-    error,
-    revisionId,
-    at,
-  );
+  records[id] = errorRecord(getEntityRecord(records, id), error, at);
 };

@@ -21,11 +21,8 @@ import {
   SyncTimestamp,
 } from 'terraso-mobile-client/model/sync/records';
 import {
-  applySyncedDatum,
-  applySyncedError,
   applySyncedValuesToData,
   applySyncResults,
-  getValues,
   getValuesForCurrentRevisions,
   isValueForCurrentRevision,
   SyncResults,
@@ -156,103 +153,6 @@ describe('results', () => {
     });
   });
 
-  describe('applySyncedDatum', () => {
-    let records: SyncRecords<any, any>;
-
-    beforeEach(() => {
-      records = {};
-    });
-
-    test('initializes sync record if not present', () => {
-      applySyncedDatum(records, 'a', {value: 'data'}, Date.now());
-      expect(records.a).toBeDefined();
-    });
-
-    test('records synced revision id', () => {
-      applySyncedDatum(
-        records,
-        'a',
-        {revisionId: 123, value: 'data'},
-        Date.now(),
-      );
-      expect(records.a.lastSyncedRevisionId).toEqual(123);
-    });
-
-    test('records synced data', () => {
-      applySyncedDatum(records, 'a', {value: 'data'}, Date.now());
-      expect(records.a.lastSyncedData).toEqual('data');
-    });
-
-    test('records synced date', () => {
-      const at = Date.now();
-      applySyncedDatum(records, 'a', {value: 'data'}, at);
-      expect(records.a.lastSyncedAt).toEqual(at);
-    });
-
-    test('clears sync error', () => {
-      records.a = {
-        lastSyncedError: 'error',
-      };
-      const at = Date.now();
-      applySyncedDatum(records, 'a', {value: 'data'}, at);
-      expect(records.a.lastSyncedError).toBeUndefined();
-    });
-
-    test('preserves other properties', () => {
-      records.a = {
-        revisionId: 100,
-        lastModifiedAt: 10000,
-      };
-      applySyncedDatum(records, 'a', {value: 'data'}, Date.now());
-      expect(records.a.revisionId).toEqual(100);
-      expect(records.a.lastModifiedAt).toEqual(10000);
-    });
-  });
-
-  describe('applySyncedError', () => {
-    let records: SyncRecords<any, any>;
-
-    beforeEach(() => {
-      records = {};
-    });
-
-    test('initializes sync record if not present', () => {
-      applySyncedError(records, 'a', {value: 'error'}, Date.now());
-      expect(records.a).toBeDefined();
-    });
-
-    test('records synced revision id', () => {
-      applySyncedError(
-        records,
-        'a',
-        {revisionId: 123, value: 'data'},
-        Date.now(),
-      );
-      expect(records.a.lastSyncedRevisionId).toEqual(123);
-    });
-
-    test('records error', () => {
-      applySyncedError(records, 'a', {value: 'error'}, Date.now());
-      expect(records.a.lastSyncedError).toEqual('error');
-    });
-
-    test('records synced date', () => {
-      const at = Date.now();
-      applySyncedError(records, 'a', {value: 'data'}, at);
-      expect(records.a.lastSyncedAt).toEqual(at);
-    });
-
-    test('preserves other properties', () => {
-      records.a = {
-        revisionId: 101,
-        lastSyncedData: 'data',
-      };
-      applySyncedError(records, 'a', {value: 'error'}, Date.now());
-      expect(records.a.revisionId).toEqual(101);
-      expect(records.a.lastSyncedData).toEqual('data');
-    });
-  });
-
   describe('applySyncedValuesToData', () => {
     test('assigns data from sync results', () => {
       const data = {a: 'old data', b: 'other data'};
@@ -262,18 +162,6 @@ describe('results', () => {
         },
       });
       expect(data).toEqual({a: 'data', b: 'other data'});
-    });
-  });
-
-  describe('getValues', () => {
-    test('returns data from sync results', () => {
-      expect(
-        getValues({
-          a: {
-            value: 'data',
-          },
-        }),
-      ).toEqual({a: 'data'});
     });
   });
 });

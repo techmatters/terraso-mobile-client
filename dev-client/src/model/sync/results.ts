@@ -17,29 +17,15 @@
 
 import {
   getEntityRecord,
-  markEntityError,
-  markEntitySynced,
+  markEntitiesError,
+  markEntitesSynced as markEntitiesSynced,
+  SyncedValue,
+  SyncedValues,
   SyncRecord,
   SyncRecords,
   SyncTimestamp,
 } from 'terraso-mobile-client/model/sync/records';
-import {
-  RevisionId,
-  revisionIdsMatch,
-} from 'terraso-mobile-client/model/sync/revisions';
-
-/**
- * A value that is the result of syncing some data at a specified revision ID.
- */
-export type SyncedValue<T> = {
-  value: T;
-  revisionId?: RevisionId;
-};
-
-/**
- * A collection of synced values keyed by their associated entity IDs.
- */
-export type SyncedValues<T> = Record<string, SyncedValue<T>>;
+import {revisionIdsMatch} from 'terraso-mobile-client/model/sync/revisions';
 
 /**
  * The results of a sync operation, containing the resulting data and errors keyed by their associated entity IDs.
@@ -60,11 +46,11 @@ export const applySyncResults = <D, E>(
   const upToDateErrors = getValuesForCurrentRevisions(records, results.errors);
 
   /* Mark the successes as synced, record their data */
-  applySyncedData(records, upToDateData, at);
+  markEntitiesSynced(records, upToDateData, at);
   applySyncedValuesToData(data, upToDateData);
 
   /* Mark errors that occurred */
-  applySyncedErrors(records, upToDateErrors, at);
+  markEntitiesError(records, upToDateErrors, at);
 };
 
 export const getValuesForCurrentRevisions = <D>(
@@ -85,53 +71,9 @@ export const isValueForCurrentRevision = (
   return revisionIdsMatch(record.revisionId, value.revisionId);
 };
 
-export const applySyncedData = <D>(
-  records: SyncRecords<D, unknown>,
-  values: SyncedValues<D>,
-  at: SyncTimestamp,
-) => {
-  Object.entries(values).forEach(([id, result]) =>
-    applySyncedDatum(records, id, result, at),
-  );
-};
-
-export const applySyncedDatum = <D>(
-  records: SyncRecords<D, unknown>,
-  id: string,
-  value: SyncedValue<D>,
-  at: SyncTimestamp,
-) => {
-  markEntitySynced(records, id, value.value, value.revisionId, at);
-};
-
-export const applySyncedErrors = <E>(
-  records: SyncRecords<unknown, E>,
-  errors: SyncedValues<E>,
-  at: SyncTimestamp,
-) => {
-  Object.entries(errors).forEach(([id, error]) =>
-    applySyncedError(records, id, error, at),
-  );
-};
-
-export const applySyncedError = <E>(
-  records: SyncRecords<unknown, E>,
-  id: string,
-  error: SyncedValue<E>,
-  at: SyncTimestamp,
-) => {
-  markEntityError(records, id, error.value, error.revisionId, at);
-};
-
 export const applySyncedValuesToData = <D>(
   data: Record<string, D>,
-  results: SyncedValues<D>,
+  values: SyncedValues<D>,
 ) => {
-  Object.assign(data, getValues(results));
-};
-
-export const getValues = <D>(values: SyncedValues<D>): Record<string, D> => {
-  return Object.fromEntries(
-    Object.entries(values).map(([id, record]) => [id, record.value]),
-  );
+  Object.entries(values).forEach(([id, value]) => (data[id] = value.value));
 };

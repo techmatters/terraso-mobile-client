@@ -26,11 +26,11 @@ import {
   selectUnsyncedSiteIds,
   selectUnsyncedSites,
 } from 'terraso-mobile-client/model/soilId/soilIdSelectors';
-import {markEntityModified} from 'terraso-mobile-client/model/sync/records';
 import {
-  applySyncedDatum,
-  applySyncedError,
-} from 'terraso-mobile-client/model/sync/results';
+  markEntityError,
+  markEntityModified,
+  markEntitySynced,
+} from 'terraso-mobile-client/model/sync/records';
 import {AppState, useSelector} from 'terraso-mobile-client/store';
 
 const appState = (): AppState => {
@@ -64,7 +64,7 @@ describe('selectUnsyncedSites', () => {
   test('selects unsynced sites only', () => {
     const state = appState();
     const now = Date.now();
-    applySyncedDatum(state.soilId.soilSync, 'a', {value: soilData()}, now);
+    markEntitySynced(state.soilId.soilSync, 'a', {value: soilData()}, now);
     markEntityModified(state.soilId.soilSync, 'b', now);
 
     const selected = renderSelectorHook(
@@ -108,7 +108,7 @@ describe('selectUnsyncedSiteIds', () => {
   test('selects unsynced site IDs only, sorted', () => {
     const state = appState();
     const now = Date.now();
-    applySyncedDatum(state.soilId.soilSync, 'a', {value: soilData()}, now);
+    markEntitySynced(state.soilId.soilSync, 'a', {value: soilData()}, now);
 
     markEntityModified(state.soilId.soilSync, 'c', now);
     markEntityModified(state.soilId.soilSync, 'b', now);
@@ -152,8 +152,8 @@ describe('selectSyncErrorSites', () => {
   test('selects sync error sites only', () => {
     const state = appState();
     const now = Date.now();
-    applySyncedDatum(state.soilId.soilSync, 'a', {value: soilData()}, now);
-    applySyncedError(
+    markEntitySynced(state.soilId.soilSync, 'a', {value: soilData()}, now);
+    markEntityError(
       state.soilId.soilSync,
       'b',
       {revisionId: 1, value: 'DOES_NOT_EXIST'},
@@ -176,7 +176,7 @@ describe('selectSyncErrorSites', () => {
 
   test('returns stable values for input states', () => {
     const stateA = appState();
-    applySyncedError(
+    markEntityError(
       stateA.soilId.soilSync,
       'a',
       {value: 'DOES_NOT_EXIST'},
@@ -193,7 +193,7 @@ describe('selectSyncErrorSites', () => {
     );
 
     const stateB = cloneDeep(stateA);
-    applySyncedError(
+    markEntityError(
       stateB.soilId.soilSync,
       'b',
       {revisionId: 1, value: 'DOES_NOT_EXIST'},

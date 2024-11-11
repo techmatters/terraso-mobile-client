@@ -76,18 +76,26 @@ describe('record', () => {
 
   describe('syncedRecord', () => {
     test('record synced revision id', () => {
-      const result = syncedRecord({}, 'data', 123, Date.now());
+      const result = syncedRecord(
+        {},
+        {value: 'data', revisionId: 123},
+        Date.now(),
+      );
       expect(result.lastSyncedRevisionId).toEqual(123);
     });
 
     test('record synced data', () => {
-      const result = syncedRecord({}, 'data', 123, Date.now());
+      const result = syncedRecord(
+        {},
+        {value: 'data', revisionId: 123},
+        Date.now(),
+      );
       expect(result.lastSyncedData).toEqual('data');
     });
 
     test('record synced date', () => {
       const at = Date.now();
-      const result = syncedRecord({}, 'data', 123, at);
+      const result = syncedRecord({}, {value: 'data', revisionId: 123}, at);
       expect(result.lastSyncedAt).toEqual(at);
     });
 
@@ -95,7 +103,11 @@ describe('record', () => {
       const record = {
         lastSyncedError: 'error',
       };
-      const result = syncedRecord(record, 'data', 123, Date.now());
+      const result = syncedRecord(
+        record,
+        {value: 'data', revisionId: 123},
+        Date.now(),
+      );
       expect(result.lastSyncedError).toBeUndefined();
     });
 
@@ -104,7 +116,11 @@ describe('record', () => {
         revisionId: 100,
         lastModifiedAt: 10000,
       };
-      const result = syncedRecord(record, 'data', 123, Date.now());
+      const result = syncedRecord(
+        record,
+        {value: 'data', revisionId: 123},
+        Date.now(),
+      );
       expect(result.revisionId).toEqual(100);
       expect(result.lastModifiedAt).toEqual(10000);
     });
@@ -112,18 +128,30 @@ describe('record', () => {
 
   describe('errorRecord', () => {
     test('record synced revision id', () => {
-      const result = errorRecord({}, 'error', 123, Date.now());
+      const result = errorRecord(
+        {},
+        {value: 'error', revisionId: 123},
+        Date.now(),
+      );
       expect(result.lastSyncedRevisionId).toEqual(123);
     });
 
     test('record error', () => {
-      const result = errorRecord({}, 'error', 123, Date.now());
+      const result = errorRecord(
+        {},
+        {value: 'error', revisionId: 123},
+        Date.now(),
+      );
       expect(result.lastSyncedError).toEqual('error');
     });
 
     test('record synced date', () => {
       const at = Date.now();
-      const result = errorRecord({}, 'error', 123, Date.now());
+      const result = errorRecord(
+        {},
+        {value: 'error', revisionId: 123},
+        Date.now(),
+      );
       expect(result.lastSyncedAt).toEqual(at);
     });
 
@@ -132,7 +160,11 @@ describe('record', () => {
         revisionId: 101,
         lastSyncedData: 'data',
       };
-      const result = errorRecord(record, 'error', 123, Date.now());
+      const result = errorRecord(
+        record,
+        {value: 'error', revisionId: 123},
+        Date.now(),
+      );
       expect(result.revisionId).toEqual(101);
       expect(result.lastSyncedData).toEqual('data');
     });
@@ -389,13 +421,18 @@ describe('record', () => {
     });
 
     test('initializes sync record if not present', () => {
-      markEntitySynced(records, 'a', 'data', 0, Date.now());
+      markEntitySynced(
+        records,
+        'a',
+        {value: 'data', revisionId: 0},
+        Date.now(),
+      );
       expect(records.a).toBeDefined();
     });
 
     test('records synced state', () => {
       const at = Date.now();
-      markEntitySynced(records, 'a', 'data', 123, at);
+      markEntitySynced(records, 'a', {value: 'data', revisionId: 123}, at);
       expect(records.a.lastSyncedData).toEqual('data');
       expect(records.a.lastSyncedRevisionId).toEqual(123);
       expect(records.a.lastSyncedAt).toEqual(at);
@@ -410,13 +447,23 @@ describe('record', () => {
     });
 
     test('initializes sync record if not present', () => {
-      markEntityError(records, 'a', 'error', 123, Date.now());
+      markEntityError(
+        records,
+        'a',
+        {value: 'error', revisionId: 123},
+        Date.now(),
+      );
       expect(records.a).toBeDefined();
     });
 
     test('records error state', () => {
       const at = Date.now();
-      markEntityError(records, 'a', 'error', 123, Date.now());
+      markEntityError(
+        records,
+        'a',
+        {value: 'error', revisionId: 123},
+        Date.now(),
+      );
       expect(records.a.lastSyncedError).toEqual('error');
       expect(records.a.lastSyncedRevisionId).toEqual(123);
       expect(records.a.lastSyncedAt).toEqual(at);
