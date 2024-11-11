@@ -23,7 +23,7 @@ import {
   useIsLoggedIn,
   usePushDispatch,
   useRetryInterval,
-} from 'terraso-mobile-client/components/sync/hooks/syncHooks';
+} from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 
 export const PUSH_DEBOUNCE_MS = 500;
 export const PUSH_RETRY_INTERVAL_MS = 1000 * 60;

@@ -18,14 +18,14 @@
 import {waitFor} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
 
-import * as syncHooks from 'terraso-mobile-client/components/sync/hooks/syncHooks';
+import * as syncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {
   PUSH_DEBOUNCE_MS,
   PUSH_RETRY_INTERVAL_MS,
   PushDispatcher,
-} from 'terraso-mobile-client/components/sync/PushDispatcher';
+} from 'terraso-mobile-client/store/sync/PushDispatcher';
 
-jest.mock('terraso-mobile-client/components/sync/hooks/syncHooks', () => {
+jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
   return {
     useDebouncedIsOffline: jest.fn(),
     useDebouncedUnsyncedSiteIds: jest.fn(),
