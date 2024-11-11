@@ -55,6 +55,7 @@ export const CustomUserLocation = ({
   const userLocation = useSelector(state => state.map.userLocation);
 
   const feature = useMemo(() => {
+    // Coords should be null when permissions are not granted
     if (userLocation.coords === null) {
       return null;
     }

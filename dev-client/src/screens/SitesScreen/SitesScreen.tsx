@@ -98,7 +98,9 @@ export const SitesScreen = memo(() => {
     }
   }, [dispatch, currentUserID]);
 
-  const currentUserCoords = useSelector(state => state.map.userLocation.coords);
+  const currentUserCoords = useSelector(
+    state => state.map.userLocation?.coords,
+  );
 
   const [finishedLoading, setFinishedLoading] = useState(false);
   const [finishedInitialCameraMove, setFinishedInitialCameraMove] =
