@@ -45,6 +45,7 @@ import {captureConsoleIntegration} from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
 import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
+import {PushDispatcher} from 'terraso-mobile-client/components/sync/PushDispatcher';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
@@ -54,7 +55,6 @@ import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScr
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
-import {PushDispatcher} from 'terraso-mobile-client/store/components/PushDispatcher';
 import {
   loadPersistedReduxState,
   patchPersistedReduxState,
