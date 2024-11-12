@@ -1798,6 +1798,7 @@ exports[`renders correctly 1`] = `
                                                     vbWidth={24}
                                                   >
                                                     <RNSVGGroup
+                                                      color="#737373"
                                                       fill={
                                                         {
                                                           "payload": 4278190080,
@@ -2072,6 +2073,7 @@ exports[`renders correctly 1`] = `
                                                     vbWidth={24}
                                                   >
                                                     <RNSVGGroup
+                                                      color="#028843"
                                                       fill={
                                                         {
                                                           "payload": 4278190080,
