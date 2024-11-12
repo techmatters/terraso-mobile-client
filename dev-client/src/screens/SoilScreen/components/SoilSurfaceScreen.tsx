@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {useCallback, useMemo} from 'react';
-import {useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 import {Image} from 'react-native';
 
 import {
@@ -30,6 +30,7 @@ import {
   Column,
   Heading,
   Paragraph,
+  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
@@ -87,9 +88,37 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
           />
           <Box height="lg" />
 
+          <Paragraph>{t('soil.vertical_cracking.description')}</Paragraph>
+
           <Paragraph>
-            {t('soil.vertical_cracking.description', {units: 'METRIC'})}
+            <Trans
+              i18nKey="soil.vertical_cracking.no_cracks"
+              components={{
+                bold: <Text bold />,
+              }}
+            />
           </Paragraph>
+
+          <Paragraph>
+            <Trans
+              i18nKey="soil.vertical_cracking.surface_cracks"
+              values={{units: 'METRIC'}}
+              components={{
+                bold: <Text bold />,
+              }}
+            />
+          </Paragraph>
+
+          <Paragraph>
+            <Trans
+              i18nKey="soil.vertical_cracking.deep_vertical_cracks"
+              values={{units: 'METRIC'}}
+              components={{
+                bold: <Text bold />,
+              }}
+            />
+          </Paragraph>
+
           <Box width="100%" alignItems="center">
             <Image
               source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
