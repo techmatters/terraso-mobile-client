@@ -46,6 +46,10 @@ export const methodRequired = <T extends CollectionMethod>(
   method: T,
 ): `${T}Required` => `${method}Required`;
 
+export const depthIntervalKey = (depthInterval: DepthInterval): string => {
+  return `${depthInterval.start}-${depthInterval.end}`;
+};
+
 export const sameDepth =
   ({depthInterval: a}: {depthInterval: DepthInterval}) =>
   ({depthInterval: b}: {depthInterval: DepthInterval}) =>

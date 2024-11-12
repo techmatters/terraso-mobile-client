@@ -17,13 +17,13 @@
 
 import {createSelector} from '@reduxjs/toolkit';
 
-import {SoilData, SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
-  ChangeRecords,
+  getErrorRecords,
   getUnsyncedRecords,
-} from 'terraso-mobile-client/model/sync/sync';
+} from 'terraso-mobile-client/model/sync/records';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilIdMatches =
@@ -31,10 +31,25 @@ export const selectSoilIdMatches =
   (state: AppState): SoilIdEntry | undefined =>
     state.soilId.matches[key];
 
-export const selectUnsyncedSites = (state: AppState): ChangeRecords<SoilData> =>
-  getUnsyncedRecords(state.soilId.soilChanges);
+export const selectSoilChanges = (state: AppState) => state.soilId.soilSync;
+
+/*
+ * Note: selectors that derive new values from change records are memoized to ensure
+ * stable values between renders. (If derived values are not stable, we can have unexpected
+ * results for downstream consumers, in particular for side-effect dependencies.)
+ *
+ * (see https://redux.js.org/usage/deriving-data-selectors#optimizing-selectors-with-memoization)
+ */
+export const selectUnsyncedSites = createSelector(selectSoilChanges, records =>
+  getUnsyncedRecords(records),
+);
 
 export const selectUnsyncedSiteIds = createSelector(
   selectUnsyncedSites,
-  changes => Object.keys(changes),
+  records => Object.keys(records).sort(),
+);
+
+export const selectSyncErrorSites = createSelector(
+  selectSoilChanges,
+  getErrorRecords,
 );
