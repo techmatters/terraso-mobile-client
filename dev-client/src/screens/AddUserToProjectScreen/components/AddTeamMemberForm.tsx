@@ -67,9 +67,10 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
       // Success
       else {
         const user = userOrError as UserFields;
+        const userId = user.id;
         // Currently there is no need to access any user's preferences besides the current user
         dispatch(addUserToCache({...user, preferences: {}}));
-        navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, user});
+        navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, userId});
       }
     } catch (e) {
       console.error(e);
