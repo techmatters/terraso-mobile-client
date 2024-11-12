@@ -23,6 +23,7 @@ import {
 import {
   compareInterval,
   degreeToPercent,
+  depthIntervalKey,
   methodEnabled,
   methodRequired,
   overlaps,
@@ -46,6 +47,12 @@ describe('methodEnabled', () => {
 describe('methodRequired', () => {
   test('formats method names with the Required suffix', () => {
     expect(methodRequired('soilTexture')).toBe('soilTextureRequired');
+  });
+});
+
+describe('depthIntervalKey', () => {
+  test('generates a key from start and end', () => {
+    expect(depthIntervalKey({start: 1, end: 2})).toEqual('1-2');
   });
 });
 

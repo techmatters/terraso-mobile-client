@@ -39,7 +39,7 @@ test('renders correctly', () => {
             slopeSteepnessSelect: 'FLAT',
           },
         },
-        soilChanges: {},
+        soilSync: {},
         projectSettings: {
           '1': {
             ...fromEntries(

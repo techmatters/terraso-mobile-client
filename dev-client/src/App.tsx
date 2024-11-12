@@ -44,6 +44,7 @@ import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {captureConsoleIntegration} from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
+import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
@@ -57,6 +58,7 @@ import {
   loadPersistedReduxState,
   patchPersistedReduxState,
 } from 'terraso-mobile-client/store/persistence';
+import {PushDispatcher} from 'terraso-mobile-client/store/sync/PushDispatcher';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
 enableFreeze(true);
@@ -132,6 +134,9 @@ function App(): React.JSX.Element {
                         <SitesScreenContextProvider>
                           <ConnectivityContextProvider>
                             <ForegroundPermissionsProvider>
+                              <RestrictByFlag flag="FF_offline">
+                                <PushDispatcher />
+                              </RestrictByFlag>
                               <RootNavigator />
                             </ForegroundPermissionsProvider>
                           </ConnectivityContextProvider>
