@@ -36,7 +36,10 @@ import {
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
 
-type Props = {siteId: string; elevation?: number; initialTab?: SiteTabName};
+type Props = {
+  siteId: string;
+  initialTab?: SiteTabName;
+};
 
 // A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with only coords)
 export const SiteTabsScreen = (props: Props) => {
