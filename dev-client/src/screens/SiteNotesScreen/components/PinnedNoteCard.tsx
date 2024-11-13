@@ -29,12 +29,12 @@ type Props = {
   project: Project;
 };
 
-export const SiteInstructionsCard = ({project}: Props) => {
+export const PinnedNoteCard = ({project}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
   const onShowNote = useCallback(() => {
-    navigation.navigate('READ_NOTE', {
+    navigation.navigate('READ_PINNED_NOTE', {
       projectId: project.id,
     });
   }, [navigation, project]);

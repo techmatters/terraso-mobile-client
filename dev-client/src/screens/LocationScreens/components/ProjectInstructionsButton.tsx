@@ -40,7 +40,7 @@ export const ProjectInstructionsButton = ({project}: Props) => {
 
   const onShowNote = useCallback(() => {
     return () =>
-      navigation.navigate('READ_NOTE', {
+      navigation.navigate('READ_PINNED_NOTE', {
         projectId: project.id,
       });
   }, [navigation, project]);

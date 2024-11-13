@@ -37,7 +37,7 @@ import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
 import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/AddSiteNoteScreen';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/EditSiteNoteScreen';
-import {ReadNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/ReadNoteScreen';
+import {ReadPinnedNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/ReadPinnedNoteScreen';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {SitesScreen} from 'terraso-mobile-client/screens/SitesScreen/SitesScreen';
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
@@ -103,7 +103,7 @@ export const modalScreenDefinitions = {
   ADD_SITE_NOTE: AddSiteNoteScreen,
   EDIT_SITE_NOTE: EditSiteNoteScreen,
   EDIT_PROJECT_INSTRUCTIONS: EditProjectInstructionsScreen,
-  READ_NOTE: ReadNoteScreen,
+  READ_PINNED_NOTE: ReadPinnedNoteScreen,
 } satisfies ScreenDefinitions;
 
 export const combinedScreenDefinitions = {

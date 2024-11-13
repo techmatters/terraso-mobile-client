@@ -34,7 +34,7 @@ type Props = {
   projectId: string;
 };
 
-export const ReadNoteScreen = ({projectId}: Props) => {
+export const ReadPinnedNoteScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(selectProject(projectId));
