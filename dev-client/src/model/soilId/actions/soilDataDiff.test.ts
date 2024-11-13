@@ -204,6 +204,7 @@ describe('soil data diff', () => {
       prev.depthIntervals = [
         {label: '', depthInterval: {start: 1, end: 2}},
         {label: 'old', depthInterval: {start: 2, end: 3}},
+        {label: 'deleted', depthInterval: {start: 4, end: 5}},
       ];
 
       const changed = getChangedDepthIntervals(curr, prev);
