@@ -51,7 +51,7 @@ export const SOIL_DATA_UPDATE_FIELDS = [
   'waterTableDepthSelect',
 ] as const satisfies (keyof SoilData)[] & (keyof SoilDataUpdateMutationInput)[];
 
-export type UpdateField = (typeof SOIL_DATA_UPDATE_FIELDS)[number];
+export type SoilDataUpdateField = (typeof SOIL_DATA_UPDATE_FIELDS)[number];
 
 /**
  * The soil data depth interval fields which are covered by the depth interval update action.

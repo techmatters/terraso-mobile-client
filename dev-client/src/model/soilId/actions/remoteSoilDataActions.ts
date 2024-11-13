@@ -24,7 +24,12 @@ import {
 import * as remoteSoilData from 'terraso-client-shared/soilId/soilDataService';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {getDeletedDepthIntervals} from 'terraso-mobile-client/model/soilId/actions/soilDataDiff';
+import {
+  getChangedDepthDependentData,
+  getChangedDepthIntervals,
+  getChangedSoilDataFields,
+  getDeletedDepthIntervals,
+} from 'terraso-mobile-client/model/soilId/actions/soilDataDiff';
 import {
   getEntityRecord,
   SyncRecord,
@@ -69,13 +74,23 @@ export const unsyncedDataToMutationInputEntry = (
   return {
     siteId,
     soilData: {
-      ...soilData,
-      depthIntervals: soilData.depthIntervals,
-      depthDependentData: soilData.depthDependentData,
+      ...getChangedSoilDataFields(soilData, record.lastSyncedData),
+      depthIntervals: getChangedDepthIntervals(
+        soilData,
+        record.lastSyncedData,
+      ).map(changes => {
+        return {depthInterval: changes.depthInterval, ...changes.changedFields};
+      }),
       deletedDepthIntervals: getDeletedDepthIntervals(
         soilData,
         record.lastSyncedData,
       ),
+      depthDependentData: getChangedDepthDependentData(
+        soilData,
+        record.lastSyncedData,
+      ).map(changes => {
+        return {depthInterval: changes.depthInterval, ...changes.changedFields};
+      }),
     },
   };
 };
