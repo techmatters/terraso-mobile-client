@@ -563,6 +563,9 @@
             "required_data_title": "Data Collection Requirements"
         },
         "required_method": "{{method}} (required)",
+        "collection_method_summary": {
+            "soilTexture": "Texture Class"
+        },
         "collection_method": {
             "slope": "Slope and Landscape",
             "soilTexture": "Soil Texture",
@@ -644,9 +647,9 @@
             "title": "Soil Texture",
             "label": "Texture Class",
             "info": {
-                "title": "Soil Texture",
-                "description": "Soil is made up of particles of different sizes. Once you remove all large particles (anything over $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter), what is left is a mixture of sand, silt, and clay.\n\n<bold>Soil texture</bold> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.\n\nSoil texture determines many important characteristics of your land, including:",
-                "description_end": "Knowing the soil texture also helps you more accurately identify your soil.",
+                "title": "Texture Class",
+                "description": "Soil is made up of particles of different sizes. Once you remove all rock fragments (anything over $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter), what is left is a mixture of sand, silt, and clay.\n\n<bold>Texture class</bold> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.\n\nSoil texture determines many important characteristics of your land, including:",
+                "description_end": "Knowing the soil texture helps you more accurately identify your soil.",
                 "description_diameter_METRIC": "2mm",
                 "description_diameter_ENGLISH": "1/16”",
                 "point1": "How much water the soil can hold",
@@ -696,7 +699,7 @@
                 "grittyness_details_2": "<0>Smooth</0> means that the wetted soil is slippery or soapy in feel.",
                 "grittyness_details_3": "<0>Not gritty or smooth</0> means that neither of those two textures dominates. You may still feel some sand grains or some soapiness, but the feel of the soil is not predominantly one or the other."
             },
-            "guide_intro": "Don’t know your soil texture? Use the step-by-step guide.",
+            "guide_intro": "Don’t know the texture class? Use the step-by-step guide.",
             "use_guide_label": "Use Guide",
             "clay_title": "Percent Clay",
             "clay_label": "Percent clay",
