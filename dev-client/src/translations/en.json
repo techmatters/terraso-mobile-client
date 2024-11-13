@@ -664,7 +664,7 @@
                 "ribbon_length_help": "How long is the ribbon?",
                 "grittyness_help": "How does the soil feel?",
                 "result": "Soil Texture: {{result}}",
-                "use_label": "Use This Texture",
+                "use_label": "Use This Texture Class",
                 "ribbon_length": {
                     "SM": "<2.5cm",
                     "MD": "2.5–5cm",
