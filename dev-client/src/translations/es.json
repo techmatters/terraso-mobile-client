@@ -552,7 +552,7 @@
                 "ribbon_help": "¿Se puede formar una cinta con el suelo?",
                 "ribbon_length_help": "¿Cuánto mide la cinta de largo?",
                 "grittyness_help": "¿Cómo se siente el suelo?",
-                "use_label": "Usar esta textura",
+                "use_label": "Usar esta clase de textura",
                 "ribbon_length": {
                     "SM": "<2.5cm",
                     "MD": "2.5–5cm",
@@ -715,9 +715,12 @@
             "required_data_title": "Requisitos para la recogida de datos"
         },
         "required_method": "{{method}} (obligatorio)",
+        "collection_method_summary": {
+            "soilTexture": "Clase de textura"
+        },
         "collection_method": {
             "slope": "Incluye la inclinación, forma, aspecto y posición del pendiente del suelo.",
-            "soilTexture": "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca",
+            "soilTexture": "Textura del suelo",
             "rockFragmentVolume": "Fragmento de roca",
             "soilColor": "Color de suelo",
             "verticalCracking": "Grietas del suelo",

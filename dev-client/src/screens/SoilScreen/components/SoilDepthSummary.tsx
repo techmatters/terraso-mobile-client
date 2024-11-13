@@ -42,7 +42,7 @@ type Props = {
 
 export const SoilDepthSummary = ({siteId, interval, requiredInputs}: Props) => {
   const {interval: depthInterval} = interval;
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
 
   const navigation = useNavigation();
 
@@ -84,6 +84,7 @@ export const SoilDepthSummary = ({siteId, interval, requiredInputs}: Props) => {
       }));
   }, [t, navigation, siteId, soilData, depthInterval, project]);
 
+  // Texture Class needs a different label on the Soil tab.
   return (
     <Column space="1px">
       <DepthEditor
@@ -91,14 +92,23 @@ export const SoilDepthSummary = ({siteId, interval, requiredInputs}: Props) => {
         aggregatedInterval={interval}
         requiredInputs={requiredInputs}
       />
-      {methods.map(({method, summary, ...props}) => (
-        <DataInputSummary
-          key={method}
-          label={t(`soil.collection_method.${method}`)}
-          value={summary}
-          {...props}
-        />
-      ))}
+      {methods.map(({method, summary, ...props}) => {
+        const summaryDescriptionExists = i18n.exists(
+          `soil.collection_method_summary.${method}`,
+        );
+        const description = summaryDescriptionExists
+          ? `soil.collection_method_summary.${method}`
+          : `soil.collection_method.${method}`;
+
+        return (
+          <DataInputSummary
+            key={method}
+            label={t(description)}
+            value={summary}
+            {...props}
+          />
+        );
+      })}
       {methods.length === 0 && <Box height="2px" />}
     </Column>
   );
