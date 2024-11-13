@@ -21,11 +21,8 @@ import {Formik, FormikHelpers} from 'formik';
 import {Button} from 'native-base';
 import * as yup from 'yup';
 
-import {
-  checkUserInProject,
-  UserInProjectError,
-} from 'terraso-client-shared/account/accountService';
-import {addUserToCache} from 'terraso-client-shared/account/accountSlice';
+import {UserInProjectError} from 'terraso-client-shared/account/accountService';
+import {checkUserInProject} from 'terraso-client-shared/account/accountSlice';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
@@ -54,23 +51,31 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
     formikHelpers: FormikHelpers<FormValues>,
   ) => {
     try {
-      const userOrError = await checkUserInProject(projectId, values.email);
-      const validationResult = createBackendValidationErrorMessage(
-        values.email,
-        userOrError,
+      const result = await dispatch(
+        checkUserInProject({projectId: projectId, userEmail: values.email}),
       );
-      // Backend returned errors
-      if (validationResult !== undefined) {
-        const error = {email: validationResult};
-        formikHelpers.setErrors(error);
-      }
-      // Success
-      else {
-        const user = userOrError as UserFields;
-        const userId = user.id;
-        // Currently there is no need to access any user's preferences besides the current user
-        dispatch(addUserToCache({...user, preferences: {}}));
-        navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, userId});
+      if (!result.payload) {
+        console.error('checkUserInProject returned an undefined payload');
+      } else if ('error' in result.payload) {
+        console.error(result.payload.error);
+        console.error(result.payload.parsedErrors);
+      } else {
+        const userOrError = result.payload;
+        const validationResult = createBackendValidationErrorMessage(
+          values.email,
+          userOrError,
+        );
+        // Cannot add email to project
+        if (validationResult !== undefined) {
+          const error = {email: validationResult};
+          formikHelpers.setErrors(error);
+        }
+        // Success
+        else {
+          const user = userOrError as UserFields;
+          const userId = user.id;
+          navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, userId});
+        }
       }
     } catch (e) {
       console.error(e);
