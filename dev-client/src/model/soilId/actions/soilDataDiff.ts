@@ -25,23 +25,20 @@ import {
 import {
   DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
   DEPTH_INTERVAL_UPDATE_FIELDS,
-  DepthDependentUpdateField,
-  DepthIntervalUpdateField,
   SOIL_DATA_UPDATE_FIELDS,
-  SoilDataUpdateField,
 } from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
 import {depthIntervalKey} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
 export const getChangedSoilDataFields = (
   curr: SoilData,
   prev?: SoilData,
-): Record<SoilDataUpdateField, any> => {
+): Partial<SoilData> => {
   return diffFields(SOIL_DATA_UPDATE_FIELDS, curr, prev);
 };
 
-export type DepthIntervalChanges<F extends string> = {
+export type DepthIntervalChanges<T> = {
   depthInterval: DepthInterval;
-  changedFields: Record<F, any>;
+  changedFields: Partial<T>;
 };
 
 export const getDeletedDepthIntervals = (
@@ -63,7 +60,7 @@ export const getDeletedDepthIntervals = (
 export const getChangedDepthIntervals = (
   curr: SoilData,
   prev?: SoilData,
-): DepthIntervalChanges<DepthIntervalUpdateField>[] => {
+): DepthIntervalChanges<SoilDataDepthInterval>[] => {
   const prevIntervals = indexDepthIntervals(prev?.depthIntervals ?? []);
   const diffs = curr.depthIntervals.map(di => {
     return {
@@ -81,14 +78,14 @@ export const getChangedDepthIntervals = (
 export const getChangedDepthIntervalFields = (
   curr: SoilDataDepthInterval,
   prev?: SoilDataDepthInterval,
-): Record<DepthIntervalUpdateField, any> => {
+): Partial<SoilDataDepthInterval> => {
   return diffFields(DEPTH_INTERVAL_UPDATE_FIELDS, curr, prev);
 };
 
 export const getChangedDepthDependentData = (
   curr: SoilData,
   prev?: SoilData,
-): DepthIntervalChanges<DepthDependentUpdateField>[] => {
+): DepthIntervalChanges<DepthDependentSoilData>[] => {
   const prevData = indexDepthIntervals(prev?.depthDependentData ?? []);
   const diffs = curr.depthDependentData.map(dd => {
     return {
@@ -105,7 +102,7 @@ export const getChangedDepthDependentData = (
 export const getChangedDepthDependentFields = (
   curr: DepthDependentSoilData,
   prev?: DepthDependentSoilData,
-): Record<DepthDependentUpdateField, any> => {
+): Partial<DepthDependentSoilData> => {
   return diffFields(DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS, curr, prev);
 };
 
@@ -113,7 +110,7 @@ export const diffFields = <F extends keyof T, T>(
   fields: F[],
   curr: T,
   prev?: T,
-): Record<F, any> => {
+): Partial<T> => {
   let changedFields: (keyof T)[];
   if (!prev) {
     changedFields = fields;
@@ -123,7 +120,7 @@ export const diffFields = <F extends keyof T, T>(
 
   return Object.fromEntries(
     changedFields.map(field => [field, curr[field]]),
-  ) as Record<F, any>;
+  ) as Partial<T>;
 };
 
 export const indexDepthIntervals = <T>(
