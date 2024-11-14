@@ -298,16 +298,16 @@ exports[`renders correctly 1`] = `
                           style={
                             {
                               "bottom": 0,
-                              "left": 0,
+                              "end": 0,
                               "position": "absolute",
-                              "right": 0,
+                              "start": 0,
                               "top": 0,
                               "transform": [
                                 {
                                   "translateX": -0,
                                 },
                               ],
-                              "width": "160%",
+                              "width": 0,
                             }
                           }
                         >
@@ -317,11 +317,11 @@ exports[`renders correctly 1`] = `
                               {
                                 "backgroundColor": "#C05621",
                                 "bottom": 0,
+                                "end": 0,
                                 "height": "100%",
-                                "left": "0%",
                                 "opacity": 0,
                                 "position": "absolute",
-                                "right": 0,
+                                "start": 0,
                                 "transform": [
                                   {
                                     "scaleX": 0,
@@ -351,10 +351,11 @@ exports[`renders correctly 1`] = `
                               [
                                 {
                                   "flexDirection": "row",
+                                  "flexGrow": 1,
                                   "flexWrap": "nowrap",
                                 },
                                 {
-                                  "width": "160%",
+                                  "width": 0,
                                 },
                                 undefined,
                               ]
@@ -447,11 +448,6 @@ exports[`renders correctly 1`] = `
                                       "selected": true,
                                     }
                                   }
-                                  accessibilityStates={
-                                    [
-                                      "selected",
-                                    ]
-                                  }
                                   accessibilityValue={
                                     {
                                       "max": undefined,
@@ -462,7 +458,6 @@ exports[`renders correctly 1`] = `
                                   }
                                   accessible={true}
                                   collapsable={false}
-                                  delayPressIn={0}
                                   focusable={true}
                                   onBlur={[Function]}
                                   onClick={[Function]}
@@ -477,11 +472,13 @@ exports[`renders correctly 1`] = `
                                   style={
                                     [
                                       {
+                                        "cursor": "pointer",
                                         "opacity": 1,
                                       },
                                       [
                                         {
                                           "backgroundColor": "transparent",
+                                          "borderRadius": 10,
                                         },
                                         null,
                                       ],
@@ -517,32 +514,7 @@ exports[`renders correctly 1`] = `
                                             "opacity": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#C05621",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          Site
-                                        </Text>
-                                      </View>
+                                      />
                                       <View
                                         collapsable={false}
                                         style={
@@ -555,32 +527,7 @@ exports[`renders correctly 1`] = `
                                             "top": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#FFFFFF",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          Site
-                                        </Text>
-                                      </View>
+                                      />
                                     </View>
                                   </View>
                                 </View>
@@ -608,7 +555,6 @@ exports[`renders correctly 1`] = `
                                       "selected": false,
                                     }
                                   }
-                                  accessibilityStates={[]}
                                   accessibilityValue={
                                     {
                                       "max": undefined,
@@ -619,7 +565,6 @@ exports[`renders correctly 1`] = `
                                   }
                                   accessible={true}
                                   collapsable={false}
-                                  delayPressIn={0}
                                   focusable={true}
                                   onBlur={[Function]}
                                   onClick={[Function]}
@@ -634,11 +579,13 @@ exports[`renders correctly 1`] = `
                                   style={
                                     [
                                       {
+                                        "cursor": "pointer",
                                         "opacity": 1,
                                       },
                                       [
                                         {
                                           "backgroundColor": "transparent",
+                                          "borderRadius": 10,
                                         },
                                         null,
                                       ],
@@ -674,32 +621,7 @@ exports[`renders correctly 1`] = `
                                             "opacity": 1,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#C05621",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          Slope
-                                        </Text>
-                                      </View>
+                                      />
                                       <View
                                         collapsable={false}
                                         style={
@@ -712,32 +634,7 @@ exports[`renders correctly 1`] = `
                                             "top": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#FFFFFF",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          Slope
-                                        </Text>
-                                      </View>
+                                      />
                                     </View>
                                   </View>
                                 </View>
@@ -765,7 +662,6 @@ exports[`renders correctly 1`] = `
                                       "selected": false,
                                     }
                                   }
-                                  accessibilityStates={[]}
                                   accessibilityValue={
                                     {
                                       "max": undefined,
@@ -776,7 +672,6 @@ exports[`renders correctly 1`] = `
                                   }
                                   accessible={true}
                                   collapsable={false}
-                                  delayPressIn={0}
                                   focusable={true}
                                   onBlur={[Function]}
                                   onClick={[Function]}
@@ -791,11 +686,13 @@ exports[`renders correctly 1`] = `
                                   style={
                                     [
                                       {
+                                        "cursor": "pointer",
                                         "opacity": 1,
                                       },
                                       [
                                         {
                                           "backgroundColor": "transparent",
+                                          "borderRadius": 10,
                                         },
                                         null,
                                       ],
@@ -831,32 +728,7 @@ exports[`renders correctly 1`] = `
                                             "opacity": 1,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#C05621",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          Soil
-                                        </Text>
-                                      </View>
+                                      />
                                       <View
                                         collapsable={false}
                                         style={
@@ -869,32 +741,7 @@ exports[`renders correctly 1`] = `
                                             "top": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#FFFFFF",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          Soil
-                                        </Text>
-                                      </View>
+                                      />
                                     </View>
                                   </View>
                                 </View>
@@ -922,7 +769,6 @@ exports[`renders correctly 1`] = `
                                       "selected": false,
                                     }
                                   }
-                                  accessibilityStates={[]}
                                   accessibilityValue={
                                     {
                                       "max": undefined,
@@ -933,7 +779,6 @@ exports[`renders correctly 1`] = `
                                   }
                                   accessible={true}
                                   collapsable={false}
-                                  delayPressIn={0}
                                   focusable={true}
                                   onBlur={[Function]}
                                   onClick={[Function]}
@@ -948,11 +793,13 @@ exports[`renders correctly 1`] = `
                                   style={
                                     [
                                       {
+                                        "cursor": "pointer",
                                         "opacity": 1,
                                       },
                                       [
                                         {
                                           "backgroundColor": "transparent",
+                                          "borderRadius": 10,
                                         },
                                         null,
                                       ],
@@ -988,32 +835,7 @@ exports[`renders correctly 1`] = `
                                             "opacity": 1,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#C05621",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          Notes
-                                        </Text>
-                                      </View>
+                                      />
                                       <View
                                         collapsable={false}
                                         style={
@@ -1026,32 +848,7 @@ exports[`renders correctly 1`] = `
                                             "top": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "fontSize": 13,
-                                                "margin": 4,
-                                                "textAlign": "center",
-                                                "textTransform": "uppercase",
-                                              },
-                                              {
-                                                "color": "#FFFFFF",
-                                              },
-                                              {
-                                                "fontSize": 14,
-                                                "fontWeight": "500",
-                                                "letterSpacing": 0.4,
-                                                "lineHeight": 24,
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          Notes
-                                        </Text>
-                                      </View>
+                                      />
                                     </View>
                                   </View>
                                 </View>
@@ -1112,12 +909,7 @@ exports[`renders correctly 1`] = `
                                   "top": 0,
                                 },
                                 [
-                                  [
-                                    {
-                                      "backgroundColor": "rgb(242, 242, 242)",
-                                    },
-                                    undefined,
-                                  ],
+                                  undefined,
                                   {
                                     "bottom": 0,
                                     "left": 0,
@@ -2067,12 +1859,7 @@ exports[`renders correctly 1`] = `
                                 },
                                 null,
                                 [
-                                  [
-                                    {
-                                      "backgroundColor": "rgb(242, 242, 242)",
-                                    },
-                                    undefined,
-                                  ],
+                                  undefined,
                                   {
                                     "bottom": 0,
                                     "left": 0,
@@ -2108,12 +1895,7 @@ exports[`renders correctly 1`] = `
                                 },
                                 null,
                                 [
-                                  [
-                                    {
-                                      "backgroundColor": "rgb(242, 242, 242)",
-                                    },
-                                    undefined,
-                                  ],
+                                  undefined,
                                   {
                                     "bottom": 0,
                                     "left": 0,
@@ -2149,12 +1931,7 @@ exports[`renders correctly 1`] = `
                                 },
                                 null,
                                 [
-                                  [
-                                    {
-                                      "backgroundColor": "rgb(242, 242, 242)",
-                                    },
-                                    undefined,
-                                  ],
+                                  undefined,
                                   {
                                     "bottom": 0,
                                     "left": 0,
