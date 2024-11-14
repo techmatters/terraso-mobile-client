@@ -298,16 +298,16 @@ exports[`renders correctly 1`] = `
                           style={
                             {
                               "bottom": 0,
-                              "left": 0,
+                              "end": 0,
                               "position": "absolute",
-                              "right": 0,
+                              "start": 0,
                               "top": 0,
                               "transform": [
                                 {
                                   "translateX": -0,
                                 },
                               ],
-                              "width": "120%",
+                              "width": 0,
                             }
                           }
                         >
@@ -317,11 +317,11 @@ exports[`renders correctly 1`] = `
                               {
                                 "backgroundColor": "#C05621",
                                 "bottom": 0,
+                                "end": 0,
                                 "height": "100%",
-                                "left": "0%",
                                 "opacity": 0,
                                 "position": "absolute",
-                                "right": 0,
+                                "start": 0,
                                 "transform": [
                                   {
                                     "scaleX": 0,
@@ -351,10 +351,11 @@ exports[`renders correctly 1`] = `
                               [
                                 {
                                   "flexDirection": "row",
+                                  "flexGrow": 1,
                                   "flexWrap": "nowrap",
                                 },
                                 {
-                                  "width": "120%",
+                                  "width": 0,
                                 },
                                 undefined,
                               ]
@@ -440,11 +441,6 @@ exports[`renders correctly 1`] = `
                                       "selected": true,
                                     }
                                   }
-                                  accessibilityStates={
-                                    [
-                                      "selected",
-                                    ]
-                                  }
                                   accessibilityValue={
                                     {
                                       "max": undefined,
@@ -455,7 +451,6 @@ exports[`renders correctly 1`] = `
                                   }
                                   accessible={true}
                                   collapsable={false}
-                                  delayPressIn={0}
                                   focusable={true}
                                   onBlur={[Function]}
                                   onClick={[Function]}
@@ -470,11 +465,13 @@ exports[`renders correctly 1`] = `
                                   style={
                                     [
                                       {
+                                        "cursor": "pointer",
                                         "opacity": 1,
                                       },
                                       [
                                         {
                                           "backgroundColor": "transparent",
+                                          "borderRadius": 10,
                                         },
                                         null,
                                       ],
@@ -502,73 +499,6 @@ exports[`renders correctly 1`] = `
                                       ]
                                     }
                                   >
-                                    <View
-                                      style={
-                                        {
-                                          "margin": 2,
-                                        }
-                                      }
-                                    >
-                                      <View
-                                        collapsable={false}
-                                        style={
-                                          {
-                                            "opacity": 0,
-                                          }
-                                        }
-                                      >
-                                        <View
-                                          style={
-                                            [
-                                              {
-                                                "height": 24,
-                                                "width": 24,
-                                              },
-                                              undefined,
-                                            ]
-                                          }
-                                        >
-                                          <Icon
-                                            color="#C05621"
-                                            name="tune"
-                                            size={24}
-                                            style={{}}
-                                          />
-                                        </View>
-                                      </View>
-                                      <View
-                                        collapsable={false}
-                                        style={
-                                          {
-                                            "bottom": 0,
-                                            "left": 0,
-                                            "opacity": 1,
-                                            "position": "absolute",
-                                            "right": 0,
-                                            "top": 0,
-                                          }
-                                        }
-                                      >
-                                        <View
-                                          style={
-                                            [
-                                              {
-                                                "height": 24,
-                                                "width": 24,
-                                              },
-                                              undefined,
-                                            ]
-                                          }
-                                        >
-                                          <Icon
-                                            color="#FFFFFF"
-                                            name="tune"
-                                            size={24}
-                                            style={{}}
-                                          />
-                                        </View>
-                                      </View>
-                                    </View>
                                     <View>
                                       <View
                                         collapsable={false}
@@ -577,22 +507,7 @@ exports[`renders correctly 1`] = `
                                             "opacity": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#C05621",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Inputs
-                                        </Text>
-                                      </View>
+                                      />
                                       <View
                                         collapsable={false}
                                         style={
@@ -605,22 +520,7 @@ exports[`renders correctly 1`] = `
                                             "top": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#FFFFFF",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Inputs
-                                        </Text>
-                                      </View>
+                                      />
                                     </View>
                                   </View>
                                 </View>
@@ -648,7 +548,6 @@ exports[`renders correctly 1`] = `
                                       "selected": false,
                                     }
                                   }
-                                  accessibilityStates={[]}
                                   accessibilityValue={
                                     {
                                       "max": undefined,
@@ -659,7 +558,6 @@ exports[`renders correctly 1`] = `
                                   }
                                   accessible={true}
                                   collapsable={false}
-                                  delayPressIn={0}
                                   focusable={true}
                                   onBlur={[Function]}
                                   onClick={[Function]}
@@ -674,11 +572,13 @@ exports[`renders correctly 1`] = `
                                   style={
                                     [
                                       {
+                                        "cursor": "pointer",
                                         "opacity": 1,
                                       },
                                       [
                                         {
                                           "backgroundColor": "transparent",
+                                          "borderRadius": 10,
                                         },
                                         null,
                                       ],
@@ -706,73 +606,6 @@ exports[`renders correctly 1`] = `
                                       ]
                                     }
                                   >
-                                    <View
-                                      style={
-                                        {
-                                          "margin": 2,
-                                        }
-                                      }
-                                    >
-                                      <View
-                                        collapsable={false}
-                                        style={
-                                          {
-                                            "opacity": 1,
-                                          }
-                                        }
-                                      >
-                                        <View
-                                          style={
-                                            [
-                                              {
-                                                "height": 24,
-                                                "width": 24,
-                                              },
-                                              undefined,
-                                            ]
-                                          }
-                                        >
-                                          <Icon
-                                            color="#C05621"
-                                            name="location-on"
-                                            size={24}
-                                            style={{}}
-                                          />
-                                        </View>
-                                      </View>
-                                      <View
-                                        collapsable={false}
-                                        style={
-                                          {
-                                            "bottom": 0,
-                                            "left": 0,
-                                            "opacity": 0,
-                                            "position": "absolute",
-                                            "right": 0,
-                                            "top": 0,
-                                          }
-                                        }
-                                      >
-                                        <View
-                                          style={
-                                            [
-                                              {
-                                                "height": 24,
-                                                "width": 24,
-                                              },
-                                              undefined,
-                                            ]
-                                          }
-                                        >
-                                          <Icon
-                                            color="#FFFFFF"
-                                            name="location-on"
-                                            size={24}
-                                            style={{}}
-                                          />
-                                        </View>
-                                      </View>
-                                    </View>
                                     <View>
                                       <View
                                         collapsable={false}
@@ -781,22 +614,7 @@ exports[`renders correctly 1`] = `
                                             "opacity": 1,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#C05621",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Sites
-                                        </Text>
-                                      </View>
+                                      />
                                       <View
                                         collapsable={false}
                                         style={
@@ -809,22 +627,7 @@ exports[`renders correctly 1`] = `
                                             "top": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#FFFFFF",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Sites
-                                        </Text>
-                                      </View>
+                                      />
                                     </View>
                                   </View>
                                 </View>
@@ -852,7 +655,6 @@ exports[`renders correctly 1`] = `
                                       "selected": false,
                                     }
                                   }
-                                  accessibilityStates={[]}
                                   accessibilityValue={
                                     {
                                       "max": undefined,
@@ -863,7 +665,6 @@ exports[`renders correctly 1`] = `
                                   }
                                   accessible={true}
                                   collapsable={false}
-                                  delayPressIn={0}
                                   focusable={true}
                                   onBlur={[Function]}
                                   onClick={[Function]}
@@ -878,11 +679,13 @@ exports[`renders correctly 1`] = `
                                   style={
                                     [
                                       {
+                                        "cursor": "pointer",
                                         "opacity": 1,
                                       },
                                       [
                                         {
                                           "backgroundColor": "transparent",
+                                          "borderRadius": 10,
                                         },
                                         null,
                                       ],
@@ -910,73 +713,6 @@ exports[`renders correctly 1`] = `
                                       ]
                                     }
                                   >
-                                    <View
-                                      style={
-                                        {
-                                          "margin": 2,
-                                        }
-                                      }
-                                    >
-                                      <View
-                                        collapsable={false}
-                                        style={
-                                          {
-                                            "opacity": 1,
-                                          }
-                                        }
-                                      >
-                                        <View
-                                          style={
-                                            [
-                                              {
-                                                "height": 24,
-                                                "width": 24,
-                                              },
-                                              undefined,
-                                            ]
-                                          }
-                                        >
-                                          <Icon
-                                            color="#C05621"
-                                            name="people"
-                                            size={24}
-                                            style={{}}
-                                          />
-                                        </View>
-                                      </View>
-                                      <View
-                                        collapsable={false}
-                                        style={
-                                          {
-                                            "bottom": 0,
-                                            "left": 0,
-                                            "opacity": 0,
-                                            "position": "absolute",
-                                            "right": 0,
-                                            "top": 0,
-                                          }
-                                        }
-                                      >
-                                        <View
-                                          style={
-                                            [
-                                              {
-                                                "height": 24,
-                                                "width": 24,
-                                              },
-                                              undefined,
-                                            ]
-                                          }
-                                        >
-                                          <Icon
-                                            color="#FFFFFF"
-                                            name="people"
-                                            size={24}
-                                            style={{}}
-                                          />
-                                        </View>
-                                      </View>
-                                    </View>
                                     <View>
                                       <View
                                         collapsable={false}
@@ -985,22 +721,7 @@ exports[`renders correctly 1`] = `
                                             "opacity": 1,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#C05621",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Team
-                                        </Text>
-                                      </View>
+                                      />
                                       <View
                                         collapsable={false}
                                         style={
@@ -1013,22 +734,7 @@ exports[`renders correctly 1`] = `
                                             "top": 0,
                                           }
                                         }
-                                      >
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#FFFFFF",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Team
-                                        </Text>
-                                      </View>
+                                      />
                                     </View>
                                   </View>
                                 </View>
@@ -1089,12 +795,7 @@ exports[`renders correctly 1`] = `
                                   "top": 0,
                                 },
                                 [
-                                  [
-                                    {
-                                      "backgroundColor": "rgb(242, 242, 242)",
-                                    },
-                                    undefined,
-                                  ],
+                                  undefined,
                                   {
                                     "bottom": 0,
                                     "left": 0,
@@ -3816,12 +3517,7 @@ exports[`renders correctly 1`] = `
                                 },
                                 null,
                                 [
-                                  [
-                                    {
-                                      "backgroundColor": "rgb(242, 242, 242)",
-                                    },
-                                    undefined,
-                                  ],
+                                  undefined,
                                   {
                                     "bottom": 0,
                                     "left": 0,
@@ -3857,12 +3553,7 @@ exports[`renders correctly 1`] = `
                                 },
                                 null,
                                 [
-                                  [
-                                    {
-                                      "backgroundColor": "rgb(242, 242, 242)",
-                                    },
-                                    undefined,
-                                  ],
+                                  undefined,
                                   {
                                     "bottom": 0,
                                     "left": 0,
