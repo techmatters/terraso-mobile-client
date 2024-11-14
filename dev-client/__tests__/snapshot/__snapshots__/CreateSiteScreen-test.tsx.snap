@@ -1698,7 +1698,6 @@ exports[`renders correctly 1`] = `
                                               },
                                             ]
                                           }
-                                          tintColor="#028843"
                                           vbHeight={24}
                                           vbWidth={24}
                                         >
@@ -1974,7 +1973,6 @@ exports[`renders correctly 1`] = `
                                               },
                                             ]
                                           }
-                                          tintColor="#737373"
                                           vbHeight={24}
                                           vbWidth={24}
                                         >
