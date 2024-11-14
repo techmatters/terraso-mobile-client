@@ -19,6 +19,7 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
@@ -31,13 +32,15 @@ export function DeleteAccountItem() {
     [navigation],
   );
 
+  const isDisabled = useIsOffline() === true || isPending;
+
   return (
     <MenuItem
       variant="destructive"
       uppercase
       icon="delete"
       label={t('settings.delete_account')}
-      disabled={isPending}
+      disabled={isDisabled}
       subLabel={isPending ? t('settings.delete_account_pending') : undefined}
       onPress={onDeleteAccount}
     />
