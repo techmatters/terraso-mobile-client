@@ -20,7 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {
   Box,
@@ -31,18 +30,20 @@ import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrap
 import {updateProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectProject} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
-  project: Project;
+  projectId: string;
 };
 
-export const EditProjectInstructionsScreen = ({project}: Props) => {
+export const EditProjectInstructionsScreen = ({projectId}: Props) => {
   const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const project = useSelector(selectProject(projectId));
 
   const handleUpdateProject = async ({content}: {content: string}) => {
     Keyboard.dismiss();
