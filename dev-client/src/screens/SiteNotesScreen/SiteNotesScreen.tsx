@@ -30,7 +30,7 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SiteInstructionsCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteInstructionsCard';
+import {PinnedNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/PinnedNoteCard';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
 import {useSelector} from 'terraso-mobile-client/store';
 
@@ -55,9 +55,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
           <Heading variant="h6">{t('site.notes.title')}</Heading>
         </Row>
         <Box height="16px" />
-        {project?.siteInstructions && (
-          <SiteInstructionsCard siteInstructions={project?.siteInstructions} />
-        )}
+        {project?.siteInstructions && <PinnedNoteCard project={project} />}
         <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
           <Box pl={4} pb={4} alignItems="flex-start">
             <Button

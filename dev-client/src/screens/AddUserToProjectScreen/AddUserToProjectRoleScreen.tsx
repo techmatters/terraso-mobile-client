@@ -33,25 +33,23 @@ import {addUserToProject} from 'terraso-mobile-client/model/project/projectGloba
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {TabRoutes} from 'terraso-mobile-client/navigation/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {
-  MinimalUserDisplay,
-  UserFields,
-} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
+import {MinimalUserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
 import {ProjectRoleRadioBlock} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/ProjectRoleRadioBlock';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   projectId: string;
-  user: UserFields;
+  userId: string;
 };
 
-export const AddUserToProjectRoleScreen = ({projectId, user}: Props) => {
+export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const project = useSelector(state => state.project.projects[projectId]);
+  const user = useSelector(state => state.account.users[userId]);
 
   const [selectedRole, setSelectedRole] = useState<ProjectRole>('VIEWER');
 
