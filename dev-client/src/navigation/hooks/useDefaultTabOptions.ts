@@ -40,6 +40,7 @@ export const useDefaultTabOptions = (): MaterialTopTabNavigationOptions => {
         fontWeight: '500',
         lineHeight: 24,
         letterSpacing: 0.4,
+        textTransform: 'uppercase',
       },
       tabBarStyle: {
         backgroundColor: colors.grey[200],
