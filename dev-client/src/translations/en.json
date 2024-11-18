@@ -555,7 +555,7 @@
         "add_depth_label": "Add Depth",
         "project_settings": {
             "pit_required_label": "Soil pit required",
-            "required_data_title": "Data Collection Requirements"
+            "required_data_title": "Observation Requirements"
         },
         "required_method": "{{method}} (required)",
         "collection_method_summary": {
