@@ -1452,7 +1452,7 @@ exports[`renders correctly 1`] = `
                                                       }
                                                     }
                                                   >
-                                                    All data entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII).
+                                                    All observations entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII).
                                                   </Text>
                                                   <Text
                                                     letterSpacing="0.15px"
@@ -3375,7 +3375,7 @@ exports[`renders correctly 1`] = `
                                         }
                                       }
                                     >
-                                      Data Collection Requirements
+                                      Observation Requirements
                                     </Text>
                                     <View
                                       accessibilityRole="button"
