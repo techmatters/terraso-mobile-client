@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-10-18T20:10:11.771Z\n"
-"PO-Revision-Date: 2024-10-18T20:10:11.771Z\n"
+"POT-Creation-Date: 2024-11-18T16:51:33.737Z\n"
+"PO-Revision-Date: 2024-11-18T16:51:33.737Z\n"
 
 msgid "welcome##title"
 msgstr "Bienvenido a LandPKS Soil ID"
@@ -154,15 +154,6 @@ msgstr "Configuraciones del sitio"
 
 msgid "site##dashboard##delete_button"
 msgstr "Eliminar este sitio"
-
-msgid "site##dashboard##delete_site_modal##title"
-msgstr "¿Eliminar sitio?"
-
-msgid "site##dashboard##delete_site_modal##body"
-msgstr "Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer."
-
-msgid "site##dashboard##delete_site_modal##action_name"
-msgstr "Eliminar"
 
 msgid "site##dashboard##location_accuracy"
 msgstr "Precisión de ubicación"
@@ -1228,7 +1219,7 @@ msgid "soil##texture##guide##grittyness_help"
 msgstr "¿Cómo se siente el suelo?"
 
 msgid "soil##texture##guide##use_label"
-msgstr "Usar esta textura"
+msgstr "Usar esta clase de textura"
 
 msgid "soil##texture##guide##ribbon_length##SM"
 msgstr "<2.5cm"
@@ -1590,11 +1581,14 @@ msgstr "Requisitos para la recogida de datos"
 msgid "soil##required_method"
 msgstr "{{method}} (obligatorio)"
 
+msgid "soil##collection_method_summary##soilTexture"
+msgstr "Clase de textura"
+
 msgid "soil##collection_method##slope"
 msgstr "Incluye la inclinación, forma, aspecto y posición del pendiente del suelo."
 
 msgid "soil##collection_method##soilTexture"
-msgstr "Incluye clase de textura, porcentaje de arcilla y fragmentos de roca"
+msgstr "Textura del suelo"
 
 msgid "soil##collection_method##rockFragmentVolume"
 msgstr "Fragmento de roca"
@@ -1642,10 +1636,22 @@ msgid "soil##collection_method_description##soilTexture"
 msgstr "Incluye clase de textura y volumen de fragmentos de roca"
 
 msgid "soil##vertical_cracking##description"
+msgstr "Surface cracks develop in clay-rich soils after they dry out."
+
+msgid "soil##vertical_cracking##no_cracks"
 msgstr ""
-"Pueden aparecer grietas verticales en la superficie cuando algunos suelos experimentan cambios de humedad o temperatura. Las grietas pueden ser permanentes o desaparecer con el tiempo.\n"
-"\n"
-"Las grietas verticales tienen al menos $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) de ancho y $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) de profundidad. Deberías poder colocar un lápiz dentro de las grietas."
+"<bold>No Cracks</bold>\n"
+"No cracks are visible on the soil surface."
+
+msgid "soil##vertical_cracking##surface_cracks"
+msgstr ""
+"<bold>Surface Cracks</bold>\n"
+"Surface cracks are less than $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep."
+
+msgid "soil##vertical_cracking##deep_vertical_cracks"
+msgstr ""
+"<bold>Deep Vertical Cracks</bold>\n"
+"Deep vertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks."
 
 msgid "soil##vertical_cracking##description_width_METRIC"
 msgstr "5 mm"
@@ -1840,7 +1846,7 @@ msgstr ""
 "\n"
 "La forma de la pendiente se determina en dos direcciones: <bold>pendiente descendente</bold> y <bold>pendiente transversal</bold>.\n"
 "\n"
-"En primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(pendiente.forma.info.descripcion_distancia, {\"context\": \"{{units}}\"}\"}) en todas las direcciones.\n"
+"En primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) en todas las direcciones.\n"
 "\n"
 "Si lloviera, ¿en qué dirección general fluiría el agua cuesta abajo? Esto se denomina la dirección <bold>pendiente abajo</bold>.\n"
 "\n"
