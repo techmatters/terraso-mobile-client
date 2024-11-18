@@ -28,7 +28,7 @@
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.0.5",
     "@expo/vector-icons": "^14.0.4",
-    "@gorhom/bottom-sheet": "^5.0.5",
+    "@gorhom/bottom-sheet": "^5.0.6",
     "@react-native-community/checkbox": "^0.5.17",
     "@react-native-community/netinfo": "^11.4.1",
     "@react-navigation/bottom-tabs": "^6.6.1",
