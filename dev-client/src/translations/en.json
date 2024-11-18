@@ -310,7 +310,7 @@
             "delete_site": "Delete Site",
             "delete_site_modal": {
                 "title": "Delete site?",
-                "body": "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.\n\nProject managers can remove the site from this project to retain its data.",
+                "body": "This will permanently delete the site {{siteName}} and all of its observations. This cannot be undone.\n\nProject managers can remove the site from this project to retain its data.",
                 "action_name": "Delete"
             },
             "remove_site_modal": {
