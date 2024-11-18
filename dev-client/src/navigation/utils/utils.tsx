@@ -24,9 +24,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 import {ScreenDefinitions} from 'terraso-mobile-client/navigation/types';
 
-export const generateScreens = <
-  T extends TypedNavigator<any, any, any, any, any>,
->(
+export const generateScreens = <T extends TypedNavigator<any, any>>(
   Navigator: T,
   definitions: ScreenDefinitions,
 ) =>
