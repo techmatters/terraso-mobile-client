@@ -315,12 +315,12 @@
             },
             "remove_site_modal": {
                 "title": "Remove site from project?",
-                "body": "Only you will have access to this site and its data. Other project team members will no longer have access.",
+                "body": "Only you will have access to this site. Other project team members will no longer have access.",
                 "action_name": "Remove Site"
             },
             "transfer_site_modal": {
                 "title": "Transfer sites?",
-                "body": "Transferred sites will use the data settings and team member roles from this project.\n\nIf sites have data entered at different depths than what is specified in this project, that data will be deleted. This can’t be undone.",
+                "body": "Transferred sites will use the inputs, settings and team member roles from this project.\n\nIf sites have observations entered at different depths than what is specified in this project, rhose observations will be deleted. This cannot be undone.",
                 "action_name": "Transfer"
             },
             "search": {
@@ -355,7 +355,7 @@
         },
         "transfer_sites": {
             "heading": "Transfer Sites to this Project",
-            "description": "Transfer LandPKS Soil ID sites you manage to this project. When you transfer sites, they will use the data settings and team member roles from this project.",
+            "description": "Transfer LandPKS Soil ID sites you manage to this project. When you transfer sites, they will use the inputs, settings and team member roles from this project.",
             "unaffiliated": "Unaffiliated"
         },
         "form": {
