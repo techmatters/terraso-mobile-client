@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-10-18T20:10:11.766Z\n"
-"PO-Revision-Date: 2024-10-18T20:10:11.767Z\n"
+"POT-Creation-Date: 2024-11-18T16:51:33.732Z\n"
+"PO-Revision-Date: 2024-11-18T16:51:33.733Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -18,7 +18,7 @@ msgid "welcome##version_includes##bullet_1"
 msgstr "Soil identification for US locations"
 
 msgid "welcome##version_includes##bullet_2"
-msgstr "Slope and soil data collection"
+msgstr "Slope and soil observations"
 
 msgid "welcome##version_includes##bullet_3"
 msgstr "Site notes"
@@ -231,15 +231,6 @@ msgstr "Site Settings"
 
 msgid "site##dashboard##delete_button"
 msgstr "Delete this site"
-
-msgid "site##dashboard##delete_site_modal##title"
-msgstr "Delete site?"
-
-msgid "site##dashboard##delete_site_modal##body"
-msgstr "This will permanently delete the site {{siteName}} and all of its data. This cannot be undone."
-
-msgid "site##dashboard##delete_site_modal##action_name"
-msgstr "Delete"
 
 msgid "site##dashboard##location_accuracy"
 msgstr "Location Accuracy"
@@ -515,7 +506,7 @@ msgid "projects##none##header"
 msgstr "You don’t have any projects."
 
 msgid "projects##none##info"
-msgstr "Projects let you group sites, set data needs, and manage team members."
+msgstr "Projects let you group sites, set requirements, and manage team members."
 
 msgid "projects##learn_more"
 msgstr "Learn more about using projects"
@@ -678,9 +669,9 @@ msgstr "Delete project?"
 
 msgid "projects##settings##delete_description"
 msgstr ""
-"This will permanently delete the project and its sites’ data. This can’t be undone.\n"
+"This will permanently delete the project and its sites’ observations. This cannot be undone.\n"
 "\n"
-"Project managers have the option to transfer sites from this project to keep site data."
+"Project managers have the option to transfer sites from this project to keep site observations."
 
 msgid "projects##sites##empty_viewer"
 msgstr "This project has no sites yet."
@@ -714,7 +705,7 @@ msgstr "Delete site?"
 
 msgid "projects##sites##delete_site_modal##body"
 msgstr ""
-"This will permanently delete the site {{siteName}} and all of its data. This cannot be undone.\n"
+"This will permanently delete the site {{siteName}} and all of its observations. This cannot be undone.\n"
 "\n"
 "Project managers can remove the site from this project to retain its data."
 
@@ -725,7 +716,7 @@ msgid "projects##sites##remove_site_modal##title"
 msgstr "Remove site from project?"
 
 msgid "projects##sites##remove_site_modal##body"
-msgstr "Only you will have access to this site and its data. Other project team members will no longer have access."
+msgstr "Only you will have access to this site. Other project team members will no longer have access."
 
 msgid "projects##sites##remove_site_modal##action_name"
 msgstr "Remove Site"
@@ -735,9 +726,9 @@ msgstr "Transfer sites?"
 
 msgid "projects##sites##transfer_site_modal##body"
 msgstr ""
-"Transferred sites will use the data settings and team member roles from this project.\n"
+"Transferred sites will use the inputs, settings and team member roles from this project.\n"
 "\n"
-"If sites have data entered at different depths than what is specified in this project, that data will be deleted. This can’t be undone."
+"If sites have observations entered at different depths than what is specified in this project, rhose observations will be deleted. This cannot be undone."
 
 msgid "projects##sites##transfer_site_modal##action_name"
 msgstr "Transfer"
@@ -785,22 +776,22 @@ msgid "projects##manage_member##manager_help"
 msgstr "Can view and edit all aspects of the project and its affiliated sites"
 
 msgid "projects##manage_member##contributor_help"
-msgstr "Can view, add, and edit site data"
+msgstr "Can view site data, and add and edit observations"
 
 msgid "projects##manage_member##viewer_help"
-msgstr "Can view site data"
+msgstr "Can view site data and observations"
 
 msgid "projects##manage_member##remove"
 msgstr "Remove from project"
 
 msgid "projects##manage_member##remove_help"
-msgstr "Remove the team member’s access to this project, retaining any data contributed to sites"
+msgstr "Remove the team member’s access to this project, retaining any observations contributed to sites"
 
 msgid "projects##manage_member##confirm_removal_title"
 msgstr "Remove from Project?"
 
 msgid "projects##manage_member##confirm_removal_body"
-msgstr "This will remove the team member from the project, but will retain their contributed site data."
+msgstr "This will remove the team member from the project. Yheir contributed site observations will be retained."
 
 msgid "projects##manage_member##confirm_removal_action"
 msgstr "Remove"
@@ -809,7 +800,7 @@ msgid "projects##transfer_sites##heading"
 msgstr "Transfer Sites to this Project"
 
 msgid "projects##transfer_sites##description"
-msgstr "Transfer LandPKS Soil ID sites you manage to this project. When you transfer sites, they will use the data settings and team member roles from this project."
+msgstr "Transfer LandPKS Soil ID sites you manage to this project. When you transfer sites, they will use the inputs, settings and team member roles from this project."
 
 msgid "projects##transfer_sites##unaffiliated"
 msgstr "Unaffiliated"
@@ -971,7 +962,7 @@ msgid "general##info##privacy_item1"
 msgstr "<bold>Public sites</bold> are visible to anyone on the LandPKS data portal."
 
 msgid "general##info##privacy_item2"
-msgstr "All data entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII)."
+msgstr "All observations entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII)."
 
 msgid "general##info##privacy_item3"
 msgstr "<bold>A private site</bold> not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. "
@@ -1094,7 +1085,7 @@ msgid "delete_account##confirm##p3"
 msgstr "The following won’t be deleted:"
 
 msgid "delete_account##confirm##p4##b0"
-msgstr "data you contributed to a project for which you aren’t the only manager"
+msgstr "observations you contributed to a project for which you aren’t the only manager"
 
 msgid "delete_account##confirm##p4##b1"
 msgstr "your Terraso account (including groups, landscapes, and story maps)"
@@ -1223,10 +1214,13 @@ msgid "soil##project_settings##pit_required_label"
 msgstr "Soil pit required"
 
 msgid "soil##project_settings##required_data_title"
-msgstr "Data Collection Requirements"
+msgstr "Observation Requirements"
 
 msgid "soil##required_method"
 msgstr "{{method}} (required)"
+
+msgid "soil##collection_method_summary##soilTexture"
+msgstr "Texture Class"
 
 msgid "soil##collection_method##slope"
 msgstr "Slope and Landscape"
@@ -1280,10 +1274,22 @@ msgid "soil##collection_method_description##soilTexture"
 msgstr "Includes texture class and rock fragment volume"
 
 msgid "soil##vertical_cracking##description"
+msgstr "Surface cracks develop in clay-rich soils after they dry out."
+
+msgid "soil##vertical_cracking##no_cracks"
 msgstr ""
-"Vertical cracks may appear on the soil surface when some soils experience changes in moisture or temperature. The cracks may be permanent, or they may disappear after some time.\n"
-"\n"
-"Vertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks."
+"<bold>No Cracks</bold>\n"
+"No cracks are visible on the soil surface."
+
+msgid "soil##vertical_cracking##surface_cracks"
+msgstr ""
+"<bold>Surface Cracks</bold>\n"
+"Surface cracks are less than $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep."
+
+msgid "soil##vertical_cracking##deep_vertical_cracks"
+msgstr ""
+"<bold>Deep Vertical Cracks</bold>\n"
+"Deep vertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks."
 
 msgid "soil##vertical_cracking##description_width_METRIC"
 msgstr "5 mm"
@@ -1370,7 +1376,7 @@ msgid "soil##depth##update_modal##title"
 msgstr "Change depth?"
 
 msgid "soil##depth##update_modal##body"
-msgstr "Data that has been entered at this depth will be deleted. This action cannot be undone."
+msgstr "Soil pit observations that has been entered at this depth will be deleted. This action cannot be undone."
 
 msgid "soil##depth##update_modal##action"
 msgstr "Change"
@@ -1379,7 +1385,7 @@ msgid "soil##depth##delete_modal##title"
 msgstr "Delete depth?"
 
 msgid "soil##depth##delete_modal##body"
-msgstr "Data that has been entered at this depth will be deleted. This action cannot be undone."
+msgstr "Observations that have been entered at this depth will be deleted. This action cannot be undone."
 
 msgid "soil##depth##delete_modal##action"
 msgstr "Delete"
@@ -1409,18 +1415,18 @@ msgid "soil##texture##label"
 msgstr "Texture Class"
 
 msgid "soil##texture##info##title"
-msgstr "Soil Texture"
+msgstr "Texture Class"
 
 msgid "soil##texture##info##description"
 msgstr ""
-"Soil is made up of particles of different sizes. Once you remove all large particles (anything over $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter), what is left is a mixture of sand, silt, and clay.\n"
+"Soil is made up of particles of different sizes. Once you remove all rock fragments (anything over $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) in diameter), what is left is a mixture of sand, silt, and clay.\n"
 "\n"
-"<bold>Soil texture</bold> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.\n"
+"<bold>Texture class</bold> is determined by the percent of sand, silt, and clay in the soil. Changes in this ratio can have large impacts on the potential of the soil.\n"
 "\n"
 "Soil texture determines many important characteristics of your land, including:"
 
 msgid "soil##texture##info##description_end"
-msgstr "Knowing the soil texture also helps you more accurately identify your soil."
+msgstr "Knowing the soil texture helps you more accurately identify your soil."
 
 msgid "soil##texture##info##description_diameter_METRIC"
 msgstr "2mm"
@@ -1459,7 +1465,7 @@ msgid "soil##texture##guide##result"
 msgstr "Soil Texture: {{result}}"
 
 msgid "soil##texture##guide##use_label"
-msgstr "Use This Texture"
+msgstr "Use This Texture Class"
 
 msgid "soil##texture##guide##ribbon_length##SM"
 msgstr "<2.5cm"
@@ -1549,7 +1555,7 @@ msgid "soil##texture##guide##grittyness_details_3"
 msgstr "<0>Not gritty or smooth</0> means that neither of those two textures dominates. You may still feel some sand grains or some soapiness, but the feel of the soil is not predominantly one or the other."
 
 msgid "soil##texture##guide_intro"
-msgstr "Don’t know your soil texture? Use the step-by-step guide."
+msgstr "Don’t know the texture class? Use the step-by-step guide."
 
 msgid "soil##texture##use_guide_label"
 msgstr "Use Guide"

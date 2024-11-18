@@ -61,11 +61,6 @@
             "archive_button_help_text": "Marcar este sitio como sólo lectura",
             "settings_title": "Configuraciones del sitio",
             "delete_button": "Eliminar este sitio",
-            "delete_site_modal": {
-                "title": "¿Eliminar sitio?",
-                "body": "Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer.",
-                "action_name": "Eliminar"
-            },
             "location_accuracy": "Precisión de ubicación",
             "default_title": "Marcador temporario",
             "speed_dial": {

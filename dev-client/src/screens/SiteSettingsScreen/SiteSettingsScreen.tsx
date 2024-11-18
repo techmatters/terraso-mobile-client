@@ -81,11 +81,11 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
               onPress={onOpen}
             />
           )}
-          title={t('site.dashboard.delete_site_modal.title')}
-          body={t('site.dashboard.delete_site_modal.body', {
+          title={t('project.sites.delete_site_modal.title')}
+          body={t('project.sites.delete_site_modal.body', {
             siteName: site.name,
           })}
-          actionName={t('site.dashboard.delete_site_modal.action_name')}
+          actionName={t('project.sites.delete_site_modal.action_name')}
           handleConfirm={onDelete}
         />
       </Column>
