@@ -23,7 +23,7 @@ import {Button, ScrollView} from 'native-base';
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
@@ -98,7 +98,11 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           <InfoSheet
             heading={<TranslatedHeading i18nKey="soil.soil_preset.header" />}
             trigger={onOpen => (
-              <IconButton type="md" name="tune" onPress={onOpen} />
+              <TextButton
+                label={t('soil.soil_preset.label')}
+                rightIcon="expand-more"
+                onPress={onOpen}
+              />
             )}>
             <EditSiteSoilDepthPreset
               selected={soilData.depthIntervalPreset}
