@@ -28,7 +28,7 @@ export type TextButtonType = 'default' | 'error';
 export type TextButtonProps = {
   label: string;
   type?: TextButtonType;
-  role: AccessibilityProps['role'];
+  role?: AccessibilityProps['role'];
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
@@ -38,7 +38,7 @@ export type TextButtonProps = {
 export const TextButton = ({
   label,
   type = 'default',
-  role,
+  role = 'button',
   leftIcon,
   rightIcon,
   disabled,
