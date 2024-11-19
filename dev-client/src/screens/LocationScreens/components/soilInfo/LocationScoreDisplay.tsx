@@ -78,7 +78,7 @@ export function LocationScoreDisplay({
                 : 'site.soil_id.soil_info.outside_map_label'
             }
             values={{
-              distance: match.distanceToNearestMapUnitM,
+              distance: match.distanceToNearestMapUnitM?.toFixed(0),
               units: t('site.soil_id.soil_info.map_units_METRIC'),
             }}
           />
