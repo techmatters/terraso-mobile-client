@@ -19,9 +19,12 @@ import {useTranslation} from 'react-i18next';
 
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {SignOutModal} from 'terraso-mobile-client/components/modals/SignOutModal';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 
 export function SignOutItem() {
   const {t} = useTranslation();
+
+  const isDisabled = useIsOffline();
 
   return (
     <SignOutModal
@@ -31,6 +34,7 @@ export function SignOutItem() {
           uppercase
           icon="logout"
           label={t('settings.sign_out')}
+          disabled={isDisabled}
           onPress={onOpen}
         />
       )}
