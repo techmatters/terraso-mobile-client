@@ -32,7 +32,7 @@ export function DeleteAccountItem() {
     [navigation],
   );
 
-  const isDisabled = useIsOffline() === true || isPending;
+  const isDisabled = useIsOffline() || isPending;
 
   return (
     <MenuItem

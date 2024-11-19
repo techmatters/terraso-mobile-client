@@ -22,5 +22,9 @@ import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/Co
 export const useIsOffline = () => {
   const context = useContext(ConnectivityContext);
 
+  // if we aren't sure yet whether we are on or offline, conservatively assume we are offline
+  if (context.isOffline === null) {
+    return true;
+  }
   return context.isOffline;
 };

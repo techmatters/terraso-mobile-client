@@ -24,7 +24,7 @@ import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 export function SignOutItem() {
   const {t} = useTranslation();
 
-  const isDisabled = useIsOffline() === true;
+  const isDisabled = useIsOffline();
 
   return (
     <SignOutModal
