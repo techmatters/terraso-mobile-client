@@ -58,6 +58,9 @@ import {
   loadPersistedReduxState,
   patchPersistedReduxState,
 } from 'terraso-mobile-client/store/persistence';
+import {PullContextProvider} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
+import {PullDispatcher} from 'terraso-mobile-client/store/sync/PullDispatcher';
+import {PullRequester} from 'terraso-mobile-client/store/sync/PullRequester';
 import {PushDispatcher} from 'terraso-mobile-client/store/sync/PushDispatcher';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
@@ -136,6 +139,10 @@ function App(): React.JSX.Element {
                             <ForegroundPermissionsProvider>
                               <RestrictByFlag flag="FF_offline">
                                 <PushDispatcher />
+                                <PullContextProvider>
+                                  <PullRequester />
+                                  <PullDispatcher />
+                                </PullContextProvider>
                               </RestrictByFlag>
                               <RootNavigator />
                             </ForegroundPermissionsProvider>
