@@ -19,6 +19,8 @@ import {memo} from 'react';
 
 import {IPopoverProps, Popover} from 'native-base';
 
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
 type TooltipProps = React.PropsWithChildren<{
   trigger: IPopoverProps['trigger'];
 }>;
@@ -26,15 +28,12 @@ type TooltipProps = React.PropsWithChildren<{
 export const Tooltip = memo(({trigger, children}: TooltipProps) => {
   return (
     <Popover trigger={trigger}>
-      <Popover.Content bg="grey.800" p="0px" shadow="0">
-        <Popover.Arrow bg="grey.800" shadow="0" />
-        <Popover.Body
-          bg="grey.800"
-          px="8px"
-          py="4px"
-          shadow="0"
-          _text={{color: 'primary.contrast', fontSize: '16px'}}>
-          {children}
+      <Popover.Content borderWidth="0px" borderRadius="4px">
+        <Popover.Arrow bg="grey.900" borderColor="grey.900" />
+        <Popover.Body bg="grey.900" px="8px" py="4px">
+          <Text color="primary.contrast" variant="tooltip-label">
+            {children}
+          </Text>
         </Popover.Body>
       </Popover.Content>
     </Popover>
