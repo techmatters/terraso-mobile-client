@@ -25,6 +25,7 @@ import {
   PullContextProvider,
   usePullRequested,
 } from 'terraso-mobile-client/store/sync/hooks/SyncContext';
+import * as SyncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {PullRequester} from 'terraso-mobile-client/store/sync/PullRequester';
 
 /* 
@@ -40,12 +41,12 @@ import {PullRequester} from 'terraso-mobile-client/store/sync/PullRequester';
     - 
 */
 
-jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
-  return {
-    useDebouncedIsOffline: jest.fn(),
-    useIsLoggedIn: jest.fn(),
-  };
-});
+// jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
+//   return {
+//     useDebouncedIsOffline: jest.fn(),
+//     useIsLoggedIn: jest.fn(),
+//   };
+// });
 
 // Allows test to inspect the state with: screen.getByTestId('pullRequestedState')
 // and set the state with: fireEvent.press(screen.getByText('setPullRequestedFalse'))
@@ -66,27 +67,67 @@ const ExposePullRequestedForTest = () => {
   );
 };
 
-describe('PullRequester', () => {
-  beforeEach(() => {});
+type RenderedScreen = ReturnType<typeof render>;
+const setPullRequestedFalse = (screen: RenderedScreen) => {
+  fireEvent.press(screen.getByText('setPullRequestedFalse'));
+};
+const getPullRequestedText = (screen: RenderedScreen) => {
+  return screen.getByTestId('pullRequestedState');
+};
+const renderTestComponents = () => {
+  return render(
+    <PullContextProvider>
+      <PullRequester />
+      <ExposePullRequestedForTest />
+    </PullContextProvider>,
+  );
+};
+const rerenderTestComponents = (screen: RenderedScreen) => {
+  screen.rerender(
+    <PullContextProvider>
+      <PullRequester />
+      <ExposePullRequestedForTest />
+    </PullContextProvider>,
+  );
+};
 
+describe('PullRequester', () => {
   test('requests pull on first mount', () => {
-    const screen = render(
-      <PullContextProvider>
-        <PullRequester />
-        <ExposePullRequestedForTest />
-      </PullContextProvider>,
-    );
+    const screen = renderTestComponents();
     expect(screen.getByTestId('pullRequestedState')).toHaveTextContent('true');
   });
 
   test('does not request pull immediately after pull is set to false', () => {
-    const screen = render(
-      <PullContextProvider>
-        <PullRequester />
-        <ExposePullRequestedForTest />
-      </PullContextProvider>,
-    );
-    fireEvent.press(screen.getByText('setPullRequestedFalse'));
-    expect(screen.getByTestId('pullRequestedState')).toHaveTextContent('false');
+    const screen = renderTestComponents();
+    setPullRequestedFalse(screen);
+    expect(getPullRequestedText(screen)).toHaveTextContent('false');
   });
 });
+
+describe('PullRequester + isOffline', () => {
+  const offlineSpy = jest.spyOn(SyncHooks, 'useDebouncedIsOffline');
+  beforeEach(() => {
+    offlineSpy.mockClear();
+  });
+  test('requests pull when coming online from offline', () => {
+    offlineSpy.mockClear().mockReturnValue(true);
+    const screen = renderTestComponents();
+    setPullRequestedFalse(screen);
+    offlineSpy.mockClear().mockReturnValue(false);
+    rerenderTestComponents(screen);
+    expect(getPullRequestedText(screen)).toHaveTextContent('true');
+  });
+
+  test('does not request pull when going offline from online', () => {
+    offlineSpy.mockClear().mockReturnValue(false);
+    const screen = renderTestComponents();
+    setPullRequestedFalse(screen);
+    offlineSpy.mockClear().mockReturnValue(true);
+    rerenderTestComponents(screen);
+    expect(getPullRequestedText(screen)).toHaveTextContent('false');
+  });
+});
+
+describe('PullRequester + sitesWithErrors', () => {});
+
+describe('PullRequester + interval', () => {});
