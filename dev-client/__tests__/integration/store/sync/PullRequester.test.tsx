@@ -15,14 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useContext} from 'react';
+import {Button} from 'react-native';
 
+import {fireEvent} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   PullContextProvider,
-  PullRequestedContext,
+  usePullRequested,
 } from 'terraso-mobile-client/store/sync/hooks/SyncContext';
 import {PullRequester} from 'terraso-mobile-client/store/sync/PullRequester';
 
@@ -46,23 +47,46 @@ jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
   };
 });
 
-const StateTestComponent = () => {
-  const context = useContext(PullRequestedContext);
+// Allows test to inspect the state with: screen.getByTestId('pullRequestedState')
+// and set the state with: fireEvent.press(screen.getByText('setPullRequestedFalse'))
+const ExposePullRequestedForTest = () => {
+  const {pullRequested, setPullRequested} = usePullRequested();
   return (
-    <Text testID="stateTestComponent">{context.pullRequested.toString()}</Text>
+    <>
+      <Button
+        title="setPullRequestedFalse"
+        onPress={() => setPullRequested(false)}
+      />
+      <Button
+        title="setPullRequestedTrue"
+        onPress={() => setPullRequested(true)}
+      />
+      <Text testID="pullRequestedState">{pullRequested.toString()}</Text>
+    </>
   );
 };
 
 describe('PullRequester', () => {
   beforeEach(() => {});
 
-  test('requests pull on first mount', async () => {
+  test('requests pull on first mount', () => {
     const screen = render(
       <PullContextProvider>
         <PullRequester />
-        <StateTestComponent />
+        <ExposePullRequestedForTest />
       </PullContextProvider>,
     );
-    expect(screen.getByTestId('stateTestComponent')).toHaveTextContent('true');
+    expect(screen.getByTestId('pullRequestedState')).toHaveTextContent('true');
+  });
+
+  test('does not request pull immediately after pull is set to false', () => {
+    const screen = render(
+      <PullContextProvider>
+        <PullRequester />
+        <ExposePullRequestedForTest />
+      </PullContextProvider>,
+    );
+    fireEvent.press(screen.getByText('setPullRequestedFalse'));
+    expect(screen.getByTestId('pullRequestedState')).toHaveTextContent('false');
   });
 });

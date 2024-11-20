@@ -31,6 +31,16 @@ export const OFFLINE_DEBOUNCE_MS = 500;
 export const PullRequester = () => {
   const {setPullRequested} = useContext(PullRequestedContext);
 
+  // Request a pull when app starts
+  useEffect(() => {
+    // TODO-cknipe: Remove all the console.logs
+    console.log(
+      'Requesting pull on app start -- hopefully this only happens once??',
+    );
+
+    setPullRequested(true);
+  }, [setPullRequested]);
+
   // Request a pull when we come online
   const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
   const wasPreviouslyOffline = useRef<boolean>(
@@ -53,16 +63,6 @@ export const PullRequester = () => {
       setPullRequested(true);
     }
   }, [sitesWithErrors, setPullRequested]);
-
-  // Request a pull when app starts
-  useEffect(() => {
-    // TODO-cknipe: Remove all the console.logs
-    console.log(
-      'Requesting pull on app start -- hopefully this only happens once??',
-    );
-
-    setPullRequested(true);
-  }, [setPullRequested]);
 
   // Request a pull at regular intervals
   // FYI intervals just keep running even if app in background or if a pull errors, etc.
