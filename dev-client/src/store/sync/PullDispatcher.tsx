@@ -41,12 +41,23 @@ import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequeste
  */
 export const PullDispatcher = () => {
   const {pullRequested} = usePullRequested();
-  const pullAllowed = usePullAllowed();
+
+  // Determine whether the user is logged in before doing anything.
+  const isLoggedIn = useIsLoggedIn();
+  // Debounce offline state so we know when it's safe to attempt a pull.
+  const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
+  // Don't pull when there are changes yet to push.
+  const unsyncedSiteIds = useSelector(selectUnsyncedSiteIds);
+  // Don't bother pulling when app is not in foreground
+  const appInForeground = AppState.currentState === 'active'; //TODO: make a hook for this so you can mock it out
+
+  const pullAllowed =
+    isLoggedIn && !isOffline && unsyncedSiteIds.length === 0 && appInForeground;
 
   // Set up a callback for the dispatcher to use when it determines a pull is needed.
   const dispatchPull = usePullDispatch();
 
-  // TODO-cknipe: REmove this
+  // TODO-cknipe: Remove this
   console.log('PULL Requested:', pullRequested, ' |  Allowed:', pullAllowed);
 
   useEffect(() => {
@@ -58,20 +69,7 @@ export const PullDispatcher = () => {
   return <></>;
 };
 
-export const usePullAllowed = () => {
-  // Determine whether the user is logged in before doing anything.
-  const isLoggedIn = useIsLoggedIn();
-  // Debounce offline state so we know when it's safe to attempt a pull.
-  const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
-  // Don't pull when there are changes yet to push.
-  const unsyncedSiteIds = useSelector(selectUnsyncedSiteIds);
-  // Don't bother pulling when app is not in foreground
-  const appInForeground = AppState.currentState === 'active'; //TODO: make a hook for this so you can mock it out
-
-  return (
-    isLoggedIn && !isOffline && unsyncedSiteIds.length === 0 && appInForeground
-  );
-};
+export const usePullAllowed = () => {};
 
 export const usePullDispatch = () => {
   const dispatch = useDispatch();
