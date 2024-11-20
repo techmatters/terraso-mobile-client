@@ -20,7 +20,6 @@ import {mhvcToLab} from 'munsell';
 import {
   DataBasedSoilMatch,
   LabColorInput,
-  LocationBasedSoilMatch,
   Maybe,
   SoilIdInputData,
   SoilIdInputDepthDependentData,
@@ -159,10 +158,15 @@ export const soilIdEntryForStatus = (status: SoilIdStatus): SoilIdEntry => {
 };
 
 export const soilIdEntryLocationBased = (
-  matches: LocationBasedSoilMatch[],
+  matches: DataBasedSoilMatch[],
 ): SoilIdEntry => {
   return {
-    locationBasedMatches: matches,
+    locationBasedMatches: matches.map(
+      ({dataMatch: _, locationMatch: __, combinedMatch, ...rest}) => ({
+        ...rest,
+        match: combinedMatch,
+      }),
+    ),
     status: 'ready',
   };
 };

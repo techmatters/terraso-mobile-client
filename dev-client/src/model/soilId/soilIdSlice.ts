@@ -17,7 +17,11 @@
 
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
 
-import {SoilDataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  DataBasedSoilMatchesQuery,
+  SoilDataPushFailureReason,
+  SoilIdInputData,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import * as soilIdService from 'terraso-client-shared/soilId/soilIdService';
 import {
@@ -30,6 +34,7 @@ import {
   SoilIdKey,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
+import {Coords} from 'terraso-client-shared/types';
 
 import * as soilDataActions from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
 import {
@@ -270,14 +275,19 @@ export const deleteProjectDepthInterval = createAsyncThunk(
   soilDataService.deleteProjectDepthInterval,
 );
 
-export const fetchLocationBasedSoilMatches = createAsyncThunk(
-  'soilId/fetchLocationBasedSoilMatches',
-  soilIdService.fetchLocationBasedSoilMatches,
+export const fetchLocationBasedSoilMatches = createAsyncThunk<
+  DataBasedSoilMatchesQuery['soilId']['dataBasedSoilMatches'],
+  Coords
+>('soilId/fetchLocationBasedSoilMatches', coords =>
+  soilIdService.fetchDataBasedSoilMatches({
+    coords,
+    soilData: {depthDependentData: []},
+  }),
 );
 
-export const fetchDataBasedSoilMatches = createAsyncThunk(
-  'soilId/fetchDataBasedSoilMatches',
-  soilIdService.fetchDataBasedSoilMatches,
-);
+export const fetchDataBasedSoilMatches = createAsyncThunk<
+  DataBasedSoilMatchesQuery['soilId']['dataBasedSoilMatches'],
+  {coords: Coords; soilData: SoilIdInputData; siteId?: string}
+>('soilId/fetchDataBasedSoilMatches', soilIdService.fetchDataBasedSoilMatches);
 
 export default soilIdSlice.reducer;
