@@ -350,7 +350,7 @@
             "remove": "Remove from project",
             "remove_help": "Remove the team member’s access to this project, retaining any observations contributed to sites",
             "confirm_removal_title": "Remove from Project?",
-            "confirm_removal_body": "This will remove the team member from the project. Yheir contributed site observations will be retained.",
+            "confirm_removal_body": "This will remove the team member from the project. Their contributed site observations will be retained.",
             "confirm_removal_action": "Remove"
         },
         "transfer_sites": {
