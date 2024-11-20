@@ -265,7 +265,7 @@
                 },
                 "confirm_preset": {
                     "title": "Change depths?",
-                    "body": "Soil pit data that has been entered will be deleted. This action cannot be undone.",
+                    "body": "Soil pit observations that have been entered will be deleted. This action cannot be undone.",
                     "confirm": "Change"
                 },
                 "label": "Label",
@@ -320,7 +320,7 @@
             },
             "transfer_site_modal": {
                 "title": "Transfer sites?",
-                "body": "Transferred sites will use the inputs, settings and team member roles from this project.\n\nIf sites have observations entered at different depths than what is specified in this project, rhose observations will be deleted. This cannot be undone.",
+                "body": "Transferred sites will use the inputs, settings and team member roles from this project.\n\nIf sites have observations entered at different depths than what is specified in this project, those observations will be deleted. This cannot be undone.",
                 "action_name": "Transfer"
             },
             "search": {
@@ -350,7 +350,7 @@
             "remove": "Remove from project",
             "remove_help": "Remove the team member’s access to this project, retaining any observations contributed to sites",
             "confirm_removal_title": "Remove from Project?",
-            "confirm_removal_body": "This will remove the team member from the project. Yheir contributed site observations will be retained.",
+            "confirm_removal_body": "This will remove the team member from the project. Their contributed site observations will be retained.",
             "confirm_removal_action": "Remove"
         },
         "transfer_sites": {
