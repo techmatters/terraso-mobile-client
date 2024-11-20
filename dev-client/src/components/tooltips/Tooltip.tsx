@@ -28,7 +28,11 @@ type TooltipProps = React.PropsWithChildren<{
 export const Tooltip = memo(({trigger, children}: TooltipProps) => {
   return (
     <Popover trigger={trigger}>
-      <Popover.Content borderWidth="0px" borderRadius="4px">
+      <Popover.Content
+        borderWidth="0px"
+        borderRadius="4px"
+        mx="16px"
+        maxWidth="328px">
         <Popover.Arrow bg="grey.900" borderColor="grey.900" />
         <Popover.Body bg="grey.900" px="8px" py="4px">
           <Text color="primary.contrast" variant="tooltip-label">
