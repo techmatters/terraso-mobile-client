@@ -16,8 +16,8 @@
  */
 
 import {useCallback, useEffect} from 'react';
-import {AppState} from 'react-native';
 
+import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -49,10 +49,13 @@ export const PullDispatcher = () => {
   // Don't pull when there are changes yet to push.
   const unsyncedSiteIds = useSelector(selectUnsyncedSiteIds);
   // Don't bother pulling when app is not in foreground
-  const appInForeground = AppState.currentState === 'active'; //TODO: make a hook for this so you can mock it out
+  const appState = useAppState();
 
   const pullAllowed =
-    isLoggedIn && !isOffline && unsyncedSiteIds.length === 0 && appInForeground;
+    isLoggedIn &&
+    !isOffline &&
+    unsyncedSiteIds.length === 0 &&
+    appState === 'active';
 
   // Set up a callback for the dispatcher to use when it determines a pull is needed.
   const dispatchPull = usePullDispatch();
