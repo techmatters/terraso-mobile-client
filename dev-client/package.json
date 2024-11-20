@@ -76,7 +76,7 @@
     "react-native-paper": "^5.12.5",
     "react-native-reanimated": "^3.16.2",
     "react-native-safe-area-context": "^4.14.0",
-    "react-native-screens": "^4.2.0",
+    "react-native-screens": "^4.1.0",
     "react-native-svg": "^15.9.0",
     "react-native-tab-view": "^4.0.2",
     "reduce-reducers": "^1.0.4",
