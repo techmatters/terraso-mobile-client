@@ -37,7 +37,9 @@ export const fetchLocationBasedSoilMatchesThunk = async (
 ) => fetchLocationBasedSoilMatches(coords);
 
 export const fetchLocationBasedSoilMatches = async (coords: Coords) => {
-  const result = await soilIdService.fetchLocationBasedSoilMatches(coords);
+  const result = await soilIdService.fetchDataBasedSoilMatches(coords, {
+    depthDependentData: [],
+  });
 
   if (result.__typename === 'SoilIdFailure') {
     return locationEntryForStatus(coords, result.reason);
