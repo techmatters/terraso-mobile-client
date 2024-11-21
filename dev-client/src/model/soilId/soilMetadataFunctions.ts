@@ -18,15 +18,14 @@
 import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
 export const getMatchSelectionId = (match: DataBasedSoilMatch) => {
-  /* TODO is this actually a unique id?? */
   return match.soilInfo.soilSeries.name;
 };
 
 export const findSelectedMatch = (
   matches: DataBasedSoilMatch[],
-  selectedSoilId?: string,
+  selectedSoilId: string | undefined | null,
 ): DataBasedSoilMatch | undefined => {
-  if (selectedSoilId === undefined) {
+  if (selectedSoilId === undefined || selectedSoilId === null) {
     return undefined;
   }
   return matches.find(match => selectedSoilId === getMatchSelectionId(match));
