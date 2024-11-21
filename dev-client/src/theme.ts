@@ -423,6 +423,11 @@ export const theme = extendTheme({
           adjustsFontSizeToFit: true,
           numberOfLines: 1,
         },
+        'match-tile-selected': {
+          fontWeight: 700,
+          fontSize: '16px',
+          lineHeight: '24px',
+        },
         'chip-text': {
           fontWeight: 400,
           fontSize: '13px',

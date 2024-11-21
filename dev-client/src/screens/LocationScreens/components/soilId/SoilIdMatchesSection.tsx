@@ -96,7 +96,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
             }
             trigger={onOpen => (
               <SoilMatchTile
-                soil_name={dataMatch.soilInfo.soilSeries.name}
+                soilName={dataMatch.soilInfo.soilSeries.name}
                 score={dataMatch.combinedMatch.score}
                 onPress={onOpen}
               />
@@ -121,7 +121,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
             }
             trigger={onOpen => (
               <SoilMatchTile
-                soil_name={locationMatch.soilInfo.soilSeries.name}
+                soilName={locationMatch.soilInfo.soilSeries.name}
                 score={locationMatch.match.score}
                 onPress={onOpen}
               />
