@@ -29,6 +29,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {
@@ -100,7 +101,13 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
                 onPress={onOpen}
               />
             )}>
-            <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
+            <SiteRoleContextProvider siteId={siteId}>
+              <SiteScoreInfoContent
+                dataMatch={dataMatch}
+                siteId={siteId}
+                coords={coords}
+              />
+            </SiteRoleContextProvider>
           </InfoSheet>
         ));
       } else {

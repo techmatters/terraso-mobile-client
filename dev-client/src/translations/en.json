@@ -121,7 +121,8 @@
                 "native_lands_link": "nativeland.info",
                 "native_lands_url": "https://nativeland.info/",
                 "offline_title": "You are offline",
-                "offline_body": "Soil matches will update here when you are online."
+                "offline_body": "Soil matches will update here when you are online.",
+                "selector": "This is the correct soil"
             },
             "site_data": {
                 "title": "Site Data",
