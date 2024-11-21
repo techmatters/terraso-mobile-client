@@ -108,9 +108,7 @@ export const CreateSiteForm = ({
                 {t('site.create.add_to_project_label')}
                 <HelpContentSpacer />
                 <HelpButton>
-                  <Text color="primary.contrast" variant="body1">
-                    {t('site.create.add_to_project_tooltip')}
-                  </Text>
+                  {t('site.create.add_to_project_tooltip')}
                 </HelpButton>
               </FormLabel>
               <ProjectSelect
