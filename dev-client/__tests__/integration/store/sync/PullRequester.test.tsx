@@ -21,12 +21,16 @@ import {fireEvent} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {AppState} from 'terraso-mobile-client/store';
 import {
   PullContextProvider,
   usePullRequested,
 } from 'terraso-mobile-client/store/sync/hooks/SyncContext';
 import * as SyncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
-import {PullRequester} from 'terraso-mobile-client/store/sync/PullRequester';
+import {
+  PULL_INTERVAL_MS,
+  PullRequester,
+} from 'terraso-mobile-client/store/sync/PullRequester';
 
 /* 
     Render PullRequester
@@ -70,16 +74,19 @@ const ExposePullRequestedForTest = () => {
 type RenderedScreen = ReturnType<typeof render>;
 const setPullRequestedFalse = (screen: RenderedScreen) => {
   fireEvent.press(screen.getByText('setPullRequestedFalse'));
+  console.log('Clearing pullRequested');
 };
 const getPullRequestedText = (screen: RenderedScreen) => {
   return screen.getByTestId('pullRequestedState');
 };
-const renderTestComponents = () => {
+
+const renderTestComponents = (initialState?: Partial<AppState>) => {
   return render(
     <PullContextProvider>
       <PullRequester />
       <ExposePullRequestedForTest />
     </PullContextProvider>,
+    {initialState: initialState},
   );
 };
 const rerenderTestComponents = (screen: RenderedScreen) => {
@@ -99,7 +106,10 @@ describe('PullRequester', () => {
 
   test('does not request pull immediately after pull is set to false', () => {
     const screen = renderTestComponents();
+    // All the following tests should set pullRequested to false after first render
+    // as first render will always set it to true
     setPullRequestedFalse(screen);
+    rerenderTestComponents(screen);
     expect(getPullRequestedText(screen)).toHaveTextContent('false');
   });
 });
@@ -126,8 +136,92 @@ describe('PullRequester + isOffline', () => {
     rerenderTestComponents(screen);
     expect(getPullRequestedText(screen)).toHaveTextContent('false');
   });
+
+  test('does not request pull when consistently online', () => {
+    offlineSpy.mockClear().mockReturnValue(false);
+    const screen = renderTestComponents();
+    setPullRequestedFalse(screen);
+    rerenderTestComponents(screen);
+    expect(getPullRequestedText(screen)).toHaveTextContent('false');
+  });
 });
 
-describe('PullRequester + sitesWithErrors', () => {});
+// TODO-cknipe: Figure this out
 
-describe('PullRequester + interval', () => {});
+// const exampleSoilSyncEntry = {
+//   lastSyncedData: {
+//     bedrock: null,
+//     crossSlope: null,
+//     depthDependentData: [],
+//     depthIntervalPreset: 'NRCS' as SoilIdSoilDataDepthIntervalPresetChoices,
+//     depthIntervals: [],
+//     downSlope: null,
+//     floodingSelect: null,
+//     grazingSelect: null,
+//     landCoverSelect: null,
+//     limeRequirementsSelect: null,
+//     slopeAspect: null,
+//     slopeLandscapePosition: null,
+//     slopeSteepnessDegree: null,
+//     slopeSteepnessPercent: null,
+//     slopeSteepnessSelect: null,
+//     soilDepthSelect: null,
+//     surfaceCracksSelect: null,
+//     surfaceSaltSelect: null,
+//     surfaceStoninessSelect: null,
+//     waterTableDepthSelect: null,
+//   },
+//   lastSyncedError: undefined,
+//   lastSyncedRevisionId: 1,
+//   revisionId: 1,
+// };
+
+// describe('PullRequester + sitesWithErrors', () => {
+//   test('requests pull when site has error', () => {
+//     // TODO-cknipe: Confirm that the errors in soilId slice will go away after an actual pull
+//     const createTestState = () => {
+//       return {
+//         soilId: {
+//           soilData: {},
+//           projectSettings: {},
+//           status: 'ready' as LoadingState,
+//           matches: {},
+//           soilSync: {
+//             site: exampleSoilSyncEntry,
+//           },
+//         },
+//       } as Partial<AppState>;
+//     };
+//     const screen = renderTestComponents(createTestState());
+//     setPullRequestedFalse(screen);
+//     const updatedTestState = createTestState();
+//     updatedTestState.soilId!.soilSync.site.lastSyncedError =
+//       'NOT_ALLOWED' as SoilDataPushFailureReason;
+//     // TODO-cknipe: How to properly update the redux state so the selector will trigger?
+//     // - Create a redux action in prod to dispatch in test? Seems sketch
+//     // - Figure out how to dispatch redux actions in a test &
+//     //   mock whatever happens in the push dispatch to return new soilSync data
+//     //   Uhhhh dunno how to useDispatch tho: dispatch(pushSoilData(["site"]))
+//     // - ???????
+//     rerenderTestComponents(screen);
+//     expect(getPullRequestedText(screen)).toHaveTextContent('true');
+//   });
+// });
+
+describe('PullRequester + interval', () => {
+  jest.useFakeTimers();
+  test('requests pull after specified amount of time', () => {
+    const screen = renderTestComponents();
+    setPullRequestedFalse(screen);
+    jest.advanceTimersByTime(PULL_INTERVAL_MS + 1);
+    rerenderTestComponents(screen);
+    expect(getPullRequestedText(screen)).toHaveTextContent('true');
+  });
+  test('does not request pull before specified amount of time', () => {
+    const screen = renderTestComponents();
+    setPullRequestedFalse(screen);
+    jest.advanceTimersByTime(PULL_INTERVAL_MS - 1);
+    rerenderTestComponents(screen);
+    expect(getPullRequestedText(screen)).toHaveTextContent('false');
+  });
+});
