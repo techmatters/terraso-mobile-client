@@ -67,6 +67,7 @@ export const theme = extendTheme({
       300: '#E0E0E0',
       700: '#616161',
       800: '#424242',
+      900: '#212121',
     },
     action: {
       active: '#1A202C',
@@ -427,6 +428,11 @@ export const theme = extendTheme({
           fontSize: '13px',
           lineHeight: '18px',
           letterSpacing: '0.16px',
+        },
+        'tooltip-label': {
+          fontSize: '12px',
+          lineHeight: '14px',
+          fontWeight: 500,
         },
       },
     },
