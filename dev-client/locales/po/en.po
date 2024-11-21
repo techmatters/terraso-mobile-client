@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-26T18:14:40.146Z\n"
-"PO-Revision-Date: 2024-11-26T18:14:40.147Z\n"
+"POT-Creation-Date: 2024-11-21T22:46:04.456Z\n"
+"PO-Revision-Date: 2024-11-21T22:46:04.457Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -274,6 +274,9 @@ msgstr ""
 "\n"
 "Create a site here and enter the recommended data to improve accuracy of the match scores."
 
+msgid "site##soil_id##matches##match_score"
+msgstr "{{score}}"
+
 msgid "site##soil_id##matches##match"
 msgstr "match"
 
@@ -303,6 +306,12 @@ msgstr "You are offline"
 
 msgid "site##soil_id##matches##offline_body"
 msgstr "Soil matches will update here when you are online."
+
+msgid "site##soil_id##matches##selector"
+msgstr "This is the correct soil"
+
+msgid "site##soil_id##matches##selected"
+msgstr "Selected Soil"
 
 msgid "site##soil_id##site_data##title"
 msgstr "Site Data"
