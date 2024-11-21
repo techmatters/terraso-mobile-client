@@ -26,7 +26,7 @@ import {
   PullContextProvider,
   usePullRequested,
 } from 'terraso-mobile-client/store/sync/hooks/SyncContext';
-import * as SyncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
+import * as syncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {
   PULL_INTERVAL_MS,
   PullRequester,
@@ -115,7 +115,7 @@ describe('PullRequester', () => {
 });
 
 describe('PullRequester + isOffline', () => {
-  const offlineSpy = jest.spyOn(SyncHooks, 'useDebouncedIsOffline');
+  const offlineSpy = jest.spyOn(syncHooks, 'useDebouncedIsOffline');
   beforeEach(() => {
     offlineSpy.mockClear();
   });
