@@ -21,3 +21,13 @@ export const getMatchSelectionId = (match: DataBasedSoilMatch) => {
   /* TODO is this actually a unique id?? */
   return match.soilInfo.soilSeries.name;
 };
+
+export const findSelectedMatch = (
+  matches: DataBasedSoilMatch[],
+  selectedSoilId?: string,
+): DataBasedSoilMatch | undefined => {
+  if (selectedSoilId === undefined) {
+    return undefined;
+  }
+  return matches.find(match => selectedSoilId === getMatchSelectionId(match));
+};

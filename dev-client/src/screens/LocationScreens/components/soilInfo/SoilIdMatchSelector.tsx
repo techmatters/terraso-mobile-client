@@ -40,6 +40,7 @@ export function SoilIdMatchSelector({siteId, match}: SoilIdMatchSelectorProps) {
     <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
       <View style={styles.container}>
         <CheckBox
+          accessibilityRole="checkbox"
           value={selectedSoilId === matchId}
           onValueChange={value => {
             selectSoilId(value ? matchId : null);

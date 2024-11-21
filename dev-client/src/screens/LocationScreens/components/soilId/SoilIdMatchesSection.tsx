@@ -90,9 +90,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
           <InfoSheet
             key={dataMatch.soilInfo.soilSeries.name}
             heading={
-              <Heading variant="h4">
-                {dataMatch.soilInfo.soilSeries.name}
-              </Heading>
+              <TranslatedHeading i18nKey={dataMatch.soilInfo.soilSeries.name} />
             }
             trigger={onOpen => (
               <SoilMatchTile
