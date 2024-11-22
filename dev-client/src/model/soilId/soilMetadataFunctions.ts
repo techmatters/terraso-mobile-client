@@ -25,7 +25,7 @@ export const findSelectedMatch = (
   matches: DataBasedSoilMatch[],
   selectedSoilId: string | undefined | null,
 ): DataBasedSoilMatch | undefined => {
-  if (selectedSoilId === undefined || selectedSoilId === null) {
+  if (!selectedSoilId) {
     return undefined;
   }
   return matches.find(match => selectedSoilId === getMatchSelectionId(match));
