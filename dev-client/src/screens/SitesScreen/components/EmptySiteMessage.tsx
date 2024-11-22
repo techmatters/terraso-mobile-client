@@ -14,35 +14,51 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {Trans} from 'react-i18next';
 
-import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
+import {StyleSheet} from 'react-native';
+
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const EmptySiteMessage = () => {
   return (
     <View px="17px">
-      <Text variant="body1">
-        <Trans
-          i18nKey="site.empty.info"
-          components={{
-            bold: <Text bold />,
-          }}
-        />
+      <Text bold>
+        <TranslatedParagraph i18nKey="site.empty.info" />
       </Text>
 
-      <BulletList
-        data={[1, 2, 3]}
-        renderItem={i => (
-          <Text variant="body1" color="text.primary">
-            <Trans
-              i18nKey={`site.empty.bullet_${i}`}
-              components={{icon: <LocationIcon />}}
-            />
-          </Text>
-        )}
-      />
+      <View style={styles.view}>
+        <Icon name="tap-and-play" color="text.icon" size={14} pr={5} />
+        <TranslatedParagraph i18nKey="site.empty.map" />
+      </View>
+
+      <View style={styles.view}>
+        <Icon name="my-location" color="text.icon" size={14} pr={5} />
+        <TranslatedParagraph i18nKey="site.empty.icon" />
+      </View>
+
+      <View style={styles.enter}>
+        <Icon name="search" color="text.icon" size={14} pr={5} marginTop={1} />
+        <TranslatedParagraph i18nKey="site.empty.coords" />
+      </View>
+
+      <View style={styles.enter}>
+        <TranslatedParagraph i18nKey="site.empty.summary" />
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  view: {
+    flexDirection: 'row',
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  enter: {
+    flexDirection: 'row',
+    marginTop: 10,
+    alignItems: 'flex-start',
+  },
+});
