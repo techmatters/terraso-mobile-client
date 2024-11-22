@@ -27,9 +27,7 @@ exports[`renders correctly 1`] = `
           {
             "flex": 1,
           },
-          {
-            "backgroundColor": "rgb(242, 242, 242)",
-          },
+          undefined,
         ]
       }
     >
