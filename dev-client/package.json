@@ -78,7 +78,7 @@
     "react-native-safe-area-context": "^4.14.0",
     "react-native-screens": "^4.3.0",
     "react-native-svg": "^15.9.0",
-    "react-native-tab-view": "^4.0.2",
+    "react-native-tab-view": "^4.0.3",
     "reduce-reducers": "^1.0.4",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#cdf2161",
     "use-debounce": "^10.0.4",
