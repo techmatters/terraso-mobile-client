@@ -56,8 +56,7 @@ describe('PullDispatcher', () => {
     'fetchSoilDataForUser',
   );
 
-  // Simulates user being logged in
-  const stateWithUser = {
+  const stateWithLoggedInUser = {
     account: {
       currentUser: {data: {id: 'userid1'}},
     },
@@ -112,7 +111,7 @@ describe('PullDispatcher', () => {
     fetchSoilDataForUserSpy.mockClear();
   });
   test('dispatches pull when all conditions are right', () => {
-    renderTestComponents(stateWithUser);
+    renderTestComponents(stateWithLoggedInUser);
     expect(fetchSoilDataForUserSpy).toHaveBeenCalled();
   });
 
@@ -124,18 +123,18 @@ describe('PullDispatcher', () => {
 
   test('does not dispatch pull when offline', () => {
     useIsOfflineSpy.mockReset().mockReturnValue(true);
-    renderTestComponents(stateWithUser);
+    renderTestComponents(stateWithLoggedInUser);
     expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when there are unsynced site ids yet to push', () => {
-    renderTestComponents({...stateWithUser, ...stateWithUnsyncedSites});
+    renderTestComponents({...stateWithLoggedInUser, ...stateWithUnsyncedSites});
     expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when app is not in foreground', () => {
     useAppStateSpy.mockReset().mockReturnValue('background');
-    renderTestComponents(stateWithUser);
+    renderTestComponents(stateWithLoggedInUser);
     expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
   });
 
@@ -143,7 +142,7 @@ describe('PullDispatcher', () => {
     usePullRequested
       .mockReset()
       .mockReturnValue({pullRequested: false, setPullRequested: () => {}});
-    renderTestComponents(stateWithUser);
+    renderTestComponents(stateWithLoggedInUser);
     expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
   });
 });
