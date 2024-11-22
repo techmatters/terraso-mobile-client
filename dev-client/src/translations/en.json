@@ -35,7 +35,7 @@
         "placeholder": "Search map"
     },
     "site": {
-        "list_title": "Sites List",
+        "list_title": "Create Site",
         "last_updated": "Last Modified: {{date}} by {{name}}",
         "progress": "Progress: {{progress}}",
         "members": "{{members}} Members",
@@ -50,10 +50,11 @@
         "elevation_unknown": "unknown",
         "not_available_offine": "Not available offline",
         "empty": {
-            "info": "You don’t have any sites yet. A site lets you collect and save data, learn more about your land and its potential, and share with others.\n\n<bold>Use the map to create a site.</bold> There are three ways to use the map to find a location for a site:\n",
-            "bullet_1": "Tap the map to drop a pin and get more information about that location.",
-            "bullet_2": "Tap the location icon <icon/> to find your current GPS location.",
-            "bullet_3": "Enter coordinates, address, or other search term in the search bar."
+            "info": "<bold>Three ways to create a site site:</bold>\n",
+            "map": "Tap anywhere on the map.",
+            "icon": "Tap the My Location icon.",
+            "coords": "Enter coordinates, address, or search term in the map search bar",
+            "summary": "A site lets you collect and save observations, learn more about the land and its potentnial, and share with others."
         },
         "create": {
             "title": "Create Site",
