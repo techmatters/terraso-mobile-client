@@ -28,14 +28,6 @@ import {PullContextProvider} from 'terraso-mobile-client/store/sync/hooks/SyncCo
 import * as syncContext from 'terraso-mobile-client/store/sync/hooks/SyncContext';
 import {PullDispatcher} from 'terraso-mobile-client/store/sync/PullDispatcher';
 
-// jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
-//   return {
-//     useDebouncedIsOffline: jest.fn(),
-//     useIsLoggedIn: jest.fn(),
-// };
-// });
-// fetchSoilDataForUser: jest.fn();
-
 const renderTestComponents = (initialState?: Partial<ReduxAppState>) => {
   return render(
     <PullContextProvider>
@@ -46,12 +38,10 @@ const renderTestComponents = (initialState?: Partial<ReduxAppState>) => {
 };
 
 describe('PullDispatcher', () => {
-  const useIsOfflineSpy = jest.spyOn(connectivityHooks, 'useIsOffline');
-  const useAppStateSpy = jest.spyOn(appStateHooks, 'useAppState');
-  const usePullRequested = jest.spyOn(syncContext, 'usePullRequested');
-
-  // TODO-cknipe: Use mock instead of spy
-  const fetchSoilDataForUserSpy = jest.spyOn(
+  const useIsOfflineMock = jest.spyOn(connectivityHooks, 'useIsOffline');
+  const useAppStateMock = jest.spyOn(appStateHooks, 'useAppState');
+  const usePullRequestedMock = jest.spyOn(syncContext, 'usePullRequested');
+  const fetchSoilDataForUserMock = jest.spyOn(
     globalSoilId,
     'fetchSoilDataForUser',
   );
@@ -102,47 +92,47 @@ describe('PullDispatcher', () => {
   } as Partial<ReduxAppState>;
 
   beforeEach(() => {
-    //useIsLoggedInSpy.mockReset().mockReturnValue(true);
-    useIsOfflineSpy.mockReset().mockReturnValue(false);
-    useAppStateSpy.mockReset().mockReturnValue('active');
-    usePullRequested
+    useIsOfflineMock.mockReset().mockReturnValue(false);
+    useAppStateMock.mockReset().mockReturnValue('active');
+    usePullRequestedMock
       .mockReset()
       .mockReturnValue({pullRequested: true, setPullRequested: () => {}});
-    fetchSoilDataForUserSpy.mockClear();
+    fetchSoilDataForUserMock.mockClear();
   });
+
   test('dispatches pull when all conditions are right', () => {
     renderTestComponents(stateWithLoggedInUser);
-    expect(fetchSoilDataForUserSpy).toHaveBeenCalled();
+    expect(fetchSoilDataForUserMock).toHaveBeenCalled();
   });
 
   test('does not dispatch pull when no logged in user', () => {
-    // Don't use stateWithUser
+    // Don't use stateWithLoggedInUser
     renderTestComponents();
-    expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
+    expect(fetchSoilDataForUserMock).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when offline', () => {
-    useIsOfflineSpy.mockReset().mockReturnValue(true);
+    useIsOfflineMock.mockReset().mockReturnValue(true);
     renderTestComponents(stateWithLoggedInUser);
-    expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
+    expect(fetchSoilDataForUserMock).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when there are unsynced site ids yet to push', () => {
     renderTestComponents({...stateWithLoggedInUser, ...stateWithUnsyncedSites});
-    expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
+    expect(fetchSoilDataForUserMock).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when app is not in foreground', () => {
-    useAppStateSpy.mockReset().mockReturnValue('background');
+    useAppStateMock.mockReset().mockReturnValue('background');
     renderTestComponents(stateWithLoggedInUser);
-    expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
+    expect(fetchSoilDataForUserMock).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when pull is not requested', () => {
-    usePullRequested
+    usePullRequestedMock
       .mockReset()
       .mockReturnValue({pullRequested: false, setPullRequested: () => {}});
     renderTestComponents(stateWithLoggedInUser);
-    expect(fetchSoilDataForUserSpy).not.toHaveBeenCalled();
+    expect(fetchSoilDataForUserMock).not.toHaveBeenCalled();
   });
 });
