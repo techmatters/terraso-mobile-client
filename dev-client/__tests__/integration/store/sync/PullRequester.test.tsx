@@ -15,12 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'react-native';
+import {useEffect} from 'react';
 
-import {fireEvent} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
 
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppState} from 'terraso-mobile-client/store';
 import {
   PullContextProvider,
@@ -32,85 +30,84 @@ import {
   PullRequester,
 } from 'terraso-mobile-client/store/sync/PullRequester';
 
-/* 
-    Render PullRequester
-    - Test that on open, pullRequested is false
-    - Test that after 10 seconds pullRequested is false 
-    - Test that after 5 minutes pullRequested is true (or the pull itself has triggered)
-
-    Render PullDispatcher
-    - Test that when a pull is requested and [], the pull itself gets triggered
-
-    PullRequester + PullDispatcher
-    - 
-*/
-
-// jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
-//   return {
-//     useDebouncedIsOffline: jest.fn(),
-//     useIsLoggedIn: jest.fn(),
-//   };
-// });
-
 // Allows test to inspect the state with: screen.getByTestId('pullRequestedState')
 // and set the state with: fireEvent.press(screen.getByText('setPullRequestedFalse'))
-const ExposePullRequestedForTest = () => {
+type Props = {
+  mock: ReturnType<typeof jest.fn>;
+  newPullRequested?: boolean;
+};
+
+// The mock exists so we can test against what it was called with,
+// so we can access the value of pullRequested
+const ExposePullRequestedForTest = ({mock, newPullRequested}: Props) => {
   const {pullRequested, setPullRequested} = usePullRequested();
-  return (
-    <>
-      <Button
-        title="setPullRequestedFalse"
-        onPress={() => setPullRequested(false)}
-      />
-      <Button
-        title="setPullRequestedTrue"
-        onPress={() => setPullRequested(true)}
-      />
-      <Text testID="pullRequestedState">{pullRequested.toString()}</Text>
-    </>
-  );
+  useEffect(() => {
+    console.log('Doing mock to pullRequested which is', pullRequested);
+    mock(pullRequested);
+  }, [pullRequested, mock]);
+
+  useEffect(() => {
+    if (newPullRequested !== undefined) {
+      console.log('useEffect for newPullRequested:', newPullRequested);
+      setPullRequested(newPullRequested);
+    }
+  }, [newPullRequested, setPullRequested]);
+  return <></>;
 };
 
 type RenderedScreen = ReturnType<typeof render>;
-const setPullRequestedFalse = (screen: RenderedScreen) => {
-  fireEvent.press(screen.getByText('setPullRequestedFalse'));
-  console.log('Clearing pullRequested');
-};
-const getPullRequestedText = (screen: RenderedScreen) => {
-  return screen.getByTestId('pullRequestedState');
-};
 
 const renderTestComponents = (initialState?: Partial<AppState>) => {
-  return render(
+  const mock = jest.fn();
+  const screen = render(
     <PullContextProvider>
       <PullRequester />
-      <ExposePullRequestedForTest />
+      <ExposePullRequestedForTest mock={mock} />
     </PullContextProvider>,
     {initialState: initialState},
   );
+  return {screen, mock};
 };
-const rerenderTestComponents = (screen: RenderedScreen) => {
+
+const setPullRequestedFalse = (screen: RenderedScreen) => {
   screen.rerender(
     <PullContextProvider>
       <PullRequester />
-      <ExposePullRequestedForTest />
+      <ExposePullRequestedForTest mock={jest.fn()} newPullRequested={false} />
     </PullContextProvider>,
   );
+};
+
+const rerenderTestComponents = (
+  screen: RenderedScreen,
+  newPullRequested?: boolean,
+) => {
+  const mock = jest.fn();
+  screen.rerender(
+    <PullContextProvider>
+      <PullRequester />
+      <ExposePullRequestedForTest
+        mock={mock}
+        newPullRequested={newPullRequested}
+      />
+    </PullContextProvider>,
+  );
+  return {mock};
 };
 
 describe('PullRequester', () => {
   test('requests pull on first mount', () => {
-    const screen = renderTestComponents();
-    expect(screen.getByTestId('pullRequestedState')).toHaveTextContent('true');
+    const {mock} = renderTestComponents();
+    expect(mock).toHaveBeenLastCalledWith(true);
   });
 
   test('does not request pull immediately after pull is set to false', () => {
-    const screen = renderTestComponents();
-    // All the following tests should set pullRequested to false after first render
-    // as first render will always set it to true
+    const {screen} = renderTestComponents();
+    // This and all following tests should do this after first render
+    // because (as test above shows) first render will always set it to true
     setPullRequestedFalse(screen);
-    rerenderTestComponents(screen);
-    expect(getPullRequestedText(screen)).toHaveTextContent('false');
+    const {mock} = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(false);
   });
 });
 
@@ -121,28 +118,28 @@ describe('PullRequester + isOffline', () => {
   });
   test('requests pull when coming online from offline', () => {
     offlineSpy.mockClear().mockReturnValue(true);
-    const screen = renderTestComponents();
+    const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
     offlineSpy.mockClear().mockReturnValue(false);
-    rerenderTestComponents(screen);
-    expect(getPullRequestedText(screen)).toHaveTextContent('true');
+    const {mock} = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(true);
   });
 
   test('does not request pull when going offline from online', () => {
     offlineSpy.mockClear().mockReturnValue(false);
-    const screen = renderTestComponents();
+    const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
     offlineSpy.mockClear().mockReturnValue(true);
-    rerenderTestComponents(screen);
-    expect(getPullRequestedText(screen)).toHaveTextContent('false');
+    const {mock} = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(false);
   });
 
   test('does not request pull when consistently online', () => {
     offlineSpy.mockClear().mockReturnValue(false);
-    const screen = renderTestComponents();
+    const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
-    rerenderTestComponents(screen);
-    expect(getPullRequestedText(screen)).toHaveTextContent('false');
+    const {mock} = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(false);
   });
 });
 
@@ -211,17 +208,17 @@ describe('PullRequester + isOffline', () => {
 describe('PullRequester + interval', () => {
   jest.useFakeTimers();
   test('requests pull after specified amount of time', () => {
-    const screen = renderTestComponents();
+    const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
     jest.advanceTimersByTime(PULL_INTERVAL_MS + 1);
-    rerenderTestComponents(screen);
-    expect(getPullRequestedText(screen)).toHaveTextContent('true');
+    const {mock} = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(true);
   });
   test('does not request pull before specified amount of time', () => {
-    const screen = renderTestComponents();
+    const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
     jest.advanceTimersByTime(PULL_INTERVAL_MS - 1);
-    rerenderTestComponents(screen);
-    expect(getPullRequestedText(screen)).toHaveTextContent('false');
+    const {mock} = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(false);
   });
 });
