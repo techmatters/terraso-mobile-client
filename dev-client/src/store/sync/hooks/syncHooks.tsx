@@ -20,7 +20,10 @@ import {useCallback, useRef} from 'react';
 import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+import {
+  selectSyncErrorSites,
+  selectUnsyncedSiteIds,
+} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {pushSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -70,4 +73,8 @@ export const useRetryInterval = (interval: number, action: () => void) => {
   }, [endRetry, handle, action, interval]);
 
   return {beginRetry, endRetry};
+};
+
+export const useSyncErrorSiteIds = () => {
+  return Object.keys(useSelector(selectSyncErrorSites));
 };

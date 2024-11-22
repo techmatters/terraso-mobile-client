@@ -19,10 +19,11 @@ import {useContext, useEffect, useRef} from 'react';
 
 import _ from 'lodash';
 
-import {selectSyncErrorSites} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
-import {useSelector} from 'terraso-mobile-client/store';
 import {PullRequestedContext} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
-import {useDebouncedIsOffline} from 'terraso-mobile-client/store/sync/hooks/syncHooks';
+import {
+  useDebouncedIsOffline,
+  useSyncErrorSiteIds,
+} from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 
 // Pull every 5 minutes
 export const PULL_INTERVAL_MS = 1000 * 60 * 5;
@@ -56,7 +57,7 @@ export const PullRequester = () => {
   }, [isOffline, setPullRequested]);
 
   // Request a pull when most recent push yielded errors
-  const sitesWithErrors = useSelector(selectSyncErrorSites);
+  const sitesWithErrors = useSyncErrorSiteIds();
   useEffect(() => {
     if (!_.isEmpty(sitesWithErrors)) {
       console.log('Requesting pull via sitesWithErrors');

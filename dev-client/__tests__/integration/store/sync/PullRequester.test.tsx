@@ -30,25 +30,27 @@ import {
   PullRequester,
 } from 'terraso-mobile-client/store/sync/PullRequester';
 
-// Allows test to inspect the state with: screen.getByTestId('pullRequestedState')
-// and set the state with: fireEvent.press(screen.getByText('setPullRequestedFalse'))
+jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
+  return {
+    useDebouncedIsOffline: jest.fn(),
+    useSyncErrorSiteIds: jest.fn(),
+  };
+});
+
 type Props = {
   mock: ReturnType<typeof jest.fn>;
   newPullRequested?: boolean;
 };
 
-// The mock exists so we can test against what it was called with,
-// so we can access the value of pullRequested
+// We can read the value of pullRequested, by testing what the mock was last called with.
 const ExposePullRequestedForTest = ({mock, newPullRequested}: Props) => {
   const {pullRequested, setPullRequested} = usePullRequested();
   useEffect(() => {
-    console.log('Doing mock to pullRequested which is', pullRequested);
     mock(pullRequested);
   }, [pullRequested, mock]);
 
   useEffect(() => {
     if (newPullRequested !== undefined) {
-      console.log('useEffect for newPullRequested:', newPullRequested);
       setPullRequested(newPullRequested);
     }
   }, [newPullRequested, setPullRequested]);
@@ -92,7 +94,7 @@ const rerenderTestComponents = (
       />
     </PullContextProvider>,
   );
-  return {mock};
+  return mock;
 };
 
 describe('PullRequester', () => {
@@ -103,107 +105,71 @@ describe('PullRequester', () => {
 
   test('does not request pull immediately after pull is set to false', () => {
     const {screen} = renderTestComponents();
-    // This and all following tests should do this after first render
+    // This and all following tests should set pullRequested to false after first render
     // because (as test above shows) first render will always set it to true
     setPullRequestedFalse(screen);
-    const {mock} = rerenderTestComponents(screen);
+    const mock = rerenderTestComponents(screen);
     expect(mock).toHaveBeenLastCalledWith(false);
   });
 });
 
 describe('PullRequester + isOffline', () => {
-  const offlineSpy = jest.spyOn(syncHooks, 'useDebouncedIsOffline');
+  let useDebouncedIsOffline = jest.mocked(syncHooks.useDebouncedIsOffline);
+
   beforeEach(() => {
-    offlineSpy.mockClear();
+    useDebouncedIsOffline.mockReset();
   });
+
   test('requests pull when coming online from offline', () => {
-    offlineSpy.mockClear().mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(true);
     const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
-    offlineSpy.mockClear().mockReturnValue(false);
-    const {mock} = rerenderTestComponents(screen);
+    useDebouncedIsOffline.mockReturnValue(false);
+    const mock = rerenderTestComponents(screen);
     expect(mock).toHaveBeenLastCalledWith(true);
   });
 
   test('does not request pull when going offline from online', () => {
-    offlineSpy.mockClear().mockReturnValue(false);
+    useDebouncedIsOffline.mockReturnValue(false);
     const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
-    offlineSpy.mockClear().mockReturnValue(true);
-    const {mock} = rerenderTestComponents(screen);
+    useDebouncedIsOffline.mockReturnValue(true);
+    const mock = rerenderTestComponents(screen);
     expect(mock).toHaveBeenLastCalledWith(false);
   });
 
   test('does not request pull when consistently online', () => {
-    offlineSpy.mockClear().mockReturnValue(false);
+    useDebouncedIsOffline.mockClear().mockReturnValue(false);
     const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
-    const {mock} = rerenderTestComponents(screen);
+    const mock = rerenderTestComponents(screen);
     expect(mock).toHaveBeenLastCalledWith(false);
   });
 });
 
-// TODO-cknipe: Figure this out
+describe('PullRequester + sites with errors', () => {
+  let useSyncErrorSiteIds = jest.mocked(syncHooks.useSyncErrorSiteIds);
 
-// const exampleSoilSyncEntry = {
-//   lastSyncedData: {
-//     bedrock: null,
-//     crossSlope: null,
-//     depthDependentData: [],
-//     depthIntervalPreset: 'NRCS' as SoilIdSoilDataDepthIntervalPresetChoices,
-//     depthIntervals: [],
-//     downSlope: null,
-//     floodingSelect: null,
-//     grazingSelect: null,
-//     landCoverSelect: null,
-//     limeRequirementsSelect: null,
-//     slopeAspect: null,
-//     slopeLandscapePosition: null,
-//     slopeSteepnessDegree: null,
-//     slopeSteepnessPercent: null,
-//     slopeSteepnessSelect: null,
-//     soilDepthSelect: null,
-//     surfaceCracksSelect: null,
-//     surfaceSaltSelect: null,
-//     surfaceStoninessSelect: null,
-//     waterTableDepthSelect: null,
-//   },
-//   lastSyncedError: undefined,
-//   lastSyncedRevisionId: 1,
-//   revisionId: 1,
-// };
+  beforeEach(() => {
+    useSyncErrorSiteIds.mockReset();
+  });
 
-// describe('PullRequester + sitesWithErrors', () => {
-//   test('requests pull when site has error', () => {
-//     // TODO-cknipe: Confirm that the errors in soilId slice will go away after an actual pull
-//     const createTestState = () => {
-//       return {
-//         soilId: {
-//           soilData: {},
-//           projectSettings: {},
-//           status: 'ready' as LoadingState,
-//           matches: {},
-//           soilSync: {
-//             site: exampleSoilSyncEntry,
-//           },
-//         },
-//       } as Partial<AppState>;
-//     };
-//     const screen = renderTestComponents(createTestState());
-//     setPullRequestedFalse(screen);
-//     const updatedTestState = createTestState();
-//     updatedTestState.soilId!.soilSync.site.lastSyncedError =
-//       'NOT_ALLOWED' as SoilDataPushFailureReason;
-//     // TODO-cknipe: How to properly update the redux state so the selector will trigger?
-//     // - Create a redux action in prod to dispatch in test? Seems sketch
-//     // - Figure out how to dispatch redux actions in a test &
-//     //   mock whatever happens in the push dispatch to return new soilSync data
-//     //   Uhhhh dunno how to useDispatch tho: dispatch(pushSoilData(["site"]))
-//     // - ???????
-//     rerenderTestComponents(screen);
-//     expect(getPullRequestedText(screen)).toHaveTextContent('true');
-//   });
-// });
+  test('requests pull when site has sync error', () => {
+    const {screen} = renderTestComponents();
+    setPullRequestedFalse(screen);
+    useSyncErrorSiteIds.mockReturnValue(['site1']);
+    const mock = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(true);
+  });
+
+  test('does not request pull when no sites have sync errors', () => {
+    const {screen} = renderTestComponents();
+    setPullRequestedFalse(screen);
+    useSyncErrorSiteIds.mockReturnValue([]);
+    const mock = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(false);
+  });
+});
 
 describe('PullRequester + interval', () => {
   jest.useFakeTimers();
@@ -211,14 +177,14 @@ describe('PullRequester + interval', () => {
     const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
     jest.advanceTimersByTime(PULL_INTERVAL_MS + 1);
-    const {mock} = rerenderTestComponents(screen);
+    const mock = rerenderTestComponents(screen);
     expect(mock).toHaveBeenLastCalledWith(true);
   });
   test('does not request pull before specified amount of time', () => {
     const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
     jest.advanceTimersByTime(PULL_INTERVAL_MS - 1);
-    const {mock} = rerenderTestComponents(screen);
+    const mock = rerenderTestComponents(screen);
     expect(mock).toHaveBeenLastCalledWith(false);
   });
 });
