@@ -28,16 +28,10 @@ import {
 } from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequester';
 
-/* PullRequester contains all the logic for when to request a pull. 
-   It doesn't necessarily mean that a pull will happen immediately.
-   Another component decides if we're actually ready to pull.
-*/
-
 /*
  * Automated system to pull updated data from the server.
- *
- * Listens to if a pull has been requested, and if the conditions are right,
- * dispatches the pull
+ * Listens to if a pull has been requested by PullRequester,
+ * and decides if we're ready to actually execute the pull
  */
 export const PullDispatcher = () => {
   const {pullRequested} = usePullRequested();
@@ -59,9 +53,6 @@ export const PullDispatcher = () => {
 
   // Set up a callback for the dispatcher to use when it determines a pull is needed.
   const dispatchPull = usePullDispatch();
-
-  // TODO-cknipe: Remove this
-  console.log('PULL Requested:', pullRequested, ' |  Allowed:', pullAllowed);
 
   useEffect(() => {
     if (pullAllowed && pullRequested) {

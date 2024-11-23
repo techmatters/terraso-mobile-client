@@ -69,13 +69,12 @@ const renderTestComponents = (initialState?: Partial<ReduxAppState>) => {
 };
 
 describe('PullDispatcher', () => {
-  // TODO-cknipe: Make const?
-  let useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
-  let useAppStateMock = jest.mocked(appStateHooks.useAppState);
-  let usePullRequestedMock = jest.mocked(syncContext.usePullRequested);
+  const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
+  const useAppStateMock = jest.mocked(appStateHooks.useAppState);
+  const usePullRequestedMock = jest.mocked(syncContext.usePullRequested);
 
-  let usePullDispatchMock = jest.mocked(syncHooks.usePullDispatch);
-  let dispatchPull = jest.fn();
+  const usePullDispatchMock = jest.mocked(syncHooks.usePullDispatch);
+  const dispatchPull = jest.fn();
 
   const stateWithLoggedInUser = {
     account: {
