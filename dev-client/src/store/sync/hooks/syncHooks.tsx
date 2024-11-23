@@ -20,12 +20,14 @@ import {useCallback, useRef} from 'react';
 import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
 import {
   selectSyncErrorSites,
   selectUnsyncedSiteIds,
 } from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {pushSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {usePullRequested} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
 
 export const useIsLoggedIn = () => {
   return useSelector(state => !!state.account.currentUser.data);
@@ -77,4 +79,24 @@ export const useRetryInterval = (interval: number, action: () => void) => {
 
 export const useSyncErrorSiteIds = () => {
   return Object.keys(useSelector(selectSyncErrorSites));
+};
+
+export const usePullDispatch = () => {
+  const dispatch = useDispatch();
+  const {setPullRequested} = usePullRequested();
+
+  const currentUserID = useSelector(
+    state => state.account.currentUser?.data?.id,
+  );
+
+  return useCallback(() => {
+    if (currentUserID !== undefined) {
+      // TODO-cknipe: Remove this
+      console.log('Doing pull!');
+      setPullRequested(false);
+      // TODO-cknipe: Should we retry if it fails / if there was a network issue?
+      // If the pull failed, do nothing. Another pull will happen eventually.
+      return dispatch(fetchSoilDataForUser(currentUserID));
+    }
+  }, [dispatch, currentUserID, setPullRequested]);
 };

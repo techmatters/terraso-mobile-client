@@ -15,16 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect} from 'react';
+import {useEffect} from 'react';
 
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {useSelector} from 'terraso-mobile-client/store';
 import {usePullRequested} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
 import {
   useDebouncedIsOffline,
   useIsLoggedIn,
+  usePullDispatch,
 } from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequester';
 
@@ -65,31 +65,10 @@ export const PullDispatcher = () => {
 
   useEffect(() => {
     if (pullAllowed && pullRequested) {
+      console.log('Dispatching pull');
       dispatchPull();
     }
   }, [pullRequested, pullAllowed, dispatchPull]);
 
   return <></>;
-};
-
-export const usePullAllowed = () => {};
-
-export const usePullDispatch = () => {
-  const dispatch = useDispatch();
-  const {setPullRequested} = usePullRequested();
-
-  const currentUserID = useSelector(
-    state => state.account.currentUser?.data?.id,
-  );
-
-  return useCallback(() => {
-    if (currentUserID !== undefined) {
-      // TODO-cknipe: Remove this
-      console.log('Doing pull!');
-      setPullRequested(false);
-      // TODO-cknipe: Should we retry if it fails / if there was a network issue?
-      // If the pull failed, do nothing. Another pull will happen eventually.
-      return dispatch(fetchSoilDataForUser(currentUserID));
-    }
-  }, [dispatch, currentUserID, setPullRequested]);
 };
