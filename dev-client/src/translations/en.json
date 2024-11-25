@@ -57,7 +57,7 @@
             "summary": "A site lets you collect and save observations, learn more about the land and its potential, and share with others."
         },
         "create": {
-            "title": "Create Site",
+            "title": "+ Create Site",
             "description": "Create a site here to save this location, collect data, and see more detailed reports.",
             "button_label": "Create Site Here",
             "gps": "Use my current location (GPS)",
