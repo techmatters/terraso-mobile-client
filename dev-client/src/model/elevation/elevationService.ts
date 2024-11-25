@@ -20,6 +20,9 @@ import {formatCoordinate} from 'terraso-mobile-client/util';
 const OUT_OF_RANGE_MESSAGE = 'Invalid or missing input parameters.';
 const UNABLE_TO_PROCESS_MESSAGE = 'Unable to complete operation.';
 
+// Call failed.  [Failed cloud operation: Open, Path: /vsimem/_0000096E.aux.xml]
+const CALL_FAILED_MESSAGE = 'Call failed.';
+
 export const getElevation = async (
   lat: number,
   lng: number,
@@ -39,7 +42,10 @@ export const getElevation = async (
       `https://epqs.nationalmap.gov/v1/json/?${queryString}`,
     );
     const result = await response.text();
-    if ([OUT_OF_RANGE_MESSAGE, UNABLE_TO_PROCESS_MESSAGE].includes(result)) {
+    if (
+      [OUT_OF_RANGE_MESSAGE, UNABLE_TO_PROCESS_MESSAGE].includes(result) ||
+      result.startsWith(CALL_FAILED_MESSAGE)
+    ) {
       elevation = undefined;
     } else {
       elevation = parseFloat(JSON.parse(result).value);
