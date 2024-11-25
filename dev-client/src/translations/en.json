@@ -50,7 +50,7 @@
         "elevation_unknown": "unknown",
         "not_available_offine": "Not available offline",
         "empty": {
-            "info": "<bold>Three ways to create a site site:</bold>\n",
+            "info": "<bold>Three ways to create a site:</bold>\n",
             "map": "Tap anywhere on the map.",
             "icon": "Tap the My Location icon.",
             "coords": "Enter coordinates, address, or search term in the map search bar",
