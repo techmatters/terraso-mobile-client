@@ -43,11 +43,15 @@ export const formatDate = (dateString: string) => {
 };
 
 export const formatPercent = (value: number) => {
-  return value.toLocaleString(undefined, {style: 'percent'});
+  const locale = getSystemLocale();
+
+  return value.toLocaleString(locale, {style: 'percent'});
 };
 
 export const formatCoordinate = (value: number) => {
-  return value.toLocaleString(undefined, {
+  const locale = getSystemLocale();
+
+  return value.toLocaleString(locale, {
     maximumFractionDigits: COORDINATE_PRECISION,
   });
 };
