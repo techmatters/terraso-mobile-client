@@ -41,7 +41,7 @@
         "members": "{{members}} Members",
         "more_info": "Learn more",
         "your_location": "Your location",
-        "coords": "{{lat}}, {{lng}}",
+        "coords": "{{lat}}, {{long}}",
         "soil_id_prediction": "Soil ID Top Match",
         "ecological_site_prediction": "Ecological Site Top Match",
         "annual_precip_avg": "Annual precipitation avg",
