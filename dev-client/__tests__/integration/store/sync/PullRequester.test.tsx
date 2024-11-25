@@ -19,11 +19,9 @@ import {useEffect} from 'react';
 
 import {render} from '@testing/integration/utils';
 
-import {AppState} from 'terraso-mobile-client/store';
-import {
-  PullContextProvider,
-  usePullRequested,
-} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
+import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
+import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
+import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 import * as syncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {
   PULL_INTERVAL_MS,
@@ -42,18 +40,36 @@ type Props = {
   newPullRequested?: boolean;
 };
 
+// const OLD_ExposePullRequestedForTest = ({mock, newPullRequested}: Props) => {
+//   const {pullRequested, setPullRequested} = usePullRequested();
+//   useEffect(() => {
+//     mock(pullRequested);
+//   }, [pullRequested, mock]);
+
+//   useEffect(() => {
+//     if (newPullRequested !== undefined) {
+//       setPullRequested(newPullRequested);
+//     }
+//   }, [newPullRequested, setPullRequested]);
+//   return <></>;
+// };
+
 // We can read the value of pullRequested, by testing what the mock was last called with.
 const ExposePullRequestedForTest = ({mock, newPullRequested}: Props) => {
-  const {pullRequested, setPullRequested} = usePullRequested();
+  const pullRequested = useSelector(selectPullRequested);
+  const dispatch = useDispatch();
+  console.log('PullRequested exposed!! --> ', pullRequested);
+
   useEffect(() => {
     mock(pullRequested);
   }, [pullRequested, mock]);
 
   useEffect(() => {
     if (newPullRequested !== undefined) {
-      setPullRequested(newPullRequested);
+      dispatch(setPullRequested(newPullRequested));
     }
-  }, [newPullRequested, setPullRequested]);
+  });
+
   return <></>;
 };
 
@@ -62,10 +78,10 @@ type RenderedScreen = ReturnType<typeof render>;
 const renderTestComponents = (initialState?: Partial<AppState>) => {
   const mock = jest.fn();
   const screen = render(
-    <PullContextProvider>
+    <>
       <PullRequester />
       <ExposePullRequestedForTest mock={mock} />
-    </PullContextProvider>,
+    </>,
     {initialState: initialState},
   );
   return {screen, mock};
@@ -73,10 +89,10 @@ const renderTestComponents = (initialState?: Partial<AppState>) => {
 
 const setPullRequestedFalse = (screen: RenderedScreen) => {
   screen.rerender(
-    <PullContextProvider>
+    <>
       <PullRequester />
       <ExposePullRequestedForTest mock={jest.fn()} newPullRequested={false} />
-    </PullContextProvider>,
+    </>,
   );
 };
 
@@ -86,13 +102,13 @@ const rerenderTestComponents = (
 ) => {
   const mock = jest.fn();
   screen.rerender(
-    <PullContextProvider>
+    <>
       <PullRequester />
       <ExposePullRequestedForTest
         mock={mock}
         newPullRequested={newPullRequested}
       />
-    </PullContextProvider>,
+    </>,
   );
   return mock;
 };
@@ -174,13 +190,21 @@ describe('PullRequester + sites with errors', () => {
 describe('PullRequester + interval', () => {
   jest.useFakeTimers();
   test('requests pull after specified amount of time', () => {
+    console.log('-------TEST-------');
     const {screen} = renderTestComponents();
+    console.log('0');
     setPullRequestedFalse(screen);
+    console.log('1');
     jest.advanceTimersByTime(PULL_INTERVAL_MS + 1);
+    console.log('2');
     const mock = rerenderTestComponents(screen);
+    console.log('3');
     expect(mock).toHaveBeenLastCalledWith(true);
+    console.log('-------END TEST-------');
   });
   test('does not request pull before specified amount of time', () => {
+    console.log('-------UNRELATED TEST-------');
+
     const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
     jest.advanceTimersByTime(PULL_INTERVAL_MS - 1);

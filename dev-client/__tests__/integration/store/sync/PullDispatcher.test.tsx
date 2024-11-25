@@ -23,7 +23,6 @@ import * as appStateHooks from 'terraso-mobile-client/hooks/appStateHooks';
 import * as connectivityHooks from 'terraso-mobile-client/hooks/connectivityHooks';
 import {LoadingState} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {AppState as ReduxAppState} from 'terraso-mobile-client/store';
-import * as syncContext from 'terraso-mobile-client/store/sync/hooks/SyncContext';
 import * as syncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {PullDispatcher} from 'terraso-mobile-client/store/sync/PullDispatcher';
 
@@ -49,32 +48,17 @@ jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
   };
 });
 
-jest.mock('terraso-mobile-client/store/sync/hooks/SyncContext', () => {
-  const actual = jest.requireActual(
-    'terraso-mobile-client/store/sync/hooks/SyncContext',
-  );
-  return {
-    ...actual,
-    usePullRequested: jest.fn(),
-  };
-});
-
-const renderTestComponents = (initialState?: Partial<ReduxAppState>) => {
-  return render(
-    <syncContext.PullContextProvider>
-      <PullDispatcher />
-    </syncContext.PullContextProvider>,
-    {initialState: initialState},
-  );
-};
-
 describe('PullDispatcher', () => {
   const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
   const useAppStateMock = jest.mocked(appStateHooks.useAppState);
-  const usePullRequestedMock = jest.mocked(syncContext.usePullRequested);
-
   const usePullDispatchMock = jest.mocked(syncHooks.usePullDispatch);
   const dispatchPull = jest.fn();
+
+  const stateWithPullRequested = {
+    sync: {
+      pullRequested: true,
+    },
+  };
 
   const stateWithLoggedInUser = {
     account: {
@@ -124,11 +108,6 @@ describe('PullDispatcher', () => {
   beforeEach(() => {
     useIsOfflineMock.mockReset().mockReturnValue(false);
     useAppStateMock.mockReset().mockReturnValue('active');
-    usePullRequestedMock.mockReset().mockReturnValue({
-      pullRequested: true,
-      setPullRequested: () => {},
-    } as syncContext.PullRequestedState);
-
     dispatchPull.mockReset();
     usePullDispatchMock.mockReset();
     usePullDispatchMock.mockReturnValue(dispatchPull);
@@ -136,39 +115,54 @@ describe('PullDispatcher', () => {
   });
 
   test('dispatches pull when all conditions are right', () => {
-    renderTestComponents(stateWithLoggedInUser);
+    render(<PullDispatcher />, {
+      initialState: {...stateWithLoggedInUser, ...stateWithPullRequested},
+    });
     expect(dispatchPull).toHaveBeenCalled();
   });
 
+  // test('OLD - dispatches pull when all conditions are right', () => {
+  //   renderTestComponents(stateWithLoggedInUser);
+  //   expect(dispatchPull).toHaveBeenCalled();
+  // });
+
   test('does not dispatch pull when no logged in user', () => {
     // Don't use stateWithLoggedInUser
-    renderTestComponents();
+    render(<PullDispatcher />, {initialState: stateWithPullRequested});
     expect(dispatchPull).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when offline', () => {
     useIsOfflineMock.mockReturnValue(true);
-    renderTestComponents(stateWithLoggedInUser);
+    render(<PullDispatcher />, {
+      initialState: {...stateWithLoggedInUser, ...stateWithPullRequested},
+    });
     expect(dispatchPull).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when there are unsynced site ids yet to push', () => {
-    renderTestComponents({...stateWithLoggedInUser, ...stateWithUnsyncedSites});
+    render(<PullDispatcher />, {
+      initialState: {
+        ...stateWithLoggedInUser,
+        ...stateWithPullRequested,
+        ...stateWithUnsyncedSites,
+      },
+    });
     expect(dispatchPull).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when app is not in foreground', () => {
     useAppStateMock.mockReturnValue('background');
-    renderTestComponents(stateWithLoggedInUser);
+    render(<PullDispatcher />, {
+      initialState: {...stateWithLoggedInUser, ...stateWithPullRequested},
+    });
     expect(dispatchPull).not.toHaveBeenCalled();
   });
 
   test('does not dispatch pull when pull is not requested', () => {
-    usePullRequestedMock.mockReturnValue({
-      pullRequested: false,
-      setPullRequested: () => {},
-    } as syncContext.PullRequestedState);
-    renderTestComponents(stateWithLoggedInUser);
+    render(<PullDispatcher />, {
+      initialState: {...stateWithLoggedInUser},
+    });
     expect(dispatchPull).not.toHaveBeenCalled();
   });
 });

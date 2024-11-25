@@ -23,8 +23,9 @@ import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {usePullRequested} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
+import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
 
 // TODO: I expect this to be removed or modified by the time we actually release the offline feature,
 // but is helpful for manually testing
@@ -46,7 +47,7 @@ export const PushInfo = () => {
 };
 
 export const PullInfo = () => {
-  const {pullRequested} = usePullRequested();
+  const pullRequested = useSelector(selectPullRequested);
 
   const requested = pullRequested ? 'requested' : 'not requested';
   return (
@@ -59,9 +60,7 @@ export const PullInfo = () => {
 export const SyncButton = () => {
   const dispatch = useDispatch();
 
-  const currentUserID = useSelector(
-    state => state.account.currentUser?.data?.id,
-  );
+  const currentUserID = useSelector(selectCurrentUserID);
 
   const onSync = useCallback(() => {
     if (currentUserID !== undefined) {

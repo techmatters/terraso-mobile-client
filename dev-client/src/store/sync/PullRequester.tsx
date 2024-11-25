@@ -15,11 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useContext, useEffect, useRef} from 'react';
+import {useEffect, useRef} from 'react';
 
+import {useDispatch} from '..';
 import _ from 'lodash';
 
-import {PullRequestedContext} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
+import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {
   useDebouncedIsOffline,
   useSyncErrorSiteIds,
@@ -30,8 +31,7 @@ export const PULL_INTERVAL_MS = 1000 * 60 * 5;
 export const OFFLINE_DEBOUNCE_MS = 500;
 
 export const PullRequester = () => {
-  const {setPullRequested} = useContext(PullRequestedContext);
-
+  const dispatch = useDispatch();
   // Request a pull when app starts
   useEffect(() => {
     // TODO-cknipe: Remove all the console.logs
@@ -39,8 +39,8 @@ export const PullRequester = () => {
       'Requesting pull on app start -- hopefully this only happens once??',
     );
 
-    setPullRequested(true);
-  }, [setPullRequested]);
+    dispatch(setPullRequested(true));
+  }, [dispatch]);
 
   // Request a pull when we come online
   const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
@@ -51,19 +51,19 @@ export const PullRequester = () => {
   useEffect(() => {
     if (isOffline === false && isOffline !== wasPreviouslyOffline.current) {
       console.log('Requesting pull via offline');
-      setPullRequested(true);
+      dispatch(setPullRequested(true));
       wasPreviouslyOffline.current = isOffline;
     }
-  }, [isOffline, setPullRequested]);
+  }, [isOffline, dispatch]);
 
   // Request a pull when most recent push yielded errors
   const sitesWithErrors = useSyncErrorSiteIds();
   useEffect(() => {
     if (!_.isEmpty(sitesWithErrors)) {
       console.log('Requesting pull via sitesWithErrors');
-      setPullRequested(true);
+      dispatch(setPullRequested(true));
     }
-  }, [sitesWithErrors, setPullRequested]);
+  }, [sitesWithErrors, dispatch]);
 
   // Request a pull at regular intervals
   // FYI intervals just keep running even if app in background or if a pull errors, etc.
@@ -71,7 +71,7 @@ export const PullRequester = () => {
   useEffect(() => {
     intervalIdRef.current = setInterval(() => {
       console.log('Requesting pull via interval');
-      setPullRequested(true);
+      dispatch(setPullRequested(true));
     }, PULL_INTERVAL_MS);
     return () => {
       if (intervalIdRef.current !== undefined) {
@@ -79,7 +79,7 @@ export const PullRequester = () => {
         intervalIdRef.current = undefined;
       }
     };
-  }, [setPullRequested]);
+  }, [dispatch]);
 
   return <></>;
 };

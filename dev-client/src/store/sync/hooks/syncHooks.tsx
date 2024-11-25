@@ -26,8 +26,8 @@ import {
   selectUnsyncedSiteIds,
 } from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {pushSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {usePullRequested} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
 
 export const useIsLoggedIn = () => {
   return useSelector(state => !!state.account.currentUser.data);
@@ -83,7 +83,6 @@ export const useSyncErrorSiteIds = () => {
 
 export const usePullDispatch = () => {
   const dispatch = useDispatch();
-  const {setPullRequested} = usePullRequested();
 
   const currentUserID = useSelector(
     state => state.account.currentUser?.data?.id,
@@ -93,10 +92,10 @@ export const usePullDispatch = () => {
     if (currentUserID !== undefined) {
       // TODO-cknipe: Remove this
       console.log('Doing pull!');
-      setPullRequested(false);
+      dispatch(setPullRequested(false));
       // TODO-cknipe: Should we retry if it fails / if there was a network issue?
       // If the pull failed, do nothing. Another pull will happen eventually.
       return dispatch(fetchSoilDataForUser(currentUserID));
     }
-  }, [dispatch, currentUserID, setPullRequested]);
+  }, [dispatch, currentUserID]);
 };

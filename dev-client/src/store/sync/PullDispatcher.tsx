@@ -19,8 +19,8 @@ import {useEffect} from 'react';
 
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {useSelector} from 'terraso-mobile-client/store';
-import {usePullRequested} from 'terraso-mobile-client/store/sync/hooks/SyncContext';
 import {
   useDebouncedIsOffline,
   useIsLoggedIn,
@@ -34,7 +34,7 @@ import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequeste
  * and decides if we're ready to actually execute the pull
  */
 export const PullDispatcher = () => {
-  const {pullRequested} = usePullRequested();
+  const pullRequested = useSelector(selectPullRequested);
 
   // Determine whether the user is logged in before doing anything.
   const isLoggedIn = useIsLoggedIn();
