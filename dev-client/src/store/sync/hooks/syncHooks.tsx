@@ -28,6 +28,7 @@ import {
 import {pushSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
 
 export const useIsLoggedIn = () => {
   return useSelector(state => !!state.account.currentUser.data);
@@ -84,9 +85,7 @@ export const useSyncErrorSiteIds = () => {
 export const usePullDispatch = () => {
   const dispatch = useDispatch();
 
-  const currentUserID = useSelector(
-    state => state.account.currentUser?.data?.id,
-  );
+  const currentUserID = useSelector(selectCurrentUserID);
 
   return useCallback(() => {
     if (currentUserID !== undefined) {

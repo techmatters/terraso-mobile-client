@@ -26,12 +26,12 @@ import {
   useSyncErrorSiteIds,
 } from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 
-// Pull every 5 minutes
 export const PULL_INTERVAL_MS = 1000 * 60 * 5;
 export const OFFLINE_DEBOUNCE_MS = 500;
 
 export const PullRequester = () => {
   const dispatch = useDispatch();
+
   // Request a pull when app starts
   useEffect(() => {
     dispatch(setPullRequested(true));
