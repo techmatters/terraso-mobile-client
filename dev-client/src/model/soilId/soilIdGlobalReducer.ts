@@ -15,15 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import _ from 'lodash';
-
 import {setUsers} from 'terraso-client-shared/account/accountSlice';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
 import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
-import {selectUnsyncedSites} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {
   setProjectSettings,
   setSoilData,
@@ -39,18 +36,13 @@ export const fetchSoilDataForUser = createAsyncThunk(
 
 export const soilIdGlobalReducer = createGlobalReducer(builder => {
   builder.addCase(fetchSoilDataForUser.fulfilled, (state, {payload}) => {
-    // In case a change is made while a pull is already happening,
-    // we don't want to clobber the user's change, so ignore the fetch for now
-    // TODO: https://github.com/techmatters/terraso-mobile-client/issues/2556
-    if (_.isEmpty(selectUnsyncedSites(state))) {
-      setProjects(state.project, payload.projects);
-      setSites(state.site, payload.sites);
-      setUsers(state.account, payload.users);
-      setProjectSettings(state.soilId, payload.projectSoilSettings);
-      setSoilData(state.soilId, payload.soilData);
-      setSoilMetadata(state.soilMetadata, payload.soilMetadata);
-      updateSoilIdStatus(state.soilId, 'ready');
-    }
+    setProjects(state.project, payload.projects);
+    setSites(state.site, payload.sites);
+    setUsers(state.account, payload.users);
+    setProjectSettings(state.soilId, payload.projectSoilSettings);
+    setSoilData(state.soilId, payload.soilData);
+    setSoilMetadata(state.soilMetadata, payload.soilMetadata);
+    updateSoilIdStatus(state.soilId, 'ready');
   });
 
   builder.addCase(fetchSoilDataForUser.pending, state => {
