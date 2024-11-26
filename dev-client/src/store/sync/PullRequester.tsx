@@ -39,10 +39,7 @@ export const PullRequester = () => {
 
   // Request a pull when we come online
   const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
-  const wasPreviouslyOffline = useRef<boolean>(
-    // TODO-cknipe: Remove this once garo makes isOffline a boolean
-    isOffline === null ? true : isOffline,
-  );
+  const wasPreviouslyOffline = useRef<boolean>(isOffline);
   useEffect(() => {
     if (isOffline === false && isOffline !== wasPreviouslyOffline.current) {
       dispatch(setPullRequested(true));
