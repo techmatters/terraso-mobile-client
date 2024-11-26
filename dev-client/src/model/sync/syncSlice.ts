@@ -33,7 +33,6 @@ export const syncSlice = createSlice({
       pullRequested: action.payload,
     }),
   },
-  extraReducers: {},
 });
 
 export const {setPullRequested} = syncSlice.actions;
