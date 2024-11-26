@@ -32,14 +32,10 @@ i18n.use(initReactI18next).init({
   compatibilityJSON: 'v4',
   resources: {
     en: {
-      translation: {
-        ...en,
-      },
+      translation: en,
     },
     es: {
-      translation: {
-        ...es,
-      },
+      translation: es,
     },
   },
   debug: __DEV__ && process.env.NODE_ENV !== 'test',
