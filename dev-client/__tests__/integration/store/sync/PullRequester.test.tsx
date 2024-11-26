@@ -40,25 +40,10 @@ type Props = {
   newPullRequested?: boolean;
 };
 
-// const OLD_ExposePullRequestedForTest = ({mock, newPullRequested}: Props) => {
-//   const {pullRequested, setPullRequested} = usePullRequested();
-//   useEffect(() => {
-//     mock(pullRequested);
-//   }, [pullRequested, mock]);
-
-//   useEffect(() => {
-//     if (newPullRequested !== undefined) {
-//       setPullRequested(newPullRequested);
-//     }
-//   }, [newPullRequested, setPullRequested]);
-//   return <></>;
-// };
-
 // We can read the value of pullRequested, by testing what the mock was last called with.
 const ExposePullRequestedForTest = ({mock, newPullRequested}: Props) => {
   const pullRequested = useSelector(selectPullRequested);
   const dispatch = useDispatch();
-  console.log('PullRequested exposed!! --> ', pullRequested);
 
   useEffect(() => {
     mock(pullRequested);
@@ -68,7 +53,7 @@ const ExposePullRequestedForTest = ({mock, newPullRequested}: Props) => {
     if (newPullRequested !== undefined) {
       dispatch(setPullRequested(newPullRequested));
     }
-  });
+  }, [newPullRequested, dispatch]);
 
   return <></>;
 };
@@ -189,22 +174,16 @@ describe('PullRequester + sites with errors', () => {
 
 describe('PullRequester + interval', () => {
   jest.useFakeTimers();
-  test('requests pull after specified amount of time', () => {
-    console.log('-------TEST-------');
-    const {screen} = renderTestComponents();
-    console.log('0');
-    setPullRequestedFalse(screen);
-    console.log('1');
-    jest.advanceTimersByTime(PULL_INTERVAL_MS + 1);
-    console.log('2');
-    const mock = rerenderTestComponents(screen);
-    console.log('3');
-    expect(mock).toHaveBeenLastCalledWith(true);
-    console.log('-------END TEST-------');
-  });
-  test('does not request pull before specified amount of time', () => {
-    console.log('-------UNRELATED TEST-------');
 
+  test('requests pull after specified amount of time', () => {
+    const {screen} = renderTestComponents();
+    setPullRequestedFalse(screen);
+    jest.advanceTimersByTime(PULL_INTERVAL_MS + 1);
+    const mock = rerenderTestComponents(screen);
+    expect(mock).toHaveBeenLastCalledWith(true);
+  });
+
+  test('does not request pull before specified amount of time', () => {
     const {screen} = renderTestComponents();
     setPullRequestedFalse(screen);
     jest.advanceTimersByTime(PULL_INTERVAL_MS - 1);
