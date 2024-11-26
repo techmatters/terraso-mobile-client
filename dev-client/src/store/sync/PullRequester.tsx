@@ -46,8 +46,8 @@ export const PullRequester = () => {
   useEffect(() => {
     if (isOffline === false && isOffline !== wasPreviouslyOffline.current) {
       dispatch(setPullRequested(true));
-      wasPreviouslyOffline.current = isOffline;
     }
+    wasPreviouslyOffline.current = isOffline;
   }, [isOffline, dispatch]);
 
   // Request a pull when most recent push yielded errors
