@@ -56,7 +56,6 @@ export const PullDispatcher = () => {
 
   useEffect(() => {
     if (pullAllowed && pullRequested) {
-      console.log('Dispatching pull');
       dispatchPull();
     }
   }, [pullRequested, pullAllowed, dispatchPull]);

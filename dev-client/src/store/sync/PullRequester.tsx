@@ -34,11 +34,6 @@ export const PullRequester = () => {
   const dispatch = useDispatch();
   // Request a pull when app starts
   useEffect(() => {
-    // TODO-cknipe: Remove all the console.logs
-    console.log(
-      'Requesting pull on app start -- hopefully this only happens once??',
-    );
-
     dispatch(setPullRequested(true));
   }, [dispatch]);
 
@@ -50,7 +45,6 @@ export const PullRequester = () => {
   );
   useEffect(() => {
     if (isOffline === false && isOffline !== wasPreviouslyOffline.current) {
-      console.log('Requesting pull via offline');
       dispatch(setPullRequested(true));
       wasPreviouslyOffline.current = isOffline;
     }
@@ -60,7 +54,6 @@ export const PullRequester = () => {
   const sitesWithErrors = useSyncErrorSiteIds();
   useEffect(() => {
     if (!_.isEmpty(sitesWithErrors)) {
-      console.log('Requesting pull via sitesWithErrors');
       dispatch(setPullRequested(true));
     }
   }, [sitesWithErrors, dispatch]);
@@ -70,7 +63,6 @@ export const PullRequester = () => {
   const intervalIdRef = useRef<number | undefined>(undefined);
   useEffect(() => {
     intervalIdRef.current = setInterval(() => {
-      console.log('Requesting pull via interval');
       dispatch(setPullRequested(true));
     }, PULL_INTERVAL_MS);
     return () => {

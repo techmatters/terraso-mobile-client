@@ -90,10 +90,7 @@ export const usePullDispatch = () => {
 
   return useCallback(() => {
     if (currentUserID !== undefined) {
-      // TODO-cknipe: Remove this
-      console.log('Doing pull!');
       dispatch(setPullRequested(false));
-      // TODO-cknipe: Should we retry if it fails / if there was a network issue?
       // If the pull failed, do nothing. Another pull will happen eventually.
       return dispatch(fetchSoilDataForUser(currentUserID));
     }
