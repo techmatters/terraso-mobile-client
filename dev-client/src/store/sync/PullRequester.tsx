@@ -17,10 +17,10 @@
 
 import {useEffect, useRef} from 'react';
 
-import {useDispatch} from '..';
 import _ from 'lodash';
 
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
+import {useDispatch} from 'terraso-mobile-client/store';
 import {
   useDebouncedIsOffline,
   useSyncErrorSiteIds,
