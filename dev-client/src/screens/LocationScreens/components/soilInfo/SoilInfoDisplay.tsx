@@ -17,7 +17,10 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {SoilInfo} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  LandCapabilityClass,
+  SoilInfo,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
@@ -31,6 +34,14 @@ import {
 type SoilInfoDisplayProps = {
   dataSource: string;
   soilInfo: SoilInfo;
+};
+
+const renderLCCString = ({capabilityClass, subClass}: LandCapabilityClass) => {
+  if (!subClass) {
+    return capabilityClass;
+  }
+
+  return `${capabilityClass}${subClass}`;
 };
 
 export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
@@ -71,9 +82,7 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
       <Box>
         <TranslatedParagraph
           i18nKey="site.soil_id.soil_info.land_class_label"
-          values={{
-            land: soilInfo.landCapabilityClass.capabilityClass,
-          }}
+          values={{land: renderLCCString(soilInfo.landCapabilityClass)}}
         />
         <TranslatedParagraph
           i18nKey="site.soil_id.soil_info.data_source_label"
