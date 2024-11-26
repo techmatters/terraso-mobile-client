@@ -58,7 +58,7 @@
     "expo-web-browser": "~13.0.3",
     "formik": "^2.4.6",
     "haversine": "^1.1.1",
-    "i18next": "^24.0.0",
+    "i18next": "^24.0.2",
     "intl-pluralrules": "^2.0.1",
     "jpeg-js": "^0.4.4",
     "munsell": "^1.1.5",

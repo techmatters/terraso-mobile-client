@@ -66,7 +66,7 @@ msgid "site##members"
 msgstr "{{members}} Miembros"
 
 msgid "site##coords"
-msgstr "{{lat}}, {{lng}}"
+msgstr "{{lat}}, {{long}}"
 
 msgid "site##empty##info"
 msgstr ""
