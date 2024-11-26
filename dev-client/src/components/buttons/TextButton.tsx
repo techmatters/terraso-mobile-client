@@ -23,7 +23,7 @@ import {Button} from 'native-base';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 
-export type TextButtonType = 'default' | 'error';
+export type TextButtonType = 'default' | 'error' | 'alertError';
 
 export type TextButtonProps = {
   label: string;
@@ -95,6 +95,10 @@ export const COLORS = {
   error: {
     default: 'error.main',
     pressed: 'error.content',
+  },
+  alertError: {
+    default: 'alert.errorContent',
+    pressed: 'text.primary', // TODO: get real color from design team
   },
   disabled: {
     default: 'text.disabled',

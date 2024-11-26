@@ -62,6 +62,10 @@ export const theme = extendTheme({
       main: '#ED6C02',
       content: '#663C00',
     },
+    alert: {
+      errorContent: '#5F2120',
+      errorFill: '#FDEDED',
+    },
     grey: {
       200: '#EEEEEE',
       300: '#E0E0E0',
