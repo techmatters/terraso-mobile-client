@@ -27,7 +27,7 @@
     "site": {
         "progress": "Progreso: {{progress}}",
         "members": "{{members}} Miembros",
-        "coords": "{{lat}}, {{lng}}",
+        "coords": "{{lat}}, {{long}}",
         "empty": {
             "info": "No tiene aún ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu suelo y su potencial, y compartir con otros.\n\n<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de utilizar el mapa para encontrar una ubicación para un sitio:",
             "bullet_1": "Toca el mapa para marcar una ubicación y obtener más imformacion acerca del lugar.",

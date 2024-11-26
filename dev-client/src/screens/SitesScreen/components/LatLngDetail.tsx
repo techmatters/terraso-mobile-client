@@ -41,7 +41,7 @@ export const LatLngDetail = ({isCurrentLocation, coords}: Props) => {
       <Text variant="body2">
         {t('site.coords', {
           lat: formatCoordinate(coords.latitude),
-          lng: formatCoordinate(coords.longitude),
+          long: formatCoordinate(coords.longitude),
         })}
       </Text>
       {isCurrentLocation && (

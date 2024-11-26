@@ -107,7 +107,7 @@ msgid "site##your_location"
 msgstr "Your location"
 
 msgid "site##coords"
-msgstr "{{lat}}, {{lng}}"
+msgstr "{{lat}}, {{long}}"
 
 msgid "site##soil_id_prediction"
 msgstr "Soil ID Top Match"
