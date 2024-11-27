@@ -62,21 +62,25 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
       </Heading>
 
       <Box flexDirection="column">
-        <Box
-          borderWidth="2px"
-          width="85px"
-          height="85px"
-          mr="md"
-          justifyContent="center"
-          alignItems="center">
-          {imageSrc && <Image style={styles.image} source={imageSrc} />}
-          {shouldShowNumberInBox && <SlopeSteepnessTextSection {...soilData} />}
-        </Box>
+        <Box flexDirection="row" alignItems="center">
+          <Box
+            borderWidth="2px"
+            width="85px"
+            height="85px"
+            mr="md"
+            justifyContent="center"
+            alignItems="center">
+            {imageSrc && <Image style={styles.image} source={imageSrc} />}
+            {shouldShowNumberInBox && (
+              <SlopeSteepnessTextSection {...soilData} />
+            )}
+          </Box>
 
-        <Box flex={1}>
-          {!shouldShowNumberInBox && (
-            <SlopeSteepnessTextSection {...soilData} />
-          )}
+          <Box flex={1}>
+            {!shouldShowNumberInBox && (
+              <SlopeSteepnessTextSection {...soilData} />
+            )}
+          </Box>
         </Box>
 
         <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
