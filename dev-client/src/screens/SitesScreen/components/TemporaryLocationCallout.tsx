@@ -38,7 +38,9 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
+import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilId/soilIdSlice';
@@ -59,6 +61,7 @@ export const TemporaryLocationCallout = ({
 }: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const isOffline = useIsOffline();
 
   const elevation = useElevationData(coords);
   const soilIdData = useSoilIdData(coords);
@@ -92,22 +95,30 @@ export const TemporaryLocationCallout = ({
           <CalloutDetail
             label={t('site.soil_id_prediction')}
             value={
-              <TopSoilMatchDisplay
-                status={soilIdData.status}
-                topSoilMatch={topSoilMatch}
-                t={t}
-              />
+              isOffline ? (
+                <NotAvailableOffline />
+              ) : (
+                <TopSoilMatchDisplay
+                  status={soilIdData.status}
+                  topSoilMatch={topSoilMatch}
+                  t={t}
+                />
+              )
             }
           />
           <Divider />
           <CalloutDetail
             label={t('site.ecological_site_prediction')}
             value={
-              <EcologicalSiteMatchDisplay
-                status={soilIdData.status}
-                topSoilMatch={topSoilMatch}
-                t={t}
-              />
+              isOffline ? (
+                <NotAvailableOffline />
+              ) : (
+                <EcologicalSiteMatchDisplay
+                  status={soilIdData.status}
+                  topSoilMatch={topSoilMatch}
+                  t={t}
+                />
+              )
             }
           />
           <Divider />
@@ -115,10 +126,10 @@ export const TemporaryLocationCallout = ({
         <CalloutDetail
           label={t('site.elevation_label')}
           value={
-            elevation.fetching ? (
-              <ActivityIndicator size="small" />
+            isOffline ? (
+              <NotAvailableOffline />
             ) : (
-              <Text bold>{renderElevation(t, elevation.value)}</Text>
+              <ElevationDisplay elevation={elevation} t={t} />
             )
           }
         />
@@ -126,6 +137,7 @@ export const TemporaryLocationCallout = ({
         <Row justifyContent="flex-end">
           <Button
             onPress={onCreate}
+            isDisabled={isOffline}
             _text={{textTransform: 'uppercase'}}
             size="sm"
             variant="outline">
@@ -134,6 +146,7 @@ export const TemporaryLocationCallout = ({
           <Box w="24px" />
           <Button
             onPress={onLearnMore}
+            isDisabled={isOffline}
             _text={{textTransform: 'uppercase'}}
             size="sm">
             {t('site.more_info')}
@@ -142,6 +155,22 @@ export const TemporaryLocationCallout = ({
       </Column>
     </Card>
   );
+};
+
+type SoilIdStatusDisplayElevationProps = {
+  elevation: ElevationRecord;
+  t: TFunction;
+};
+
+const ElevationDisplay = ({
+  elevation,
+  t,
+}: SoilIdStatusDisplayElevationProps) => {
+  if (elevation.fetching) {
+    return <ActivityIndicator size="small" />;
+  }
+
+  return <Text bold>{renderElevation(t, elevation.value)}</Text>;
 };
 
 type SoilIdStatusDisplayTopMatchProps = {
@@ -203,5 +232,15 @@ const EcologicalSiteMatchDisplay = ({
         </Text>
       }
     />
+  );
+};
+
+const NotAvailableOffline = () => {
+  const {t} = useTranslation();
+
+  return (
+    <Text textTransform="uppercase" bold color="error.main">
+      {t('site.not_available_offine')}
+    </Text>
   );
 };
