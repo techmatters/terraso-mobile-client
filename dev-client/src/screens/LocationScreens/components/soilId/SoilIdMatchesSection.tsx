@@ -72,13 +72,16 @@ export const SoilIdMatchesSection = ({
 
 const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
   const isOffline = useIsOffline();
+  const {t} = useTranslation();
 
   const soilIdData = useSoilIdData(coords, siteId);
   const status = soilIdData.status;
   const isSite = !!siteId;
 
   if (isOffline) {
-    return <OfflineMessageBox />;
+    return (
+      <OfflineMessageBox message={t('site.soil_id.matches.offline_body')} />
+    );
   }
 
   switch (status) {
