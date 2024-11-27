@@ -49,6 +49,7 @@
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "unknown",
         "not_available_offine": "Not available offline",
+        "offline": "Sites can only be created while online.",
         "empty": {
             "info": "<bold>Three ways to create a site:</bold>\n",
             "map": "Tap anywhere on the map.",

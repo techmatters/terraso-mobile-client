@@ -116,6 +116,7 @@
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "desconocido",
         "not_available_offine": "TK Not available offline",
+        "offline": "TK Sites can only be created while online.",
         "form": {
             "name_min_length_error": "El nombre del sitio debe tener un mínimo de {{min}} caracteres",
             "name_max_length_error": "El nombre del sitio debe tener un máximo de {{max}} caracteres",
