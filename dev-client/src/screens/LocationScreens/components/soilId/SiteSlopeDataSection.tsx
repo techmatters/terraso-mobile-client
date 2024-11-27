@@ -61,7 +61,7 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
         {t('site.soil_id.site_data.slope.title')}
       </Heading>
 
-      <Box flexDirection="row">
+      <Box flexDirection="column">
         <Box
           borderWidth="2px"
           width="85px"
@@ -83,7 +83,7 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
           <Box paddingVertical="lg">
             <Button
               _text={{textTransform: 'uppercase'}}
-              alignSelf="flex-end"
+              alignSelf="flex-start"
               rightIcon={<Icon name="chevron-right" />}
               onPress={onAddSoilDataPress}>
               {t('site.soil_id.site_data.slope.add_data')}
