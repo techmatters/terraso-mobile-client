@@ -219,6 +219,7 @@
         "label": "Project",
         "title": "Projects",
         "header": "Projects",
+        "offline": "Project management is only available online",
         "none": {
             "header": "You don’t have any projects.",
             "info": "Projects let you group sites, set requirements, and manage team members."

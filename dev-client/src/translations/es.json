@@ -209,6 +209,7 @@
         "label": "Proyecto",
         "title": "Proyectos",
         "header": "Proyectos",
+        "offline": "TK Project management is only available online",
         "none": {
             "header": "No tienes ningún proyecto.",
             "info": "Los proyectos te permiten agrupar sitios, establecer necesidades de datos y administrar a los miembros del equipo."
