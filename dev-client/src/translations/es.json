@@ -302,7 +302,8 @@
             "delete_site": "Eliminar sitio",
             "delete_site_modal": {
                 "title": "¿Eliminar sitio?",
-                "body": "Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer.\n\nLos administradores del proyecto pueden eliminar el sitio de este proyecto para conservar sus datos.",
+                "body": "Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer.",
+                "project": "\n\nLos administradores del proyecto pueden eliminar el sitio de este proyecto para conservar sus datos.",
                 "action_name": "Eliminar"
             },
             "remove_site_modal": {

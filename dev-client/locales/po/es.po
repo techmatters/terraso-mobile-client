@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-18T16:51:33.737Z\n"
-"PO-Revision-Date: 2024-11-18T16:51:33.737Z\n"
+"POT-Creation-Date: 2024-11-26T18:14:40.151Z\n"
+"PO-Revision-Date: 2024-11-26T18:14:40.151Z\n"
 
 msgid "welcome##title"
 msgstr "Bienvenido a LandPKS Soil ID"
@@ -675,8 +675,11 @@ msgid "projects##sites##delete_site_modal##title"
 msgstr "¿Eliminar sitio?"
 
 msgid "projects##sites##delete_site_modal##body"
+msgstr "Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer."
+
+msgid "projects##sites##delete_site_modal##project"
 msgstr ""
-"Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer.\n"
+"\n"
 "\n"
 "Los administradores del proyecto pueden eliminar el sitio de este proyecto para conservar sus datos."
 
