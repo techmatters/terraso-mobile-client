@@ -448,7 +448,7 @@
         "no": "No",
         "next": "Next",
         "proceed": "Proceed",
-        "offline_header": "You are offline"
+        "offline_title": "You are offline"
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",

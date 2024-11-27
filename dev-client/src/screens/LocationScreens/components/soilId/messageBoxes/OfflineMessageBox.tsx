@@ -24,7 +24,7 @@ export const OfflineMessageBox = () => {
   const {t} = useTranslation();
 
   return (
-    <AlertMessageBox title={t('site.soil_id.matches.offline_title')}>
+    <AlertMessageBox title={t('general.offline_title')}>
       <Text variant="body1" mb="sm">
         {t('site.soil_id.matches.offline_body')}
       </Text>

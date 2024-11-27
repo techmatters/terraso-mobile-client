@@ -404,7 +404,7 @@
         "no": "No",
         "next": "Siguiente",
         "proceed": "Proceder",
-        "offline_header": "TK You are offline",
+        "offline_title": "Estás fuera de linea",
         "last_modified": "Última modificación",
         "save_fab": "Guardar",
         "last_modified_by": "última modificación {{user}}, {{date}}",

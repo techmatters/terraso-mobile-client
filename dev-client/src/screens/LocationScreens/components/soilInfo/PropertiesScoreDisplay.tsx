@@ -74,7 +74,7 @@ export function PropertiesScoreDisplay({
         <ScoreTile score={matchInfo.score} />
       </Row>
       {isOffline ? (
-        <AlertMessageBox title={t('general.offline_header')}>
+        <AlertMessageBox title={t('general.offline_title')}>
           <Text>{t('site.soil_id.soil_properties_score_info.offline')}</Text>
         </AlertMessageBox>
       ) : (
