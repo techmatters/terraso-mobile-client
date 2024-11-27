@@ -200,7 +200,8 @@
                     "3": "Color de suelo por profundidad",
                     "4": "Pendiente del sitio",
                     "5": "Grietas del suelo"
-                }
+                },
+                "offline": "TK Soil properties score will update when you are online."
             }
         }
     },
@@ -403,6 +404,7 @@
         "no": "No",
         "next": "Siguiente",
         "proceed": "Proceder",
+        "offline_header": "TK You are offline",
         "last_modified": "Última modificación",
         "save_fab": "Guardar",
         "last_modified_by": "última modificación {{user}}, {{date}}",

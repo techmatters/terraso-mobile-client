@@ -176,7 +176,8 @@
                     "3": "Soil color by depth",
                     "4": "Site slope",
                     "5": "Soil cracks"
-                }
+                },
+                "offline": "Soil properties score will update when you are online."
             }
         },
         "notes": {
@@ -446,7 +447,8 @@
         "yes": "Yes",
         "no": "No",
         "next": "Next",
-        "proceed": "Proceed"
+        "proceed": "Proceed",
+        "offline_header": "You are offline"
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",
