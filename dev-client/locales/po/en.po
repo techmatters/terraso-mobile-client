@@ -323,7 +323,7 @@ msgid "site##soil_id##site_data##slope##title"
 msgstr "Slope Steepness"
 
 msgid "site##soil_id##site_data##slope##add_data"
-msgstr "Add slope"
+msgstr "Enter steepness"
 
 msgid "site##soil_id##site_data##soil_properties##title"
 msgstr "Soil Properties"
