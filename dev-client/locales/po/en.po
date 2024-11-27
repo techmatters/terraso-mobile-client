@@ -304,9 +304,6 @@ msgstr "nativeland.info"
 msgid "site##soil_id##matches##native_lands_url"
 msgstr "https://nativeland.info/"
 
-msgid "site##soil_id##matches##offline_title"
-msgstr "You are offline"
-
 msgid "site##soil_id##matches##offline_body"
 msgstr "Soil matches will update here when you are online."
 
@@ -427,6 +424,9 @@ msgstr "Site slope"
 msgid "site##soil_id##soil_properties_score_info##bullets##5"
 msgstr "Soil cracks"
 
+msgid "site##soil_id##soil_properties_score_info##offline"
+msgstr "Soil properties score will update when you are online."
+
 msgid "site##notes##add_note_label"
 msgstr "Add Note"
 
@@ -513,6 +513,9 @@ msgstr "Projects"
 
 msgid "projects##header"
 msgstr "Projects"
+
+msgid "projects##offline"
+msgstr "Project management is only available online"
 
 msgid "projects##none##header"
 msgstr "You don’t have any projects."
@@ -1017,6 +1020,9 @@ msgstr "Next"
 
 msgid "general##proceed"
 msgstr "Proceed"
+
+msgid "general##offline_title"
+msgstr "You are offline"
 
 msgid "permissions##camera_title"
 msgstr "LandPKS Soil ID needs to access your camera"

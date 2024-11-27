@@ -467,6 +467,9 @@ msgstr "Pendiente del sitio"
 msgid "site##soil_id##soil_properties_score_info##bullets##5"
 msgstr "Grietas del suelo"
 
+msgid "site##soil_id##soil_properties_score_info##offline"
+msgstr "TK Soil properties score will update when you are online."
+
 msgid "projects##label"
 msgstr "Proyecto"
 
@@ -475,6 +478,9 @@ msgstr "Proyectos"
 
 msgid "projects##header"
 msgstr "Proyectos"
+
+msgid "projects##offline"
+msgstr "TK Project management is only available online"
 
 msgid "projects##none##header"
 msgstr "No tienes ningún proyecto."
@@ -895,6 +901,9 @@ msgstr "Siguiente"
 
 msgid "general##proceed"
 msgstr "Proceder"
+
+msgid "general##offline_title"
+msgstr "Estás fuera de linea"
 
 msgid "general##last_modified"
 msgstr "Última modificación"
