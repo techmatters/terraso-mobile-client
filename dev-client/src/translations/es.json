@@ -12,7 +12,7 @@
         "version_includes": {
             "title": "Esta version incluye:",
             "bullet_1": "Identificación de suelos dentro de los EEUU",
-            "bullet_2": "Recogida de datos sobre pendientes y suelos",
+            "bullet_2": "Observaciones de la pendiente y del suelo",
             "bullet_3": "Notas acerca del sitio",
             "bullet_4": "El manejo de projectos"
         },
@@ -246,7 +246,7 @@
                 "depth": "Profundidad ({{units}})",
                 "confirm_preset": {
                     "title": "¿Cambiar profundidades?",
-                    "body": "Se borrarán los datos del pozo de suelo que se hayan introducido. Esta acción no se puede deshacer.",
+                    "body": "Se borrarán las observaciones de la fosa de suelo que se hayan introducido. Esta acción no se puede deshacer.",
                     "confirm": "Cambiar"
                 }
             },
@@ -278,7 +278,7 @@
             "archive_description": "El proyecto se moverá a Proyectos archivados, por lo que será de sólo lectura. Los miembros del equipo podrán acceder a los datos, y los administradores del proyecto podrán restaurarlo en cualquier momento. Los proyectos públicos archivados seguirán siendo visibles en los portales de datos.",
             "delete_button": "Eliminar",
             "delete_button_prompt": "¿Eliminar proyecto?",
-            "delete_description": "Esto borrará el proyecto y los datos de sus sitios de manera permanente. Esto no se puede deshacer.\n\nLos administradores del proyectos tienen la opción de transferir sitios de este proyecto para mantener los datos del sitio."
+            "delete_description": "Esto eliminará permanentemente el proyecto y las observaciones de sus sitios. Esto no se puede deshacer.\n\nLos jefes de proyecto tienen la opción de transferir los centros de este proyecto para conservar las observaciones de los centros."
         },
         "sites": {
             "add": "Añadir sitios",
@@ -302,18 +302,18 @@
             "delete_site": "Eliminar sitio",
             "delete_site_modal": {
                 "title": "¿Eliminar sitio?",
-                "body": "Esto eliminará el sitio {{siteName}} y todos sus datos de manera permanente. Esto no se puede deshacer.",
-                "project": "\n\nLos administradores del proyecto pueden eliminar el sitio de este proyecto para conservar sus datos.",
-                "action_name": "Eliminar"
+                "body": "Esto eliminará permanentemente el sitio {{siteName}} y todas sus observaciones. Esto no se puede deshacer.",
+                "action_name": "Eliminar",
+                "project": "\n\nSi los sitios tienen datos ingresados con profundidades diferentes a lo especificado en este proyecto, esos datos se eliminarán. Esto no se puede deshacer."
             },
             "remove_site_modal": {
                 "title": "¿Eliminar sitio de este proyecto?",
-                "body": "Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros del equipo del proyecto dejarán de tener acceso.",
+                "body": "Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros del proyecto dejarán de tener acceso.",
                 "action_name": "Eliminar sitio."
             },
             "transfer_site_modal": {
                 "title": "¿Transferir sitios?",
-                "body": "Los sitios transferidos utilizarán la configuración de datos y los roles de los miembros del equipo de este proyecto.\n\nSi los sitios tienen datos ingresados con profundidades diferentes a lo especificado en este proyecto, esos datos se eliminarán. Esto no se puede deshacer.",
+                "body": "Los sitios transferidos utilizarán las entradas, ajustes y funciones de los miembros del equipo de este proyecto.\n\nSi los centros tienen observaciones introducidas a profundidades diferentes de las especificadas en este proyecto, esas observaciones se eliminarán. Esto no se puede deshacer.",
                 "action_name": "Transferir"
             }
         },
@@ -345,11 +345,11 @@
             "project_role": "Rol en el proyecto",
             "manager_help": "Puede visualizar y editar todos los aspectos del proyecto y sus sitios afiliados",
             "contributor_help": "Puede visualizar, añadir y editar datos del sitio",
-            "viewer_help": "Puede visualizar los datos del sitio",
+            "viewer_help": "Puede ver los datos y observaciones del sitio",
             "remove": "Eliminar del proyecto",
-            "remove_help": "Quitarle acceso al miembro del equipo a este proyecto, manteniendo cualquier dato que haya contribuido a los sitios",
+            "remove_help": "Elimine el acceso del miembro a este proyecto, manteniendo cualquier dato que haya contribuido a los sitios",
             "confirm_removal_title": "¿Eliminar del proyecto?",
-            "confirm_removal_body": "Esto eliminará al miembro del equipo del proyecto, pero conservará los datos que haya aportado sobre el sitio.",
+            "confirm_removal_body": "Esto eliminará al miembro del proyecto. Conservará los datos que haya aportado sobre el sitio.",
             "confirm_removal_action": "Eliminar"
         },
         "transfer_sites": {
@@ -426,7 +426,7 @@
             "privacy_item2": "Se incluyen todos los datos ingresados en la aplicación móvil LandPKS Soil ID, excepto la información de identificación personal (IIP).",
             "privacy_item3": "<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo para la persona quien lo creó. Esa persona puede cambiar la privacidad en cualquier momento.",
             "privacy_item4": "La configuración de privacidad de un proyecto determina la privacidad de sus sitios afiliados.</bold> Los sitios que pertenecen a un proyecto privado son visibles para los miembros del equipo del proyecto. Un administrador de proyectos puede cambiar la privacidad en cualquier momento.",
-            "data_portal_link_url": "\nhttps://landpks.terraso.org/portal",
+            "data_portal_link_url": "https://landpks.terraso.org/portal",
             "data_portal_link_text": "Portal de datos LandPKS",
             "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
             "privacy_policy_link_text": "Lee más acerca de nuestras políticas de privacidad de datos."
@@ -510,12 +510,12 @@
             "depth_end": "profundidad final",
             "update_modal": {
                 "title": "¿Cambiar profunidad?",
-                "body": "Los datos que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
+                "body": "Las observaciones de la fosa de suelo que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
                 "action": "Cambiar"
             },
             "delete_modal": {
                 "title": "¿Eliminar profundad?",
-                "body": "Los datos que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
+                "body": "Las observaciones que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
                 "action": "Eliminar"
             },
             "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
@@ -526,15 +526,15 @@
             "title": "Textura del suelo",
             "label": "Clase de textura",
             "info": {
-                "title": "Textura del suelo",
-                "description": "El suelo se compone de partículas de diferentes tamaños. Una vez que eliminas todas las partículas grandes (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n\n<bold>La textura del suelo</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener un gran impacto en el potencial del suelo.\n\nLa textura del suelo determina muchas características importantes de tu terreno, incluyendo:",
-                "description_end": "Conocer la textura del suelo también te ayuda a identificar tu suelo con mayor precisión.",
+                "title": "Clase Textura",
+                "description": "El suelo está formado por partículas de diferentes tamaños. Una vez eliminados todos los fragmentos de roca (cualquier cosa de más de $t(soil.texture.info.description_diameter,{\"context\":\"{{units}}\"}) de diámetro), lo que queda es una mezcla de arena, limo y arcilla.\n\n<bold>Clase textura</bold> viene determinada por el porcentaje de arena, limo y arcilla del suelo. Los cambios en esta proporción pueden tener grandes repercusiones en el potencial del suelo.\n\nLa textura del suelo determina muchas características importantes de su tierra, incluyendo:",
                 "point1": "Cuánta agua puede retener el suelo",
                 "point2": "La rapidez con la que el agua puede ser absorbida y filtrada a través del suelo.",
                 "point3": "La facilidad con la que el suelo se erosiona cuando se expone al viento o al agua.",
                 "point4": "Cómo responde el suelo a las actividades de gestión (por ejemplo, la compactación por operaciones de labranza).",
                 "description_diameter_METRIC": "2mm",
-                "description_diameter_ENGLISH": "1/16”"
+                "description_diameter_ENGLISH": "1/16”",
+                "description_end": "Conocer la textura del suelo también te ayuda a identificar tu suelo con mayor precisión."
             },
             "guide": {
                 "title": "Guía de texturas",
@@ -600,7 +600,7 @@
                 "SILTY_CLAY_LOAM": "Franco arcillo limoso",
                 "SILT_LOAM": "Franco limoso"
             },
-            "guide_intro": "¿No conoce la textura de su suelo? Utiliza la guía paso a paso.",
+            "guide_intro": "¿No conoce la clase de textura? Utilice la guía paso a paso.",
             "use_guide_label": "Usar guía",
             "clay_title": "Porcentaje arcilla",
             "clay_label": "Porcentaje arcilla",
@@ -708,12 +708,9 @@
         "add_depth_label": "Añadir profundidad",
         "project_settings": {
             "pit_required_label": "Pozo de tierra requerido",
-            "required_data_title": "Requisitos para la recogida de datos"
+            "required_data_title": "Requisitos de observación"
         },
         "required_method": "{{method}} (obligatorio)",
-        "collection_method_summary": {
-            "soilTexture": "Clase de textura"
-        },
         "collection_method": {
             "slope": "Incluye la inclinación, forma, aspecto y posición del pendiente del suelo.",
             "soilTexture": "Textura del suelo",
@@ -736,10 +733,7 @@
             "soilTexture": "Incluye clase de textura y volumen de fragmentos de roca"
         },
         "vertical_cracking": {
-            "description": "Surface cracks develop in clay-rich soils after they dry out.",
-            "no_cracks": "<bold>No Cracks</bold>\nNo cracks are visible on the soil surface.",
-            "surface_cracks": "<bold>Surface Cracks</bold>\nSurface cracks are less than $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep.",
-            "deep_vertical_cracks": "<bold>Deep Vertical Cracks</bold>\nDeep vertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks.",
+            "description": "Las grietas superficiales se desarrollan en suelos ricos en arcilla después de que se sequen.",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "25 cm",
@@ -748,7 +742,10 @@
                 "NO_CRACKING": "Sin grietas",
                 "SURFACE_CRACKING_ONLY": "Sólo grietas superficiales",
                 "DEEP_VERTICAL_CRACKS": "Grietas verticales profundas"
-            }
+            },
+            "no_cracks": "<bold>Sin grietas</bold>\nNo se aprecian grietas en la superficie del suelo.",
+            "surface_cracks": "<bold>Grietas superficiales</bold>\nLas grietas superficiales tienen una profundidad inferior a $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}).",
+            "deep_vertical_cracks": "<bold>Grietas verticales profundas</bold>\nLas grietas verticales profundas tienen una anchura mínima de $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) y una profundidad mínima de $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}). Debería poder colocar un lápiz dentro de las grietas."
         },
         "soil_preset": {
             "header": "Cambiar profundidades del pozo",
@@ -757,6 +754,9 @@
             "NRCS": "NRCS/GSP (predeterminado)",
             "BLM": "Norma de supervisión de BLM",
             "CUSTOM": "A medida"
+        },
+        "collection_method_summary": {
+            "soilTexture": "Clase de textura"
         }
     },
     "slope": {
