@@ -36,6 +36,7 @@ import {
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {updateSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -87,6 +88,8 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
     [site, dispatch],
   );
 
+  const isOffline = useIsOffline();
+
   useSoilIdData(coords, site?.id);
 
   return (
@@ -135,6 +138,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
         {site && !project && (
           <Row>
             <RadioBlock
+              allDisabled={isOffline}
               label={
                 <Row alignItems="center">
                   <Text variant="body1" bold>
