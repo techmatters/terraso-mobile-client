@@ -125,16 +125,17 @@ function App(): React.JSX.Element {
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
         <NavigationContainer>
-          <HeaderHeightContext.Provider value={{headerHeight, setHeaderHeight}}>
-            <BottomSheetModalProvider>
-              <PaperProvider theme={paperTheme}>
-                <NativeBaseProvider theme={theme}>
-                  <Portal.Host>
-                    <BottomSheetModalProvider>
-                      <GeospatialProvider>
-                        <Toasts />
-                        <SitesScreenContextProvider>
-                          <ConnectivityContextProvider>
+          <ConnectivityContextProvider>
+            <HeaderHeightContext.Provider
+              value={{headerHeight, setHeaderHeight}}>
+              <BottomSheetModalProvider>
+                <PaperProvider theme={paperTheme}>
+                  <NativeBaseProvider theme={theme}>
+                    <Portal.Host>
+                      <BottomSheetModalProvider>
+                        <GeospatialProvider>
+                          <Toasts />
+                          <SitesScreenContextProvider>
                             <ForegroundPermissionsProvider>
                               <RestrictByFlag flag="FF_offline">
                                 <PushDispatcher />
@@ -143,15 +144,15 @@ function App(): React.JSX.Element {
                               </RestrictByFlag>
                               <RootNavigator />
                             </ForegroundPermissionsProvider>
-                          </ConnectivityContextProvider>
-                        </SitesScreenContextProvider>
-                      </GeospatialProvider>
-                    </BottomSheetModalProvider>
-                  </Portal.Host>
-                </NativeBaseProvider>
-              </PaperProvider>
-            </BottomSheetModalProvider>
-          </HeaderHeightContext.Provider>
+                          </SitesScreenContextProvider>
+                        </GeospatialProvider>
+                      </BottomSheetModalProvider>
+                    </Portal.Host>
+                  </NativeBaseProvider>
+                </PaperProvider>
+              </BottomSheetModalProvider>
+            </HeaderHeightContext.Provider>
+          </ConnectivityContextProvider>
         </NavigationContainer>
       </Provider>
     </GestureHandlerRootView>
