@@ -196,6 +196,13 @@ export const theme = extendTheme({
             },
           },
         },
+        outline: {
+          _disabled: {
+            _text: {
+              color: 'action.disabled',
+            },
+          },
+        },
         fullWidth: {
           borderRadius: '0px',
           width: 'full',
