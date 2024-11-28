@@ -20,10 +20,11 @@ import {useEffect} from 'react';
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
-import {useSelector} from 'terraso-mobile-client/store';
+import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
 import {
   useDebouncedIsOffline,
-  useIsLoggedIn,
   usePullDispatch,
 } from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequester';
@@ -34,10 +35,11 @@ import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequeste
  * and decides if we're ready to actually execute the pull
  */
 export const PullDispatcher = () => {
+  const dispatch = useDispatch();
   const pullRequested = useSelector(selectPullRequested);
 
   // Determine whether the user is logged in before doing anything.
-  const isLoggedIn = useIsLoggedIn();
+  const currentUserID = useSelector(selectCurrentUserID);
   // Debounce offline state so we know when it's safe to attempt a pull.
   const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
   // Don't pull when there are changes yet to push.
@@ -46,7 +48,7 @@ export const PullDispatcher = () => {
   const appState = useAppState();
 
   const pullAllowed =
-    isLoggedIn &&
+    currentUserID !== undefined &&
     !isOffline &&
     unsyncedSiteIds.length === 0 &&
     appState === 'active';
@@ -56,9 +58,10 @@ export const PullDispatcher = () => {
 
   useEffect(() => {
     if (pullAllowed && pullRequested) {
-      dispatchPull();
+      dispatchPull(currentUserID);
+      dispatch(setPullRequested(false));
     }
-  }, [pullRequested, pullAllowed, dispatchPull]);
+  }, [pullRequested, pullAllowed, dispatchPull, currentUserID, dispatch]);
 
   return <></>;
 };
