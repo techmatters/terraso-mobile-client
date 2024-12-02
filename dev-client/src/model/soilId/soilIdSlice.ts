@@ -53,6 +53,7 @@ export type MethodRequired<
 > = `${T}Required`;
 
 export type SoilState = {
+  /* Note that the keys for these records are the site IDs to which the soil data belongs */
   soilData: Record<string, SoilData | undefined>;
   soilSync: SyncRecords<SoilData, SoilDataPushFailureReason>;
 

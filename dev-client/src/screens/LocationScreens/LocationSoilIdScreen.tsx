@@ -27,6 +27,7 @@ import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/co
 import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
 import {SoilIdDescriptionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdDescriptionSection';
 import {SoilIdMatchesSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdMatchesSection';
+import {SoilIdSelectionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdSelectionSection';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 import {selectSite} from 'terraso-mobile-client/store/selectors';
@@ -38,8 +39,10 @@ type Props = {
 
 export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
   const {t} = useTranslation();
+
+  const isSite = !!siteId;
   const site = useSelector(state =>
-    siteId === undefined ? undefined : selectSite(siteId)(state),
+    isSite ? selectSite(siteId)(state) : undefined,
   );
 
   return (
@@ -48,9 +51,14 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
         <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
       }>
       <ScrollView>
+        {isSite ? (
+          <SoilIdSelectionSection siteId={siteId} coords={coords} />
+        ) : (
+          <></>
+        )}
         <SoilIdDescriptionSection siteId={siteId} coords={coords} />
         <SoilIdMatchesSection siteId={siteId} coords={coords} />
-        {siteId ? (
+        {isSite ? (
           <SiteRoleContextProvider siteId={siteId}>
             <SiteDataSection siteId={siteId} />
           </SiteRoleContextProvider>

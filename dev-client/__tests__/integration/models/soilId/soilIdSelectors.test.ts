@@ -49,6 +49,9 @@ const appState = (): AppState => {
       soilData: {},
       status: 'ready',
     },
+    soilMetadata: {
+      soilMetadata: {},
+    },
   };
 };
 

@@ -15,20 +15,31 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
 import {Pressable} from 'react-native';
 
+import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {formatPercent} from 'terraso-mobile-client/util';
 
-type Props = {soil_name: string; score: number; onPress: () => void};
+type Props = {
+  soilName: string;
+  score: number;
+  isSelected?: boolean;
+  onPress: () => void;
+};
 
-export const SoilMatchTile = ({soil_name, score, onPress}: Props) => {
-  const {t} = useTranslation();
-
+export const SoilMatchTile = ({
+  soilName,
+  score,
+  isSelected,
+  onPress,
+}: Props) => {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{disabled: !onPress}}
+      onPress={onPress}>
       <Box
         variant="tile"
         alignItems="center"
@@ -37,28 +48,39 @@ export const SoilMatchTile = ({soil_name, score, onPress}: Props) => {
         my="4px"
         py="6px">
         <Box marginHorizontal="16px" width="84px" justifyContent="center">
-          <Text
-            variant="match-tile-score"
-            color="primary.lighter"
-            textAlign="center"
-            mb="-6px">
-            {formatPercent(score)}
-          </Text>
-          <Text
-            variant="body2"
-            color="primary.lighter"
-            textAlign="center"
-            mb="6px">
-            {t('site.soil_id.matches.match')}
-          </Text>
+          {isSelected ? (
+            <Text
+              variant="match-tile-selected"
+              color="primary.lighter"
+              textAlign="center">
+              <TranslatedContent i18nKey="site.soil_id.matches.selected" />
+            </Text>
+          ) : (
+            <>
+              <Text
+                variant="match-tile-score"
+                color="primary.lighter"
+                textAlign="center">
+                <TranslatedContent
+                  i18nKey="site.soil_id.matches.match_score"
+                  values={{score: formatPercent(score)}}
+                />
+              </Text>
+              <Text
+                variant="body2"
+                color="primary.lighter"
+                textAlign="center"
+                mb="6px">
+                <TranslatedContent i18nKey="site.soil_id.matches.match" />
+              </Text>
+            </>
+          )}
         </Box>
-
         <Box flex={1} mr="12px" my="8px" flexDirection="row">
           <Text variant="match-tile-name" color="primary.contrast">
-            {soil_name}
+            {soilName}
           </Text>
         </Box>
-
         <Icon name="chevron-right" color="primary.contrast" mr="12px" />
       </Box>
     </Pressable>

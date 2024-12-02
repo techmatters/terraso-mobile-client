@@ -43,5 +43,8 @@ export const loadPersistedReduxState = () => {
 export const patchPersistedReduxState = (
   state: Partial<AppState>,
 ): Partial<AppState> => {
-  return merge(state, {soilId: {soilSync: {}}});
+  return merge(state, {
+    soilId: {soilSync: {}},
+    soilMetadata: {soilMetadata: {}},
+  });
 };

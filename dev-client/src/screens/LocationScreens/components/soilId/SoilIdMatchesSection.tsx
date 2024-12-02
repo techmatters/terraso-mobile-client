@@ -29,6 +29,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {
@@ -89,18 +90,22 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
           <InfoSheet
             key={dataMatch.soilInfo.soilSeries.name}
             heading={
-              <Heading variant="h4">
-                {dataMatch.soilInfo.soilSeries.name}
-              </Heading>
+              <TranslatedHeading i18nKey={dataMatch.soilInfo.soilSeries.name} />
             }
             trigger={onOpen => (
               <SoilMatchTile
-                soil_name={dataMatch.soilInfo.soilSeries.name}
+                soilName={dataMatch.soilInfo.soilSeries.name}
                 score={dataMatch.combinedMatch.score}
                 onPress={onOpen}
               />
             )}>
-            <SiteScoreInfoContent dataMatch={dataMatch} coords={coords} />
+            <SiteRoleContextProvider siteId={siteId}>
+              <SiteScoreInfoContent
+                dataMatch={dataMatch}
+                siteId={siteId}
+                coords={coords}
+              />
+            </SiteRoleContextProvider>
           </InfoSheet>
         ));
       } else {
@@ -114,7 +119,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
             }
             trigger={onOpen => (
               <SoilMatchTile
-                soil_name={locationMatch.soilInfo.soilSeries.name}
+                soilName={locationMatch.soilInfo.soilSeries.name}
                 score={locationMatch.match.score}
                 onPress={onOpen}
               />
