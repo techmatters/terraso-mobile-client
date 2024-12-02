@@ -440,10 +440,18 @@
             "privacy_policy_link_text": "Lee más acerca de nuestras políticas de privacidad de datos."
         },
         "character_limit": "{{current}} / {{limit}} caracteres",
-        "open_settings": "Ir a configuraciones"
+        "open_settings": "Ir a configuraciones",
+        "support": {
+            "label": "Support TK",
+            "url": "https://landpks.terraso.org/"
+        }
     },
     "errors": {
-        "generic": "Error al guardar la informacion de la identificación del suelo."
+        "generic": "Error al guardar la informacion de la identificación del suelo.",
+        "sync_conflict": {
+            "headline": "Project conflict TK",
+            "body": "This project has changed. Learn more and get support at the LandPKS website. TK"
+        }
     },
     "screens": {
         "LOGIN": "Iniciar sesión",

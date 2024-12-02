@@ -898,6 +898,9 @@ msgstr "Save"
 msgid "general##save_fab"
 msgstr "Save"
 
+msgid "general##dismiss"
+msgstr "Dismiss"
+
 msgid "general##use"
 msgstr "Use"
 
@@ -1024,6 +1027,12 @@ msgstr "Next"
 msgid "general##proceed"
 msgstr "Proceed"
 
+msgid "general##support##label"
+msgstr "Support"
+
+msgid "general##support##url"
+msgstr "https://landpks.terraso.org/"
+
 msgid "permissions##camera_title"
 msgstr "LandPKS Soil ID needs to access your camera"
 
@@ -1044,6 +1053,12 @@ msgstr "For the best map experience, grant LandPKS Soil ID access to your locati
 
 msgid "errors##generic"
 msgstr "Error saving soil ID information."
+
+msgid "errors##sync_conflict##headline"
+msgstr "Project conflict"
+
+msgid "errors##sync_conflict##body"
+msgstr "This project has changed. Learn more and get support at the LandPKS website."
 
 msgid "screens##SITES"
 msgstr "LandPKS Soil ID"
