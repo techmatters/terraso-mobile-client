@@ -79,7 +79,8 @@
             "confirm_removal_body": "Esta acción no se puede deshacer.",
             "min_length_error": "Debe tener al menos {{min}} caracteres",
             "placeholder_text": "Empieza a escribir tu nota…",
-            "project_instructions": "Nota destacada"
+            "project_instructions": "Nota destacada",
+            "offline": "TK Creating and editing notes is only available online."
         },
         "search": {
             "placeholder": "Buscar sitios",
