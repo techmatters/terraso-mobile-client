@@ -124,8 +124,8 @@ type MatchContentProps = {
 
 const MatchContent = ({
   status,
-  match: topSoilMatch,
-  isSelected,
+  match,
+  isSelected = false,
 }: MatchContentProps) => {
   const {t} = useTranslation();
 
@@ -142,7 +142,7 @@ const MatchContent = ({
           noData={<Text>{t('soil.no_matches')}</Text>}
           data={
             <Text>
-              {topSoilMatch?.soilInfo.soilSeries.name ?? t('soil.no_matches')}
+              {match?.soilInfo.soilSeries.name ?? t('soil.no_matches')}
             </Text>
           }
         />
@@ -156,8 +156,7 @@ const MatchContent = ({
           noData={<Text>{t('soil.no_matches')}</Text>}
           data={
             <Text>
-              {topSoilMatch?.soilInfo.ecologicalSite?.name ??
-                t('soil.no_matches')}
+              {match?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
             </Text>
           }
         />
