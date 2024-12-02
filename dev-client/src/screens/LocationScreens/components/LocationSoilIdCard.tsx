@@ -73,7 +73,7 @@ export const LocationSoilIdCard = ({
       {isSite ? (
         <SiteMatchContent siteId={siteId} coords={coords} />
       ) : (
-        <LocationMatchContent coords={coords} />
+        <TempLocationMatchContent coords={coords} />
       )}
 
       <Button
@@ -89,7 +89,7 @@ export const LocationSoilIdCard = ({
 
 type LocationMatchDisplayProps = {coords: Coords};
 
-const LocationMatchContent = ({coords}: LocationMatchDisplayProps) => {
+const TempLocationMatchContent = ({coords}: LocationMatchDisplayProps) => {
   const soilIdData = useSoilIdData(coords);
   const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
 
