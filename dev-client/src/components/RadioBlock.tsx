@@ -53,24 +53,31 @@ export const RadioBlock = <T extends string>({
         onChange={onChange as (_: string) => void}
         value={groupValue ?? ''}
         {...radioGroupProps}>
-        {entries(options).flatMap(([value, {text, isDisabled, helpText}]) =>
-          [
-            <Radio
-              key={value}
-              value={value}
-              isDisabled={isDisabled || allDisabled}>
-              {text}
-            </Radio>,
-            helpText ? (
-              <FormControl.HelperText
-                key={helpText + value}
-                ml="40px"
-                mt="-4px"
-                mb="4px">
-                {helpText}
-              </FormControl.HelperText>
-            ) : undefined,
-          ].filter(Boolean),
+        {entries(options).flatMap(
+          ([value, {text, isDisabled, helpText}], index) =>
+            [
+              <Radio
+                key={value}
+                value={value}
+                ml={
+                  // remove leading space from first item in horizontal radio groups
+                  radioGroupProps?.flexDirection === 'row' && index === 0
+                    ? 0
+                    : undefined
+                }
+                isDisabled={isDisabled || allDisabled}>
+                {text}
+              </Radio>,
+              helpText ? (
+                <FormControl.HelperText
+                  key={helpText + value}
+                  ml="40px"
+                  mt="-4px"
+                  mb="4px">
+                  {helpText}
+                </FormControl.HelperText>
+              ) : undefined,
+            ].filter(Boolean),
         )}
       </Radio.Group>
     </FormControl>
