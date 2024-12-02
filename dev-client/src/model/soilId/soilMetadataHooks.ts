@@ -41,7 +41,9 @@ export const useSoilIdSelection = (
     (newSelection: string | null) =>
       dispatch(
         updateSoilMetadata({siteId: siteId, selectedSoilId: newSelection}),
-      ).then(() => {}),
+      ).then(
+        () => {} /* Empty then() to simplify promise return type to void */,
+      ),
     [dispatch, siteId],
   );
 
