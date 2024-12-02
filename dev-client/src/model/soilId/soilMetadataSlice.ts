@@ -26,7 +26,7 @@ export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 
 export type SoilState = {
   /* Note that the keys for these records are the site IDs to which the soil metadata belongs */
-  soilMetadata: Record<string, SoilMetadata | undefined>;
+  soilMetadata: Record<string, SoilMetadata>;
 };
 
 export const initialState: SoilState = {
