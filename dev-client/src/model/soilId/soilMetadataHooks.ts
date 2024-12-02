@@ -16,12 +16,11 @@
  */
 
 import {useCallback} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-
-import type {SharedDispatch} from 'terraso-client-shared/store/store';
+import {useSelector} from 'react-redux';
 
 import {selectSoilMetadata} from 'terraso-mobile-client/model/soilId/soilMetadataSelectors';
 import {updateSoilMetadata} from 'terraso-mobile-client/model/soilId/soilMetadataSlice';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 export const useSoilIdSelection = (
   siteId: string,
@@ -29,7 +28,7 @@ export const useSoilIdSelection = (
   selectedSoilId?: string;
   selectSoilId: (selectedSoilId: string | null) => Promise<void>;
 } => {
-  const dispatch = useDispatch<SharedDispatch>();
+  const dispatch = useDispatch();
 
   const soilMetadata = useSelector(selectSoilMetadata(siteId));
   const selectedSoilId =
