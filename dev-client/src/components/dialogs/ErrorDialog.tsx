@@ -60,11 +60,11 @@ export const ErrorDialog = forwardRef<
           </View>
           {headline && (
             <View style={styles.headline}>
-              <Text color="alert.errorContent">{headline}</Text>
+              <Text color="error.content">{headline}</Text>
             </View>
           )}
           <View>
-            <Text color="alert.errorContent">{children}</Text>
+            <Text color="error.content">{children}</Text>
           </View>
           <View style={styles.actions}>
             <ExternalLink
@@ -82,7 +82,7 @@ export const ErrorDialog = forwardRef<
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: convertColorProp('alert.errorFill'),
+    backgroundColor: convertColorProp('error.background'),
     borderRadius: 28,
     padding: 24,
     width: 312,
