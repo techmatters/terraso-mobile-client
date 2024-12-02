@@ -401,6 +401,7 @@
         "users": "users",
         "save": "Save",
         "save_fab": "Save",
+        "dismiss": "Dismiss",
         "use": "Use",
         "last_modified_by": "last modified {{user}}, {{date}}",
         "select_all": "Select All",
@@ -450,7 +451,11 @@
         "yes": "Yes",
         "no": "No",
         "next": "Next",
-        "proceed": "Proceed"
+        "proceed": "Proceed",
+        "support": {
+            "label": "Support",
+            "url": "https://landpks.terraso.org/"
+        }
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",
@@ -461,7 +466,11 @@
         "location_body": "For the best map experience, grant LandPKS Soil ID access to your location in device settings."
     },
     "errors": {
-        "generic": "Error saving soil ID information."
+        "generic": "Error saving soil ID information.",
+        "sync_conflict": {
+            "headline": "Project conflict",
+            "body": "This project has changed. Learn more and get support at the LandPKS website."
+        }
     },
     "screens": {
         "SITES": "LandPKS Soil ID",

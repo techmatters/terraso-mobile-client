@@ -98,7 +98,7 @@ export const COLORS = {
   },
   alertError: {
     default: 'alert.errorContent',
-    pressed: 'text.primary', // TODO: get real color from design team
+    pressed: 'alert.errorContent',
   },
   disabled: {
     default: 'text.disabled',
