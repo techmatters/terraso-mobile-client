@@ -41,7 +41,7 @@ import {updateSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
-import {LocationPrediction} from 'terraso-mobile-client/screens/LocationScreens/components/LocationPrediction';
+import {LocationSoilIdCard} from 'terraso-mobile-client/screens/LocationScreens/components/LocationSoilIdCard';
 import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {formatCoordinate} from 'terraso-mobile-client/util';
@@ -171,8 +171,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
         )}
       </Box>
       <Column space="20px" padding="16px">
-        <LocationPrediction
-          label={t('soil.soil_id')}
+        <LocationSoilIdCard
           coords={coords}
           siteId={site?.id}
           onExploreDataPress={onExploreDataPress}

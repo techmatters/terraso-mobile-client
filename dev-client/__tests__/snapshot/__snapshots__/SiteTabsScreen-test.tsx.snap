@@ -1987,7 +1987,8 @@ exports[`renders correctly 1`] = `
                                       }
                                     >
                                       Top Match
-                                      : 
+                                      :
+                                       
                                     </Text>
                                     <Text
                                       style={{}}

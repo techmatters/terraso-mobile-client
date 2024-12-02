@@ -136,6 +136,7 @@
                         "temp_location": "Los suelos enumerados son los más propensos de encontrarse en esta ubicación según los mapas de suelos del USDA NRCS.\n\nCrea un sitio aquí e introduce los datos recomendados para mejorar la precisión de las puntuaciones de coincidencia."
                     }
                 },
+                "match_score": "{{score}}",
                 "match": "coincidencia",
                 "error_generic_title": "No se puede obtener el mapa del suelo",
                 "error_generic_body": "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Vuelve a intentarlo más tarde.",
@@ -145,7 +146,9 @@
                 "native_lands_link": "nativeland.info",
                 "native_lands_url": "https://nativeland.info/",
                 "offline_title": "Estás fuera de linea",
-                "offline_body": "Las coincidencias de suelos se actualizarán aquí cuando estás sin conexión."
+                "offline_body": "Las coincidencias de suelos se actualizarán aquí cuando estás sin conexión.",
+                "selector": "This is the correct soil",
+                "selected": "Selected Soil"
             },
             "site_data": {
                 "title": "Datos del sitio",

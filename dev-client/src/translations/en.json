@@ -112,6 +112,7 @@
                         "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended data to improve accuracy of the match scores."
                     }
                 },
+                "match_score": "{{score}}",
                 "match": "match",
                 "error_generic_title": "Can’t fetch soil map",
                 "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
@@ -121,7 +122,9 @@
                 "native_lands_link": "nativeland.info",
                 "native_lands_url": "https://nativeland.info/",
                 "offline_title": "You are offline",
-                "offline_body": "Soil matches will update here when you are online."
+                "offline_body": "Soil matches will update here when you are online.",
+                "selector": "This is the correct soil",
+                "selected": "Selected Soil"
             },
             "site_data": {
                 "title": "Site Data",
