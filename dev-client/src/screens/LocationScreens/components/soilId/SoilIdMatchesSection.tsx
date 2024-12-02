@@ -79,9 +79,7 @@ const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
   const isSite = !!siteId;
 
   if (isOffline) {
-    return (
-      <OfflineMessageBox message={t('site.soil_id.matches.offline_body')} />
-    );
+    return <OfflineMessageBox message={t('site.soil_id.matches.offline')} />;
   }
 
   switch (status) {
