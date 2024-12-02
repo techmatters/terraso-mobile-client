@@ -17,6 +17,7 @@
 
 import {useEffect} from 'react';
 
+import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {
   useDebouncedIsOffline,
   useDebouncedUnsyncedSiteIds,
@@ -40,6 +41,9 @@ export const PushDispatcher = () => {
   /* Determine whether the user is logged in before doing anything. */
   const isLoggedIn = useIsLoggedIn();
 
+  /* Use notifications to show errors to the user */
+  const syncNotifications = useSyncNotificationContext();
+
   /* Debounce offline state so we know when it's safe to attempt a push. */
   const isOffline = useDebouncedIsOffline(PUSH_DEBOUNCE_MS);
 
@@ -62,10 +66,13 @@ export const PushDispatcher = () => {
     /* Dispatch a push if needed */
     if (needsPush) {
       dispatchPush()
-        /* If the initial push failed, begin a retry cycle */
         .then(result => {
           if (!result.payload || 'error' in result.payload) {
+            /* If the initial push failed, begin a retry cycle */
             beginRetry();
+          } else if (Object.keys(result.payload.errors).length > 0) {
+            /* If the push yielded sync errors, notify the user */
+            syncNotifications.showError();
           }
         })
         .catch(beginRetry);
@@ -73,7 +80,7 @@ export const PushDispatcher = () => {
 
     /* Cancel any pending retries when push input changes or component unmounts */
     return endRetry;
-  }, [needsPush, dispatchPush, beginRetry, endRetry]);
+  }, [needsPush, dispatchPush, beginRetry, endRetry, syncNotifications]);
 
   return <></>;
 };

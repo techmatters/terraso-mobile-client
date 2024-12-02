@@ -18,6 +18,7 @@
 import {waitFor} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
 
+import * as syncNotifications from 'terraso-mobile-client/context/SyncNotificationContext';
 import * as syncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {
   PUSH_DEBOUNCE_MS,
@@ -34,6 +35,9 @@ jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
     useRetryInterval: jest.fn(),
   };
 });
+jest.mock('terraso-mobile-client/context/SyncNotificationContext', () => {
+  return {useSyncNotificationContext: jest.fn()};
+});
 
 describe('PushDispatcher', () => {
   let useDebouncedIsOffline = jest.mocked(syncHooks.useDebouncedIsOffline);
@@ -49,6 +53,11 @@ describe('PushDispatcher', () => {
   let endRetry = jest.fn();
   let useRetryInterval = jest.mocked(syncHooks.useRetryInterval);
 
+  let showError = jest.fn();
+  let useSyncNotificationContext = jest.mocked(
+    syncNotifications.useSyncNotificationContext,
+  );
+
   beforeEach(() => {
     useDebouncedIsOffline.mockReset();
     useIsLoggedIn.mockReset();
@@ -63,9 +72,15 @@ describe('PushDispatcher', () => {
     beginRetry.mockReset();
     endRetry.mockReset();
     useRetryInterval.mockReset();
-    jest.mocked(useRetryInterval).mockReturnValue({
+    useRetryInterval.mockReturnValue({
       beginRetry: beginRetry,
       endRetry: endRetry,
+    });
+
+    showError.mockReset();
+    useSyncNotificationContext.mockReset();
+    useSyncNotificationContext.mockReturnValue({
+      showError: showError,
     });
   });
 
@@ -118,7 +133,39 @@ describe('PushDispatcher', () => {
     expect(endRetry).toHaveBeenCalledTimes(0);
   });
 
-  test('begins retry when push has error', async () => {
+  test('shows error notification when push has sync error', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        data: {},
+        errors: {a: {value: 'DOES_NOT_EXIST'}},
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
+  });
+
+  test('shoes not show error notification when push has no sync errors', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        data: {},
+        errors: {},
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(0));
+  });
+
+  test('begins retry when push has graphql error', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
     useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
