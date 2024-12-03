@@ -127,6 +127,9 @@ msgstr "{{value}} {{units}}"
 msgid "site##elevation_unknown"
 msgstr "unknown"
 
+msgid "site##not_available_offine"
+msgstr "Not available offline"
+
 msgid "site##empty##info"
 msgstr ""
 "You don’t have any sites yet. A site lets you collect and save data, learn more about your land and its potential, and share with others.\n"
