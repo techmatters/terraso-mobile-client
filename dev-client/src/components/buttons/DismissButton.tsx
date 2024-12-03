@@ -29,7 +29,7 @@ export type DismissButtonProps = {
 export const DismissButton = ({onPress}: DismissButtonProps) => {
   return (
     <Button
-      borderColor="alert.errorContent"
+      borderColor="error.content"
       _pressed={{backgroundColor: 'transparent'}}
       onPress={onPress}
       variant="outline">
@@ -42,7 +42,7 @@ export const DismissButton = ({onPress}: DismissButtonProps) => {
 
 const styles = StyleSheet.create({
   text: {
-    color: convertColorProp('alert.errorContent'),
+    color: convertColorProp('error.content'),
     fontSize: 14,
     lineHeight: 24,
     fontWeight: '500',

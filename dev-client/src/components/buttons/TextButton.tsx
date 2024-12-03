@@ -97,8 +97,8 @@ export const COLORS = {
     pressed: 'error.content',
   },
   alertError: {
-    default: 'alert.errorContent',
-    pressed: 'alert.errorContent',
+    default: 'error.content',
+    pressed: 'error.content',
   },
   disabled: {
     default: 'text.disabled',
