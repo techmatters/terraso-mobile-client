@@ -409,6 +409,7 @@
         "proceed": "Proceder",
         "last_modified": "Última modificación",
         "save_fab": "Guardar",
+        "dismiss": "Dismiss TK",
         "last_modified_by": "última modificación {{user}}, {{date}}",
         "select_all": "Seleccionar todo",
         "you_name": "{{name}} (tú)",
