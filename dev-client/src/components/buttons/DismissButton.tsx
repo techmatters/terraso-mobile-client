@@ -26,7 +26,7 @@ export default function DismissButton() {
   return (
     <Button
       borderColor="alert.errorContent"
-      _pressed={{backgroundColor: 'transparent'}} // TODO: get actual color
+      _pressed={{backgroundColor: 'transparent'}}
       variant="outline">
       <Text style={styles.text}>
         <TranslatedContent i18nKey="general.dismiss" />
