@@ -15,25 +15,30 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet, Text} from 'react-native';
+import {PressableProps, StyleSheet, Text} from 'react-native';
 
 import {Button} from 'native-base';
 
 import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
-export default function DismissButton() {
+export type DismissButtonProps = {
+  onPress?: PressableProps['onPress'];
+};
+
+export const DismissButton = ({onPress}: DismissButtonProps) => {
   return (
     <Button
       borderColor="alert.errorContent"
       _pressed={{backgroundColor: 'transparent'}}
+      onPress={onPress}
       variant="outline">
       <Text style={styles.text}>
         <TranslatedContent i18nKey="general.dismiss" />
       </Text>
     </Button>
   );
-}
+};
 
 const styles = StyleSheet.create({
   text: {
