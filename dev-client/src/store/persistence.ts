@@ -46,5 +46,6 @@ export const patchPersistedReduxState = (
   return merge(state, {
     soilId: {soilSync: {}},
     soilMetadata: {soilMetadata: {}},
+    sync: {pullRequested: false},
   });
 };

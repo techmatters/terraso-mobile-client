@@ -31,11 +31,12 @@ import {
   markEntityModified,
   markEntitySynced,
 } from 'terraso-mobile-client/model/sync/records';
+import {initialState as syncInitialState} from 'terraso-mobile-client/model/sync/syncSlice';
 import {AppState, useSelector} from 'terraso-mobile-client/store';
 
 const appState = (): AppState => {
   return {
-    account: {...accountInitialState},
+    account: accountInitialState,
     map: {userLocation: {accuracyM: null, coords: null}},
     elevation: {elevationCache: {}},
     notifications: {messages: {}},
@@ -52,6 +53,7 @@ const appState = (): AppState => {
     soilMetadata: {
       soilMetadata: {},
     },
+    sync: syncInitialState,
   };
 };
 

@@ -37,10 +37,10 @@ export const PUSH_RETRY_INTERVAL_MS = 1000 * 60;
  * (i.e., the set of unsynced data changes due to a success or new user-made changes.)
  */
 export const PushDispatcher = () => {
-  /* Determined whether the user is logged in before doing anything. */
+  /* Determine whether the user is logged in before doing anything. */
   const isLoggedIn = useIsLoggedIn();
 
-  /* Sebounce offline state so we know when it's safe to attempt a push. */
+  /* Debounce offline state so we know when it's safe to attempt a push. */
   const isOffline = useDebouncedIsOffline(PUSH_DEBOUNCE_MS);
 
   /* Also debounce unsynced IDs so we have a stable state when queuing up a push */
@@ -49,7 +49,7 @@ export const PushDispatcher = () => {
   /* Set up a callback for the dispatcher to use when it determines a push is needed. */
   const dispatchPush = usePushDispatch(unsyncedSiteIds);
 
-  /*A push is needed when the user is logged in, not offline, and has unsynced data. */
+  /* A push is needed when the user is logged in, not offline, and has unsynced data. */
   const needsPush = isLoggedIn && !isOffline && unsyncedSiteIds.length > 0;
 
   /* Set up retry mechanism which will dispatch the push action when it begins. */
