@@ -15,8 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createContext, useEffect, useRef, useState} from 'react';
-import {AppState} from 'react-native';
+import {createContext, useCallback, useEffect, useRef, useState} from 'react';
 
 import {
   addEventListener,
@@ -24,6 +23,7 @@ import {
 } from '@react-native-community/netinfo';
 
 import {getIsOffline} from 'terraso-mobile-client/context/connectivity/connectivityLogic';
+import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 
 export type ConnectivityContextType = {
   isOffline: boolean | null;
@@ -38,45 +38,35 @@ export const ConnectivityContextProvider = ({
 }: React.PropsWithChildren) => {
   const [isOffline, setIsOffline] = useState<boolean | null>(null);
   const netInfoSubscriptionRef = useRef<NetInfoSubscription | null>(null);
+  const appState = useAppState();
+
+  const stopMonitoringReachability = useCallback(() => {
+    if (netInfoSubscriptionRef.current) {
+      netInfoSubscriptionRef.current?.();
+      netInfoSubscriptionRef.current = null;
+    }
+  }, [netInfoSubscriptionRef]);
+
+  const startMonitoringReachability = useCallback(() => {
+    stopMonitoringReachability();
+
+    netInfoSubscriptionRef.current = addEventListener(state => {
+      setIsOffline(
+        getIsOffline({
+          isConnected: state.isConnected,
+          isInternetReachable: state.isInternetReachable,
+        }),
+      );
+    });
+  }, [netInfoSubscriptionRef, stopMonitoringReachability]);
 
   useEffect(() => {
-    const stopMonitoringReachability = () => {
-      if (netInfoSubscriptionRef.current) {
-        netInfoSubscriptionRef.current?.();
-        netInfoSubscriptionRef.current = null;
-      }
-    };
+    appState === 'active'
+      ? startMonitoringReachability()
+      : stopMonitoringReachability();
 
-    const startMonitoringReachability = () => {
-      stopMonitoringReachability();
-
-      netInfoSubscriptionRef.current = addEventListener(state => {
-        setIsOffline(
-          getIsOffline({
-            isConnected: state.isConnected,
-            isInternetReachable: state.isInternetReachable,
-          }),
-        );
-      });
-    };
-
-    if (AppState.currentState === 'active') {
-      startMonitoringReachability();
-    }
-
-    const appStateListener = AppState.addEventListener('change', state => {
-      if (state === 'active') {
-        startMonitoringReachability();
-      } else {
-        stopMonitoringReachability();
-      }
-    });
-
-    return () => {
-      stopMonitoringReachability();
-      appStateListener.remove();
-    };
-  }, []);
+    return stopMonitoringReachability;
+  }, [appState, startMonitoringReachability, stopMonitoringReachability]);
 
   return (
     <ConnectivityContext.Provider value={{isOffline}}>

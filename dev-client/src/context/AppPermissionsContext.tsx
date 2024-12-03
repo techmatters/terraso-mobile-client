@@ -16,7 +16,6 @@
  */
 
 import {createContext, useCallback, useEffect, useState} from 'react';
-import {AppState, AppStateStatus} from 'react-native';
 
 import {
   LocationPermissionResponse,
@@ -24,6 +23,7 @@ import {
 } from 'expo-location';
 
 import {UpdatedPermissionsHookReturnType} from 'terraso-mobile-client/hooks/appPermissionsHooks';
+import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 
 export type ForegroundPermissionsType = UpdatedPermissionsHookReturnType | null;
 
@@ -36,6 +36,7 @@ export const ForegroundPermissionsProvider = ({
   const [permissions, request, get] = useForegroundPermissions();
   const [updatedPermissions, setUpdatedPermissions] =
     useState<LocationPermissionResponse | null>(permissions);
+  const appState = useAppState();
 
   const updatedRequest = useCallback(async () => {
     const response = await request();
@@ -50,25 +51,14 @@ export const ForegroundPermissionsProvider = ({
   }, [get, setUpdatedPermissions]);
 
   useEffect(() => {
-    // Don't start listening until someone asks about location permissions.
-    //   updatedPermissions will only be non-null if permissions have been gotten/requested so far
-    if (updatedPermissions) {
-      // If app switches from background to foreground, update permissions in case they changed
-      const onAppStateChange = async (state: AppStateStatus) => {
-        if (state === 'active') {
-          updatedGet();
-        }
-      };
-      const appStateListener = AppState.addEventListener(
-        'change',
-        onAppStateChange,
-      );
-
-      return () => {
-        appStateListener.remove();
-      };
+    // If app switches from background to foreground, update permissions in case they changed
+    if (!!updatedPermissions && appState === 'active') {
+      updatedGet();
     }
-  }, [updatedGet, updatedPermissions]);
+    // Don't include updatedPermissions. It'll infinite loop, and it's only here so we don't bother
+    // awaiting the get() if nobody has asked about location permissions yet (when it's null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appState, updatedGet]);
 
   return (
     <ForegroundPermissionsContext.Provider
