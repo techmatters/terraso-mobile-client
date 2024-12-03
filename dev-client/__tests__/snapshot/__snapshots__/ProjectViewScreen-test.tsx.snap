@@ -1530,6 +1530,7 @@ exports[`renders correctly 1`] = `
                                         style={
                                           {
                                             "alignItems": "flex-start",
+                                            "flexDirection": "row",
                                             "marginLeft": 0,
                                           }
                                         }
@@ -1687,7 +1688,7 @@ exports[`renders correctly 1`] = `
                                                     "letterSpacing": 0.15,
                                                     "lineHeight": 24,
                                                     "marginBottom": 8,
-                                                    "marginLeft": 8,
+                                                    "marginLeft": 0,
                                                     "marginRight": 0,
                                                     "marginTop": 8,
                                                     "opacity": 0.6,
