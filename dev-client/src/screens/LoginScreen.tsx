@@ -158,9 +158,11 @@ export const LoginScreen = () => {
               color={theme.colors.primary.contrast}
             />
           ) : isOffline ? (
-            <Box width="80%">
-              <OfflineSignInBox />
-            </Box>
+            <Row marginHorizontal="lg">
+              <Box flex={1}>
+                <OfflineSignInBox />
+              </Box>
+            </Row>
           ) : (
             <LoginButtons onPress={onPress} />
           )}
