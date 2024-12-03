@@ -157,6 +157,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
                 onChange: onSitePrivacyChanged,
                 value: site.privacy,
                 ml: '0',
+                variant: 'oneLine',
               }}
             />
           </Row>

@@ -1530,6 +1530,7 @@ exports[`renders correctly 1`] = `
                                         style={
                                           {
                                             "alignItems": "flex-start",
+                                            "flexDirection": "row",
                                             "marginLeft": 0,
                                           }
                                         }
@@ -1807,7 +1808,11 @@ exports[`renders correctly 1`] = `
                                         </View>
                                         <View
                                           dataSet={{}}
-                                          style={{}}
+                                          style={
+                                            {
+                                              "width": 26,
+                                            }
+                                          }
                                         />
                                         <View
                                           accessibilityRole="radio"

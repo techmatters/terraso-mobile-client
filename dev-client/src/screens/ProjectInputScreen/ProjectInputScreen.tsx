@@ -103,6 +103,7 @@ export const ProjectInputScreen = ({
                 onChange: onProjectPrivacyChanged,
                 value: project?.privacy,
                 ml: '0',
+                variant: 'oneLine',
               }}
               allDisabled={!allowEditing}
             />
