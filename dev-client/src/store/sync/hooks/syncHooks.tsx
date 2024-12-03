@@ -20,7 +20,11 @@ import {useCallback, useRef} from 'react';
 import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
+import {
+  selectSyncErrorSiteIds,
+  selectUnsyncedSiteIds,
+} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {pushSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -70,4 +74,20 @@ export const useRetryInterval = (interval: number, action: () => void) => {
   }, [endRetry, handle, action, interval]);
 
   return {beginRetry, endRetry};
+};
+
+export const useSyncErrorSiteIds = () => {
+  return useSelector(selectSyncErrorSiteIds);
+};
+
+export const usePullDispatch = () => {
+  const dispatch = useDispatch();
+
+  return useCallback(
+    (currentUserID: string) => {
+      // If the pull failed, do nothing. Another pull will happen eventually.
+      return dispatch(fetchSoilDataForUser(currentUserID));
+    },
+    [dispatch],
+  );
 };

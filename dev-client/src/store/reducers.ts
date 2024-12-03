@@ -31,6 +31,7 @@ import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
 import siteReducer from 'terraso-mobile-client/model/site/siteSlice';
 import soilIdReducer from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import soilMetadataReducer from 'terraso-mobile-client/model/soilId/soilMetadataSlice';
+import syncReducer from 'terraso-mobile-client/model/sync/syncSlice';
 
 const sliceReducers = {
   ...sharedReducers,
@@ -41,6 +42,7 @@ const sliceReducers = {
   project: projectReducer,
   soilId: soilIdReducer,
   soilMetadata: soilMetadataReducer,
+  sync: syncReducer,
 };
 
 export type AppState = StateFromReducersMapObject<typeof sliceReducers>;

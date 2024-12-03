@@ -21,31 +21,55 @@ import {Button} from 'native-base';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
+import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
 
-// TODO: I expect this will move or be removed by the time we actually release the offline feature,
+// TODO: I expect this to be removed or modified by the time we actually release the offline feature,
 // but is helpful for manually testing
+export const SyncContent = () => {
+  return (
+    <>
+      <RestrictByFlag flag="FF_offline">
+        <SyncButton />
+        <PullInfo />
+        <PushInfo />
+      </RestrictByFlag>
+    </>
+  );
+};
+
+export const PushInfo = () => {
+  const unsyncedIds = useSelector(selectUnsyncedSiteIds);
+  return <Text>({unsyncedIds.length} changed sites)</Text>;
+};
+
+export const PullInfo = () => {
+  const pullRequested = useSelector(selectPullRequested);
+
+  const requested = pullRequested ? 'requested' : 'not requested';
+  return (
+    <>
+      <Text>{`* Pull ${requested}`}</Text>
+    </>
+  );
+};
+
 export const SyncButton = () => {
   const dispatch = useDispatch();
 
-  const currentUserID = useSelector(
-    state => state.account.currentUser?.data?.id,
-  );
-  const unsyncedIds = useSelector(selectUnsyncedSiteIds);
+  const currentUserID = useSelector(selectCurrentUserID);
 
   const onSync = useCallback(() => {
     if (currentUserID !== undefined) {
-      dispatch(fetchSoilDataForUser(currentUserID));
+      dispatch(setPullRequested(true));
     }
   }, [currentUserID, dispatch]);
 
   return (
     // TODO-offline: Create string in en.json if we actually want this button for reals
-    <RestrictByFlag flag="FF_offline">
-      <Button onPress={onSync}>SYNC: pull</Button>
-      <Text>({unsyncedIds.length} changed sites)</Text>
-    </RestrictByFlag>
+    <Button onPress={onSync}>SYNC: pull</Button>
   );
 };

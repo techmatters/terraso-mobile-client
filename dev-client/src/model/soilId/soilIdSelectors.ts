@@ -53,3 +53,8 @@ export const selectSyncErrorSites = createSelector(
   selectSoilChanges,
   getErrorRecords,
 );
+
+export const selectSyncErrorSiteIds = createSelector(
+  selectSyncErrorSites,
+  errorSites => Object.keys(errorSites),
+);
