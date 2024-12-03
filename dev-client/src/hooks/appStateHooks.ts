@@ -29,7 +29,7 @@ export const useAppState = () => {
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [setAppState]);
 
   return appState;
 };
