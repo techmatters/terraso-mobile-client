@@ -17,9 +17,12 @@
 
 import {StyleSheet} from 'react-native';
 
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export const EmptySiteMessage = () => {
   return (
@@ -29,7 +32,12 @@ export const EmptySiteMessage = () => {
       </Text>
 
       <View style={styles.view}>
-        <Icon name="tap-and-play" color="text.icon" size={14} pr={5} />
+        <MaterialCommunityIcons
+          name="gesture-tap"
+          size={14}
+          color={convertColorProp('text.icon')}
+          style={styles.communityIcon}
+        />
         <TranslatedParagraph i18nKey="site.empty.map" />
       </View>
 
@@ -61,4 +69,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'flex-start',
   },
+  communityIcon: {marginRight: 20},
 });
