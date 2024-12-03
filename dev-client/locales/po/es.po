@@ -368,12 +368,6 @@ msgstr "Inclinación de pendiente"
 msgid "site##soil_id##site_data##slope##add_data"
 msgstr "Añadir pendiente"
 
-msgid "site##soil_id##site_data##cracks##title"
-msgstr "TK Soil Cracks"
-
-msgid "site##soil_id##site_data##cracks##add_data"
-msgstr "TK Enter Cracks"
-
 msgid "site##soil_id##site_data##soil_properties##title"
 msgstr "Propiedades del suelo"
 
