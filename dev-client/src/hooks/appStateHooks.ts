@@ -15,8 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {AppState} from 'react-native';
+import {useEffect, useState} from 'react';
+import {AppState, AppStateStatus} from 'react-native';
 
 export const useAppState = () => {
-  return AppState.currentState;
+  const [appState, setAppState] = useState(AppState.currentState);
+
+  useEffect(() => {
+    const listener = (newAppState: AppStateStatus) => {
+      setAppState(newAppState);
+    };
+    const subscription = AppState.addEventListener('change', listener);
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  return appState;
 };
