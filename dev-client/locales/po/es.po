@@ -278,12 +278,9 @@ msgstr "{{value}} {{units}}"
 msgid "site##elevation_unknown"
 msgstr "desconocido"
 
-<<<<<<< HEAD
-=======
 msgid "site##not_available_offine"
 msgstr "TK Not available offline"
 
->>>>>>> e1c86dcf (chore: update PO files)
 msgid "site##form##name_min_length_error"
 msgstr "El nombre del sitio debe tener un mínimo de {{min}} caracteres"
 
