@@ -34,7 +34,7 @@ export const EmptySiteMessage = () => {
       <View style={styles.view}>
         <MaterialCommunityIcons
           name="gesture-tap"
-          size={14}
+          size={24}
           color={convertColorProp('text.icon')}
           style={styles.communityIcon}
         />
@@ -42,12 +42,12 @@ export const EmptySiteMessage = () => {
       </View>
 
       <View style={styles.view}>
-        <Icon name="my-location" color="text.icon" size={14} pr={5} />
+        <Icon name="my-location" color="text.icon" size={24} pr={5} />
         <TranslatedParagraph i18nKey="site.empty.icon" />
       </View>
 
       <View style={styles.enter}>
-        <Icon name="search" color="text.icon" size={14} pr={5} marginTop={1} />
+        <Icon name="search" color="text.icon" size={24} pr={5} marginTop={1} />
         <TranslatedParagraph i18nKey="site.empty.coords" />
       </View>
 
