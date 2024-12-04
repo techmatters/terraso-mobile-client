@@ -102,6 +102,8 @@ export const SiteListBottomSheet = memo(
         [t],
       );
 
+      const isEmpty = sites.length === 0;
+
       return (
         <BottomSheet
           ref={ref}
@@ -111,19 +113,25 @@ export const SiteListBottomSheet = memo(
           handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
           <Column px="16px">
             <Row justifyContent="flex-start" alignItems="center" pb="4">
-              <MaterialCommunityIcons
-                name="plus"
-                size={24}
-                color="black"
-                style={styles.communityIcon}
-              />
-              <Heading variant="h6">{t('site.list_title')}</Heading>
+              {isEmpty ? (
+                <>
+                  <MaterialCommunityIcons
+                    name="plus"
+                    size={24}
+                    color="black"
+                    style={styles.communityIcon}
+                  />
+                  <Heading variant="h6">{t('site.list_title_empty')}</Heading>
+                </>
+              ) : (
+                <Heading variant="h6">{t('site.list_title')}</Heading>
+              )}
             </Row>
             {sites.length > 0 && <SiteFilterModal useDistance={useDistance} />}
           </Column>
           {isLoadingData ? (
             <ActivityIndicator size="large" />
-          ) : sites.length === 0 ? (
+          ) : isEmpty ? (
             <BottomSheetScrollView>
               <EmptySiteMessage />
             </BottomSheetScrollView>
