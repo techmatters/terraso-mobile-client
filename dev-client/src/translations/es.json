@@ -106,6 +106,7 @@
             "NOTES": "Notas"
         },
         "list_title": "Lista de sitios",
+        "list_title_empty": "Crear sitio",
         "last_updated": "Última modificaión: {{date}} por {{name}}",
         "more_info": "Aprende más",
         "your_location": "Tu ubicación",
