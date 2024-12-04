@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-27T22:32:06.768Z\n"
-"PO-Revision-Date: 2024-11-27T22:32:06.768Z\n"
+"POT-Creation-Date: 2024-12-03T21:40:11.862Z\n"
+"PO-Revision-Date: 2024-12-03T21:40:11.862Z\n"
 
 msgid "welcome##title"
 msgstr "Bienvenido a LandPKS Soil ID"
@@ -326,6 +326,9 @@ msgstr ""
 "\n"
 "Crea un sitio aquí e introduce los datos recomendados para mejorar la precisión de las puntuaciones de coincidencia."
 
+msgid "site##soil_id##matches##match_score"
+msgstr "{{score}}"
+
 msgid "site##soil_id##matches##match"
 msgstr "coincidencia"
 
@@ -356,6 +359,12 @@ msgstr "Estás fuera de linea"
 msgid "site##soil_id##matches##offline_body"
 msgstr "Las coincidencias de suelos se actualizarán aquí cuando estás sin conexión."
 
+msgid "site##soil_id##matches##selector"
+msgstr "This is the correct soil"
+
+msgid "site##soil_id##matches##selected"
+msgstr "Selected Soil"
+
 msgid "site##soil_id##site_data##title"
 msgstr "Datos del sitio"
 
@@ -367,6 +376,12 @@ msgstr "Inclinación de pendiente"
 
 msgid "site##soil_id##site_data##slope##add_data"
 msgstr "Añadir pendiente"
+
+msgid "site##soil_id##site_data##cracks##title"
+msgstr "TK Soil Cracks"
+
+msgid "site##soil_id##site_data##cracks##add_data"
+msgstr "TK Enter Cracks"
 
 msgid "site##soil_id##site_data##soil_properties##title"
 msgstr "Propiedades del suelo"

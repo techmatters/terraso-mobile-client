@@ -134,6 +134,10 @@
                     "title": "Slope Steepness",
                     "add_data": "Enter steepness"
                 },
+                "cracks": {
+                    "title": "Soil Cracks",
+                    "add_data": "Enter Cracks"
+                },
                 "soil_properties": {
                     "title": "Soil Properties",
                     "depth": "Depth ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
