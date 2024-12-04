@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -23,11 +24,18 @@ import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typo
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 
 export const EmptySiteMessage = () => {
+  const {t} = useTranslation();
+  const isOffline = useIsOffline();
+
   return (
     <View px="17px">
-      <Text bold>
+      {isOffline ? <OfflineMessageBox message={t('site.offline')} /> : <></>}
+
+      <Text bold mt={isOffline ? 5 : undefined}>
         <TranslatedParagraph i18nKey="site.empty.info" />
       </Text>
 
