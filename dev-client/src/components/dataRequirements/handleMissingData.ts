@@ -16,19 +16,19 @@
  */
 
 import {useCallback} from 'react';
-import {ToastAndroid} from 'react-native';
 
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 export const useHandleMissingSite = () => {
   const navigation = useNavigation();
+  const syncNotifications = useSyncNotificationContext();
 
   return useCallback(() => {
     navigation.navigate('BOTTOM_TABS');
-    // TODO: Decide design / how to show toasts / use en.json string
     if (isFlagEnabled('FF_offline')) {
-      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+      syncNotifications.showError();
     }
-  }, [navigation]);
+  }, [navigation, syncNotifications]);
 };
