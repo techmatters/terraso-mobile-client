@@ -21,6 +21,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import type {SharedDispatch} from 'terraso-client-shared/store/store';
 import {Coords} from 'terraso-client-shared/types';
 
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {DEFAULT_SOIL_DATA} from 'terraso-mobile-client/model/soilId/soilDataConstants';
 import {selectSoilIdMatches} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {
@@ -38,6 +39,7 @@ import {selectSoilData} from 'terraso-mobile-client/store/selectors';
  * will not function correctly.
  */
 export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
+  const isOffline = useIsOffline();
   const dispatch = useDispatch<SharedDispatch>();
 
   /* We only need to select soil data for data-based matches. */
@@ -51,9 +53,9 @@ export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
   const entry = useSelector(soilIdSelector);
   const entryPresent = Boolean(entry);
 
-  /* load data if it's missing */
+  /* load data if it's missing (and we're not offline) */
   useEffect(() => {
-    if (!entryPresent) {
+    if (!entryPresent && !isOffline) {
       if (siteId && soilData) {
         dispatch(
           fetchDataBasedSoilMatches({
@@ -66,7 +68,7 @@ export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
         dispatch(fetchLocationBasedSoilMatches(coords));
       }
     }
-  }, [dispatch, coords, siteId, entryPresent, soilData]);
+  }, [dispatch, coords, siteId, entryPresent, isOffline, soilData]);
 
   return {
     locationBasedMatches: entry?.locationBasedMatches ?? [],
