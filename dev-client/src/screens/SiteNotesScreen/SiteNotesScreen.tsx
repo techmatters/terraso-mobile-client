@@ -28,8 +28,10 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {PinnedNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/PinnedNoteCard';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -48,6 +50,8 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
     navigation.navigate('ADD_SITE_NOTE', {siteId: siteId});
   }, [navigation, siteId]);
 
+  const isOffline = useIsOffline();
+
   return (
     <ScrollView>
       <Column>
@@ -57,16 +61,25 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
         <Box height="16px" />
         {project?.siteInstructions && <PinnedNoteCard project={project} />}
         <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-          <Box pl={4} pb={4} alignItems="flex-start">
-            <Button
-              size="lg"
-              shadow={5}
-              onPress={onAddNote}
-              _text={{textTransform: 'uppercase'}}>
-              {t('site.notes.add_note_label')}
-            </Button>
+          <Box
+            pl={4}
+            pb={4}
+            pr={4}
+            alignItems={isOffline ? undefined : 'flex-start'}>
+            {isOffline ? (
+              <OfflineMessageBox message={t('site.notes.offline')} />
+            ) : (
+              <Button
+                size="lg"
+                shadow={5}
+                onPress={onAddNote}
+                _text={{textTransform: 'uppercase'}}>
+                {t('site.notes.add_note_label')}
+              </Button>
+            )}
           </Box>
         </RestrictBySiteRole>
+
         {Object.values(site.notes).map(note => (
           <SiteNoteCard note={note} key={note.id} />
         ))}

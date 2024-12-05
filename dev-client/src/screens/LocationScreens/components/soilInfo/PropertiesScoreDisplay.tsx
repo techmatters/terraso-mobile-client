@@ -33,6 +33,8 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 
@@ -50,6 +52,9 @@ export function PropertiesScoreDisplay({
     () => rowsFromSoilIdData(match.soilInfo.soilData),
     [match.soilInfo.soilData],
   );
+
+  const isOffline = useIsOffline();
+
   return (
     <Column space="16px">
       <Row justifyContent="space-between" alignItems="center">
@@ -67,7 +72,13 @@ export function PropertiesScoreDisplay({
         </Row>
         <ScoreTile score={matchInfo.score} />
       </Row>
-      <SoilPropertiesDataTable rows={rows} />
+      {isOffline ? (
+        <OfflineMessageBox
+          message={t('site.soil_id.soil_properties_score_info.offline')}
+        />
+      ) : (
+        <SoilPropertiesDataTable rows={rows} />
+      )}
     </Column>
   );
 }

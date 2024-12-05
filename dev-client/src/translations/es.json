@@ -79,7 +79,8 @@
             "confirm_removal_body": "Esta acción no se puede deshacer.",
             "min_length_error": "Debe tener al menos {{min}} caracteres",
             "placeholder_text": "Empieza a escribir tu nota…",
-            "project_instructions": "Nota destacada"
+            "project_instructions": "Nota destacada",
+            "offline": "TK Creating and editing notes is only available online."
         },
         "search": {
             "placeholder": "Buscar sitios",
@@ -204,7 +205,8 @@
                     "3": "Color de suelo por profundidad",
                     "4": "Pendiente del sitio",
                     "5": "Grietas del suelo"
-                }
+                },
+                "offline": "TK Soil properties score will update when you are online."
             }
         }
     },
@@ -212,6 +214,7 @@
         "label": "Proyecto",
         "title": "Proyectos",
         "header": "Proyectos",
+        "offline": "TK Project management is only available online",
         "none": {
             "header": "No tienes ningún proyecto.",
             "info": "Los proyectos te permiten agrupar sitios, establecer necesidades de datos y administrar a los miembros del equipo."
@@ -407,6 +410,7 @@
         "no": "No",
         "next": "Siguiente",
         "proceed": "Proceder",
+        "offline_title": "Estás fuera de linea",
         "last_modified": "Última modificación",
         "save_fab": "Guardar",
         "dismiss": "Dismiss TK",
