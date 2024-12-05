@@ -21,8 +21,10 @@ import CheckBox from '@react-native-community/checkbox';
 
 import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {DisableableText} from 'terraso-mobile-client/components/content/typography/DisableableText';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {getMatchSelectionId} from 'terraso-mobile-client/model/soilId/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilId/soilMetadataHooks';
@@ -32,7 +34,11 @@ type SoilIdMatchSelectorProps = {
   siteId: string;
 };
 
-export function SoilIdMatchSelector({siteId, match}: SoilIdMatchSelectorProps) {
+export const SoilIdMatchSelector = ({
+  siteId,
+  match,
+}: SoilIdMatchSelectorProps) => {
+  const isOffline = useIsOffline();
   const {selectedSoilId, selectSoilId} = useSoilIdSelection(siteId);
   const matchId = getMatchSelectionId(match);
 
@@ -41,16 +47,20 @@ export function SoilIdMatchSelector({siteId, match}: SoilIdMatchSelectorProps) {
       <View style={styles.container}>
         <CheckBox
           accessibilityRole="checkbox"
+          accessibilityState={{disabled: isOffline}}
           value={selectedSoilId === matchId}
+          disabled={isOffline}
           onValueChange={value => {
             selectSoilId(value ? matchId : null);
           }}
         />
-        <TranslatedParagraph i18nKey="site.soil_id.matches.selector" />
+        <DisableableText disabled={isOffline}>
+          <TranslatedParagraph i18nKey="site.soil_id.matches.selector" />
+        </DisableableText>
       </View>
     </RestrictBySiteRole>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

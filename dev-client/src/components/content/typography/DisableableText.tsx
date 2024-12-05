@@ -15,20 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
-import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+type DisableableTextProps = {
+  disabled?: boolean;
+} & React.PropsWithChildren;
 
-export const useHandleMissingSite = () => {
-  const navigation = useNavigation();
-  const syncNotifications = useSyncNotificationContext();
-
-  return useCallback(() => {
-    navigation.navigate('BOTTOM_TABS');
-    if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError();
-    }
-  }, [navigation, syncNotifications]);
+export const DisableableText = ({
+  disabled = false,
+  children,
+}: DisableableTextProps) => {
+  return <Text color={disabled ? 'text.disabled' : undefined}>{children}</Text>;
 };

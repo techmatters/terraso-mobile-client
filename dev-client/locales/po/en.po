@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-21T22:46:04.456Z\n"
-"PO-Revision-Date: 2024-11-21T22:46:04.457Z\n"
+"POT-Creation-Date: 2024-12-03T21:40:11.857Z\n"
+"PO-Revision-Date: 2024-12-03T21:40:11.858Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -324,6 +324,12 @@ msgstr "Slope Steepness"
 
 msgid "site##soil_id##site_data##slope##add_data"
 msgstr "Enter steepness"
+
+msgid "site##soil_id##site_data##cracks##title"
+msgstr "Soil Cracks"
+
+msgid "site##soil_id##site_data##cracks##add_data"
+msgstr "Enter Cracks"
 
 msgid "site##soil_id##site_data##soil_properties##title"
 msgstr "Soil Properties"
@@ -895,6 +901,9 @@ msgstr "Save"
 msgid "general##save_fab"
 msgstr "Save"
 
+msgid "general##dismiss"
+msgstr "Dismiss"
+
 msgid "general##use"
 msgstr "Use"
 
@@ -1024,6 +1033,12 @@ msgstr "Proceed"
 msgid "general##offline_title"
 msgstr "You are offline"
 
+msgid "general##support##label"
+msgstr "Support"
+
+msgid "general##support##url"
+msgstr "https://landpks.terraso.org/"
+
 msgid "permissions##camera_title"
 msgstr "LandPKS Soil ID needs to access your camera"
 
@@ -1044,6 +1059,12 @@ msgstr "For the best map experience, grant LandPKS Soil ID access to your locati
 
 msgid "errors##generic"
 msgstr "Error saving soil ID information."
+
+msgid "errors##sync_conflict##headline"
+msgstr "Project conflict"
+
+msgid "errors##sync_conflict##body"
+msgstr "This project has changed. Learn more and get support at the LandPKS website."
 
 msgid "screens##SITES"
 msgstr "LandPKS Soil ID"

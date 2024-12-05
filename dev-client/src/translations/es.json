@@ -159,6 +159,10 @@
                     "title": "Inclinación de pendiente",
                     "add_data": "Añadir pendiente"
                 },
+                "cracks": {
+                    "title": "TK Soil Cracks",
+                    "add_data": "TK Enter Cracks"
+                },
                 "soil_properties": {
                     "title": "Propiedades del suelo",
                     "depth": "Profundidad ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
@@ -409,6 +413,7 @@
         "offline_title": "Estás fuera de linea",
         "last_modified": "Última modificación",
         "save_fab": "Guardar",
+        "dismiss": "Dismiss TK",
         "last_modified_by": "última modificación {{user}}, {{date}}",
         "select_all": "Seleccionar todo",
         "you_name": "{{name}} (tú)",
@@ -440,10 +445,18 @@
             "privacy_policy_link_text": "Lee más acerca de nuestras políticas de privacidad de datos."
         },
         "character_limit": "{{current}} / {{limit}} caracteres",
-        "open_settings": "Ir a configuraciones"
+        "open_settings": "Ir a configuraciones",
+        "support": {
+            "label": "Support TK",
+            "url": "https://landpks.terraso.org/"
+        }
     },
     "errors": {
-        "generic": "Error al guardar la informacion de la identificación del suelo."
+        "generic": "Error al guardar la informacion de la identificación del suelo.",
+        "sync_conflict": {
+            "headline": "Project conflict TK",
+            "body": "This project has changed. Learn more and get support at the LandPKS website. TK"
+        }
     },
     "screens": {
         "LOGIN": "Iniciar sesión",
