@@ -140,7 +140,7 @@ describe('PushDispatcher', () => {
     await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
   });
 
-  test('shoes not show error notification when push has no sync errors', async () => {
+  test('does not show error notification when push has no sync errors', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
     useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
