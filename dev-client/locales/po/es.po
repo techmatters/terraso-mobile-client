@@ -995,8 +995,20 @@ msgstr "{{current}} / {{limit}} caracteres"
 msgid "general##open_settings"
 msgstr "Ir a configuraciones"
 
+msgid "general##support##label"
+msgstr "Support TK"
+
+msgid "general##support##url"
+msgstr "https://landpks.terraso.org/"
+
 msgid "errors##generic"
 msgstr "Error al guardar la informacion de la identificación del suelo."
+
+msgid "errors##sync_conflict##headline"
+msgstr "Project conflict TK"
+
+msgid "errors##sync_conflict##body"
+msgstr "This project has changed. Learn more and get support at the LandPKS website. TK"
 
 msgid "screens##LOGIN"
 msgstr "Iniciar sesión"

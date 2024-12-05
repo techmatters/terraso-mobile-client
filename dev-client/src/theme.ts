@@ -72,6 +72,7 @@ export const theme = extendTheme({
     action: {
       active: '#1A202C',
       active_subtle: '#1A202CB2',
+      selected: '#00192314',
       disabled: '#8B9498',
       disabledBackground: '#E0E0E0',
     },

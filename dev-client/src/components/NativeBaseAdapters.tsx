@@ -109,18 +109,28 @@ type HeadingProps = NativeBaseTextProps &
     variant?: keyof (typeof theme.components)['Heading']['variants'];
   };
 
-export const Heading = (props: React.PropsWithChildren<HeadingProps>) => (
-  <RN.Text
-    {...convertNBStyles(
-      {
-        variant: 'h6',
-        color: 'text.primary',
-        ...props,
-      },
-      'Heading',
-    )}
-  />
-);
+export const Heading = (props: React.PropsWithChildren<HeadingProps>) => {
+  const hasTextAncestor = useContext(TextAncestorContext);
+  return (
+    <TextAncestorContext.Provider value={true}>
+      <RN.Text
+        {...convertNBStyles(
+          {
+            ...(hasTextAncestor
+              ? {variant: 'h6'}
+              : {
+                  variant: 'h6',
+                  color: 'text.primary',
+                  ...props,
+                }),
+            ...props,
+          },
+          'Heading',
+        )}
+      />
+    </TextAncestorContext.Provider>
+  );
+};
 
 type BadgeProps = NativeBaseProps &
   RN.ViewProps & {

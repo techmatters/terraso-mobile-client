@@ -21,18 +21,26 @@ import {Linking} from 'react-native';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {validateUrl} from 'terraso-mobile-client/util';
 
+export type ExternalLinkType = 'default' | 'alertError';
+
 export type ExternalLinkProps = {
+  type?: ExternalLinkType;
   label: string;
   url: string;
 };
 
-export const ExternalLink = ({label, url}: ExternalLinkProps) => {
+export const ExternalLink = ({
+  type = 'default',
+  label,
+  url,
+}: ExternalLinkProps) => {
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
   const openUrl = useCallback(() => Linking.openURL(url), [url]);
 
   return (
     isValidUrl && (
       <TextButton
+        type={type}
         role="link"
         label={label}
         rightIcon="open-in-new"
