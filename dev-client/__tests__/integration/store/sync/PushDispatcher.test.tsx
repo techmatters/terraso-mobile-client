@@ -91,15 +91,6 @@ describe('PushDispatcher', () => {
     expect(useDebouncedUnsyncedSiteIds).toHaveBeenCalledWith(PUSH_DEBOUNCE_MS);
   });
 
-  test('uses correct interval for retry', async () => {
-    render(<PushDispatcher />);
-
-    expect(useRetryInterval).toHaveBeenCalledWith(
-      PUSH_RETRY_INTERVAL_MS,
-      dispatchPush,
-    );
-  });
-
   test('uses correct site IDs for push dispatch', async () => {
     useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
 
@@ -224,5 +215,39 @@ describe('PushDispatcher', () => {
     handle.rerender(<PushDispatcher />);
 
     await waitFor(() => expect(endRetry).toHaveBeenCalledTimes(1));
+  });
+
+  test('uses correct interval for retry', async () => {
+    render(<PushDispatcher />);
+
+    expect(useRetryInterval.mock.calls.length).toEqual(1);
+    expect(useRetryInterval.mock.calls[0][0]).toEqual(PUSH_RETRY_INTERVAL_MS);
+  });
+
+  test('re-dispatches push on retry', async () => {
+    dispatchPush.mockResolvedValue({});
+    render(<PushDispatcher />);
+
+    expect(useRetryInterval.mock.calls.length).toEqual(1);
+    const retryAction = useRetryInterval.mock.calls[0][1];
+    retryAction();
+
+    expect(dispatchPush).toHaveBeenCalledTimes(1);
+  });
+
+  test('shows error notification when retried push has sync error', async () => {
+    dispatchPush.mockResolvedValue({
+      payload: {
+        data: {},
+        errors: {a: {value: 'DOES_NOT_EXIST'}},
+      },
+    });
+    render(<PushDispatcher />);
+
+    expect(useRetryInterval.mock.calls.length).toEqual(1);
+    const retryAction = useRetryInterval.mock.calls[0][1];
+    retryAction();
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
   });
 });
