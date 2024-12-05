@@ -93,7 +93,7 @@ export const PushDispatcher = () => {
 
     /* Cancel any pending retries when push input changes or component unmounts */
     return endRetry;
-  }, [needsPush, dispatchPush, beginRetry, endRetry, syncNotifications]);
+  }, [needsPush, dispatchPush, beginRetry, endRetry]);
 
   return <></>;
 };
