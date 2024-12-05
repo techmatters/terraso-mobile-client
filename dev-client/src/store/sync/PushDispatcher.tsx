@@ -15,8 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useEffect} from 'react';
+import {useCallback, useEffect} from 'react';
 
+import {PayloadAction} from '@reduxjs/toolkit';
+
+import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
+import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import {
   useDebouncedIsOffline,
   useDebouncedUnsyncedSiteIds,
@@ -40,6 +44,9 @@ export const PushDispatcher = () => {
   /* Determine whether the user is logged in before doing anything. */
   const isLoggedIn = useIsLoggedIn();
 
+  /* Use notifications to show errors to the user */
+  const syncNotifications = useSyncNotificationContext();
+
   /* Debounce offline state so we know when it's safe to attempt a push. */
   const isOffline = useDebouncedIsOffline(PUSH_DEBOUNCE_MS);
 
@@ -47,7 +54,20 @@ export const PushDispatcher = () => {
   const unsyncedSiteIds = useDebouncedUnsyncedSiteIds(PUSH_DEBOUNCE_MS);
 
   /* Set up a callback for the dispatcher to use when it determines a push is needed. */
-  const dispatchPush = usePushDispatch(unsyncedSiteIds);
+  const dispatchPushBase = usePushDispatch(unsyncedSiteIds);
+
+  /* Connect the push dispatch to sync error notifications */
+  const dispatchPush = useCallback(
+    () =>
+      dispatchPushBase().then(result => {
+        if (dispatchResultHasSyncErrors(result)) {
+          /* If the push yielded sync errors, notify the user */
+          syncNotifications.showError();
+        }
+        return result;
+      }),
+    [dispatchPushBase, syncNotifications],
+  );
 
   /* A push is needed when the user is logged in, not offline, and has unsynced data. */
   const needsPush = isLoggedIn && !isOffline && unsyncedSiteIds.length > 0;
@@ -62,9 +82,9 @@ export const PushDispatcher = () => {
     /* Dispatch a push if needed */
     if (needsPush) {
       dispatchPush()
-        /* If the initial push failed, begin a retry cycle */
         .then(result => {
-          if (!result.payload || 'error' in result.payload) {
+          if (dispatchFailed(result)) {
+            /* If the initial push failed, begin a retry cycle */
             beginRetry();
           }
         })
@@ -76,4 +96,20 @@ export const PushDispatcher = () => {
   }, [needsPush, dispatchPush, beginRetry, endRetry]);
 
   return <></>;
+};
+
+const dispatchResultHasSyncErrors = (
+  result: PayloadAction<undefined | object | SyncResults<unknown, unknown>>,
+): boolean => {
+  return (
+    !!result.payload &&
+    'errors' in result.payload &&
+    Object.keys(result.payload.errors).length > 0
+  );
+};
+
+const dispatchFailed = (
+  result: PayloadAction<undefined | object | SyncResults<unknown, unknown>>,
+) => {
+  return !result.payload || 'error' in result.payload;
 };
