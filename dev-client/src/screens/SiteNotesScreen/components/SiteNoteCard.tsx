@@ -26,6 +26,7 @@ import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useSelector} from 'terraso-mobile-client/store';
 import {formatDate, formatFullName} from 'terraso-mobile-client/util';
@@ -43,8 +44,12 @@ export const SiteNoteCard = ({note}: Props) => {
   const siteRole = useSiteRoleContext();
   const currentUserIsOwner = siteRole?.role === 'OWNER';
   const currentUserIsManager = siteRole?.role === 'MANAGER';
+
+  const isOffline = useIsOffline();
+
   const canViewEditScreen =
-    currentUserIsAuthor || currentUserIsOwner || currentUserIsManager;
+    !isOffline &&
+    (currentUserIsAuthor || currentUserIsOwner || currentUserIsManager);
 
   const onEditNote = useCallback(() => {
     if (canViewEditScreen) {

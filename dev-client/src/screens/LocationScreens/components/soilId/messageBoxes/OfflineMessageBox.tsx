@@ -20,13 +20,17 @@ import {useTranslation} from 'react-i18next';
 import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-export const OfflineMessageBox = () => {
+type OfflineMessageBoxProps = {
+  message: string;
+};
+
+export const OfflineMessageBox = ({message}: OfflineMessageBoxProps) => {
   const {t} = useTranslation();
 
   return (
-    <AlertMessageBox title={t('site.soil_id.matches.offline_title')}>
+    <AlertMessageBox title={t('general.offline_title')}>
       <Text variant="body1" mb="sm">
-        {t('site.soil_id.matches.offline_body')}
+        {message}
       </Text>
     </AlertMessageBox>
   );

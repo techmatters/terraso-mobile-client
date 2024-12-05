@@ -34,8 +34,10 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -71,6 +73,8 @@ export const ProjectListScreen = () => {
     [t],
   );
 
+  const isOffline = useIsOffline();
+
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} />}>
       <Column
@@ -80,85 +84,91 @@ export const ProjectListScreen = () => {
         flexShrink={0}
         flexBasis="70%"
         space="10px">
-        {isLoadingData ? (
-          <ActivityIndicator size="large" />
+        {isOffline ? (
+          <OfflineMessageBox message={t('projects.offline')} />
         ) : (
-          activeProjects.length === 0 && (
-            <Box mb="md">
-              <Text bold>{t('projects.none.header')}</Text>
-              <Text>{t('projects.none.info')}</Text>
+          <>
+            {isLoadingData ? (
+              <ActivityIndicator size="large" />
+            ) : (
+              activeProjects.length === 0 && (
+                <Box mb="md">
+                  <Text bold>{t('projects.none.header')}</Text>
+                  <Text>{t('projects.none.info')}</Text>
+                </Box>
+              )
+            )}
+            <Box alignItems="flex-start" pb="md">
+              <AddButton
+                text={t('projects.create_button')}
+                buttonProps={{onPress}}
+              />
             </Box>
-          )
-        )}
-        <Box alignItems="flex-start" pb="md">
-          <AddButton
-            text={t('projects.create_button')}
-            buttonProps={{onPress}}
-          />
-        </Box>
-        {activeProjects.length > 0 && (
-          <ListFilterProvider
-            items={activeProjects}
-            filters={{
-              search: {
-                kind: 'filter',
-                f: searchText,
-                preprocess: normalizeText,
-                lookup: {key: 'name'},
-                hide: true,
-              },
-              role: {
-                kind: 'filter',
-                f: equals,
-                lookup: {key: 'id', record: projectRoleLookup},
-              },
-              sort: {
-                kind: 'sorting',
-                options: {
-                  nameAsc: {
-                    key: 'name',
-                    order: 'ascending',
+            {activeProjects.length > 0 && (
+              <ListFilterProvider
+                items={activeProjects}
+                filters={{
+                  search: {
+                    kind: 'filter',
+                    f: searchText,
+                    preprocess: normalizeText,
+                    lookup: {key: 'name'},
+                    hide: true,
                   },
-                  nameDesc: {
-                    key: 'name',
-                    order: 'descending',
+                  role: {
+                    kind: 'filter',
+                    f: equals,
+                    lookup: {key: 'id', record: projectRoleLookup},
                   },
-                  lastModAsc: {
-                    key: 'updatedAt',
-                    order: 'ascending',
+                  sort: {
+                    kind: 'sorting',
+                    options: {
+                      nameAsc: {
+                        key: 'name',
+                        order: 'ascending',
+                      },
+                      nameDesc: {
+                        key: 'name',
+                        order: 'descending',
+                      },
+                      lastModAsc: {
+                        key: 'updatedAt',
+                        order: 'ascending',
+                      },
+                      lastModDesc: {
+                        key: 'updatedAt',
+                        order: 'descending',
+                      },
+                    },
                   },
-                  lastModDesc: {
-                    key: 'updatedAt',
-                    order: 'descending',
-                  },
-                },
-              },
-            }}>
-            <ListFilterModal
-              searchInput={
-                <TextInputFilter
-                  name="search"
-                  label={t('projects.search_label')}
-                  placeholder={t('projects.search.placeholder')}
-                />
-              }>
-              <SelectFilter
-                name="sort"
-                label={t('projects.sort_label')}
-                options={SORT_OPTIONS}
-                renderValue={renderSortOption}
-              />
-              <SelectFilter
-                name="role"
-                label={t('projects.role_filter_label')}
-                renderValue={renderRole}
-                options={PROJECT_ROLES}
-                unselectedLabel={t('general.filter.no_role')}
-                nullable={true}
-              />
-            </ListFilterModal>
-            <ProjectList />
-          </ListFilterProvider>
+                }}>
+                <ListFilterModal
+                  searchInput={
+                    <TextInputFilter
+                      name="search"
+                      label={t('projects.search_label')}
+                      placeholder={t('projects.search.placeholder')}
+                    />
+                  }>
+                  <SelectFilter
+                    name="sort"
+                    label={t('projects.sort_label')}
+                    options={SORT_OPTIONS}
+                    renderValue={renderSortOption}
+                  />
+                  <SelectFilter
+                    name="role"
+                    label={t('projects.role_filter_label')}
+                    renderValue={renderRole}
+                    options={PROJECT_ROLES}
+                    unselectedLabel={t('general.filter.no_role')}
+                    nullable={true}
+                  />
+                </ListFilterModal>
+                <ProjectList />
+              </ListFilterProvider>
+            )}
+          </>
         )}
       </Column>
     </ScreenScaffold>

@@ -180,7 +180,8 @@
                     "3": "Soil color by depth",
                     "4": "Site slope",
                     "5": "Soil cracks"
-                }
+                },
+                "offline": "Soil properties score will update when you are online."
             }
         },
         "notes": {
@@ -193,7 +194,8 @@
             "confirm_removal_body": "This action cannot be undone.",
             "min_length_error": "Must be at least {{min}} characters",
             "placeholder_text": "Start typing your note…",
-            "project_instructions": "Pinned Note"
+            "project_instructions": "Pinned Note",
+            "offline": "Creating and editing notes is only available online."
         },
         "search": {
             "placeholder": "Search sites",
@@ -222,6 +224,7 @@
         "label": "Project",
         "title": "Projects",
         "header": "Projects",
+        "offline": "Project management is only available online",
         "none": {
             "header": "You don’t have any projects.",
             "info": "Projects let you group sites, set requirements, and manage team members."
@@ -452,6 +455,7 @@
         "no": "No",
         "next": "Next",
         "proceed": "Proceed",
+        "offline_title": "You are offline",
         "support": {
             "label": "Support",
             "url": "https://landpks.terraso.org/"
