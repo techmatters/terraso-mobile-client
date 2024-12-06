@@ -29,10 +29,11 @@
         "members": "{{members}} Miembros",
         "coords": "{{lat}}, {{long}}",
         "empty": {
-            "info": "No tiene aún ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu suelo y su potencial, y compartir con otros.\n\n<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de utilizar el mapa para encontrar una ubicación para un sitio:",
-            "bullet_1": "Toca el mapa para marcar una ubicación y obtener más imformacion acerca del lugar.",
-            "bullet_2": "Toca el icono de ubicación <icon/> para encontrar tu ubicación GPS actual.",
-            "bullet_3": "Introduce las coordenadas, la dirección u otro término de búsqueda en la barra de búsqueda."
+            "info": "TK <bold>Three ways to create a site site:</bold>\n",
+            "map": "TK Tap anywhere on the map.",
+            "icon": "TK Tap the My Location icon.",
+            "coords": "TK Enter coordinates, address, or search term in the map search bar",
+            "summary": "TK A site lets you collect and save observations, learn more about the land and its potentnial, and share with others."
         },
         "create": {
             "title": "Crear sitio",
@@ -105,6 +106,7 @@
             "NOTES": "Notas"
         },
         "list_title": "Lista de sitios",
+        "list_title_empty": "Crear sitio",
         "last_updated": "Última modificaión: {{date}} por {{name}}",
         "more_info": "Aprende más",
         "your_location": "Tu ubicación",
@@ -115,6 +117,7 @@
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "desconocido",
         "not_available_offine": "TK Not available offline",
+        "offline": "TK Sites can only be created while online.",
         "form": {
             "name_min_length_error": "El nombre del sitio debe tener un mínimo de {{min}} caracteres",
             "name_max_length_error": "El nombre del sitio debe tener un máximo de {{max}} caracteres",

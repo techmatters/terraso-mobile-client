@@ -89,7 +89,7 @@ msgid "search##placeholder"
 msgstr "Search map"
 
 msgid "site##list_title"
-msgstr "Sites List"
+msgstr "Create Site"
 
 msgid "site##last_updated"
 msgstr "Last Modified: {{date}} by {{name}}"
@@ -131,19 +131,19 @@ msgid "site##not_available_offine"
 msgstr "Not available offline"
 
 msgid "site##empty##info"
-msgstr ""
-"You don’t have any sites yet. A site lets you collect and save data, learn more about your land and its potential, and share with others.\n"
-"\n"
-"<bold>Use the map to create a site.</bold> There are three ways to use the map to find a location for a site:\n"
+msgstr "<bold>Three ways to create a site site:</bold>\n"
 
-msgid "site##empty##bullet_1"
-msgstr "Tap the map to drop a pin and get more information about that location."
+msgid "site##empty##map"
+msgstr "Tap anywhere on the map."
 
-msgid "site##empty##bullet_2"
-msgstr "Tap the location icon <icon/> to find your current GPS location."
+msgid "site##empty##icon"
+msgstr "Tap the My Location icon."
 
-msgid "site##empty##bullet_3"
-msgstr "Enter coordinates, address, or other search term in the search bar."
+msgid "site##empty##coords"
+msgstr "Enter coordinates, address, or search term in the map search bar"
+
+msgid "site##empty##summary"
+msgstr "A site lets you collect and save observations, learn more about the land and its potentnial, and share with others."
 
 msgid "site##create##title"
 msgstr "Create Site"
