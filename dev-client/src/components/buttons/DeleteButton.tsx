@@ -30,14 +30,16 @@ export default function DeleteButton({label, ...props}: Props) {
 
   label = label ?? t('general.delete_fab');
 
+  const color = props?.disabled ? 'action.disabled' : 'error.main';
+
   return (
     <Button
       background="background.default"
       p={0}
       pt="10px"
-      startIcon={<Icon name="delete" color="error.main" size="md" mr={2} />}
+      startIcon={<Icon name="delete" color={color} size="md" mr={2} />}
       _text={{
-        color: 'error.main',
+        color: color,
         fontWeight: 500,
         fontSize: 'md',
         textTransform: 'uppercase',
