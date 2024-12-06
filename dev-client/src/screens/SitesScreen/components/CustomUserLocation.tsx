@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {CircleLayer, Location, UserLocation} from '@rnmapbox/maps';
+import {CircleLayer, UserLocation} from '@rnmapbox/maps';
 
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
 import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
@@ -42,12 +42,10 @@ const layerStyles = {
 
 type CustomUserLocationProps = {
   onUserLocationPress: (event?: GeoJSON.GeoJsonProperties) => void;
-  updateUserLocation?: (location: Location) => void;
 };
 
 export const CustomUserLocation = ({
   onUserLocationPress,
-  updateUserLocation,
 }: CustomUserLocationProps) => {
   const {permissions} = useUpdatedForegroundPermissions();
   console.log('Permissions: ', permissions?.granted);
@@ -58,7 +56,6 @@ export const CustomUserLocation = ({
 
   return permissions?.granted ? (
     <UserLocation
-      onUpdate={updateUserLocation}
       onPress={handleUserLocationPress}
       minDisplacement={USER_DISPLACEMENT_MIN_DISTANCE_M}>
       <CircleLayer
