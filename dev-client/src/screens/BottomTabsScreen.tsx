@@ -78,6 +78,8 @@ export const BottomTabsScreen = memo(() => {
       locationManager.addListener(listener);
 
       return () => locationManager.removeListener(listener);
+    } else {
+      dispatch(updateLocation({coords: null, accuracyM: null}));
     }
   }, [dispatch, locationPermissions?.granted]);
 
