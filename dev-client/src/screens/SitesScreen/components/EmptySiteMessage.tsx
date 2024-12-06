@@ -46,17 +46,23 @@ export const EmptySiteMessage = () => {
           color={convertColorProp('text.icon')}
           style={styles.communityIcon}
         />
-        <TranslatedParagraph i18nKey="site.empty.map" />
+        <View style={styles.flex}>
+          <TranslatedParagraph i18nKey="site.empty.map" />
+        </View>
       </View>
 
       <View style={styles.view}>
         <Icon name="my-location" color="text.icon" size={24} pr={5} />
-        <TranslatedParagraph i18nKey="site.empty.icon" />
+        <View style={styles.flex}>
+          <TranslatedParagraph i18nKey="site.empty.icon" />
+        </View>
       </View>
 
       <View style={styles.enter}>
         <Icon name="search" color="text.icon" size={24} pr={5} marginTop={1} />
-        <TranslatedParagraph i18nKey="site.empty.coords" />
+        <View style={styles.flex}>
+          <TranslatedParagraph i18nKey="site.empty.coords" />
+        </View>
       </View>
 
       <View style={styles.enter}>
@@ -76,6 +82,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
     alignItems: 'flex-start',
+  },
+  flex: {
+    flex: 1,
   },
   communityIcon: {marginRight: 20},
 });
