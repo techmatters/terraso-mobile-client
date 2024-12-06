@@ -17,8 +17,11 @@
 
 import {forwardRef, memo, useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {StyleSheet} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import BottomSheet, {
   BottomSheetFlatList,
@@ -99,6 +102,8 @@ export const SiteListBottomSheet = memo(
         [t],
       );
 
+      const isEmpty = sites.length === 0;
+
       return (
         <BottomSheet
           ref={ref}
@@ -107,14 +112,26 @@ export const SiteListBottomSheet = memo(
           backgroundStyle={backgroundStyle}
           handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
           <Column px="16px">
-            <Row justifyContent="space-between" alignItems="center" pb="4">
-              <Heading variant="h6">{t('site.list_title')}</Heading>
+            <Row justifyContent="flex-start" alignItems="center" pb="4">
+              {isEmpty ? (
+                <>
+                  <MaterialCommunityIcons
+                    name="plus"
+                    size={24}
+                    color="black"
+                    style={styles.communityIcon}
+                  />
+                  <Heading variant="h6">{t('site.list_title_empty')}</Heading>
+                </>
+              ) : (
+                <Heading variant="h6">{t('site.list_title')}</Heading>
+              )}
             </Row>
             {sites.length > 0 && <SiteFilterModal useDistance={useDistance} />}
           </Column>
           {isLoadingData ? (
             <ActivityIndicator size="large" />
-          ) : sites.length === 0 ? (
+          ) : isEmpty ? (
             <BottomSheetScrollView>
               <EmptySiteMessage />
             </BottomSheetScrollView>
@@ -140,3 +157,7 @@ export const SiteListBottomSheet = memo(
 const keyExtractor = (site: Site) => site.id;
 const ItemSeparatorComponent = () => <Box h={`${SEPARATOR_HEIGHT}px`} />;
 const ListFooterComponent = <Box h="10px" />;
+
+const styles = StyleSheet.create({
+  communityIcon: {marginRight: 10},
+});
