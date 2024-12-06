@@ -45,7 +45,7 @@ export const ErrorDialog = forwardRef<
   React.PropsWithChildren<ErrorDialogProps>
 >(({headline, children}, forwardedRef) => {
   const {t} = useTranslation();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const onOpen = useCallback(() => setIsOpen(true), [setIsOpen]);
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
   const modalHandle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
