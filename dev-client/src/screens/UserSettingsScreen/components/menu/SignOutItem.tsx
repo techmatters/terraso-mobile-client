@@ -26,7 +26,15 @@ export function SignOutItem() {
 
   const isDisabled = useIsOffline();
 
-  return (
+  return isDisabled ? (
+    <MenuItem
+      variant="default"
+      uppercase
+      icon="logout"
+      label={t('settings.sign_out')}
+      disabled={isDisabled}
+    />
+  ) : (
     <SignOutModal
       trigger={onOpen => (
         <MenuItem
@@ -34,7 +42,6 @@ export function SignOutItem() {
           uppercase
           icon="logout"
           label={t('settings.sign_out')}
-          disabled={isDisabled}
           onPress={onOpen}
         />
       )}
