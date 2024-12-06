@@ -83,7 +83,7 @@
     "terraso-client-shared": "github:techmatters/terraso-client-shared#d51ec3b",
     "use-debounce": "^10.0.4",
     "uuid": "^10.0.0",
-    "yup": "^1.4.0"
+    "yup": "^1.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
