@@ -17,6 +17,7 @@
 import {CircleLayer, Location, UserLocation} from '@rnmapbox/maps';
 
 import {USER_DISPLACEMENT_MIN_DISTANCE_M} from 'terraso-mobile-client/constants';
+import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 
 const mapboxBlue = 'rgba(51, 181, 229, 100)';
 
@@ -48,11 +49,14 @@ export const CustomUserLocation = ({
   onUserLocationPress,
   updateUserLocation,
 }: CustomUserLocationProps) => {
+  const {permissions} = useUpdatedForegroundPermissions();
+  console.log('Permissions: ', permissions?.granted);
+
   const handleUserLocationPress = (event?: GeoJSON.GeoJsonProperties) => {
     onUserLocationPress(event);
   };
 
-  return (
+  return permissions?.granted ? (
     <UserLocation
       onUpdate={updateUserLocation}
       onPress={handleUserLocationPress}
@@ -76,5 +80,7 @@ export const CustomUserLocation = ({
         style={layerStyles.foreground}
       />
     </UserLocation>
+  ) : (
+    <></>
   );
 };
