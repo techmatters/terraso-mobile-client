@@ -16,35 +16,38 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {PressableProps} from 'react-native';
 
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {SignOutModal} from 'terraso-mobile-client/components/modals/SignOutModal';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 
-export function SignOutItem() {
+type Props = {
+  disabled?: boolean;
+  onPress?: PressableProps['onPress'];
+};
+
+const SignOutMenuItem = ({disabled, onPress}: Props) => {
   const {t} = useTranslation();
 
-  const isDisabled = useIsOffline();
-
-  return isDisabled ? (
+  return (
     <MenuItem
       variant="default"
       uppercase
       icon="logout"
       label={t('settings.sign_out')}
-      disabled={isDisabled}
-    />
-  ) : (
-    <SignOutModal
-      trigger={onOpen => (
-        <MenuItem
-          variant="default"
-          uppercase
-          icon="logout"
-          label={t('settings.sign_out')}
-          onPress={onOpen}
-        />
-      )}
+      disabled={disabled}
+      onPress={onPress}
     />
   );
-}
+};
+
+export const SignOutItem = () => {
+  const isDisabled = useIsOffline();
+
+  return isDisabled ? (
+    <SignOutMenuItem disabled={isDisabled} />
+  ) : (
+    <SignOutModal trigger={onOpen => <SignOutMenuItem onPress={onOpen} />} />
+  );
+};
