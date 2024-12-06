@@ -17,6 +17,7 @@
 
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {PressableProps} from 'react-native';
 
 import {Fab} from 'native-base';
 
@@ -40,6 +41,23 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   siteId: string;
+};
+
+type DeleteButtonWrapperProps = {
+  disabled?: boolean;
+  onPress?: PressableProps['onPress'];
+};
+
+const DeleteButtonWrapper = ({disabled, onPress}: DeleteButtonWrapperProps) => {
+  const {t} = useTranslation();
+
+  return (
+    <DeleteButton
+      label={t('site.dashboard.delete_button')}
+      disabled={disabled}
+      onPress={onPress}
+    />
+  );
 };
 
 export const SiteSettingsScreen = ({siteId}: Props) => {
@@ -78,18 +96,10 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           placeholder={t('site.create.name_label')}
         />
         {isOffline ? (
-          <DeleteButton
-            label={t('site.dashboard.delete_button')}
-            disabled={true}
-          />
+          <DeleteButtonWrapper disabled={true} />
         ) : (
           <ConfirmModal
-            trigger={onOpen => (
-              <DeleteButton
-                label={t('site.dashboard.delete_button')}
-                onPress={onOpen}
-              />
-            )}
+            trigger={onOpen => <DeleteButtonWrapper onPress={onOpen} />}
             title={t('projects.sites.delete_site_modal.title')}
             body={t('projects.sites.delete_site_modal.body', {
               siteName: site.name,
