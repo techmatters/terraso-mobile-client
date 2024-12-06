@@ -37,12 +37,15 @@ import LandPKSLogo from 'terraso-mobile-client/assets/landpks-logo.svg';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import {auth, AuthProvider} from 'terraso-mobile-client/auth';
 import {
+  Box,
   Column,
   Heading,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {OfflineSignInBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineSignInBox';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {theme} from 'terraso-mobile-client/theme';
 
@@ -114,6 +117,8 @@ export const LoginScreen = () => {
     [dispatch],
   );
 
+  const isOffline = useIsOffline();
+
   useEffect(() => {
     if (loggedIn) {
       navigation.replace('BOTTOM_TABS');
@@ -152,6 +157,12 @@ export const LoginScreen = () => {
               size="large"
               color={theme.colors.primary.contrast}
             />
+          ) : isOffline ? (
+            <Row marginHorizontal="lg">
+              <Box flex={1}>
+                <OfflineSignInBox />
+              </Box>
+            </Row>
           ) : (
             <LoginButtons onPress={onPress} />
           )}

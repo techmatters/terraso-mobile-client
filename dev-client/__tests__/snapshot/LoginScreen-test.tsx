@@ -17,9 +17,20 @@
 
 import {render} from '@testing/integration/utils';
 
+import * as connectivityHooks from 'terraso-mobile-client/hooks/connectivityHooks';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 
+jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
+  return {
+    useIsOffline: jest.fn(),
+  };
+});
+
 test('renders correctly', () => {
+  const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
+
+  useIsOfflineMock.mockReset().mockReturnValue(false);
+
   const screen = render(<LoginScreen />, {
     initialState: {
       account: {

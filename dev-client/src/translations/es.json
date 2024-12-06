@@ -411,6 +411,8 @@
         "next": "Siguiente",
         "proceed": "Proceder",
         "offline_title": "Estás fuera de linea",
+        "offline_sign_in_title": "TK Sign in not available offline",
+        "offline_sign_in_body": "TK To use LandPKS Soil ID offline, you must first sign in while online.",
         "last_modified": "Última modificación",
         "save_fab": "Guardar",
         "dismiss": "Dismiss TK",
