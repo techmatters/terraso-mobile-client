@@ -31,7 +31,7 @@ import {
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {useSoilIdData} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
+import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
   getSortedDataBasedMatches,
   getSortedLocationBasedMatches,

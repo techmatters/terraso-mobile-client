@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft} from '@reduxjs/toolkit';
 
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
@@ -30,9 +30,6 @@ import {
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export type SoilState = {
-  // don't persist location-based matches to disk??
-  // split metadata into own module
-
   locationBasedMatches: Record<CoordsKey, SoilIdLocationEntry>;
   siteDataBasedMatches: Record<string, SoilIdDataEntry>;
 };
@@ -55,20 +52,24 @@ const soilIdMatchSlice = createSlice({
   name: 'soilIdMatch',
   initialState,
   reducers: {
-    flushSiteDataBasedMatches: (state, action: PayloadAction<string>) => {
-      const siteId = action.payload;
-      delete state.siteDataBasedMatches[siteId];
+    flushLocationCache: state => {
+      state.locationBasedMatches = {};
     },
   },
   extraReducers: builder => {
     builder.addCase(fetchLocationBasedSoilMatches.pending, (state, action) => {
-      const key = coordsKey(action.meta.arg);
-      state.locationBasedMatches[key] = locationEntryForStatus('loading');
+      const coords = action.meta.arg;
+      const key = coordsKey(coords);
+      state.locationBasedMatches[key] = locationEntryForStatus(
+        coords,
+        'loading',
+      );
     });
 
     builder.addCase(fetchLocationBasedSoilMatches.rejected, (state, action) => {
-      const key = coordsKey(action.meta.arg);
-      state.locationBasedMatches[key] = locationEntryForStatus('error');
+      const coords = action.meta.arg;
+      const key = coordsKey(coords);
+      state.locationBasedMatches[key] = locationEntryForStatus(coords, 'error');
     });
 
     builder.addCase(
@@ -101,7 +102,7 @@ const soilIdMatchSlice = createSlice({
   },
 });
 
-export const {flushSiteDataBasedMatches} = soilIdMatchSlice.actions;
+export const {flushLocationCache} = soilIdMatchSlice.actions;
 
 export const fetchLocationBasedSoilMatches = createAsyncThunk(
   'soilId/fetchLocationBasedSoilMatches',

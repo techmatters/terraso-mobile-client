@@ -26,12 +26,13 @@ import {Coords} from 'terraso-client-shared/types';
 export type CoordsKey = `(${number}, ${number})`;
 
 export type SoilIdLocationEntry = {
+  input: Coords;
   matches: LocationBasedSoilMatch[];
   status: SoilIdStatus;
 };
 
 export type SoilIdDataEntry = {
-  input?: SoilIdInputData;
+  input: SoilIdInputData;
   matches: DataBasedSoilMatch[];
   status: SoilIdStatus;
 };
@@ -46,18 +47,22 @@ export const coordsKey = (coords: Coords): CoordsKey => {
 };
 
 export const locationEntryForStatus = (
+  input: Coords,
   status: SoilIdStatus,
 ): SoilIdLocationEntry => {
   return {
+    input,
     status,
     matches: [],
   };
 };
 
 export const locationEntryForMatches = (
+  input: Coords,
   matches: LocationBasedSoilMatch[],
 ): SoilIdLocationEntry => {
   return {
+    input,
     status: 'ready',
     matches: matches,
   };

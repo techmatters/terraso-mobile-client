@@ -31,7 +31,10 @@ describe('coordsKey', () => {
 
 describe('locationEntryForStatus', () => {
   test('produces an entry with the given status and empty matches', () => {
-    expect(locationEntryForStatus('error')).toEqual({
+    expect(
+      locationEntryForStatus({latitude: 1, longitude: 2}, 'error'),
+    ).toEqual({
+      input: {latitude: 1, longitude: 2},
       status: 'error',
       matches: [],
     });
@@ -40,7 +43,10 @@ describe('locationEntryForStatus', () => {
 
 describe('locationEntryForMatches', () => {
   test('produces an entry with ready status and the given matches', () => {
-    expect(locationEntryForMatches(['match'] as any)).toEqual({
+    expect(
+      locationEntryForMatches({latitude: 1, longitude: 2}, ['match'] as any),
+    ).toEqual({
+      input: {latitude: 1, longitude: 2},
       status: 'ready',
       matches: ['match'],
     });

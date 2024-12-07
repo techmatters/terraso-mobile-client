@@ -15,9 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {createSelector} from '@reduxjs/toolkit';
+
 import {Coords} from 'terraso-client-shared/types';
 
-import {DEFAULT_SOIL_DATA} from 'terraso-mobile-client/model/soilId/soilDataConstants';
+import {soilDataToIdInput} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchInputs';
 import {
   coordsKey,
   SoilIdLocationEntry,
@@ -31,12 +33,49 @@ export const selectLocationBasedMatches = (
   return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];
 };
 
-export const selectSiteData = (siteId?: string) => {
-  return (state: AppState) =>
-    (siteId ? state.soilId.soilData[siteId] : undefined) ?? DEFAULT_SOIL_DATA;
-};
-
 export const selectSiteDataBasedMatches = (siteId?: string) => {
   return (state: AppState) =>
     siteId ? state.soilIdMatch.siteDataBasedMatches[siteId] : undefined;
 };
+
+/* Memoized selector to let us select the current keys for location-based matches */
+export const selectLocationBasedKeys = createSelector(
+  [(state: AppState) => state.soilIdMatch.locationBasedMatches],
+  /* Extract location-based match keys */
+  entries => Object.keys(entries),
+);
+
+/* Memoized selector to let us select the current data-based inputs for a set of site IDs (potentially expensive) */
+export const selectDataBasedInputs = createSelector(
+  [
+    (state: AppState) => state.soilIdMatch.siteDataBasedMatches,
+    (_: AppState, siteIds: string[]) => siteIds,
+  ],
+  /* Combine data-based matches with site IDs to extract relevant entries */
+  (entries, siteIds) =>
+    Object.fromEntries(siteIds.map(siteId => [siteId, entries[siteId]?.input])),
+);
+
+/*
+ * Memoized selector to let us select the upcoming data-based inputs for a set of site IDs (potentially expensive;
+ * uses nested memoization to only recalculate input when source soil data changes)
+ */
+export const selectNextDataBasedInputs = createSelector(
+  createSelector(
+    [
+      (state: AppState) => state.soilId.soilData,
+      (_: AppState, siteIds: string[]) => siteIds,
+    ],
+    /* Combine soil data with site IDs to extract relevant entries */
+    (soilData, siteIds) =>
+      Object.fromEntries(siteIds.map(siteId => [siteId, soilData[siteId]])),
+  ),
+  /* Pass site-specific soil data through input format converter */
+  soilData =>
+    Object.fromEntries(
+      Object.entries(soilData).map(([siteId, siteSoilData]) => [
+        siteId,
+        siteSoilData ? soilDataToIdInput(siteSoilData) : undefined,
+      ]),
+    ),
+);

@@ -40,9 +40,9 @@ export const fetchLocationBasedSoilMatches = async (coords: Coords) => {
   const result = await soilIdService.fetchLocationBasedSoilMatches(coords);
 
   if (result.__typename === 'SoilIdFailure') {
-    return locationEntryForStatus(result.reason);
+    return locationEntryForStatus(coords, result.reason);
   } else {
-    return locationEntryForMatches(result.matches);
+    return locationEntryForMatches(coords, result.matches);
   }
 };
 
