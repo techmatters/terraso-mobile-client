@@ -35,9 +35,17 @@ export default function DeleteButton({label, ...props}: Props) {
       background="background.default"
       p={0}
       pt="10px"
-      startIcon={<Icon name="delete" color="error.main" size="md" mr={2} />}
+      variant="error"
+      startIcon={
+        <Icon
+          name="delete"
+          color={props?.disabled ? 'action.disabled' : 'error.main'}
+          size="md"
+          mr={2}
+        />
+      }
+      isDisabled={props?.disabled ? props.disabled : undefined}
       _text={{
-        color: 'error.main',
         fontWeight: 500,
         fontSize: 'md',
         textTransform: 'uppercase',
