@@ -76,7 +76,7 @@ export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
     }
   }, [isOffline, isDataBased, dataEntry, input, dispatch, siteId]);
 
-  if (isDataBased) {
+  if (!isDataBased) {
     return {
       locationBasedMatches: locationEntry?.matches ?? [],
       dataBasedMatches: [],
