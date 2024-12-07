@@ -26,8 +26,8 @@ import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typo
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
-import {getMatchSelectionId} from 'terraso-mobile-client/model/soilId/soilMetadataFunctions';
-import {useSoilIdSelection} from 'terraso-mobile-client/model/soilId/soilMetadataHooks';
+import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
+import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 
 type SoilIdMatchSelectorProps = {
   match: DataBasedSoilMatch;

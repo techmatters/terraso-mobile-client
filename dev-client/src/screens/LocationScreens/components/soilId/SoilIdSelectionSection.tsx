@@ -21,9 +21,9 @@ import {ScreenContentSection} from 'terraso-mobile-client/components/content/Scr
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {findSelectedMatch} from 'terraso-mobile-client/model/soilId/soilMetadataFunctions';
-import {useSoilIdSelection} from 'terraso-mobile-client/model/soilId/soilMetadataHooks';
 import {useSoilIdData} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
+import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
+import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 

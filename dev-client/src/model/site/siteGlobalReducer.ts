@@ -29,7 +29,7 @@ import {
   updateSites,
 } from 'terraso-mobile-client/model/site/siteSlice';
 import {deleteSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {deleteSoilMetadata} from 'terraso-mobile-client/model/soilId/soilMetadataSlice';
+import {deleteSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
 export const addSite = createAsyncThunk('site/addSite', siteService.addSite);
