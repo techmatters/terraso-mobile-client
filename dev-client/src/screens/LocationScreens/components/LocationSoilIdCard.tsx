@@ -34,11 +34,11 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
-import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
-import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilId/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilId/soilMetadataHooks';
+import {useSoilIdData} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
+import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 
 type LocationSoilIdCardProps = {
   coords: Coords;

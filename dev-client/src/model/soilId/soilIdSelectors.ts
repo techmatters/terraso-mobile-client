@@ -17,19 +17,12 @@
 
 import {createSelector} from '@reduxjs/toolkit';
 
-import {SoilIdKey} from 'terraso-client-shared/soilId/soilIdTypes';
-
-import {SoilIdEntry} from 'terraso-mobile-client/model/soilId/soilIdSlice';
 import {
+  getEntityRecord,
   getErrorRecords,
   getUnsyncedRecords,
 } from 'terraso-mobile-client/model/sync/records';
 import {AppState} from 'terraso-mobile-client/store';
-
-export const selectSoilIdMatches =
-  (key: SoilIdKey) =>
-  (state: AppState): SoilIdEntry | undefined =>
-    state.soilId.matches[key];
 
 export const selectSoilChanges = (state: AppState) => state.soilId.soilSync;
 
@@ -58,3 +51,7 @@ export const selectSyncErrorSiteIds = createSelector(
   selectSyncErrorSites,
   errorSites => Object.keys(errorSites),
 );
+
+export const selectSiteSoilDataRevision =
+  (siteId: string) => (state: AppState) =>
+    getEntityRecord(state.soilId.soilSync, siteId).revisionId;
