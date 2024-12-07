@@ -29,6 +29,7 @@ import {
   updateSites,
 } from 'terraso-mobile-client/model/site/siteSlice';
 import {deleteSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {deleteSiteMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
 import {deleteSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
@@ -76,6 +77,7 @@ export const siteGlobalReducer = createGlobalReducer(builder => {
     deleteSites(state.site, [payload]);
     deleteSoilData(state.soilId, [payload]);
     deleteSoilMetadata(state.soilMetadata, [payload]);
+    deleteSiteMatches(state.soilIdMatch, [payload]);
   });
 
   builder.addCase(transferSites.fulfilled, (state, {payload}) => {

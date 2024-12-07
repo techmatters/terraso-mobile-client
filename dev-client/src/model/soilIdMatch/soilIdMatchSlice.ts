@@ -42,7 +42,10 @@ export const initialState: SoilState = {
   siteDataBasedMatches: {},
 };
 
-export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {
+export const deleteSiteMatches = (
+  state: Draft<SoilState>,
+  siteIds: string[],
+) => {
   for (const siteId of siteIds) {
     delete state.siteDataBasedMatches[siteId];
   }
