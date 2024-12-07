@@ -27,6 +27,7 @@ type Props = {
 
 export default function DeleteButton({label, ...props}: Props) {
   const {t} = useTranslation();
+  const color = props?.disabled ? 'action.disabled' : 'error.main';
 
   label = label ?? t('general.delete_fab');
 
@@ -35,10 +36,10 @@ export default function DeleteButton({label, ...props}: Props) {
       background="background.default"
       p={0}
       pt="10px"
-      startIcon={<Icon name="delete" color="error.main" size="md" mr={2} />}
+      startIcon={<Icon name="delete" color={color} size="md" mr={2} />}
       isDisabled={props?.disabled ? props.disabled : undefined}
       _text={{
-        color: 'error.main',
+        color: color,
         fontWeight: 500,
         fontSize: 'md',
         textTransform: 'uppercase',
