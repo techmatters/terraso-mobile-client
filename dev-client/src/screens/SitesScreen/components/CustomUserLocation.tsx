@@ -48,7 +48,6 @@ export const CustomUserLocation = ({
   onUserLocationPress,
 }: CustomUserLocationProps) => {
   const {permissions} = useUpdatedForegroundPermissions();
-  console.log('Permissions: ', permissions?.granted);
 
   const handleUserLocationPress = (event?: GeoJSON.GeoJsonProperties) => {
     onUserLocationPress(event);
