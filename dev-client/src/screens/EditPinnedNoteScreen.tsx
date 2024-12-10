@@ -51,6 +51,7 @@ export const EditPinnedNoteScreen = ({projectId}: Props) => {
     try {
       const projectInput: ProjectUpdateMutationInput = {
         id: project.id,
+        // FYI: "pinned notes" historically have been called "site instructions" or "project instructions"
         siteInstructions: content,
       };
       await dispatch(updateProject(projectInput));
