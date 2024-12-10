@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
@@ -25,14 +27,21 @@ type Props = {projectId: string};
 
 export const ProjectViewScreen = ({projectId}: Props) => {
   const project = useSelector(state => state.project.projects[projectId]);
+  const handleMissingProject = useHandleMissingSiteOrProject();
+
+  const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
-    <ProjectRoleContextProvider projectId={projectId}>
-      <ScreenScaffold
-        AppBar={<AppBar title={project?.name} />}
-        BottomNavigation={null}>
-        <ProjectTabNavigator projectId={projectId} />
-      </ScreenScaffold>
-    </ProjectRoleContextProvider>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ProjectRoleContextProvider projectId={projectId}>
+          <ScreenScaffold
+            AppBar={<AppBar title={project?.name} />}
+            BottomNavigation={null}>
+            <ProjectTabNavigator projectId={projectId} />
+          </ScreenScaffold>
+        </ProjectRoleContextProvider>
+      )}
+    </RestrictByRequirements>
   );
 };
