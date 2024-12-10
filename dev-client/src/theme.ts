@@ -186,6 +186,16 @@ export const theme = extendTheme({
         },
       },
       variants: {
+        error: {
+          _text: {
+            color: 'error.main',
+          },
+          _disabled: {
+            _text: {
+              color: 'action.disabled',
+            },
+          },
+        },
         solid: {
           _disabled: {
             bg: 'action.disabledBackground',
