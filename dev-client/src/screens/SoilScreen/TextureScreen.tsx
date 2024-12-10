@@ -27,7 +27,7 @@ import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
@@ -92,7 +92,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const site = useSelector(state => selectSite(siteId)(state));
-  const handleMissingSite = useHandleMissingSite();
+  const handleMissingSite = useHandleMissingSiteOrProject();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   const onTextureChange = useCallback(

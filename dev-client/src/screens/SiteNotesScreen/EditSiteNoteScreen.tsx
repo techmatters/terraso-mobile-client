@@ -18,7 +18,7 @@
 import {useCallback} from 'react';
 import {ToastAndroid} from 'react-native';
 
-import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -39,7 +39,7 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const note = site?.notes[noteId];
   // TODO: Also handle the case where user no longer has permissions to edit notes
 
-  const handleMissingSite = useHandleMissingSite();
+  const handleMissingSite = useHandleMissingSiteOrProject();
   const handleMissingSiteNote = useCallback(() => {
     navigation.navigate('SITE_TABS', {
       siteId: siteId,

@@ -21,7 +21,7 @@ import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-export const useHandleMissingSite = () => {
+export const useHandleMissingSiteOrProject = () => {
   const navigation = useNavigation();
   const syncNotifications = useSyncNotificationContext();
 

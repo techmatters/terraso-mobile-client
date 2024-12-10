@@ -19,7 +19,7 @@ import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
-import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
@@ -51,7 +51,7 @@ export const SiteTabsScreen = (props: Props) => {
   const site = useSelector(state => selectSite(siteId)(state));
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  const handleMissingSite = useHandleMissingSite();
+  const handleMissingSite = useHandleMissingSiteOrProject();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   const appBarRightButton = useMemo(() => {
