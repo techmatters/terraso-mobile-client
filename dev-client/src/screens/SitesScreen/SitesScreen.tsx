@@ -55,20 +55,22 @@ import {
 } from 'terraso-mobile-client/screens/SitesScreen/SitesScreenCallout';
 import {getSitesScreenFilters} from 'terraso-mobile-client/screens/SitesScreen/utils/sitesScreenFilters';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectSitesAndUserRoles} from 'terraso-mobile-client/store/selectors';
+import {
+  selectCurrentUserID,
+  selectSites,
+  selectSitesAndUserRoles,
+} from 'terraso-mobile-client/store/selectors';
 
 export const SitesScreen = memo(() => {
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>(noneCallout());
-  const currentUserID = useSelector(
-    state => state.account.currentUser?.data?.id,
-  );
-  const sites = useSelector(state => state.site.sites);
+  const currentUserID = useSelector(selectCurrentUserID);
+  const sites = useSelector(selectSites);
   const siteList = useMemo(() => Object.values(sites), [sites]);
   const dispatch = useDispatch();
   const mapRef = useRef<MapRef>(null);
-  const siteProjectRoles = useSelector(state => selectSitesAndUserRoles(state));
+  const siteProjectRoles = useSelector(selectSitesAndUserRoles);
   const sitesScreenContext = useContext(SitesScreenContext);
 
   const showSiteOnMap = useCallback(
