@@ -25,6 +25,8 @@ import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
@@ -32,6 +34,8 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {
   deleteUserFromProject,
   updateUserRole,
@@ -57,6 +61,7 @@ export const ManageTeamMemberScreen = ({
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const syncNotifications = useSyncNotificationContext();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const user = useSelector(state => state.account.users[userId]);
@@ -81,53 +86,69 @@ export const ManageTeamMemberScreen = ({
     navigation.pop();
   }, [dispatch, projectId, userId, selectedRole, navigation]);
 
+  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingUser = useCallback(() => {
+    navigation.pop();
+    if (isFlagEnabled('FF_offline')) {
+      syncNotifications.showError();
+    }
+  }, [navigation, syncNotifications]);
+  const requirements = [
+    {data: project, doIfMissing: handleMissingProject},
+    {data: user, doIfMissing: handleMissingUser},
+  ];
+
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar title={project?.name} LeftButton={<ScreenCloseButton />} />
-      }>
-      <ScreenContentSection title={t('projects.manage_member.title')}>
-        <Column>
-          <Box ml="md" my="lg">
-            <MinimalUserDisplay user={user} />
-          </Box>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold
+          AppBar={
+            <AppBar title={project?.name} LeftButton={<ScreenCloseButton />} />
+          }>
+          <ScreenContentSection title={t('projects.manage_member.title')}>
+            <Column>
+              <Box ml="md" my="lg">
+                <MinimalUserDisplay user={user} />
+              </Box>
 
-          <ProjectRoleRadioBlock
-            onChange={setSelectedRole}
-            selectedRole={selectedRole}
-          />
-          <Divider style={DIVIDER_STYLE} />
+              <ProjectRoleRadioBlock
+                onChange={setSelectedRole}
+                selectedRole={selectedRole}
+              />
+              <Divider style={DIVIDER_STYLE} />
 
-          <ConfirmModal
-            trigger={onOpen => (
-              <Button
-                size="lg"
-                variant="ghost"
-                alignSelf="flex-start"
-                onPress={onOpen}
-                _text={{color: 'error.main', textTransform: 'uppercase'}}
-                _pressed={{backgroundColor: 'red.100'}}
-                leftIcon={<Icon name="delete" color="error.main" />}>
-                {t('projects.manage_member.remove')}
-              </Button>
-            )}
-            title={t('projects.manage_member.confirm_removal_title')}
-            body={t('projects.manage_member.confirm_removal_body')}
-            actionName={t('projects.manage_member.confirm_removal_action')}
-            handleConfirm={removeMembership}
-          />
-          <Text ml="20px" variant="caption">
-            {t('projects.manage_member.remove_help')}
-          </Text>
+              <ConfirmModal
+                trigger={onOpen => (
+                  <Button
+                    size="lg"
+                    variant="ghost"
+                    alignSelf="flex-start"
+                    onPress={onOpen}
+                    _text={{color: 'error.main', textTransform: 'uppercase'}}
+                    _pressed={{backgroundColor: 'red.100'}}
+                    leftIcon={<Icon name="delete" color="error.main" />}>
+                    {t('projects.manage_member.remove')}
+                  </Button>
+                )}
+                title={t('projects.manage_member.confirm_removal_title')}
+                body={t('projects.manage_member.confirm_removal_body')}
+                actionName={t('projects.manage_member.confirm_removal_action')}
+                handleConfirm={removeMembership}
+              />
+              <Text ml="20px" variant="caption">
+                {t('projects.manage_member.remove_help')}
+              </Text>
 
-          <Box flex={0} height="15%" justifyContent="flex-end">
-            <Button onPress={updateUser} alignSelf="flex-end">
-              {t('general.save_fab')}
-            </Button>
-          </Box>
-        </Column>
-      </ScreenContentSection>
-    </ScreenScaffold>
+              <Box flex={0} height="15%" justifyContent="flex-end">
+                <Button onPress={updateUser} alignSelf="flex-end">
+                  {t('general.save_fab')}
+                </Button>
+              </Box>
+            </Column>
+          </ScreenContentSection>
+        </ScreenScaffold>
+      )}
+    </RestrictByRequirements>
   );
 };
 
