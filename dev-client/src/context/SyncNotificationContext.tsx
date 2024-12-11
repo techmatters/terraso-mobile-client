@@ -16,6 +16,7 @@
  */
 
 import {createContext, useContext, useMemo, useRef} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -37,6 +38,7 @@ export const useSyncNotificationContext = () => {
 export const SyncNotificationContextProvider = ({
   children,
 }: React.PropsWithChildren) => {
+  const {t} = useTranslation();
   const errorDialogRef = useRef<ModalHandle>(null);
   const syncNotificationHandle = useMemo(() => {
     return {
@@ -48,6 +50,7 @@ export const SyncNotificationContextProvider = ({
     <SyncNotificationContext.Provider value={syncNotificationHandle}>
       <ErrorDialog
         ref={errorDialogRef}
+        supportUrl={t('errors.sync_conflict.support_url')}
         headline={
           <TranslatedHeading i18nKey="errors.sync_conflict.headline" />
         }>
