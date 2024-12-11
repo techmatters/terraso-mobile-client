@@ -21,6 +21,8 @@ import {Keyboard} from 'react-native';
 
 import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {
   Box,
   Column,
@@ -30,7 +32,8 @@ import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrap
 import {addSiteNote} from 'terraso-mobile-client/model/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   siteId: string;
@@ -67,23 +70,31 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
     navigation.pop();
   };
 
+  const site = useSelector(selectSite(siteId));
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+
   return (
-    <ScreenFormWrapper
-      ref={formWrapperRef}
-      initialValues={{content: ''}}
-      onSubmit={handleAddNote}
-      onDelete={handleDelete}
-      isSubmitting={isSubmitting}>
-      {formikProps => (
-        <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
-          <Heading variant="h6" pb={7}>
-            {t('site.notes.add_title')}
-          </Heading>
-          <Box flexGrow={1}>
-            <SiteNoteForm content={formikProps.values.content || ''} />
-          </Box>
-        </Column>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenFormWrapper
+          ref={formWrapperRef}
+          initialValues={{content: ''}}
+          onSubmit={handleAddNote}
+          onDelete={handleDelete}
+          isSubmitting={isSubmitting}>
+          {formikProps => (
+            <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
+              <Heading variant="h6" pb={7}>
+                {t('site.notes.add_title')}
+              </Heading>
+              <Box flexGrow={1}>
+                <SiteNoteForm content={formikProps.values.content || ''} />
+              </Box>
+            </Column>
+          )}
+        </ScreenFormWrapper>
       )}
-    </ScreenFormWrapper>
+    </RestrictByRequirements>
   );
 };

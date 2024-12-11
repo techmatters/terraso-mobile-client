@@ -21,6 +21,8 @@ import {ScrollView} from 'react-native';
 
 import {Button} from 'native-base';
 
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {
   Box,
   Column,
@@ -35,11 +37,12 @@ import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/c
 import {PinnedNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/PinnedNoteCard';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
 import {useSelector} from 'terraso-mobile-client/store';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 
 export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const site = useSelector(state => state.site.sites[siteId]);
+  const site = useSelector(selectSite(siteId));
   const project = useSelector(state =>
     site.projectId === undefined
       ? undefined
@@ -52,39 +55,46 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
 
   const isOffline = useIsOffline();
 
-  return (
-    <ScrollView>
-      <Column>
-        <Row backgroundColor="background.default" px="16px" py="12px">
-          <Heading variant="h6">{t('site.notes.title')}</Heading>
-        </Row>
-        <Box height="16px" />
-        {project?.siteInstructions && <PinnedNoteCard project={project} />}
-        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-          <Box
-            pl={4}
-            pb={4}
-            pr={4}
-            alignItems={isOffline ? undefined : 'flex-start'}>
-            {isOffline ? (
-              <OfflineMessageBox message={t('site.notes.offline')} />
-            ) : (
-              <Button
-                size="lg"
-                shadow={5}
-                onPress={onAddNote}
-                _text={{textTransform: 'uppercase'}}>
-                {t('site.notes.add_note_label')}
-              </Button>
-            )}
-          </Box>
-        </RestrictBySiteRole>
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
-        {Object.values(site.notes).map(note => (
-          <SiteNoteCard note={note} key={note.id} />
-        ))}
-        {site.notes && <Box height="300px" />}
-      </Column>
-    </ScrollView>
+  return (
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScrollView>
+          <Column>
+            <Row backgroundColor="background.default" px="16px" py="12px">
+              <Heading variant="h6">{t('site.notes.title')}</Heading>
+            </Row>
+            <Box height="16px" />
+            {project?.siteInstructions && <PinnedNoteCard project={project} />}
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+              <Box
+                pl={4}
+                pb={4}
+                pr={4}
+                alignItems={isOffline ? undefined : 'flex-start'}>
+                {isOffline ? (
+                  <OfflineMessageBox message={t('site.notes.offline')} />
+                ) : (
+                  <Button
+                    size="lg"
+                    shadow={5}
+                    onPress={onAddNote}
+                    _text={{textTransform: 'uppercase'}}>
+                    {t('site.notes.add_note_label')}
+                  </Button>
+                )}
+              </Box>
+            </RestrictBySiteRole>
+
+            {Object.values(site.notes).map(note => (
+              <SiteNoteCard note={note} key={note.id} />
+            ))}
+            {site.notes && <Box height="300px" />}
+          </Column>
+        </ScrollView>
+      )}
+    </RestrictByRequirements>
   );
 };

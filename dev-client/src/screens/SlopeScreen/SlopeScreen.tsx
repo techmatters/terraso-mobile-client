@@ -24,6 +24,8 @@ import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {
   Heading,
   Row,
@@ -36,6 +38,7 @@ import {
 } from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
+  selectSite,
   selectSoilData,
   useSiteProjectSoilSettings,
 } from 'terraso-mobile-client/store/selectors';
@@ -59,32 +62,40 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
     [navigation, siteId],
   );
 
+  const site = useSelector(selectSite(siteId));
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+
   return (
-    <ScrollView backgroundColor="grey.300">
-      <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
-        <Heading variant="h6">{t('slope.title')}</Heading>
-        <HelpContentSpacer />
-        <InfoButton
-          sheetHeading={<TranslatedHeading i18nKey="slope.info.title" />}>
-          <SlopeInfoContent />
-        </InfoButton>
-      </Row>
-      <Divider />
-      <DataInputSummary
-        required={required}
-        complete={steepnessValue !== undefined}
-        label={t('slope.steepness.short_title')}
-        value={steepnessValue}
-        onPress={onSteepness}
-      />
-      <Divider />
-      <DataInputSummary
-        required={required}
-        complete={shapeValue !== undefined}
-        label={t('slope.shape.title')}
-        value={shapeValue}
-        onPress={onShape}
-      />
-    </ScrollView>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScrollView backgroundColor="grey.300">
+          <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
+            <Heading variant="h6">{t('slope.title')}</Heading>
+            <HelpContentSpacer />
+            <InfoButton
+              sheetHeading={<TranslatedHeading i18nKey="slope.info.title" />}>
+              <SlopeInfoContent />
+            </InfoButton>
+          </Row>
+          <Divider />
+          <DataInputSummary
+            required={required}
+            complete={steepnessValue !== undefined}
+            label={t('slope.steepness.short_title')}
+            value={steepnessValue}
+            onPress={onSteepness}
+          />
+          <Divider />
+          <DataInputSummary
+            required={required}
+            complete={shapeValue !== undefined}
+            label={t('slope.shape.title')}
+            value={shapeValue}
+            onPress={onShape}
+          />
+        </ScrollView>
+      )}
+    </RestrictByRequirements>
   );
 };

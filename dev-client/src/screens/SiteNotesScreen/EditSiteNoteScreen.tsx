@@ -16,11 +16,11 @@
  */
 
 import {useCallback} from 'react';
-import {ToastAndroid} from 'react-native';
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {EditSiteNoteContent} from 'terraso-mobile-client/screens/SiteNotesScreen/components/EditSiteNoteContent';
@@ -34,6 +34,7 @@ type Props = {
 
 export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const navigation = useNavigation();
+  const syncNotifications = useSyncNotificationContext();
 
   const site = useSelector(state => selectSite(siteId)(state));
   const note = site?.notes[noteId];
@@ -45,11 +46,10 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
       siteId: siteId,
       initialTab: 'NOTES' as SiteTabName,
     });
-    // TODO: Decide design / how to show toasts / use en.json string
     if (isFlagEnabled('FF_offline')) {
-      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+      syncNotifications.showError();
     }
-  }, [navigation, siteId]);
+  }, [navigation, siteId, syncNotifications]);
   const requirements = [
     {data: site, doIfMissing: handleMissingSite},
     {data: note, doIfMissing: handleMissingSiteNote},

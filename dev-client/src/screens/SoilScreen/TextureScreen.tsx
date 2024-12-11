@@ -91,10 +91,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
 
   const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
-  const site = useSelector(state => selectSite(siteId)(state));
-  const handleMissingSite = useHandleMissingSiteOrProject();
-  const requirements = [{data: site, doIfMissing: handleMissingSite}];
-
   const onTextureChange = useCallback(
     (texture: SoilTexture | null) => {
       dispatch(
@@ -160,6 +156,10 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
     },
     [dispatch, siteId, depthInterval],
   );
+
+  const site = useSelector(selectSite(siteId));
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
     <RestrictByRequirements requirements={requirements}>

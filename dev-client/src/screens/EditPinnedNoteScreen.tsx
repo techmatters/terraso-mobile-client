@@ -21,6 +21,8 @@ import {Keyboard} from 'react-native';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {
   Box,
   Column,
@@ -67,23 +69,30 @@ export const EditPinnedNoteScreen = ({projectId}: Props) => {
     await handleUpdateProject({content: ''});
   };
 
+  const handleMissingProject = useHandleMissingSiteOrProject();
+  const requirements = [{data: project, doIfMissing: handleMissingProject}];
+
   return (
-    <ScreenFormWrapper
-      ref={formWrapperRef}
-      initialValues={{content: project.siteInstructions || ''}}
-      onSubmit={handleUpdateProject}
-      onDelete={handleDelete}
-      isSubmitting={isSubmitting}>
-      {formikProps => (
-        <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
-          <Heading variant="h6" pb={7}>
-            {t('projects.inputs.instructions.title')}
-          </Heading>
-          <Box flexGrow={1}>
-            <SiteNoteForm content={formikProps.values.content || ''} />
-          </Box>
-        </Column>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenFormWrapper
+          ref={formWrapperRef}
+          initialValues={{content: project.siteInstructions || ''}}
+          onSubmit={handleUpdateProject}
+          onDelete={handleDelete}
+          isSubmitting={isSubmitting}>
+          {formikProps => (
+            <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
+              <Heading variant="h6" pb={7}>
+                {t('projects.inputs.instructions.title')}
+              </Heading>
+              <Box flexGrow={1}>
+                <SiteNoteForm content={formikProps.values.content || ''} />
+              </Box>
+            </Column>
+          )}
+        </ScreenFormWrapper>
       )}
-    </ScreenFormWrapper>
+    </RestrictByRequirements>
   );
 };

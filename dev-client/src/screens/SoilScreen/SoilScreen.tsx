@@ -25,6 +25,8 @@ import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/gr
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -47,6 +49,7 @@ import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/compone
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
+  selectSite,
   selectSoilData,
   useSiteProjectSoilSettings,
   useSiteSoilIntervals,
@@ -83,71 +86,83 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     [dispatch, siteId],
   );
 
+  const site = useSelector(selectSite(siteId));
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+
   return (
-    <ScrollView backgroundColor="grey.300">
-      <SoilSurfaceStatus siteId={siteId} />
-      <Box height="16px" />
-      <Row
-        backgroundColor="background.default"
-        px="16px"
-        py="12px"
-        justifyContent="space-between"
-        alignItems="center">
-        <Heading variant="h6">{t('soil.pit')}</Heading>
-        {!projectSettings && (
-          <InfoSheet
-            heading={<TranslatedHeading i18nKey="soil.soil_preset.header" />}
-            trigger={onOpen => (
-              <TextButton
-                label={t('soil.soil_preset.label')}
-                rightIcon="expand-more"
-                onPress={onOpen}
-              />
-            )}>
-            <EditSiteSoilDepthPreset
-              selected={soilData.depthIntervalPreset}
-              updateChoice={updateSoilDataDepthPreset}
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScrollView backgroundColor="grey.300">
+          <SoilSurfaceStatus siteId={siteId} />
+          <Box height="16px" />
+          <Row
+            backgroundColor="background.default"
+            px="16px"
+            py="12px"
+            justifyContent="space-between"
+            alignItems="center">
+            <Heading variant="h6">{t('soil.pit')}</Heading>
+            {!projectSettings && (
+              <InfoSheet
+                heading={
+                  <TranslatedHeading i18nKey="soil.soil_preset.header" />
+                }
+                trigger={onOpen => (
+                  <TextButton
+                    label={t('soil.soil_preset.label')}
+                    rightIcon="expand-more"
+                    onPress={onOpen}
+                  />
+                )}>
+                <EditSiteSoilDepthPreset
+                  selected={soilData.depthIntervalPreset}
+                  updateChoice={updateSoilDataDepthPreset}
+                />
+              </InfoSheet>
+            )}
+          </Row>
+          {allDepths.map(interval => (
+            <SoilDepthSummary
+              key={`${interval.interval.depthInterval.start}:${interval.interval.depthInterval.end}`}
+              siteId={siteId}
+              interval={interval}
+              requiredInputs={projectRequiredInputs}
             />
-          </InfoSheet>
-        )}
-      </Row>
-      {allDepths.map(interval => (
-        <SoilDepthSummary
-          key={`${interval.interval.depthInterval.start}:${interval.interval.depthInterval.end}`}
-          siteId={siteId}
-          interval={interval}
-          requiredInputs={projectRequiredInputs}
-        />
-      ))}
-      <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-        <Modal
-          trigger={onOpen => (
-            <Button
-              size="lg"
-              variant="fullWidth"
-              backgroundColor="primary.dark"
-              justifyContent="start"
-              _text={{
-                color: 'primary.contrast',
-                textTransform: 'uppercase',
-              }}
-              _icon={{
-                color: 'primary.contrast',
-              }}
-              width="full"
-              borderRadius="0px"
-              leftIcon={<Icon name="add" />}
-              onPress={onOpen}>
-              {t('soil.add_depth_label')}
-            </Button>
-          )}
-          Header={<Heading variant="h6">{t('soil.depth.add_title')}</Heading>}>
-          <AddDepthModalBody
-            onSubmit={onAddDepth}
-            existingDepths={existingDepths}
-          />
-        </Modal>
-      </RestrictBySiteRole>
-    </ScrollView>
+          ))}
+          <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+            <Modal
+              trigger={onOpen => (
+                <Button
+                  size="lg"
+                  variant="fullWidth"
+                  backgroundColor="primary.dark"
+                  justifyContent="start"
+                  _text={{
+                    color: 'primary.contrast',
+                    textTransform: 'uppercase',
+                  }}
+                  _icon={{
+                    color: 'primary.contrast',
+                  }}
+                  width="full"
+                  borderRadius="0px"
+                  leftIcon={<Icon name="add" />}
+                  onPress={onOpen}>
+                  {t('soil.add_depth_label')}
+                </Button>
+              )}
+              Header={
+                <Heading variant="h6">{t('soil.depth.add_title')}</Heading>
+              }>
+              <AddDepthModalBody
+                onSubmit={onAddDepth}
+                existingDepths={existingDepths}
+              />
+            </Modal>
+          </RestrictBySiteRole>
+        </ScrollView>
+      )}
+    </RestrictByRequirements>
   );
 };

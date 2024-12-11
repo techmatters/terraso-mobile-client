@@ -49,6 +49,11 @@ type Props = {
   children: () => React.ReactNode;
 };
 
+/*
+ * This is intended to wrap components (mostly screens as of 2024-12) so they only render
+ * if required data is truthy. This prevents screens from breaking if, for example, a pull
+ * happens that deletes data that is required to view the screen.
+ */
 export const RestrictByRequirements = ({requirements, children}: Props) => {
   const requiredDataExists = useRequiredData(requirements);
 

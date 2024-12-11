@@ -22,6 +22,8 @@ import {PressableProps} from 'react-native';
 import {Fab} from 'native-base';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
@@ -78,42 +80,47 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
     navigation.navigate('BOTTOM_TABS');
   }, [dispatch, navigation, site]);
 
-  if (!site) {
-    return null;
-  }
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <ScreenScaffold BottomNavigation={null} AppBar={<AppBar title={name} />}>
-      <Column px="16px" py="22px" space="20px" alignItems="flex-start">
-        <Heading variant="h6">{t('site.dashboard.settings_title')}</Heading>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold
+          BottomNavigation={null}
+          AppBar={<AppBar title={name} />}>
+          <Column px="16px" py="22px" space="20px" alignItems="flex-start">
+            <Heading variant="h6">{t('site.dashboard.settings_title')}</Heading>
 
-        <TextInput
-          maxLength={SITE_NAME_MAX_LENGTH}
-          disabled={isOffline}
-          value={name}
-          onChangeText={setName}
-          label={t('site.create.name_label')}
-          placeholder={t('site.create.name_label')}
-        />
-        {isOffline ? (
-          <DeleteButtonWrapper disabled={true} />
-        ) : (
-          <ConfirmModal
-            trigger={onOpen => <DeleteButtonWrapper onPress={onOpen} />}
-            title={t('projects.sites.delete_site_modal.title')}
-            body={t('projects.sites.delete_site_modal.body', {
-              siteName: site.name,
-            })}
-            actionName={t('projects.sites.delete_site_modal.action_name')}
-            handleConfirm={onDelete}
+            <TextInput
+              maxLength={SITE_NAME_MAX_LENGTH}
+              disabled={isOffline}
+              value={name}
+              onChangeText={setName}
+              label={t('site.create.name_label')}
+              placeholder={t('site.create.name_label')}
+            />
+            {isOffline ? (
+              <DeleteButtonWrapper disabled={true} />
+            ) : (
+              <ConfirmModal
+                trigger={onOpen => <DeleteButtonWrapper onPress={onOpen} />}
+                title={t('projects.sites.delete_site_modal.title')}
+                body={t('projects.sites.delete_site_modal.body', {
+                  siteName: site.name,
+                })}
+                actionName={t('projects.sites.delete_site_modal.action_name')}
+                handleConfirm={onDelete}
+              />
+            )}
+          </Column>
+          <Fab
+            label={t('general.save_fab')}
+            onPress={onSave}
+            isDisabled={isOffline}
           />
-        )}
-      </Column>
-      <Fab
-        label={t('general.save_fab')}
-        onPress={onSave}
-        isDisabled={isOffline}
-      />
-    </ScreenScaffold>
+        </ScreenScaffold>
+      )}
+    </RestrictByRequirements>
   );
 };

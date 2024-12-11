@@ -28,6 +28,8 @@ import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/com
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {
@@ -41,7 +43,8 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';
 import {degreeToPercent} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessConversion';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 
 const toDegrees = (rad: number) => Math.round(Math.abs((rad * 180) / Math.PI));
 
@@ -87,75 +90,86 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
     navigation.pop();
   }, [dispatch, siteId, deviceTiltDeg, navigation]);
 
+  const site = useSelector(selectSite(siteId));
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+
   return (
-    <ScreenScaffold AppBar={null} BottomNavigation={null}>
-      <Row flex={1} alignItems="stretch" px="24px" py="20px">
-        <Box flex={1} justifyContent="center">
-          {permission?.granted ? (
-            <CameraView style={styles.camera}>
-              <Column flex={1} alignItems="stretch">
-                <Box flex={1} />
-                <Box height="3px" bg="text.primary" />
-                <Box height="3px" bg="primary.contrast" />
-                <Box flex={1} bg="#00000080" />
-              </Column>
-            </CameraView>
-          ) : (
-            <PermissionsRequestWrapper
-              requestModalTitle={t('permissions.camera_title')}
-              requestModalBody={t('permissions.camera_body', {
-                feature: t('slope.steepness.slope_meter'),
-              })}
-              permissionHook={useCameraPermissions}
-              permissionedAction={getCameraPermissionAsync}>
-              {onRequest => (
-                <Button size="lg" onPress={onRequest}>
-                  {t('slope.steepness.camera_grant')}
-                </Button>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold AppBar={null} BottomNavigation={null}>
+          <Row flex={1} alignItems="stretch" px="24px" py="20px">
+            <Box flex={1} justifyContent="center">
+              {permission?.granted ? (
+                <CameraView style={styles.camera}>
+                  <Column flex={1} alignItems="stretch">
+                    <Box flex={1} />
+                    <Box height="3px" bg="text.primary" />
+                    <Box height="3px" bg="primary.contrast" />
+                    <Box flex={1} bg="#00000080" />
+                  </Column>
+                </CameraView>
+              ) : (
+                <PermissionsRequestWrapper
+                  requestModalTitle={t('permissions.camera_title')}
+                  requestModalBody={t('permissions.camera_body', {
+                    feature: t('slope.steepness.slope_meter'),
+                  })}
+                  permissionHook={useCameraPermissions}
+                  permissionedAction={getCameraPermissionAsync}>
+                  {onRequest => (
+                    <Button size="lg" onPress={onRequest}>
+                      {t('slope.steepness.camera_grant')}
+                    </Button>
+                  )}
+                </PermissionsRequestWrapper>
               )}
-            </PermissionsRequestWrapper>
-          )}
-        </Box>
-        <Column alignItems="center">
-          <Box {...styles.closeButtonBox}>
-            <BigCloseButton onPress={onClose} />
-          </Box>
-          <Column
-            px="56px"
-            flex={1}
-            justifyContent="center"
-            alignItems="center">
-            <Row alignItems="center">
-              <Heading variant="h6">{t('slope.steepness.slope_meter')}</Heading>
-              <HelpContentSpacer />
-              <InfoButton
-                sheetHeading={
-                  <TranslatedHeading i18nKey="slope.steepness.info.title" />
-                }>
-                <SlopeMeterInfoContent />
-              </InfoButton>
-            </Row>
-            <Box height="12px" />
-            <Heading variant="h5" fontWeight={700}>
-              {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
-            </Heading>
-            <Box height="5px" />
-            <Heading variant="h6">
-              {deviceTiltDeg !== null && `${degreeToPercent(deviceTiltDeg)}%`}
-            </Heading>
-            <Box height="18px" />
-            <Button
-              onPress={onUse}
-              size="lg"
-              px="46px"
-              py="18px"
-              {...styles.useButton}>
-              {t('general.use')}
-            </Button>
-          </Column>
-        </Column>
-      </Row>
-    </ScreenScaffold>
+            </Box>
+            <Column alignItems="center">
+              <Box {...styles.closeButtonBox}>
+                <BigCloseButton onPress={onClose} />
+              </Box>
+              <Column
+                px="56px"
+                flex={1}
+                justifyContent="center"
+                alignItems="center">
+                <Row alignItems="center">
+                  <Heading variant="h6">
+                    {t('slope.steepness.slope_meter')}
+                  </Heading>
+                  <HelpContentSpacer />
+                  <InfoButton
+                    sheetHeading={
+                      <TranslatedHeading i18nKey="slope.steepness.info.title" />
+                    }>
+                    <SlopeMeterInfoContent />
+                  </InfoButton>
+                </Row>
+                <Box height="12px" />
+                <Heading variant="h5" fontWeight={700}>
+                  {deviceTiltDeg !== null && `${deviceTiltDeg}°`}
+                </Heading>
+                <Box height="5px" />
+                <Heading variant="h6">
+                  {deviceTiltDeg !== null &&
+                    `${degreeToPercent(deviceTiltDeg)}%`}
+                </Heading>
+                <Box height="18px" />
+                <Button
+                  onPress={onUse}
+                  size="lg"
+                  px="46px"
+                  py="18px"
+                  {...styles.useButton}>
+                  {t('general.use')}
+                </Button>
+              </Column>
+            </Column>
+          </Row>
+        </ScreenScaffold>
+      )}
+    </RestrictByRequirements>
   );
 };
 

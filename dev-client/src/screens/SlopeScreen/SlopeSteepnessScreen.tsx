@@ -24,6 +24,8 @@ import {Button, ScrollView} from 'native-base';
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
@@ -59,6 +61,7 @@ import {
 import {STEEPNESS_IMAGES} from 'terraso-mobile-client/screens/SlopeScreen/utils/steepnessImages';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
+  selectSite,
   selectSoilData,
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
@@ -134,66 +137,80 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
     [navigation, siteId],
   );
 
+  const site = useSelector(selectSite(siteId));
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+
   return (
-    <ScreenScaffold AppBar={<AppBar title={name} />} BottomNavigation={null}>
-      <SiteRoleContextProvider siteId={siteId}>
-        <ScrollView
-          bg="primary.contrast"
-          _contentContainerStyle={styles.scrollContentContainer}>
-          <Column>
-            <Column p="15px" bg="primary.contrast">
-              <Heading variant="h6">{t('slope.steepness.long_title')}</Heading>
-            </Column>
-          </Column>
-          <Column p="15px" bg="grey.300">
-            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-              <Text variant="body1">{t('slope.steepness.description')}</Text>
-              <Box height="30px" />
-              <Row justifyContent="space-between">
-                <Modal
-                  trigger={onOpen => (
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold
+          AppBar={<AppBar title={name} />}
+          BottomNavigation={null}>
+          <SiteRoleContextProvider siteId={siteId}>
+            <ScrollView
+              bg="primary.contrast"
+              _contentContainerStyle={styles.scrollContentContainer}>
+              <Column>
+                <Column p="15px" bg="primary.contrast">
+                  <Heading variant="h6">
+                    {t('slope.steepness.long_title')}
+                  </Heading>
+                </Column>
+              </Column>
+              <Column p="15px" bg="grey.300">
+                <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+                  <Text variant="body1">
+                    {t('slope.steepness.description')}
+                  </Text>
+                  <Box height="30px" />
+                  <Row justifyContent="space-between">
+                    <Modal
+                      trigger={onOpen => (
+                        <Button
+                          onPress={onOpen}
+                          _text={{textTransform: 'uppercase'}}
+                          rightIcon={<Icon name="chevron-right" />}>
+                          {t('slope.steepness.manual_label')}
+                        </Button>
+                      )}>
+                      <ManualSteepnessModal siteId={siteId} />
+                    </Modal>
                     <Button
-                      onPress={onOpen}
                       _text={{textTransform: 'uppercase'}}
-                      rightIcon={<Icon name="chevron-right" />}>
-                      {t('slope.steepness.manual_label')}
+                      rightIcon={<Icon name="chevron-right" />}
+                      onPress={onMeter}>
+                      {t('slope.steepness.slope_meter')}
                     </Button>
-                  )}>
-                  <ManualSteepnessModal siteId={siteId} />
-                </Modal>
-                <Button
-                  _text={{textTransform: 'uppercase'}}
-                  rightIcon={<Icon name="chevron-right" />}
-                  onPress={onMeter}>
-                  {t('slope.steepness.slope_meter')}
-                </Button>
-              </Row>
-              <Box height="15px" />
+                  </Row>
+                  <Box height="15px" />
+                </RestrictBySiteRole>
+                <Text variant="body1" fontWeight={700} alignSelf="center">
+                  {renderSteepness(t, soilData)}
+                </Text>
+              </Column>
+              <ConfirmModal
+                ref={confirmationModalRef}
+                title={t('slope.steepness.confirm_title')}
+                body={t('slope.steepness.confirm_body')}
+                actionName={t('general.change')}
+                handleConfirm={onConfirmSteepness}
+                isConfirmError={false}
+              />
+              <ImageRadio
+                value={soilData.slopeSteepnessSelect}
+                options={steepnessOptions as any}
+                onChange={isViewer ? () => {} : onSteepnessOptionSelected}
+                minimumPerRow={2}
+              />
+            </ScrollView>
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+              <DoneButton />
             </RestrictBySiteRole>
-            <Text variant="body1" fontWeight={700} alignSelf="center">
-              {renderSteepness(t, soilData)}
-            </Text>
-          </Column>
-          <ConfirmModal
-            ref={confirmationModalRef}
-            title={t('slope.steepness.confirm_title')}
-            body={t('slope.steepness.confirm_body')}
-            actionName={t('general.change')}
-            handleConfirm={onConfirmSteepness}
-            isConfirmError={false}
-          />
-          <ImageRadio
-            value={soilData.slopeSteepnessSelect}
-            options={steepnessOptions as any}
-            onChange={isViewer ? () => {} : onSteepnessOptionSelected}
-            minimumPerRow={2}
-          />
-        </ScrollView>
-        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-          <DoneButton />
-        </RestrictBySiteRole>
-      </SiteRoleContextProvider>
-    </ScreenScaffold>
+          </SiteRoleContextProvider>
+        </ScreenScaffold>
+      )}
+    </RestrictByRequirements>
   );
 };
 
