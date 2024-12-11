@@ -20,6 +20,8 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 import {Coords} from 'terraso-client-shared/types';
 
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -45,29 +47,42 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
     isSite ? selectSite(siteId)(state) : undefined,
   );
 
+  const siteIsRequiredButMissing = isSite && !site;
+  const handleMissingSite = useHandleMissingSiteOrProject();
+  const requirements = [
+    {
+      data: siteIsRequiredButMissing ? undefined : true,
+      doIfMissing: handleMissingSite,
+    },
+  ];
+
   return (
-    <ScreenScaffold
-      AppBar={
-        <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
-      }>
-      <ScrollView>
-        {isSite ? (
-          <SoilIdSelectionSection siteId={siteId} coords={coords} />
-        ) : (
-          <></>
-        )}
-        <SoilIdDescriptionSection siteId={siteId} coords={coords} />
-        <SoilIdMatchesSection siteId={siteId} coords={coords} />
-        {isSite ? (
-          <SiteRoleContextProvider siteId={siteId}>
-            <SiteDataSection siteId={siteId} />
-          </SiteRoleContextProvider>
-        ) : (
-          <Box paddingVertical="md">
-            <CreateSiteButton coords={coords} />
-          </Box>
-        )}
-      </ScrollView>
-    </ScreenScaffold>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold
+          AppBar={
+            <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
+          }>
+          <ScrollView>
+            {isSite ? (
+              <SoilIdSelectionSection siteId={siteId} coords={coords} />
+            ) : (
+              <></>
+            )}
+            <SoilIdDescriptionSection siteId={siteId} coords={coords} />
+            <SoilIdMatchesSection siteId={siteId} coords={coords} />
+            {isSite ? (
+              <SiteRoleContextProvider siteId={siteId}>
+                <SiteDataSection siteId={siteId} />
+              </SiteRoleContextProvider>
+            ) : (
+              <Box paddingVertical="md">
+                <CreateSiteButton coords={coords} />
+              </Box>
+            )}
+          </ScrollView>
+        </ScreenScaffold>
+      )}
+    </RestrictByRequirements>
   );
 };
