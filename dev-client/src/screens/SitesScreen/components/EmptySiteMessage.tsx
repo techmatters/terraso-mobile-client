@@ -16,16 +16,15 @@
  */
 
 import {useTranslation} from 'react-i18next';
-import {StyleSheet} from 'react-native';
-
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
+import {
+  GetStartedMessage,
+  styles,
+} from 'terraso-mobile-client/screens/SitesScreen/components/GetStartedMessage';
 
 export const EmptySiteMessage = () => {
   const {t} = useTranslation();
@@ -39,31 +38,7 @@ export const EmptySiteMessage = () => {
         <TranslatedParagraph i18nKey="site.empty.info" />
       </Text>
 
-      <View style={styles.view}>
-        <MaterialCommunityIcons
-          name="gesture-tap"
-          size={24}
-          color={convertColorProp('text.icon')}
-          style={styles.communityIcon}
-        />
-        <View style={styles.flex}>
-          <TranslatedParagraph i18nKey="site.empty.map" />
-        </View>
-      </View>
-
-      <View style={styles.view}>
-        <Icon name="my-location" color="text.icon" size={24} pr={5} />
-        <View style={styles.flex}>
-          <TranslatedParagraph i18nKey="site.empty.icon" />
-        </View>
-      </View>
-
-      <View style={styles.enter}>
-        <Icon name="search" color="text.icon" size={24} pr={5} marginTop={1} />
-        <View style={styles.flex}>
-          <TranslatedParagraph i18nKey="site.empty.coords" />
-        </View>
-      </View>
+      <GetStartedMessage />
 
       <View style={styles.enter}>
         <TranslatedParagraph i18nKey="site.empty.summary" />
@@ -71,20 +46,3 @@ export const EmptySiteMessage = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  view: {
-    flexDirection: 'row',
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  enter: {
-    flexDirection: 'row',
-    marginTop: 10,
-    alignItems: 'flex-start',
-  },
-  flex: {
-    flex: 1,
-  },
-  communityIcon: {marginRight: 20},
-});
