@@ -37,7 +37,7 @@ type Props = {
   projectId: string;
 };
 
-export const EditProjectInstructionsScreen = ({projectId}: Props) => {
+export const EditPinnedNoteScreen = ({projectId}: Props) => {
   const formWrapperRef = useRef<{handleSubmit: () => void}>(null);
   const {t} = useTranslation();
   const navigation = useNavigation();
