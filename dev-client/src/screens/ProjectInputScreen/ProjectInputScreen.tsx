@@ -58,7 +58,7 @@ export const ProjectInputScreen = ({
   const project = useSelector(state => state.project.projects[projectId]);
   const dispatch = useDispatch();
 
-  const onEditInstructions = useCallback(() => {
+  const onEditPinnedNote = useCallback(() => {
     return navigation.navigate('EDIT_PINNED_NOTE', {
       projectId: project.id,
     });
@@ -117,7 +117,7 @@ export const ProjectInputScreen = ({
               pr={4}
               size="lg"
               shadow={5}
-              onPress={onEditInstructions}
+              onPress={onEditPinnedNote}
               leftIcon={<Icon name="push-pin" />}>
               {t('projects.inputs.instructions.add_label')}
             </Button>
