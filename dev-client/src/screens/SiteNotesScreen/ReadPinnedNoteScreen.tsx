@@ -15,16 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Button, ScrollView, Spacer} from 'native-base';
 
+import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
 import {
   Column,
   Heading,
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -37,6 +42,8 @@ type Props = {
 export const ReadPinnedNoteScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const syncNotifications = useSyncNotificationContext();
+
   const project = useSelector(selectProject(projectId));
   const content = project?.siteInstructions;
 
@@ -44,26 +51,42 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
     navigation.pop();
   };
 
+  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingPinnedNote = useCallback(() => {
+    navigation.pop();
+    if (isFlagEnabled('FF_offline')) {
+      syncNotifications.showError();
+    }
+  }, [navigation, syncNotifications]);
+  const requirements = [
+    {data: project, doIfMissing: handleMissingProject},
+    {data: content, doIfMissing: handleMissingPinnedNote},
+  ];
+
   return (
-    <ScreenScaffold BottomNavigation={null} AppBar={null}>
-      <Column pt={10} pl={5} pr={5} pb={10} flexGrow={1}>
-        <Heading variant="h6" pb={7}>
-          {t('projects.inputs.instructions.screen_title')}
-        </Heading>
-        <ScrollView flex={1}>
-          <Text>{content}</Text>
-        </ScrollView>
-        <Row>
-          <Spacer />
-          <Button
-            onPress={handleClose}
-            shadow={1}
-            size="lg"
-            _text={{textTransform: 'uppercase'}}>
-            {t('general.close_fab')}
-          </Button>
-        </Row>
-      </Column>
-    </ScreenScaffold>
+    <RestrictByRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold BottomNavigation={null} AppBar={null}>
+          <Column pt={10} pl={5} pr={5} pb={10} flexGrow={1}>
+            <Heading variant="h6" pb={7}>
+              {t('projects.inputs.instructions.screen_title')}
+            </Heading>
+            <ScrollView flex={1}>
+              <Text>{content}</Text>
+            </ScrollView>
+            <Row>
+              <Spacer />
+              <Button
+                onPress={handleClose}
+                shadow={1}
+                size="lg"
+                _text={{textTransform: 'uppercase'}}>
+                {t('general.close_fab')}
+              </Button>
+            </Row>
+          </Column>
+        </ScreenScaffold>
+      )}
+    </RestrictByRequirements>
   );
 };
