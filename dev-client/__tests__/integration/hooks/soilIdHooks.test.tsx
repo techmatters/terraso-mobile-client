@@ -23,7 +23,7 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
-import * as SoilIdMatchContext from 'terraso-mobile-client/context/soilIdMatchContext2';
+import * as SoilIdMatchContext from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import * as soilIdMatchHooks from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
 

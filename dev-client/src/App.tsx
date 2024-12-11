@@ -51,7 +51,7 @@ import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connect
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScreenContext';
-import {SoilIdMatchContextProvider} from 'terraso-mobile-client/context/soilIdMatchContext2';
+import {SoilIdMatchContextProvider} from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';

@@ -20,7 +20,7 @@ import {useEffect} from 'react';
 import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
-import {useActiveSoilIdData} from 'terraso-mobile-client/context/soilIdMatchContext2';
+import {useActiveSoilIdData} from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {SoilIdResults} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
   useLocationBasedMatches,
