@@ -20,7 +20,7 @@ import {LayoutChangeEvent, StatusBar, StyleSheet, View} from 'react-native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
+import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {SyncContent} from 'terraso-mobile-client/components/SyncContent';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';

@@ -32,7 +32,7 @@ import {
   Paragraph,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {
   isProjectViewer,

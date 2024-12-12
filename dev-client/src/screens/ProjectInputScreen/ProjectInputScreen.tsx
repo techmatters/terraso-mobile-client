@@ -33,7 +33,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {updateProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
