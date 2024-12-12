@@ -51,8 +51,8 @@
         "offline": "Sites can only be created while online.",
         "empty": {
             "info": "<bold>Three ways to create a site:</bold>\n",
-            "map": "Tap anywhere on the map.",
-            "icon": "Tap the My Location icon.",
+            "map": "Tap anywhere on the map",
+            "icon": "Tap the My Location icon",
             "coords": "Enter coordinates, address, or search term in the map search bar",
             "summary": "A site lets you collect and save observations, learn more about the land and its potential, and share with others."
         },
