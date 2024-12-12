@@ -460,7 +460,8 @@
         "generic": "Error al guardar la informacion de la identificación del suelo.",
         "sync_conflict": {
             "headline": "Project conflict TK",
-            "body": "This project has changed. Learn more and get support at the LandPKS website. TK"
+            "body": "This project has changed. Learn more and get support at the LandPKS website. TK",
+            "support_url": "https://landpks.terraso.org/help/synchronization-conflict/"
         }
     },
     "screens": {
