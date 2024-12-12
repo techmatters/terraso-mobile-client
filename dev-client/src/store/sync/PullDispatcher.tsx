@@ -18,7 +18,7 @@
 import {useEffect} from 'react';
 
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
-import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';

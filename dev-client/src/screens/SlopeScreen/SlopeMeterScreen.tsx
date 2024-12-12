@@ -36,7 +36,7 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {updateSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SlopeMeterInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/components/SlopeMeterInfoContent';

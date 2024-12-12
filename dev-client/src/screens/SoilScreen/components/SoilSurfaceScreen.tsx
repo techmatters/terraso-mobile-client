@@ -38,7 +38,7 @@ import {
   isProjectViewer,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
-import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {updateSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';

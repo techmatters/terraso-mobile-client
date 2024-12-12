@@ -62,7 +62,9 @@ export const ProjectListScreen = () => {
     () => navigation.navigate('CREATE_PROJECT'),
     [navigation],
   );
-  const isLoadingData = useSelector(state => state.soilId.status === 'loading');
+  const isLoadingData = useSelector(
+    state => state.soilData.status === 'loading',
+  );
   const renderSortOption = useCallback(
     (option: string) => t(`projects.search.${option}`),
     [t],

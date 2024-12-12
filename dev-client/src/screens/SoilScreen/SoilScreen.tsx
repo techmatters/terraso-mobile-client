@@ -41,7 +41,7 @@ import {
   soilPitMethods,
   updateSoilData,
   updateSoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';

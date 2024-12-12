@@ -21,7 +21,7 @@ import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/gr
 
 import * as appStateHooks from 'terraso-mobile-client/hooks/appStateHooks';
 import * as connectivityHooks from 'terraso-mobile-client/hooks/connectivityHooks';
-import {LoadingState} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {LoadingState} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AppState as ReduxAppState} from 'terraso-mobile-client/store';
 import * as syncHooks from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {PullDispatcher} from 'terraso-mobile-client/store/sync/PullDispatcher';
@@ -67,7 +67,7 @@ describe('PullDispatcher', () => {
   } as Partial<ReduxAppState>;
 
   const stateWithUnsyncedSites = {
-    soilId: {
+    soilData: {
       soilData: {},
       projectSettings: {},
       status: 'ready' as LoadingState,

@@ -22,7 +22,7 @@ import {
   DEPTH_LABEL_MAX_LENGTH,
   DEPTH_MAX,
 } from 'terraso-mobile-client/constants';
-import {DepthInterval} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {DepthInterval} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 
 type Args = {
   t: TFunction;
