@@ -240,7 +240,7 @@ const NotAvailableOffline = () => {
 
   return (
     <Text textTransform="uppercase" bold color="error.main">
-      {t('site.not_available_offine')}
+      {t('general.not_available_offine')}
     </Text>
   );
 };

@@ -15,26 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {
   GetStartedMessage,
   styles,
 } from 'terraso-mobile-client/screens/SitesScreen/components/GetStartedMessage';
 
 export const EmptySiteMessage = () => {
-  const {t} = useTranslation();
-  const isOffline = useIsOffline();
-
   return (
     <View px="17px">
-      {isOffline ? <OfflineMessageBox message={t('site.offline')} /> : <></>}
-
-      <Text bold mt={isOffline ? 5 : undefined}>
+      <Text bold>
         <TranslatedParagraph i18nKey="site.empty.info" />
       </Text>
 
