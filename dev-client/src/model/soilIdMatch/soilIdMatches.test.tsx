@@ -19,9 +19,24 @@ import {
   coordsKey,
   dataEntryForMatches,
   dataEntryForStatus,
+  flushErrorEntries,
+  isErrorStatus,
   locationEntryForMatches,
   locationEntryForStatus,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+
+describe('isErrorStatus', () => {
+  test('identifies errors', () => {
+    expect(isErrorStatus('error')).toBeTruthy();
+    expect(isErrorStatus('ALGORITHM_FAILURE')).toBeTruthy();
+    expect(isErrorStatus('DATA_UNAVAILABLE')).toBeTruthy();
+  });
+
+  test('identifies non-errors', () => {
+    expect(isErrorStatus('loading')).toBeFalsy();
+    expect(isErrorStatus('ready')).toBeFalsy();
+  });
+});
 
 describe('coordsKey', () => {
   test('produces keys for coords', () => {
@@ -70,5 +85,22 @@ describe('dataEntryForMatches', () => {
       input: 'input',
       matches: ['match'],
     });
+  });
+});
+
+describe('flushErrorEntries', () => {
+  test('removes entries with error statuses', () => {
+    const coords = {latitude: 1, longitude: 2};
+    const entries = {
+      a: locationEntryForStatus(coords, 'loading'),
+      b: locationEntryForStatus(coords, 'ready'),
+      c: locationEntryForStatus(coords, 'error'),
+      d: locationEntryForStatus(coords, 'ALGORITHM_FAILURE'),
+      e: locationEntryForStatus(coords, 'DATA_UNAVAILABLE'),
+    };
+
+    flushErrorEntries(entries);
+
+    expect(Object.keys(entries).sort()).toEqual(['a', 'b']);
   });
 });
