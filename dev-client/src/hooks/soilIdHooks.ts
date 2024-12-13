@@ -32,10 +32,8 @@ export type SoilIdData = SoilIdResults & {
 };
 
 export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
-  /* Determine what we can and can't fetch based on online status and usage type */
+  /* Request active soil ID data based on this hook's input parameters */
   const isDataBased = !!siteId;
-
-  /* Request active soil ID data for hook input parameters */
   const {addCoords, addSite} = useActiveSoilIdData();
   useEffect(() => {
     const activeData = isDataBased ? addSite(siteId) : addCoords(coords);
