@@ -22,7 +22,7 @@ import {fromEntries} from 'terraso-client-shared/utils';
 
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';

@@ -17,7 +17,7 @@
 
 import {forwardRef, memo, useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -32,7 +32,9 @@ import {useTheme} from 'native-base';
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
 
+import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
+import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
 import {
   Box,
   Column,
@@ -40,6 +42,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {EmptySiteMessage} from 'terraso-mobile-client/screens/SitesScreen/components/EmptySiteMessage';
@@ -129,6 +132,13 @@ export const SiteListBottomSheet = memo(
             </Row>
             {sites.length > 0 && <SiteFilterModal useDistance={useDistance} />}
           </Column>
+          <RestrictByConnectivity offline={true}>
+            <View style={styles.alertView}>
+              <AlertMessageBox title={t('site.offline.alert_title')}>
+                <TranslatedContent i18nKey="site.offline.alert_body" />
+              </AlertMessageBox>
+            </View>
+          </RestrictByConnectivity>
           {isLoadingData ? (
             <ActivityIndicator size="large" />
           ) : isEmpty ? (
@@ -160,4 +170,5 @@ const ListFooterComponent = <Box h="10px" />;
 
 const styles = StyleSheet.create({
   communityIcon: {marginRight: 10},
+  alertView: {margin: 16},
 });

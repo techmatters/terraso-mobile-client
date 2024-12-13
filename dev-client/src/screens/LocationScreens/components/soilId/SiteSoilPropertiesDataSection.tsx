@@ -25,7 +25,7 @@ import {
   Box,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {rowsFromSiteSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';

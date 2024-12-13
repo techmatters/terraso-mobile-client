@@ -116,8 +116,10 @@
         "elevation_label": "Elevación",
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "desconocido",
-        "not_available_offine": "TK Not available offline",
-        "offline": "TK Sites can only be created while online.",
+        "offline": {
+            "alert_title": "You are offline",
+            "alert_body": "Sites can only be created while online."
+        },
         "form": {
             "name_min_length_error": "El nombre del sitio debe tener un mínimo de {{min}} caracteres",
             "name_max_length_error": "El nombre del sitio debe tener un máximo de {{max}} caracteres",
@@ -414,6 +416,7 @@
         "next": "Siguiente",
         "proceed": "Proceder",
         "offline_title": "Estás fuera de linea",
+        "not_available_offine": "Not available offline TK",
         "offline_sign_in_title": "TK Sign in not available offline",
         "offline_sign_in_body": "TK To use LandPKS Soil ID offline, you must first sign in while online.",
         "last_modified": "Última modificación",

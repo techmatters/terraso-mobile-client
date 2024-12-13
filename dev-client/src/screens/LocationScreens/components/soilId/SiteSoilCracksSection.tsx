@@ -26,7 +26,7 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictBySiteRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useSelector} from 'terraso-mobile-client/store';
