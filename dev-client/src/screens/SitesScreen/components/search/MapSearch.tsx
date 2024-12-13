@@ -35,7 +35,9 @@ import {
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
+import {MapSearchOfflineBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineBox';
 import {MapSearchSuggestionBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
 
 type Props = {
@@ -45,6 +47,7 @@ type Props = {
 };
 
 export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
+  const isOffline = useIsOffline();
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
   const {coords, suggestions, querySuggestions, lookupFeature} =
@@ -89,7 +92,7 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
         <View flex={1} pointerEvents="box-none">
           <Autocomplete
             data={suggestions}
-            hideResults={hideResults}
+            hideResults={hideResults || isOffline}
             flatListProps={{
               keyboardShouldPersistTaps: 'always',
               keyExtractor: suggestion => suggestion.mapbox_id,
@@ -104,26 +107,29 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
             }}
             inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
             renderTextInput={() => (
-              <Searchbar
-                onChangeText={newText => {
-                  setQuery(newText);
-                  querySuggestions(newText);
-                }}
-                onFocus={() => {
-                  setHideResults(false);
-                  querySuggestions(query);
-                }}
-                onEndEditing={() => {
-                  setHideResults(true);
-                }}
-                value={query}
-                placeholder={t('search.placeholder')}
-                style={{
-                  ...searchBarStyles.search,
-                  ...searchBarStyles.wideSearchOverride,
-                }}
-                inputStyle={searchBarStyles.input}
-              />
+              <>
+                <Searchbar
+                  onChangeText={newText => {
+                    setQuery(newText);
+                    querySuggestions(newText);
+                  }}
+                  onFocus={() => {
+                    setHideResults(false);
+                    querySuggestions(query);
+                  }}
+                  onEndEditing={() => {
+                    setHideResults(true);
+                  }}
+                  value={query}
+                  placeholder={t('search.placeholder')}
+                  style={{
+                    ...searchBarStyles.search,
+                    ...searchBarStyles.wideSearchOverride,
+                  }}
+                  inputStyle={searchBarStyles.input}
+                />
+                {isOffline && !hideResults ? <MapSearchOfflineBox /> : <></>}
+              </>
             )}
           />
         </View>
