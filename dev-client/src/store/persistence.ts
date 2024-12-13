@@ -46,6 +46,7 @@ export const patchPersistedReduxState = (
   return merge(state, {
     soilId: {soilSync: {}},
     soilMetadata: {soilMetadata: {}},
+    soilIdMatch: {locationBasedMatches: {}, siteDataBasedMatches: {}},
     sync: {pullRequested: false},
   });
 };
