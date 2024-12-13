@@ -18,7 +18,6 @@
 import {createSelector} from '@reduxjs/toolkit';
 
 import {
-  getEntityRecord,
   getErrorRecords,
   getUnsyncedRecords,
 } from 'terraso-mobile-client/model/sync/records';
@@ -51,7 +50,3 @@ export const selectSyncErrorSiteIds = createSelector(
   selectSyncErrorSites,
   errorSites => Object.keys(errorSites),
 );
-
-export const selectSiteSoilDataRevision =
-  (siteId: string) => (state: AppState) =>
-    getEntityRecord(state.soilId.soilSync, siteId).revisionId;
