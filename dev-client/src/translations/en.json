@@ -47,14 +47,16 @@
         "elevation_label": "Elevation",
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "unknown",
-        "not_available_offine": "Not available offline",
-        "offline": "Sites can only be created while online.",
         "empty": {
             "info": "<bold>Three ways to create a site:</bold>\n",
             "map": "Tap anywhere on the map",
             "icon": "Tap the My Location icon",
             "coords": "Enter coordinates, address, or search term in the map search bar",
             "summary": "A site lets you collect and save observations, learn more about the land and its potential, and share with others."
+        },
+        "offline": {
+            "alert_title": "You are offline",
+            "alert_body": "Sites can only be created while online."
         },
         "create": {
             "title": "Create Site",
@@ -461,6 +463,7 @@
             "label": "Support",
             "url": "https://landpks.terraso.org/"
         },
+        "not_available_offine": "Not available offline",
         "offline_sign_in_title": "Sign in not available offline",
         "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online."
     },

@@ -20,7 +20,7 @@ import {useCallback} from 'react';
 import {Button} from 'native-base';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
+import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,25 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
-import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {
-  GetStartedMessage,
-  styles,
-} from 'terraso-mobile-client/screens/SitesScreen/components/GetStartedMessage';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 
-export const EmptySiteMessage = () => {
-  return (
-    <View px="17px">
-      <Text bold>
-        <TranslatedParagraph i18nKey="site.empty.info" />
-      </Text>
+type Props = {offline: boolean} & React.PropsWithChildren;
 
-      <GetStartedMessage />
-
-      <View style={styles.enter}>
-        <TranslatedParagraph i18nKey="site.empty.summary" />
-      </View>
-    </View>
-  );
+export const RestrictByConnectivity = ({offline, children}: Props) => {
+  const isOffline = useIsOffline();
+  return isOffline === offline ? <>{children}</> : <></>;
 };
