@@ -73,8 +73,8 @@ export const dataEntryForStatus = (
   status: SoilIdStatus,
 ): SoilIdDataEntry => {
   return {
-    status: status,
     input,
+    status: status,
     matches: [],
   };
 };
@@ -84,8 +84,8 @@ export const dataEntryForMatches = (
   matches: DataBasedSoilMatch[],
 ): SoilIdDataEntry => {
   return {
-    status: 'ready',
     input,
+    status: 'ready',
     matches: matches,
   };
 };
