@@ -36,6 +36,10 @@ export const useValueSet = <T>(): ValueSet<T> => {
    * The ref here always holds the most recent contents; when it is updated, changes are propagated
    * changes to it are propagated to a React state which allows re-renders when subscriptions
    * change.
+   *
+   * (If we didn't use a ref, updates to just the state would always cause new values for the
+   * useCallback() result, which would have undesired consequences for downstream usages in
+   * React side effects etc; using the ref lets us keep the callback value stable for clients.)
    */
   const valuesRef = useRef(new Set<{value: T}>());
   const [valuesState, setValuesState] = useState(new Set(valuesRef.current));
