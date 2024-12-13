@@ -195,7 +195,7 @@
             "confirm_removal_body": "This action cannot be undone.",
             "min_length_error": "Must be at least {{min}} characters",
             "placeholder_text": "Start typing your note…",
-            "project_instructions": "Pinned Note",
+            "pinned_note": "Pinned Note",
             "offline": "Creating and editing notes is only available online."
         },
         "search": {

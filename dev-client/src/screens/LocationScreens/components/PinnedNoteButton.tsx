@@ -34,7 +34,7 @@ type Props = {
   project: Project;
 };
 
-export const ProjectInstructionsButton = ({project}: Props) => {
+export const PinnedNoteButton = ({project}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 

@@ -50,7 +50,7 @@ export const PinnedNoteCard = ({project}: Props) => {
       <Row>
         <Icon name="push-pin" color="primary.dark" size="sm" mr={1} />
         <Text bold fontSize="md">
-          {t('site.notes.project_instructions')}
+          {t('site.notes.pinned_note')}
         </Text>
       </Row>
       <Text pt={1} fontSize="md" numberOfLines={3} ellipsizeMode="tail">
