@@ -80,7 +80,7 @@
     "react-native-svg": "^15.10.1",
     "react-native-tab-view": "^4.0.5",
     "reduce-reducers": "^1.0.4",
-    "terraso-client-shared": "github:techmatters/terraso-client-shared#91c89da",
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#a4df832",
     "use-debounce": "^10.0.4",
     "uuid": "^10.0.0",
     "yup": "^1.5.0"
