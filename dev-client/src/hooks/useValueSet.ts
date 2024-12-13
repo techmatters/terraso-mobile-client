@@ -37,21 +37,21 @@ export const useValueSet = <T>(): ValueSet<T> => {
    * changes to it are propagated to a React state which allows re-renders when subscriptions
    * change.
    */
-  const valuesSet = useRef(new Set<{value: T}>());
-  const [valuesState, setValuesState] = useState(new Set(valuesSet.current));
+  const valuesRef = useRef(new Set<{value: T}>());
+  const [valuesState, setValuesState] = useState(new Set(valuesRef.current));
   const add = useCallback(
     (value: T) => {
       const container = {value};
-      valuesSet.current.add(container);
-      setValuesState(new Set(valuesSet.current));
+      valuesRef.current.add(container);
+      setValuesState(new Set(valuesRef.current));
       return {
         remove: () => {
-          valuesSet.current.delete(container);
-          setValuesState(new Set(valuesSet.current));
+          valuesRef.current.delete(container);
+          setValuesState(new Set(valuesRef.current));
         },
       };
     },
-    [setValuesState],
+    [valuesRef, setValuesState],
   );
 
   /* Condense all values based on structural equality */
