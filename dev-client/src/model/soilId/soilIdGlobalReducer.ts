@@ -26,7 +26,7 @@ import {
   setSoilData,
   updateSoilIdStatus,
 } from 'terraso-mobile-client/model/soilId/soilIdSlice';
-import {setSoilMetadata} from 'terraso-mobile-client/model/soilId/soilMetadataSlice';
+import {setSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
 export const fetchSoilDataForUser = createAsyncThunk(

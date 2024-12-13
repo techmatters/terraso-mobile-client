@@ -18,7 +18,7 @@
 import {
   findSelectedMatch,
   getMatchSelectionId,
-} from 'terraso-mobile-client/model/soilId/soilMetadataFunctions';
+} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 
 const dataBasedMatchWithName = (name: string) => {
   return {

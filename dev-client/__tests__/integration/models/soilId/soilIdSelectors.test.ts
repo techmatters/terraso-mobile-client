@@ -44,11 +44,14 @@ const appState = (): AppState => {
     project: {projects: {}},
     site: {sites: {}},
     soilId: {
-      matches: {},
       projectSettings: {},
       soilSync: {},
       soilData: {},
       status: 'ready',
+    },
+    soilIdMatch: {
+      locationBasedMatches: {},
+      siteDataBasedMatches: {},
     },
     soilMetadata: {
       soilMetadata: {},

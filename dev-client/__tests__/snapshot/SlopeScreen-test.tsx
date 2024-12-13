@@ -51,7 +51,6 @@ test('renders correctly', () => {
             slopeRequired: true,
           },
         },
-        matches: {},
       },
     },
   }).toJSON();

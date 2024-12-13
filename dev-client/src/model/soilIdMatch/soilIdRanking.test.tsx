@@ -19,7 +19,7 @@ import {
   getSortedDataBasedMatches,
   getSortedLocationBasedMatches,
   getTopMatch,
-} from 'terraso-mobile-client/model/soilId/soilIdRanking';
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 
 const locationBasedMatchWithRank = (rank: number) => {
   return {

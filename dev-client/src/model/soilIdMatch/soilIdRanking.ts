@@ -19,7 +19,8 @@ import {
   DataBasedSoilMatch,
   LocationBasedSoilMatch,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {SoilIdResults} from 'terraso-client-shared/soilId/soilIdTypes';
+
+import {SoilIdResults} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export const getTopMatch = (
   results: SoilIdResults,

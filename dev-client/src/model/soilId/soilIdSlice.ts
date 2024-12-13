@@ -19,25 +19,16 @@ import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
 
 import {SoilDataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
-import * as soilIdService from 'terraso-client-shared/soilId/soilIdService';
 import {
   CollectionMethod,
   DisabledCollectionMethod,
   LoadingState,
   ProjectSoilSettings,
   SoilData,
-  SoilIdEntry,
-  SoilIdKey,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 import * as soilDataActions from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
-import {
-  soilIdEntryDataBased,
-  soilIdEntryForStatus,
-  soilIdEntryLocationBased,
-  soilIdKey,
-} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
 import {
   markEntityModified,
   mergeUnsyncedEntities,
@@ -59,8 +50,6 @@ export type SoilState = {
 
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
   status: LoadingState;
-
-  matches: Record<SoilIdKey, SoilIdEntry>;
 };
 
 export const initialState: SoilState = {
@@ -69,8 +58,6 @@ export const initialState: SoilState = {
 
   projectSettings: {},
   status: 'loading',
-
-  matches: {},
 };
 
 export const setProjectSettings = (
@@ -105,14 +92,12 @@ export const setSoilData = (
   );
   state.soilData = mergedData;
   state.soilSync = mergedRecords;
-  state.matches = {};
 };
 
 export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {
   for (const siteId of siteIds) {
     delete state.soilData[siteId];
   }
-  flushDataBasedMatches(state);
 };
 
 const soilIdSlice = createSlice({
@@ -136,32 +121,26 @@ const soilIdSlice = createSlice({
         action.payload,
         Date.now(),
       );
-
-      flushDataBasedMatches(state);
     });
 
     builder.addCase(updateSoilData.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
       markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
-      flushDataBasedMatches(state);
     });
 
     builder.addCase(updateDepthDependentSoilData.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
       markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
-      flushDataBasedMatches(state);
     });
 
     builder.addCase(updateSoilDataDepthInterval.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
       markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
-      flushDataBasedMatches(state);
     });
 
     builder.addCase(deleteSoilDataDepthInterval.fulfilled, (state, action) => {
       state.soilData[action.meta.arg.siteId] = action.payload;
       markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
-      flushDataBasedMatches(state);
     });
 
     builder.addCase(updateProjectSoilSettings.fulfilled, (state, action) => {
@@ -175,59 +154,8 @@ const soilIdSlice = createSlice({
     builder.addCase(deleteProjectDepthInterval.fulfilled, (state, action) => {
       state.projectSettings[action.meta.arg.projectId] = action.payload;
     });
-
-    builder.addCase(fetchLocationBasedSoilMatches.pending, (state, action) => {
-      const key = soilIdKey(action.meta.arg);
-      state.matches[key] = soilIdEntryForStatus('loading');
-    });
-
-    builder.addCase(fetchLocationBasedSoilMatches.rejected, (state, action) => {
-      const key = soilIdKey(action.meta.arg);
-      state.matches[key] = soilIdEntryForStatus('error');
-    });
-
-    builder.addCase(
-      fetchLocationBasedSoilMatches.fulfilled,
-      (state, action) => {
-        const key = soilIdKey(action.meta.arg);
-        if (action.payload.__typename === 'SoilIdFailure') {
-          state.matches[key] = soilIdEntryForStatus(action.payload.reason);
-        } else {
-          state.matches[key] = soilIdEntryLocationBased(action.payload.matches);
-        }
-      },
-    );
-
-    builder.addCase(fetchDataBasedSoilMatches.pending, (state, action) => {
-      const key = soilIdKey(action.meta.arg.coords, action.meta.arg.siteId);
-      state.matches[key] = soilIdEntryForStatus('loading');
-    });
-
-    builder.addCase(fetchDataBasedSoilMatches.rejected, (state, action) => {
-      const key = soilIdKey(action.meta.arg.coords, action.meta.arg.siteId);
-      state.matches[key] = soilIdEntryForStatus('error');
-    });
-
-    builder.addCase(fetchDataBasedSoilMatches.fulfilled, (state, action) => {
-      const key = soilIdKey(action.meta.arg.coords, action.meta.arg.siteId);
-      if (action.payload.__typename === 'SoilIdFailure') {
-        state.matches[key] = soilIdEntryForStatus(action.payload.reason);
-      } else {
-        state.matches[key] = soilIdEntryDataBased(action.payload.matches);
-      }
-    });
   },
 });
-
-const flushDataBasedMatches = (state: Draft<SoilState>) => {
-  /*
-   * When soil ID input data changes (e.g. samples, intervals), we clear any
-   * cached entries that are data-based since they aren't valid anymore.
-   */
-  Object.keys(state.matches)
-    .filter(key => state.matches[key as SoilIdKey].dataBasedMatches?.length)
-    .forEach(key => delete state.matches[key as SoilIdKey]);
-};
 
 export const {setSoilIdStatus} = soilIdSlice.actions;
 
@@ -269,16 +197,6 @@ export const updateProjectDepthInterval = createAsyncThunk(
 export const deleteProjectDepthInterval = createAsyncThunk(
   'soilId/deleteProjectDepthInterval',
   soilDataService.deleteProjectDepthInterval,
-);
-
-export const fetchLocationBasedSoilMatches = createAsyncThunk(
-  'soilId/fetchLocationBasedSoilMatches',
-  soilIdService.fetchLocationBasedSoilMatches,
-);
-
-export const fetchDataBasedSoilMatches = createAsyncThunk(
-  'soilId/fetchDataBasedSoilMatches',
-  soilIdService.fetchDataBasedSoilMatches,
 );
 
 export default soilIdSlice.reducer;

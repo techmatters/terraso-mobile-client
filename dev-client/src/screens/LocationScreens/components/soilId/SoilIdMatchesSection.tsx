@@ -31,11 +31,11 @@ import {
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
+import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
   getSortedDataBasedMatches,
   getSortedLocationBasedMatches,
-} from 'terraso-mobile-client/model/soilId/soilIdRanking';
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {NoMapDataAlertMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/NoMapDataAlertMessageBox';
 import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {SoilMatchesErrorMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/SoilMatchesErrorMessageBox';

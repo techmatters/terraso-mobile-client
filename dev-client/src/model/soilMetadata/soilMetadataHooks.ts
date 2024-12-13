@@ -18,8 +18,8 @@
 import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 
-import {selectSoilMetadata} from 'terraso-mobile-client/model/soilId/soilMetadataSelectors';
-import {updateSoilMetadata} from 'terraso-mobile-client/model/soilId/soilMetadataSlice';
+import {selectSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
+import {updateSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 export const useSoilIdSelection = (

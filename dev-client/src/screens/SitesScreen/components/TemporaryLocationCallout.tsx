@@ -39,11 +39,11 @@ import {
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
-import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
-import {getTopMatch} from 'terraso-mobile-client/model/soilId/soilIdRanking';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CalloutDetail} from 'terraso-mobile-client/screens/SitesScreen/components/CalloutDetail';
 import {LatLngDetail} from 'terraso-mobile-client/screens/SitesScreen/components/LatLngDetail';
