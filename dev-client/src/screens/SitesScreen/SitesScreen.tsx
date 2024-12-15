@@ -35,6 +35,7 @@ import {Coords} from 'terraso-client-shared/types';
 import {LandPKSInfoButton} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoButton';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
@@ -127,9 +128,18 @@ export const SitesScreen = memo(() => {
     [setCalloutState, mapRef],
   );
 
-  const moveToUser = useCallback(() => {
+  const moveToUserAndShowCallout = useCallback(() => {
     if (currentUserCoords !== null) {
       mapRef.current?.moveToPoint(currentUserCoords);
+      setCalloutState(
+        locationCallout(
+          positionToCoords([
+            currentUserCoords.longitude,
+            currentUserCoords.latitude,
+          ]),
+          true,
+        ),
+      );
     }
   }, [currentUserCoords, mapRef]);
 
@@ -158,7 +168,7 @@ export const SitesScreen = memo(() => {
           <Box flex={1} zIndex={-1}>
             <MapSearch
               zoomTo={searchFunction}
-              zoomToUser={moveToUser}
+              zoomToUser={moveToUserAndShowCallout}
               toggleMapLayer={toggleMapLayer}
             />
             <SiteMap
