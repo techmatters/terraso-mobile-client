@@ -128,7 +128,7 @@ export const SitesScreen = memo(() => {
     [setCalloutState, mapRef],
   );
 
-  const moveToUser = useCallback(() => {
+  const moveToUserAndShowCallout = useCallback(() => {
     if (currentUserCoords !== null) {
       mapRef.current?.moveToPoint(currentUserCoords);
       setCalloutState(
@@ -168,7 +168,7 @@ export const SitesScreen = memo(() => {
           <Box flex={1} zIndex={-1}>
             <MapSearch
               zoomTo={searchFunction}
-              zoomToUser={moveToUser}
+              zoomToUser={moveToUserAndShowCallout}
               toggleMapLayer={toggleMapLayer}
             />
             <SiteMap
