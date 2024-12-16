@@ -36,12 +36,12 @@ export const AlertMessageBox = ({title, children}: MessageBoxProps) => {
       borderRadius="4px"
       padding="md">
       <Row>
-        <Icon name="warning-amber" color="warning.main" mr="md" />
+        <Icon name="warning-amber" color="warning.main" mr="md" size="xs" />
         <Column flex={1}>
           <Text variant="body1-strong" color="warning.content" mb="sm">
             {title}
           </Text>
-          {children}
+          <Text color="warning.content">{children}</Text>
         </Column>
       </Row>
     </Box>

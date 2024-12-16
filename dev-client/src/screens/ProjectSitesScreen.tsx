@@ -43,7 +43,7 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';

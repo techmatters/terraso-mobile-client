@@ -33,7 +33,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {RestrictByProjectRole} from 'terraso-mobile-client/components/RestrictByRole';
+import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {updateProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
@@ -58,8 +58,8 @@ export const ProjectInputScreen = ({
   const project = useSelector(state => state.project.projects[projectId]);
   const dispatch = useDispatch();
 
-  const onEditInstructions = useCallback(() => {
-    return navigation.navigate('EDIT_PROJECT_INSTRUCTIONS', {
+  const onEditPinnedNote = useCallback(() => {
+    return navigation.navigate('EDIT_PINNED_NOTE', {
       projectId: project.id,
     });
   }, [navigation, project]);
@@ -117,7 +117,7 @@ export const ProjectInputScreen = ({
               pr={4}
               size="lg"
               shadow={5}
-              onPress={onEditInstructions}
+              onPress={onEditPinnedNote}
               leftIcon={<Icon name="push-pin" />}>
               {t('projects.inputs.instructions.add_label')}
             </Button>

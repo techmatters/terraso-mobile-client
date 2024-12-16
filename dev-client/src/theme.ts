@@ -186,6 +186,16 @@ export const theme = extendTheme({
         },
       },
       variants: {
+        error: {
+          _text: {
+            color: 'error.main',
+          },
+          _disabled: {
+            _text: {
+              color: 'action.disabled',
+            },
+          },
+        },
         solid: {
           _disabled: {
             bg: 'action.disabledBackground',
@@ -290,6 +300,7 @@ export const theme = extendTheme({
     },
     Icon: {
       sizes: {
+        xs: 18,
         sm: 20,
         md: 24,
         lg: 35,

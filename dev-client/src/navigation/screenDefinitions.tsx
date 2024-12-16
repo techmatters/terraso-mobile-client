@@ -27,7 +27,7 @@ import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisSc
 import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
 import {DeleteAccountScreen} from 'terraso-mobile-client/screens/DeleteAccountScreen/DeleteAccountScreen';
-import {EditProjectInstructionsScreen} from 'terraso-mobile-client/screens/EditProjectInstructionsScreen';
+import {EditPinnedNoteScreen} from 'terraso-mobile-client/screens/EditPinnedNoteScreen';
 import {LocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationSoilIdScreen';
 import {SiteTabsScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteTabsScreen';
 import {TemporaryLocationScreen} from 'terraso-mobile-client/screens/LocationScreens/TemporaryLocationScreen';
@@ -102,7 +102,7 @@ export const screenDefinitions = {
 export const modalScreenDefinitions = {
   ADD_SITE_NOTE: AddSiteNoteScreen,
   EDIT_SITE_NOTE: EditSiteNoteScreen,
-  EDIT_PROJECT_INSTRUCTIONS: EditProjectInstructionsScreen,
+  EDIT_PINNED_NOTE: EditPinnedNoteScreen,
   READ_PINNED_NOTE: ReadPinnedNoteScreen,
 } satisfies ScreenDefinitions;
 

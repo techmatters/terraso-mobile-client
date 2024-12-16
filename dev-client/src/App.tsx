@@ -44,13 +44,14 @@ import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {captureConsoleIntegration} from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
-import {RestrictByFlag} from 'terraso-mobile-client/components/RestrictByFlag';
+import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {HeaderHeightContext} from 'terraso-mobile-client/context/HeaderHeightContext';
 import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScreenContext';
+import {SoilIdMatchContextProvider} from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
 import {Toasts} from 'terraso-mobile-client/screens/Toasts';
@@ -139,12 +140,14 @@ function App(): React.JSX.Element {
                           <SitesScreenContextProvider>
                             <ForegroundPermissionsProvider>
                               <SyncNotificationContextProvider>
-                                <RestrictByFlag flag="FF_offline">
-                                  <PushDispatcher />
-                                  <PullRequester />
-                                  <PullDispatcher />
-                                </RestrictByFlag>
-                                <RootNavigator />
+                                <SoilIdMatchContextProvider>
+                                  <RestrictByFlag flag="FF_offline">
+                                    <PushDispatcher />
+                                    <PullRequester />
+                                    <PullDispatcher />
+                                  </RestrictByFlag>
+                                  <RootNavigator />
+                                </SoilIdMatchContextProvider>
                               </SyncNotificationContextProvider>
                             </ForegroundPermissionsProvider>
                           </SitesScreenContextProvider>

@@ -18,19 +18,17 @@
 import {Trans, useTranslation} from 'react-i18next';
 
 import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
-import {LocationIcon} from 'terraso-mobile-client/components/icons/LocationIcon';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
   Box,
   Column,
   Heading,
-  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {GetStartedMessage} from 'terraso-mobile-client/screens/SitesScreen/components/GetStartedMessage';
 
 export const LandPKSInfoContent = () => {
   const {t} = useTranslation();
-  const numberedListMargin = 2;
 
   return (
     <Column space={3} pb="65%" pt={5} px={5}>
@@ -48,19 +46,16 @@ export const LandPKSInfoContent = () => {
         </Trans>
       </Text>
       <Column>
-        {[1, 2, 3].map(index => (
-          <Row key={index}>
-            <Text variant="body1" mr={numberedListMargin}>
-              {index}.
-            </Text>
-            <Text variant="body1" mr={numberedListMargin * 2}>
-              <Trans
-                i18nKey={`info.list${index}`}
-                components={{icon: <LocationIcon />}}
-              />
-            </Text>
-          </Row>
-        ))}
+        <Text variant="body1">
+          <Trans
+            i18nKey="info.get_started"
+            components={{
+              bold: <Text bold />,
+            }}>
+            <Text bold>first</Text>
+          </Trans>
+        </Text>
+        <GetStartedMessage />
       </Column>
       <Text variant="body1">
         <Trans

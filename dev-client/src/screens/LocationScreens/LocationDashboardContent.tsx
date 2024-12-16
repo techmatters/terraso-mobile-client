@@ -38,11 +38,10 @@ import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {updateSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
-import {useSoilIdData} from 'terraso-mobile-client/model/soilId/soilIdHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {LocationSoilIdCard} from 'terraso-mobile-client/screens/LocationScreens/components/LocationSoilIdCard';
-import {ProjectInstructionsButton} from 'terraso-mobile-client/screens/LocationScreens/components/ProjectInstructionsButton';
+import {PinnedNoteButton} from 'terraso-mobile-client/screens/LocationScreens/components/PinnedNoteButton';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {formatCoordinate} from 'terraso-mobile-client/util';
 
@@ -89,8 +88,6 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
   );
 
   const isOffline = useIsOffline();
-
-  useSoilIdData(coords, site?.id);
 
   return (
     <ScrollView backgroundColor="background.default">
@@ -166,7 +163,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
           <Row space={4} alignItems="baseline">
             <PeopleChip count={Object.keys(project.memberships).length} />
             {project?.siteInstructions && (
-              <ProjectInstructionsButton project={project} />
+              <PinnedNoteButton project={project} />
             )}
           </Row>
         )}

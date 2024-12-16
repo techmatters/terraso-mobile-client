@@ -35,6 +35,7 @@ import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBase
 
 export type ErrorDialogProps = React.PropsWithChildren<{
   headline?: React.ReactNode;
+  supportUrl?: string;
 }>;
 
 /**
@@ -43,7 +44,7 @@ export type ErrorDialogProps = React.PropsWithChildren<{
 export const ErrorDialog = forwardRef<
   ModalHandle,
   React.PropsWithChildren<ErrorDialogProps>
->(({headline, children}, forwardedRef) => {
+>(({headline, supportUrl, children}, forwardedRef) => {
   const {t} = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const onOpen = useCallback(() => setIsOpen(true), [setIsOpen]);
@@ -70,7 +71,7 @@ export const ErrorDialog = forwardRef<
             <ExternalLink
               type="alertError"
               label={t('general.support.label')}
-              url={t('general.support.url')}
+              url={supportUrl ?? t('general.support.label')}
             />
             <DismissButton onPress={onClose} />
           </View>
