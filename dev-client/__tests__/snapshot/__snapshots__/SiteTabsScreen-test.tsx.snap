@@ -1991,9 +1991,13 @@ exports[`renders correctly 1`] = `
                                        
                                     </Text>
                                     <Text
-                                      style={{}}
+                                      style={
+                                        {
+                                          "fontStyle": "italic",
+                                        }
+                                      }
                                     >
-                                      Loading…
+                                      Not available offline
                                     </Text>
                                   </Text>
                                   <Text
@@ -2019,9 +2023,13 @@ exports[`renders correctly 1`] = `
                                       : 
                                     </Text>
                                     <Text
-                                      style={{}}
+                                      style={
+                                        {
+                                          "fontStyle": "italic",
+                                        }
+                                      }
                                     >
-                                      Loading…
+                                      Not available offline
                                     </Text>
                                   </Text>
                                   <View
