@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -21,8 +21,6 @@ import {Keyboard} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import {Searchbar} from 'react-native-paper';
 
-import {Pressable} from 'native-base';
-
 import {Coords} from 'terraso-client-shared/types';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
@@ -32,36 +30,15 @@ import {
   Box,
   Column,
   Row,
-  Text,
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
-
-type SuggestionProps = {
-  name: string;
-  address: string;
-  mapboxId: string;
-  onPress: (name: string, mapboxId: string) => void;
-};
-
-function SuggestionBox({name, address, mapboxId, onPress}: SuggestionProps) {
-  const selectSuggestion = useCallback(
-    () => onPress(name, mapboxId),
-    [name, mapboxId, onPress],
-  );
-
-  return (
-    <Pressable w="100%" py={1} px={3} onPress={selectSuggestion}>
-      <Column>
-        <Text>{name}</Text>
-        <Text>{address}</Text>
-      </Column>
-    </Pressable>
-  );
-}
+import {MapSearchOfflineAlertBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineAlertBox';
+import {MapSearchSuggestionBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
 
 type Props = {
   zoomTo?: (site: Coords) => void;
@@ -69,12 +46,13 @@ type Props = {
   toggleMapLayer?: () => void;
 };
 
-export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
+export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
+  const isOffline = useIsOffline();
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
   const {coords, suggestions, querySuggestions, lookupFeature} =
     useMapSuggestions();
-  const [hideResults, setHideResults] = useState(false);
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
   const sitesScreen = useSitesScreenContext();
 
   useEffect(() => {
@@ -92,7 +70,7 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
   const selectQuery = useCallback(
     (name: string, mapboxId: string) => {
       setQuery(name);
-      setHideResults(true);
+      setShowAutocomplete(false);
       lookupFeature(mapboxId);
       Keyboard.dismiss();
     },
@@ -114,12 +92,12 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
         <View flex={1} pointerEvents="box-none">
           <Autocomplete
             data={suggestions}
-            hideResults={hideResults}
+            hideResults={!showAutocomplete || isOffline}
             flatListProps={{
               keyboardShouldPersistTaps: 'always',
               keyExtractor: suggestion => suggestion.mapbox_id,
               renderItem: ({item}) => (
-                <SuggestionBox
+                <MapSearchSuggestionBox
                   name={item.name}
                   address={item.place_formatted}
                   mapboxId={item.mapbox_id}
@@ -129,26 +107,33 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
             }}
             inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
             renderTextInput={() => (
-              <Searchbar
-                onChangeText={newText => {
-                  setQuery(newText);
-                  querySuggestions(newText);
-                }}
-                onFocus={() => {
-                  setHideResults(false);
-                  querySuggestions(query);
-                }}
-                onEndEditing={() => {
-                  setHideResults(true);
-                }}
-                value={query}
-                placeholder={t('search.placeholder')}
-                style={{
-                  ...searchBarStyles.search,
-                  ...searchBarStyles.wideSearchOverride,
-                }}
-                inputStyle={searchBarStyles.input}
-              />
+              <>
+                <Searchbar
+                  onChangeText={newText => {
+                    setQuery(newText);
+                    querySuggestions(newText);
+                  }}
+                  onFocus={() => {
+                    setShowAutocomplete(true);
+                    querySuggestions(query);
+                  }}
+                  onEndEditing={() => {
+                    setShowAutocomplete(false);
+                  }}
+                  value={query}
+                  placeholder={t('search.placeholder')}
+                  style={{
+                    ...searchBarStyles.search,
+                    ...searchBarStyles.wideSearchOverride,
+                  }}
+                  inputStyle={searchBarStyles.input}
+                />
+                {isOffline && showAutocomplete ? (
+                  <MapSearchOfflineAlertBox />
+                ) : (
+                  <></>
+                )}
+              </>
             )}
           />
         </View>
@@ -177,4 +162,4 @@ export default function MapSearch({zoomTo, zoomToUser, toggleMapLayer}: Props) {
       </Row>
     </Box>
   );
-}
+};

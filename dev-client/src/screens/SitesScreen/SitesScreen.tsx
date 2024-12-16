@@ -41,7 +41,7 @@ import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenConte
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import MapSearch from 'terraso-mobile-client/screens/SitesScreen/components/MapSearch';
+import {MapSearch} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearch';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/components/SiteListBottomSheet';
 import {
   MapRef,
