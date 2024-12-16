@@ -206,6 +206,7 @@
             "filter_projects": "Filter sites by project",
             "filter_role": "Filter sites by role",
             "no_matches": "No sites match the current search and filter options.",
+            "offline": "You are offline. Search is not available, but you can enter exact coordinates.",
             "sort": {
                 "label": "Sort sites by",
                 "nameAsc": "Name (A to Z)",

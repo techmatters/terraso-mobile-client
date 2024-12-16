@@ -94,6 +94,7 @@
                 "distanceAsc": "Distancia (más cercana)",
                 "distanceDesc": "Distance (más lejana)"
             },
+            "offline": "You are offline. Search is not available, but you can enter exact coordinates. TK",
             "accessibility_label": "Ordenar sitios por nombre",
             "filter_projects": "Ordenar sitios por proyecto",
             "filter_role": "Ordenar sitios por rol",

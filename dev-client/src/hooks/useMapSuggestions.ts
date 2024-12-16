@@ -25,6 +25,7 @@ import {
   MAP_QUERY_MIN_LENGTH,
   SEARCH_DEBOUNCE_TIME_MS,
 } from 'terraso-mobile-client/constants';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
   initMapSearch,
   Suggestion,
@@ -39,6 +40,7 @@ import {isValidCoordinates} from 'terraso-mobile-client/util';
 const {getSuggestions, retrieveFeature} = initMapSearch();
 
 export const useMapSuggestions = () => {
+  const isOffline = useIsOffline();
   const [coords, setCoords] = useState<Coords | undefined>(undefined);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
@@ -70,7 +72,7 @@ export const useMapSuggestions = () => {
         const [latitude, longitude] = queryText.split(',').map(Number);
         setCoords({latitude, longitude});
         setSuggestions([]);
-      } else {
+      } else if (!isOffline) {
         setCoords(undefined);
         if (queryText.length >= MAP_QUERY_MIN_LENGTH) {
           try {
@@ -91,9 +93,12 @@ export const useMapSuggestions = () => {
           });
           setSuggestions([]);
         }
+      } else {
+        setCoords(undefined);
+        setSuggestions([]);
       }
     },
-    [makeSuggestionsApiCall],
+    [makeSuggestionsApiCall, isOffline],
   );
   const debouncedQuerySuggestions = useDebouncedCallback(
     querySuggestions,
