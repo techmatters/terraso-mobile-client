@@ -39,7 +39,7 @@ import {
   isProjectEditor,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
-import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';

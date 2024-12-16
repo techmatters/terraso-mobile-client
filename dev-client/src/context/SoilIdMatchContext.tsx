@@ -33,7 +33,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useValueSet} from 'terraso-mobile-client/hooks/useValueSet';
-import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
 import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
   selectDataBasedInputs,

@@ -55,7 +55,7 @@ import {
   SoilPitMethod,
   soilPitMethods,
   updateSoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';

@@ -35,7 +35,7 @@ import {SerializableSet} from 'terraso-client-shared/store/utils';
 import {
   DEFAULT_ENABLED_SOIL_PIT_METHODS,
   DEPTH_INTERVAL_PRESETS,
-} from 'terraso-mobile-client/model/soilId/soilDataConstants';
+} from 'terraso-mobile-client/model/soilData/soilDataConstants';
 import {
   DepthInterval,
   methodEnabled,
@@ -47,7 +47,7 @@ import {
   SoilPitMethod,
   soilPitMethods,
   SoilState,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {createStore} from 'terraso-mobile-client/store';
 import {
   selectProjectMembershipsWithUsers,
@@ -257,7 +257,7 @@ function initState(
       site: {
         sites: keyBy(sites, 'id'),
       },
-      soilId: {
+      soilData: {
         soilData,
         projectSettings,
         status: 'ready',

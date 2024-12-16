@@ -117,14 +117,14 @@ describe('persistence middleware', () => {
 
 describe('patchPersistedReduxState', () => {
   test('adds sync records if absent', () => {
-    const state: any = {soilId: {soilSync: undefined}};
+    const state: any = {soilData: {soilSync: undefined}};
     const result = patchPersistedReduxState(state);
-    expect(result.soilId!.soilSync).toEqual({});
+    expect(result.soilData!.soilSync).toEqual({});
   });
 
   test('retains sync records if present', () => {
-    const state: any = {soilId: {soilSync: {a: {}}}};
+    const state: any = {soilData: {soilSync: {a: {}}}};
     const result = patchPersistedReduxState(state);
-    expect(result.soilId!.soilSync).toEqual({a: {}});
+    expect(result.soilData!.soilSync).toEqual({a: {}});
   });
 });

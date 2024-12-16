@@ -63,7 +63,7 @@ export const selectDataBasedInputs = createSelector(
 export const selectNextDataBasedInputs = createSelector(
   createSelector(
     [
-      (state: AppState) => state.soilId.soilData,
+      (state: AppState) => state.soilData.soilData,
       (_: AppState, siteIds: string[]) => siteIds,
     ],
     /* Combine soil data with site IDs to extract relevant entries */

@@ -65,7 +65,7 @@ export const SiteListBottomSheet = memo(
     ({sites, showSiteOnMap, snapIndex}, ref) => {
       const {t} = useTranslation();
       const isLoadingData = useSelector(
-        state => state.soilId.status === 'loading',
+        state => state.soilData.status === 'loading',
       );
       const deviceBottomInsets = useSafeAreaInsets().bottom;
 

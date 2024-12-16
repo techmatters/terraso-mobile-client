@@ -22,7 +22,7 @@ import * as soilMetadataService from 'terraso-client-shared/soilId/soilMetadataS
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
-export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+export * from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 
 export type SoilState = {
   /* Note that the keys for these records are the site IDs to which the soil metadata belongs */

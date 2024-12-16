@@ -31,7 +31,7 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {updateSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {updateSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {
   degreeToPercent,
   percentToDegree,

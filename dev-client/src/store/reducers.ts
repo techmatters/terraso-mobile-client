@@ -29,7 +29,7 @@ import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
 import {reducer as preferencesReducer} from 'terraso-mobile-client/model/preferences/preferencesSlice';
 import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
 import siteReducer from 'terraso-mobile-client/model/site/siteSlice';
-import soilIdReducer from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import soilDataReducer from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import soilIdMatchReducer from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
 import soilMetadataReducer from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import syncReducer from 'terraso-mobile-client/model/sync/syncSlice';
@@ -41,7 +41,7 @@ const sliceReducers = {
   elevation: elevationReducer,
   site: siteReducer,
   project: projectReducer,
-  soilId: soilIdReducer,
+  soilData: soilDataReducer,
   soilMetadata: soilMetadataReducer,
   soilIdMatch: soilIdMatchReducer,
   sync: syncReducer,

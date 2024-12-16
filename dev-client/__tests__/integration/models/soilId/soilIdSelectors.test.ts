@@ -25,7 +25,7 @@ import {
   selectSyncErrorSites,
   selectUnsyncedSiteIds,
   selectUnsyncedSites,
-} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
+} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
 import {
   markEntityError,
   markEntityModified,
@@ -43,7 +43,7 @@ const appState = (): AppState => {
     preferences: {colorWorkflow: 'MANUAL'},
     project: {projects: {}},
     site: {sites: {}},
-    soilId: {
+    soilData: {
       projectSettings: {},
       soilSync: {},
       soilData: {},
@@ -72,8 +72,8 @@ describe('selectUnsyncedSites', () => {
   test('selects unsynced sites only', () => {
     const state = appState();
     const now = Date.now();
-    markEntitySynced(state.soilId.soilSync, 'a', {value: soilData()}, now);
-    markEntityModified(state.soilId.soilSync, 'b', now);
+    markEntitySynced(state.soilData.soilSync, 'a', {value: soilData()}, now);
+    markEntityModified(state.soilData.soilSync, 'b', now);
 
     const selected = renderSelectorHook(
       () => useSelector(selectUnsyncedSites),
@@ -87,7 +87,7 @@ describe('selectUnsyncedSites', () => {
 
   test('returns stable values for input states only', () => {
     const stateA = appState();
-    markEntityModified(stateA.soilId.soilSync, 'a', Date.now());
+    markEntityModified(stateA.soilData.soilSync, 'a', Date.now());
 
     const selectedA1 = renderSelectorHook(
       () => useSelector(selectUnsyncedSites),
@@ -99,7 +99,7 @@ describe('selectUnsyncedSites', () => {
     );
 
     const stateB = cloneDeep(stateA);
-    markEntityModified(stateB.soilId.soilSync, 'b', Date.now());
+    markEntityModified(stateB.soilData.soilSync, 'b', Date.now());
 
     const selectedB = renderSelectorHook(
       () => useSelector(selectUnsyncedSites),
@@ -116,10 +116,10 @@ describe('selectUnsyncedSiteIds', () => {
   test('selects unsynced site IDs only, sorted', () => {
     const state = appState();
     const now = Date.now();
-    markEntitySynced(state.soilId.soilSync, 'a', {value: soilData()}, now);
+    markEntitySynced(state.soilData.soilSync, 'a', {value: soilData()}, now);
 
-    markEntityModified(state.soilId.soilSync, 'c', now);
-    markEntityModified(state.soilId.soilSync, 'b', now);
+    markEntityModified(state.soilData.soilSync, 'c', now);
+    markEntityModified(state.soilData.soilSync, 'b', now);
 
     const selected = renderSelectorHook(
       () => useSelector(selectUnsyncedSiteIds),
@@ -131,7 +131,7 @@ describe('selectUnsyncedSiteIds', () => {
 
   test('returns stable values for input states', () => {
     const stateA = appState();
-    markEntityModified(stateA.soilId.soilSync, 'a', Date.now());
+    markEntityModified(stateA.soilData.soilSync, 'a', Date.now());
 
     const selectedA1 = renderSelectorHook(
       () => useSelector(selectUnsyncedSiteIds),
@@ -143,7 +143,7 @@ describe('selectUnsyncedSiteIds', () => {
     );
 
     const stateB = cloneDeep(stateA);
-    markEntityModified(stateB.soilId.soilSync, 'b', Date.now());
+    markEntityModified(stateB.soilData.soilSync, 'b', Date.now());
 
     const selectedB = renderSelectorHook(
       () => useSelector(selectUnsyncedSiteIds),
@@ -160,9 +160,9 @@ describe('selectSyncErrorSites', () => {
   test('selects sync error sites only', () => {
     const state = appState();
     const now = Date.now();
-    markEntitySynced(state.soilId.soilSync, 'a', {value: soilData()}, now);
+    markEntitySynced(state.soilData.soilSync, 'a', {value: soilData()}, now);
     markEntityError(
-      state.soilId.soilSync,
+      state.soilData.soilSync,
       'b',
       {revisionId: 1, value: 'DOES_NOT_EXIST'},
       now,
@@ -185,7 +185,7 @@ describe('selectSyncErrorSites', () => {
   test('returns stable values for input states', () => {
     const stateA = appState();
     markEntityError(
-      stateA.soilId.soilSync,
+      stateA.soilData.soilSync,
       'a',
       {value: 'DOES_NOT_EXIST'},
       Date.now(),
@@ -202,7 +202,7 @@ describe('selectSyncErrorSites', () => {
 
     const stateB = cloneDeep(stateA);
     markEntityError(
-      stateB.soilId.soilSync,
+      stateB.soilData.soilSync,
       'b',
       {revisionId: 1, value: 'DOES_NOT_EXIST'},
       Date.now(),

@@ -31,7 +31,7 @@ import {
 
 import {projectGlobalReducer} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {siteGlobalReducer} from 'terraso-mobile-client/model/site/siteGlobalReducer';
-import {soilIdGlobalReducer} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
+import {soilIdGlobalReducer} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {persistenceMiddleware} from 'terraso-mobile-client/store/persistence';
 import {AppState, rootReducer} from 'terraso-mobile-client/store/reducers';
 

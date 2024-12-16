@@ -25,7 +25,7 @@ import {
   DepthDependentSoilData,
   SoilData,
   SoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 
 /**
  * The soil data fields which are covered by the update action.

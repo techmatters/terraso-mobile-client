@@ -23,7 +23,7 @@ import {
   methodEnabled,
   methodRequired,
   soilPitMethods,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {DepthEditor} from 'terraso-mobile-client/screens/SoilScreen/components/DepthEditor';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';

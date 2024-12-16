@@ -26,7 +26,7 @@ import {
   deleteProjectDepthInterval,
   DepthInterval,
   ProjectDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 type TableProps = {

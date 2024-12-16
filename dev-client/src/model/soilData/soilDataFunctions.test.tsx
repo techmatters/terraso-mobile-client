@@ -22,7 +22,7 @@ import {
   methodRequired,
   overlaps,
   sameDepth,
-} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+} from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 
 describe('methodEnabled', () => {
   test('formats method names with the Enabled suffix', () => {

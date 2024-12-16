@@ -26,8 +26,8 @@ import {
   DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
   DEPTH_INTERVAL_UPDATE_FIELDS,
   SOIL_DATA_UPDATE_FIELDS,
-} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
-import {depthIntervalKey} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+} from 'terraso-mobile-client/model/soilData/actions/soilDataActionFields';
+import {depthIntervalKey} from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 
 export const getChangedSoilDataFields = (
   curr: SoilData,

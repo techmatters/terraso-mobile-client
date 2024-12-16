@@ -26,7 +26,7 @@ import {
   DepthDependentSoilData,
   LabelledDepthInterval,
   SoilPitMethod,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 
 export const renderDepth = (

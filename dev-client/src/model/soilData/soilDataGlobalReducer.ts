@@ -25,7 +25,7 @@ import {
   setProjectSettings,
   setSoilData,
   updateSoilIdStatus,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {setSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
@@ -39,17 +39,17 @@ export const soilIdGlobalReducer = createGlobalReducer(builder => {
     setProjects(state.project, payload.projects);
     setSites(state.site, payload.sites);
     setUsers(state.account, payload.users);
-    setProjectSettings(state.soilId, payload.projectSoilSettings);
-    setSoilData(state.soilId, payload.soilData);
+    setProjectSettings(state.soilData, payload.projectSoilSettings);
+    setSoilData(state.soilData, payload.soilData);
     setSoilMetadata(state.soilMetadata, payload.soilMetadata);
-    updateSoilIdStatus(state.soilId, 'ready');
+    updateSoilIdStatus(state.soilData, 'ready');
   });
 
   builder.addCase(fetchSoilDataForUser.pending, state => {
-    updateSoilIdStatus(state.soilId, 'loading');
+    updateSoilIdStatus(state.soilData, 'loading');
   });
 
   builder.addCase(fetchSoilDataForUser.rejected, state => {
-    updateSoilIdStatus(state.soilId, 'error');
+    updateSoilIdStatus(state.soilData, 'error');
   });
 });

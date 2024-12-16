@@ -28,8 +28,8 @@ import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 import {ThunkAPI} from 'terraso-client-shared/store/utils';
 
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
-import * as localSoilData from 'terraso-mobile-client/model/soilId/actions/localSoilDataActions';
-import * as remoteSoilData from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
+import * as localSoilData from 'terraso-mobile-client/model/soilData/actions/localSoilDataActions';
+import * as remoteSoilData from 'terraso-mobile-client/model/soilData/actions/remoteSoilDataActions';
 import {
   getDataForRecords,
   getEntityRecords,
@@ -49,11 +49,11 @@ export const pushSoilData = async (
   state: AppState,
 ): Promise<SyncResults<SoilData, SoilDataPushFailureReason>> => {
   const unsyncedChanges = getUnsyncedRecords(
-    getEntityRecords(state.soilId.soilSync, input),
+    getEntityRecords(state.soilData.soilSync, input),
   );
   const unsyncedData = getDataForRecords(
     unsyncedChanges,
-    state.soilId.soilData,
+    state.soilData.soilData,
   );
   return remoteSoilData.pushSoilData(unsyncedChanges, unsyncedData);
 };
@@ -69,7 +69,7 @@ export const updateSoilData = async (
   state: AppState,
 ): Promise<SoilData> => {
   if (isFlagEnabled('FF_offline')) {
-    const data = state.soilId.soilData[input.siteId];
+    const data = state.soilData.soilData[input.siteId];
     return Promise.resolve(localSoilData.updateSoilData(input, data));
   } else {
     return soilDataService.updateSoilData(input);
@@ -87,7 +87,7 @@ export const deleteSoilDataDepthInterval = async (
   state: AppState,
 ): Promise<SoilData> => {
   if (isFlagEnabled('FF_offline')) {
-    const data = state.soilId.soilData[input.siteId];
+    const data = state.soilData.soilData[input.siteId];
     return Promise.resolve(
       localSoilData.deleteSoilDataDepthInterval(input, data),
     );
@@ -107,7 +107,7 @@ export const updateSoilDataDepthInterval = async (
   state: AppState,
 ): Promise<SoilData> => {
   if (isFlagEnabled('FF_offline')) {
-    const data = state.soilId.soilData[input.siteId];
+    const data = state.soilData.soilData[input.siteId];
     return Promise.resolve(
       localSoilData.updateSoilDataDepthInterval(input, data),
     );
@@ -127,7 +127,7 @@ export const updateDepthDependentSoilData = async (
   state: AppState,
 ): Promise<SoilData> => {
   if (isFlagEnabled('FF_offline')) {
-    const data = state.soilId.soilData[input.siteId];
+    const data = state.soilData.soilData[input.siteId];
     return Promise.resolve(
       localSoilData.updateDepthDependentSoilData(input, data),
     );

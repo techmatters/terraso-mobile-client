@@ -19,14 +19,14 @@ import {useTranslation} from 'react-i18next';
 
 import {useToast} from 'native-base';
 
-import {setSoilIdStatus} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {setSoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const Toasts = () => {
   const dispatch = useDispatch();
   const {t} = useTranslation();
   const toast = useToast();
-  const soilIdStatus = useSelector(state => state.soilId.status);
+  const soilIdStatus = useSelector(state => state.soilData.status);
 
   useEffect(() => {
     if (soilIdStatus === 'error') {

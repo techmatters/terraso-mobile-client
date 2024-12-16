@@ -23,7 +23,7 @@ import {
 } from 'terraso-mobile-client/model/sync/records';
 import {AppState} from 'terraso-mobile-client/store';
 
-export const selectSoilChanges = (state: AppState) => state.soilId.soilSync;
+export const selectSoilChanges = (state: AppState) => state.soilData.soilSync;
 
 /*
  * Note: selectors that derive new values from change records are memoized to ensure

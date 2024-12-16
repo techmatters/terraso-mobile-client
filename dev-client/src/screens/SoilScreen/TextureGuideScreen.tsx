@@ -34,7 +34,7 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   SoilTexture,
   updateDepthDependentSoilData,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';

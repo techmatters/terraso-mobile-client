@@ -28,7 +28,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
-import * as soilDataActions from 'terraso-mobile-client/model/soilId/actions/soilDataActions';
+import * as soilDataActions from 'terraso-mobile-client/model/soilData/actions/soilDataActions';
 import {
   markEntityModified,
   mergeUnsyncedEntities,
@@ -37,7 +37,7 @@ import {
 import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
-export * from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+export * from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 
 export type MethodRequired<
   T extends CollectionMethod | DisabledCollectionMethod,
@@ -100,8 +100,8 @@ export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {
   }
 };
 
-const soilIdSlice = createSlice({
-  name: 'soilId',
+const soilDataSlice = createSlice({
+  name: 'soilData',
   initialState,
   reducers: {
     setSoilIdStatus: (state, action: PayloadAction<LoadingState>) => {
@@ -157,7 +157,7 @@ const soilIdSlice = createSlice({
   },
 });
 
-export const {setSoilIdStatus} = soilIdSlice.actions;
+export const {setSoilIdStatus} = soilDataSlice.actions;
 
 export const pushSoilData = createAsyncThunk(
   'soilId/pushSoilData',
@@ -199,4 +199,4 @@ export const deleteProjectDepthInterval = createAsyncThunk(
   soilDataService.deleteProjectDepthInterval,
 );
 
-export default soilIdSlice.reducer;
+export default soilDataSlice.reducer;

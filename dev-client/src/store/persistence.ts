@@ -44,7 +44,7 @@ export const patchPersistedReduxState = (
   state: Partial<AppState>,
 ): Partial<AppState> => {
   return merge(state, {
-    soilId: {soilSync: {}},
+    soilData: {soilSync: {}},
     soilMetadata: {soilMetadata: {}},
     soilIdMatch: {locationBasedMatches: {}, siteDataBasedMatches: {}},
     sync: {pullRequested: false},

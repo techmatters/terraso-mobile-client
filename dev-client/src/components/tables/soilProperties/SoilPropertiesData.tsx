@@ -31,7 +31,7 @@ import {
   fullMunsellColor,
   munsellToString,
 } from 'terraso-mobile-client/model/color/colorConversions';
-import {sameDepth} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {sameDepth} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
 
 export type SoilPropertiesDataTableRow = {
