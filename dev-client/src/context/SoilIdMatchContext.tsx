@@ -43,6 +43,7 @@ import {
 import {
   fetchLocationBasedSoilMatches,
   fetchSiteDataBasedSoilMatches,
+  flushDataCacheErrors,
   flushLocationCache,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -82,7 +83,7 @@ export const SoilIdMatchContextProvider = ({
   const activeSites = useValueSet<string>();
 
   /* One-time cache flush for when the user first comes online */
-  useLocationCacheFlushing();
+  useCacheFlushing();
 
   /* Dispatch fetches as needed for the active inputs */
   useCoordFetching(useCoordsToFetch(activeCoords.values));
@@ -102,7 +103,7 @@ export const SoilIdMatchContextProvider = ({
   );
 };
 
-const useLocationCacheFlushing = () => {
+const useCacheFlushing = () => {
   const dispatch = useDispatch();
   const isOffline = useIsOffline();
   const [isFlushed, setIsFlushed] = useState(false);
@@ -114,6 +115,7 @@ const useLocationCacheFlushing = () => {
   useEffect(() => {
     if (!isOffline && !isFlushed) {
       dispatch(flushLocationCache());
+      dispatch(flushDataCacheErrors());
       setIsFlushed(true);
     }
   }, [dispatch, isOffline, isFlushed, setIsFlushed]);

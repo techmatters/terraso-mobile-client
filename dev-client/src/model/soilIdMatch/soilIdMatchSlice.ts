@@ -24,6 +24,7 @@ import {
   CoordsKey,
   coordsKey,
   dataEntryForStatus,
+  flushErrorEntries,
   locationEntryForStatus,
   SoilIdDataEntry,
   SoilIdLocationEntry,
@@ -54,6 +55,9 @@ const soilIdMatchSlice = createSlice({
   reducers: {
     flushLocationCache: state => {
       state.locationBasedMatches = {};
+    },
+    flushDataCacheErrors: state => {
+      flushErrorEntries(state.siteDataBasedMatches);
     },
   },
   extraReducers: builder => {
@@ -102,7 +106,8 @@ const soilIdMatchSlice = createSlice({
   },
 });
 
-export const {flushLocationCache} = soilIdMatchSlice.actions;
+export const {flushLocationCache, flushDataCacheErrors} =
+  soilIdMatchSlice.actions;
 
 export const fetchLocationBasedSoilMatches = createAsyncThunk(
   'soilId/fetchLocationBasedSoilMatches',
