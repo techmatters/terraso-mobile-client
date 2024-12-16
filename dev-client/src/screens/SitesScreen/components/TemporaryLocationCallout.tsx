@@ -171,13 +171,11 @@ const TopSoilMatchDisplay = ({
   topSoilMatch,
   t,
 }: SoilIdStatusDisplayTopMatchProps) => {
-  const isOffline = useIsOffline();
   return (
     <SoilIdStatusDisplay
       status={status}
-      loading={
-        isOffline ? <NotAvailableOffline /> : <ActivityIndicator size="small" />
-      }
+      offline={<NotAvailableOffline />}
+      loading={<ActivityIndicator size="small" />}
       error={
         <Text bold textTransform="uppercase" color="error.main">
           {t('soil.error')}
@@ -205,6 +203,7 @@ const EcologicalSiteMatchDisplay = ({
   return (
     <SoilIdStatusDisplay
       status={status}
+      offline={<NotAvailableOffline />}
       loading={<ActivityIndicator size="small" />}
       error={
         <Text bold textTransform="uppercase" color="error.main">

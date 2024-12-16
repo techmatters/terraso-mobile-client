@@ -137,6 +137,7 @@ const MatchContent = ({
         </Text>
         <SoilIdStatusDisplay
           status={status}
+          offline={<Text italic>{t('general.not_available_offine')}</Text>}
           loading={<Text>{t('soil.loading')}</Text>}
           error={<Text>{t('soil.error')}</Text>}
           noData={<Text>{t('soil.no_matches')}</Text>}
@@ -151,6 +152,7 @@ const MatchContent = ({
         <Text bold>{t('soil.ecological_site_name')}: </Text>
         <SoilIdStatusDisplay
           status={status}
+          offline={<Text italic>{t('general.not_available_offine')}</Text>}
           loading={<Text>{t('soil.loading')}</Text>}
           error={<Text>{t('soil.error')}</Text>}
           noData={<Text>{t('soil.no_matches')}</Text>}

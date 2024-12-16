@@ -19,9 +19,12 @@ import {ReactNode} from 'react';
 
 import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
 
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+
 export type SoilIdStatusDisplayProps = {
   status: SoilIdStatus;
 
+  offline: ReactNode;
   loading: ReactNode;
   error: ReactNode;
   noData: ReactNode;
@@ -29,13 +32,19 @@ export type SoilIdStatusDisplayProps = {
 };
 export const SoilIdStatusDisplay = ({
   status,
+  offline,
   loading,
   error,
   noData,
   data,
 }: SoilIdStatusDisplayProps) => {
+  const isOffline = useIsOffline();
   if (status === 'loading') {
-    return loading;
+    /*
+     * Don't show a loading indicator when offline. Other statuses indicate a completed Soil ID API call,
+     * which are Ok to display to the user even in offline mode.
+     */
+    return isOffline ? offline : loading;
   } else if (status === 'error') {
     return error;
   } else if (status === 'DATA_UNAVAILABLE') {
