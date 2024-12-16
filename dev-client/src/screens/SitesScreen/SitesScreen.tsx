@@ -38,7 +38,7 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
+import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import MapSearch from 'terraso-mobile-client/screens/SitesScreen/components/MapSearch';

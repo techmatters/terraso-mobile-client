@@ -29,7 +29,7 @@ import {
   getChangedDepthIntervals,
   getChangedSoilDataFields,
   getDeletedDepthIntervals,
-} from 'terraso-mobile-client/model/soilId/actions/soilDataDiff';
+} from 'terraso-mobile-client/model/soilData/actions/soilDataDiff';
 import {
   getEntityRecord,
   SyncRecord,

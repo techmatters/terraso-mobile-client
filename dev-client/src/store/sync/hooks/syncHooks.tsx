@@ -20,12 +20,12 @@ import {useCallback, useRef} from 'react';
 import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilId/soilIdGlobalReducer';
+import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {
   selectSyncErrorSiteIds,
   selectUnsyncedSiteIds,
-} from 'terraso-mobile-client/model/soilId/soilIdSelectors';
-import {pushSoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
+import {pushSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const useIsLoggedIn = () => {

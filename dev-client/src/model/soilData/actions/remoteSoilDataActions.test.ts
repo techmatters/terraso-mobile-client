@@ -25,8 +25,8 @@ import {
   mutationResponseToResults,
   unsyncedDataToMutationInput,
   unsyncedDataToMutationInputEntry,
-} from 'terraso-mobile-client/model/soilId/actions/remoteSoilDataActions';
-import {SoilData} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/actions/remoteSoilDataActions';
+import {SoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {
   SyncRecord,
   SyncRecords,

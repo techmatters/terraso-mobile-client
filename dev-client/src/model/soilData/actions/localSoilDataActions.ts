@@ -30,12 +30,12 @@ import {
   DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
   DEPTH_INTERVAL_UPDATE_FIELDS,
   SOIL_DATA_UPDATE_FIELDS,
-} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
-import {DEFAULT_DEPTH_INTERVAL_PRESET} from 'terraso-mobile-client/model/soilId/soilDataConstants';
+} from 'terraso-mobile-client/model/soilData/actions/soilDataActionFields';
+import {DEFAULT_DEPTH_INTERVAL_PRESET} from 'terraso-mobile-client/model/soilData/soilDataConstants';
 import {
   compareInterval,
   sameDepth,
-} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+} from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 
 /*
  * Logic ported from `apps/soil_id/graphql/soil_data.py` in backend project

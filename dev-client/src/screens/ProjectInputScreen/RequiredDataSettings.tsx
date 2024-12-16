@@ -30,7 +30,7 @@ import {
   collectionMethods,
   methodRequired,
   updateProjectSoilSettings,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
 import {SWITCH_PADDING} from 'terraso-mobile-client/theme';

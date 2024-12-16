@@ -29,17 +29,17 @@ import {
   updateFields,
   updateSoilData,
   updateSoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/actions/localSoilDataActions';
+} from 'terraso-mobile-client/model/soilData/actions/localSoilDataActions';
 import {
   DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
   DEPTH_INTERVAL_UPDATE_FIELDS,
   SOIL_DATA_UPDATE_FIELDS,
-} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
+} from 'terraso-mobile-client/model/soilData/actions/soilDataActionFields';
 import {
   DepthDependentSoilData,
   SoilData,
   SoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 
 describe('initializeResult', () => {
   test('deep-copies soil data object', () => {

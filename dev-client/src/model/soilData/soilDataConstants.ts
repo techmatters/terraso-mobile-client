@@ -28,7 +28,7 @@ import {fromEntries, mapEntries} from 'terraso-client-shared/utils';
 import {
   methodEnabled,
   methodRequired,
-} from 'terraso-mobile-client/model/soilId/soilIdFunctions';
+} from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 
 export const DEFAULT_DEPTH_INTERVAL_PRESET = 'NRCS';
 

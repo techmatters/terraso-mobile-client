@@ -41,7 +41,7 @@ import {
   ProjectDepthIntervalPreset,
   updateProjectDepthInterval,
   updateProjectSoilSettings,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {DepthTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthTable';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';

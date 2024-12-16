@@ -21,7 +21,7 @@ import {render} from '@testing/integration/utils';
 import {collectionMethods} from 'terraso-client-shared/soilId/soilIdTypes';
 import {fromEntries} from 'terraso-client-shared/utils';
 
-import {methodRequired} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {methodRequired} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {SlopeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeScreen';
 
 test('renders correctly', () => {
@@ -29,7 +29,7 @@ test('renders correctly', () => {
     route: 'SITE_TABS',
     initialState: {
       ...testState,
-      soilId: {
+      soilData: {
         status: 'ready',
         soilData: {
           '1': {

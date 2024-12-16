@@ -47,7 +47,7 @@ import {
   DEFAULT_PROJECT_SETTINGS,
   DEFAULT_SOIL_DATA,
   DEPTH_INTERVAL_PRESETS,
-} from 'terraso-mobile-client/model/soilId/soilDataConstants';
+} from 'terraso-mobile-client/model/soilData/soilDataConstants';
 import {
   compareInterval,
   DepthInterval,
@@ -56,7 +56,7 @@ import {
   overlaps,
   sameDepth,
   SoilData,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {type AppState} from 'terraso-mobile-client/store/index';
 
 const useSelector = reduxUseSelector as TypedUseSelectorHook<AppState>;
@@ -256,7 +256,9 @@ const useProjectSoilSettingsBase = <ID extends string | undefined>(
       return undefined;
     }
 
-    return state.soilId.projectSettings[projectId] ?? DEFAULT_PROJECT_SETTINGS;
+    return (
+      state.soilData.projectSettings[projectId] ?? DEFAULT_PROJECT_SETTINGS
+    );
   });
 
   return useMemo(
@@ -283,7 +285,7 @@ export type AggregatedInterval = {
 };
 
 export const selectSoilData = (siteId: string) => (state: AppState) =>
-  state.soilId.soilData[siteId] ?? DEFAULT_SOIL_DATA;
+  state.soilData.soilData[siteId] ?? DEFAULT_SOIL_DATA;
 
 export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
   const projectSettings = useSiteProjectSoilSettings(siteId);

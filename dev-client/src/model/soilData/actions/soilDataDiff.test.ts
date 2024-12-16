@@ -19,7 +19,7 @@ import {
   DEPTH_DEPENDENT_SOIL_DATA_UPDATE_FIELDS,
   DEPTH_INTERVAL_UPDATE_FIELDS,
   SOIL_DATA_UPDATE_FIELDS,
-} from 'terraso-mobile-client/model/soilId/actions/soilDataActionFields';
+} from 'terraso-mobile-client/model/soilData/actions/soilDataActionFields';
 import {
   getChangedDepthDependentData,
   getChangedDepthDependentFields,
@@ -27,12 +27,12 @@ import {
   getChangedDepthIntervals,
   getChangedSoilDataFields,
   getDeletedDepthIntervals,
-} from 'terraso-mobile-client/model/soilId/actions/soilDataDiff';
+} from 'terraso-mobile-client/model/soilData/actions/soilDataDiff';
 import {
   DepthDependentSoilData,
   SoilData,
   SoilDataDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 
 describe('soil data diff', () => {
   describe('getChangedSoilDataFields', () => {

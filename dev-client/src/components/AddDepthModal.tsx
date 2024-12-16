@@ -30,7 +30,7 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   DepthInterval,
   LabelledDepthInterval,
-} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 
 type Props = {

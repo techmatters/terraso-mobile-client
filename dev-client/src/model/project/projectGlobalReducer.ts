@@ -24,7 +24,7 @@ import {
   updateProjects,
 } from 'terraso-mobile-client/model/project/projectSlice';
 import {updateSites} from 'terraso-mobile-client/model/site/siteSlice';
-import {updateProjectSettings} from 'terraso-mobile-client/model/soilId/soilIdSlice';
+import {updateProjectSettings} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
 export const fetchProject = createAsyncThunk(
@@ -60,20 +60,20 @@ export const projectGlobalReducer = createGlobalReducer(builder => {
     updateProjects(state.project, {[payload.project.id]: payload.project});
     updateSites(state.site, payload.sites);
     updateUsers(state.account, payload.users);
-    updateProjectSettings(state.soilId, payload.soilSettings);
+    updateProjectSettings(state.soilData, payload.soilSettings);
   });
 
   builder.addCase(addProject.fulfilled, (state, {payload}) => {
     updateProjects(state.project, {[payload.project.id]: payload.project});
     updateSites(state.site, payload.sites);
     updateUsers(state.account, payload.users);
-    updateProjectSettings(state.soilId, payload.soilSettings);
+    updateProjectSettings(state.soilData, payload.soilSettings);
   });
 
   builder.addCase(updateProject.fulfilled, (state, {payload}) => {
     updateProjects(state.project, {[payload.project.id]: payload.project});
     updateSites(state.site, payload.sites);
     updateUsers(state.account, payload.users);
-    updateProjectSettings(state.soilId, payload.soilSettings);
+    updateProjectSettings(state.soilData, payload.soilSettings);
   });
 });
