@@ -42,6 +42,10 @@ export type SoilIdResults = {
   dataBasedMatches: DataBasedSoilMatch[];
 };
 
+export const isErrorStatus = (status: SoilIdStatus): boolean => {
+  return status !== 'loading' && status !== 'ready';
+};
+
 export const coordsKey = (coords: Coords): CoordsKey => {
   return `(${coords.longitude}, ${coords.latitude})`;
 };
@@ -88,4 +92,16 @@ export const dataEntryForMatches = (
     status: 'ready',
     matches: matches,
   };
+};
+
+export const flushErrorEntries = (
+  entries:
+    | Record<string, SoilIdLocationEntry>
+    | Record<string, SoilIdDataEntry>,
+) => {
+  for (const id of Object.keys(entries)) {
+    if (isErrorStatus(entries[id].status)) {
+      delete entries[id];
+    }
+  }
 };
