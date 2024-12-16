@@ -21,7 +21,7 @@ import {DisableableText} from 'terraso-mobile-client/components/content/typograp
 import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
-export const MapSearchOfflineBox = () => {
+export const MapSearchOfflineAlertBox = () => {
   return (
     <View style={styles.container}>
       <DisableableText disabled={true}>

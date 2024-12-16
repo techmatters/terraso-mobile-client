@@ -37,7 +37,7 @@ import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenCo
 import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
-import {MapSearchOfflineBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineBox';
+import {MapSearchOfflineAlertBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineAlertBox';
 import {MapSearchSuggestionBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
 
 type Props = {
@@ -52,7 +52,7 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
   const [query, setQuery] = useState('');
   const {coords, suggestions, querySuggestions, lookupFeature} =
     useMapSuggestions();
-  const [hideResults, setHideResults] = useState(false);
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
   const sitesScreen = useSitesScreenContext();
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
   const selectQuery = useCallback(
     (name: string, mapboxId: string) => {
       setQuery(name);
-      setHideResults(true);
+      setShowAutocomplete(false);
       lookupFeature(mapboxId);
       Keyboard.dismiss();
     },
@@ -92,7 +92,7 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
         <View flex={1} pointerEvents="box-none">
           <Autocomplete
             data={suggestions}
-            hideResults={hideResults || isOffline}
+            hideResults={!showAutocomplete || isOffline}
             flatListProps={{
               keyboardShouldPersistTaps: 'always',
               keyExtractor: suggestion => suggestion.mapbox_id,
@@ -114,11 +114,11 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
                     querySuggestions(newText);
                   }}
                   onFocus={() => {
-                    setHideResults(false);
+                    setShowAutocomplete(true);
                     querySuggestions(query);
                   }}
                   onEndEditing={() => {
-                    setHideResults(true);
+                    setShowAutocomplete(false);
                   }}
                   value={query}
                   placeholder={t('search.placeholder')}
@@ -128,7 +128,11 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
                   }}
                   inputStyle={searchBarStyles.input}
                 />
-                {isOffline && !hideResults ? <MapSearchOfflineBox /> : <></>}
+                {isOffline && showAutocomplete ? (
+                  <MapSearchOfflineAlertBox />
+                ) : (
+                  <></>
+                )}
               </>
             )}
           />
