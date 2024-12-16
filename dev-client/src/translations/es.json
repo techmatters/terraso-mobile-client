@@ -153,8 +153,7 @@
                 "native_lands_intro": "Recursos de suelos para las tierras indígenas:",
                 "native_lands_link": "nativeland.info",
                 "native_lands_url": "https://nativeland.info/",
-                "offline_title": "Estás fuera de linea",
-                "offline_body": "Las coincidencias de suelos se actualizarán aquí cuando estás sin conexión.",
+                "offline": "Las coincidencias de suelos se actualizarán aquí cuando estás sin conexión.",
                 "selector": "This is the correct soil",
                 "selected": "Selected Soil"
             },
