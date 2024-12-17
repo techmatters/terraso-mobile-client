@@ -69,12 +69,12 @@ export const SoilIdMatchesSection = ({
       <RestrictByConnectivity offline={true}>
         <OfflineMessageBox message={t('site.soil_id.matches.offline')} />
       </RestrictByConnectivity>
-      <MatchTilesOrMessage siteId={siteId} coords={coords} />
+      <MatchTiles siteId={siteId} coords={coords} />
     </ScreenContentSection>
   );
 };
 
-const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
+const MatchTiles = ({siteId, coords}: SoilIdMatchesSectionProps) => {
   const isOffline = useIsOffline();
   const soilIdData = useSoilIdData(coords, siteId);
   const status = soilIdData.status;
