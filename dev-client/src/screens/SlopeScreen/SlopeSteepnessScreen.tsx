@@ -23,7 +23,7 @@ import {Button, ScrollView} from 'native-base';
 
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/special/DoneButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,

@@ -25,8 +25,8 @@ import * as yup from 'yup';
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {fromEntries} from 'terraso-client-shared/utils';
 
-import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import DeleteButton from 'terraso-mobile-client/components/buttons/special/DeleteButton';
 import {
   DepthForm,
   DepthFormInput,

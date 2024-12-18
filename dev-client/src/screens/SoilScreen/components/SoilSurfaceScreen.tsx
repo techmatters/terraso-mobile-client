@@ -23,7 +23,7 @@ import {
   surfaceCracks,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/special/DoneButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,

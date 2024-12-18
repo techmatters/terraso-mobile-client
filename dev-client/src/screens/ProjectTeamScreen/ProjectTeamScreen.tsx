@@ -22,7 +22,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
-import {AddButton} from 'terraso-mobile-client/components/AddButton';
+import {AddButton} from 'terraso-mobile-client/components/buttons/special/AddButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,

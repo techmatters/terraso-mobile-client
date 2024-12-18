@@ -19,8 +19,8 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/special/DoneButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';

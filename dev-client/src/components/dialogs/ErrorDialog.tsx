@@ -26,7 +26,7 @@ import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 import {Modal, Portal} from 'react-native-paper';
 
-import {DismissButton} from 'terraso-mobile-client/components/buttons/DismissButton';
+import {DismissButton} from 'terraso-mobile-client/components/buttons/special/DismissButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';

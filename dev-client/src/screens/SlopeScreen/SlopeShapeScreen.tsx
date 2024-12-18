@@ -35,8 +35,8 @@ import ConvexLinear from 'terraso-mobile-client/assets/slope/shape/convex-linear
 import LinearConcave from 'terraso-mobile-client/assets/slope/shape/linear-concave.svg';
 import LinearConvex from 'terraso-mobile-client/assets/slope/shape/linear-convex.svg';
 import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear.svg';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
+import {DoneButton} from 'terraso-mobile-client/components/buttons/special/DoneButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
