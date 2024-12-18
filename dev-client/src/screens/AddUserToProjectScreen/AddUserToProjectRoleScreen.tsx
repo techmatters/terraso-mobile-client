@@ -25,8 +25,8 @@ import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {
-  useHandleMissingSiteOrProject,
-  usePopNavigationAndSyncError,
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
 } from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
@@ -74,8 +74,8 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
     navigation.dispatch(TabActions.jumpTo(TabRoutes.TEAM));
   }, [dispatch, projectId, user, selectedRole, navigation]);
 
-  const handleMissingProject = useHandleMissingSiteOrProject();
-  const handleMissingUser = usePopNavigationAndSyncError();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const handleMissingUser = usePopNavigationAndShowSyncError();
   const requirements = [
     {data: project, doIfMissing: handleMissingProject},
     {data: user, doIfMissing: handleMissingUser},

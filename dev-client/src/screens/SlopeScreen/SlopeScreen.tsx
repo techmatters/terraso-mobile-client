@@ -24,7 +24,7 @@ import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Heading,
@@ -63,7 +63,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
   );
 
   const site = useSelector(selectSite(siteId));
-  const handleMissingSite = useHandleMissingSiteOrProject();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (

@@ -23,7 +23,7 @@ import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
@@ -101,7 +101,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
   );
 
   const site = useSelector(selectSite(props.siteId));
-  const handleMissingSite = useHandleMissingSiteOrProject();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   // TODO-cknipe: Require the depth interval to exist for the site/project
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 

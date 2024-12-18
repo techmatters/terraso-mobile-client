@@ -22,7 +22,7 @@ import {PressableProps} from 'react-native';
 import {Fab} from 'native-base';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
@@ -80,7 +80,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
     navigation.navigate('BOTTOM_TABS');
   }, [dispatch, navigation, site]);
 
-  const handleMissingSite = useHandleMissingSiteOrProject();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (

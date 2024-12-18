@@ -24,7 +24,7 @@ import {ScrollView} from 'native-base';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -68,7 +68,7 @@ export function ProjectSettingsScreen({
 
   const userRole = useProjectRoleContext();
 
-  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (

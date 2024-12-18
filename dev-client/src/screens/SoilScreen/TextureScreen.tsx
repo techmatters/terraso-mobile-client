@@ -27,7 +27,7 @@ import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
@@ -158,7 +158,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   );
 
   const site = useSelector(selectSite(siteId));
-  const handleMissingSite = useHandleMissingSiteOrProject();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (

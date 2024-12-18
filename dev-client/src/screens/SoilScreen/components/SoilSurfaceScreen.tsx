@@ -24,7 +24,7 @@ import {
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
@@ -72,7 +72,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
 
   const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
-  const handleMissingSite = useHandleMissingSiteOrProject();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (

@@ -21,7 +21,7 @@ import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-export const useHandleMissingSiteOrProject = () => {
+export const useNavToBottomTabsAndShowSyncError = () => {
   const navigation = useNavigation();
   const syncNotifications = useSyncNotificationContext();
 
@@ -33,7 +33,7 @@ export const useHandleMissingSiteOrProject = () => {
   }, [navigation, syncNotifications]);
 };
 
-export const usePopNavigationAndSyncError = () => {
+export const usePopNavigationAndShowSyncError = () => {
   const navigation = useNavigation();
   const syncNotifications = useSyncNotificationContext();
 

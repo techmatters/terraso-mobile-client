@@ -22,7 +22,7 @@ import {ScrollView} from 'react-native';
 import {Fab} from 'native-base';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -191,7 +191,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     return navigation.pop();
   }, [dispatch, navigation, projectId, checkedSites]);
 
-  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (

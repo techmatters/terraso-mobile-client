@@ -17,7 +17,7 @@
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -29,7 +29,7 @@ type Props = {
 export const SiteDashboardScreen = ({siteId}: Props) => {
   const site = useSelector(selectSite(siteId));
 
-  const handleMissingSite = useHandleMissingSiteOrProject();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (

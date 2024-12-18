@@ -25,7 +25,7 @@ import {Button, Fab} from 'native-base';
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
@@ -82,7 +82,7 @@ export const ProjectInputScreen = ({
 
   const allowEditing = useMemo(() => userRole === 'MANAGER', [userRole]);
 
-  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (

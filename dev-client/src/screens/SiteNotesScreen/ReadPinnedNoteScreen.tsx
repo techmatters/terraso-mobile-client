@@ -20,8 +20,8 @@ import {useTranslation} from 'react-i18next';
 import {Button, ScrollView, Spacer} from 'native-base';
 
 import {
-  useHandleMissingSiteOrProject,
-  usePopNavigationAndSyncError,
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
 } from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
@@ -50,8 +50,8 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
     navigation.pop();
   };
 
-  const handleMissingProject = useHandleMissingSiteOrProject();
-  const handleMissingPinnedNote = usePopNavigationAndSyncError();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const handleMissingPinnedNote = usePopNavigationAndShowSyncError();
   const requirements = [
     {data: project, doIfMissing: handleMissingProject},
     {data: content, doIfMissing: handleMissingPinnedNote},

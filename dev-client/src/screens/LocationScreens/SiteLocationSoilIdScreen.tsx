@@ -20,7 +20,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -42,7 +42,7 @@ export const SiteLocationSoilIdScreen = ({siteId, coords}: SiteProps) => {
 
   const site = useSelector(state => selectSite(siteId)(state));
 
-  const handleMissingSite = useHandleMissingSiteOrProject();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (

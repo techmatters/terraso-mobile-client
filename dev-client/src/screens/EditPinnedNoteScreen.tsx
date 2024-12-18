@@ -21,7 +21,7 @@ import {Keyboard} from 'react-native';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
@@ -69,7 +69,7 @@ export const EditPinnedNoteScreen = ({projectId}: Props) => {
     await handleUpdateProject({content: ''});
   };
 
-  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (

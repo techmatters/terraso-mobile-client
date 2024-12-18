@@ -24,7 +24,7 @@ import {Button, ScrollView} from 'native-base';
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
@@ -138,7 +138,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
   );
 
   const site = useSelector(selectSite(siteId));
-  const handleMissingSite = useHandleMissingSiteOrProject();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (

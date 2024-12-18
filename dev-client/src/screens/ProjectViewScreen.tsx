@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -27,7 +27,7 @@ type Props = {projectId: string};
 
 export const ProjectViewScreen = ({projectId}: Props) => {
   const project = useSelector(state => state.project.projects[projectId]);
-  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
 
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 

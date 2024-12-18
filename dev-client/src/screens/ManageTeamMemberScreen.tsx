@@ -26,8 +26,8 @@ import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {
-  useHandleMissingSiteOrProject,
-  usePopNavigationAndSyncError,
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
 } from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
@@ -86,8 +86,8 @@ export const ManageTeamMemberScreen = ({
     navigation.pop();
   }, [dispatch, projectId, userId, selectedRole, navigation]);
 
-  const handleMissingProject = useHandleMissingSiteOrProject();
-  const handleMissingUser = usePopNavigationAndSyncError();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const handleMissingUser = usePopNavigationAndShowSyncError();
   const requirements = [
     {data: project, doIfMissing: handleMissingProject},
     {data: user, doIfMissing: handleMissingUser},

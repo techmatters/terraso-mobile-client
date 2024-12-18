@@ -18,7 +18,7 @@
 import {useTranslation} from 'react-i18next';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -40,7 +40,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
   // wanting to add multiple users at the same time.
 
-  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (

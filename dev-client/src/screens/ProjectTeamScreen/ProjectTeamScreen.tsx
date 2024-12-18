@@ -23,7 +23,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
@@ -95,7 +95,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
   );
 
   const project = useSelector(selectProject(route.params.projectId));
-  const handleMissingProject = useHandleMissingSiteOrProject();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
