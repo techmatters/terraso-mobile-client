@@ -28,6 +28,7 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
@@ -65,26 +66,23 @@ export const SoilIdMatchesSection = ({
           <TopSoilMatchesInfoContent isSite={isSite} />
         </InfoButton>
       </Row>
-      <MatchTilesOrMessage siteId={siteId} coords={coords} />
+      <RestrictByConnectivity offline={true}>
+        <OfflineMessageBox message={t('site.soil_id.matches.offline')} />
+      </RestrictByConnectivity>
+      <MatchTiles siteId={siteId} coords={coords} />
     </ScreenContentSection>
   );
 };
 
-const MatchTilesOrMessage = ({siteId, coords}: SoilIdMatchesSectionProps) => {
+const MatchTiles = ({siteId, coords}: SoilIdMatchesSectionProps) => {
   const isOffline = useIsOffline();
-  const {t} = useTranslation();
-
   const soilIdData = useSoilIdData(coords, siteId);
   const status = soilIdData.status;
   const isSite = !!siteId;
 
-  if (isOffline) {
-    return <OfflineMessageBox message={t('site.soil_id.matches.offline')} />;
-  }
-
   switch (status) {
     case 'loading':
-      return <ActivityIndicator size="small" />;
+      return isOffline ? <></> : <ActivityIndicator size="small" />;
     case 'ready': {
       if (isSite) {
         return getSortedDataBasedMatches(soilIdData).map(dataMatch => (

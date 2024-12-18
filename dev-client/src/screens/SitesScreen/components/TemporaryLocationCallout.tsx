@@ -95,43 +95,29 @@ export const TemporaryLocationCallout = ({
           <CalloutDetail
             label={t('site.soil_id_prediction')}
             value={
-              isOffline ? (
-                <NotAvailableOffline />
-              ) : (
-                <TopSoilMatchDisplay
-                  status={soilIdData.status}
-                  topSoilMatch={topSoilMatch}
-                  t={t}
-                />
-              )
+              <TopSoilMatchDisplay
+                status={soilIdData.status}
+                topSoilMatch={topSoilMatch}
+                t={t}
+              />
             }
           />
           <Divider />
           <CalloutDetail
             label={t('site.ecological_site_prediction')}
             value={
-              isOffline ? (
-                <NotAvailableOffline />
-              ) : (
-                <EcologicalSiteMatchDisplay
-                  status={soilIdData.status}
-                  topSoilMatch={topSoilMatch}
-                  t={t}
-                />
-              )
+              <EcologicalSiteMatchDisplay
+                status={soilIdData.status}
+                topSoilMatch={topSoilMatch}
+                t={t}
+              />
             }
           />
           <Divider />
         </>
         <CalloutDetail
           label={t('site.elevation_label')}
-          value={
-            isOffline ? (
-              <NotAvailableOffline />
-            ) : (
-              <ElevationDisplay elevation={elevation} t={t} />
-            )
-          }
+          value={<ElevationDisplay elevation={elevation} t={t} />}
         />
         <Divider />
         <Row justifyContent="flex-end">
@@ -157,20 +143,21 @@ export const TemporaryLocationCallout = ({
   );
 };
 
-type SoilIdStatusDisplayElevationProps = {
+type ElevationDisplayProps = {
   elevation: ElevationRecord;
   t: TFunction;
 };
 
-const ElevationDisplay = ({
-  elevation,
-  t,
-}: SoilIdStatusDisplayElevationProps) => {
-  if (elevation.fetching) {
-    return <ActivityIndicator size="small" />;
-  }
+const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
+  const isOffline = useIsOffline();
 
-  return <Text bold>{renderElevation(t, elevation.value)}</Text>;
+  if (isOffline) {
+    return <NotAvailableOffline />;
+  } else if (elevation.fetching) {
+    return <ActivityIndicator size="small" />;
+  } else {
+    return <Text bold>{renderElevation(t, elevation.value)}</Text>;
+  }
 };
 
 type SoilIdStatusDisplayTopMatchProps = {
@@ -187,6 +174,7 @@ const TopSoilMatchDisplay = ({
   return (
     <SoilIdStatusDisplay
       status={status}
+      offline={<NotAvailableOffline />}
       loading={<ActivityIndicator size="small" />}
       error={
         <Text bold textTransform="uppercase" color="error.main">
@@ -215,6 +203,7 @@ const EcologicalSiteMatchDisplay = ({
   return (
     <SoilIdStatusDisplay
       status={status}
+      offline={<NotAvailableOffline />}
       loading={<ActivityIndicator size="small" />}
       error={
         <Text bold textTransform="uppercase" color="error.main">
