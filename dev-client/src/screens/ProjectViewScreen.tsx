@@ -16,7 +16,7 @@
  */
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
@@ -32,7 +32,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ProjectRoleContextProvider projectId={projectId}>
           <ScreenScaffold
@@ -42,6 +42,6 @@ export const ProjectViewScreen = ({projectId}: Props) => {
           </ScreenScaffold>
         </ProjectRoleContextProvider>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

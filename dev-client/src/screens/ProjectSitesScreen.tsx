@@ -30,7 +30,7 @@ import {normalizeText} from 'terraso-client-shared/utils';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   ListFilterModal,
   ListFilterProvider,
@@ -267,7 +267,7 @@ export function ProjectSitesScreen({
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <Column
           p={3}
@@ -294,7 +294,7 @@ export function ProjectSitesScreen({
           {!isEmpty && full}
         </Column>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 }
 

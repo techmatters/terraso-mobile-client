@@ -54,7 +54,7 @@ type Props = {
  * if required data is truthy. This prevents screens from breaking if, for example, a pull
  * happens that deletes data that is required to view the screen.
  */
-export const RestrictByRequirements = ({requirements, children}: Props) => {
+export const ScreenDataRequirements = ({requirements, children}: Props) => {
   const requiredDataExists = useRequiredData(requirements);
 
   if (!requiredDataExists) {

@@ -16,7 +16,7 @@
  */
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -33,12 +33,12 @@ export const SiteTeamSettingsScreen = ({siteId}: Props) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold AppBar={<AppBar title={site.name} />}>
           <Text>Unimplemented team settings page</Text>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

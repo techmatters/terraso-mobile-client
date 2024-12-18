@@ -25,7 +25,7 @@ import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/g
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
@@ -142,7 +142,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
           AppBar={<AppBar title={name} />}
@@ -210,7 +210,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
           </SiteRoleContextProvider>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };
 

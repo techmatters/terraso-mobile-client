@@ -24,7 +24,7 @@ import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
 import {AddButton} from 'terraso-mobile-client/components/AddButton';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -99,7 +99,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <Column
           height="full"
@@ -133,6 +133,6 @@ export const ProjectTeamScreen = ({route}: Props) => {
           </ScrollView>
         </Column>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

@@ -29,7 +29,7 @@ import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {
@@ -95,7 +95,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold AppBar={null} BottomNavigation={null}>
           <Row flex={1} alignItems="stretch" px="24px" py="20px">
@@ -169,7 +169,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
           </Row>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };
 

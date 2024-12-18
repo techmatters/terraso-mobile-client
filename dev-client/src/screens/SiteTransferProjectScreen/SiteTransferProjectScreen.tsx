@@ -23,7 +23,7 @@ import {Fab} from 'native-base';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
@@ -195,7 +195,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
           BottomNavigation={null}
@@ -263,6 +263,6 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
           </ScrollView>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

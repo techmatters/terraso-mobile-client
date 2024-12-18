@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AddTeamMemberForm} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/AddTeamMemberForm';
@@ -44,7 +44,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold AppBar={<AppBar title={project.name} />}>
           <ScreenContentSection title={t('projects.add_user.heading')}>
@@ -55,6 +55,6 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
           </ScreenContentSection>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

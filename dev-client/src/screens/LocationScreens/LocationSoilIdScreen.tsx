@@ -21,7 +21,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -57,7 +57,7 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
   ];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
           AppBar={
@@ -83,6 +83,6 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
           </ScrollView>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

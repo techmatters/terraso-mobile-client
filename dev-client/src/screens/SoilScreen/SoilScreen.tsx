@@ -26,7 +26,7 @@ import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal'
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -91,7 +91,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScrollView backgroundColor="grey.300">
           <SoilSurfaceStatus siteId={siteId} />
@@ -163,6 +163,6 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           </RestrictBySiteRole>
         </ScrollView>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

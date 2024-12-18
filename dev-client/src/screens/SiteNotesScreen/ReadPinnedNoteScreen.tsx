@@ -21,7 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {Button, ScrollView, Spacer} from 'native-base';
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Column,
   Heading,
@@ -64,7 +64,7 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
   ];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold BottomNavigation={null} AppBar={null}>
           <Column pt={10} pl={5} pr={5} pb={10} flexGrow={1}>
@@ -87,6 +87,6 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
           </Column>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

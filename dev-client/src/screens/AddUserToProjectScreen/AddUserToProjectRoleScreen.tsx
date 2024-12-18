@@ -25,7 +25,7 @@ import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -87,7 +87,7 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
   ];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold AppBar={<AppBar title={project?.name} />}>
           <ScreenContentSection title={t('projects.add_user.heading')}>
@@ -132,6 +132,6 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
           </ScreenContentSection>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

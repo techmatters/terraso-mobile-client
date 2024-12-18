@@ -40,7 +40,7 @@ import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   ImageRadio,
   ImageRadioOption,
@@ -152,7 +152,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
           AppBar={<AppBar title={name} />}
@@ -194,7 +194,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
           </SiteRoleContextProvider>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };
 

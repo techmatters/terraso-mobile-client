@@ -18,7 +18,7 @@
 import {Coords} from 'terraso-client-shared/types';
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
 import {useSelector} from 'terraso-mobile-client/store';
 import {selectSite} from 'terraso-mobile-client/store/selectors';
@@ -33,7 +33,7 @@ export const SiteDashboardScreen = ({siteId}: Props) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <LocationDashboardContent
           site={site}
@@ -41,6 +41,6 @@ export const SiteDashboardScreen = ({siteId}: Props) => {
           elevation={site?.elevation ?? undefined}
         />
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

@@ -26,7 +26,7 @@ import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
@@ -99,7 +99,7 @@ export const ManageTeamMemberScreen = ({
   ];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
           AppBar={
@@ -148,7 +148,7 @@ export const ManageTeamMemberScreen = ({
           </ScreenContentSection>
         </ScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };
 

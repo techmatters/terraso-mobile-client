@@ -25,7 +25,7 @@ import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/gr
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
@@ -72,7 +72,7 @@ export function ProjectSettingsScreen({
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScrollView
           backgroundColor={theme.colors.primary.contrast}
@@ -106,7 +106,7 @@ export function ProjectSettingsScreen({
           </Column>
         </ScrollView>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 }
 

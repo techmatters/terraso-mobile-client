@@ -22,7 +22,7 @@ import {Keyboard} from 'react-native';
 import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -75,7 +75,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenFormWrapper
           ref={formWrapperRef}
@@ -95,6 +95,6 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
           )}
         </ScreenFormWrapper>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

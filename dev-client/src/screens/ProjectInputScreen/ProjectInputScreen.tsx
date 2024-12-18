@@ -26,7 +26,7 @@ import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -86,7 +86,7 @@ export const ProjectInputScreen = ({
   const requirements = [{data: project, doIfMissing: handleMissingProject}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <Column height="full" backgroundColor="background.default">
           <ScrollView>
@@ -164,6 +164,6 @@ export const ProjectInputScreen = ({
           </RestrictByProjectRole>
         </Column>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

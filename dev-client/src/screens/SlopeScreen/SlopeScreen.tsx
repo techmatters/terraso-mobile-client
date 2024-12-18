@@ -25,7 +25,7 @@ import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpCo
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Heading,
   Row,
@@ -67,7 +67,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScrollView backgroundColor="grey.300">
           <Row backgroundColor="primary.contrast" p="15px" alignItems="center">
@@ -96,6 +96,6 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
           />
         </ScrollView>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

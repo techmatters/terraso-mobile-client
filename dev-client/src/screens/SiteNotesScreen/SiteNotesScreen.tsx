@@ -22,7 +22,7 @@ import {ScrollView} from 'react-native';
 import {Button} from 'native-base';
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -59,7 +59,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScrollView>
           <Column>
@@ -95,6 +95,6 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
           </Column>
         </ScrollView>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };
