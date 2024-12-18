@@ -15,12 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Button, ScrollView, Spacer} from 'native-base';
 
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useHandleMissingSiteOrProject,
+  usePopNavigationAndSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Column,
@@ -28,8 +30,6 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
-import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -42,7 +42,6 @@ type Props = {
 export const ReadPinnedNoteScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const syncNotifications = useSyncNotificationContext();
 
   const project = useSelector(selectProject(projectId));
   const content = project?.siteInstructions;
@@ -52,12 +51,7 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
   };
 
   const handleMissingProject = useHandleMissingSiteOrProject();
-  const handleMissingPinnedNote = useCallback(() => {
-    navigation.pop();
-    if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError();
-    }
-  }, [navigation, syncNotifications]);
+  const handleMissingPinnedNote = usePopNavigationAndSyncError();
   const requirements = [
     {data: project, doIfMissing: handleMissingProject},
     {data: content, doIfMissing: handleMissingPinnedNote},

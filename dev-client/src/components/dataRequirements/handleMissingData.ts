@@ -32,3 +32,15 @@ export const useHandleMissingSiteOrProject = () => {
     }
   }, [navigation, syncNotifications]);
 };
+
+export const usePopNavigationAndSyncError = () => {
+  const navigation = useNavigation();
+  const syncNotifications = useSyncNotificationContext();
+
+  return useCallback(() => {
+    navigation.pop();
+    if (isFlagEnabled('FF_offline')) {
+      syncNotifications.showError();
+    }
+  }, [navigation, syncNotifications]);
+};

@@ -25,7 +25,10 @@ import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useHandleMissingSiteOrProject,
+  usePopNavigationAndSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
@@ -34,8 +37,6 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
-import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {
   deleteUserFromProject,
   updateUserRole,
@@ -61,7 +62,6 @@ export const ManageTeamMemberScreen = ({
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const syncNotifications = useSyncNotificationContext();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const user = useSelector(state => state.account.users[userId]);
@@ -87,12 +87,7 @@ export const ManageTeamMemberScreen = ({
   }, [dispatch, projectId, userId, selectedRole, navigation]);
 
   const handleMissingProject = useHandleMissingSiteOrProject();
-  const handleMissingUser = useCallback(() => {
-    navigation.pop();
-    if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError();
-    }
-  }, [navigation, syncNotifications]);
+  const handleMissingUser = usePopNavigationAndSyncError();
   const requirements = [
     {data: project, doIfMissing: handleMissingProject},
     {data: user, doIfMissing: handleMissingUser},
