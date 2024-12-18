@@ -21,7 +21,7 @@ import {PressableProps} from 'react-native';
 
 import {Fab} from 'native-base';
 
-import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
+import DeleteButton from 'terraso-mobile-client/components/buttons/special/DeleteButton';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {

@@ -23,7 +23,7 @@ import {ScrollView} from 'native-base';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
+import DeleteButton from 'terraso-mobile-client/components/buttons/special/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
