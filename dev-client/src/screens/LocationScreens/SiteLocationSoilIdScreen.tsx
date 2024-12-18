@@ -22,10 +22,8 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {useHandleMissingSiteOrProject} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
 import {SoilIdDescriptionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdDescriptionSection';
 import {SoilIdMatchesSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdMatchesSection';
@@ -34,27 +32,18 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 import {selectSite} from 'terraso-mobile-client/store/selectors';
 
-type Props = {
-  siteId?: string;
+type SiteProps = {
+  siteId: string;
   coords: Coords;
 };
 
-export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
+export const SiteLocationSoilIdScreen = ({siteId, coords}: SiteProps) => {
   const {t} = useTranslation();
 
-  const isSite = !!siteId;
-  const site = useSelector(state =>
-    isSite ? selectSite(siteId)(state) : undefined,
-  );
+  const site = useSelector(state => selectSite(siteId)(state));
 
-  const siteIsRequiredButMissing = isSite && !site;
   const handleMissingSite = useHandleMissingSiteOrProject();
-  const requirements = [
-    {
-      data: siteIsRequiredButMissing ? undefined : true,
-      doIfMissing: handleMissingSite,
-    },
-  ];
+  const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   return (
     <ScreenDataRequirements requirements={requirements}>
@@ -64,22 +53,13 @@ export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
             <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
           }>
           <ScrollView>
-            {isSite ? (
-              <SoilIdSelectionSection siteId={siteId} coords={coords} />
-            ) : (
-              <></>
-            )}
+            <SoilIdSelectionSection siteId={siteId} coords={coords} />
+
             <SoilIdDescriptionSection siteId={siteId} coords={coords} />
             <SoilIdMatchesSection siteId={siteId} coords={coords} />
-            {isSite ? (
-              <SiteRoleContextProvider siteId={siteId}>
-                <SiteDataSection siteId={siteId} />
-              </SiteRoleContextProvider>
-            ) : (
-              <Box paddingVertical="md">
-                <CreateSiteButton coords={coords} />
-              </Box>
-            )}
+            <SiteRoleContextProvider siteId={siteId}>
+              <SiteDataSection siteId={siteId} />
+            </SiteRoleContextProvider>
           </ScrollView>
         </ScreenScaffold>
       )}
