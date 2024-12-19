@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: convertColorProp('background.default'),
     borderWidth: 1,
-    borderColor: convertColorProp('grey.300'),
+    borderColor: convertColorProp('text.secondary'),
     paddingHorizontal: 12,
     paddingVertical: 4,
     marginHorizontal: 12,
