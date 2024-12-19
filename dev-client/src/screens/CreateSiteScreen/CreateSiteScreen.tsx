@@ -22,7 +22,6 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {addSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
-import {fetchSitesForProject} from 'terraso-mobile-client/model/site/siteSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -31,9 +30,6 @@ import {useDispatch} from 'terraso-mobile-client/store';
 type Props =
   | {
       coords: Coords;
-    }
-  | {
-      projectId: string;
     }
   | {
       elevation: number;
@@ -52,9 +48,6 @@ export const CreateSiteScreen = (props: Props = {}) => {
         console.error(result.payload.parsedErrors);
         return;
       }
-      if (input.projectId) {
-        dispatch(fetchSitesForProject(input.projectId));
-      }
       return result.payload;
     },
     [dispatch],
@@ -66,7 +59,6 @@ export const CreateSiteScreen = (props: Props = {}) => {
       AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
       <CreateSiteView
         createSiteCallback={createSiteCallback}
-        defaultProjectId={'projectId' in props ? props.projectId : undefined}
         sitePin={'coords' in props ? props.coords : undefined}
         elevation={'elevation' in props ? props.elevation : undefined}
       />

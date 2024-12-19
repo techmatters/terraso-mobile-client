@@ -21,52 +21,28 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Coords} from 'terraso-client-shared/types';
 
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
-import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
 import {SoilIdDescriptionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdDescriptionSection';
 import {SoilIdMatchesSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdMatchesSection';
-import {SoilIdSelectionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdSelectionSection';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useSelector} from 'terraso-mobile-client/store';
-import {selectSite} from 'terraso-mobile-client/store/selectors';
 
-type Props = {
-  siteId?: string;
+type TempLocationProps = {
   coords: Coords;
 };
 
-export const LocationSoilIdScreen = ({siteId, coords}: Props) => {
+export const TemporaryLocationSoilIdScreen = ({coords}: TempLocationProps) => {
   const {t} = useTranslation();
-
-  const isSite = !!siteId;
-  const site = useSelector(state =>
-    isSite ? selectSite(siteId)(state) : undefined,
-  );
 
   return (
     <ScreenScaffold
-      AppBar={
-        <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
-      }>
+      AppBar={<AppBar title={t('site.dashboard.default_title')} />}>
       <ScrollView>
-        {isSite ? (
-          <SoilIdSelectionSection siteId={siteId} coords={coords} />
-        ) : (
-          <></>
-        )}
-        <SoilIdDescriptionSection siteId={siteId} coords={coords} />
-        <SoilIdMatchesSection siteId={siteId} coords={coords} />
-        {isSite ? (
-          <SiteRoleContextProvider siteId={siteId}>
-            <SiteDataSection siteId={siteId} />
-          </SiteRoleContextProvider>
-        ) : (
-          <Box paddingVertical="md">
-            <CreateSiteButton coords={coords} />
-          </Box>
-        )}
+        <SoilIdDescriptionSection coords={coords} />
+        <SoilIdMatchesSection coords={coords} />
+        <Box paddingVertical="md">
+          <CreateSiteButton coords={coords} />
+        </Box>
       </ScrollView>
     </ScreenScaffold>
   );

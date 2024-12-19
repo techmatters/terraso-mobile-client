@@ -17,20 +17,35 @@
 
 import {Coords} from 'terraso-client-shared/types';
 
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
 import {useSelector} from 'terraso-mobile-client/store';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   siteId: string;
 };
 export const SiteDashboardScreen = ({siteId}: Props) => {
-  const site = useSelector(state => state.site.sites[siteId]);
+  const site = useSelector(selectSite(siteId));
+
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
 
   return (
-    <LocationDashboardContent
-      site={site}
-      coords={site as Coords}
-      elevation={site?.elevation ?? undefined}
-    />
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <LocationDashboardContent
+          site={site}
+          coords={site as Coords}
+          elevation={site?.elevation ?? undefined}
+        />
+      )}
+    </ScreenDataRequirements>
   );
 };
