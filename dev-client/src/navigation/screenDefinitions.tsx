@@ -28,9 +28,10 @@ import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectSc
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
 import {DeleteAccountScreen} from 'terraso-mobile-client/screens/DeleteAccountScreen/DeleteAccountScreen';
 import {EditPinnedNoteScreen} from 'terraso-mobile-client/screens/EditPinnedNoteScreen';
-import {LocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/LocationSoilIdScreen';
+import {SiteLocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteLocationSoilIdScreen';
 import {SiteTabsScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteTabsScreen';
 import {TemporaryLocationScreen} from 'terraso-mobile-client/screens/LocationScreens/TemporaryLocationScreen';
+import {TemporaryLocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/TemporaryLocationSoilIdScreen';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
@@ -59,6 +60,8 @@ import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScr
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 import {WelcomeScreen} from 'terraso-mobile-client/screens/WelcomeScreen';
 
+SiteLocationSoilIdScreen;
+
 export const bottomTabScreensDefinitions = {
   PROJECT_LIST: ProjectListScreen,
   SITES: SitesScreen,
@@ -75,7 +78,8 @@ export const screenDefinitions = {
   CREATE_SITE: CreateSiteScreen,
   TEMP_LOCATION: TemporaryLocationScreen,
   SITE_TABS: SiteTabsScreen,
-  LOCATION_SOIL_ID: LocationSoilIdScreen,
+  SITE_LOCATION_SOIL_ID: SiteLocationSoilIdScreen,
+  TEMPORARY_LOCATION_SOIL_ID: TemporaryLocationSoilIdScreen,
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,

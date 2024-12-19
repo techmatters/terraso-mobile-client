@@ -15,6 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
@@ -25,14 +30,23 @@ type Props = {projectId: string};
 
 export const ProjectViewScreen = ({projectId}: Props) => {
   const project = useSelector(state => state.project.projects[projectId]);
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+  ]);
 
   return (
-    <ProjectRoleContextProvider projectId={projectId}>
-      <ScreenScaffold
-        AppBar={<AppBar title={project?.name} />}
-        BottomNavigation={null}>
-        <ProjectTabNavigator projectId={projectId} />
-      </ScreenScaffold>
-    </ProjectRoleContextProvider>
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ProjectRoleContextProvider projectId={projectId}>
+          <ScreenScaffold
+            AppBar={<AppBar title={project?.name} />}
+            BottomNavigation={null}>
+            <ProjectTabNavigator projectId={projectId} />
+          </ScreenScaffold>
+        </ProjectRoleContextProvider>
+      )}
+    </ScreenDataRequirements>
   );
 };

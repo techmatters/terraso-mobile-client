@@ -22,6 +22,11 @@ import {ScrollView} from 'react-native';
 import {Fab} from 'native-base';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
@@ -189,71 +194,80 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     return navigation.pop();
   }, [dispatch, navigation, projectId, checkedSites]);
 
-  return (
-    <ScreenScaffold
-      BottomNavigation={null}
-      AppBar={<AppBar title={project.name} />}>
-      <ScrollView>
-        <ListHeader query={query} setQuery={setQuery} />
-        {listData.map(item => {
-          const [projId, {projectName, sites: projectSites}] = item;
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+  ]);
 
-          return (
-            <Accordion
-              key={projId.toString()}
-              Head={
-                <Text
-                  variant="body1"
-                  fontWeight={700}
-                  color="primary.contrast"
-                  py="14px">
-                  {projectName} ({projectSites.length})
-                </Text>
-              }
-              boxProps={{
-                mb: '2px',
-              }}
-              initiallyOpen={projectSites.length > 0}
-              disableOpen={projectSites.length === 0}>
-              {projectSites.length > 0 ? (
-                <Box px="15px" my="15px">
-                  <CheckboxGroup
-                    groupName={projectName}
-                    groupId={projId}
-                    checkboxes={projectSites
-                      .map(({siteId, siteName}) => ({
-                        label: siteName,
-                        id: siteId,
-                        checked:
-                          projState && projState[projId]
-                            ? projState[projId][siteId]
-                            : false,
-                      }))
-                      .sort((a, b) => a.label.localeCompare(b.label))}
-                    onChangeValue={onCheckboxChange}
-                  />
-                </Box>
-              ) : undefined}
-            </Accordion>
-          );
-        })}
-        <ConfirmModal
-          trigger={onOpen => (
-            <Fab
-              label={t('projects.sites.transfer')}
-              onPress={onOpen}
-              isDisabled={disabled}
-              _disabled={{
-                shadow: 0,
-              }}
+  return (
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold
+          BottomNavigation={null}
+          AppBar={<AppBar title={project.name} />}>
+          <ScrollView>
+            <ListHeader query={query} setQuery={setQuery} />
+            {listData.map(item => {
+              const [projId, {projectName, sites: projectSites}] = item;
+
+              return (
+                <Accordion
+                  key={projId.toString()}
+                  Head={
+                    <Text
+                      variant="body1"
+                      fontWeight={700}
+                      color="primary.contrast"
+                      py="14px">
+                      {projectName} ({projectSites.length})
+                    </Text>
+                  }
+                  boxProps={{
+                    mb: '2px',
+                  }}
+                  initiallyOpen={projectSites.length > 0}
+                  disableOpen={projectSites.length === 0}>
+                  {projectSites.length > 0 ? (
+                    <Box px="15px" my="15px">
+                      <CheckboxGroup
+                        groupName={projectName}
+                        groupId={projId}
+                        checkboxes={projectSites
+                          .map(({siteId, siteName}) => ({
+                            label: siteName,
+                            id: siteId,
+                            checked:
+                              projState && projState[projId]
+                                ? projState[projId][siteId]
+                                : false,
+                          }))
+                          .sort((a, b) => a.label.localeCompare(b.label))}
+                        onChangeValue={onCheckboxChange}
+                      />
+                    </Box>
+                  ) : undefined}
+                </Accordion>
+              );
+            })}
+            <ConfirmModal
+              trigger={onOpen => (
+                <Fab
+                  label={t('projects.sites.transfer')}
+                  onPress={onOpen}
+                  isDisabled={disabled}
+                  _disabled={{
+                    shadow: 0,
+                  }}
+                />
+              )}
+              title={t('projects.sites.transfer_site_modal.title')}
+              body={t('projects.sites.transfer_site_modal.body')}
+              actionName={t('projects.sites.transfer_site_modal.action_name')}
+              handleConfirm={onSubmit}
             />
-          )}
-          title={t('projects.sites.transfer_site_modal.title')}
-          body={t('projects.sites.transfer_site_modal.body')}
-          actionName={t('projects.sites.transfer_site_modal.action_name')}
-          handleConfirm={onSubmit}
-        />
-      </ScrollView>
-    </ScreenScaffold>
+          </ScrollView>
+        </ScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };

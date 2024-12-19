@@ -27,8 +27,11 @@ import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
@@ -90,10 +93,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
   const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
-
-  const site = useSelector(state => selectSite(siteId)(state));
-  const handleMissingSite = useHandleMissingSite();
-  const requirements = [{data: site, doIfMissing: handleMissingSite}];
 
   const onTextureChange = useCallback(
     (texture: SoilTexture | null) => {
@@ -161,8 +160,14 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
     [dispatch, siteId, depthInterval],
   );
 
+  const site = useSelector(selectSite(siteId));
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
+
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => (
         <SoilPitInputScreenScaffold {...props}>
           <SiteRoleContextProvider siteId={siteId}>
@@ -230,6 +235,6 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
           </SiteRoleContextProvider>
         </SoilPitInputScreenScaffold>
       )}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

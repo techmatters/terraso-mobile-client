@@ -21,12 +21,24 @@ import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-export const useHandleMissingSite = () => {
+export const useNavToBottomTabsAndShowSyncError = () => {
   const navigation = useNavigation();
   const syncNotifications = useSyncNotificationContext();
 
   return useCallback(() => {
     navigation.navigate('BOTTOM_TABS');
+    if (isFlagEnabled('FF_offline')) {
+      syncNotifications.showError();
+    }
+  }, [navigation, syncNotifications]);
+};
+
+export const usePopNavigationAndShowSyncError = () => {
+  const navigation = useNavigation();
+  const syncNotifications = useSyncNotificationContext();
+
+  return useCallback(() => {
+    navigation.pop();
     if (isFlagEnabled('FF_offline')) {
       syncNotifications.showError();
     }

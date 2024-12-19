@@ -19,9 +19,9 @@ import {Text} from 'react-native';
 
 import {render} from '@testing/integration/utils';
 
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 
-describe('RestrictByRequrements', () => {
+describe('ScreenDataRequirements', () => {
   test('renders children and triggers no actions when required data exists', () => {
     let thingsDone = '';
     const requirements = [
@@ -37,9 +37,9 @@ describe('RestrictByRequrements', () => {
     ];
 
     const {queryByText} = render(
-      <RestrictByRequirements requirements={requirements}>
+      <ScreenDataRequirements requirements={requirements}>
         {() => <Text>Hello world</Text>}
-      </RestrictByRequirements>,
+      </ScreenDataRequirements>,
     );
 
     expect(queryByText('Hello world')).toBeTruthy();
@@ -64,9 +64,9 @@ describe('RestrictByRequrements', () => {
     ];
 
     const {queryByText} = render(
-      <RestrictByRequirements requirements={requirements}>
+      <ScreenDataRequirements requirements={requirements}>
         {() => <Text>Hello world</Text>}
-      </RestrictByRequirements>,
+      </ScreenDataRequirements>,
     );
 
     expect(queryByText('Hello world')).toBeNull();
@@ -91,12 +91,31 @@ describe('RestrictByRequrements', () => {
     ];
 
     const {queryByText} = render(
-      <RestrictByRequirements requirements={requirements}>
+      <ScreenDataRequirements requirements={requirements}>
         {() => <Text>Hello world</Text>}
-      </RestrictByRequirements>,
+      </ScreenDataRequirements>,
     );
 
     expect(queryByText('Hello world')).toBeNull();
     expect(thingsDone).toEqual('null');
+  });
+
+  test('renders children and triggers no action when required data exists, even if it is a boolean equal to false', () => {
+    let thingsDone = '';
+    const requirements = [
+      {
+        data: false,
+        doIfMissing: () => (thingsDone += 'false'),
+      },
+    ];
+
+    const {queryByText} = render(
+      <ScreenDataRequirements requirements={requirements}>
+        {() => <Text>Hello world</Text>}
+      </ScreenDataRequirements>,
+    );
+
+    expect(queryByText('Hello world')).toBeTruthy();
+    expect(thingsDone).toEqual('');
   });
 });

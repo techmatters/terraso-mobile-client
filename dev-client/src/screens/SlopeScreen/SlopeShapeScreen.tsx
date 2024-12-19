@@ -39,6 +39,11 @@ import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   ImageRadio,
   ImageRadioOption,
@@ -61,6 +66,7 @@ import {SlopeShapeInfoContent} from 'terraso-mobile-client/screens/SlopeScreen/c
 import {renderShape} from 'terraso-mobile-client/screens/SlopeScreen/utils/renderValues';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
+  selectSite,
   selectSoilData,
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
@@ -144,40 +150,56 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
     [dispatch, siteId],
   );
 
+  const site = useSelector(selectSite(siteId));
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
+
   return (
-    <ScreenScaffold AppBar={<AppBar title={name} />} BottomNavigation={null}>
-      <SiteRoleContextProvider siteId={siteId}>
-        <ScrollView
-          bg="primary.contrast"
-          _contentContainerStyle={styles.scrollContentContainer}>
-          <Column>
-            <Column p="15px" bg="primary.contrast">
-              <Row alignItems="center">
-                <Heading variant="h6">{t('slope.shape.long_title')}</Heading>
-                <HelpContentSpacer />
-                <InfoButton
-                  sheetHeading={
-                    <TranslatedHeading i18nKey="slope.shape.info.title" />
-                  }>
-                  <SlopeShapeInfoContent />
-                </InfoButton>
-              </Row>
-            </Column>
-          </Column>
-          <ImageRadio
-            value={
-              downSlope && crossSlope ? `${downSlope}:${crossSlope}` : undefined
-            }
-            options={options}
-            onChange={isViewer ? () => {} : onChange}
-            minimumPerRow={3}
-          />
-        </ScrollView>
-        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-          <DoneButton />
-        </RestrictBySiteRole>
-      </SiteRoleContextProvider>
-    </ScreenScaffold>
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold
+          AppBar={<AppBar title={name} />}
+          BottomNavigation={null}>
+          <SiteRoleContextProvider siteId={siteId}>
+            <ScrollView
+              bg="primary.contrast"
+              _contentContainerStyle={styles.scrollContentContainer}>
+              <Column>
+                <Column p="15px" bg="primary.contrast">
+                  <Row alignItems="center">
+                    <Heading variant="h6">
+                      {t('slope.shape.long_title')}
+                    </Heading>
+                    <HelpContentSpacer />
+                    <InfoButton
+                      sheetHeading={
+                        <TranslatedHeading i18nKey="slope.shape.info.title" />
+                      }>
+                      <SlopeShapeInfoContent />
+                    </InfoButton>
+                  </Row>
+                </Column>
+              </Column>
+              <ImageRadio
+                value={
+                  downSlope && crossSlope
+                    ? `${downSlope}:${crossSlope}`
+                    : undefined
+                }
+                options={options}
+                onChange={isViewer ? () => {} : onChange}
+                minimumPerRow={3}
+              />
+            </ScrollView>
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+              <DoneButton />
+            </RestrictBySiteRole>
+          </SiteRoleContextProvider>
+        </ScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };
 

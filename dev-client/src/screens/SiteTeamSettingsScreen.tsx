@@ -15,6 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -26,9 +31,19 @@ type Props = {
 
 export const SiteTeamSettingsScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
+
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
+
   return (
-    <ScreenScaffold AppBar={<AppBar title={site.name} />}>
-      <Text>Unimplemented team settings page</Text>
-    </ScreenScaffold>
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold AppBar={<AppBar title={site.name} />}>
+          <Text>Unimplemented team settings page</Text>
+        </ScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };
