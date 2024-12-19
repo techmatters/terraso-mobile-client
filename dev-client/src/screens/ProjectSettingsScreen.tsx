@@ -25,7 +25,10 @@ import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/gr
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
@@ -69,7 +72,9 @@ export function ProjectSettingsScreen({
   const userRole = useProjectRoleContext();
 
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const requirements = [{data: project, doIfMissing: handleMissingProject}];
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

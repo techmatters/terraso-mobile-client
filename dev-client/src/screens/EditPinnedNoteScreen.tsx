@@ -22,7 +22,10 @@ import {Keyboard} from 'react-native';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -70,7 +73,9 @@ export const EditPinnedNoteScreen = ({projectId}: Props) => {
   };
 
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const requirements = [{data: project, doIfMissing: handleMissingProject}];
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

@@ -30,7 +30,10 @@ import {normalizeText} from 'terraso-client-shared/utils';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   ListFilterModal,
   ListFilterProvider,
@@ -264,7 +267,9 @@ export function ProjectSitesScreen({
 
   const project = useSelector(selectProject(projectId));
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const requirements = [{data: project, doIfMissing: handleMissingProject}];
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

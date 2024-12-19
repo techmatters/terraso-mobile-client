@@ -23,7 +23,10 @@ import {Fab} from 'native-base';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
@@ -81,7 +84,9 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   }, [dispatch, navigation, site]);
 
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

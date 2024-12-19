@@ -26,7 +26,10 @@ import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
@@ -83,7 +86,9 @@ export const ProjectInputScreen = ({
   const allowEditing = useMemo(() => userRole === 'MANAGER', [userRole]);
 
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const requirements = [{data: project, doIfMissing: handleMissingProject}];
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

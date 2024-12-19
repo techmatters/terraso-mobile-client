@@ -25,7 +25,10 @@ import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpCo
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {DataInputSummary} from 'terraso-mobile-client/components/DataInputSummary';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Heading,
   Row,
@@ -64,7 +67,9 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
 
   const site = useSelector(selectSite(siteId));
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

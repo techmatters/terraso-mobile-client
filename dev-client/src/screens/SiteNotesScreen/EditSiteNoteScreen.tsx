@@ -18,7 +18,10 @@
 import {useCallback} from 'react';
 
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -50,10 +53,10 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
       syncNotifications.showError();
     }
   }, [navigation, siteId, syncNotifications]);
-  const requirements = [
+  const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
     {data: note, doIfMissing: handleMissingSiteNote},
-  ];
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

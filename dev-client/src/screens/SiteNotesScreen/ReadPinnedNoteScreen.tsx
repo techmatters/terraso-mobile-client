@@ -23,7 +23,10 @@ import {
   useNavToBottomTabsAndShowSyncError,
   usePopNavigationAndShowSyncError,
 } from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Column,
   Heading,
@@ -52,10 +55,10 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
 
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleMissingPinnedNote = usePopNavigationAndShowSyncError();
-  const requirements = [
+  const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
     {data: content, doIfMissing: handleMissingPinnedNote},
-  ];
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

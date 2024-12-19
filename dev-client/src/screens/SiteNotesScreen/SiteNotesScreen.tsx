@@ -22,7 +22,10 @@ import {ScrollView} from 'react-native';
 import {Button} from 'native-base';
 
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -56,7 +59,9 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   const isOffline = useIsOffline();
 
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

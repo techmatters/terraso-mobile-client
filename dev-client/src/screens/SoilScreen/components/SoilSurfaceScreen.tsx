@@ -25,7 +25,10 @@ import {
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   Box,
@@ -73,7 +76,9 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
   const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const requirements = [{data: site, doIfMissing: handleMissingSite}];
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

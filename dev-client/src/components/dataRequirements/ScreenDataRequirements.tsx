@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useEffect} from 'react';
+import {useEffect, useMemo} from 'react';
 
 type Requirement = {
   data: any;
@@ -56,9 +56,24 @@ type Props = {
  */
 export const ScreenDataRequirements = ({requirements, children}: Props) => {
   const requiredDataExists = useRequiredData(requirements);
-
   if (!requiredDataExists) {
     return null;
   }
   return <>{children()}</>;
+};
+
+/*
+ * I believe this is not strictly necessary; if a screen is re-rendering, the ScreenDataRequirements component
+ * will re-render regardless of if its props change (unless memoized)
+ */
+export const useMemoizedRequirements = (
+  requirementsAsNewObj: Requirement[],
+) => {
+  const deps = requirementsAsNewObj.flatMap(r => [r.data, r.doIfMissing]);
+  return useMemo(() => {
+    return requirementsAsNewObj;
+    // The linter doesn't like the dynamic dependency list, but the useMemo should only depend on the values of the required data
+    // and missing data handlers. If it depends on the list object, it's re-created every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
 };

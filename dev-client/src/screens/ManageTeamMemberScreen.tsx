@@ -29,7 +29,10 @@ import {
   useNavToBottomTabsAndShowSyncError,
   usePopNavigationAndShowSyncError,
 } from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
@@ -88,10 +91,10 @@ export const ManageTeamMemberScreen = ({
 
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleMissingUser = usePopNavigationAndShowSyncError();
-  const requirements = [
+  const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
     {data: user, doIfMissing: handleMissingUser},
-  ];
+  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>
