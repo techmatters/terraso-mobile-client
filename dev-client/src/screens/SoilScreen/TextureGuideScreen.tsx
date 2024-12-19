@@ -26,6 +26,14 @@ import {ScrollView} from 'native-base';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
+  useNavToBottomTabsAndShowSyncError,
+  useNavToSiteAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
   Box,
   Column,
   Text,
@@ -39,11 +47,15 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  selectSite,
+  useSiteSoilInterval,
+} from 'terraso-mobile-client/store/selectors';
 
 const LENGTH_IMAGE = require('terraso-mobile-client/assets/texture/guide/length.png');
 
-export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
+export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const [ball, setBall] = useState<'YES' | 'NO'>();
   const [ribbon, setRibbon] = useState<'YES' | 'NO'>();
@@ -78,9 +90,6 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
   const navigation = useNavigation();
 
   const onUseResult = useMemo(() => {
-    if (props === undefined) {
-      return undefined;
-    }
     return async () => {
       await dispatch(
         updateDepthDependentSoilData({
@@ -93,189 +102,220 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
     };
   }, [props, dispatch, result, navigation]);
 
+  const site = useSelector(selectSite(props.siteId));
+  const depthInterval = useSiteSoilInterval(
+    props.siteId,
+    props.depthInterval.depthInterval,
+  );
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingDepth = useNavToSiteAndShowSyncError(props.siteId);
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+    {data: depthInterval, doIfMissing: handleMissingDepth},
+  ]);
+
   return (
-    <ScreenScaffold
-      AppBar={<AppBar title={t('soil.texture.guide.title')} />}
-      BottomNavigation={null}>
-      <ScrollView bg="grey.300">
-        <Column space="16px">
-          <Column p="15px" bg="primary.contrast">
-            <Text variant="body1-strong">
-              {t('soil.texture.guide.prepare')}
-            </Text>
-            <BulletList
-              data={[1, 2, 3]}
-              renderItem={i => (
-                <Text variant="body1" color="text.primary">
-                  <Trans i18nKey={`soil.texture.guide.prepare_details_${i}`} />
-                </Text>
-              )}
-            />
-            <Text variant="body1-strong">{t('soil.texture.guide.wet')}</Text>
-            <BulletList
-              data={[1, 2, 3, 4, 5]}
-              renderItem={i => (
-                <Text variant="body1" color="text.primary">
-                  <Trans i18nKey={`soil.texture.guide.wet_details_${i}`} />
-                </Text>
-              )}
-            />
-            <Text variant="body1-strong">{t('soil.texture.guide.ball')}</Text>
-            <BulletList
-              data={[1, 2]}
-              renderItem={i => (
-                <Text variant="body1" color="text.primary">
-                  <Trans i18nKey={`soil.texture.guide.ball_details_${i}`} />
-                </Text>
-              )}
-            />
-            <Video
-              isLooping
-              shouldPlay
-              source={require('terraso-mobile-client/assets/texture/guide/ball.mp4')}
-              resizeMode={ResizeMode.COVER}
-              style={styles.ballVideo}
-            />
-            <RadioBlock
-              label={t('soil.texture.guide.ball_help')}
-              options={{
-                YES: {text: t('general.yes')},
-                NO: {text: t('general.no')},
-              }}
-              groupProps={{name: 'ball', onChange: setBall, value: ball}}
-            />
-          </Column>
-          {ball === 'YES' && (
-            <>
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold
+          AppBar={<AppBar title={t('soil.texture.guide.title')} />}
+          BottomNavigation={null}>
+          <ScrollView bg="grey.300">
+            <Column space="16px">
               <Column p="15px" bg="primary.contrast">
                 <Text variant="body1-strong">
-                  {t('soil.texture.guide.ribbon')}
+                  {t('soil.texture.guide.prepare')}
+                </Text>
+                <BulletList
+                  data={[1, 2, 3]}
+                  renderItem={i => (
+                    <Text variant="body1" color="text.primary">
+                      <Trans
+                        i18nKey={`soil.texture.guide.prepare_details_${i}`}
+                      />
+                    </Text>
+                  )}
+                />
+                <Text variant="body1-strong">
+                  {t('soil.texture.guide.wet')}
                 </Text>
                 <BulletList
                   data={[1, 2, 3, 4, 5]}
                   renderItem={i => (
                     <Text variant="body1" color="text.primary">
-                      <Trans
-                        i18nKey={`soil.texture.guide.ribbon_details_${i}`}
-                      />
+                      <Trans i18nKey={`soil.texture.guide.wet_details_${i}`} />
+                    </Text>
+                  )}
+                />
+                <Text variant="body1-strong">
+                  {t('soil.texture.guide.ball')}
+                </Text>
+                <BulletList
+                  data={[1, 2]}
+                  renderItem={i => (
+                    <Text variant="body1" color="text.primary">
+                      <Trans i18nKey={`soil.texture.guide.ball_details_${i}`} />
                     </Text>
                   )}
                 />
                 <Video
                   isLooping
                   shouldPlay
-                  source={require('terraso-mobile-client/assets/texture/guide/ribbon.mp4')}
+                  source={require('terraso-mobile-client/assets/texture/guide/ball.mp4')}
                   resizeMode={ResizeMode.COVER}
-                  style={styles.ribbonVideo}
+                  style={styles.ballVideo}
                 />
                 <RadioBlock
-                  label={t('soil.texture.guide.ribbon_help')}
+                  label={t('soil.texture.guide.ball_help')}
                   options={{
                     YES: {text: t('general.yes')},
                     NO: {text: t('general.no')},
                   }}
-                  groupProps={{
-                    name: 'ribbon',
-                    onChange: setRibbon,
-                    value: ribbon,
-                  }}
+                  groupProps={{name: 'ball', onChange: setBall, value: ball}}
                 />
               </Column>
-              {ribbon === 'YES' && (
+              {ball === 'YES' && (
                 <>
                   <Column p="15px" bg="primary.contrast">
-                    <View style={styles.lengthImageContainer}>
-                      <Image style={styles.lengthImage} source={LENGTH_IMAGE} />
-                    </View>
+                    <Text variant="body1-strong">
+                      {t('soil.texture.guide.ribbon')}
+                    </Text>
+                    <BulletList
+                      data={[1, 2, 3, 4, 5]}
+                      renderItem={i => (
+                        <Text variant="body1" color="text.primary">
+                          <Trans
+                            i18nKey={`soil.texture.guide.ribbon_details_${i}`}
+                          />
+                        </Text>
+                      )}
+                    />
+                    <Video
+                      isLooping
+                      shouldPlay
+                      source={require('terraso-mobile-client/assets/texture/guide/ribbon.mp4')}
+                      resizeMode={ResizeMode.COVER}
+                      style={styles.ribbonVideo}
+                    />
                     <RadioBlock
-                      label={t('soil.texture.guide.ribbon_length_help')}
+                      label={t('soil.texture.guide.ribbon_help')}
                       options={{
-                        SM: {text: t('soil.texture.guide.ribbon_length.SM')},
-                        MD: {text: t('soil.texture.guide.ribbon_length.MD')},
-                        LG: {text: t('soil.texture.guide.ribbon_length.LG')},
+                        YES: {text: t('general.yes')},
+                        NO: {text: t('general.no')},
                       }}
                       groupProps={{
-                        name: 'ribbonLength',
-                        onChange: setRibbonLength,
-                        value: ribbonLength,
+                        name: 'ribbon',
+                        onChange: setRibbon,
+                        value: ribbon,
                       }}
                     />
                   </Column>
-                  {ribbonLength !== undefined && (
-                    <Column p="15px" bg="primary.contrast">
-                      <Text variant="body1-strong">
-                        {t('soil.texture.guide.grittyness')}
-                      </Text>
-                      <BulletList
-                        data={[1, 2, 3]}
-                        renderItem={i => (
-                          <Text variant="body1" color="text.primary">
-                            <Trans
-                              i18nKey={`soil.texture.guide.grittyness_details_${i}`}>
-                              <Text bold>first</Text>
-                              <Text>second</Text>
-                            </Trans>
+                  {ribbon === 'YES' && (
+                    <>
+                      <Column p="15px" bg="primary.contrast">
+                        <View style={styles.lengthImageContainer}>
+                          <Image
+                            style={styles.lengthImage}
+                            source={LENGTH_IMAGE}
+                          />
+                        </View>
+                        <RadioBlock
+                          label={t('soil.texture.guide.ribbon_length_help')}
+                          options={{
+                            SM: {
+                              text: t('soil.texture.guide.ribbon_length.SM'),
+                            },
+                            MD: {
+                              text: t('soil.texture.guide.ribbon_length.MD'),
+                            },
+                            LG: {
+                              text: t('soil.texture.guide.ribbon_length.LG'),
+                            },
+                          }}
+                          groupProps={{
+                            name: 'ribbonLength',
+                            onChange: setRibbonLength,
+                            value: ribbonLength,
+                          }}
+                        />
+                      </Column>
+                      {ribbonLength !== undefined && (
+                        <Column p="15px" bg="primary.contrast">
+                          <Text variant="body1-strong">
+                            {t('soil.texture.guide.grittyness')}
                           </Text>
-                        )}
-                      />
-                      <Video
-                        isLooping
-                        shouldPlay
-                        source={require('terraso-mobile-client/assets/texture/guide/grittyness.mp4')}
-                        resizeMode={ResizeMode.COVER}
-                        style={styles.grittynessVideo}
-                      />
-                      <RadioBlock
-                        label={t('soil.texture.guide.grittyness_help')}
-                        options={{
-                          GRITTY: {
-                            text: t(
-                              'soil.texture.guide.grittyness_type.GRITTY',
-                            ),
-                          },
-                          NEITHER: {
-                            text: t(
-                              'soil.texture.guide.grittyness_type.NEITHER',
-                            ),
-                          },
-                          SMOOTH: {
-                            text: t(
-                              'soil.texture.guide.grittyness_type.SMOOTH',
-                            ),
-                          },
-                        }}
-                        groupProps={{
-                          name: 'grit',
-                          onChange: setGrit,
-                          value: grit,
-                        }}
-                      />
-                    </Column>
+                          <BulletList
+                            data={[1, 2, 3]}
+                            renderItem={i => (
+                              <Text variant="body1" color="text.primary">
+                                <Trans
+                                  i18nKey={`soil.texture.guide.grittyness_details_${i}`}>
+                                  <Text bold>first</Text>
+                                  <Text>second</Text>
+                                </Trans>
+                              </Text>
+                            )}
+                          />
+                          <Video
+                            isLooping
+                            shouldPlay
+                            source={require('terraso-mobile-client/assets/texture/guide/grittyness.mp4')}
+                            resizeMode={ResizeMode.COVER}
+                            style={styles.grittynessVideo}
+                          />
+                          <RadioBlock
+                            label={t('soil.texture.guide.grittyness_help')}
+                            options={{
+                              GRITTY: {
+                                text: t(
+                                  'soil.texture.guide.grittyness_type.GRITTY',
+                                ),
+                              },
+                              NEITHER: {
+                                text: t(
+                                  'soil.texture.guide.grittyness_type.NEITHER',
+                                ),
+                              },
+                              SMOOTH: {
+                                text: t(
+                                  'soil.texture.guide.grittyness_type.SMOOTH',
+                                ),
+                              },
+                            }}
+                            groupProps={{
+                              name: 'grit',
+                              onChange: setGrit,
+                              value: grit,
+                            }}
+                          />
+                        </Column>
+                      )}
+                    </>
                   )}
                 </>
               )}
-            </>
-          )}
-          {result !== undefined && (
-            <Column p="15px" bg="primary.contrast" alignItems="flex-start">
-              <Text variant="body1-strong" textTransform="uppercase">
-                {t('soil.texture.guide.result', {
-                  result: t(`soil.texture.class.${result}`),
-                })}
-              </Text>
-              <Box height="10px" />
-              {onUseResult !== undefined && (
-                <ContainedButton
-                  leftIcon="check"
-                  onPress={onUseResult}
-                  label={t('soil.texture.guide.use_label')}
-                />
+              {result !== undefined && (
+                <Column p="15px" bg="primary.contrast" alignItems="flex-start">
+                  <Text variant="body1-strong" textTransform="uppercase">
+                    {t('soil.texture.guide.result', {
+                      result: t(`soil.texture.class.${result}`),
+                    })}
+                  </Text>
+                  <Box height="10px" />
+                  {onUseResult !== undefined && (
+                    <ContainedButton
+                      leftIcon="check"
+                      onPress={onUseResult}
+                      label={t('soil.texture.guide.use_label')}
+                    />
+                  )}
+                </Column>
               )}
             </Column>
-          )}
-        </Column>
-      </ScrollView>
-    </ScreenScaffold>
+          </ScrollView>
+        </ScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };
 
