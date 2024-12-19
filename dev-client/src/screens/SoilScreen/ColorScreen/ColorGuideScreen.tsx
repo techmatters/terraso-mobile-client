@@ -21,6 +21,8 @@ import {Image, ScrollView, StyleSheet} from 'react-native';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   ImagePicker,
   Photo,
@@ -143,21 +145,33 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
     </>,
   ] satisfies React.ReactNode[];
 
+  const requirements = useDefaultSiteDepthRequirements(
+    props.siteId,
+    props.depthInterval.depthInterval,
+  );
+
   return (
-    <ScreenScaffold>
-      <ScrollView>
-        <Column backgroundColor="grey.300" space="md">
-          {stepContent.map((content, index) => (
-            <Column backgroundColor="primary.contrast" key={index} padding="md">
-              <Text variant="body1-strong">
-                {t(`soil.color.guide.step${index + 1}.title`)}
-              </Text>
-              {content}
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold>
+          <ScrollView>
+            <Column backgroundColor="grey.300" space="md">
+              {stepContent.map((content, index) => (
+                <Column
+                  backgroundColor="primary.contrast"
+                  key={index}
+                  padding="md">
+                  <Text variant="body1-strong">
+                    {t(`soil.color.guide.step${index + 1}.title`)}
+                  </Text>
+                  {content}
+                </Column>
+              ))}
             </Column>
-          ))}
-        </Column>
-      </ScrollView>
-    </ScreenScaffold>
+          </ScrollView>
+        </ScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };
 

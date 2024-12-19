@@ -25,14 +25,8 @@ import {ScrollView} from 'native-base';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {
-  useNavToBottomTabsAndShowSyncError,
-  useNavToSiteAndShowSyncError,
-} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {
-  ScreenDataRequirements,
-  useMemoizedRequirements,
-} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -47,11 +41,7 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {
-  selectSite,
-  useSiteSoilInterval,
-} from 'terraso-mobile-client/store/selectors';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 const LENGTH_IMAGE = require('terraso-mobile-client/assets/texture/guide/length.png');
 
@@ -102,17 +92,10 @@ export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
     };
   }, [props, dispatch, result, navigation]);
 
-  const site = useSelector(selectSite(props.siteId));
-  const depthInterval = useSiteSoilInterval(
+  const requirements = useDefaultSiteDepthRequirements(
     props.siteId,
     props.depthInterval.depthInterval,
   );
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const handleMissingDepth = useNavToSiteAndShowSyncError(props.siteId);
-  const requirements = useMemoizedRequirements([
-    {data: site, doIfMissing: handleMissingSite},
-    {data: depthInterval, doIfMissing: handleMissingDepth},
-  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

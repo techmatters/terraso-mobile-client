@@ -23,11 +23,8 @@ import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {
-  ScreenDataRequirements,
-  useMemoizedRequirements,
-} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -57,7 +54,6 @@ import {
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   selectDepthDependentData,
-  selectSite,
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
 
@@ -103,12 +99,10 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
     [data],
   );
 
-  const site = useSelector(selectSite(props.siteId));
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  // TODO-cknipe: Require the depth interval to exist for the site/project
-  const requirements = useMemoizedRequirements([
-    {data: site, doIfMissing: handleMissingSite},
-  ]);
+  const requirements = useDefaultSiteDepthRequirements(
+    props.siteId,
+    props.depthInterval.depthInterval,
+  );
 
   return (
     <ScreenDataRequirements requirements={requirements}>
