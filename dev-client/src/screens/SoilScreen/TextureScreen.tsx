@@ -28,7 +28,10 @@ import {ContainedButton} from 'terraso-mobile-client/components/buttons/Containe
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useNavToBottomTabsAndShowSyncError,
+  useNavToSiteAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
@@ -69,6 +72,7 @@ import {
   selectDepthDependentData,
   selectSite,
   selectUserRoleSite,
+  useSiteSoilInterval,
 } from 'terraso-mobile-client/store/selectors';
 
 const FRAGMENT_IMAGES = {
@@ -161,9 +165,15 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
   );
 
   const site = useSelector(selectSite(siteId));
+  const existingDepthInterval = useSiteSoilInterval(
+    siteId,
+    depthInterval.depthInterval,
+  );
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingDepth = useNavToSiteAndShowSyncError(siteId);
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
+    {data: existingDepthInterval, doIfMissing: handleMissingDepth},
   ]);
 
   return (
