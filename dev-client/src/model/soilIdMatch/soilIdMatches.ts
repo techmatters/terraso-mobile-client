@@ -23,7 +23,9 @@ import {
 import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
-export type CoordsKey = `(${number}, ${number})`;
+import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
+
+export type CoordsKey = `(${string}, ${string})`;
 
 export type SoilIdLocationEntry = {
   input: Coords;
@@ -47,7 +49,7 @@ export const isErrorStatus = (status: SoilIdStatus): boolean => {
 };
 
 export const coordsKey = (coords: Coords): CoordsKey => {
-  return `(${coords.longitude}, ${coords.latitude})`;
+  return `(${coords.longitude.toFixed(COORDINATE_PRECISION)}, ${coords.latitude.toFixed(COORDINATE_PRECISION)})`;
 };
 
 export const locationEntryForStatus = (
