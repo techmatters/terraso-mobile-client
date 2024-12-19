@@ -27,14 +27,8 @@ import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {
-  useNavToBottomTabsAndShowSyncError,
-  useNavToSiteAndShowSyncError,
-} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {
-  ScreenDataRequirements,
-  useMemoizedRequirements,
-} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
@@ -70,9 +64,7 @@ import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/compo
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   selectDepthDependentData,
-  selectSite,
   selectUserRoleSite,
-  useSiteSoilInterval,
 } from 'terraso-mobile-client/store/selectors';
 
 const FRAGMENT_IMAGES = {
@@ -164,17 +156,10 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
     [dispatch, siteId, depthInterval],
   );
 
-  const site = useSelector(selectSite(siteId));
-  const existingDepthInterval = useSiteSoilInterval(
-    siteId,
-    depthInterval.depthInterval,
+  const requirements = useDefaultSiteDepthRequirements(
+    props.siteId,
+    props.depthInterval.depthInterval,
   );
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const handleMissingDepth = useNavToSiteAndShowSyncError(siteId);
-  const requirements = useMemoizedRequirements([
-    {data: site, doIfMissing: handleMissingSite},
-    {data: existingDepthInterval, doIfMissing: handleMissingDepth},
-  ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>
