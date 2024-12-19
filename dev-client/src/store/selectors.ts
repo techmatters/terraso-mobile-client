@@ -338,6 +338,24 @@ export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
   );
 };
 
+// This confirms that a given DepthInterval is actually part of the site's
+// displayed depth intervals. (There may be a mismatch if, for example, a
+// depth interval got deleted in redux, but a sheet takes depth as a prop)
+export const useSiteSoilInterval = (
+  siteId: string,
+  depthInterval: DepthInterval,
+): AggregatedInterval | undefined => {
+  const allSiteSoilIntervals = useSiteSoilIntervals(siteId);
+  const foundInterval = useMemo(
+    () =>
+      allSiteSoilIntervals.find(aggInterval =>
+        sameDepth({depthInterval})(aggInterval.interval),
+      ),
+    [allSiteSoilIntervals, depthInterval],
+  );
+  return foundInterval;
+};
+
 export const selectDepthDependentData = ({
   siteId,
   depthInterval,

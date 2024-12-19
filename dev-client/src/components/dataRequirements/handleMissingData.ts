@@ -44,3 +44,15 @@ export const usePopNavigationAndShowSyncError = () => {
     }
   }, [navigation, syncNotifications]);
 };
+
+export const useNavToSiteAndShowSyncError = (siteId: string) => {
+  const navigation = useNavigation();
+  const syncNotifications = useSyncNotificationContext();
+
+  return useCallback(() => {
+    navigation.navigate('SITE_TABS', {siteId: siteId});
+    if (isFlagEnabled('FF_offline')) {
+      syncNotifications.showError();
+    }
+  }, [siteId, navigation, syncNotifications]);
+};
