@@ -40,7 +40,13 @@ describe('isErrorStatus', () => {
 
 describe('coordsKey', () => {
   test('produces keys for coords', () => {
-    expect(coordsKey({longitude: 1, latitude: 2})).toBe('(1, 2)');
+    expect(coordsKey({longitude: 1, latitude: 2})).toBe('(1.00000, 2.00000)');
+  });
+
+  test('produces keys for coords with appropriate precision', () => {
+    expect(coordsKey({longitude: 1.000014, latitude: 2.000014})).toBe(
+      '(1.00001, 2.00001)',
+    );
   });
 });
 
