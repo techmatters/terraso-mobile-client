@@ -18,11 +18,17 @@
 import {useTranslation} from 'react-i18next';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AddTeamMemberForm} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/AddTeamMemberForm';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
+import {selectProject} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   projectId: string;
@@ -31,22 +37,29 @@ type Props = {
 export const AddUserToProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
 
-  const projectName = useSelector(
-    state => state.project.projects[projectId]?.name,
-  );
+  const project = useSelector(selectProject(projectId));
 
   // FYI: There was previously a mechanism to enter emails individually, but set roles at the same time.
   // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
   // wanting to add multiple users at the same time.
 
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+  ]);
+
   return (
-    <ScreenScaffold AppBar={<AppBar title={projectName} />}>
-      <ScreenContentSection title={t('projects.add_user.heading')}>
-        <Text variant="body1">{t('projects.add_user.help_text')}</Text>
-        <Box mt="md">
-          <AddTeamMemberForm projectId={projectId} />
-        </Box>
-      </ScreenContentSection>
-    </ScreenScaffold>
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold AppBar={<AppBar title={project.name} />}>
+          <ScreenContentSection title={t('projects.add_user.heading')}>
+            <Text variant="body1">{t('projects.add_user.help_text')}</Text>
+            <Box mt="md">
+              <AddTeamMemberForm projectId={projectId} />
+            </Box>
+          </ScreenContentSection>
+        </ScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };

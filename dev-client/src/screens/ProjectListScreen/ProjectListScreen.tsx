@@ -41,20 +41,21 @@ import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/c
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
-import {selectProjectUserRolesMap} from 'terraso-mobile-client/store/selectors';
+import {
+  selectProjects,
+  selectProjectUserRolesMap,
+} from 'terraso-mobile-client/store/selectors';
 import {equals, searchText} from 'terraso-mobile-client/util';
 
 const SORT_OPTIONS = ['nameAsc', 'nameDesc', 'lastModAsc', 'lastModDesc'];
 
 export const ProjectListScreen = () => {
-  const allProjects = useSelector(state => state.project.projects);
+  const allProjects = useSelector(selectProjects);
   const activeProjects = useMemo(
     () => Object.values(allProjects).filter(project => !project.archived),
     [allProjects],
   );
-  const projectRoleLookup = useSelector(state =>
-    selectProjectUserRolesMap(state),
-  );
+  const projectRoleLookup = useSelector(selectProjectUserRolesMap);
 
   const {t} = useTranslation();
   const navigation = useNavigation();

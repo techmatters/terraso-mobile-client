@@ -24,6 +24,11 @@ import {
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   Box,
@@ -70,67 +75,76 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
 
   const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: site, doIfMissing: handleMissingSite},
+  ]);
+
   return (
-    <ScreenScaffold AppBar={<AppBar title={site.name} />}>
-      <SiteRoleContextProvider siteId={siteId}>
-        <Column padding="md">
-          <Heading variant="h6">
-            {t('soil.collection_method.verticalCracking')}
-          </Heading>
-          <Select
-            disabled={isViewer}
-            nullable
-            value={cracking ?? null}
-            onValueChange={onUpdate}
-            options={surfaceCracks}
-            renderValue={renderSurfaceCrack}
-            label={t('soil.collection_method.verticalCracking')}
-          />
-          <Box height="lg" />
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold AppBar={<AppBar title={site.name} />}>
+          <SiteRoleContextProvider siteId={siteId}>
+            <Column padding="md">
+              <Heading variant="h6">
+                {t('soil.collection_method.verticalCracking')}
+              </Heading>
+              <Select
+                disabled={isViewer}
+                nullable
+                value={cracking ?? null}
+                onValueChange={onUpdate}
+                options={surfaceCracks}
+                renderValue={renderSurfaceCrack}
+                label={t('soil.collection_method.verticalCracking')}
+              />
+              <Box height="lg" />
 
-          <Paragraph>{t('soil.vertical_cracking.description')}</Paragraph>
+              <Paragraph>{t('soil.vertical_cracking.description')}</Paragraph>
 
-          <Paragraph>
-            <Trans
-              i18nKey="soil.vertical_cracking.no_cracks"
-              components={{
-                bold: <Text bold />,
-              }}
-            />
-          </Paragraph>
+              <Paragraph>
+                <Trans
+                  i18nKey="soil.vertical_cracking.no_cracks"
+                  components={{
+                    bold: <Text bold />,
+                  }}
+                />
+              </Paragraph>
 
-          <Paragraph>
-            <Trans
-              i18nKey="soil.vertical_cracking.surface_cracks"
-              values={{units: 'METRIC'}}
-              components={{
-                bold: <Text bold />,
-              }}
-            />
-          </Paragraph>
+              <Paragraph>
+                <Trans
+                  i18nKey="soil.vertical_cracking.surface_cracks"
+                  values={{units: 'METRIC'}}
+                  components={{
+                    bold: <Text bold />,
+                  }}
+                />
+              </Paragraph>
 
-          <Paragraph>
-            <Trans
-              i18nKey="soil.vertical_cracking.deep_vertical_cracks"
-              values={{units: 'METRIC'}}
-              components={{
-                bold: <Text bold />,
-              }}
-            />
-          </Paragraph>
+              <Paragraph>
+                <Trans
+                  i18nKey="soil.vertical_cracking.deep_vertical_cracks"
+                  values={{units: 'METRIC'}}
+                  components={{
+                    bold: <Text bold />,
+                  }}
+                />
+              </Paragraph>
 
-          <Box width="100%" alignItems="center">
-            <Image
-              source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
-            />
-          </Box>
-        </Column>
-        <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-          <Box position="absolute" bottom="0" right="0">
-            <DoneButton isDisabled={!cracking} />
-          </Box>
-        </RestrictBySiteRole>
-      </SiteRoleContextProvider>
-    </ScreenScaffold>
+              <Box width="100%" alignItems="center">
+                <Image
+                  source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
+                />
+              </Box>
+            </Column>
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+              <Box position="absolute" bottom="0" right="0">
+                <DoneButton isDisabled={!cracking} />
+              </Box>
+            </RestrictBySiteRole>
+          </SiteRoleContextProvider>
+        </ScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };

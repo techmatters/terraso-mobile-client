@@ -77,12 +77,12 @@ export const selectProjectMembershipsWithUsers = createSelector(
 export const selectProject = (projectId: string) => (state: AppState) =>
   state.project.projects[projectId];
 
-const selectProjects = (state: AppState) => state.project.projects;
+export const selectProjects = (state: AppState) => state.project.projects;
 
 export const selectSite = (siteId: string) => (state: AppState) =>
   state.site.sites[siteId];
 
-const selectSites = (state: AppState) => state.site.sites;
+export const selectSites = (state: AppState) => state.site.sites;
 
 const selectUserRole = (_state: AppState, userRole: ProjectRole) => userRole;
 

@@ -16,11 +16,14 @@
  */
 
 import {useCallback} from 'react';
-import {ToastAndroid} from 'react-native';
 
-import {useHandleMissingSite} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {RestrictByRequirements} from 'terraso-mobile-client/components/dataRequirements/RestrictByRequirements';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {EditSiteNoteContent} from 'terraso-mobile-client/screens/SiteNotesScreen/components/EditSiteNoteContent';
@@ -34,30 +37,30 @@ type Props = {
 
 export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const navigation = useNavigation();
+  const syncNotifications = useSyncNotificationContext();
 
   const site = useSelector(state => selectSite(siteId)(state));
   const note = site?.notes[noteId];
   // TODO: Also handle the case where user no longer has permissions to edit notes
 
-  const handleMissingSite = useHandleMissingSite();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const handleMissingSiteNote = useCallback(() => {
     navigation.navigate('SITE_TABS', {
       siteId: siteId,
       initialTab: 'NOTES' as SiteTabName,
     });
-    // TODO: Decide design / how to show toasts / use en.json string
     if (isFlagEnabled('FF_offline')) {
-      ToastAndroid.show('Sorry, someone deleted that!', ToastAndroid.SHORT);
+      syncNotifications.showError();
     }
-  }, [navigation, siteId]);
-  const requirements = [
+  }, [navigation, siteId, syncNotifications]);
+  const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
     {data: note, doIfMissing: handleMissingSiteNote},
-  ];
+  ]);
 
   return (
-    <RestrictByRequirements requirements={requirements}>
+    <ScreenDataRequirements requirements={requirements}>
       {() => <EditSiteNoteContent note={note} />}
-    </RestrictByRequirements>
+    </ScreenDataRequirements>
   );
 };

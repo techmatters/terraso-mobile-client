@@ -79,7 +79,11 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
   );
 
   const onExploreDataPress = useCallback(() => {
-    navigation.navigate('LOCATION_SOIL_ID', {siteId: site?.id, coords});
+    if (site?.id) {
+      navigation.navigate('SITE_LOCATION_SOIL_ID', {siteId: site.id, coords});
+    } else {
+      navigation.navigate('TEMPORARY_LOCATION_SOIL_ID', {coords});
+    }
   }, [navigation, site, coords]);
 
   const onSitePrivacyChanged = useCallback(

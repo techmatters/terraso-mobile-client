@@ -20,6 +20,14 @@ import {useTranslation} from 'react-i18next';
 import {Button, ScrollView, Spacer} from 'native-base';
 
 import {
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
   Column,
   Heading,
   Row,
@@ -37,6 +45,7 @@ type Props = {
 export const ReadPinnedNoteScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+
   const project = useSelector(selectProject(projectId));
   const content = project?.siteInstructions;
 
@@ -44,26 +53,37 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
     navigation.pop();
   };
 
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const handleMissingPinnedNote = usePopNavigationAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+    {data: content, doIfMissing: handleMissingPinnedNote},
+  ]);
+
   return (
-    <ScreenScaffold BottomNavigation={null} AppBar={null}>
-      <Column pt={10} pl={5} pr={5} pb={10} flexGrow={1}>
-        <Heading variant="h6" pb={7}>
-          {t('projects.inputs.instructions.screen_title')}
-        </Heading>
-        <ScrollView flex={1}>
-          <Text>{content}</Text>
-        </ScrollView>
-        <Row>
-          <Spacer />
-          <Button
-            onPress={handleClose}
-            shadow={1}
-            size="lg"
-            _text={{textTransform: 'uppercase'}}>
-            {t('general.close_fab')}
-          </Button>
-        </Row>
-      </Column>
-    </ScreenScaffold>
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScreenScaffold BottomNavigation={null} AppBar={null}>
+          <Column pt={10} pl={5} pr={5} pb={10} flexGrow={1}>
+            <Heading variant="h6" pb={7}>
+              {t('projects.inputs.instructions.screen_title')}
+            </Heading>
+            <ScrollView flex={1}>
+              <Text>{content}</Text>
+            </ScrollView>
+            <Row>
+              <Spacer />
+              <Button
+                onPress={handleClose}
+                shadow={1}
+                size="lg"
+                _text={{textTransform: 'uppercase'}}>
+                {t('general.close_fab')}
+              </Button>
+            </Row>
+          </Column>
+        </ScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };

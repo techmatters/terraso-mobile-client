@@ -24,6 +24,11 @@ import {ScrollView} from 'native-base';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
+import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  ScreenDataRequirements,
+  useMemoizedRequirements,
+} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
@@ -50,7 +55,8 @@ export function ProjectSettingsScreen({
 }: Props) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const {name, description, privacy} = useSelector(selectProject(projectId));
+  const project = useSelector(selectProject(projectId));
+  const {name, description, privacy} = project;
 
   const onSubmit = async (values: Omit<ProjectUpdateMutationInput, 'id'>) => {
     await dispatch(updateProject({...values, id: projectId, privacy}));
@@ -65,38 +71,47 @@ export function ProjectSettingsScreen({
 
   const userRole = useProjectRoleContext();
 
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const requirements = useMemoizedRequirements([
+    {data: project, doIfMissing: handleMissingProject},
+  ]);
+
   return (
-    <ScrollView
-      backgroundColor={theme.colors.primary.contrast}
-      contentContainerStyle={styles.scrollview}>
-      <Column
-        space={4}
-        m={3}
-        mb="50px"
-        style={styles.column}
-        alignItems="flex-start">
-        <EditProjectForm
-          onSubmit={onSubmit}
-          name={name}
-          description={description}
-          userRole={userRole}
-        />
-        <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
-          <ConfirmModal
-            title={t('projects.settings.delete_button_prompt')}
-            actionName={t('projects.settings.delete_button')}
-            body={t('projects.settings.delete_description')}
-            handleConfirm={triggerDeleteProject}
-            trigger={onOpen => (
-              <DeleteButton
-                label={t('projects.settings.delete')}
-                onPress={onOpen}
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <ScrollView
+          backgroundColor={theme.colors.primary.contrast}
+          contentContainerStyle={styles.scrollview}>
+          <Column
+            space={4}
+            m={3}
+            mb="50px"
+            style={styles.column}
+            alignItems="flex-start">
+            <EditProjectForm
+              onSubmit={onSubmit}
+              name={name}
+              description={description}
+              userRole={userRole}
+            />
+            <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
+              <ConfirmModal
+                title={t('projects.settings.delete_button_prompt')}
+                actionName={t('projects.settings.delete_button')}
+                body={t('projects.settings.delete_description')}
+                handleConfirm={triggerDeleteProject}
+                trigger={onOpen => (
+                  <DeleteButton
+                    label={t('projects.settings.delete')}
+                    onPress={onOpen}
+                  />
+                )}
               />
-            )}
-          />
-        </RestrictByProjectRole>
-      </Column>
-    </ScrollView>
+            </RestrictByProjectRole>
+          </Column>
+        </ScrollView>
+      )}
+    </ScreenDataRequirements>
   );
 }
 

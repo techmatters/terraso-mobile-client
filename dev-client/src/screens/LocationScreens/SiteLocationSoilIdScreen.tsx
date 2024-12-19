@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,78 +15,57 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ScrollView} from 'react-native-gesture-handler';
 
-import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
+import {Coords} from 'terraso-client-shared/types';
+
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {isSiteManager} from 'terraso-mobile-client/model/permissions/permissions';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {
-  SiteTabName,
-  SiteTabNavigator,
-} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
+import {SiteDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteDataSection';
+import {SoilIdDescriptionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdDescriptionSection';
+import {SoilIdMatchesSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdMatchesSection';
+import {SoilIdSelectionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdSelectionSection';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
-import {
-  selectSite,
-  selectUserRoleSite,
-} from 'terraso-mobile-client/store/selectors';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 
-type Props = {
+type SiteProps = {
   siteId: string;
-  initialTab?: SiteTabName;
+  coords: Coords;
 };
 
-// A "Location" can refer to a "Site" (with siteId) xor a "Temporary Location" (with only coords)
-export const SiteTabsScreen = (props: Props) => {
+export const SiteLocationSoilIdScreen = ({siteId, coords}: SiteProps) => {
   const {t} = useTranslation();
-  const navigation = useNavigation();
-  const initialTab = props.initialTab === undefined ? 'SITE' : props.initialTab;
 
-  const siteId = props.siteId;
   const site = useSelector(state => selectSite(siteId)(state));
-  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);
 
-  const appBarRightButton = useMemo(() => {
-    // display nothing if user does not own the site / is not manager
-    if (userRole === null || !isSiteManager(userRole)) {
-      return undefined;
-    }
-
-    // otherwise, show the settings
-    return (
-      <AppBarIconButton
-        name="settings"
-        onPress={() => navigation.navigate('SITE_SETTINGS', {siteId})}
-      />
-    );
-  }, [siteId, navigation, userRole]);
-
   return (
     <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
           AppBar={
-            <AppBar
-              RightButton={appBarRightButton}
-              title={site?.name ?? t('site.dashboard.default_title')}
-            />
+            <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
           }>
-          <SiteRoleContextProvider siteId={siteId}>
-            <SiteTabNavigator siteId={siteId} initialTab={initialTab} />
-          </SiteRoleContextProvider>
+          <ScrollView>
+            <SoilIdSelectionSection siteId={siteId} coords={coords} />
+
+            <SoilIdDescriptionSection siteId={siteId} coords={coords} />
+            <SoilIdMatchesSection siteId={siteId} coords={coords} />
+            <SiteRoleContextProvider siteId={siteId}>
+              <SiteDataSection siteId={siteId} />
+            </SiteRoleContextProvider>
+          </ScrollView>
         </ScreenScaffold>
       )}
     </ScreenDataRequirements>
