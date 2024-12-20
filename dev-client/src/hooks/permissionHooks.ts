@@ -20,16 +20,13 @@ import {useCallback} from 'react';
 import {Project, ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {
-  projectRolesEqual,
-  siteRolesEqual,
-} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
-import {
-  PROJECT_EDITOR_ROLES,
-  SITE_EDITOR_ROLES,
+  canEditProject,
+  canEditSite,
   userHasProjectRole,
 } from 'terraso-mobile-client/model/permissions/permissions';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
+  selectSite,
   selectUserRoleProject,
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
@@ -50,15 +47,33 @@ export const useRoleMayEditProject = (projectId: string) => {
   const userRole = useSelector(state =>
     selectUserRoleProject(state, projectId),
   );
-  return !!PROJECT_EDITOR_ROLES.find(editorRole => {
-    return userRole !== null && projectRolesEqual(userRole, editorRole);
-  });
+  return canEditProject(userRole);
 };
 
 export const useRoleMayEditSite = (siteId: string) => {
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
-  const foundRole = SITE_EDITOR_ROLES.find(editorRole => {
-    return userRole !== null && siteRolesEqual(userRole, editorRole);
-  });
-  return !!foundRole;
+  return canEditSite(userRole);
+};
+
+export const useUserMayEditSiteNote = ({
+  siteId,
+  noteId,
+}: {
+  siteId: string;
+  noteId: string;
+}) => {
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+
+  const site = useSelector(state => selectSite(siteId)(state));
+  const note = site?.notes[noteId];
+  const currentUser = useSelector(state => state.account.currentUser.data);
+  const currentUserIsAuthor = !!note && note.authorId === currentUser?.id;
+
+  return (
+    userRole &&
+    ((userRole.kind === 'site' && canEditSite(userRole)) ||
+      (userRole.kind === 'project' &&
+        canEditProject(userRole.role) &&
+        currentUserIsAuthor))
+  );
 };
