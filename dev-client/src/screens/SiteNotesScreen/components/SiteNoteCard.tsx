@@ -25,10 +25,9 @@ import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useSiteRoleContext} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {useUserMayEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useSelector} from 'terraso-mobile-client/store';
 import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 
 type Props = {
@@ -39,17 +38,12 @@ export const SiteNoteCard = ({note}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
-  const currentUser = useSelector(state => state.account.currentUser.data);
-  const currentUserIsAuthor = note.authorId === currentUser?.id;
-  const siteRole = useSiteRoleContext();
-  const currentUserIsOwner = siteRole?.role === 'OWNER';
-  const currentUserIsManager = siteRole?.role === 'MANAGER';
-
   const isOffline = useIsOffline();
-
-  const canViewEditScreen =
-    !isOffline &&
-    (currentUserIsAuthor || currentUserIsOwner || currentUserIsManager);
+  const userCanEditNote = useUserMayEditSiteNote({
+    siteId: note.siteId,
+    noteId: note.id,
+  });
+  const canViewEditScreen = !isOffline && userCanEditNote;
 
   const onEditNote = useCallback(() => {
     if (canViewEditScreen) {

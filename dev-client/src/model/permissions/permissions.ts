@@ -61,6 +61,10 @@ export const canEditSite = (userRole: SiteUserRole | null) => {
   );
 };
 
+export const canEditProject = (userRole: ProjectRole | null) => {
+  return Boolean(userRole && PROJECT_EDITOR_ROLES.includes(userRole));
+};
+
 export const userHasProjectRole = (
   currentUser: User | null,
   project: Project | null,
