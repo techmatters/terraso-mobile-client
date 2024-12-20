@@ -63,10 +63,10 @@ export const isProjectEditor = (userRole: SiteUserRole | null) => {
 
 export const userHasProjectRole = (
   currentUser: User | null,
-  project: Project,
+  project: Project | null,
   userRoles?: ProjectRole[],
 ) => {
-  if (!currentUser) {
+  if (!currentUser || !project) {
     return false;
   }
 

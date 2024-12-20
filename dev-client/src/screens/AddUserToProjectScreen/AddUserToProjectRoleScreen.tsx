@@ -37,6 +37,7 @@ import {
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useRoleMayEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {addUserToProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {TabRoutes} from 'terraso-mobile-client/navigation/constants';
@@ -73,10 +74,13 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
     navigation.dispatch(TabActions.jumpTo(TabRoutes.TEAM));
   }, [dispatch, projectId, user, selectedRole, navigation]);
 
+  const roleIsEditor = useRoleMayEditProject(projectId);
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleMissingUser = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
+    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
     {data: user, doIfMissing: handleMissingUser},
   ]);
 

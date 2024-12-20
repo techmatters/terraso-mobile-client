@@ -100,7 +100,7 @@ describe('ScreenDataRequirements', () => {
     expect(thingsDone).toEqual('null');
   });
 
-  test('renders children and triggers no action when required data exists, even if it is a boolean equal to false', () => {
+  test('does not render children and triggers action when required data is falsy', () => {
     let thingsDone = '';
     const requirements = [
       {
@@ -115,7 +115,7 @@ describe('ScreenDataRequirements', () => {
       </ScreenDataRequirements>,
     );
 
-    expect(queryByText('Hello world')).toBeTruthy();
-    expect(thingsDone).toEqual('');
+    expect(queryByText('Hello world')).toBeNull();
+    expect(thingsDone).toEqual('false');
   });
 });

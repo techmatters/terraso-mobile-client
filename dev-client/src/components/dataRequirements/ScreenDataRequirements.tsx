@@ -23,7 +23,7 @@ type Requirement = {
 };
 
 const dataExists = (data: object | undefined | null) => {
-  return data !== null && data !== undefined;
+  return !!data;
 };
 // First item should be the entity with the largest scope
 // Example: if EditSiteNoteScreen is missing the site and the site note,
@@ -50,9 +50,9 @@ type Props = {
 };
 
 /*
- * This is intended to wrap components (mostly screens as of 2024-12) so they only render
- * if required data is truthy. This prevents screens from breaking if, for example, a pull
- * happens that deletes data that is required to view the screen.
+ * This is intended to wrap Screen components so they only render if required data is truthy, and do
+ * an action if not. This prevents screens from breaking if, for example, a pull happens that
+ * deletes data that is required to view the screen.
  */
 export const ScreenDataRequirements = ({requirements, children}: Props) => {
   const requiredDataExists = useRequiredData(requirements);
