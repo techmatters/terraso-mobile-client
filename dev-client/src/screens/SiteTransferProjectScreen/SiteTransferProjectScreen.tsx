@@ -22,13 +22,17 @@ import {ScrollView} from 'react-native';
 import {Fab} from 'native-base';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useRoleMayEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
 import {transferSites} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -194,9 +198,12 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     return navigation.pop();
   }, [dispatch, navigation, projectId, checkedSites]);
 
+  const roleIsEditor = useRoleMayEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
+    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (

@@ -18,12 +18,16 @@
 import {useTranslation} from 'react-i18next';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useRoleMayEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AddTeamMemberForm} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/AddTeamMemberForm';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -43,9 +47,12 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
   // wanting to add multiple users at the same time.
 
+  const roleIsEditor = useRoleMayEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
+    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (

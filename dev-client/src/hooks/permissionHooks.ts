@@ -19,8 +19,20 @@ import {useCallback} from 'react';
 
 import {Project, ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
-import {userHasProjectRole} from 'terraso-mobile-client/model/permissions/permissions';
+import {
+  projectRolesEqual,
+  siteRolesEqual,
+} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
+import {
+  PROJECT_EDITOR_ROLES,
+  SITE_EDITOR_ROLES,
+  userHasProjectRole,
+} from 'terraso-mobile-client/model/permissions/permissions';
 import {useSelector} from 'terraso-mobile-client/store';
+import {
+  selectUserRoleProject,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
 
 type ProjectFilter = (project: Project) => boolean;
 
@@ -32,4 +44,21 @@ export const useProjectUserRolesFilter = (
     project => userHasProjectRole(currentUser, project, userRoles),
     [currentUser, userRoles],
   );
+};
+
+export const useRoleMayEditProject = (projectId: string) => {
+  const userRole = useSelector(state =>
+    selectUserRoleProject(state, projectId),
+  );
+  return !!PROJECT_EDITOR_ROLES.find(editorRole => {
+    return userRole !== null && projectRolesEqual(userRole, editorRole);
+  });
+};
+
+export const useRoleMayEditSite = (siteId: string) => {
+  const userRole = useSelector(state => selectUserRoleSite(state, siteId));
+  const foundRole = SITE_EDITOR_ROLES.find(editorRole => {
+    return userRole !== null && siteRolesEqual(userRole, editorRole);
+  });
+  return !!foundRole;
 };
