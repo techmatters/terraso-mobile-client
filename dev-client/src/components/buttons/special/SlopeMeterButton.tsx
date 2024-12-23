@@ -18,7 +18,7 @@
 import {useTranslation} from 'react-i18next';
 import {TouchableRippleProps} from 'react-native-paper';
 
-import {BaseContainedButton} from 'terraso-mobile-client/components/Buttons/BaseContainedButton';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 
 export type SlopeMeterButtonProps = {
   disabled?: boolean;
@@ -31,7 +31,7 @@ export const SlopeMeterButton = ({
 }: SlopeMeterButtonProps) => {
   const {t} = useTranslation();
   return (
-    <BaseContainedButton
+    <ContainedButton
       label={t('general.use')}
       leftIcon="check"
       disabled={disabled}

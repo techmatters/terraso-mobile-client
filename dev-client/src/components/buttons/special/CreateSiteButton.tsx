@@ -15,12 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, Text} from 'react-native';
-import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
+import {TouchableRippleProps} from 'react-native-paper';
 
-import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {OutlinedButton} from 'terraso-mobile-client/components/buttons/OutlinedButton';
 
 export type CreateSiteButtonProps = {
   disabled?: boolean;
@@ -33,85 +31,11 @@ export const CreateSiteButton = ({
 }: CreateSiteButtonProps) => {
   const {t} = useTranslation();
 
-  const [pressed, setPressed] = useState(false);
-  const onPressIn = useMemo(() => () => setPressed(true), [setPressed]);
-  const onPressOut = useMemo(() => () => setPressed(false), [setPressed]);
-
-  const label = t('site.create.title');
-  const colorStyles = disabled ? COLOR_STYLES.disabled : COLOR_STYLES.default;
-  const colorStyle = pressed ? colorStyles.pressed : colorStyles.default;
-
   return (
-    <TouchableRipple
-      style={[styles.container, colorStyle.container]}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{disabled}}
+    <OutlinedButton
+      label={t('site.create.title')}
       disabled={disabled}
       onPress={onPress}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut}>
-      <Text style={[styles.label, colorStyle.content]}>{label}</Text>
-    </TouchableRipple>
+    />
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderRadius: 4,
-    alignSelf: 'flex-start',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-  },
-  containerDefault: {
-    borderColor: convertColorProp('primary.main'),
-    backgroundColor: convertColorProp('transparent'),
-  },
-  containerDefaultPressed: {
-    borderColor: convertColorProp('primary.dark'),
-    backgroundColor: convertColorProp('action.selected'),
-  },
-  containerDisabled: {
-    borderColor: convertColorProp('action.disabled'),
-    backgroundColor: convertColorProp('transparent'),
-  },
-  contentDefault: {
-    color: convertColorProp('primary.main'),
-  },
-  contentDefaultPressed: {
-    color: convertColorProp('primary.dark'),
-  },
-  contentDisabled: {
-    color: convertColorProp('action.disabled'),
-  },
-  label: {
-    fontWeight: '500',
-    textTransform: 'uppercase',
-    fontSize: 13,
-    lineHeight: 22,
-  },
-});
-
-const COLOR_STYLES = {
-  default: {
-    default: {
-      container: styles.containerDefault,
-      content: styles.contentDefault,
-    },
-    pressed: {
-      container: styles.containerDefaultPressed,
-      content: styles.contentDefaultPressed,
-    },
-  },
-  disabled: {
-    default: {
-      container: styles.containerDisabled,
-      content: styles.contentDisabled,
-    },
-    pressed: {
-      container: styles.containerDisabled,
-      content: styles.contentDisabled,
-    },
-  },
 };
