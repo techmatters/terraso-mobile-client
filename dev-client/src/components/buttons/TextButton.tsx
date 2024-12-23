@@ -15,20 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useState} from 'react';
-import {AccessibilityProps} from 'react-native';
+import {useMemo, useState} from 'react';
+import {AccessibilityProps, Pressable, StyleSheet, Text} from 'react-native';
 import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
 
-import {Button} from 'native-base';
-
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
-export type TextButtonType = 'default' | 'error' | 'alertError';
+export type TextButtonType = 'default' | 'destructive' | 'alertError';
 
 export type TextButtonProps = {
   label: string;
   type?: TextButtonType;
-  role?: AccessibilityProps['role'];
+  role?: AccessibilityProps['accessibilityRole'];
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
@@ -45,63 +44,96 @@ export const TextButton = ({
   onPress,
 }: TextButtonProps) => {
   const [pressed, setPressed] = useState(false);
-  const colors = disabled ? COLORS.disabled : COLORS[type];
+  const onPressIn = useMemo(() => () => setPressed(true), [setPressed]);
+  const onPressOut = useMemo(() => () => setPressed(false), [setPressed]);
+
+  const colorStyles = disabled ? COLOR_STYLES.disabled : COLOR_STYLES[type];
+  const colorStyle = pressed ? colorStyles.pressed : colorStyles.default;
 
   return (
-    <Button
-      size="md"
-      alignSelf="flex-start"
-      background="transparent"
-      _text={{
-        textTransform: 'uppercase',
-        textDecoration: 'none',
-        color: colors.default,
-      }}
-      _pressed={{
-        background: 'transparent',
-        _text: {textDecoration: 'none', color: colors.pressed},
-      }}
-      leftIcon={
-        leftIcon && (
-          <Icon
-            name={leftIcon}
-            color={!pressed ? colors.default : colors.pressed}
-          />
-        )
-      }
-      rightIcon={
-        rightIcon && (
-          <Icon
-            name={rightIcon}
-            color={!pressed ? colors.default : colors.pressed}
-          />
-        )
-      }
+    <Pressable
+      style={styles.container}
+      accessibilityRole={role}
+      accessibilityLabel={label}
+      accessibilityState={{disabled}}
       disabled={disabled}
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}
       onPress={onPress}
-      role={role}>
-      {label}
-    </Button>
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}>
+      {leftIcon ? (
+        <Icon name={leftIcon} style={[styles.leftIcon, colorStyle]} />
+      ) : (
+        <></>
+      )}
+      <Text style={[styles.label, colorStyle]}>{label}</Text>
+      {rightIcon ? (
+        <Icon name={rightIcon} style={[styles.rightIcon, colorStyle]} />
+      ) : (
+        <></>
+      )}
+    </Pressable>
   );
 };
 
-export const COLORS = {
-  default: {
-    default: 'primary.main',
-    pressed: 'primary.dark',
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 8,
   },
-  error: {
-    default: 'error.main',
-    pressed: 'error.content',
+  label: {
+    textTransform: 'uppercase',
+    fontSize: 15,
+    fontWeight: '500',
+    lineHeight: 26,
+    marginHorizontal: 8,
+  },
+  leftIcon: {
+    marginRight: 8,
+  },
+  rightIcon: {
+    marginLeft: 8,
+  },
+  contentDefault: {
+    color: convertColorProp('primary.main'),
+  },
+  contentDefaultPressed: {
+    color: convertColorProp('primary.dark'),
+  },
+  contentDestructive: {
+    color: convertColorProp('error.main'),
+  },
+  contentDestructivePressed: {
+    color: convertColorProp('error.content'),
+  },
+  contentAlertError: {
+    color: convertColorProp('error.content'),
+  },
+  contentAlertErrorPressed: {
+    color: convertColorProp('error.content'),
+  },
+  contentDisabled: {
+    color: convertColorProp('text.disabled'),
+  },
+});
+
+const COLOR_STYLES = {
+  default: {
+    default: styles.contentDefault,
+    pressed: styles.contentDefaultPressed,
+  },
+  destructive: {
+    default: styles.contentDestructive,
+    pressed: styles.contentDestructivePressed,
   },
   alertError: {
-    default: 'error.content',
-    pressed: 'error.content',
+    default: styles.contentAlertError,
+    pressed: styles.contentAlertError,
   },
   disabled: {
-    default: 'text.disabled',
-    pressed: 'text.disabled',
+    default: styles.contentDisabled,
+    pressed: styles.contentDisabled,
   },
 };
