@@ -28,12 +28,14 @@ import {
 } from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {theme} from 'terraso-mobile-client/theme';
 
+export type IconSize = keyof typeof theme.components.Icon.sizes | number;
+
 export type IconProps = Omit<
   React.ComponentProps<typeof MaterialIcon>,
   'size' | 'color'
 > &
   NativeBaseProps & {
-    size?: keyof typeof theme.components.Icon.sizes | number;
+    size?: IconSize;
     color?: ThemeColor | ColorValue | string;
   };
 
