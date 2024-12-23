@@ -15,10 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo} from 'react';
-import {Linking} from 'react-native';
+import {useCallback, useMemo, useState} from 'react';
+import {Linking, Pressable, StyleSheet, Text} from 'react-native';
 
-import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {validateUrl} from 'terraso-mobile-client/util';
 
 export type ExternalLinkType = 'default' | 'alertError';
@@ -34,18 +35,70 @@ export const ExternalLink = ({
   label,
   url,
 }: ExternalLinkProps) => {
+  const [pressed, setPressed] = useState(false);
+  const onPressIn = useCallback(() => setPressed(true), [setPressed]);
+  const onPressOut = useCallback(() => setPressed(false), [setPressed]);
+
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
   const openUrl = useCallback(() => Linking.openURL(url), [url]);
 
-  return (
-    isValidUrl && (
-      <TextButton
-        type={type}
-        role="link"
-        label={label}
-        rightIcon="open-in-new"
-        onPress={openUrl}
-      />
-    )
+  const colorStyles = COLOR_STYLES[type];
+  const colorStyle = pressed ? colorStyles.pressed : colorStyles.default;
+
+  return isValidUrl ? (
+    <Pressable
+      style={styles.container}
+      accessibilityRole="link"
+      accessibilityLabel={label}
+      onPress={openUrl}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}>
+      <Text style={[styles.label, colorStyle]}>{label}</Text>
+      <Icon name="open-in-new" style={[styles.icon, colorStyle]} />
+    </Pressable>
+  ) : (
+    <></>
   );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  label: {
+    textTransform: 'uppercase',
+    fontSize: 15,
+    fontWeight: '500',
+    lineHeight: 26,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  contentDefault: {
+    color: convertColorProp('primary.main'),
+  },
+  contentDefaultPressed: {
+    color: convertColorProp('primary.dark'),
+  },
+  contentAlertError: {
+    color: convertColorProp('error.content'),
+  },
+  contentAlertErrorPressed: {
+    color: convertColorProp('error.content'),
+  },
+});
+
+const COLOR_STYLES = {
+  default: {
+    default: styles.contentDefault,
+    pressed: styles.contentDefaultPressed,
+  },
+  alertError: {
+    default: styles.contentAlertError,
+    pressed: styles.contentAlertError,
+  },
 };
