@@ -15,9 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo, useState} from 'react';
-import {AccessibilityProps, Pressable, StyleSheet, Text} from 'react-native';
-import {PressableProps} from 'react-native-paper/lib/typescript/components/TouchableRipple/Pressable';
+import {useCallback, useState} from 'react';
+import {AccessibilityProps, StyleSheet, Text} from 'react-native';
+import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -31,7 +31,7 @@ export type TextButtonProps = {
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
-  onPress?: PressableProps['onPress'];
+  onPress?: TouchableRippleProps['onPress'];
 };
 
 export const TextButton = ({
@@ -44,15 +44,17 @@ export const TextButton = ({
   onPress,
 }: TextButtonProps) => {
   const [pressed, setPressed] = useState(false);
-  const onPressIn = useMemo(() => () => setPressed(true), [setPressed]);
-  const onPressOut = useMemo(() => () => setPressed(false), [setPressed]);
+  const onPressIn = useCallback(() => setPressed(true), [setPressed]);
+  const onPressOut = useCallback(() => setPressed(false), [setPressed]);
 
-  const colorStyles = disabled ? COLOR_STYLES.disabled : COLOR_STYLES[type];
-  const colorStyle = pressed ? colorStyles.pressed : colorStyles.default;
+  const containerStyle = pressed
+    ? styles.containerPressed
+    : styles.containerDefault;
+  const contentStyle = disabled ? COLOR_STYLES.disabled : COLOR_STYLES[type];
 
   return (
-    <Pressable
-      style={styles.container}
+    <TouchableRipple
+      style={[styles.container, containerStyle]}
       accessibilityRole={role}
       accessibilityLabel={label}
       accessibilityState={{disabled}}
@@ -60,18 +62,28 @@ export const TextButton = ({
       onPress={onPress}
       onPressIn={onPressIn}
       onPressOut={onPressOut}>
-      {leftIcon ? (
-        <Icon name={leftIcon} style={[styles.leftIcon, colorStyle]} />
-      ) : (
-        <></>
-      )}
-      <Text style={[styles.label, colorStyle]}>{label}</Text>
-      {rightIcon ? (
-        <Icon name={rightIcon} style={[styles.rightIcon, colorStyle]} />
-      ) : (
-        <></>
-      )}
-    </Pressable>
+      <>
+        {leftIcon ? (
+          <Icon
+            name={leftIcon}
+            size="sm"
+            style={[styles.leftIcon, contentStyle]}
+          />
+        ) : (
+          <></>
+        )}
+        <Text style={[styles.label, contentStyle]}>{label}</Text>
+        {rightIcon ? (
+          <Icon
+            name={rightIcon}
+            size="sm"
+            style={[styles.rightIcon, contentStyle]}
+          />
+        ) : (
+          <></>
+        )}
+      </>
+    </TouchableRipple>
   );
 };
 
@@ -82,12 +94,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 6,
     paddingHorizontal: 8,
+    borderRadius: 4,
+  },
+  containerDefault: {
+    backgroundColor: 'transparent',
+  },
+  containerPressed: {
+    backgroundColor: convertColorProp('action.selected'),
   },
   label: {
     textTransform: 'uppercase',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '500',
-    lineHeight: 26,
+    lineHeight: 24,
     marginHorizontal: 8,
   },
   leftIcon: {
@@ -99,19 +118,10 @@ const styles = StyleSheet.create({
   contentDefault: {
     color: convertColorProp('primary.main'),
   },
-  contentDefaultPressed: {
-    color: convertColorProp('primary.dark'),
-  },
   contentDestructive: {
     color: convertColorProp('error.main'),
   },
-  contentDestructivePressed: {
-    color: convertColorProp('error.content'),
-  },
   contentAlertError: {
-    color: convertColorProp('error.content'),
-  },
-  contentAlertErrorPressed: {
     color: convertColorProp('error.content'),
   },
   contentDisabled: {
@@ -120,20 +130,8 @@ const styles = StyleSheet.create({
 });
 
 const COLOR_STYLES = {
-  default: {
-    default: styles.contentDefault,
-    pressed: styles.contentDefaultPressed,
-  },
-  destructive: {
-    default: styles.contentDestructive,
-    pressed: styles.contentDestructivePressed,
-  },
-  alertError: {
-    default: styles.contentAlertError,
-    pressed: styles.contentAlertError,
-  },
-  disabled: {
-    default: styles.contentDisabled,
-    pressed: styles.contentDisabled,
-  },
+  default: styles.contentDefault,
+  destructive: styles.contentDestructive,
+  alertError: styles.contentAlertError,
+  disabled: styles.contentDisabled,
 };
