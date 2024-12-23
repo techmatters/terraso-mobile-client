@@ -19,38 +19,24 @@ import {useCallback, useState} from 'react';
 import {StyleSheet, Text} from 'react-native';
 import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
-import {
-  Icon,
-  IconName,
-  IconSize,
-} from 'terraso-mobile-client/components/icons/Icon';
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
-export type ContainedButtonSize =
-  | 'sm'
-  | 'md'
-  | 'lg'
-  | 'xl'; /* (XL only appears in special cases) */
-
-export type ContainedButtonProps = {
+export type OutlinedButtonProps = {
   label: string;
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
-  size?: ContainedButtonSize;
-  stretchToFit?: boolean;
   onPress?: TouchableRippleProps['onPress'];
 };
 
-export const ContainedButton = ({
+export const OutlinedButton = ({
   label,
   leftIcon,
   rightIcon,
   disabled,
-  size = 'md',
-  stretchToFit,
   onPress,
-}: ContainedButtonProps) => {
+}: OutlinedButtonProps) => {
   const [pressed, setPressed] = useState(false);
   const onPressIn = useCallback(() => setPressed(true), [setPressed]);
   const onPressOut = useCallback(() => setPressed(false), [setPressed]);
@@ -64,14 +50,10 @@ export const ContainedButton = ({
   const contentStyle = disabled
     ? CONTENT_STYLES.disabled
     : CONTENT_STYLES.default;
-  const containerSize = CONTAINER_STYLES[size];
-  const contentSize = CONTENT_STYLES[size];
-  const iconSize = ICON_SIZES[size];
-  const stretchStyle = stretchToFit ? styles.containerStretch : undefined;
 
   return (
     <TouchableRipple
-      style={[styles.container, containerSize, containerStyle, stretchStyle]}
+      style={[styles.container, containerStyle]}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{disabled}}
@@ -83,17 +65,17 @@ export const ContainedButton = ({
         {leftIcon ? (
           <Icon
             name={leftIcon}
-            size={iconSize}
+            size="xs"
             style={[styles.leftIcon, contentStyle]}
           />
         ) : (
           <></>
         )}
-        <Text style={[styles.label, contentSize, contentStyle]}>{label}</Text>
+        <Text style={[styles.label, contentStyle]}>{label}</Text>
         {rightIcon ? (
           <Icon
             name={rightIcon}
-            size={iconSize}
+            size="xs"
             style={[styles.rightIcon, contentStyle]}
           />
         ) : (
@@ -107,41 +89,27 @@ export const ContainedButton = ({
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'flex-start',
+    borderWidth: 1,
     borderRadius: 4,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  containerStretch: {
-    alignSelf: 'auto',
-  },
-  containerSm: {
     paddingVertical: 4,
     paddingHorizontal: 10,
   },
-  containerMd: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-  },
-  containerLg: {
-    paddingVertical: 8,
-    paddingHorizontal: 22,
-  },
-  containerXl: {
-    paddingVertical: 16,
-    paddingHorizontal: 44,
-  },
   containerDefault: {
-    backgroundColor: convertColorProp('primary.main'),
+    borderColor: convertColorProp('primary.main'),
+    backgroundColor: convertColorProp('transparent'),
   },
   containerDefaultPressed: {
-    backgroundColor: convertColorProp('primary.dark'),
+    borderColor: convertColorProp('primary.main'),
+    backgroundColor: convertColorProp('action.selected'),
   },
   containerDisabled: {
-    backgroundColor: convertColorProp('action.disabledBackground'),
+    borderColor: convertColorProp('action.disabled'),
   },
   contentDefault: {
-    color: convertColorProp('primary.contrast'),
+    color: convertColorProp('primary.main'),
   },
   contentDisabled: {
     color: convertColorProp('action.disabled'),
@@ -149,18 +117,8 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: '500',
     textTransform: 'uppercase',
-  },
-  labelSm: {
     fontSize: 13,
     lineHeight: 22,
-  },
-  labelMd: {
-    fontSize: 14,
-    lineHeight: 24,
-  },
-  labelLg: {
-    fontSize: 15,
-    lineHeight: 26,
   },
   leftIcon: {
     marginRight: 8,
@@ -179,24 +137,9 @@ const CONTAINER_STYLES = {
     default: styles.containerDisabled,
     pressed: styles.containerDisabled,
   },
-  sm: styles.containerSm,
-  md: styles.containerMd,
-  lg: styles.containerLg,
-  xl: styles.containerXl,
 };
 
 const CONTENT_STYLES = {
   default: styles.contentDefault,
   disabled: styles.contentDisabled,
-  sm: styles.labelSm,
-  md: styles.labelMd,
-  lg: styles.labelLg,
-  xl: styles.labelLg,
-};
-
-const ICON_SIZES: Record<string, IconSize> = {
-  sm: 'xs',
-  md: 'sm',
-  lg: 'md',
-  xl: 'md',
 };
