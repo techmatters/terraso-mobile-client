@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 
@@ -57,6 +58,7 @@ export function ProjectSettingsScreen({
   const dispatch = useDispatch();
   const project = useSelector(selectProject(projectId));
   const {name, description, privacy} = project;
+  const [projectPurposelyDeleted, setProjectPurposelyDeleted] = useState(false);
 
   const onSubmit = async (values: Omit<ProjectUpdateMutationInput, 'id'>) => {
     await dispatch(updateProject({...values, id: projectId, privacy}));
@@ -64,16 +66,20 @@ export function ProjectSettingsScreen({
 
   const navigation = useNavigation();
 
-  const triggerDeleteProject = () => {
+  const triggerDeleteProject = useCallback(() => {
+    setProjectPurposelyDeleted(true);
     dispatch(deleteProject({id: projectId}));
     navigation.pop();
-  };
+  }, [dispatch, navigation, projectId]);
 
   const userRole = useProjectRoleContext();
 
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const requirements = useMemoizedRequirements([
-    {data: project, doIfMissing: handleMissingProject},
+    {
+      data: project || projectPurposelyDeleted,
+      doIfMissing: handleMissingProject,
+    },
   ]);
 
   return (

@@ -72,20 +72,22 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
   const [name, setName] = useState(site?.name);
   const isOffline = useIsOffline();
+  const [sitePurposelyDeleted, setSitePurposelyDeleted] = useState(false);
 
   const onSave = useCallback(
     () => dispatch(updateSite({id: site.id, name})),
     [dispatch, site, name],
   );
 
-  const onDelete = useCallback(async () => {
-    await dispatch(deleteSite(site));
+  const onDelete = useCallback(() => {
+    setSitePurposelyDeleted(true);
+    dispatch(deleteSite(site));
     navigation.navigate('BOTTOM_TABS');
   }, [dispatch, navigation, site]);
 
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = useMemoizedRequirements([
-    {data: site, doIfMissing: handleMissingSite},
+    {data: site || sitePurposelyDeleted, doIfMissing: handleMissingSite},
   ]);
 
   return (
