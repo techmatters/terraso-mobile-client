@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'flex-start',
     borderRadius: 4,
+    borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -133,12 +134,15 @@ const styles = StyleSheet.create({
   },
   containerDefault: {
     backgroundColor: convertColorProp('primary.main'),
+    borderColor: convertColorProp('primary.main'),
   },
   containerDefaultPressed: {
     backgroundColor: convertColorProp('primary.dark'),
+    borderColor: convertColorProp('primary.dark'),
   },
   containerDisabled: {
     backgroundColor: convertColorProp('action.disabledBackground'),
+    borderColor: convertColorProp('action.disabledBackground'),
   },
   contentDefault: {
     color: convertColorProp('primary.contrast'),
