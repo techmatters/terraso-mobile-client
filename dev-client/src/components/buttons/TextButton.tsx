@@ -15,8 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet} from 'react-native';
-import {TouchableRippleProps} from 'react-native-paper';
+import {PressableProps, StyleSheet} from 'react-native';
 
 import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
@@ -30,7 +29,7 @@ export type TextButtonProps = {
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
-  onPress?: TouchableRippleProps['onPress'];
+  onPress?: PressableProps['onPress'];
 };
 
 export const TextButton = ({

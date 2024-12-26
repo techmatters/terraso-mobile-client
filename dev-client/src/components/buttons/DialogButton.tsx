@@ -15,8 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet} from 'react-native';
-import {TouchableRippleProps} from 'react-native-paper';
+import {PressableProps, StyleSheet} from 'react-native';
 
 import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -26,7 +25,7 @@ export type DialogButtonType = 'default' | 'destructive' | 'outlined';
 export type DialogButtonProps = {
   label: string;
   type?: DialogButtonType;
-  onPress?: TouchableRippleProps['onPress'];
+  onPress?: PressableProps['onPress'];
 };
 
 export const DialogButton = ({
@@ -48,7 +47,7 @@ export const DialogButton = ({
 export type BaseContainedButtonProps = {
   label: string;
   type?: DialogButtonType;
-  onPress?: TouchableRippleProps['onPress'];
+  onPress?: PressableProps['onPress'];
 };
 
 const styles = StyleSheet.create({
