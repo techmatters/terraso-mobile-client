@@ -19,6 +19,7 @@ import {useCallback, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
+import {buttonShape} from 'terraso-mobile-client/components/buttons/ButtonShapes';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export type DialogButtonType = 'default' | 'destructive' | 'outlined';
@@ -38,6 +39,7 @@ export const DialogButton = ({
   const onPressIn = useCallback(() => setPressed(true), [setPressed]);
   const onPressOut = useCallback(() => setPressed(false), [setPressed]);
 
+  const shape = buttonShape('dialog');
   const containerStyles = CONTAINER_STYLES[type];
   const containerStyle = pressed
     ? containerStyles.pressed
@@ -47,14 +49,14 @@ export const DialogButton = ({
   return (
     <View>
       <TouchableRipple
-        style={[styles.container, containerStyle]}
+        style={[...shape.containerStyles, containerStyle]}
         accessibilityRole="button"
         accessibilityLabel={label}
         onPress={onPress}
         onPressIn={onPressIn}
         onPressOut={onPressOut}>
         <>
-          <Text style={[styles.label, contentStyle]}>{label}</Text>
+          <Text style={[...shape.labelStyles, contentStyle]}>{label}</Text>
         </>
       </TouchableRipple>
     </View>
@@ -68,16 +70,6 @@ export type BaseContainedButtonProps = {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'flex-start',
-    borderRadius: 4,
-    borderWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-  },
   containerDefault: {
     borderColor: convertColorProp('primary.main'),
     backgroundColor: convertColorProp('primary.main'),
@@ -110,12 +102,6 @@ const styles = StyleSheet.create({
   },
   contentOutlined: {
     color: convertColorProp('text.primary'),
-  },
-  label: {
-    fontWeight: '500',
-    textTransform: 'capitalize',
-    fontSize: 14,
-    lineHeight: 20,
   },
 });
 

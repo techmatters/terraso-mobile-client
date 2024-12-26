@@ -19,6 +19,7 @@ import {useCallback, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
+import {buttonShape} from 'terraso-mobile-client/components/buttons/ButtonShapes';
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
@@ -41,6 +42,7 @@ export const OutlinedButton = ({
   const onPressIn = useCallback(() => setPressed(true), [setPressed]);
   const onPressOut = useCallback(() => setPressed(false), [setPressed]);
 
+  const shape = buttonShape('sm');
   const containerStyles = disabled
     ? CONTAINER_STYLES.disabled
     : CONTAINER_STYLES.default;
@@ -54,7 +56,7 @@ export const OutlinedButton = ({
   return (
     <View>
       <TouchableRipple
-        style={[styles.container, containerStyle]}
+        style={[...shape.containerStyles, containerStyle]}
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityState={{disabled}}
@@ -66,18 +68,18 @@ export const OutlinedButton = ({
           {leftIcon ? (
             <Icon
               name={leftIcon}
-              size="xs"
-              style={[styles.leftIcon, contentStyle]}
+              size={shape.iconSize}
+              style={[...shape.leftIconStyles, contentStyle]}
             />
           ) : (
             <></>
           )}
-          <Text style={[styles.label, contentStyle]}>{label}</Text>
+          <Text style={[...shape.labelStyles, contentStyle]}>{label}</Text>
           {rightIcon ? (
             <Icon
               name={rightIcon}
-              size="xs"
-              style={[styles.rightIcon, contentStyle]}
+              size={shape.iconSize}
+              style={[...shape.rightIconStyles, contentStyle]}
             />
           ) : (
             <></>
@@ -89,16 +91,6 @@ export const OutlinedButton = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'flex-start',
-    borderRadius: 4,
-    borderWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-  },
   containerDefault: {
     borderColor: convertColorProp('primary.main'),
     backgroundColor: convertColorProp('transparent'),
@@ -115,18 +107,6 @@ const styles = StyleSheet.create({
   },
   contentDisabled: {
     color: convertColorProp('action.disabled'),
-  },
-  label: {
-    fontWeight: '500',
-    textTransform: 'uppercase',
-    fontSize: 13,
-    lineHeight: 22,
-  },
-  leftIcon: {
-    marginRight: 8,
-  },
-  rightIcon: {
-    marginLeft: 8,
   },
 });
 

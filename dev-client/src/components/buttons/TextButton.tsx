@@ -19,6 +19,7 @@ import {useCallback, useState} from 'react';
 import {AccessibilityProps, StyleSheet, Text, View} from 'react-native';
 import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
+import {buttonShape} from 'terraso-mobile-client/components/buttons/ButtonShapes';
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
@@ -47,6 +48,7 @@ export const TextButton = ({
   const onPressIn = useCallback(() => setPressed(true), [setPressed]);
   const onPressOut = useCallback(() => setPressed(false), [setPressed]);
 
+  const shape = buttonShape('text');
   const containerStyle = pressed
     ? styles.containerPressed
     : styles.containerDefault;
@@ -55,7 +57,7 @@ export const TextButton = ({
   return (
     <View>
       <TouchableRipple
-        style={[styles.container, containerStyle]}
+        style={[...shape.containerStyles, containerStyle]}
         borderless={true} /* Fixes iOS ripple effect border radius issue */
         accessibilityRole={role}
         accessibilityLabel={label}
@@ -68,18 +70,18 @@ export const TextButton = ({
           {leftIcon ? (
             <Icon
               name={leftIcon}
-              size="sm"
-              style={[styles.leftIcon, contentStyle]}
+              size={shape.iconSize}
+              style={[...shape.leftIconStyles, contentStyle]}
             />
           ) : (
             <></>
           )}
-          <Text style={[styles.label, contentStyle]}>{label}</Text>
+          <Text style={[...shape.labelStyles, contentStyle]}>{label}</Text>
           {rightIcon ? (
             <Icon
               name={rightIcon}
-              size="sm"
-              style={[styles.rightIcon, contentStyle]}
+              size={shape.iconSize}
+              style={[...shape.rightIconStyles, contentStyle]}
             />
           ) : (
             <></>
@@ -91,32 +93,13 @@ export const TextButton = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    borderRadius: 4,
-  },
   containerDefault: {
     backgroundColor: 'transparent',
+    borderColor: 'transparent',
   },
   containerPressed: {
     backgroundColor: convertColorProp('action.selected'),
-  },
-  label: {
-    textTransform: 'uppercase',
-    fontSize: 14,
-    fontWeight: '500',
-    lineHeight: 24,
-    marginHorizontal: 8,
-  },
-  leftIcon: {
-    marginRight: 8,
-  },
-  rightIcon: {
-    marginLeft: 8,
+    borderColor: convertColorProp('action.selected'),
   },
   contentDefault: {
     color: convertColorProp('primary.main'),
