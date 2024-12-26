@@ -17,28 +17,23 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {Fab} from 'native-base';
-
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type DoneFabProps = {
-  isDisabled?: boolean;
+  disabled?: boolean;
 };
 
-export const DoneFab = ({isDisabled}: DoneFabProps) => {
+export const DoneFab = ({disabled}: DoneFabProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 
   return (
-    <Box>
-      <Fab
-        onPress={() => navigation.pop()}
-        leftIcon={<Icon name="check" />}
-        label={t('general.done')}
-        isDisabled={isDisabled}
-      />
-    </Box>
+    <Fab
+      onPress={() => navigation.pop()}
+      leftIcon="check"
+      label={t('general.done')}
+      disabled={disabled}
+    />
   );
 };
