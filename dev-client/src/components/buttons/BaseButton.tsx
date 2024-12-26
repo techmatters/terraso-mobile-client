@@ -15,44 +15,122 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet} from 'react-native';
+import {useCallback, useState} from 'react';
+import {
+  PressableProps,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
+import {TouchableRipple} from 'react-native-paper';
 
+import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {IconSize} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 /**
- * Standard shapes and sizes for button implementations. Individual button implementations
- * should use these constants for consistent styling.
+ * Base shapes and structure for button implementations. Individual button implementations
+ * should use these constants and components for consistent behavior and styling.
  */
 export type ButtonShape = 'sm' | 'md' | 'lg' | 'xl' | 'dialog' | 'text';
 
-export const buttonShape = (shape: ButtonShape) => {
-  return {
-    containerStyles: containerStyles(shape),
-    labelStyles: labelStyles(shape),
-    leftIconStyles: leftIconStyles(shape),
-    rightIconStyles: rightIconStyles(shape),
-    iconSize: iconSize(shape),
-  };
+export type StateStyles<T> = {
+  default: StyleProp<T>;
+  pressed?: StyleProp<T>;
+  disabled?: StyleProp<T>;
 };
 
-export const containerStyles = (shape: ButtonShape) => {
-  return containerShapeStyles[shape];
+export type BaseButtonProps = {
+  shape: ButtonShape;
+  stretchToFit?: boolean;
+  container: StateStyles<ViewStyle>;
+  content: StateStyles<TextStyle>;
+  label: string;
+  leftIcon?: IconName;
+  rightIcon?: IconName;
+  disabled?: boolean;
+  onPress?: PressableProps['onPress'];
 };
 
-export const labelStyles = (shape: ButtonShape) => {
-  return labelShapeStyles[shape];
+export const BaseButton = ({
+  shape,
+  stretchToFit,
+  container,
+  content,
+  label,
+  leftIcon,
+  rightIcon,
+  disabled,
+  onPress,
+}: BaseButtonProps) => {
+  const [pressed, setPressed] = useState(false);
+  const onPressIn = useCallback(() => setPressed(true), [setPressed]);
+  const onPressOut = useCallback(() => setPressed(false), [setPressed]);
+
+  const containerStyles = containerShapeStyles[shape];
+  const labelStyles = labelShapeStyles[shape];
+  const leftIconStyles = leftIconShapeStyles[shape];
+  const rightIconStyles = rightIconShapeStyles[shape];
+  const iconSize = iconShapeSize[shape];
+
+  const stretchStyle = stretchToFit ? styles.containerStretch : undefined;
+
+  const stateContainerStyle = styleForState(container, {disabled, pressed});
+  const stateContentStyle = styleForState(content, {disabled, pressed});
+
+  return (
+    <View>
+      <TouchableRipple
+        style={[...containerStyles, stretchStyle, stateContainerStyle]}
+        borderless={true} /* Fixes iOS ripple effect border radius issue */
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{disabled}}
+        disabled={disabled}
+        onPress={onPress ?? undefined}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}>
+        <>
+          {leftIcon ? (
+            <Icon
+              name={leftIcon}
+              size={iconSize}
+              style={[leftIconStyles, stateContentStyle]}
+            />
+          ) : (
+            <></>
+          )}
+          <Text style={[labelStyles, stateContentStyle]}>{label}</Text>
+          {rightIcon ? (
+            <Icon
+              name={rightIcon}
+              size={iconSize}
+              style={[rightIconStyles, stateContentStyle]}
+            />
+          ) : (
+            <></>
+          )}
+        </>
+      </TouchableRipple>
+    </View>
+  );
 };
 
-export const iconSize = (shape: ButtonShape) => {
-  return iconShapeSize[shape];
-};
+export const styleForState = <T,>(
+  style: StateStyles<T>,
+  state: {disabled?: boolean; pressed?: boolean},
+) => {
+  const defaultStyle = style.default;
+  const disabledStyle = style.disabled ?? style.default;
+  const pressedStyle = style.pressed ?? style.default;
 
-export const leftIconStyles = (shape: ButtonShape) => {
-  return leftIconShapeStyles[shape];
-};
-
-export const rightIconStyles = (shape: ButtonShape) => {
-  return rightIconShapeStyles[shape];
+  return state.disabled
+    ? disabledStyle
+    : state.pressed
+      ? pressedStyle
+      : defaultStyle;
 };
 
 const styles = StyleSheet.create({

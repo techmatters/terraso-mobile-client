@@ -15,12 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
-import {AccessibilityProps, StyleSheet, Text, View} from 'react-native';
-import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
+import {StyleSheet} from 'react-native';
+import {TouchableRippleProps} from 'react-native-paper';
 
-import {buttonShape} from 'terraso-mobile-client/components/buttons/ButtonShapes';
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
+import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export type TextButtonType = 'default' | 'destructive' | 'alertError';
@@ -28,7 +27,6 @@ export type TextButtonType = 'default' | 'destructive' | 'alertError';
 export type TextButtonProps = {
   label: string;
   type?: TextButtonType;
-  role?: AccessibilityProps['accessibilityRole'];
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
@@ -38,57 +36,22 @@ export type TextButtonProps = {
 export const TextButton = ({
   label,
   type = 'default',
-  role = 'button',
   leftIcon,
   rightIcon,
   disabled,
   onPress,
 }: TextButtonProps) => {
-  const [pressed, setPressed] = useState(false);
-  const onPressIn = useCallback(() => setPressed(true), [setPressed]);
-  const onPressOut = useCallback(() => setPressed(false), [setPressed]);
-
-  const shape = buttonShape('text');
-  const containerStyle = pressed
-    ? styles.containerPressed
-    : styles.containerDefault;
-  const contentStyle = disabled ? COLOR_STYLES.disabled : COLOR_STYLES[type];
-
   return (
-    <View>
-      <TouchableRipple
-        style={[...shape.containerStyles, containerStyle]}
-        borderless={true} /* Fixes iOS ripple effect border radius issue */
-        accessibilityRole={role}
-        accessibilityLabel={label}
-        accessibilityState={{disabled}}
-        disabled={disabled}
-        onPress={onPress}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}>
-        <>
-          {leftIcon ? (
-            <Icon
-              name={leftIcon}
-              size={shape.iconSize}
-              style={[...shape.leftIconStyles, contentStyle]}
-            />
-          ) : (
-            <></>
-          )}
-          <Text style={[...shape.labelStyles, contentStyle]}>{label}</Text>
-          {rightIcon ? (
-            <Icon
-              name={rightIcon}
-              size={shape.iconSize}
-              style={[...shape.rightIconStyles, contentStyle]}
-            />
-          ) : (
-            <></>
-          )}
-        </>
-      </TouchableRipple>
-    </View>
+    <BaseButton
+      label={label}
+      shape="text"
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      container={CONTAINER_STYLES}
+      content={CONTENT_STYLES[type]}
+      disabled={disabled}
+      onPress={onPress}
+    />
   );
 };
 
@@ -115,9 +78,22 @@ const styles = StyleSheet.create({
   },
 });
 
-const COLOR_STYLES = {
-  default: styles.contentDefault,
-  destructive: styles.contentDestructive,
-  alertError: styles.contentAlertError,
-  disabled: styles.contentDisabled,
+const CONTAINER_STYLES = {
+  default: styles.containerDefault,
+  pressed: styles.containerPressed,
+};
+
+const CONTENT_STYLES = {
+  default: {
+    default: styles.contentDefault,
+    disabled: styles.contentDisabled,
+  },
+  destructive: {
+    default: styles.contentDestructive,
+    disabled: styles.contentDisabled,
+  },
+  alertError: {
+    default: styles.contentAlertError,
+    disabled: styles.contentDisabled,
+  },
 };

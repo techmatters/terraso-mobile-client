@@ -15,11 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
+import {StyleSheet} from 'react-native';
+import {TouchableRippleProps} from 'react-native-paper';
 
-import {buttonShape} from 'terraso-mobile-client/components/buttons/ButtonShapes';
+import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export type DialogButtonType = 'default' | 'destructive' | 'outlined';
@@ -35,31 +34,14 @@ export const DialogButton = ({
   type = 'default',
   onPress,
 }: DialogButtonProps) => {
-  const [pressed, setPressed] = useState(false);
-  const onPressIn = useCallback(() => setPressed(true), [setPressed]);
-  const onPressOut = useCallback(() => setPressed(false), [setPressed]);
-
-  const shape = buttonShape('dialog');
-  const containerStyles = CONTAINER_STYLES[type];
-  const containerStyle = pressed
-    ? containerStyles.pressed
-    : containerStyles.default;
-  const contentStyle = CONTENT_STYLES[type];
-
   return (
-    <View>
-      <TouchableRipple
-        style={[...shape.containerStyles, containerStyle]}
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        onPress={onPress}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}>
-        <>
-          <Text style={[...shape.labelStyles, contentStyle]}>{label}</Text>
-        </>
-      </TouchableRipple>
-    </View>
+    <BaseButton
+      label={label}
+      shape="dialog"
+      container={CONTAINER_STYLES[type]}
+      content={CONTENT_STYLES[type]}
+      onPress={onPress}
+    />
   );
 };
 
@@ -121,7 +103,7 @@ const CONTAINER_STYLES = {
 };
 
 const CONTENT_STYLES = {
-  default: styles.contentDefault,
-  destructive: styles.contentDestructive,
-  outlined: styles.contentOutlined,
+  default: {default: styles.contentDefault},
+  destructive: {default: styles.contentDestructive},
+  outlined: {default: styles.contentOutlined},
 };

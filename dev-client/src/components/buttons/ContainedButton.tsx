@@ -15,12 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
+import {StyleSheet} from 'react-native';
+import {TouchableRippleProps} from 'react-native-paper';
 
-import {buttonShape} from 'terraso-mobile-client/components/buttons/ButtonShapes';
-import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
+import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export type ContainedButtonSize =
@@ -48,63 +47,22 @@ export const ContainedButton = ({
   stretchToFit,
   onPress,
 }: ContainedButtonProps) => {
-  const [pressed, setPressed] = useState(false);
-  const onPressIn = useCallback(() => setPressed(true), [setPressed]);
-  const onPressOut = useCallback(() => setPressed(false), [setPressed]);
-
-  const shape = buttonShape(size);
-  const containerStyles = disabled
-    ? CONTAINER_STYLES.disabled
-    : CONTAINER_STYLES.default;
-  const containerStyle = pressed
-    ? containerStyles.pressed
-    : containerStyles.default;
-  const contentStyle = disabled
-    ? CONTENT_STYLES.disabled
-    : CONTENT_STYLES.default;
-  const stretchStyle = stretchToFit ? styles.containerStretch : undefined;
-
   return (
-    <View>
-      <TouchableRipple
-        style={[...shape.containerStyles, containerStyle, stretchStyle]}
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        accessibilityState={{disabled}}
-        disabled={disabled}
-        onPress={onPress}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}>
-        <>
-          {leftIcon ? (
-            <Icon
-              name={leftIcon}
-              size={shape.iconSize}
-              style={[...shape.leftIconStyles, contentStyle]}
-            />
-          ) : (
-            <></>
-          )}
-          <Text style={[...shape.labelStyles, contentStyle]}>{label}</Text>
-          {rightIcon ? (
-            <Icon
-              name={rightIcon}
-              size={shape.iconSize}
-              style={[...shape.rightIconStyles, contentStyle]}
-            />
-          ) : (
-            <></>
-          )}
-        </>
-      </TouchableRipple>
-    </View>
+    <BaseButton
+      label={label}
+      shape={size}
+      stretchToFit={stretchToFit}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      container={CONTAINER_STYLES}
+      content={CONTENT_STYLES}
+      disabled={disabled}
+      onPress={onPress}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  containerStretch: {
-    alignSelf: 'auto',
-  },
   containerDefault: {
     backgroundColor: convertColorProp('primary.main'),
     borderColor: convertColorProp('primary.main'),
@@ -126,14 +84,9 @@ const styles = StyleSheet.create({
 });
 
 const CONTAINER_STYLES = {
-  default: {
-    default: styles.containerDefault,
-    pressed: styles.containerDefaultPressed,
-  },
-  disabled: {
-    default: styles.containerDisabled,
-    pressed: styles.containerDisabled,
-  },
+  default: styles.containerDefault,
+  pressed: styles.containerDefaultPressed,
+  disabled: styles.containerDisabled,
 };
 
 const CONTENT_STYLES = {
