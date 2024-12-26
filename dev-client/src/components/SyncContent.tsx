@@ -17,7 +17,7 @@
 
 import {useCallback} from 'react';
 
-import {Button as NbButton} from 'native-base';
+import {Button} from 'native-base';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
@@ -31,11 +31,13 @@ import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
 // but is helpful for manually testing
 export const SyncContent = () => {
   return (
-    <RestrictByFlag flag="FF_offline">
-      <SyncButton />
-      <PullInfo />
-      <PushInfo />
-    </RestrictByFlag>
+    <>
+      <RestrictByFlag flag="FF_offline">
+        <SyncButton />
+        <PullInfo />
+        <PushInfo />
+      </RestrictByFlag>
+    </>
   );
 };
 
@@ -68,6 +70,6 @@ export const SyncButton = () => {
 
   return (
     // TODO-offline: Create string in en.json if we actually want this button for reals
-    <NbButton onPress={onSync}>SYNC: pull</NbButton>
+    <Button onPress={onSync}>SYNC: pull</Button>
   );
 };
