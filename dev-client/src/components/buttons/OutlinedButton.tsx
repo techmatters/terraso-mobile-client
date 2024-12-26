@@ -16,7 +16,7 @@
  */
 
 import {useCallback, useState} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
@@ -52,37 +52,39 @@ export const OutlinedButton = ({
     : CONTENT_STYLES.default;
 
   return (
-    <TouchableRipple
-      style={[styles.container, containerStyle]}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{disabled}}
-      disabled={disabled}
-      onPress={onPress}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut}>
-      <>
-        {leftIcon ? (
-          <Icon
-            name={leftIcon}
-            size="xs"
-            style={[styles.leftIcon, contentStyle]}
-          />
-        ) : (
-          <></>
-        )}
-        <Text style={[styles.label, contentStyle]}>{label}</Text>
-        {rightIcon ? (
-          <Icon
-            name={rightIcon}
-            size="xs"
-            style={[styles.rightIcon, contentStyle]}
-          />
-        ) : (
-          <></>
-        )}
-      </>
-    </TouchableRipple>
+    <View>
+      <TouchableRipple
+        style={[styles.container, containerStyle]}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{disabled}}
+        disabled={disabled}
+        onPress={onPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}>
+        <>
+          {leftIcon ? (
+            <Icon
+              name={leftIcon}
+              size="xs"
+              style={[styles.leftIcon, contentStyle]}
+            />
+          ) : (
+            <></>
+          )}
+          <Text style={[styles.label, contentStyle]}>{label}</Text>
+          {rightIcon ? (
+            <Icon
+              name={rightIcon}
+              size="xs"
+              style={[styles.rightIcon, contentStyle]}
+            />
+          ) : (
+            <></>
+          )}
+        </>
+      </TouchableRipple>
+    </View>
   );
 };
 

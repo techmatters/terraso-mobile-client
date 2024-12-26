@@ -16,7 +16,7 @@
  */
 
 import {useCallback, useState} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -45,17 +45,19 @@ export const DialogButton = ({
   const contentStyle = CONTENT_STYLES[type];
 
   return (
-    <TouchableRipple
-      style={[styles.container, containerStyle]}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      onPress={onPress}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut}>
-      <>
-        <Text style={[styles.label, contentStyle]}>{label}</Text>
-      </>
-    </TouchableRipple>
+    <View>
+      <TouchableRipple
+        style={[styles.container, containerStyle]}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPress={onPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}>
+        <>
+          <Text style={[styles.label, contentStyle]}>{label}</Text>
+        </>
+      </TouchableRipple>
+    </View>
   );
 };
 

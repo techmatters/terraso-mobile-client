@@ -16,7 +16,7 @@
  */
 
 import {useCallback, useState} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
 import {
@@ -70,37 +70,39 @@ export const ContainedButton = ({
   const stretchStyle = stretchToFit ? styles.containerStretch : undefined;
 
   return (
-    <TouchableRipple
-      style={[styles.container, containerSize, containerStyle, stretchStyle]}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{disabled}}
-      disabled={disabled}
-      onPress={onPress}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut}>
-      <>
-        {leftIcon ? (
-          <Icon
-            name={leftIcon}
-            size={iconSize}
-            style={[styles.leftIcon, contentStyle]}
-          />
-        ) : (
-          <></>
-        )}
-        <Text style={[styles.label, contentSize, contentStyle]}>{label}</Text>
-        {rightIcon ? (
-          <Icon
-            name={rightIcon}
-            size={iconSize}
-            style={[styles.rightIcon, contentStyle]}
-          />
-        ) : (
-          <></>
-        )}
-      </>
-    </TouchableRipple>
+    <View>
+      <TouchableRipple
+        style={[styles.container, containerSize, containerStyle, stretchStyle]}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{disabled}}
+        disabled={disabled}
+        onPress={onPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}>
+        <>
+          {leftIcon ? (
+            <Icon
+              name={leftIcon}
+              size={iconSize}
+              style={[styles.leftIcon, contentStyle]}
+            />
+          ) : (
+            <></>
+          )}
+          <Text style={[styles.label, contentSize, contentStyle]}>{label}</Text>
+          {rightIcon ? (
+            <Icon
+              name={rightIcon}
+              size={iconSize}
+              style={[styles.rightIcon, contentStyle]}
+            />
+          ) : (
+            <></>
+          )}
+        </>
+      </TouchableRipple>
+    </View>
   );
 };
 

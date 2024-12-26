@@ -22,7 +22,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
-import {CreateSiteButton} from 'terraso-mobile-client/components/buttons/special/CreateSiteButton';
+import {OutlinedButton} from 'terraso-mobile-client/components/buttons/OutlinedButton';
 import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special/SlopeMeterButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -40,75 +40,71 @@ export const UiComponentList = () => {
       />
       {show && (
         <>
-          <ButtonList />
+          <ComponentList title="Buttons">
+            <Heading variant="h5">TextButton</Heading>
+            <TextButton
+              label="type: default"
+              leftIcon="info"
+              rightIcon="info"
+            />
+            <TextButton
+              label="type: destructive"
+              type="destructive"
+              leftIcon="info"
+              rightIcon="info"
+            />
+            <TextButton
+              label="disabled"
+              disabled
+              leftIcon="info"
+              rightIcon="info"
+            />
+            <Heading variant="h5">ContainedButton</Heading>
+            <ContainedButton
+              label="size:SM"
+              size="sm"
+              leftIcon="info"
+              rightIcon="info"
+            />
+            <ContainedButton
+              label="size:MD"
+              size="md"
+              leftIcon="info"
+              rightIcon="info"
+            />
+            <ContainedButton
+              label="size:LG"
+              size="lg"
+              leftIcon="info"
+              rightIcon="info"
+            />
+            <ContainedButton
+              label="stretch"
+              stretchToFit
+              leftIcon="info"
+              rightIcon="info"
+            />
+            <ContainedButton
+              label="disabled"
+              disabled
+              leftIcon="info"
+              rightIcon="info"
+            />
+            <Heading variant="h5">DialogButton</Heading>
+            <DialogButton label="type: default" />
+            <DialogButton label="type: destructive" type="destructive" />
+            <DialogButton label="type: outlined" type="outlined" />
+            <Heading variant="h5">OutlinedButton</Heading>
+            <OutlinedButton label="default" />
+            <OutlinedButton label="disabled" disabled />
+            <Heading variant="h5">SlopeMeterButton</Heading>
+            <SlopeMeterButton />
+            <Heading variant="h6">FAB</Heading>
+            <Fab label="default" leftIcon="info" />
+          </ComponentList>
         </>
       )}
     </View>
-  );
-};
-
-const ButtonList = () => {
-  return (
-    <>
-      <ComponentList title="buttons">
-        <Heading variant="h5">TextButton</Heading>
-        <TextButton label="type: default" leftIcon="info" rightIcon="info" />
-        <TextButton
-          label="type: destructive"
-          type="destructive"
-          leftIcon="info"
-          rightIcon="info"
-        />
-        <TextButton
-          label="disabled"
-          disabled
-          leftIcon="info"
-          rightIcon="info"
-        />
-        <Heading variant="h5">ContainedButton</Heading>
-        <ContainedButton
-          label="size:SM"
-          size="sm"
-          leftIcon="info"
-          rightIcon="info"
-        />
-        <ContainedButton
-          label="size:MD"
-          size="md"
-          leftIcon="info"
-          rightIcon="info"
-        />
-        <ContainedButton
-          label="size:LG"
-          size="lg"
-          leftIcon="info"
-          rightIcon="info"
-        />
-        <ContainedButton
-          label="stretch"
-          stretchToFit
-          leftIcon="info"
-          rightIcon="info"
-        />
-        <ContainedButton
-          label="disabled"
-          disabled
-          leftIcon="info"
-          rightIcon="info"
-        />
-        <Heading variant="h5">DialogButton</Heading>
-        <DialogButton label="type: default" />
-        <DialogButton label="type: destructive" type="destructive" />
-        <DialogButton label="type: outlined" type="outlined" />
-        <Heading variant="h5">SlopeMeterButton</Heading>
-        <SlopeMeterButton />
-        <Heading variant="h5">CreateSiteButton</Heading>
-        <CreateSiteButton />
-        <CreateSiteButton disabled />
-        <Heading variant="h6">FAB</Heading>
-        <Fab label="default" leftIcon="info" />
-      </ComponentList>
-    </>
   );
 };
 

@@ -16,7 +16,7 @@
  */
 
 import {useCallback, useState} from 'react';
-import {AccessibilityProps, StyleSheet, Text} from 'react-native';
+import {AccessibilityProps, StyleSheet, Text, View} from 'react-native';
 import {TouchableRipple, TouchableRippleProps} from 'react-native-paper';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
@@ -53,38 +53,40 @@ export const TextButton = ({
   const contentStyle = disabled ? COLOR_STYLES.disabled : COLOR_STYLES[type];
 
   return (
-    <TouchableRipple
-      style={[styles.container, containerStyle]}
-      borderless={true} /* Fixes iOS ripple effect border radius issue */
-      accessibilityRole={role}
-      accessibilityLabel={label}
-      accessibilityState={{disabled}}
-      disabled={disabled}
-      onPress={onPress}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut}>
-      <>
-        {leftIcon ? (
-          <Icon
-            name={leftIcon}
-            size="sm"
-            style={[styles.leftIcon, contentStyle]}
-          />
-        ) : (
-          <></>
-        )}
-        <Text style={[styles.label, contentStyle]}>{label}</Text>
-        {rightIcon ? (
-          <Icon
-            name={rightIcon}
-            size="sm"
-            style={[styles.rightIcon, contentStyle]}
-          />
-        ) : (
-          <></>
-        )}
-      </>
-    </TouchableRipple>
+    <View>
+      <TouchableRipple
+        style={[styles.container, containerStyle]}
+        borderless={true} /* Fixes iOS ripple effect border radius issue */
+        accessibilityRole={role}
+        accessibilityLabel={label}
+        accessibilityState={{disabled}}
+        disabled={disabled}
+        onPress={onPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}>
+        <>
+          {leftIcon ? (
+            <Icon
+              name={leftIcon}
+              size="sm"
+              style={[styles.leftIcon, contentStyle]}
+            />
+          ) : (
+            <></>
+          )}
+          <Text style={[styles.label, contentStyle]}>{label}</Text>
+          {rightIcon ? (
+            <Icon
+              name={rightIcon}
+              size="sm"
+              style={[styles.rightIcon, contentStyle]}
+            />
+          ) : (
+            <></>
+          )}
+        </>
+      </TouchableRipple>
+    </View>
   );
 };
 
