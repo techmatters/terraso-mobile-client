@@ -94,7 +94,12 @@ export const ScreenFormWrapper = forwardRef(
             onSubmit={onSubmit}>
             {children}
           </Formik>
-          <Row pl={5} pr={5} pb={10} justifyContent="space-between">
+          <Row
+            pb={10}
+            paddingHorizontal={5}
+            space={5}
+            justifyContent="flex-end"
+            alignItems="center">
             <ConfirmModal
               trigger={onOpen => (
                 <DeleteButton

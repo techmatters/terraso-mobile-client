@@ -240,7 +240,7 @@ export const EditDepthModal = ({
               </FormLabel>
             </Row>
 
-            <Row justifyContent="space-between">
+            <Row justifyContent="flex-end" alignItems="center" space={5}>
               {mutable && (
                 <ConfirmDeleteDepthModal
                   onConfirm={deleteDepth}
