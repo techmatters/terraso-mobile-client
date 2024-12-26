@@ -22,10 +22,12 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {OutlinedButton} from 'terraso-mobile-client/components/buttons/OutlinedButton';
 import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special/SlopeMeterButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export const UiComponentList = () => {
   const [show, setShow] = useState(false);
@@ -102,6 +104,21 @@ export const UiComponentList = () => {
             <Heading variant="h6">FAB</Heading>
             <Fab label="default" leftIcon="info" />
           </ComponentList>
+          <ComponentList title="IconButtons">
+            <Heading variant="h5">IconButton</Heading>
+            <View style={styles.darkBackground}>
+              <IconButton type="sm" variant="light" name="info" />
+              <IconButton type="md" variant="light" name="info" />
+              <IconButton type="sm" variant="light-filled" name="info" />
+              <IconButton type="md" variant="light-filled" name="info" />
+            </View>
+            <IconButton type="sm" variant="location" name="location-pin" />
+            <IconButton type="md" variant="location" name="location-pin" />
+            <IconButton type="sm" variant="normal" name="info" />
+            <IconButton type="md" variant="normal" name="info" />
+            <IconButton type="sm" variant="normal-filled" name="info" />
+            <IconButton type="md" variant="normal-filled" name="info" />
+          </ComponentList>
         </>
       )}
     </View>
@@ -125,4 +142,5 @@ const ComponentList = ({
 
 const styles = StyleSheet.create({
   container: {maxHeight: 300},
+  darkBackground: {backgroundColor: convertColorProp('primary.dark')},
 });
