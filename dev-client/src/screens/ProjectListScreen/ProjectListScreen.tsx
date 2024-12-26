@@ -103,8 +103,8 @@ export const ProjectListScreen = () => {
             )}
             <Box alignItems="flex-start" pb="md">
               <AddButton
-                text={t('projects.create_button')}
-                buttonProps={{onPress}}
+                label={t('projects.create_button')}
+                onPress={onPress}
               />
             </Box>
             {activeProjects.length > 0 && (

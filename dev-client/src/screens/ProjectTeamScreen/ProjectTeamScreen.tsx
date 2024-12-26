@@ -114,13 +114,12 @@ export const ProjectTeamScreen = ({route}: Props) => {
           <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
             <Box alignSelf="flex-start">
               <AddButton
-                text={t('projects.team.add')}
-                buttonProps={{
-                  onPress: () =>
-                    navigation.navigate('ADD_USER_PROJECT', {
-                      projectId: route.params.projectId,
-                    }),
-                }}
+                label={t('projects.team.add')}
+                onPress={() =>
+                  navigation.navigate('ADD_USER_PROJECT', {
+                    projectId: route.params.projectId,
+                  })
+                }
               />
             </Box>
           </RestrictByProjectRole>
