@@ -68,8 +68,8 @@ export type BaseContainedButtonProps = {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'flex-start',
-    borderWidth: 1,
     borderRadius: 4,
+    borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

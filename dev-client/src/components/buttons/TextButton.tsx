@@ -55,6 +55,7 @@ export const TextButton = ({
   return (
     <TouchableRipple
       style={[styles.container, containerStyle]}
+      borderless={true} /* Fixes iOS ripple effect border radius issue */
       accessibilityRole={role}
       accessibilityLabel={label}
       accessibilityState={{disabled}}
@@ -89,8 +90,8 @@ export const TextButton = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
     alignSelf: 'flex-start',
+    flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 6,
     paddingHorizontal: 8,
