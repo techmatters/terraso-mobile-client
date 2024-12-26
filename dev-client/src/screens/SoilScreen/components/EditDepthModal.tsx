@@ -25,7 +25,7 @@ import * as yup from 'yup';
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {fromEntries} from 'terraso-client-shared/utils';
 
-import DeleteButton from 'terraso-mobile-client/components/buttons/common/DeleteButton';
+import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   DepthForm,
@@ -240,7 +240,7 @@ export const EditDepthModal = ({
               </FormLabel>
             </Row>
 
-            <Row justifyContent="flex-end">
+            <Row justifyContent="space-between">
               {mutable && (
                 <ConfirmDeleteDepthModal
                   onConfirm={deleteDepth}
@@ -248,7 +248,6 @@ export const EditDepthModal = ({
                     <DeleteButton
                       label={t('soil.depth.delete_button')}
                       onPress={onOpen}
-                      mr="20px"
                     />
                   )}
                 />

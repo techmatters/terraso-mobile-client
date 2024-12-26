@@ -16,42 +16,27 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {PressableProps} from 'react-native';
 
-import {Button} from 'native-base';
-
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 
 type Props = {
   label?: string;
-} & React.ComponentProps<typeof Button>;
+  disabled?: boolean;
+  onPress?: PressableProps['onPress'];
+};
 
-export default function DeleteButton({label, ...props}: Props) {
+export const DeleteButton = ({label, disabled, onPress}: Props) => {
   const {t} = useTranslation();
-
   label = label ?? t('general.delete_fab');
 
   return (
-    <Button
-      background="background.default"
-      p={0}
-      pt="10px"
-      variant="error"
-      startIcon={
-        <Icon
-          name="delete"
-          color={props?.disabled ? 'action.disabled' : 'error.main'}
-          size="md"
-          mr={2}
-        />
-      }
-      isDisabled={props?.disabled ? props.disabled : undefined}
-      _text={{
-        fontWeight: 500,
-        fontSize: 'md',
-        textTransform: 'uppercase',
-      }}
-      {...props}>
-      {label}
-    </Button>
+    <TextButton
+      label={label}
+      type="destructive"
+      leftIcon="delete"
+      onPress={onPress}
+      disabled={disabled}
+    />
   );
-}
+};

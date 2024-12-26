@@ -23,7 +23,7 @@ import {ScrollView} from 'native-base';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import DeleteButton from 'terraso-mobile-client/components/buttons/common/DeleteButton';
+import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
