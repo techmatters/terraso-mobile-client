@@ -26,7 +26,7 @@ import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 import {Modal, Portal} from 'react-native-paper';
 
-import {DismissButton} from 'terraso-mobile-client/components/buttons/common/DismissButton';
+import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
@@ -73,7 +73,11 @@ export const ErrorDialog = forwardRef<
               label={t('general.support.label')}
               url={supportUrl ?? t('general.support.label')}
             />
-            <DismissButton onPress={onClose} />
+            <DialogButton
+              type="alertError"
+              label={t('general.dismiss')}
+              onPress={onClose}
+            />
           </View>
         </View>
       </Modal>

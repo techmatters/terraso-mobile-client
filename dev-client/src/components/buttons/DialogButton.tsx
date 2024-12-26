@@ -20,7 +20,11 @@ import {PressableProps, StyleSheet} from 'react-native';
 import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
-export type DialogButtonType = 'default' | 'destructive' | 'outlined';
+export type DialogButtonType =
+  | 'default'
+  | 'destructive'
+  | 'outlined'
+  | 'alertError';
 
 export type DialogButtonProps = {
   label: string;
@@ -75,6 +79,10 @@ const styles = StyleSheet.create({
     borderColor: convertColorProp('text.primary'),
     backgroundColor: convertColorProp('action.selected'),
   },
+  containerAlertError: {
+    borderColor: convertColorProp('error.content'),
+    backgroundColor: convertColorProp('transparent'),
+  },
   contentDefault: {
     color: convertColorProp('primary.contrast'),
   },
@@ -83,6 +91,9 @@ const styles = StyleSheet.create({
   },
   contentOutlined: {
     color: convertColorProp('text.primary'),
+  },
+  contentAlertError: {
+    color: convertColorProp('error.content'),
   },
 });
 
@@ -99,10 +110,15 @@ const CONTAINER_STYLES = {
     default: styles.containerOutlined,
     pressed: styles.containerOutlinedPressed,
   },
+  alertError: {
+    default: styles.containerAlertError,
+    pressed: styles.containerAlertError,
+  },
 };
 
 const CONTENT_STYLES = {
   default: {default: styles.contentDefault},
   destructive: {default: styles.contentDestructive},
   outlined: {default: styles.contentOutlined},
+  alertError: {default: styles.contentAlertError},
 };
