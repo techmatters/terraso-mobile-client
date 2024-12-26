@@ -23,7 +23,7 @@ import {Button, ScrollView} from 'native-base';
 
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {DoneButton} from 'terraso-mobile-client/components/buttons/special/DoneButton';
+import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
@@ -210,7 +210,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
               />
             </ScrollView>
             <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-              <DoneButton />
+              <DoneFab />
             </RestrictBySiteRole>
           </SiteRoleContextProvider>
         </ScreenScaffold>

@@ -16,10 +16,20 @@
  */
 
 import {useCallback} from 'react';
+import {ScrollView} from 'react-native-gesture-handler';
 
-import {Button} from 'native-base';
+import {Button as NbButton} from 'native-base';
 
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
+import {CreateSiteButton} from 'terraso-mobile-client/components/buttons/special/CreateSiteButton';
+import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special/SlopeMeterButton';
+import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
+import {
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
@@ -36,6 +46,65 @@ export const SyncContent = () => {
         <SyncButton />
         <PullInfo />
         <PushInfo />
+        <ScrollView>
+          <Heading>Button Test</Heading>
+          <Heading variant="h5">TextButton</Heading>
+          <TextButton label="type: default" leftIcon="info" rightIcon="info" />
+          <TextButton
+            label="type: destructive"
+            type="destructive"
+            leftIcon="info"
+            rightIcon="info"
+          />
+          <TextButton
+            label="disabled"
+            disabled
+            leftIcon="info"
+            rightIcon="info"
+          />
+          <Heading variant="h5">ContainedButton</Heading>
+          <ContainedButton
+            label="size:SM"
+            size="sm"
+            leftIcon="info"
+            rightIcon="info"
+          />
+          <ContainedButton
+            label="size:MD"
+            size="md"
+            leftIcon="info"
+            rightIcon="info"
+          />
+          <ContainedButton
+            label="size:LG"
+            size="lg"
+            leftIcon="info"
+            rightIcon="info"
+          />
+          <ContainedButton
+            label="stretch"
+            stretchToFit
+            leftIcon="info"
+            rightIcon="info"
+          />
+          <ContainedButton
+            label="disabled"
+            disabled
+            leftIcon="info"
+            rightIcon="info"
+          />
+          <Heading variant="h5">DialogButton</Heading>
+          <DialogButton label="type: default" />
+          <DialogButton label="type: destructive" type="destructive" />
+          <DialogButton label="type: outlined" type="outlined" />
+          <Heading variant="h5">SlopeMeterButton</Heading>
+          <SlopeMeterButton />
+          <Heading variant="h5">CreateSiteButton</Heading>
+          <CreateSiteButton />
+          <CreateSiteButton disabled />
+        </ScrollView>
+        <Heading variant="h6">FAB</Heading>
+        <Fab disabled label="default" leftIcon="info" />
       </RestrictByFlag>
     </>
   );
@@ -70,6 +139,6 @@ export const SyncButton = () => {
 
   return (
     // TODO-offline: Create string in en.json if we actually want this button for reals
-    <Button onPress={onSync}>SYNC: pull</Button>
+    <NbButton onPress={onSync}>SYNC: pull</NbButton>
   );
 };

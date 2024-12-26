@@ -22,7 +22,7 @@ import {ActivityIndicator} from 'react-native-paper';
 import {PROJECT_ROLES} from 'terraso-client-shared/project/projectTypes';
 import {normalizeText} from 'terraso-client-shared/utils';
 
-import {AddButton} from 'terraso-mobile-client/components/buttons/special/AddButton';
+import {AddButton} from 'terraso-mobile-client/components/buttons/common/AddButton';
 import {
   ListFilterModal,
   ListFilterProvider,

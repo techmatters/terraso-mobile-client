@@ -23,11 +23,11 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-type DoneButtonProps = {
+type DoneFabProps = {
   isDisabled?: boolean;
 };
 
-export const DoneButton = ({isDisabled}: DoneButtonProps) => {
+export const DoneFab = ({isDisabled}: DoneFabProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
 

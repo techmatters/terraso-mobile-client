@@ -19,8 +19,8 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/special/DoneButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
@@ -169,7 +169,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
             )}
             <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
               <Box position="absolute" right="0" bottom="0">
-                <DoneButton isDisabled={!color} />
+                <DoneFab isDisabled={!color} />
               </Box>
             </RestrictBySiteRole>
           </SiteRoleContextProvider>
