@@ -15,27 +15,45 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {TouchableRippleProps} from 'react-native-paper';
+
+import {Coords} from 'terraso-client-shared/types';
 
 import {OutlinedButton} from 'terraso-mobile-client/components/buttons/OutlinedButton';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 export type CreateSiteButtonProps = {
   disabled?: boolean;
-  onPress?: TouchableRippleProps['onPress'];
+  coords: Coords;
+  elevation?: number;
+  afterCreate?: () => void;
 };
 
 export const CreateSiteButton = ({
   disabled,
-  onPress,
+  coords,
+  elevation,
+  afterCreate: cleanUp,
 }: CreateSiteButtonProps) => {
   const {t} = useTranslation();
+
+  const navigation = useNavigation();
+  const onCreate = useCallback(() => {
+    navigation.navigate('CREATE_SITE', {
+      coords,
+      elevation: elevation,
+    });
+    if (cleanUp) {
+      cleanUp();
+    }
+  }, [cleanUp, navigation, coords, elevation]);
 
   return (
     <OutlinedButton
       label={t('site.create.title')}
       disabled={disabled}
-      onPress={onPress}
+      onPress={onCreate}
     />
   );
 };

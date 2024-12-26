@@ -18,30 +18,43 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
 import {Coords} from 'terraso-client-shared/types';
 
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-type Props = {coords: Coords; elevation?: number};
+export type CreateSiteHereButtonProps = {
+  disabled?: boolean;
+  coords: Coords;
+  elevation?: number;
+  afterCreate?: () => void;
+};
 
-export const CreateSiteButton = ({coords, elevation}: Props) => {
+export const CreateSiteHereButton = ({
+  disabled,
+  coords,
+  elevation,
+  afterCreate: cleanUp,
+}: CreateSiteHereButtonProps) => {
   const {t} = useTranslation();
-  const navigation = useNavigation();
 
+  const navigation = useNavigation();
   const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {coords, elevation});
-  }, [navigation, coords, elevation]);
+    navigation.navigate('CREATE_SITE', {
+      coords,
+      elevation: elevation,
+    });
+    if (cleanUp) {
+      cleanUp();
+    }
+  }, [cleanUp, navigation, coords, elevation]);
 
   return (
-    <Button
-      alignSelf="center"
+    <ContainedButton
+      label={t('site.create.button_label')}
+      leftIcon="add"
+      disabled={disabled}
       onPress={onCreate}
-      leftIcon={<Icon name="add" />}
-      _text={{textTransform: 'uppercase'}}>
-      {t('site.create.button_label')}
-    </Button>
+    />
   );
 };

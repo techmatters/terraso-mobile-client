@@ -20,7 +20,6 @@ import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, Divider} from 'react-native-paper';
 
 import {TFunction} from 'i18next';
-import {Button} from 'native-base';
 
 import {
   DataBasedSoilMatch,
@@ -28,7 +27,9 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
+import {CreateSiteButton} from 'terraso-mobile-client/components/buttons/special/CreateSiteButton';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {
   Box,
@@ -66,14 +67,6 @@ export const TemporaryLocationCallout = ({
   const elevation = useElevationData(coords);
   const soilIdData = useSoilIdData(coords);
   const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
-
-  const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {
-      coords,
-      elevation: elevation.value,
-    });
-    closeCallout();
-  }, [closeCallout, navigation, coords, elevation]);
 
   const onLearnMore = useCallback(() => {
     navigation.navigate('TEMP_LOCATION', {
@@ -121,22 +114,19 @@ export const TemporaryLocationCallout = ({
         />
         <Divider />
         <Row justifyContent="flex-end">
-          <Button
-            onPress={onCreate}
-            isDisabled={isOffline}
-            _text={{textTransform: 'uppercase'}}
-            size="sm"
-            variant="outline">
-            {t('site.create.title')}
-          </Button>
+          <CreateSiteButton
+            coords={coords}
+            elevation={elevation.value}
+            afterCreate={closeCallout}
+            disabled={isOffline}
+          />
           <Box w="24px" />
-          <Button
+          <ContainedButton
+            label={t('site.more_info')}
             onPress={onLearnMore}
-            isDisabled={isOffline}
-            _text={{textTransform: 'uppercase'}}
-            size="sm">
-            {t('site.more_info')}
-          </Button>
+            disabled={isOffline}
+            size="sm"
+          />
         </Row>
       </Column>
     </Card>
