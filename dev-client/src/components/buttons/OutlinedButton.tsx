@@ -21,6 +21,11 @@ import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
+/*
+ * Note: the OutlinedButton is *NOT* the same as the "outlined" DialogButton type;
+ * this is a "sm"-sized button which only appears in one-off use cases.
+ */
+
 export type OutlinedButtonProps = {
   label: string;
   leftIcon?: IconName;

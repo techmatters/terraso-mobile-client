@@ -23,6 +23,10 @@ import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBase
 export type DialogButtonType =
   | 'default'
   | 'destructive'
+  /*
+   * Note: the "outlined" type is *NOT* the same as the OutlinedButton; this is a variant of the same
+   * shape as the other dialog buttons.
+   */
   | 'outlined'
   | 'alertError';
 
