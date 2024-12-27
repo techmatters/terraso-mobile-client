@@ -19,9 +19,8 @@ import {useCallback, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native';
 
-import {Fab} from 'native-base';
-
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
@@ -254,12 +253,10 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
                 <Fab
                   label={t('projects.sites.transfer')}
                   onPress={onOpen}
-                  isDisabled={disabled}
-                  _disabled={{
-                    shadow: 0,
-                  }}
+                  disabled={disabled}
                 />
               )}
+              destructive={false}
               title={t('projects.sites.transfer_site_modal.title')}
               body={t('projects.sites.transfer_site_modal.body')}
               actionLabel={t('projects.sites.transfer_site_modal.action_name')}
