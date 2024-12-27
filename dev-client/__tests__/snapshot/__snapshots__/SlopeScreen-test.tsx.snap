@@ -160,66 +160,71 @@ exports[`renders correctly 1`] = `
                       }
                     }
                   />
-                  <View
-                    accessibilityRole="button"
-                    accessibilityState={
-                      {
-                        "busy": undefined,
-                        "checked": undefined,
-                        "disabled": undefined,
-                        "expanded": undefined,
-                        "selected": undefined,
-                      }
-                    }
-                    accessibilityValue={
-                      {
-                        "max": undefined,
-                        "min": undefined,
-                        "now": undefined,
-                        "text": undefined,
-                      }
-                    }
-                    accessible={true}
-                    collapsable={false}
-                    focusable={true}
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      [
+                  <View>
+                    <View
+                      accessibilityRole="button"
+                      accessibilityState={
                         {
-                          "borderRadius": 100,
-                        },
+                          "busy": undefined,
+                          "checked": undefined,
+                          "disabled": undefined,
+                          "expanded": undefined,
+                          "selected": undefined,
+                        }
+                      }
+                      accessibilityValue={
                         {
-                          "backgroundColor": "#00000000",
-                        },
-                      ]
-                    }
-                  >
-                    <Icon
-                      name="info"
-                      size={20}
+                          "max": undefined,
+                          "min": undefined,
+                          "now": undefined,
+                          "text": undefined,
+                        }
+                      }
+                      accessible={true}
+                      collapsable={false}
+                      focusable={true}
+                      onBlur={[Function]}
+                      onClick={[Function]}
+                      onFocus={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
                       style={
                         [
                           {
-                            "textAlign": "center",
-                            "verticalAlign": "middle",
+                            "alignSelf": "flex-start",
                           },
                           {
-                            "padding": 4,
+                            "borderRadius": 100,
                           },
                           {
-                            "color": "#001923B3",
+                            "backgroundColor": "#00000000",
                           },
                         ]
                       }
-                    />
+                    >
+                      <Icon
+                        name="info"
+                        size={20}
+                        style={
+                          [
+                            {
+                              "textAlign": "center",
+                              "verticalAlign": "middle",
+                            },
+                            {
+                              "padding": 4,
+                            },
+                            {
+                              "color": "#001923B3",
+                            },
+                          ]
+                        }
+                      />
+                    </View>
                   </View>
                   <RCTScrollView
                     focusHook={[Function]}
@@ -263,66 +268,71 @@ exports[`renders correctly 1`] = `
                               Slope
                             </Text>
                           </View>
-                          <View
-                            accessibilityRole="button"
-                            accessibilityState={
-                              {
-                                "busy": undefined,
-                                "checked": undefined,
-                                "disabled": undefined,
-                                "expanded": undefined,
-                                "selected": undefined,
-                              }
-                            }
-                            accessibilityValue={
-                              {
-                                "max": undefined,
-                                "min": undefined,
-                                "now": undefined,
-                                "text": undefined,
-                              }
-                            }
-                            accessible={true}
-                            collapsable={false}
-                            focusable={true}
-                            onBlur={[Function]}
-                            onClick={[Function]}
-                            onFocus={[Function]}
-                            onResponderGrant={[Function]}
-                            onResponderMove={[Function]}
-                            onResponderRelease={[Function]}
-                            onResponderTerminate={[Function]}
-                            onResponderTerminationRequest={[Function]}
-                            onStartShouldSetResponder={[Function]}
-                            style={
-                              [
+                          <View>
+                            <View
+                              accessibilityRole="button"
+                              accessibilityState={
                                 {
-                                  "borderRadius": 100,
-                                },
+                                  "busy": undefined,
+                                  "checked": undefined,
+                                  "disabled": undefined,
+                                  "expanded": undefined,
+                                  "selected": undefined,
+                                }
+                              }
+                              accessibilityValue={
                                 {
-                                  "backgroundColor": "#EEEEEE",
-                                },
-                              ]
-                            }
-                          >
-                            <Icon
-                              name="close"
-                              size={24}
+                                  "max": undefined,
+                                  "min": undefined,
+                                  "now": undefined,
+                                  "text": undefined,
+                                }
+                              }
+                              accessible={true}
+                              collapsable={false}
+                              focusable={true}
+                              onBlur={[Function]}
+                              onClick={[Function]}
+                              onFocus={[Function]}
+                              onResponderGrant={[Function]}
+                              onResponderMove={[Function]}
+                              onResponderRelease={[Function]}
+                              onResponderTerminate={[Function]}
+                              onResponderTerminationRequest={[Function]}
+                              onStartShouldSetResponder={[Function]}
                               style={
                                 [
                                   {
-                                    "textAlign": "center",
-                                    "verticalAlign": "middle",
+                                    "alignSelf": "flex-start",
                                   },
                                   {
-                                    "padding": 12,
+                                    "borderRadius": 100,
                                   },
                                   {
-                                    "color": "#001923B3",
+                                    "backgroundColor": "#EEEEEE",
                                   },
                                 ]
                               }
-                            />
+                            >
+                              <Icon
+                                name="close"
+                                size={24}
+                                style={
+                                  [
+                                    {
+                                      "textAlign": "center",
+                                      "verticalAlign": "middle",
+                                    },
+                                    {
+                                      "padding": 12,
+                                    },
+                                    {
+                                      "color": "#001923B3",
+                                    },
+                                  ]
+                                }
+                              />
+                            </View>
                           </View>
                         </View>
                         <Text
