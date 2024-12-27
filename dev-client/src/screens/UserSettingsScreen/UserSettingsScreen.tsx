@@ -18,6 +18,8 @@
 import {FeatureFlagControlPanel} from 'terraso-mobile-client/components/FeatureFlagControl';
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
+import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponentList';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
@@ -28,6 +30,9 @@ import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen
 export function UserSettingsScreen() {
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} RightButton={null} />}>
+      <RestrictByFlag flag="FF_testing">
+        <UiComponentList />
+      </RestrictByFlag>
       <Column margin="12px">
         <UserIndicator />
         <MenuList>
