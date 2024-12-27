@@ -153,7 +153,7 @@ export const CreateSiteForm = ({
           shadow={5}
           size="lg"
           _text={{textTransform: 'uppercase'}}>
-          {t('general.save_fab')}
+          {t('general.save')}
         </Button>
       </Box>
     </KeyboardAvoidingView>

@@ -109,7 +109,7 @@ export const ScreenFormWrapper = forwardRef(
               )}
               title={t('site.notes.confirm_removal_title')}
               body={t('site.notes.confirm_removal_body')}
-              actionLabel={t('general.delete_fab')}
+              actionName={t('general.delete')}
               handleConfirm={onDelete}
             />
             <Button

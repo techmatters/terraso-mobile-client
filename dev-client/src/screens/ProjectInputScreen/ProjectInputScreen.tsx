@@ -163,7 +163,7 @@ export const ProjectInputScreen = ({
             <Fab
               onPress={() => onSave()}
               textTransform="uppercase"
-              label={t('general.save_fab')}
+              label={t('general.save')}
               renderInPortal={false}
             />
           </RestrictByProjectRole>

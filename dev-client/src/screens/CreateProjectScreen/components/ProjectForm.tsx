@@ -152,7 +152,7 @@ export const EditProjectForm = ({
                 size="lg"
                 display="flex"
                 _text={{textTransform: 'uppercase'}}>
-                {t('general.save_fab')}
+                {t('general.save')}
               </Button>
             </Box>
           )}

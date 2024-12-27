@@ -78,7 +78,7 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
                 shadow={1}
                 size="lg"
                 _text={{textTransform: 'uppercase'}}>
-                {t('general.close_fab')}
+                {t('general.close')}
               </Button>
             </Row>
           </Column>

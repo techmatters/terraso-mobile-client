@@ -120,7 +120,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             )}
           </Column>
           <Fab
-            label={t('general.save_fab')}
+            label={t('general.save')}
             onPress={onSave}
             isDisabled={isOffline}
           />

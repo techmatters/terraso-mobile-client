@@ -139,7 +139,7 @@ export const ManageTeamMemberScreen = ({
 
               <Box flex={0} height="15%" justifyContent="flex-end">
                 <Button onPress={updateUser} alignSelf="flex-end">
-                  {t('general.save_fab')}
+                  {t('general.save')}
                 </Button>
               </Box>
             </Column>
