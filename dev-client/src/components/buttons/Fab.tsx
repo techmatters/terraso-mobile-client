@@ -18,7 +18,7 @@
 import {StyleSheet} from 'react-native';
 import {Surface, TouchableRippleProps} from 'react-native-paper';
 
-import {ContainedButton} from 'terraso-mobile-client/components/Buttons/ContainedButton';
+import {ContainedButton as Test} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 
 export type FabProps = {
@@ -30,7 +30,7 @@ export type FabProps = {
 
 export const Fab = ({label, leftIcon, disabled, onPress}: FabProps) => (
   <Surface style={styles.surface} elevation={2}>
-    <ContainedButton
+    <Test
       label={label}
       leftIcon={leftIcon}
       disabled={disabled}
