@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
 
 const CONTAINER_STYLES = {
   default: styles.containerDefault,
+  pressed: styles.containerDefaultPressed,
   disabled: styles.containerDisabled,
-  pressed: styles.containerDisabled,
 };
 
 const CONTENT_STYLES = {
