@@ -23,7 +23,7 @@ import {Button, ScrollView} from 'native-base';
 
 import {entries, fromEntries} from 'terraso-client-shared/utils';
 
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
@@ -230,7 +230,7 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
               </Column>
             </ScrollView>
             <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-              <DoneButton />
+              <DoneFab />
             </RestrictBySiteRole>
           </SiteRoleContextProvider>
         </SoilPitInputScreenScaffold>

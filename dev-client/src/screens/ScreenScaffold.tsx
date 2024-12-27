@@ -65,7 +65,7 @@ export const ScreenScaffold = ({
       />
       <Column backgroundColor="primary.contrast" flex={1}>
         <View onLayout={onLayout}>{PropsAppBar}</View>
-        <RestrictByFlag flag="FF_offline">
+        <RestrictByFlag flag="FF_testing">
           <SyncContent />
         </RestrictByFlag>
         <Box flex={1}>{children}</Box>

@@ -21,33 +21,40 @@ import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
-export type TextButtonType = 'default' | 'destructive' | 'alertError';
+export type ContainedButtonSize =
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'; /* (XL only appears in special cases like the slope meter) */
 
-export type TextButtonProps = {
+export type ContainedButtonProps = {
   label: string;
-  type?: TextButtonType;
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
+  size?: ContainedButtonSize;
+  stretchToFit?: boolean;
   onPress?: PressableProps['onPress'];
 };
 
-export const TextButton = ({
+export const ContainedButton = ({
   label,
-  type = 'default',
   leftIcon,
   rightIcon,
   disabled,
+  size = 'md',
+  stretchToFit,
   onPress,
-}: TextButtonProps) => {
+}: ContainedButtonProps) => {
   return (
     <BaseButton
       label={label}
-      shape="text"
+      shape={size}
+      stretchToFit={stretchToFit}
       leftIcon={leftIcon}
       rightIcon={rightIcon}
       containerStyles={CONTAINER_STYLES}
-      contentStyles={CONTENT_STYLES[type]}
+      contentStyles={CONTENT_STYLES}
       disabled={disabled}
       onPress={onPress}
     />
@@ -56,43 +63,32 @@ export const TextButton = ({
 
 const styles = StyleSheet.create({
   containerDefault: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
+    backgroundColor: convertColorProp('primary.main'),
+    borderColor: convertColorProp('primary.main'),
   },
-  containerPressed: {
-    backgroundColor: convertColorProp('action.selected'),
-    borderColor: convertColorProp('action.selected'),
+  containerDefaultPressed: {
+    backgroundColor: convertColorProp('primary.dark'),
+    borderColor: convertColorProp('primary.dark'),
+  },
+  containerDisabled: {
+    backgroundColor: convertColorProp('action.disabledBackground'),
+    borderColor: convertColorProp('action.disabledBackground'),
   },
   contentDefault: {
-    color: convertColorProp('primary.main'),
-  },
-  contentDestructive: {
-    color: convertColorProp('error.main'),
-  },
-  contentAlertError: {
-    color: convertColorProp('error.content'),
+    color: convertColorProp('primary.contrast'),
   },
   contentDisabled: {
-    color: convertColorProp('text.disabled'),
+    color: convertColorProp('action.disabled'),
   },
 });
 
 const CONTAINER_STYLES = {
   default: styles.containerDefault,
-  pressed: styles.containerPressed,
+  pressed: styles.containerDefaultPressed,
+  disabled: styles.containerDisabled,
 };
 
 const CONTENT_STYLES = {
-  default: {
-    default: styles.contentDefault,
-    disabled: styles.contentDisabled,
-  },
-  destructive: {
-    default: styles.contentDestructive,
-    disabled: styles.contentDisabled,
-  },
-  alertError: {
-    default: styles.contentAlertError,
-    disabled: styles.contentDisabled,
-  },
+  default: styles.contentDefault,
+  disabled: styles.contentDisabled,
 };

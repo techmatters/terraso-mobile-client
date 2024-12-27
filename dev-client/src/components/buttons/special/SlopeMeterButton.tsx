@@ -15,33 +15,28 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {PressableProps} from 'react-native';
 
-import {Button} from 'native-base';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 
-import {Coords} from 'terraso-client-shared/types';
+export type SlopeMeterButtonProps = {
+  disabled?: boolean;
+  onPress?: PressableProps['onPress'];
+};
 
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-
-type Props = {coords: Coords; elevation?: number};
-
-export const CreateSiteButton = ({coords, elevation}: Props) => {
+export const SlopeMeterButton = ({
+  disabled,
+  onPress,
+}: SlopeMeterButtonProps) => {
   const {t} = useTranslation();
-  const navigation = useNavigation();
-
-  const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {coords, elevation});
-  }, [navigation, coords, elevation]);
-
   return (
-    <Button
-      alignSelf="center"
-      onPress={onCreate}
-      leftIcon={<Icon name="add" />}
-      _text={{textTransform: 'uppercase'}}>
-      {t('site.create.button_label')}
-    </Button>
+    <ContainedButton
+      label={t('general.use')}
+      leftIcon="check"
+      disabled={disabled}
+      size="xl"
+      onPress={onPress}
+    />
   );
 };

@@ -59,28 +59,31 @@ export const IconButton = forwardRef<View, IconButtonProps>(
     ref,
   ) => {
     return (
-      <Pressable
-        ref={ref}
-        accessibilityRole="button"
-        accessibilityLabel={accessibilityLabel}
-        accessibilityState={{disabled: disabled}}
-        disabled={disabled}
-        style={[
-          containerStyleForType(type),
-          containerStyleForVariant(variant, disabled),
-        ]}
-        onPress={onPress}>
-        <MaterialIcon
-          name={name}
+      <View>
+        <Pressable
+          ref={ref}
+          accessibilityRole="button"
+          accessibilityLabel={accessibilityLabel}
+          accessibilityState={{disabled: disabled}}
           disabled={disabled}
-          size={convertIconSize(type === 'sq' ? 'md' : type)}
           style={[
-            styles.icon,
-            iconStyleForType(type),
-            iconStyleForVariant(variant, disabled),
+            styles.container,
+            containerStyleForType(type),
+            containerStyleForVariant(variant, disabled),
           ]}
-        />
-      </Pressable>
+          onPress={onPress}>
+          <MaterialIcon
+            name={name}
+            disabled={disabled}
+            size={convertIconSize(type === 'sq' ? 'md' : type)}
+            style={[
+              styles.icon,
+              iconStyleForType(type),
+              iconStyleForVariant(variant, disabled),
+            ]}
+          />
+        </Pressable>
+      </View>
     );
   },
 );
@@ -152,6 +155,9 @@ const iconStyleForVariant = (
 };
 
 const styles = StyleSheet.create({
+  container: {
+    alignSelf: 'flex-start',
+  },
   icon: {
     verticalAlign: 'middle',
     textAlign: 'center',

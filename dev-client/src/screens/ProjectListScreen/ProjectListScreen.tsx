@@ -22,7 +22,7 @@ import {ActivityIndicator} from 'react-native-paper';
 import {PROJECT_ROLES} from 'terraso-client-shared/project/projectTypes';
 import {normalizeText} from 'terraso-client-shared/utils';
 
-import {AddButton} from 'terraso-mobile-client/components/AddButton';
+import {AddButton} from 'terraso-mobile-client/components/buttons/common/AddButton';
 import {
   ListFilterModal,
   ListFilterProvider,
@@ -103,8 +103,8 @@ export const ProjectListScreen = () => {
             )}
             <Box alignItems="flex-start" pb="md">
               <AddButton
-                text={t('projects.create_button')}
-                buttonProps={{onPress}}
+                label={t('projects.create_button')}
+                onPress={onPress}
               />
             </Box>
             {activeProjects.length > 0 && (

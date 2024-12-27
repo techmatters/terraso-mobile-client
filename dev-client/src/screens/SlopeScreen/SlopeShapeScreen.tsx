@@ -35,7 +35,7 @@ import ConvexLinear from 'terraso-mobile-client/assets/slope/shape/convex-linear
 import LinearConcave from 'terraso-mobile-client/assets/slope/shape/linear-concave.svg';
 import LinearConvex from 'terraso-mobile-client/assets/slope/shape/linear-convex.svg';
 import LinearLinear from 'terraso-mobile-client/assets/slope/shape/linear-linear.svg';
-import {DoneButton} from 'terraso-mobile-client/components/buttons/DoneButton';
+import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
@@ -194,7 +194,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
               />
             </ScrollView>
             <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-              <DoneButton />
+              <DoneFab />
             </RestrictBySiteRole>
           </SiteRoleContextProvider>
         </ScreenScaffold>
