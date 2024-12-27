@@ -19,11 +19,12 @@ import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, ImageSourcePropType} from 'react-native';
 
-import {Button, ScrollView} from 'native-base';
+import {ScrollView} from 'native-base';
 
 import {entries, fromEntries} from 'terraso-client-shared/utils';
 
 import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
@@ -32,7 +33,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
   radioImage,
@@ -198,12 +198,11 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
                 <Column p="15px" alignItems="flex-start" bg="grey.300">
                   <Text variant="body1">{t('soil.texture.guide_intro')}</Text>
                   <Box height="10px" />
-                  <Button
+                  <ContainedButton
                     onPress={onGuide}
-                    rightIcon={<Icon name="chevron-right" />}
-                    _text={{textTransform: 'uppercase'}}>
-                    {t('soil.texture.use_guide_label')}
-                  </Button>
+                    rightIcon="chevron-right"
+                    label={t('soil.texture.use_guide_label')}
+                  />
                 </Column>
               </RestrictBySiteRole>
 
