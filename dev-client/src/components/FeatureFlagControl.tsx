@@ -40,6 +40,7 @@ export const FeatureFlagControlPanel = () => {
           <View>
             <Heading mb="10px">Feature Flags</Heading>
             <FeatureFlagControl flag="FF_offline" />
+            <FeatureFlagControl flag="FF_testing" />
           </View>
         </>
       )}

@@ -7,7 +7,7 @@
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warFFranty of
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
@@ -15,30 +15,46 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Fab} from 'native-base';
+import {Coords} from 'terraso-client-shared/types';
 
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-type DoneButtonProps = {
-  isDisabled?: boolean;
+export type CreateSiteHereButtonProps = {
+  disabled?: boolean;
+  coords: Coords;
+  elevation?: number;
+  afterCreate?: () => void;
 };
 
-export const DoneButton = ({isDisabled}: DoneButtonProps) => {
+export const CreateSiteHereButton = ({
+  disabled,
+  coords,
+  elevation,
+  afterCreate: cleanUp,
+}: CreateSiteHereButtonProps) => {
   const {t} = useTranslation();
+
   const navigation = useNavigation();
+  const onCreate = useCallback(() => {
+    navigation.navigate('CREATE_SITE', {
+      coords,
+      elevation: elevation,
+    });
+    if (cleanUp) {
+      cleanUp();
+    }
+  }, [cleanUp, navigation, coords, elevation]);
 
   return (
-    <Box>
-      <Fab
-        onPress={() => navigation.pop()}
-        leftIcon={<Icon name="check" />}
-        label={t('general.done')}
-        isDisabled={isDisabled}
-      />
-    </Box>
+    <ContainedButton
+      label={t('site.create.button_label')}
+      leftIcon="add"
+      disabled={disabled}
+      onPress={onCreate}
+    />
   );
 };

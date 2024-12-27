@@ -24,6 +24,7 @@ import {ScrollView} from 'native-base';
 import {Site, SitePrivacy} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
+import {CreateSiteHereButton} from 'terraso-mobile-client/components/buttons/special/CreateSiteHereButton';
 import {PeopleChip} from 'terraso-mobile-client/components/chips/PeopleChip';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
@@ -39,7 +40,6 @@ import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {updateSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {LocationSoilIdCard} from 'terraso-mobile-client/screens/LocationScreens/components/LocationSoilIdCard';
 import {PinnedNoteButton} from 'terraso-mobile-client/screens/LocationScreens/components/PinnedNoteButton';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -115,8 +115,8 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
         />
         {!site && (
           <Box>
-            <Box paddingVertical="20px">
-              <CreateSiteButton coords={coords} elevation={elevation} />
+            <Box paddingVertical="20px" alignItems="center">
+              <CreateSiteHereButton coords={coords} elevation={elevation} />
             </Box>
             <Text variant="body1">{t('site.create.description')}</Text>
           </Box>

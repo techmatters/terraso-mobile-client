@@ -15,22 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Button} from 'native-base';
+import {PressableProps} from 'react-native';
 
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 
 type Props = {
-  text: string;
-  buttonProps?: any;
+  label: string;
+  onPress?: PressableProps['onPress'];
 };
 
-export const AddButton = ({text, buttonProps}: Props) => {
+export const AddButton = ({label, onPress}: Props) => {
   return (
-    <Button
-      {...buttonProps}
-      _text={{textTransform: 'uppercase'}}
-      leftIcon={<Icon name="add" />}>
-      {text}
-    </Button>
+    <ContainedButton label={label} leftIcon="add" size="md" onPress={onPress} />
   );
 };

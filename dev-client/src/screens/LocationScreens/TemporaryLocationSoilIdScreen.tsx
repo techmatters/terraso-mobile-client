@@ -20,9 +20,9 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 import {Coords} from 'terraso-client-shared/types';
 
+import {CreateSiteHereButton} from 'terraso-mobile-client/components/buttons/special/CreateSiteHereButton';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {CreateSiteButton} from 'terraso-mobile-client/screens/LocationScreens/components/CreateSiteButton';
 import {SoilIdDescriptionSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdDescriptionSection';
 import {SoilIdMatchesSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdMatchesSection';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -41,7 +41,7 @@ export const TemporaryLocationSoilIdScreen = ({coords}: TempLocationProps) => {
         <SoilIdDescriptionSection coords={coords} />
         <SoilIdMatchesSection coords={coords} />
         <Box paddingVertical="md">
-          <CreateSiteButton coords={coords} />
+          <CreateSiteHereButton coords={coords} />
         </Box>
       </ScrollView>
     </ScreenScaffold>

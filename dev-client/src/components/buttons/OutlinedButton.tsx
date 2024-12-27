@@ -21,33 +21,34 @@ import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
-export type TextButtonType = 'default' | 'destructive' | 'alertError';
+/*
+ * Note: the OutlinedButton is *NOT* the same as the "outlined" DialogButton type;
+ * this is a "sm"-sized button which only appears in one-off use cases.
+ */
 
-export type TextButtonProps = {
+export type OutlinedButtonProps = {
   label: string;
-  type?: TextButtonType;
   leftIcon?: IconName;
   rightIcon?: IconName;
   disabled?: boolean;
   onPress?: PressableProps['onPress'];
 };
 
-export const TextButton = ({
+export const OutlinedButton = ({
   label,
-  type = 'default',
   leftIcon,
   rightIcon,
   disabled,
   onPress,
-}: TextButtonProps) => {
+}: OutlinedButtonProps) => {
   return (
     <BaseButton
       label={label}
-      shape="text"
+      shape="sm"
       leftIcon={leftIcon}
       rightIcon={rightIcon}
       containerStyles={CONTAINER_STYLES}
-      contentStyles={CONTENT_STYLES[type]}
+      contentStyles={CONTENT_STYLES}
       disabled={disabled}
       onPress={onPress}
     />
@@ -56,43 +57,31 @@ export const TextButton = ({
 
 const styles = StyleSheet.create({
   containerDefault: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
+    borderColor: convertColorProp('primary.main'),
+    backgroundColor: convertColorProp('transparent'),
   },
-  containerPressed: {
+  containerDefaultPressed: {
+    borderColor: convertColorProp('primary.main'),
     backgroundColor: convertColorProp('action.selected'),
-    borderColor: convertColorProp('action.selected'),
+  },
+  containerDisabled: {
+    borderColor: convertColorProp('action.disabled'),
   },
   contentDefault: {
     color: convertColorProp('primary.main'),
   },
-  contentDestructive: {
-    color: convertColorProp('error.main'),
-  },
-  contentAlertError: {
-    color: convertColorProp('error.content'),
-  },
   contentDisabled: {
-    color: convertColorProp('text.disabled'),
+    color: convertColorProp('action.disabled'),
   },
 });
 
 const CONTAINER_STYLES = {
   default: styles.containerDefault,
-  pressed: styles.containerPressed,
+  pressed: styles.containerDefaultPressed,
+  disabled: styles.containerDisabled,
 };
 
 const CONTENT_STYLES = {
-  default: {
-    default: styles.contentDefault,
-    disabled: styles.contentDisabled,
-  },
-  destructive: {
-    default: styles.contentDestructive,
-    disabled: styles.contentDisabled,
-  },
-  alertError: {
-    default: styles.contentAlertError,
-    disabled: styles.contentDisabled,
-  },
+  default: styles.contentDefault,
+  disabled: styles.contentDisabled,
 };

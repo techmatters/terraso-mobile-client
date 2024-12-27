@@ -27,6 +27,11 @@ export const featureFlags = {
     defaultIsEnabledInDevelopment: true,
     description: 'Enables support for offline mode',
   },
+  FF_testing: {
+    defaultIsEnabled: false,
+    defaultIsEnabledInDevelopment: true,
+    description: 'Enables testing-support controls',
+  },
 };
 
 export type FeatureFlagName = keyof typeof featureFlags;

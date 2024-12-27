@@ -20,10 +20,10 @@ import {useTranslation} from 'react-i18next';
 import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 
 import {Formik, FormikProps} from 'formik';
-import {Button, Spacer} from 'native-base';
+import {Button} from 'native-base';
 import * as yup from 'yup';
 
-import DeleteButton from 'terraso-mobile-client/components/buttons/DeleteButton';
+import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
@@ -94,14 +94,17 @@ export const ScreenFormWrapper = forwardRef(
             onSubmit={onSubmit}>
             {children}
           </Formik>
-          <Row pr={5} pb={10}>
-            <Spacer />
+          <Row
+            pb={10}
+            paddingHorizontal={5}
+            space={5}
+            justifyContent="flex-end"
+            alignItems="center">
             <ConfirmModal
               trigger={onOpen => (
                 <DeleteButton
                   disabled={isSubmitting}
                   onPress={() => conditionallyConfirmDelete(onOpen)}
-                  mr="20px"
                 />
               )}
               title={t('site.notes.confirm_removal_title')}

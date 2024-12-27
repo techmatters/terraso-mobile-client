@@ -26,6 +26,7 @@ import {Button} from 'native-base';
 
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
+import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special/SlopeMeterButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
@@ -33,7 +34,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {PermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
 import {
   Box,
@@ -161,14 +161,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                     `${degreeToPercent(deviceTiltDeg)}%`}
                 </Heading>
                 <Box height="18px" />
-                <Button
-                  onPress={onUse}
-                  size="lg"
-                  px="46px"
-                  py="18px"
-                  {...styles.useButton}>
-                  {t('general.use')}
-                </Button>
+                <SlopeMeterButton onPress={onUse} />
               </Column>
             </Column>
           </Row>
@@ -186,9 +179,5 @@ const styles = {
     right: 0,
     padding: 0,
     alignSelf: 'flex-end',
-  },
-  useButton: {
-    _text: {textTransform: 'uppercase'},
-    leftIcon: <Icon name="check" />,
   },
 } as const;

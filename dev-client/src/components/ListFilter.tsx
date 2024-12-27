@@ -27,8 +27,9 @@ import {useTranslation} from 'react-i18next';
 import {Keyboard, StyleSheet, TextInput} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 
-import {Button, FormControl, Radio} from 'native-base';
+import {FormControl, Radio} from 'native-base';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {BadgedIconButton} from 'terraso-mobile-client/components/buttons/icons/BadgedIconButton';
 import {
   Select,
@@ -399,15 +400,9 @@ export const FilterModalBody = ({onClose, children}: FilterModalBodyProps) => {
   }, [applyFilters, onClose]);
 
   return (
-    <Column space="25px" width="100%" testID="MODAL">
+    <Column space="25px" width="100%" testID="MODAL" alignItems="center">
       {children}
-      <Button
-        size="lg"
-        alignSelf="center"
-        _text={{textTransform: 'uppercase'}}
-        onPress={onPress}>
-        {t('general.apply')}
-      </Button>
+      <ContainedButton size="lg" onPress={onPress} label={t('general.apply')} />
     </Column>
   );
 };

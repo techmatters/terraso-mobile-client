@@ -30,22 +30,25 @@ type InternalLinkProps = {
 };
 
 export const InternalLink = ({label, onPress, url}: InternalLinkProps) => {
+  const [pressed, setPressed] = useState(false);
+  const onPressIn = useCallback(() => setPressed(true), [setPressed]);
+  const onPressOut = useCallback(() => setPressed(false), [setPressed]);
+
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
   const openUrl = useCallback(() => openBrowserAsync(url), [url]);
-  const [pressed, setPressed] = useState(false);
 
-  return (
-    isValidUrl && (
-      <Text
-        role="link"
-        color={pressed ? 'primary.dark' : 'primary.main'}
-        underline={true}
-        fontWeight={700}
-        onPressIn={() => setPressed(true)}
-        onPressOut={() => setPressed(false)}
-        onPress={onPress ? onPress : openUrl}>
-        {label}
-      </Text>
-    )
+  return isValidUrl ? (
+    <Text
+      accessibilityRole="link"
+      color={pressed ? 'primary.dark' : 'primary.main'}
+      underline={true}
+      fontWeight={700}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      onPress={onPress ? onPress : openUrl}>
+      {label}
+    </Text>
+  ) : (
+    <></>
   );
 };
