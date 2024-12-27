@@ -914,8 +914,8 @@
         "text_input_label": "Filtrar lista por entrada de búsqueda"
     },
     "image": {
-        "use_camera": "Sacar foto",
-        "choose_from_gallery": "Biblioteca de fotos"
+        "use_camera": "Use Camera TK",
+        "choose_from_gallery": "Choose from Gallery TK"
     },
     "info": {
         "title": "Descubre el potencial de tu paisaje",
