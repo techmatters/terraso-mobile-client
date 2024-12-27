@@ -16,13 +16,13 @@
  */
 
 import {useTranslation} from 'react-i18next';
-import {TouchableRippleProps} from 'react-native-paper';
+import {PressableProps} from 'react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 
 export type SlopeMeterButtonProps = {
   disabled?: boolean;
-  onPress?: TouchableRippleProps['onPress'];
+  onPress?: PressableProps['onPress'];
 };
 
 export const SlopeMeterButton = ({
