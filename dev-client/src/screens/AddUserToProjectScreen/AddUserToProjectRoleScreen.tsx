@@ -19,10 +19,10 @@ import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {TabActions} from '@react-navigation/native';
-import {Button} from 'native-base';
 
 import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {
   useNavToBottomTabsAndShowSyncError,
@@ -60,10 +60,6 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
   const user = useSelector(state => state.account.users[userId]);
 
   const [selectedRole, setSelectedRole] = useState<ProjectRole>('VIEWER');
-
-  const onCancel = useCallback(() => {
-    navigation.pop();
-  }, [navigation]);
 
   const addUser = useCallback(async () => {
     try {
@@ -105,26 +101,11 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
                 alignItems="center"
                 space="12px"
                 pt="md">
-                <Button
-                  onPress={onCancel}
-                  size="lg"
-                  variant="outline"
-                  borderColor="action.active"
-                  _text={{textTransform: 'uppercase', color: 'action.active'}}>
-                  {t('general.cancel')}
-                </Button>
-                {/* FYI: The 1px border is to visually match the size of the outline
-            variant, which appears to be 1px bigger than the solid variant due
-            to its border. */}
-                <Button
-                  borderWidth="1px"
-                  borderColor="primary.main"
+                <ContainedButton
+                  label={t('general.add')}
                   onPress={addUser}
                   size="lg"
-                  variant="solid"
-                  _text={{textTransform: 'uppercase'}}>
-                  {t('general.add')}
-                </Button>
+                />
               </Row>
             </Column>
           </ScreenContentSection>
