@@ -46,8 +46,8 @@ export const TextButton = ({
       shape="text"
       leftIcon={leftIcon}
       rightIcon={rightIcon}
-      container={CONTAINER_STYLES}
-      content={CONTENT_STYLES[type]}
+      containerStyles={CONTAINER_STYLES}
+      contentStyles={CONTENT_STYLES[type]}
       disabled={disabled}
       onPress={onPress}
     />

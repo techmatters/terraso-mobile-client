@@ -42,8 +42,8 @@ export const OutlinedButton = ({
       shape="sm"
       leftIcon={leftIcon}
       rightIcon={rightIcon}
-      container={CONTAINER_STYLES}
-      content={CONTENT_STYLES}
+      containerStyles={CONTAINER_STYLES}
+      contentStyles={CONTENT_STYLES}
       disabled={disabled}
       onPress={onPress}
     />

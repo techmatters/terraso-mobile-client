@@ -41,8 +41,8 @@ export const DialogButton = ({
     <BaseButton
       label={label}
       shape="dialog"
-      container={CONTAINER_STYLES[type]}
-      content={CONTENT_STYLES[type]}
+      containerStyles={CONTAINER_STYLES[type]}
+      contentStyles={CONTENT_STYLES[type]}
       onPress={onPress}
     />
   );

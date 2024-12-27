@@ -45,8 +45,8 @@ export type StateStyles<T> = {
 export type BaseButtonProps = {
   shape: ButtonShape;
   stretchToFit?: boolean;
-  container: StateStyles<ViewStyle>;
-  content: StateStyles<TextStyle>;
+  containerStyles: StateStyles<ViewStyle>;
+  contentStyles: StateStyles<TextStyle>;
   label: string;
   leftIcon?: IconName;
   rightIcon?: IconName;
@@ -57,8 +57,8 @@ export type BaseButtonProps = {
 export const BaseButton = ({
   shape,
   stretchToFit,
-  container,
-  content,
+  containerStyles: container,
+  contentStyles: content,
   label,
   leftIcon,
   rightIcon,
