@@ -97,7 +97,7 @@ export function ProjectSettingsScreen({
             <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
               <ConfirmModal
                 title={t('projects.settings.delete_button_prompt')}
-                actionName={t('projects.settings.delete_button')}
+                actionLabel={t('projects.settings.delete_button')}
                 body={t('projects.settings.delete_description')}
                 handleConfirm={triggerDeleteProject}
                 trigger={onOpen => (

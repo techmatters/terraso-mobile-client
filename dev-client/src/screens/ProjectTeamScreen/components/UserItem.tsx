@@ -105,7 +105,7 @@ export const UserItem = ({
           )}
           title={t('projects.team.leave_project_modal.title')}
           body={t('projects.team.leave_project_modal.body')}
-          actionName={t('projects.team.leave_project_modal.action_name')}
+          actionLabel={t('projects.team.leave_project_modal.action_name')}
           handleConfirm={removeUser}
         />
       )}

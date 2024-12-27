@@ -262,7 +262,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
               )}
               title={t('projects.sites.transfer_site_modal.title')}
               body={t('projects.sites.transfer_site_modal.body')}
-              actionName={t('projects.sites.transfer_site_modal.action_name')}
+              actionLabel={t('projects.sites.transfer_site_modal.action_name')}
               handleConfirm={onSubmit}
             />
           </ScrollView>
