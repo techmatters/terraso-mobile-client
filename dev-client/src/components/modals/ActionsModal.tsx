@@ -17,8 +17,6 @@
 
 import {forwardRef, useImperativeHandle, useMemo, useRef} from 'react';
 
-import {Button} from 'native-base';
-
 import {
   Modal,
   ModalHandle,
@@ -29,60 +27,6 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-
-type ActionButtonProps = {
-  onPress: () => void;
-  variant: keyof typeof ACTION_BUTTON_VARIANTS;
-};
-
-const ACTION_BUTTON_DEFAULTS = {
-  px: '24px',
-  py: '10px',
-  _text: {
-    fontWeight: 400,
-    fontSize: '14px',
-  },
-} as const satisfies React.ComponentProps<typeof Button>;
-
-const ACTION_BUTTON_VARIANTS = {
-  default: {
-    _text: {
-      ...ACTION_BUTTON_DEFAULTS._text,
-      color: 'primary.contrast',
-    },
-  },
-  subtle: {
-    backgroundColor: 'grey.200',
-    borderWidth: '1px',
-    borderColor: 'm3.sys.light.outline',
-    _text: {
-      ...ACTION_BUTTON_DEFAULTS._text,
-      color: 'text.primary',
-    },
-  },
-  warning: {
-    backgroundColor: 'error.main',
-    _text: {
-      ...ACTION_BUTTON_DEFAULTS._text,
-      color: 'error.contrast',
-    },
-  },
-} as const satisfies Record<string, React.ComponentProps<typeof Button>>;
-
-export const ActionButton = ({
-  variant,
-  onPress,
-  children,
-}: React.PropsWithChildren<ActionButtonProps>) => {
-  return (
-    <Button
-      {...ACTION_BUTTON_DEFAULTS}
-      {...ACTION_BUTTON_VARIANTS[variant]}
-      onPress={onPress}>
-      {children}
-    </Button>
-  );
-};
 
 export type ActionsModalProps = Pick<ModalProps, 'trigger'> & {
   title?: string;

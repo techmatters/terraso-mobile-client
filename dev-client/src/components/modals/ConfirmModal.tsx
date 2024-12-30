@@ -24,8 +24,8 @@ import {
 } from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {
-  ActionButton,
   ActionsModal,
   ActionsModalProps,
 } from 'terraso-mobile-client/components/modals/ActionsModal';
@@ -35,9 +35,9 @@ import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 type Props = Omit<ActionsModalProps, 'actions'> & {
   title?: string;
   body: string;
-  actionName: string;
+  actionLabel: string;
+  destructive?: boolean;
   handleConfirm: () => void;
-  isConfirmError?: boolean;
 };
 
 /**
@@ -48,9 +48,9 @@ export const ConfirmModal = forwardRef<ModalHandle, Props>(
     {
       title,
       body,
-      actionName,
+      actionLabel,
       handleConfirm,
-      isConfirmError = true,
+      destructive = true,
       ...modalProps
     }: Props,
     forwardedRef,
@@ -68,17 +68,19 @@ export const ConfirmModal = forwardRef<ModalHandle, Props>(
     const actions = useMemo(
       () => (
         <>
-          <ActionButton variant="subtle" onPress={onClose}>
-            {t('general.cancel')}
-          </ActionButton>
-          <ActionButton
+          <DialogButton
+            label={t('general.cancel')}
+            type="outlined"
+            onPress={onClose}
+          />
+          <DialogButton
+            label={actionLabel}
             onPress={onConfirm}
-            variant={isConfirmError ? 'warning' : 'default'}>
-            {actionName}
-          </ActionButton>
+            type={destructive ? 'destructive' : 'default'}
+          />
         </>
       ),
-      [onConfirm, onClose, actionName, t, isConfirmError],
+      [onConfirm, onClose, actionLabel, t, destructive],
     );
 
     return (

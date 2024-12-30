@@ -130,7 +130,7 @@ export const ManageTeamMemberScreen = ({
                 )}
                 title={t('projects.manage_member.confirm_removal_title')}
                 body={t('projects.manage_member.confirm_removal_body')}
-                actionName={t('projects.manage_member.confirm_removal_action')}
+                actionLabel={t('projects.manage_member.confirm_removal_action')}
                 handleConfirm={removeMembership}
               />
               <Text ml="20px" variant="caption">

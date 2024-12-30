@@ -304,7 +304,7 @@ const ConfirmEditingModal = ({
       )}
       title={t('soil.depth.update_modal.title')}
       body={t('soil.depth.update_modal.body')}
-      actionName={t('soil.depth.update_modal.action')}
+      actionLabel={t('soil.depth.update_modal.action')}
       handleConfirm={() => handleSubmit()}
     />
   );
