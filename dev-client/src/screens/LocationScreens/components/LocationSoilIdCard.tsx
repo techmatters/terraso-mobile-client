@@ -18,8 +18,6 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
 import {
   DataBasedSoilMatch,
   LocationBasedSoilMatch,
@@ -27,7 +25,7 @@ import {
 import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
   Box,
   Row,
@@ -56,7 +54,7 @@ export const LocationSoilIdCard = ({
   const isSite = !!siteId;
 
   return (
-    <Box variant="tile" flexDirection="column" alignItems="flex-start" p="18px">
+    <Box variant="tile" p="18px">
       <Row alignItems="center">
         <Box mr={15}>
           <StackedBarChart />
@@ -76,13 +74,12 @@ export const LocationSoilIdCard = ({
         <TempLocationMatchContent coords={coords} />
       )}
 
-      <Button
-        w="100%"
-        _text={{textTransform: 'uppercase'}}
-        rightIcon={<Icon name="chevron-right" />}
-        onPress={onExploreDataPress}>
-        {t('soil.explore_data')}
-      </Button>
+      <ContainedButton
+        stretchToFit
+        rightIcon="chevron-right"
+        onPress={onExploreDataPress}
+        label={t('soil.explore_data')}
+      />
     </Box>
   );
 };
