@@ -19,10 +19,9 @@ import {useCallback} from 'react';
 import {Trans, useTranslation} from 'react-i18next';
 import {Image, ScrollView, StyleSheet} from 'react-native';
 
-import {Button} from 'native-base';
-
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {
   ImagePicker,
   Photo,
@@ -125,19 +124,16 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
         {t('soil.color.guide.step6.content')}
       </Paragraph>
       <Row justifyContent="space-between">
-        <Button variant="link" onPress={onGoBack}>
-          {t('soil.color.guide.go_back')}
-        </Button>
+        <TextButton onPress={onGoBack} label={t('soil.color.guide.go_back')} />
         <ImagePicker
           featureName={t('soil.color.featureName')}
           onPick={onTakePhoto}>
           {onOpen => (
-            <Button
-              _text={{textTransform: 'uppercase'}}
-              leftIcon={<Icon name="camera" />}
-              onPress={onOpen}>
-              {t('soil.color.guide.take_photo')}
-            </Button>
+            <ContainedButton
+              leftIcon="camera"
+              onPress={onOpen}
+              label={t('soil.color.guide.take_photo')}
+            />
           )}
         </ImagePicker>
       </Row>
