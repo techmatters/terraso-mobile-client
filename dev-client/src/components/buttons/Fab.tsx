@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet} from 'react-native';
-import {Surface, TouchableRippleProps} from 'react-native-paper';
+import {PressableProps, StyleSheet} from 'react-native';
+import {Surface} from 'react-native-paper';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
@@ -25,7 +25,7 @@ export type FabProps = {
   label: string;
   leftIcon?: IconName;
   disabled?: boolean;
-  onPress?: TouchableRippleProps['onPress'];
+  onPress?: PressableProps['onPress'];
 };
 
 export const Fab = ({label, leftIcon, disabled, onPress}: FabProps) => (
