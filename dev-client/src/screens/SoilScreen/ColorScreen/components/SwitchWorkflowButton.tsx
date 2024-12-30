@@ -82,7 +82,7 @@ export const SwitchWorkflowButton = ({
     <ConfirmModal
       title={t('soil.color.confirm_delete.title')}
       body={t('soil.color.confirm_delete.body')}
-      actionName={t('soil.color.confirm_delete.action_name')}
+      actionLabel={t('soil.color.confirm_delete.action_name')}
       handleConfirm={switchWorkflow}
       trigger={button}
     />

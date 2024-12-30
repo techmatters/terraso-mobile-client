@@ -112,7 +112,7 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
         )}
         title={t('projects.inputs.depths.confirm_preset.title')}
         body={t('projects.inputs.depths.confirm_preset.body')}
-        actionName={t('projects.inputs.depths.confirm_preset.confirm')}
+        actionLabel={t('projects.inputs.depths.confirm_preset.confirm')}
         handleConfirm={onChangeDepthPreset}
       />
       {settings.depthIntervalPreset !== 'NONE' && (

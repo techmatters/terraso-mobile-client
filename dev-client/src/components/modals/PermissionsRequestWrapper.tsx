@@ -124,8 +124,8 @@ const PermissionsRequestWrapperImpl = ({
     <>
       <ConfirmModal
         ref={ref}
-        isConfirmError={false}
-        actionName={t('general.open_settings')}
+        destructive={false}
+        actionLabel={t('general.open_settings')}
         title={requestModalTitle}
         body={requestModalBody}
         handleConfirm={Linking.openSettings}

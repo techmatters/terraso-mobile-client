@@ -54,7 +54,7 @@ export const ColorDisplay = ({onDelete, color, variant}: Props) => {
           <ConfirmModal
             title={t('soil.color.confirm_delete.title')}
             body={t('soil.color.confirm_delete.body')}
-            actionName={t('soil.color.confirm_delete.action_name')}
+            actionLabel={t('soil.color.confirm_delete.action_name')}
             handleConfirm={onDelete}
             trigger={onPress => (
               <View position="absolute" top="-18px" right="-18px">

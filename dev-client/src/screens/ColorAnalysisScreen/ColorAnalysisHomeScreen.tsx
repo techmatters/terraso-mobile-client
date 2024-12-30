@@ -21,12 +21,10 @@ import {Image, Pressable, StyleSheet} from 'react-native';
 
 import {Fab} from 'native-base';
 
+import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {
-  ActionButton,
-  ActionsModal,
-} from 'terraso-mobile-client/components/modals/ActionsModal';
+import {ActionsModal} from 'terraso-mobile-client/components/modals/ActionsModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
@@ -111,16 +109,15 @@ export const ColorAnalysisHomeScreen = () => {
     () =>
       colorResult && (
         <>
-          <ActionButton
-            variant="subtle"
-            onPress={() => dispatchColor(colorResult!.nearestValidResult)}>
-            {t('soil.color.unexpected_color.use_suggestion')}
-          </ActionButton>
-          <ActionButton
-            variant="default"
-            onPress={() => dispatchColor(colorResult!.invalidResult)}>
-            {t('general.proceed')}
-          </ActionButton>
+          <DialogButton
+            type="outlined"
+            onPress={() => dispatchColor(colorResult!.nearestValidResult)}
+            label={t('soil.color.unexpected_color.use_suggestion')}
+          />
+          <DialogButton
+            onPress={() => dispatchColor(colorResult!.invalidResult)}
+            label={t('general.proceed')}
+          />
         </>
       ),
     [dispatchColor, colorResult, t],

@@ -37,8 +37,8 @@ export function SignOutModal({trigger}: LogoutModalProps) {
     <ConfirmModal
       trigger={trigger}
       body={t('sign_out.confirm_body')}
-      actionName={t('sign_out.confirm_action')}
-      isConfirmError={false}
+      actionLabel={t('sign_out.confirm_action')}
+      destructive={false}
       handleConfirm={onSignOut}
     />
   );

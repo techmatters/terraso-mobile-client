@@ -36,7 +36,7 @@ export const ConfirmDeleteDepthModal = ({
       trigger={trigger}
       title={t('soil.depth.delete_modal.title')}
       body={t('soil.depth.delete_modal.body')}
-      actionName={t('soil.depth.delete_modal.action')}
+      actionLabel={t('soil.depth.delete_modal.action')}
       handleConfirm={onConfirm}
     />
   );

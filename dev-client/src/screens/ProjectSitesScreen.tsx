@@ -110,7 +110,7 @@ const SiteMenu = ({site}: SiteProps) => {
         body={t('projects.sites.remove_site_modal.body', {
           siteName: site.name,
         })}
-        actionName={t('projects.sites.remove_site_modal.action_name')}
+        actionLabel={t('projects.sites.remove_site_modal.action_name')}
         handleConfirm={removeSiteFromProjectCallback}
       />
 
@@ -129,7 +129,7 @@ const SiteMenu = ({site}: SiteProps) => {
             siteName: site.name,
           }) + t('projects.sites.delete_site_modal.projects')
         }
-        actionName={t('projects.sites.delete_site_modal.action_name')}
+        actionLabel={t('projects.sites.delete_site_modal.action_name')}
         handleConfirm={deleteSiteCallback}
       />
     </Menu>

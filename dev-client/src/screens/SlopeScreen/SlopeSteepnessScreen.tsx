@@ -198,9 +198,9 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
                 ref={confirmationModalRef}
                 title={t('slope.steepness.confirm_title')}
                 body={t('slope.steepness.confirm_body')}
-                actionName={t('general.change')}
+                actionLabel={t('general.change')}
                 handleConfirm={onConfirmSteepness}
-                isConfirmError={false}
+                destructive={false}
               />
               <ImageRadio
                 value={soilData.slopeSteepnessSelect}
