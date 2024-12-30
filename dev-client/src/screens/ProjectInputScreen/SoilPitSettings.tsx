@@ -18,10 +18,8 @@
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
 import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
@@ -128,15 +126,11 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
         <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
           <Modal
             trigger={onOpen => (
-              <Button
+              <ContainedButton
                 onPress={onOpen}
-                alignSelf="flex-start"
-                backgroundColor="primary.main"
-                shadow={5}
-                _text={{textTransform: 'uppercase'}}
-                leftIcon={<Icon name="add" />}>
-                {t('soil.add_depth_label')}
-              </Button>
+                leftIcon="add"
+                label={t('soil.add_depth_label')}
+              />
             )}
             Header={
               <Heading variant="h6">{t('soil.depth.add_title')}</Heading>
