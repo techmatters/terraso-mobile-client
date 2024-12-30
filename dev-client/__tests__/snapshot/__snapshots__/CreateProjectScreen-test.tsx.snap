@@ -1787,110 +1787,101 @@ exports[`renders correctly 1`] = `
                             </View>
                           </View>
                         </View>
-                      </View>
-                    </RCTScrollView>
-                    <View
-                      style={
-                        {
-                          "bottom": 32,
-                          "padding": 12,
-                          "position": "absolute",
-                          "right": 12,
-                        }
-                      }
-                    >
-                      <View
-                        accessibilityRole="button"
-                        accessibilityState={
-                          {
-                            "busy": undefined,
-                            "checked": undefined,
-                            "disabled": undefined,
-                            "expanded": undefined,
-                            "selected": undefined,
-                          }
-                        }
-                        accessibilityValue={
-                          {
-                            "max": undefined,
-                            "min": undefined,
-                            "now": undefined,
-                            "text": undefined,
-                          }
-                        }
-                        accessible={true}
-                        collapsable={false}
-                        colorScheme="primary"
-                        dataSet={{}}
-                        focusable={true}
-                        onBlur={[Function]}
-                        onClick={[Function]}
-                        onFocus={[Function]}
-                        onResponderGrant={[Function]}
-                        onResponderMove={[Function]}
-                        onResponderRelease={[Function]}
-                        onResponderTerminate={[Function]}
-                        onResponderTerminationRequest={[Function]}
-                        onStartShouldSetResponder={[Function]}
-                        style={
-                          {
-                            "alignItems": "center",
-                            "backgroundColor": "#028843",
-                            "borderRadius": 4,
-                            "elevation": 6,
-                            "flexDirection": "row",
-                            "justifyContent": "center",
-                            "paddingBottom": 8,
-                            "paddingLeft": 22,
-                            "paddingRight": 22,
-                            "paddingTop": 8,
-                            "shadowColor": "#000000",
-                            "shadowOffset": {
-                              "height": 3,
-                              "width": 0,
-                            },
-                            "shadowOpacity": 0.27,
-                            "shadowRadius": 4.65,
-                          }
-                        }
-                      >
                         <View
-                          dataSet={{}}
                           style={
                             {
-                              "alignItems": "center",
-                              "flexDirection": "row",
+                              "alignItems": "flex-end",
+                              "margin": 20,
                             }
                           }
-                          test={true}
                         >
-                          <View
-                            dataSet={{}}
-                            style={{}}
-                          >
-                            <Text
-                              dataSet={{}}
-                              style={
+                          <View>
+                            <View
+                              accessibilityLabel="Create"
+                              accessibilityRole="button"
+                              accessibilityState={
                                 {
-                                  "backgroundColor": undefined,
-                                  "color": "#fafafa",
-                                  "fontFamily": undefined,
-                                  "fontSize": 15,
-                                  "fontStyle": "normal",
-                                  "fontWeight": "500",
-                                  "letterSpacing": 0.46,
-                                  "lineHeight": 26,
-                                  "textDecorationLine": undefined,
-                                  "textTransform": "uppercase",
+                                  "busy": undefined,
+                                  "checked": undefined,
+                                  "disabled": false,
+                                  "expanded": undefined,
+                                  "selected": undefined,
                                 }
                               }
+                              accessibilityValue={
+                                {
+                                  "max": undefined,
+                                  "min": undefined,
+                                  "now": undefined,
+                                  "text": undefined,
+                                }
+                              }
+                              accessible={true}
+                              collapsable={false}
+                              focusable={true}
+                              onBlur={[Function]}
+                              onClick={[Function]}
+                              onFocus={[Function]}
+                              onResponderGrant={[Function]}
+                              onResponderMove={[Function]}
+                              onResponderRelease={[Function]}
+                              onResponderTerminate={[Function]}
+                              onResponderTerminationRequest={[Function]}
+                              onStartShouldSetResponder={[Function]}
+                              style={
+                                [
+                                  {
+                                    "overflow": "hidden",
+                                  },
+                                  [
+                                    {
+                                      "alignItems": "center",
+                                      "alignSelf": "flex-start",
+                                      "borderRadius": 4,
+                                      "borderWidth": 1,
+                                      "flexDirection": "row",
+                                      "justifyContent": "center",
+                                      "overflow": "hidden",
+                                    },
+                                    {
+                                      "paddingHorizontal": 22,
+                                      "paddingVertical": 8,
+                                    },
+                                    undefined,
+                                    {
+                                      "backgroundColor": "#028843",
+                                      "borderColor": "#028843",
+                                    },
+                                  ],
+                                ]
+                              }
                             >
-                              Save
-                            </Text>
+                              <Text
+                                style={
+                                  [
+                                    [
+                                      {
+                                        "fontWeight": "500",
+                                        "textTransform": "uppercase",
+                                      },
+                                      {
+                                        "fontSize": 15,
+                                        "lineHeight": 26,
+                                      },
+                                    ],
+                                    {
+                                      "color": "#FFFFFF",
+                                    },
+                                  ]
+                                }
+                              >
+                                Create
+                              </Text>
+                            </View>
                           </View>
                         </View>
                       </View>
-                    </View>
+                    </RCTScrollView>
                   </View>
                 </View>
               </View>
