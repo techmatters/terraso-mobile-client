@@ -21,11 +21,11 @@ import {Image, ScrollView, StyleSheet} from 'react-native';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {
   ImagePicker,
   Photo,
 } from 'terraso-mobile-client/components/inputs/image/ImagePicker';
+import {InternalLink} from 'terraso-mobile-client/components/links/InternalLink';
 import {
   Box,
   Column,
@@ -124,7 +124,10 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
         {t('soil.color.guide.step6.content')}
       </Paragraph>
       <Row justifyContent="space-between">
-        <TextButton onPress={onGoBack} label={t('soil.color.guide.go_back')} />
+        <InternalLink
+          onPress={onGoBack}
+          label={t('soil.color.guide.go_back')}
+        />
         <ImagePicker
           featureName={t('soil.color.featureName')}
           onPick={onTakePhoto}>
