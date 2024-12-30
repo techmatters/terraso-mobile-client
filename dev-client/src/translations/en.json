@@ -922,7 +922,7 @@
         }
     },
     "image": {
-        "use_camera": "Take Photo",
-        "choose_from_gallery": "Photo Library"
+        "use_camera": "Use Camera",
+        "choose_from_gallery": "Choose from Gallery"
     }
 }

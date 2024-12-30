@@ -30,9 +30,8 @@ import {createAssetAsync} from 'expo-media-library';
 
 import {Buffer} from '@craftzdog/react-native-buffer';
 import {decode} from 'jpeg-js';
-import {Button} from 'native-base';
 
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
   ModalHandle,
   ModalTrigger,
@@ -90,8 +89,6 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
     ref.current?.onClose();
   }, [onPick]);
 
-  const onCancel = useCallback(() => ref.current?.onClose(), []);
-
   return (
     <StandaloneOverlaySheet trigger={children} ref={ref}>
       <Column padding="lg" space="md">
@@ -103,12 +100,13 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
           permissionHook={useCameraPermissions}
           permissionedAction={onUseCamera}>
           {onRequestAction => (
-            <Button
-              _text={{textTransform: 'uppercase'}}
+            <ContainedButton
+              label={t('image.use_camera')}
+              size="lg"
+              stretchToFit={true}
               onPress={onRequestAction}
-              rightIcon={<Icon name="photo-camera" />}>
-              {t('image.use_camera')}
-            </Button>
+              leftIcon="photo-camera"
+            />
           )}
         </PermissionsRequestWrapper>
         <PermissionsRequestWrapper
@@ -119,20 +117,15 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
           permissionHook={useMediaLibraryPermissions}
           permissionedAction={onUseMediaLibrary}>
           {onRequestAction => (
-            <Button
-              _text={{textTransform: 'uppercase'}}
+            <ContainedButton
+              label={t('image.choose_from_gallery')}
+              size="lg"
+              stretchToFit={true}
               onPress={onRequestAction}
-              rightIcon={<Icon name="photo-library" />}>
-              {t('image.choose_from_gallery')}
-            </Button>
+              leftIcon="photo-library"
+            />
           )}
         </PermissionsRequestWrapper>
-        <Button
-          _text={{textTransform: 'uppercase'}}
-          variant="outline"
-          onPress={onCancel}>
-          {t('general.cancel')}
-        </Button>
       </Column>
     </StandaloneOverlaySheet>
   );
