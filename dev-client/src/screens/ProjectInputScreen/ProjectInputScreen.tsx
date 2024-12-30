@@ -20,9 +20,9 @@ import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Button, Fab} from 'native-base';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
@@ -30,7 +30,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   Box,
   Column,
@@ -76,11 +75,6 @@ export const ProjectInputScreen = ({
     [project, dispatch],
   );
 
-  const onSave = () => {
-    // Manual save button is for reassurance, all items auto-save.
-    navigation.pop();
-  };
-
   const userRole = useProjectRoleContext();
 
   const allowEditing = useMemo(() => userRole === 'MANAGER', [userRole]);
@@ -123,17 +117,14 @@ export const ProjectInputScreen = ({
               </Row>
               <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
                 <Text bold>{t('projects.inputs.instructions.title')}</Text>
-                <Text>{t('projects.inputs.instructions.description')}</Text>
-                <Button
-                  mt={2}
-                  pl={4}
-                  pr={4}
-                  size="lg"
-                  shadow={5}
+                <Text mb={2}>
+                  {t('projects.inputs.instructions.description')}
+                </Text>
+                <ContainedButton
                   onPress={onEditPinnedNote}
-                  leftIcon={<Icon name="push-pin" />}>
-                  {t('projects.inputs.instructions.add_label')}
-                </Button>
+                  leftIcon="push-pin"
+                  label={t('projects.inputs.instructions.add_label')}
+                />
               </RestrictByProjectRole>
             </Box>
             <Accordion
@@ -159,14 +150,6 @@ export const ProjectInputScreen = ({
               />
             </Accordion>
           </ScrollView>
-          <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
-            <Fab
-              onPress={() => onSave()}
-              textTransform="uppercase"
-              label={t('general.save')}
-              renderInPortal={false}
-            />
-          </RestrictByProjectRole>
         </Column>
       )}
     </ScreenDataRequirements>
