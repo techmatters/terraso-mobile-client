@@ -66,9 +66,9 @@ export function ProjectSettingsScreen({
 
   const navigation = useNavigation();
 
-  const triggerDeleteProject = useCallback(() => {
+  const triggerDeleteProject = useCallback(async () => {
     setProjectPurposelyDeleted(true);
-    dispatch(deleteProject({id: projectId}));
+    await dispatch(deleteProject({id: projectId}));
     navigation.pop();
   }, [dispatch, navigation, projectId]);
 

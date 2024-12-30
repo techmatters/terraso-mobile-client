@@ -79,9 +79,9 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
     [dispatch, site, name],
   );
 
-  const onDelete = useCallback(() => {
+  const onDelete = useCallback(async () => {
     setSitePurposelyDeleted(true);
-    dispatch(deleteSite(site));
+    await dispatch(deleteSite(site));
     navigation.navigate('BOTTOM_TABS');
   }, [dispatch, navigation, site]);
 
