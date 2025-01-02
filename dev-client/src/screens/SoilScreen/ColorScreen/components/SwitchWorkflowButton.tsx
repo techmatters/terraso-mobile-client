@@ -20,6 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Button} from 'native-base';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {isColorComplete} from 'terraso-mobile-client/model/color/colorConversions';
 import {updatePreferences} from 'terraso-mobile-client/model/preferences/preferencesSlice';
@@ -31,7 +32,6 @@ import {selectDepthDependentData} from 'terraso-mobile-client/store/selectors';
 export const SwitchWorkflowButton = ({
   siteId,
   depthInterval,
-  ...props
 }: SoilPitInputScreenProps &
   Omit<React.ComponentProps<typeof Button>, 'onPress'>) => {
   const {t} = useTranslation();
@@ -71,11 +71,14 @@ export const SwitchWorkflowButton = ({
   }, [dispatch, siteId, depthInterval.depthInterval, workflow, data]);
 
   const button = (onPress: () => void) => (
-    <Button _text={{textTransform: 'uppercase'}} onPress={onPress} {...props}>
-      {workflow === 'MANUAL'
-        ? t('soil.color.workflow.CAMERA')
-        : t('soil.color.workflow.MANUAL')}
-    </Button>
+    <ContainedButton
+      onPress={onPress}
+      label={
+        workflow === 'MANUAL'
+          ? t('soil.color.workflow.CAMERA')
+          : t('soil.color.workflow.MANUAL')
+      }
+    />
   );
 
   return isColorComplete(data) ? (

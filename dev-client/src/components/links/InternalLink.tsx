@@ -25,19 +25,24 @@ import {validateUrl} from 'terraso-mobile-client/util';
 
 type InternalLinkProps = {
   label: string;
+  url?: string;
   onPress?: PressableProps['onPress'];
-  url: string;
 };
 
-export const InternalLink = ({label, onPress, url}: InternalLinkProps) => {
+export const InternalLink = ({label, url, onPress}: InternalLinkProps) => {
   const [pressed, setPressed] = useState(false);
   const onPressIn = useCallback(() => setPressed(true), [setPressed]);
   const onPressOut = useCallback(() => setPressed(false), [setPressed]);
 
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
-  const openUrl = useCallback(() => openBrowserAsync(url), [url]);
+  const openUrl = useCallback(() => {
+    if (isValidUrl) {
+      openBrowserAsync(url!);
+    }
+  }, [url, isValidUrl]);
+  const shouldDisplay = isValidUrl || Boolean(onPress);
 
-  return isValidUrl ? (
+  return shouldDisplay ? (
     <Text
       accessibilityRole="link"
       color={pressed ? 'primary.dark' : 'primary.main'}

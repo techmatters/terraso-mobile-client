@@ -18,10 +18,9 @@
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
 import {User} from 'terraso-client-shared/account/accountSlice';
 
+import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -55,38 +54,18 @@ export function DeleteAccountConfirmForm({
         keyboardType="email-address"
       />
       <Row space="8px" alignSelf="flex-end">
-        <Button onPress={goBack} {...ACTION_BUTTON_VARIANTS.cancel}>
-          {t('delete_account.confirm.cancel')}
-        </Button>
-        <Button
+        <DialogButton
+          onPress={goBack}
+          type="outlined"
+          label={t('delete_account.confirm.cancel')}
+        />
+        <DialogButton
           onPress={onConfirm}
-          isDisabled={isEmailConfirmed || isSaving}
-          {...ACTION_BUTTON_VARIANTS.confirm}>
-          {t('delete_account.confirm.delete')}
-        </Button>
+          disabled={isEmailConfirmed || isSaving}
+          type="destructive"
+          label={t('delete_account.confirm.delete')}
+        />
       </Row>
     </Column>
   );
 }
-
-const ACTION_BUTTON_VARIANTS = {
-  cancel: {
-    variant: 'outline',
-    size: 'lg',
-    _text: {
-      color: 'text.primary',
-    },
-  },
-  confirm: {
-    variant: 'solid',
-    size: 'lg',
-    background: 'error.main',
-    _disabled: {
-      background: 'action.disabledBackground',
-      _text: {
-        color: 'action.disabled',
-      },
-    },
-    _text: {color: 'error.contrast'},
-  },
-};

@@ -19,11 +19,11 @@ import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Divider} from 'react-native-paper';
 
-import {Button} from 'native-base';
-
 import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
+import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {
   useNavToBottomTabsAndShowSyncError,
@@ -33,7 +33,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,
@@ -117,16 +116,12 @@ export const ManageTeamMemberScreen = ({
 
               <ConfirmModal
                 trigger={onOpen => (
-                  <Button
-                    size="lg"
-                    variant="ghost"
-                    alignSelf="flex-start"
+                  <TextButton
                     onPress={onOpen}
-                    _text={{color: 'error.main', textTransform: 'uppercase'}}
-                    _pressed={{backgroundColor: 'red.100'}}
-                    leftIcon={<Icon name="delete" color="error.main" />}>
-                    {t('projects.manage_member.remove')}
-                  </Button>
+                    type="destructive"
+                    leftIcon="delete"
+                    label={t('projects.manage_member.remove')}
+                  />
                 )}
                 title={t('projects.manage_member.confirm_removal_title')}
                 body={t('projects.manage_member.confirm_removal_body')}
@@ -138,9 +133,10 @@ export const ManageTeamMemberScreen = ({
               </Text>
 
               <Box flex={0} height="15%" justifyContent="flex-end">
-                <Button onPress={updateUser} alignSelf="flex-end">
-                  {t('general.save_fab')}
-                </Button>
+                <ContainedButton
+                  onPress={updateUser}
+                  label={t('general.save')}
+                />
               </Box>
             </Column>
           </ScreenContentSection>

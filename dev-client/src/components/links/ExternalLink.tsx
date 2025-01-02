@@ -40,7 +40,11 @@ export const ExternalLink = ({
   const onPressOut = useCallback(() => setPressed(false), [setPressed]);
 
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
-  const openUrl = useCallback(() => Linking.openURL(url), [url]);
+  const openUrl = useCallback(() => {
+    if (isValidUrl) {
+      Linking.openURL(url);
+    }
+  }, [url, isValidUrl]);
 
   const colorStyles = COLOR_STYLES[type];
   const colorStyle = pressed ? colorStyles.pressed : colorStyles.default;

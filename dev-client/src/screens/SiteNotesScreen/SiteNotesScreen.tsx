@@ -19,8 +19,7 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native';
 
-import {Button} from 'native-base';
-
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
@@ -82,13 +81,11 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
                 {isOffline ? (
                   <OfflineMessageBox message={t('site.notes.offline')} />
                 ) : (
-                  <Button
+                  <ContainedButton
                     size="lg"
-                    shadow={5}
                     onPress={onAddNote}
-                    _text={{textTransform: 'uppercase'}}>
-                    {t('site.notes.add_note_label')}
-                  </Button>
+                    label={t('site.notes.add_note_label')}
+                  />
                 )}
               </Box>
             </RestrictBySiteRole>

@@ -19,9 +19,7 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, StyleSheet} from 'react-native';
 
-import {Button} from 'native-base';
-
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
   Box,
   Heading,
@@ -84,14 +82,12 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
         </Box>
 
         <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-          <Box paddingVertical="lg">
-            <Button
-              _text={{textTransform: 'uppercase'}}
-              alignSelf="flex-start"
-              rightIcon={<Icon name="chevron-right" />}
-              onPress={onAddSoilDataPress}>
-              {t('site.soil_id.site_data.slope.add_data')}
-            </Button>
+          <Box paddingVertical="lg" alignItems="flex-end">
+            <ContainedButton
+              rightIcon="chevron-right"
+              onPress={onAddSoilDataPress}
+              label={t('site.soil_id.site_data.slope.add_data')}
+            />
           </Box>
         </RestrictBySiteRole>
       </Box>

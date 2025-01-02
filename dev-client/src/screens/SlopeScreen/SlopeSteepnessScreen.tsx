@@ -19,17 +19,17 @@ import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, StyleSheet} from 'react-native';
 
-import {Button, ScrollView} from 'native-base';
+import {ScrollView} from 'native-base';
 
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {
   ImageRadio,
   radioImage,
@@ -172,21 +172,19 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
                   <Row justifyContent="space-between">
                     <Modal
                       trigger={onOpen => (
-                        <Button
+                        <ContainedButton
                           onPress={onOpen}
-                          _text={{textTransform: 'uppercase'}}
-                          rightIcon={<Icon name="chevron-right" />}>
-                          {t('slope.steepness.manual_label')}
-                        </Button>
+                          rightIcon="chevron-right"
+                          label={t('slope.steepness.manual_label')}
+                        />
                       )}>
                       <ManualSteepnessModal siteId={siteId} />
                     </Modal>
-                    <Button
-                      _text={{textTransform: 'uppercase'}}
-                      rightIcon={<Icon name="chevron-right" />}
-                      onPress={onMeter}>
-                      {t('slope.steepness.slope_meter')}
-                    </Button>
+                    <ContainedButton
+                      rightIcon="chevron-right"
+                      onPress={onMeter}
+                      label={t('slope.steepness.slope_meter')}
+                    />
                   </Row>
                   <Box height="15px" />
                 </RestrictBySiteRole>

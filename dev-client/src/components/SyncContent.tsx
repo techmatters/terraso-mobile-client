@@ -17,8 +17,7 @@
 
 import {useCallback} from 'react';
 
-import {Button} from 'native-base';
-
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
@@ -70,6 +69,6 @@ export const SyncButton = () => {
 
   return (
     // TODO-offline: Create string in en.json if we actually want this button for reals
-    <Button onPress={onSync}>SYNC: pull</Button>
+    <ContainedButton stretchToFit onPress={onSync} label="SYNC: pull" />
   );
 };

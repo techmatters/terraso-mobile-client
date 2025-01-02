@@ -19,9 +19,8 @@ import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PressableProps} from 'react-native';
 
-import {Fab} from 'native-base';
-
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
@@ -120,9 +119,9 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
             )}
           </Column>
           <Fab
-            label={t('general.save_fab')}
+            label={t('general.save')}
             onPress={onSave}
-            isDisabled={isOffline}
+            disabled={isOffline}
           />
         </ScreenScaffold>
       )}

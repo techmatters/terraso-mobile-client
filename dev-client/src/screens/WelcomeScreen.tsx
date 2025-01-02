@@ -19,9 +19,8 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native-gesture-handler';
 
-import {Fab} from 'native-base';
-
 import LandPKSTerrasoLogo from 'terraso-mobile-client/assets/LandPKS-from-Terraso-logo.svg';
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {TranslatedBulletList} from 'terraso-mobile-client/components/content/typography/TranslatedBulletList';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';

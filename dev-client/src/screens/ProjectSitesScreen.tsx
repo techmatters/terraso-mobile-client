@@ -22,12 +22,13 @@ import {Menu} from 'react-native-paper';
 import {MaterialTopTabScreenProps} from '@react-navigation/material-top-tabs';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import {createSelector} from '@reduxjs/toolkit';
-import {Button, FlatList} from 'native-base';
+import {FlatList} from 'native-base';
 
 import {Project} from 'terraso-client-shared/project/projectTypes';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {normalizeText} from 'terraso-client-shared/utils';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
@@ -289,12 +290,10 @@ export function ProjectSitesScreen({
             </>
           )}
           <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
-            <Button
+            <ContainedButton
               onPress={transferCallback}
-              alignSelf="flex-start"
-              _text={{textTransform: 'uppercase'}}>
-              {t('projects.sites.transfer')}
-            </Button>
+              label={t('projects.sites.transfer')}
+            />
           </RestrictByProjectRole>
           {!isEmpty && full}
         </Column>

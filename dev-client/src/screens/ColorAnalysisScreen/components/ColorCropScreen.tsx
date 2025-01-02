@@ -32,9 +32,7 @@ import {
   SaveFormat,
 } from 'expo-image-manipulator';
 
-import {Fab} from 'native-base';
-
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {
   Photo,
   PhotoWithBase64,
@@ -198,11 +196,7 @@ export const ColorCropScreen = ({
         <Box height="sm" />
         <Text variant="body1">{description}</Text>
       </Column>
-      <Fab
-        onPress={onComplete}
-        label={t('general.next')}
-        leftIcon={<Icon name="check" />}
-      />
+      <Fab onPress={onComplete} label={t('general.next')} leftIcon="check" />
     </ScreenScaffold>
   );
 };

@@ -21,10 +21,10 @@ import {Image, StyleSheet, View} from 'react-native';
 
 import {ResizeMode, Video} from 'expo-av';
 
-import {Button, ScrollView} from 'native-base';
+import {ScrollView} from 'native-base';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
   Box,
   Column,
@@ -265,12 +265,11 @@ export const TextureGuideScreen = (props?: SoilPitInputScreenProps) => {
               </Text>
               <Box height="10px" />
               {onUseResult !== undefined && (
-                <Button
-                  leftIcon={<Icon name="check" />}
-                  _text={{textTransform: 'uppercase'}}
-                  onPress={onUseResult}>
-                  {t('soil.texture.guide.use_label')}
-                </Button>
+                <ContainedButton
+                  leftIcon="check"
+                  onPress={onUseResult}
+                  label={t('soil.texture.guide.use_label')}
+                />
               )}
             </Column>
           )}

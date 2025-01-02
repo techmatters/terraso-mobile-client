@@ -164,7 +164,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
           </Row>
         )}
         {project && (
-          <Row space={4} alignItems="baseline">
+          <Row space={4} alignItems="center">
             <PeopleChip count={Object.keys(project.memberships).length} />
             {project?.siteInstructions && (
               <PinnedNoteButton project={project} />

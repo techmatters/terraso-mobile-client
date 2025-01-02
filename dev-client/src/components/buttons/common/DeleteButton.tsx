@@ -28,7 +28,7 @@ type Props = {
 
 export const DeleteButton = ({label, disabled, onPress}: Props) => {
   const {t} = useTranslation();
-  label = label ?? t('general.delete_fab');
+  label = label ?? t('general.delete');
 
   return (
     <TextButton

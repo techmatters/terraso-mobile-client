@@ -19,11 +19,10 @@ import {useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
-import {Button} from 'native-base';
 import * as yup from 'yup';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
@@ -190,14 +189,12 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
             </Box>
           </Row>
           <Box height="25px" />
-          <Button
-            leftIcon={<Icon name="check" />}
-            _text={{textTransform: 'uppercase'}}
-            size="lg"
-            isDisabled={!isValid || isSubmitting}
-            onPress={() => handleSubmit()}>
-            {t('general.done')}
-          </Button>
+          <ContainedButton
+            onPress={handleSubmit}
+            leftIcon="check"
+            label={t('general.done')}
+            disabled={!isValid || isSubmitting}
+          />
         </Column>
       )}
     </Formik>

@@ -20,10 +20,10 @@ import {useTranslation} from 'react-i18next';
 import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 
 import {Formik, FormikProps} from 'formik';
-import {Button} from 'native-base';
 import * as yup from 'yup';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
@@ -109,17 +109,15 @@ export const ScreenFormWrapper = forwardRef(
               )}
               title={t('site.notes.confirm_removal_title')}
               body={t('site.notes.confirm_removal_body')}
-              actionLabel={t('general.delete_fab')}
+              actionLabel={t('general.delete')}
               handleConfirm={onDelete}
             />
-            <Button
+            <ContainedButton
               onPress={handlePressSubmit}
-              isDisabled={isSubmitting}
-              shadow={1}
+              disabled={isSubmitting}
               size="lg"
-              _text={{textTransform: 'uppercase'}}>
-              {t('general.done')}
-            </Button>
+              label={t('general.done')}
+            />
           </Row>
         </KeyboardAvoidingView>
       </ScreenScaffold>

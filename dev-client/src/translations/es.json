@@ -409,6 +409,7 @@
         "add": "Añadir",
         "submit": "enviar",
         "change": "Cambiar",
+        "create": "Create TK",
         "done": "Realizado",
         "required": "Obligatorio",
         "yes": "Sí",
@@ -420,7 +421,6 @@
         "offline_sign_in_title": "TK Sign in not available offline",
         "offline_sign_in_body": "TK To use LandPKS Soil ID offline, you must first sign in while online.",
         "last_modified": "Última modificación",
-        "save_fab": "Guardar",
         "dismiss": "Dismiss TK",
         "last_modified_by": "última modificación {{user}}, {{date}}",
         "select_all": "Seleccionar todo",
@@ -432,9 +432,8 @@
             "METRIC": "Métrico",
             "ENGLISH": "Inglés"
         },
-        "cancel_fab": "Cancelar",
-        "delete_fab": "Eliminar",
-        "close_fab": "Cerrar",
+        "delete": "Eliminar",
+        "close": "Cerrar",
         "filter": {
             "no_sort": "Ninguno",
             "no_role": "Ninguno",

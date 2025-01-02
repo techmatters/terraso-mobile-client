@@ -19,11 +19,10 @@ import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 
-import {Button} from 'native-base';
-
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
+import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {RoleChip} from 'terraso-mobile-client/components/chips/RoleChip';
 import {ProfilePic} from 'terraso-mobile-client/components/content/images/ProfilePic';
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
@@ -36,16 +35,7 @@ type TriggerProps = {
 };
 
 function LeaveProjectTrigger({onOpen, message}: TriggerProps) {
-  return (
-    <Button
-      size="sm"
-      _text={{color: 'error.main'}}
-      _pressed={{backgroundColor: '#ff0000'}}
-      bgColor="grey.200"
-      onPress={onOpen}>
-      {message}
-    </Button>
-  );
+  return <TextButton type="destructive" onPress={onOpen} label={message} />;
 }
 
 type ItemProps = {

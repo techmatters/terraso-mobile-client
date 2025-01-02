@@ -19,13 +19,13 @@ import {FormEvent, useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
-import {Button} from 'native-base';
 import * as yup from 'yup';
 
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {fromEntries} from 'terraso-client-shared/utils';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   DepthForm,
@@ -300,34 +300,18 @@ const ConfirmEditingModal = ({
   return (
     <ConfirmModal
       trigger={onOpen => (
-        <SaveButton action={buttonAction(onOpen)} isDisabled={formNotReady} />
+        <ContainedButton
+          size="lg"
+          onPress={buttonAction(onOpen)}
+          disabled={formNotReady}
+          label={t('general.save')}
+        />
       )}
       title={t('soil.depth.update_modal.title')}
       body={t('soil.depth.update_modal.body')}
       actionLabel={t('soil.depth.update_modal.action')}
       handleConfirm={() => handleSubmit()}
     />
-  );
-};
-
-type AddButtonProps = {
-  action: () => void;
-  isDisabled: boolean;
-};
-
-const SaveButton = ({action, isDisabled}: AddButtonProps) => {
-  const {t} = useTranslation();
-
-  return (
-    <Button
-      flex={1}
-      size="lg"
-      mx="auto"
-      onPress={action}
-      isDisabled={isDisabled}
-      _text={{textTransform: 'uppercase'}}>
-      {t('general.save')}
-    </Button>
   );
 };
 

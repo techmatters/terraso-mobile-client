@@ -18,15 +18,14 @@
 import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikHelpers} from 'formik';
-import {Button} from 'native-base';
 import * as yup from 'yup';
 
 import {UserInProjectError} from 'terraso-client-shared/account/accountService';
 import {checkUserInProject} from 'terraso-client-shared/account/accountSlice';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
 import {useDispatch} from 'terraso-mobile-client/store';
@@ -129,15 +128,14 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
                 autoCapitalize="none"
               />
             </Box>
-            <Button
-              mt="sm"
-              alignSelf="flex-end"
-              rightIcon={<Icon name="chevron-right" />}
-              onPress={handleSubmit}
-              isDisabled={!isValid || isSubmitting}
-              _text={{textTransform: 'uppercase'}}>
-              {t('general.next')}
-            </Button>
+            <View mt="sm" alignSelf="flex-end">
+              <ContainedButton
+                rightIcon="chevron-right"
+                onPress={handleSubmit}
+                disabled={!isValid || isSubmitting}
+                label={t('general.next')}
+              />
+            </View>
           </>
         );
       }}
