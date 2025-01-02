@@ -36,7 +36,7 @@ export const ErrorMessageBox = ({title, children}: MessageBoxProps) => {
       borderRadius="4px"
       padding="md">
       <Row>
-        <Icon name="error-outline" color="error.main" mr="md" size="xs" />
+        <Icon name="error-outline" color="error.main" mr="md" size="md" />
         <Column flex={1}>
           <Text variant="body1-strong" color="error.content" mb="sm">
             {title}
