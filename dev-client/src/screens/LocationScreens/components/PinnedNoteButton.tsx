@@ -32,10 +32,9 @@ export const PinnedNoteButton = ({project}: Props) => {
   const navigation = useNavigation();
 
   const onShowNote = useCallback(() => {
-    return () =>
-      navigation.navigate('READ_PINNED_NOTE', {
-        projectId: project.id,
-      });
+    navigation.navigate('READ_PINNED_NOTE', {
+      projectId: project.id,
+    });
   }, [navigation, project]);
 
   return (
