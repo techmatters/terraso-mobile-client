@@ -176,7 +176,7 @@
                     "texture": "Textura",
                     "color": "Color",
                     "rock_fragment": "Fragmento de roca",
-                    "add_data": "Añadir datos de suelo"
+                    "add_data": "TK Enter properties"
                 }
             },
             "soil_info": {
