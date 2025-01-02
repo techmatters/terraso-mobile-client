@@ -19,8 +19,6 @@ import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Divider} from 'react-native-paper';
 
-import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
-
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
@@ -37,6 +35,7 @@ import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal
 import {
   Box,
   Column,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
@@ -69,9 +68,9 @@ export const ManageTeamMemberScreen = ({
   const user = useSelector(state => state.account.users[userId]);
   const membership = project?.memberships[membershipId];
 
-  const [selectedRole, setSelectedRole] = useState<ProjectRole>(
-    membership ? membership.userRole : 'MANAGER',
-  );
+  const currentRole = membership ? membership.userRole : 'MANAGER';
+  const [selectedRole, setSelectedRole] = useState(currentRole);
+  const isChanged = selectedRole !== currentRole;
 
   const removeMembership = useCallback(async () => {
     await dispatch(
@@ -112,6 +111,15 @@ export const ManageTeamMemberScreen = ({
                 onChange={setSelectedRole}
                 selectedRole={selectedRole}
               />
+
+              <Row mt={4} justifyContent="flex-end">
+                <ContainedButton
+                  onPress={updateUser}
+                  disabled={!isChanged}
+                  label={t('general.save')}
+                />
+              </Row>
+
               <Divider style={DIVIDER_STYLE} />
 
               <ConfirmModal
@@ -131,13 +139,6 @@ export const ManageTeamMemberScreen = ({
               <Text ml="20px" variant="caption">
                 {t('projects.manage_member.remove_help')}
               </Text>
-
-              <Box flex={0} height="15%" justifyContent="flex-end">
-                <ContainedButton
-                  onPress={updateUser}
-                  label={t('general.save')}
-                />
-              </Box>
             </Column>
           </ScreenContentSection>
         </ScreenScaffold>
