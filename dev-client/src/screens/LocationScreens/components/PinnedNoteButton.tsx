@@ -40,7 +40,7 @@ export const PinnedNoteButton = ({project}: Props) => {
 
   return (
     <ContainedButton
-      onPress={onShowNote()}
+      onPress={onShowNote}
       leftIcon="push-pin"
       label={t('projects.inputs.instructions.add_label')}
     />
