@@ -21,7 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
-import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -189,10 +189,9 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
             </Box>
           </Row>
           <Box height="25px" />
-          <ContainedButton
+          <DialogButton
             onPress={handleSubmit}
-            leftIcon="check"
-            label={t('general.done')}
+            label={t('general.save')}
             disabled={!isValid || isSubmitting}
           />
         </Column>
