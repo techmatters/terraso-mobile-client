@@ -19,11 +19,12 @@ import {useTranslation} from 'react-i18next';
 import {Platform} from 'react-native';
 
 import {FormikProps} from 'formik';
-import {Button, KeyboardAvoidingView, ScrollView, Spacer} from 'native-base';
+import {KeyboardAvoidingView, ScrollView, Spacer} from 'native-base';
 import {InferType} from 'yup';
 
 import {Coords} from 'terraso-client-shared/types';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {HelpButton} from 'terraso-mobile-client/components/buttons/icons/common/HelpButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
@@ -33,9 +34,9 @@ import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
 import {
-  Box,
   Column,
   Text,
+  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
@@ -145,17 +146,15 @@ export const CreateSiteForm = ({
           </FormField>
           <Spacer />
         </Column>
+        <View alignItems="flex-end" margin={5}>
+          <ContainedButton
+            onPress={handleSubmit}
+            disabled={isSubmitting || !isValid}
+            size="lg"
+            label={t('general.create')}
+          />
+        </View>
       </ScrollView>
-      <Box position="absolute" bottom={10} right={3} p={3}>
-        <Button
-          onPress={() => handleSubmit()}
-          isDisabled={isSubmitting || !isValid}
-          shadow={5}
-          size="lg"
-          _text={{textTransform: 'uppercase'}}>
-          {t('general.save_fab')}
-        </Button>
-      </Box>
     </KeyboardAvoidingView>
   );
 };

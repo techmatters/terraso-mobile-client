@@ -19,9 +19,10 @@ import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikProps} from 'formik';
-import {Button, KeyboardAvoidingView, ScrollView} from 'native-base';
+import {KeyboardAvoidingView, ScrollView} from 'native-base';
 
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {Box, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {addProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import ProjectForm, {
@@ -101,17 +102,15 @@ const FormContainer = React.memo(
               privacy={privacy}
             />
           </Box>
+          <View alignItems="flex-end" margin={5}>
+            <ContainedButton
+              onPress={handleSubmit}
+              disabled={isSubmitting || !isValid}
+              size="lg"
+              label={t('general.create')}
+            />
+          </View>
         </ScrollView>
-        <Box position="absolute" bottom={8} right={3} p={3}>
-          <Button
-            onPress={handleSubmit}
-            isDisabled={isSubmitting || !isValid}
-            shadow={5}
-            size="lg"
-            _text={{textTransform: 'uppercase'}}>
-            {t('general.save_fab')}
-          </Button>
-        </Box>
       </KeyboardAvoidingView>
     );
   },

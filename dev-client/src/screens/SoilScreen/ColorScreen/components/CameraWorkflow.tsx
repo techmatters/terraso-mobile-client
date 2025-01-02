@@ -18,9 +18,7 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Photo} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {PickImageButton} from 'terraso-mobile-client/components/inputs/image/PickImageButton';
 import {
@@ -69,12 +67,11 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
             paddingVertical="lg"
             alignItems="flex-start">
             <Paragraph>{t('soil.color.photo_need_help')}</Paragraph>
-            <Button
-              _text={{textTransform: 'uppercase'}}
+            <ContainedButton
               onPress={onUseGuide}
-              rightIcon={<Icon name="chevron-right" />}>
-              {t('soil.color.use_guide_label')}
-            </Button>
+              rightIcon="chevron-right"
+              label={t('soil.color.use_guide_label')}
+            />
           </Column>
         </Column>
       </RestrictBySiteRole>

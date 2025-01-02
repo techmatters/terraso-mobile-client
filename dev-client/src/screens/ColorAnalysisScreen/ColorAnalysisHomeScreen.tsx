@@ -19,9 +19,8 @@ import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
 
-import {Fab} from 'native-base';
-
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ActionsModal} from 'terraso-mobile-client/components/modals/ActionsModal';
@@ -202,9 +201,9 @@ export const ColorAnalysisHomeScreen = () => {
       </ActionsModal>
       <Fab
         label={t('soil.color.analyze')}
-        isDisabled={onAnalyze === null}
+        disabled={onAnalyze === null}
         onPress={onAnalyze}
-        leftIcon={<Icon name="check" />}
+        leftIcon="check"
       />
     </ScreenScaffold>
   );

@@ -1839,7 +1839,7 @@ exports[`renders correctly 1`] = `
                                         "flexDirection": "row",
                                       },
                                       {
-                                        "alignItems": "baseline",
+                                        "alignItems": "center",
                                         "columnGap": 16,
                                       },
                                     ]
@@ -1909,10 +1909,8 @@ exports[`renders correctly 1`] = `
                                 <View
                                   style={
                                     {
-                                      "alignItems": "flex-start",
                                       "backgroundColor": "#00344D",
                                       "borderRadius": 4,
-                                      "flexDirection": "column",
                                       "padding": 18,
                                     }
                                   }
@@ -2025,101 +2023,107 @@ exports[`renders correctly 1`] = `
                                       Not available offline
                                     </Text>
                                   </Text>
-                                  <View
-                                    accessibilityRole="button"
-                                    accessibilityState={
-                                      {
-                                        "busy": undefined,
-                                        "checked": undefined,
-                                        "disabled": undefined,
-                                        "expanded": undefined,
-                                        "selected": undefined,
-                                      }
-                                    }
-                                    accessibilityValue={
-                                      {
-                                        "max": undefined,
-                                        "min": undefined,
-                                        "now": undefined,
-                                        "text": undefined,
-                                      }
-                                    }
-                                    accessible={true}
-                                    collapsable={false}
-                                    colorScheme="primary"
-                                    dataSet={{}}
-                                    focusable={true}
-                                    onBlur={[Function]}
-                                    onClick={[Function]}
-                                    onFocus={[Function]}
-                                    onResponderGrant={[Function]}
-                                    onResponderMove={[Function]}
-                                    onResponderRelease={[Function]}
-                                    onResponderTerminate={[Function]}
-                                    onResponderTerminationRequest={[Function]}
-                                    onStartShouldSetResponder={[Function]}
-                                    style={
-                                      {
-                                        "alignItems": "center",
-                                        "backgroundColor": "#028843",
-                                        "borderRadius": 4,
-                                        "flexDirection": "row",
-                                        "justifyContent": "center",
-                                        "paddingBottom": 6,
-                                        "paddingLeft": 16,
-                                        "paddingRight": 16,
-                                        "paddingTop": 6,
-                                        "width": "100%",
-                                      }
-                                    }
-                                  >
+                                  <View>
                                     <View
-                                      dataSet={{}}
-                                      style={
+                                      accessibilityLabel="Explore the data"
+                                      accessibilityRole="button"
+                                      accessibilityState={
                                         {
-                                          "alignItems": "center",
-                                          "flexDirection": "row",
+                                          "busy": undefined,
+                                          "checked": undefined,
+                                          "disabled": false,
+                                          "expanded": undefined,
+                                          "selected": undefined,
                                         }
                                       }
-                                      test={true}
-                                    >
-                                      <View
-                                        dataSet={{}}
-                                        style={{}}
-                                      >
-                                        <Text
-                                          dataSet={{}}
-                                          style={
-                                            {
-                                              "backgroundColor": undefined,
-                                              "color": "#fafafa",
-                                              "fontFamily": undefined,
-                                              "fontSize": 14,
-                                              "fontStyle": "normal",
-                                              "fontWeight": "500",
-                                              "letterSpacing": 0.4,
-                                              "lineHeight": 24,
-                                              "textDecorationLine": undefined,
-                                              "textTransform": "uppercase",
-                                            }
-                                          }
-                                        >
-                                          Explore the data
-                                        </Text>
-                                      </View>
-                                      <View
-                                        dataSet={{}}
-                                        style={
-                                          {
-                                            "width": 6,
-                                          }
+                                      accessibilityValue={
+                                        {
+                                          "max": undefined,
+                                          "min": undefined,
+                                          "now": undefined,
+                                          "text": undefined,
                                         }
-                                      />
+                                      }
+                                      accessible={true}
+                                      collapsable={false}
+                                      focusable={true}
+                                      onBlur={[Function]}
+                                      onClick={[Function]}
+                                      onFocus={[Function]}
+                                      onResponderGrant={[Function]}
+                                      onResponderMove={[Function]}
+                                      onResponderRelease={[Function]}
+                                      onResponderTerminate={[Function]}
+                                      onResponderTerminationRequest={[Function]}
+                                      onStartShouldSetResponder={[Function]}
+                                      style={
+                                        [
+                                          {
+                                            "overflow": "hidden",
+                                          },
+                                          [
+                                            {
+                                              "alignItems": "center",
+                                              "alignSelf": "flex-start",
+                                              "borderRadius": 4,
+                                              "borderWidth": 1,
+                                              "flexDirection": "row",
+                                              "justifyContent": "center",
+                                            },
+                                            {
+                                              "paddingHorizontal": 16,
+                                              "paddingVertical": 6,
+                                            },
+                                            {
+                                              "alignSelf": "auto",
+                                            },
+                                            {
+                                              "backgroundColor": "#028843",
+                                              "borderColor": "#028843",
+                                            },
+                                          ],
+                                        ]
+                                      }
+                                    >
+                                      <Text
+                                        style={
+                                          [
+                                            [
+                                              {
+                                                "fontWeight": "500",
+                                                "textTransform": "uppercase",
+                                              },
+                                              {
+                                                "fontSize": 14,
+                                                "lineHeight": 24,
+                                              },
+                                            ],
+                                            {
+                                              "color": "#FFFFFF",
+                                            },
+                                          ]
+                                        }
+                                      >
+                                        Explore the data
+                                      </Text>
                                       <Icon
-                                        color="#fafafa"
                                         name="chevron-right"
                                         size={20}
-                                        style={{}}
+                                        style={
+                                          [
+                                            [
+                                              [
+                                                {
+                                                  "marginLeft": 8,
+                                                },
+                                              ],
+                                              {
+                                                "color": "#FFFFFF",
+                                              },
+                                            ],
+                                            {},
+                                          ]
+                                        }
                                       />
                                     </View>
                                   </View>

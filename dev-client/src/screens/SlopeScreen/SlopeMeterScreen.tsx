@@ -22,8 +22,7 @@ import {CameraView, useCameraPermissions} from 'expo-camera';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {DeviceMotion} from 'expo-sensors';
 
-import {Button} from 'native-base';
-
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special/SlopeMeterButton';
@@ -123,9 +122,12 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
                   permissionHook={useCameraPermissions}
                   permissionedAction={getCameraPermissionAsync}>
                   {onRequest => (
-                    <Button size="lg" onPress={onRequest}>
-                      {t('slope.steepness.camera_grant')}
-                    </Button>
+                    <ContainedButton
+                      size="lg"
+                      stretchToFit
+                      onPress={onRequest}
+                      label={t('slope.steepness.camera_grant')}
+                    />
                   )}
                 </PermissionsRequestWrapper>
               )}

@@ -18,7 +18,7 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button, ScrollView} from 'native-base';
+import {ScrollView} from 'native-base';
 
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
@@ -30,7 +30,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
@@ -47,6 +46,7 @@ import {
   updateSoilData,
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {AddSoilDepthButton} from 'terraso-mobile-client/screens/SoilScreen/components/AddSoilDepthButton';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
@@ -137,26 +137,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           ))}
           <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
             <Modal
-              trigger={onOpen => (
-                <Button
-                  size="lg"
-                  variant="fullWidth"
-                  backgroundColor="primary.dark"
-                  justifyContent="start"
-                  _text={{
-                    color: 'primary.contrast',
-                    textTransform: 'uppercase',
-                  }}
-                  _icon={{
-                    color: 'primary.contrast',
-                  }}
-                  width="full"
-                  borderRadius="0px"
-                  leftIcon={<Icon name="add" />}
-                  onPress={onOpen}>
-                  {t('soil.add_depth_label')}
-                </Button>
-              )}
+              trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
               Header={
                 <Heading variant="h6">{t('soil.depth.add_title')}</Heading>
               }>

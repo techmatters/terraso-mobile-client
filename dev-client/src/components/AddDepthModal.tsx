@@ -19,8 +19,8 @@ import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
-import {Button} from 'native-base';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
   DepthForm,
   DepthFormInput,
@@ -69,14 +69,12 @@ export const AddDepthModalBody = ({
         <>
           <DepthForm />
           <Box height="50px" />
-          <Button
+          <ContainedButton
             size="lg"
-            mx="auto"
             onPress={() => handleSubmit()}
-            _text={{textTransform: 'uppercase'}}
-            isDisabled={!isValid || isSubmitting}>
-            {t('general.add')}
-          </Button>
+            disabled={!isValid || isSubmitting}
+            label={t('general.add')}
+          />
         </>
       )}
     </Formik>

@@ -33,12 +33,14 @@ export type DialogButtonType =
 export type DialogButtonProps = {
   label: string;
   type?: DialogButtonType;
+  disabled?: boolean;
   onPress?: PressableProps['onPress'];
 };
 
 export const DialogButton = ({
   label,
   type = 'default',
+  disabled,
   onPress,
 }: DialogButtonProps) => {
   return (
@@ -47,6 +49,7 @@ export const DialogButton = ({
       shape="dialog"
       containerStyles={CONTAINER_STYLES[type]}
       contentStyles={CONTENT_STYLES[type]}
+      disabled={disabled}
       onPress={onPress}
     />
   );
@@ -87,6 +90,10 @@ const styles = StyleSheet.create({
     borderColor: convertColorProp('error.content'),
     backgroundColor: convertColorProp('transparent'),
   },
+  containerDisabled: {
+    backgroundColor: convertColorProp('action.disabledBackground'),
+    borderColor: convertColorProp('action.disabledBackground'),
+  },
   contentDefault: {
     color: convertColorProp('primary.contrast'),
   },
@@ -99,30 +106,43 @@ const styles = StyleSheet.create({
   contentAlertError: {
     color: convertColorProp('error.content'),
   },
+  contentDisabled: {
+    color: convertColorProp('action.disabled'),
+  },
 });
 
 const CONTAINER_STYLES = {
   default: {
     default: styles.containerDefault,
     pressed: styles.containerDefaultPressed,
+    disabled: styles.containerDisabled,
   },
   destructive: {
     default: styles.containerDestructive,
     pressed: styles.containerDestructivePressed,
+    disabled: styles.containerDisabled,
   },
   outlined: {
     default: styles.containerOutlined,
     pressed: styles.containerOutlinedPressed,
+    disabled: styles.containerDisabled,
   },
   alertError: {
     default: styles.containerAlertError,
     pressed: styles.containerAlertError,
+    disabled: styles.containerDisabled,
   },
 };
 
 const CONTENT_STYLES = {
-  default: {default: styles.contentDefault},
-  destructive: {default: styles.contentDestructive},
-  outlined: {default: styles.contentOutlined},
-  alertError: {default: styles.contentAlertError},
+  default: {default: styles.contentDefault, disabled: styles.contentDisabled},
+  destructive: {
+    default: styles.contentDestructive,
+    disabled: styles.contentDisabled,
+  },
+  outlined: {default: styles.contentOutlined, disabled: styles.contentDisabled},
+  alertError: {
+    default: styles.contentAlertError,
+    disabled: styles.contentDisabled,
+  },
 };

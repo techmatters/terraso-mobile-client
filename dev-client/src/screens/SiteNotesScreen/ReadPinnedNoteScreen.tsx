@@ -17,8 +17,9 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {Button, ScrollView, Spacer} from 'native-base';
+import {ScrollView, Spacer} from 'native-base';
 
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {
   useNavToBottomTabsAndShowSyncError,
   usePopNavigationAndShowSyncError,
@@ -71,15 +72,9 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
             <ScrollView flex={1}>
               <Text>{content}</Text>
             </ScrollView>
+            <Fab onPress={handleClose} label={t('general.close')} />
             <Row>
               <Spacer />
-              <Button
-                onPress={handleClose}
-                shadow={1}
-                size="lg"
-                _text={{textTransform: 'uppercase'}}>
-                {t('general.close_fab')}
-              </Button>
             </Row>
           </Column>
         </ScreenScaffold>

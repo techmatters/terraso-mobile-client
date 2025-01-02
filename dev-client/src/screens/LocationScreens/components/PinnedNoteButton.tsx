@@ -18,16 +18,9 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Button} from 'native-base';
-
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {
-  Box,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 type Props = {
@@ -46,22 +39,10 @@ export const PinnedNoteButton = ({project}: Props) => {
   }, [navigation, project]);
 
   return (
-    <Box pt={4} pb={4} alignItems="flex-start">
-      <Button
-        mt={2}
-        pl={4}
-        pr={4}
-        size="md"
-        backgroundColor="primary.main"
-        shadow={5}
-        onPress={onShowNote()}>
-        <Row>
-          <Icon color="primary.contrast" size="sm" mr={2} name="push-pin" />
-          <Text color="primary.contrast" textTransform="uppercase">
-            {t('projects.inputs.instructions.add_label')}
-          </Text>
-        </Row>
-      </Button>
-    </Box>
+    <ContainedButton
+      onPress={onShowNote}
+      leftIcon="push-pin"
+      label={t('projects.inputs.instructions.add_label')}
+    />
   );
 };

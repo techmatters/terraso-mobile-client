@@ -15,22 +15,22 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet} from 'react-native';
-import {Surface, TouchableRippleProps} from 'react-native-paper';
+import {PressableProps, StyleSheet} from 'react-native';
+import {Surface} from 'react-native-paper';
 
-import {ContainedButton as Test} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 
 export type FabProps = {
   label: string;
   leftIcon?: IconName;
   disabled?: boolean;
-  onPress?: TouchableRippleProps['onPress'];
+  onPress?: PressableProps['onPress'];
 };
 
 export const Fab = ({label, leftIcon, disabled, onPress}: FabProps) => (
   <Surface style={styles.surface} elevation={2}>
-    <Test
+    <ContainedButton
       label={label}
       leftIcon={leftIcon}
       disabled={disabled}
@@ -46,5 +46,7 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 4,
   },
 });

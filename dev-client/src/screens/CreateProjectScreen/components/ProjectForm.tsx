@@ -19,7 +19,6 @@ import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikProps} from 'formik';
 import {TFunction} from 'i18next';
-import {Button} from 'native-base';
 import * as yup from 'yup';
 
 import {
@@ -27,12 +26,12 @@ import {
   ProjectUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {
-  Box,
   Column,
   Heading,
   Row,
@@ -144,17 +143,11 @@ export const EditProjectForm = ({
             textInputLabel={t('projects.create.description_label')}
           />
           {userRole === 'MANAGER' && (
-            <Box position="absolute" bottom={0} right={0}>
-              <Button
-                onPress={handleSubmit}
-                isDisabled={isSubmitting || !isValid}
-                shadow={5}
-                size="lg"
-                display="flex"
-                _text={{textTransform: 'uppercase'}}>
-                {t('general.save_fab')}
-              </Button>
-            </Box>
+            <Fab
+              onPress={handleSubmit}
+              disabled={isSubmitting || !isValid}
+              label={t('general.save')}
+            />
           )}
         </>
       )}
