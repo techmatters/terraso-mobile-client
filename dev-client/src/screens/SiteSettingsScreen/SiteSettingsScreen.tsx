@@ -20,7 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {PressableProps} from 'react-native';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
-import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
@@ -30,7 +30,7 @@ import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Column,
-  Heading,
+  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
@@ -69,6 +69,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const site = useSelector(state => state.site.sites[siteId]);
+  const siteName = site?.name;
   const [name, setName] = useState(site?.name);
   const isOffline = useIsOffline();
 
@@ -92,10 +93,8 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
       {() => (
         <ScreenScaffold
           BottomNavigation={null}
-          AppBar={<AppBar title={name} />}>
-          <Column px="16px" py="22px" space="20px" alignItems="flex-start">
-            <Heading variant="h6">{t('site.dashboard.settings_title')}</Heading>
-
+          AppBar={<AppBar title={siteName} />}>
+          <Column px="16px" py="22px">
             <TextInput
               maxLength={SITE_NAME_MAX_LENGTH}
               disabled={isOffline}
@@ -104,25 +103,32 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
               label={t('site.create.name_label')}
               placeholder={t('site.create.name_label')}
             />
-            {isOffline ? (
-              <DeleteButtonWrapper disabled={true} />
-            ) : (
-              <ConfirmModal
-                trigger={onOpen => <DeleteButtonWrapper onPress={onOpen} />}
-                title={t('projects.sites.delete_site_modal.title')}
-                body={t('projects.sites.delete_site_modal.body', {
-                  siteName: site.name,
-                })}
-                actionLabel={t('projects.sites.delete_site_modal.action_name')}
-                handleConfirm={onDelete}
+            <View mt={4} alignItems="flex-end">
+              <ContainedButton
+                size="lg"
+                label={t('general.save')}
+                onPress={onSave}
+                disabled={isOffline}
               />
-            )}
+            </View>
+            <View mt={6}>
+              {isOffline ? (
+                <DeleteButtonWrapper disabled={true} />
+              ) : (
+                <ConfirmModal
+                  trigger={onOpen => <DeleteButtonWrapper onPress={onOpen} />}
+                  title={t('projects.sites.delete_site_modal.title')}
+                  body={t('projects.sites.delete_site_modal.body', {
+                    siteName: site.name,
+                  })}
+                  actionLabel={t(
+                    'projects.sites.delete_site_modal.action_name',
+                  )}
+                  handleConfirm={onDelete}
+                />
+              )}
+            </View>
           </Column>
-          <Fab
-            label={t('general.save')}
-            onPress={onSave}
-            disabled={isOffline}
-          />
         </ScreenScaffold>
       )}
     </ScreenDataRequirements>
