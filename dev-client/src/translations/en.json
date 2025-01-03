@@ -148,7 +148,7 @@
                     "texture": "Texture",
                     "color": "Color",
                     "rock_fragment": "Rock Fragment",
-                    "add_data": "Add soil data"
+                    "add_data": "Enter properties"
                 }
             },
             "soil_info": {
