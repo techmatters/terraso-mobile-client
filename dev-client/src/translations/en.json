@@ -91,7 +91,6 @@
             "copy_download_link_button": "Copy site download link",
             "archive_button": "Archive this site",
             "archive_button_help_text": "Mark this site read-only",
-            "settings_title": "Site Settings",
             "delete_button": "Delete this site",
             "location_accuracy": "Location Accuracy",
             "default_title": "Temporary Pin",

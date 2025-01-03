@@ -60,7 +60,6 @@
             "copy_download_link_button": "Copiar enlace de descarga del sitio",
             "archive_button": "Archivar este sitio",
             "archive_button_help_text": "Marcar este sitio como sólo lectura",
-            "settings_title": "Configuraciones del sitio",
             "delete_button": "Eliminar este sitio",
             "location_accuracy": "Precisión de ubicación",
             "default_title": "Marcador temporario",
