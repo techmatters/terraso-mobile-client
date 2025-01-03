@@ -248,21 +248,21 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
                 </Accordion>
               );
             })}
-            <ConfirmModal
-              trigger={onOpen => (
-                <Fab
-                  label={t('projects.sites.transfer')}
-                  onPress={onOpen}
-                  disabled={disabled}
-                />
-              )}
-              destructive={false}
-              title={t('projects.sites.transfer_site_modal.title')}
-              body={t('projects.sites.transfer_site_modal.body')}
-              actionLabel={t('projects.sites.transfer_site_modal.action_name')}
-              handleConfirm={onSubmit}
-            />
           </ScrollView>
+          <ConfirmModal
+            trigger={onOpen => (
+              <Fab
+                label={t('projects.sites.transfer')}
+                onPress={onOpen}
+                disabled={disabled}
+              />
+            )}
+            destructive={false}
+            title={t('projects.sites.transfer_site_modal.title')}
+            body={t('projects.sites.transfer_site_modal.body')}
+            actionLabel={t('projects.sites.transfer_site_modal.action_name')}
+            handleConfirm={onSubmit}
+          />
         </ScreenScaffold>
       )}
     </ScreenDataRequirements>
