@@ -17,6 +17,7 @@
 
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
+import {Divider} from 'react-native-paper';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'native-base';
@@ -82,18 +83,14 @@ export function ProjectSettingsScreen({
         <ScrollView
           backgroundColor={theme.colors.primary.contrast}
           contentContainerStyle={styles.scrollview}>
-          <Column
-            space={4}
-            m={3}
-            mb="50px"
-            style={styles.column}
-            alignItems="flex-start">
+          <Column space={4} m={3} style={styles.column}>
             <EditProjectForm
               onSubmit={onSubmit}
               name={name}
               description={description}
               userRole={userRole}
             />
+            <Divider />
             <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
               <ConfirmModal
                 title={t('projects.settings.delete_button_prompt')}
