@@ -69,9 +69,10 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const site = useSelector(state => state.site.sites[siteId]);
-  const siteName = site?.name;
-  const [name, setName] = useState(site?.name);
   const isOffline = useIsOffline();
+
+  const [name, setName] = useState(site?.name);
+  const modified = name !== site?.name;
 
   const onSave = useCallback(
     () => dispatch(updateSite({id: site.id, name})),
@@ -93,7 +94,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
       {() => (
         <ScreenScaffold
           BottomNavigation={null}
-          AppBar={<AppBar title={siteName} />}>
+          AppBar={<AppBar title={site?.name} />}>
           <Column px="16px" py="22px">
             <TextInput
               maxLength={SITE_NAME_MAX_LENGTH}
@@ -108,7 +109,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                 size="lg"
                 label={t('general.save')}
                 onPress={onSave}
-                disabled={isOffline}
+                disabled={isOffline || !modified}
               />
             </View>
             <View mt={6}>
