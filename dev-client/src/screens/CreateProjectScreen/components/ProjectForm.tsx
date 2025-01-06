@@ -123,7 +123,7 @@ export const EditProjectForm = ({
       initialValues={{name, description}}
       validateOnMount={true}
       onSubmit={onSubmit}>
-      {({handleSubmit, isValid, isSubmitting}) => (
+      {({handleSubmit, isValid, isSubmitting, dirty}) => (
         <>
           <FormInput
             key="name"
@@ -148,7 +148,7 @@ export const EditProjectForm = ({
               <ContainedButton
                 size="lg"
                 onPress={handleSubmit}
-                disabled={isSubmitting || !isValid}
+                disabled={!dirty || isSubmitting || !isValid}
                 label={t('general.save')}
               />
             </View>
