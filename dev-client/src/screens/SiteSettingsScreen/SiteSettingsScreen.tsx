@@ -72,7 +72,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const isOffline = useIsOffline();
 
   const [name, setName] = useState(site?.name);
-  const modified = name !== site?.name;
+  const dirty = name !== site?.name;
 
   const onSave = useCallback(
     () => dispatch(updateSite({id: site.id, name})),
@@ -109,7 +109,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                 size="lg"
                 label={t('general.save')}
                 onPress={onSave}
-                disabled={isOffline || !modified}
+                disabled={isOffline || !dirty}
               />
             </View>
             <View mt={6}>
