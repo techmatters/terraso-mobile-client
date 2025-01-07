@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {userEvent} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
 
 import {FeatureFlagName} from 'terraso-mobile-client/config/featureFlags';
@@ -41,6 +42,12 @@ jest.mock('terraso-mobile-client/config/featureFlags', () => {
     isFlagEnabled: (flag: FeatureFlagName) => {
       if (flag === 'FF_offline') return true;
     },
+  };
+});
+
+jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
+  return {
+    useIsOffline: jest.fn(() => false),
   };
 });
 
@@ -102,5 +109,30 @@ describe('SiteSettingsScreen', () => {
 
     expect(screen.queryByText('Delete this site')).toBeNull();
     expect(screen.getByTestId('error-dialog')).toBeOnTheScreen();
+  });
+
+  test('displays content and no error if site was deleted from this screen', async () => {
+    const screen = render(
+      <SyncNotificationContextProvider>
+        <SiteSettingsScreen siteId="site2" />
+      </SyncNotificationContextProvider>,
+      {
+        route: 'SITE_TABS',
+        initialState: stateWithTwoSites,
+      },
+    );
+
+    // TODO: How to get site2 to be deleted so this test fails before my changes?
+    // - Try: Mock the API call (Redux recommends using MSW to mock network requests)
+
+    const deleteButton = screen.getByText('Delete this site');
+    userEvent.press(deleteButton);
+
+    const confirmDeleteButton = await screen.findByText('Delete');
+    userEvent.press(confirmDeleteButton);
+
+    // TODO-cknipe: Confirm this test would fail before the changes
+    expect(screen.getByText('Delete this site')).toBeOnTheScreen();
+    expect(screen.queryByTestId('error-dialog')).not.toBeOnTheScreen();
   });
 });
