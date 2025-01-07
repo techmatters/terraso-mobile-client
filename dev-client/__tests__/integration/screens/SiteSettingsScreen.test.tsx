@@ -18,7 +18,7 @@
 import {render} from '@testing/integration/utils';
 
 import {FeatureFlagName} from 'terraso-mobile-client/config/featureFlags';
-import {SyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
+import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {AppState as ReduxAppState} from 'terraso-mobile-client/store';
 
@@ -74,17 +74,11 @@ describe('SiteSettingsScreen', () => {
     },
   } as Partial<ReduxAppState>;
 
-  const mockShowError = jest.fn();
-
-  beforeEach(() => {
-    mockShowError.mockReset();
-  });
-
   test('displays delete button and no error', () => {
     const screen = render(
-      <SyncNotificationContext.Provider value={{showError: mockShowError}}>
+      <SyncNotificationContextProvider>
         <SiteSettingsScreen siteId="site1" />
-      </SyncNotificationContext.Provider>,
+      </SyncNotificationContextProvider>,
       {
         route: 'SITE_TABS',
         initialState: stateWithTwoSites,
@@ -92,14 +86,14 @@ describe('SiteSettingsScreen', () => {
     );
 
     expect(screen.getByText('Delete this site')).toBeOnTheScreen();
-    expect(mockShowError).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('error-dialog')).not.toBeOnTheScreen();
   });
 
   test('renders no content and displays error if missing site', () => {
     const screen = render(
-      <SyncNotificationContext.Provider value={{showError: mockShowError}}>
+      <SyncNotificationContextProvider>
         <SiteSettingsScreen siteId="site-that-does-not-exist" />
-      </SyncNotificationContext.Provider>,
+      </SyncNotificationContextProvider>,
       {
         route: 'SITE_TABS',
         initialState: stateWithTwoSites,
@@ -107,6 +101,6 @@ describe('SiteSettingsScreen', () => {
     );
 
     expect(screen.queryByText('Delete this site')).toBeNull();
-    expect(mockShowError).toHaveBeenCalled();
+    expect(screen.getByTestId('error-dialog')).toBeOnTheScreen();
   });
 });

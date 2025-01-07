@@ -27,8 +27,7 @@ export type SyncNotificationHandle = {
   showError: () => void;
 };
 
-// Only exported for testing purposes
-export const SyncNotificationContext = createContext<SyncNotificationHandle>({
+const SyncNotificationContext = createContext<SyncNotificationHandle>({
   showError: () => {},
 });
 
