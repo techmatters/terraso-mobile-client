@@ -54,7 +54,7 @@ export const ErrorDialog = forwardRef<
 
   return (
     <Portal>
-      <Modal visible={isOpen} onDismiss={onClose}>
+      <Modal visible={isOpen} onDismiss={onClose} testID="error-dialog">
         <View style={styles.container}>
           <View style={styles.icon}>
             <Icon name="error" color="error.main" size="md" />
