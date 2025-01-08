@@ -2,6 +2,23 @@
 
 This document is intended as a primer for Terraso LandPKS developers on the history and architecture of offline mode functionality for the Terraso LandPKS app. It should be supplemented with team discussions and other more in-depth documents from the development process.
 
+- [LandPKS Offline Architecture](#landpks-offline-architecture)
+  - [Background](#background)
+  - [Approach](#approach)
+  - [Implementation](#implementation)
+    - [Connectivity](#connectivity)
+    - [Persistence](#persistence)
+    - [Business rules](#business-rules)
+    - [Tracking and Pushing changes](#tracking-and-pushing-changes)
+      - [Revision tracking](#revision-tracking)
+      - [Sending changes to server](#sending-changes-to-server)
+      - [Processing changes on server](#processing-changes-on-server)
+    - [Pulling changes](#pulling-changes)
+      - [Loading changes from server](#loading-changes-from-server)
+      - [Handling changes while app is running](#handling-changes-while-app-is-running)
+    - [Additional concern: Soil ID](#additional-concern-soil-id)
+      - [Implementation](#implementation-1)
+
 ## Background
 
 Since the Terraso LandPKS app is intended for use with intermittent - or no - connectivity, it requires certain functionality to be available without an Internet connection. We need to support core use-cases for gathering and managing data in the field, and be able to reconcile user actions that are taken offline with the state of the app when they return to being online.
