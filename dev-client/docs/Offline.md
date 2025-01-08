@@ -3,23 +3,23 @@
 This document is intended as a primer for Terraso LandPKS developers on the history and architecture of offline mode functionality for the Terraso LandPKS app. It should be supplemented with team discussions and other more in-depth documents from the development process.
 
 - [LandPKS Offline Architecture](#landpks-offline-architecture)
-  - [Background](#background)
-  - [Approach](#approach)
-  - [Implementation](#implementation)
-    - [Connectivity](#connectivity)
-    - [Persistence](#persistence)
-    - [Business rules](#business-rules)
-    - [Tracking and Pushing changes](#tracking-and-pushing-changes)
+  - [I. Background](#i-background)
+  - [II. Approach](#ii-approach)
+  - [III. Implementation](#iii-implementation)
+    - [a. Connectivity](#a-connectivity)
+    - [b. Persistence](#b-persistence)
+    - [c. Business rules](#c-business-rules)
+    - [d. Tracking and Pushing changes](#d-tracking-and-pushing-changes)
       - [Revision tracking](#revision-tracking)
       - [Sending changes to server](#sending-changes-to-server)
       - [Processing changes on server](#processing-changes-on-server)
-    - [Pulling changes](#pulling-changes)
+    - [e. Pulling changes](#e-pulling-changes)
       - [Loading changes from server](#loading-changes-from-server)
       - [Handling changes while app is running](#handling-changes-while-app-is-running)
-    - [Additional concern: Soil ID](#additional-concern-soil-id)
-      - [Implementation](#implementation-1)
+    - [f. Additional concern: Soil ID](#f-additional-concern-soil-id)
+      - [Implementation](#implementation)
 
-## Background
+## I. Background
 
 Since the Terraso LandPKS app is intended for use with intermittent - or no - connectivity, it requires certain functionality to be available without an Internet connection. We need to support core use-cases for gathering and managing data in the field, and be able to reconcile user actions that are taken offline with the state of the app when they return to being online.
 
@@ -38,7 +38,7 @@ We also had to navigate these challenges within the following constraints:
 - Limited resources in general; app-wide general solution was not feasible either
 - Lack of experience; this was the team's first time building offline support into an existing mobile app
 
-## Approach
+## II. Approach
 
 The team performed initial research to inform our process. Perticularly relevant reading for more background:
 
@@ -70,30 +70,30 @@ We then partitioned the problem of offline data into the following areas of conc
 
 TODO(@shrouxm, @knipec): any additional documents (the Mural?) to embed here as reference.
 
-## Implementation
+## III. Implementation
 
 The initial scope of the problem was further reduced by selecting a subset of core use-cases to support in offline mode, rather than migrating the entire app's user workflows to an offline-first model. The implementation proceeded along these four concern partitions for the use-cases that were selected. (Initially, we targeted Soil Data measurements as the most critical use-case to support; its infrastructure was designed to be expanded as other subsets of the app's problem domain get offline support requirements.)
 
-### Connectivity
+### a. Connectivity
 
 After initial research, we decided to integrate with the `netinfo` library (https://github.com/react-native-netinfo/react-native-netinfo) to detect connectivity. The rest of the app can listen for connectivity status using React hooks which are connected to a context encapsulating the library's behavior. This status drives the enabling/disabling of relevant components as well as internal behavior that is dependent on connectivity state.
 
 TODO(@knipec): any other details/reading/etc
 
-### Persistence
+### b. Persistence
 
 Perisstence is handled through a custom Redux middleware which persists the mobile client's Redux state to the app's device-backed key-value storage when state changes occur. Persisted state is loaded back into Redux when the app reopens. This seemed like the simplest solution that achieved our goals; while we investigated more heavyweight solutions involving local databases, they far exceeded our scope capacity. We elected to implement a custom middleware due to the low initial cost of implementation and a lack of actively-maintained libraries which we felt confident in adopting for such an integral piece of behavior.
 
 TODO(@shrouxm): Handling of transient data, any other details I missed?
 TODO(@knipec): Flushing data on logout?
 
-### Business rules
+### c. Business rules
 
 We created 1:1 reimplementations in TypeScript of previously server-side operations, supporting them with unit tests to help endsure correctness. Redux actions which previously interacted with the server for these operations instead use the local version of the logic. Future implementation of offline support for previously online-only actions will likely follow this model.
 
 The responsibility of these implementations is to enforce correctness on the _client side only_; as previously stated, the server is still the authority on the canonical state of Terraso LandPKS data. As a result, integrity checks in this layer of business logic primarily function to catch UI bugs (as the UI should not allow invalid actions either), rather than as a critical element of preventing data integrity or permission violations. The client must not be trusted to operate correctly. Only the server can be trusted :)
 
-### Tracking and Pushing changes
+### d. Tracking and Pushing changes
 
 There are two aspects to this problem: tracking changes on the client, and processing them on the server.
 
@@ -140,7 +140,7 @@ TODO(@shrouxm): Anything else to add that's relevant to the client?
 
 See the `terraso-backend` repository for more details regarding GraphQL endpoint implementations.
 
-### Pulling changes
+### e. Pulling changes
 
 #### Loading changes from server
 
@@ -160,7 +160,7 @@ The dispatcher component listenes for queued pulls and, when the app is online w
 
 TODO(@knipec): screen requirements and handling background changes while viewing data
 
-### Additional concern: Soil ID
+### f. Additional concern: Soil ID
 
 Soil ID is an integral part of the Terraso LandPKS app. It uses the client's collected soil data as inputs to a core algorithm to analyze sites and their soil composition. Because these are expensive computations which need to be dynamically updated from user input, they required special consideration for offline mode operation.
 
