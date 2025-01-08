@@ -170,12 +170,15 @@ Offline Soil ID was architected with the following requirements:
 1. Any Soil ID data loaded for the user's current soil data state must be retained when offline, even if the inputs change
 1. Any changes to soil ID data must result in updated data when the user comes back online
 1. Any caching of location-based soil matches must not grow unbounded, as they do not scale linearly with the number of sites in a user's account the way data-based soil matches do
+1. It must be possible to reload Soil ID data for sites, even when an error occurs, without changing user inputs.
 1. It is not feasible to, for example, load and cache all Soil ID data for all of the user's sites at once; it must be done on-demand based on what the user is viewing
 
 #### Implementation
 
 The app maintains two caches of Soil ID data: one for location-based matches, keyed by input coordinates; and another for data-based matches, keyed by relevant site ID. The data-based match cache also retains the soil data inputs which were used to generate the cached results (if any).
 
-Individual components can request soil ID data via the `soilIdHooks` system. This will add either a site or coordinate to a set of inputs tracked in the `SoilIdMatchContext`, and will remove them when the hook is cleaned up. The `SoilIdMatchContext` tracks all unique inputs requested by components (correctly handling duplicates, so that e.g. two components requesting the same site will only result in one request for data.) The context then determines which inputs need to be re-loaded by examining the cache and dispatching queries for matches for any inputs which are not yet loaded or, in the case of data-based matches, inputs for which the soil data has changed since the last time matches were loaded.
+Individual components can request soil ID data via side-effects and the `soilIdHooks` system. This will add either a site or coordinate to a set of inputs tracked in the `SoilIdMatchContext`, and will remove them when the hook is cleaned up.
+
+The `SoilIdMatchContext` tracks all unique inputs requested by components (correctly handling duplicates, so that e.g. two components requesting the same site will only result in one request for data.) The context then determines which inputs need to be re-loaded by examining the cache and dispatching queries for matches for any inputs which are not yet loaded or, in the case of data-based matches, inputs for which the soil data has changed since the last time matches were loaded. Any time the app goes from offline to online, the location-based match cache is flushed, along with any data-based match entries which had reported errors.
 
 As with other components of the offline system, consult relevant source files for more detailed documentation.
