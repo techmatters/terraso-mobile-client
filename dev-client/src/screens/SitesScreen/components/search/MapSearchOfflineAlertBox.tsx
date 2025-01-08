@@ -15,18 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
-import {DisableableText} from 'terraso-mobile-client/components/content/typography/DisableableText';
 import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export const MapSearchOfflineAlertBox = () => {
   return (
     <View style={styles.container}>
-      <DisableableText disabled={true}>
+      <Text>
         <TranslatedContent i18nKey="site.search.offline" />
-      </DisableableText>
+      </Text>
     </View>
   );
 };
