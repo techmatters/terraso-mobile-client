@@ -1,0 +1,33 @@
+name: "Workflow failure notification"
+
+on:
+  workflow_run:
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  notify_on_failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'failure' }}
+    steps:
+      - name: Notify of failure
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_NOTIFICATION_TOKEN }}
+          payload: |
+            channel: ${{ vars.TERRASO_SLACK_NOTIFICATION_CHANNEL }}
+            text: "TESTING, PLEASE IGNORE. ⚠ *Workflow did not succeed on main*!"
+            attachments:
+              - color: danger
+                fields:
+                  - title: Workflow
+                    short: true
+                    value: TESTING # ${{ github.event.workflow_run.name }}
+                  - title: Reason
+                    short: true
+                    value: TESTING # ${{ github.event.workflow_run.conclusion }}
+                  - title: Details
+                    short: true
+                    value: TESTING # ${{ github.event.workflow_run.workflow_url }}
