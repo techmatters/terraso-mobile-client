@@ -28,7 +28,7 @@ import {
 } from 'terraso-mobile-client/navigation/constants';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
 import {ProjectInputScreen} from 'terraso-mobile-client/screens/ProjectInputScreen/ProjectInputScreen';
-import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettingsScreen';
+import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettingsScreen/ProjectSettingsScreen';
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
 import {ProjectTeamScreen} from 'terraso-mobile-client/screens/ProjectTeamScreen/ProjectTeamScreen';
 

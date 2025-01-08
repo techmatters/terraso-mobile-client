@@ -26,7 +26,7 @@ import {
   ProjectUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
@@ -35,6 +35,7 @@ import {
   Column,
   Heading,
   Row,
+  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
@@ -122,7 +123,7 @@ export const EditProjectForm = ({
       initialValues={{name, description}}
       validateOnMount={true}
       onSubmit={onSubmit}>
-      {({handleSubmit, isValid, isSubmitting}) => (
+      {({handleSubmit, isValid, isSubmitting, dirty}) => (
         <>
           <FormInput
             key="name"
@@ -143,11 +144,14 @@ export const EditProjectForm = ({
             textInputLabel={t('projects.create.description_label')}
           />
           {userRole === 'MANAGER' && (
-            <Fab
-              onPress={handleSubmit}
-              disabled={isSubmitting || !isValid}
-              label={t('general.save')}
-            />
+            <View flexDirection="row" justifyContent="flex-end">
+              <ContainedButton
+                size="lg"
+                onPress={handleSubmit}
+                disabled={!dirty || isSubmitting || !isValid}
+                label={t('general.save')}
+              />
+            </View>
           )}
         </>
       )}
