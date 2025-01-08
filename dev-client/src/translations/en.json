@@ -192,7 +192,7 @@
             "edit_title": "Site Note",
             "note_attribution": "{{createdAt}} by {{name}}",
             "confirm_removal_title": "Delete note?",
-            "confirm_removal_body": "This action cannot be undone.",
+            "confirm_removal_body": "This action can’t be undone.",
             "min_length_error": "Must be at least {{min}} characters",
             "placeholder_text": "Start typing your note…",
             "pinned_note": "Pinned Note",
@@ -278,7 +278,7 @@
                 },
                 "confirm_preset": {
                     "title": "Change depths?",
-                    "body": "Soil pit observations that have been entered will be deleted. This action cannot be undone.",
+                    "body": "Soil pit observations that have been entered will be deleted. This action can’t be undone.",
                     "confirm": "Change"
                 },
                 "label": "Label",
@@ -309,7 +309,7 @@
             "delete": "Delete this project",
             "delete_button": "Delete",
             "delete_button_prompt": "Delete project?",
-            "delete_description": "This will permanently delete the project and its sites’ observations. This cannot be undone.\n\nProject managers have the option to transfer sites from this project to keep site observations."
+            "delete_description": "This will permanently delete the project and its sites’ observations. This can’t be undone.\n\nProject managers have the option to transfer sites from this project to keep site observations."
         },
         "sites": {
             "empty_viewer": "This project has no sites yet.",
@@ -323,7 +323,7 @@
             "delete_site": "Delete Site",
             "delete_site_modal": {
                 "title": "Delete site?",
-                "body": "This will permanently delete the site {{siteName}} and all of its observations. This cannot be undone.",
+                "body": "This will permanently delete the site {{siteName}} and all of its observations. This can’t be undone.",
                 "project": "\n\nProject managers can remove the site from this project to retain its data.",
                 "action_name": "Delete"
             },
@@ -334,7 +334,7 @@
             },
             "transfer_site_modal": {
                 "title": "Transfer sites?",
-                "body": "Transferred sites will use the inputs, settings and team member roles from this project.\n\nIf sites have observations entered at different depths than what is specified in this project, those observations will be deleted. This cannot be undone.",
+                "body": "Transferred sites will use the inputs, settings and team member roles from this project.\n\nIf sites have observations entered at different depths than what is specified in this project, those observations will be deleted. This can’t be undone.",
                 "action_name": "Transfer"
             },
             "search": {
@@ -651,12 +651,12 @@
             "depth_end": "depth end",
             "update_modal": {
                 "title": "Change depth?",
-                "body": "Soil pit observations that has been entered at this depth will be deleted. This action cannot be undone.",
+                "body": "Soil pit observations that has been entered at this depth will be deleted. This action can’t be undone.",
                 "action": "Change"
             },
             "delete_modal": {
                 "title": "Delete depth?",
-                "body": "Observations that have been entered at this depth will be deleted. This action cannot be undone.",
+                "body": "Observations that have been entered at this depth will be deleted. This action can’t be undone.",
                 "action": "Delete"
             },
             "error": {

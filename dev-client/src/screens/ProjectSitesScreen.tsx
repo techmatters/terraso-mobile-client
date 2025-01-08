@@ -128,7 +128,7 @@ const SiteMenu = ({site}: SiteProps) => {
         body={
           t('projects.sites.delete_site_modal.body', {
             siteName: site.name,
-          }) + t('projects.sites.delete_site_modal.projects')
+          }) + t('projects.sites.delete_site_modal.project')
         }
         actionLabel={t('projects.sites.delete_site_modal.action_name')}
         handleConfirm={deleteSiteCallback}
