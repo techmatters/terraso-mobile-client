@@ -33,7 +33,6 @@ const SignOutMenuItem = ({disabled, onPress}: Props) => {
   return (
     <MenuItem
       variant="default"
-      uppercase
       icon="logout"
       label={t('settings.sign_out')}
       disabled={disabled}
