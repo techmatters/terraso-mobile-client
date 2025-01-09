@@ -610,6 +610,7 @@
             "soilTexture": "Includes texture class and rock fragment volume"
         },
         "vertical_cracking": {
+            "prefix": "Measure soil cracks when soil is dry",
             "description": "Cracks develop in clay-rich soils after they dry out.",
             "no_cracks": "<bold>No Cracks</bold>\nNo cracks are visible on the soil surface.",
             "surface_cracks": "<bold>Surface Cracks</bold>\nSurface cracks are less than $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep.",

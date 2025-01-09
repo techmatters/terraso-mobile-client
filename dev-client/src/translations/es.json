@@ -761,6 +761,7 @@
             "soilTexture": "Incluye clase de textura y volumen de fragmentos de roca"
         },
         "vertical_cracking": {
+            "prefix": "TK Measure soil cracks when soil is dry",
             "description": "Las grietas se desarrollan en suelos ricos en arcilla después de que se sequen.",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
