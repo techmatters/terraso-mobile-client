@@ -11,6 +11,7 @@ This document is intended as a primer for Terraso LandPKS developers on the hist
     - [c. Business rules](#c-business-rules)
     - [d. Tracking and Pushing changes](#d-tracking-and-pushing-changes)
       - [Revision tracking](#revision-tracking)
+      - [Revision lifecycle](#revision-lifecycle)
       - [Sending changes to server](#sending-changes-to-server)
       - [Processing changes on server](#processing-changes-on-server)
     - [e. Pulling changes](#e-pulling-changes)
@@ -101,7 +102,8 @@ There are two aspects to this problem: tracking changes on the client, and proce
 
 In order to transmit accumulated local changes from client to server, the client needs to determine which data have changed. Initial implementation experiments revealed major concerns and edge-cases surrounding this problem:
 
-- Additional changes can occur while a push operation is already in flight; an entity is not synced unless the most recent version of it is synced
+- Additional changes can occur while a push operation is already in flight; an entity is not synced unless the most recent version of it is synced.
+- The server's response to an out-of-date push operation must not overwrite newer client-side changes made by the user
 - Push operations can fail; user data must not be lost in the event of failure and the client must be able to retry the push at a later time
 - Pushed data can be rejected by the server; this is _not_ a failure, but it indicates that the client's data is in an invalid state
 - To reduce data traffic, it is preferable to identify individual pieces of data which have changed rather than e.g. re-transmitting all entities from the client (as an extreme example) or re-transmitting all changed entities from the client (as a less extreme but still unacceptable example)
@@ -110,7 +112,7 @@ In order to transmit accumulated local changes from client to server, the client
 
 A dedicated data model was created to support tracking local changes, attempting to address each of these concerns. (It can be found in the `model/sync` source directory.).
 
-- `Revision ID`s are monotonically-increasing integer IDs scoped to each syncable entity (meaning each entity has its own `Revision ID` history).
+- `Revision ID`s are monotonically-increasing integer IDs scoped to each syncable entity (meaning each entity has its own `Revision ID` history). They only exist client-side; the server has no knowledge of client-specific `Revision ID`s.
 - `Sync Record`s track the change state for syncable entities. The entity's `Revision ID` is incremented when the entity is changed. An entity is considered `unsynced` if its current `Revision ID` does not match the `Revision ID` of the state which was last successfully pushed to the server. Additionally, the last-known state of the entity is retained in the sync record so that a current state diff can be easily computed; the last-known sync error is also retained if the last push operation yielded an error for that entity.
   - Note that an entity is not considered synced unless the current and last-synced `Revision ID`s match exactly. This addresses the concern of changes occurring while a push is in flight.
   - Note that as long as the push operation did not **fail**, a pushed entity is considered synced even if the server reported an error for its state. That error is considered the server's final verdict about that state for the entity.
@@ -118,6 +120,53 @@ A dedicated data model was created to support tracking local changes, attempting
 - When a batch of new data comes for entities (such as resulting from a pull from the server), the `Sync Record` data is only retained for unsynced entities; all other entities start anew from the server's state.
 
 The sync data model exists parallel to main entity state in Redux. Redux actions which manipulate entity state (for example, actions which modify the user's collected soil data) are expected to perform relevant bookkeeping for that entity's sync data, such as marking it as modified when it is updated or marking it as synced when a sync action succeeds.
+
+#### Revision lifecycle
+
+Consider soil data and sync state for site `S`. Initially, `soilData[S]` contains state `A`, which is already synced to the server; `soilSync[S]` also contains `lastSyncedData` `A` and `revisionId` `R`. We will trace the state associated with `S` through a series of application events.
+
+Notice that, since `push` operations are idempotent, as long as we push a diff calculated from a valid synced state from the server, it is okay to `push` redundant diffs.
+
+_Event: User Makes Local Change_
+
+The change produces state `B`, which replaces `A` in `soilData[S]`. `soilSync[S]` retains `A` in `lastSyncedData`, but the `revisionId` is incremented to `R+1`. At this point, `S` is considered to be "unsynced".
+
+_Event: App is Online, Push Dispatched_
+
+The `PushDispatcher` sees that site `S` has unsynced data. The `push` action computes the diff between states `A` at revision `R` and `B` at `R+1`, and transmits this `A-B` diff to the server. It records that the server's response (when it arrives) is valid for revision `R+1`.
+
+_Event: User Makes Another Local Change_
+
+The change produces state `C`, which replaces `A` in `soilData[S]`. `soilSync[S]` retains `A` in `lastSyncedData`, but the `revisionId` is incremented to `R+2`. The in-flight `push` action is not affected.
+
+_Event: Push Response_
+
+The server response for pushing the `A-B` diff comes in. The server's state is state `Bs`. The client sees that `R+1` is not up-to-date with the current `revisionId` for site `S`, which is `R+2`; the client discards `Bs` and continues to hold state `C` for site `S`.
+
+_Event: Second Push Dispatched_
+
+The `PushDispatcher` sees that site `S` has unsynced data. The `push` action computes the diff between states `A` at revision `R` and `C` at `R+2`, and transmits this diff to the server as it did for `R+1`.
+
+_Event: Second Push Response_
+
+The server response for pushing the `A-C` diff comes in. The server's state is state `Cs`. The client sees that `R+2` is up-to-date with the current `revisionId` for site `S`, which is `R+2`; the client records that `Cs` is both the current and the last-synced state for `S`, and that `R+2` is the last-synced revision ID.
+
+_Event: Pull With Synced Changes_
+
+Suppose a `pull` returned state `Ps` for `S`. Since `S` is currently synced at `R+2`, the pulled state from the server `Ps` will overwrite state `B`, and the `revisionId` history for `S` will be reset.
+
+_Alternate Event: Pull With Unsynced Changes_
+
+Suppose `S` is at state `B` with `revisionId` `R+1`, and that a `pull` returned state `Ps` for `S`. Since `S` is currently unsynced at `R+1`, the pulled state from the server `Ps` will not overwrite state `B`, and the `revisionId` for `S` will remain `R+1`.
+
+_Alternate Event: Push Rejected by Server_
+
+Suppose `S` is at state `B` with `revisionId` `R+1`, and that pushing the diff for `A-B` at `R+1` yielded error `E`. The client records that `E` is the last-synced error for `S`, and that `R+1` is the last-synced revision; `A` is still the last-synced state since the server is still at state `A`. `S` is considered synced since the server has issued a ruling on the diff associated with `R+1`.
+
+At this point, one of two things can occur (either is possible depending on timing):
+
+1. Another user change could advance `S` to state `C` at revision `R+2`, which wouuld result in the `A-C` diff being transmitted to the server; it might be accepted (which will clear `E` as the last-synced error, and record `Cs` and `R+2` as the last-synced state and `revisionId` respectively)
+2. A `pull` can be dispatched to flush the invalid data; since `S` is currently synced to `R+2`, the pulled state from the server `Ps` will overwrite state `B`, the `revisionId` history for `S` will be reset, and `E` will be cleared.
 
 #### Sending changes to server
 
