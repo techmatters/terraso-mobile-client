@@ -2,7 +2,7 @@ name: Dependabot auto-merge
 
 on:
   schedule:
-    - cron: "0 2 * * 1"
+    - cron: "0 2 * * 6"
 
 permissions:
   contents: write
