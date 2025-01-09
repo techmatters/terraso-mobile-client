@@ -66,7 +66,7 @@ We then partitioned the problem of offline data into the following areas of conc
 
 1. Reading server changes from the client for reconciliation (referred to as **Pull** operations.)
 
-   - The server must be quieried for a full view of updated state, which the client must then display to the user. This needs to occur when the user first comes online, and it should be able to periodically occur during regular online-mode operation.
+   - The server must be queried for a full view of updated state, which the client must then display to the user. This needs to occur when the user first comes online, and it should be able to periodically occur during regular online-mode operation.
 
 TODO(@shrouxm, @knipec): any additional documents (the Mural?) to embed here as reference.
 
@@ -82,14 +82,14 @@ TODO(@knipec): any other details/reading/etc
 
 ### b. Persistence
 
-Perisstence is handled through a custom Redux middleware which persists the mobile client's Redux state to the app's device-backed key-value storage when state changes occur. Persisted state is loaded back into Redux when the app reopens. This seemed like the simplest solution that achieved our goals; while we investigated more heavyweight solutions involving local databases, they far exceeded our scope capacity. We elected to implement a custom middleware due to the low initial cost of implementation and a lack of actively-maintained libraries which we felt confident in adopting for such an integral piece of behavior.
+Persistence is handled through a custom Redux middleware which persists the mobile client's Redux state to the app's device-backed key-value storage when state changes occur. Persisted state is loaded back into Redux when the app reopens. This seemed like the simplest solution that achieved our goals; while we investigated more heavyweight solutions involving local databases, they far exceeded our scope capacity. We elected to implement a custom middleware due to the low initial cost of implementation and a lack of actively-maintained libraries which we felt confident in adopting for such an integral piece of behavior.
 
 TODO(@shrouxm): Handling of transient data, any other details I missed?
 TODO(@knipec): Flushing data on logout?
 
 ### c. Business rules
 
-We created 1:1 reimplementations in TypeScript of previously server-side operations, supporting them with unit tests to help endsure correctness. Redux actions which previously interacted with the server for these operations instead use the local version of the logic. Future implementation of offline support for previously online-only actions will likely follow this model.
+We created 1:1 reimplementations in TypeScript of previously server-side operations, supporting them with unit tests to help ensure correctness. Redux actions which previously interacted with the server for these operations instead use the local version of the logic. Future implementation of offline support for previously online-only actions will likely follow this model.
 
 The responsibility of these implementations is to enforce correctness on the _client side only_; as previously stated, the server is still the authority on the canonical state of Terraso LandPKS data. As a result, integrity checks in this layer of business logic primarily function to catch UI bugs (as the UI should not allow invalid actions either), rather than as a critical element of preventing data integrity or permission violations. The client must not be trusted to operate correctly. Only the server can be trusted :)
 
@@ -105,7 +105,7 @@ In order to transmit accumulated local changes from client to server, the client
 - Push operations can fail; user data must not be lost in the event of failure and the client must be able to retry the push at a later time
 - Pushed data can be rejected by the server; this is _not_ a failure, but it indicates that the client's data is in an invalid state
 - To reduce data traffic, it is preferable to identify individual pieces of data which have changed rather than e.g. re-transmitting all entities from the client (as an extreme example) or re-transmitting all changed entities from the client (as a less extreme but still unacceptable example)
-- It is easier to implement a single diff computation between the last known server-side state of data than to accumulate a ledger of client changes, because a running ledger creates more surface error for logic bugs to accumulate
+- It is easier to implement an automated diff computation than to accumulate a ledger of client changes, because manually implementing ledger updates for each business operation creates more surface area for business logic bugs to accumulate
 - Any solution to change-tracking must have minimal consequences for the rest of the app's view of data, both to reduce implementation complexity and to reduce the cost of trying new approaches if this one proves insufficient.
 
 A dedicated data model was created to support tracking local changes, attempting to address each of these concerns. (It can be found in the `model/sync` source directory.).
@@ -126,7 +126,7 @@ An internal mechanism called the **Push Dispatcher** listens for app state chang
 1. When the application is online with a logged-in user,
 1. And when there are entities with unsynced changes,
 1. Dispatch a push action for those entities, which will result in the server recieving the combined diffs of their changes.
-1. If the operation fails, begin a periodic retry cycle which will end when the set of unsynced data changes (indicating a successful sync or new user changes)
+1. If the operation fails, begin a periodic retry cycle which will end when there is a change to the set of unsynced data (which indicates either a successful sync or new changes to push.)
 
 TODO(@shrouxm, @knipec): embed visual diagram from mural doc?
 
@@ -144,7 +144,7 @@ See the `terraso-backend` repository for more details regarding GraphQL endpoint
 
 #### Loading changes from server
 
-Mirroring the push system, an internal mechanism called the **Pull Dispatcher** listens for app state changes and dispatches push actions when appropriate. It is paired with a **Pull Requester**, which determines when it is necessary to queue a future pull.
+Mirroring the push system, an internal mechanism called the **Pull Dispatcher** listens for app state changes and dispatches pull actions when appropriate. It is paired with a **Pull Requester**, which determines when it is necessary to queue a future pull.
 
 1. If the application just started,
 1. OR If the application just came online,
@@ -168,14 +168,14 @@ Offline Soil ID was architected with the following requirements:
 
 1. Soil ID data must be re-fetched when the inputs to a particular site change
 1. Any Soil ID data loaded for the user's current soil data state must be retained when offline, even if the inputs change
-1. Any changes to soil ID data must result in updated data when the user comes back online
-1. Any caching of location-based soil matches must not grow unbounded, as they do not scale linearly with the number of sites in a user's account the way data-based soil matches do
+1. Any changes to soil data must result in updated Soil ID matches when the user comes back online
+1. Any cache of location-based matches must not grow unbounded, as they do not scale linearly with the number of sites in a user's account (which _is_ the case for data-based matches.)
 1. It must be possible to reload Soil ID data for sites, even when an error occurs, without changing user inputs.
 1. It is not feasible to, for example, load and cache all Soil ID data for all of the user's sites at once; it must be done on-demand based on what the user is viewing
 
 #### Implementation
 
-The app maintains two caches of Soil ID data: one for location-based matches, keyed by input coordinates; and another for data-based matches, keyed by relevant site ID. The data-based match cache also retains the soil data inputs which were used to generate the cached results (if any).
+The app maintains two caches of Soil ID data in Redux: one for location-based matches, keyed by input coordinates; and another for data-based matches, keyed by relevant site ID. The data-based match cache also retains the soil data inputs which were used to generate the cached results (if any).
 
 Individual components can request soil ID data via side-effects and the `soilIdHooks` system. This will add either a site or coordinate to a set of inputs tracked in the `SoilIdMatchContext`, and will remove them when the hook is cleaned up.
 
