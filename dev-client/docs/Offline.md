@@ -161,11 +161,11 @@ Suppose `S` is at state `B` with `revisionId` `R+1`, and that a `pull` returned 
 
 _Alternate Event: Push Rejected by Server_
 
-Suppose `S` is at state `B` with `revisionId` `R+1`, and that pushing the diff for `A-B` at `R+1` yielded error `E`. The client records that `E` is the last-synced error for `S`, and that `R+1` is the last-synced revision; `A` is still the last-synced state since the server is still at state `A`. `S` is considered synced since the server has issued a ruling on the diff associated with `R+1`.
+Suppose `S` is at state `B` with `revisionId` `R+1`, and that a `push` of the diff for `A-B` at `R+1` yielded error `E`. The client records that `E` is the last-synced error for `S`, and that `R+1` is the last-synced revision; `A` is still the last-synced state since the server is still at state `A`. `S` is considered synced since the server has issued a ruling on the diff associated with `R+1`.
 
 At this point, one of two things can occur (either is possible depending on timing):
 
-1. Another user change could advance `S` to state `C` at revision `R+2`, which wouuld result in the `A-C` diff being transmitted to the server; it might be accepted (which will clear `E` as the last-synced error, and record `Cs` and `R+2` as the last-synced state and `revisionId` respectively)
+1. Another user change could advance `S` to state `C` at revision `R+2`, which would result in the `A-C` diff being transmitted to the server; it might be accepted (which will clear `E` as the last-synced error, and record `Cs` and `R+2` as the last-synced state and `revisionId` respectively)
 2. A `pull` can be dispatched to flush the invalid data; since `S` is currently synced to `R+2`, the pulled state from the server `Ps` will overwrite state `B`, the `revisionId` history for `S` will be reset, and `E` will be cleared.
 
 #### Sending changes to server
