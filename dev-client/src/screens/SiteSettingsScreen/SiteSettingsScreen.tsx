@@ -21,7 +21,10 @@ import {PressableProps} from 'react-native';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
@@ -34,6 +37,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {useRoleMayEditSite} from 'terraso-mobile-client/hooks/permissionHooks';
 import {
   deleteSite,
   updateSite,
@@ -84,9 +88,12 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
     navigation.navigate('BOTTOM_TABS');
   }, [dispatch, navigation, site]);
 
+  const roleIsEditor = useRoleMayEditSite(siteId);
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
+    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (

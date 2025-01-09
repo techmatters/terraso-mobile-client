@@ -18,6 +18,7 @@
 import {testState} from '@testing/integration/data';
 import {render} from '@testing/integration/utils';
 
+import * as permissionHooks from 'terraso-mobile-client/hooks/permissionHooks';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/EditSiteNoteScreen';
 
 const mockedNavigate = jest.fn();
@@ -27,12 +28,19 @@ jest.mock('terraso-mobile-client/navigation/hooks/useNavigation', () => {
   );
   return {
     ...actualNav,
-    useNavigation: () => ({navigate: mockedNavigate}),
+    useNavigation: () => ({navigate: mockedNavigate, pop: mockedNavigate}),
   };
 });
 
+const mockedUserMayEditSiteNote = jest.spyOn(
+  permissionHooks,
+  'useUserMayEditSiteNote',
+);
+mockedUserMayEditSiteNote.mockReturnValue(true);
+
 afterEach(() => {
   mockedNavigate.mockClear();
+  mockedUserMayEditSiteNote.mockReset();
 });
 
 describe('EditSiteNoteScreen', () => {
@@ -64,6 +72,26 @@ describe('EditSiteNoteScreen', () => {
   });
 
   test('renders null if note missing', () => {
+    const screen = render(
+      <EditSiteNoteScreen noteId="nonexistent-note" siteId="1" />,
+      {
+        route: 'EDIT_SITE_NOTE',
+        initialState: testState,
+      },
+    );
+
+    expect(screen.queryByText('Site Note')).toBeNull();
+    expect(screen.queryByText('note 1 contents')).toBeNull();
+    expect(mockedNavigate).toHaveBeenCalledTimes(1);
+    expect(mockedNavigate).toHaveBeenCalledWith('SITE_TABS', {
+      initialTab: 'NOTES',
+      siteId: '1',
+    });
+  });
+
+  test('renders null if user does not have permissions to edit the note', () => {
+    mockedUserMayEditSiteNote.mockReturnValue(false);
+
     const screen = render(
       <EditSiteNoteScreen noteId="nonexistent-note" siteId="1" />,
       {

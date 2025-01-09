@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   SoilPitInputScreenProps,
@@ -21,9 +23,18 @@ import {
 } from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
 export const SOCSOMScreen = (props: SoilPitInputScreenProps) => {
+  const requirements = useDefaultSiteDepthRequirements(
+    props.siteId,
+    props.depthInterval.depthInterval,
+  );
+
   return (
-    <SoilPitInputScreenScaffold {...props}>
-      <Text>Unimplemented SOCSOM Screen</Text>
-    </SoilPitInputScreenScaffold>
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <SoilPitInputScreenScaffold {...props}>
+          <Text>Unimplemented SOCSOM Screen</Text>
+        </SoilPitInputScreenScaffold>
+      )}
+    </ScreenDataRequirements>
   );
 };

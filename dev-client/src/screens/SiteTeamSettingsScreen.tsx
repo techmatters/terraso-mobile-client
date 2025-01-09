@@ -15,12 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useRoleMayEditSite} from 'terraso-mobile-client/hooks/permissionHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -32,9 +36,12 @@ type Props = {
 export const SiteTeamSettingsScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
 
+  const roleIsEditor = useRoleMayEditSite(siteId);
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
+    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (
