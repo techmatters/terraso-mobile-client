@@ -86,6 +86,8 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
         <ScreenScaffold AppBar={<AppBar title={site.name} />}>
           <SiteRoleContextProvider siteId={siteId}>
             <Column padding="md">
+              <Paragraph>{t('soil.vertical_cracking.prefix')}</Paragraph>
+
               <Heading variant="h6">
                 {t('soil.collection_method.verticalCracking')}
               </Heading>
