@@ -15,23 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {userEvent} from '@testing-library/react-native';
+import {userEvent, waitFor} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
+
+import * as terrasoApi from 'terraso-client-shared/terrasoApi/api';
 
 import {FeatureFlagName} from 'terraso-mobile-client/config/featureFlags';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {AppState as ReduxAppState} from 'terraso-mobile-client/store';
-
-// TODO-cknipe:
-// - Mock syncNotification show
-// - Turn the feature flag on
-
-// -------- Too hard ---------
-// - Set up redux store
-// - Make sure that works
-// - Navigate to the site settings screen??
-// - Mock dispatch for deleteSite to delete a site from the redux store?
 
 jest.mock('terraso-mobile-client/config/featureFlags', () => {
   const actual = jest.requireActual(
@@ -122,16 +114,26 @@ describe('SiteSettingsScreen', () => {
       },
     );
 
-    // TODO: How to get site2 to be deleted so this test fails before my changes?
-    // - Try: Mock the API call (Redux recommends using MSW to mock network requests)
+    const mockApiCall = jest
+      .spyOn(terrasoApi, 'requestGraphQL')
+      .mockReturnValue(
+        Promise.resolve({
+          deleteSite: {
+            errors: [],
+          },
+        }),
+      );
 
     const deleteButton = screen.getByText('Delete this site');
-    userEvent.press(deleteButton);
+    await userEvent.press(deleteButton);
 
     const confirmDeleteButton = await screen.findByText('Delete');
-    userEvent.press(confirmDeleteButton);
+    await userEvent.press(confirmDeleteButton);
 
-    // TODO-cknipe: Confirm this test would fail before the changes
+    await waitFor(() => {
+      expect(mockApiCall).toHaveBeenCalled();
+    });
+
     expect(screen.getByText('Delete this site')).toBeOnTheScreen();
     expect(screen.queryByTestId('error-dialog')).not.toBeOnTheScreen();
   });
