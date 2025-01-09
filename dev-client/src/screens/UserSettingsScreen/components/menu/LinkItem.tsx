@@ -48,24 +48,3 @@ export const LinkItem = ({labelI18nKey, urlI18nKey}: Props) => {
     />
   );
 };
-
-export const HelpItem = () => {
-  return (
-    <LinkItem labelI18nKey="general.help.label" urlI18nKey="general.help.url" />
-  );
-};
-
-export const PrivacyItem = () => {
-  return (
-    <LinkItem
-      labelI18nKey="general.info.privacy_policy_label"
-      urlI18nKey="general.info.privacy_policy_link_url"
-    />
-  );
-};
-
-export const TosItem = () => {
-  return (
-    <LinkItem labelI18nKey="general.tos.label" urlI18nKey="general.tos.url" />
-  );
-};

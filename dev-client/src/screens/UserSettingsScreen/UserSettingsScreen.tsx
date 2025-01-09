@@ -23,12 +23,10 @@ import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponent
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
-import {
-  HelpItem,
-  PrivacyItem,
-  TosItem,
-} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/LinkItems';
+import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
+import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
+import {TosItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/TosItem';
 import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/UserIndicatorComponent';
 import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
 
