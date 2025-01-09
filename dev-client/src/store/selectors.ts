@@ -338,9 +338,11 @@ export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
   );
 };
 
-// This confirms that a given DepthInterval is actually part of the site's
-// displayed depth intervals. (There may be a mismatch if, for example, a
-// depth interval got deleted in redux, but a sheet takes depth as a prop)
+/*
+ * This confirms that a given DepthInterval (just start & end depths) is
+ * one of the site's displayed depth intervals. If so, it returns the
+ * interval with its interval settings.
+ */
 export const useSiteSoilInterval = (
   siteId: string,
   depthInterval: DepthInterval,

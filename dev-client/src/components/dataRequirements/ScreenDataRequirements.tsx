@@ -23,7 +23,7 @@ type Requirement = {
 };
 
 const dataExists = (data: object | undefined | null) => {
-  return !!data;
+  return Boolean(data);
 };
 // First item should be the entity with the largest scope
 // Example: if EditSiteNoteScreen is missing the site and the site note,
