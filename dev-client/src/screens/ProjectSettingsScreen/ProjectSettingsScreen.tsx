@@ -36,12 +36,10 @@ import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictio
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {updateProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
-import {deleteProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {
   TabRoutes,
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectProject} from 'terraso-mobile-client/store/selectors';
@@ -51,7 +49,7 @@ type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
 export function ProjectSettingsScreen({
   route: {
-    params: {projectId},
+    params: {projectId, onDeleteProject},
   },
 }: Props) {
   const {t} = useTranslation();
@@ -61,13 +59,6 @@ export function ProjectSettingsScreen({
 
   const onSubmit = async (values: Omit<ProjectUpdateMutationInput, 'id'>) => {
     await dispatch(updateProject({...values, id: projectId, privacy}));
-  };
-
-  const navigation = useNavigation();
-
-  const triggerDeleteProject = () => {
-    dispatch(deleteProject({id: projectId}));
-    navigation.pop();
   };
 
   const userRole = useProjectRoleContext();
@@ -98,7 +89,7 @@ export function ProjectSettingsScreen({
                 title={t('projects.settings.delete_button_prompt')}
                 actionLabel={t('projects.settings.delete_button')}
                 body={t('projects.settings.delete_description')}
-                handleConfirm={triggerDeleteProject}
+                handleConfirm={onDeleteProject}
                 trigger={onOpen => (
                   <DeleteButton
                     label={t('projects.settings.delete')}
