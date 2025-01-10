@@ -15,11 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PressableProps} from 'react-native';
-
-import {Site} from 'terraso-client-shared/site/siteTypes';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -74,45 +72,38 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const dispatch = useDispatch();
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const site = useSelector(state => state.site.sites[siteId]) as Site | null;
+  const site = useSelector(state => state.site.sites[siteId]);
   const isOffline = useIsOffline();
 
   const [name, setName] = useState(site?.name);
   const dirty = name !== site?.name;
 
-  // If the user deleted the site manually, we may re-render after it
-  // becomes null, but before the await ends. In this case, we don't want
-  // to trigger any missing data behavior. And don't want to render anything
-  // new (so keep a ref to the old site).
-  const [sitePurposelyDeleted, setSitePurposelyDeleted] = useState(false);
-  const latestRealSite = useRef(site);
-  if (site) {
-    latestRealSite.current = site;
-  }
-
   const onSave = useCallback(() => {
-    if (site) {
-      dispatch(updateSite({id: site.id, name}));
-    }
+    dispatch(updateSite({id: site.id, name}));
   }, [dispatch, site, name]);
 
+  const [sitePurposelyDeleted, setSitePurposelyDeleted] = useState(false);
   const onDelete = useCallback(async () => {
-    if (site) {
-      setSitePurposelyDeleted(true);
-      await dispatch(deleteSite(site));
-      navigation.navigate('BOTTOM_TABS');
-    }
-  }, [dispatch, navigation, site]);
+    setSitePurposelyDeleted(true);
+    await dispatch(deleteSite(site));
+    // Navigation will happen as part of requirements system
+  }, [dispatch, site]);
 
   const userCanEditSite = useRoleCanEditSite(siteId);
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+  const navToBottomTabs = useCallback(() => {
+    navigation.navigate('BOTTOM_TABS');
+  }, [navigation]);
+
+  const sitePurposelyMissing = sitePurposelyDeleted && !site;
   const requirements = useMemoizedRequirements([
-    {data: site || sitePurposelyDeleted, doIfMissing: handleMissingSite},
-    {
-      data: userCanEditSite || sitePurposelyDeleted,
-      doIfMissing: handleInsufficientPermissions,
-    },
+    // Note: The requirements format is rather unintuitive here
+    // This aims to avoid showing the sync error if you just deleted the site
+    // (as this screen re-renders after site becomes null but before the dispatch await ends)
+    {data: !sitePurposelyMissing, doIfMissing: navToBottomTabs},
+    {data: site, doIfMissing: handleMissingSite},
+    {data: userCanEditSite, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (
@@ -120,7 +111,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
       {() => (
         <ScreenScaffold
           BottomNavigation={null}
-          AppBar={<AppBar title={latestRealSite.current?.name} />}>
+          AppBar={<AppBar title={site?.name} />}>
           <Column px="16px" py="22px">
             <TextInput
               maxLength={SITE_NAME_MAX_LENGTH}
@@ -146,7 +137,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                   trigger={onOpen => <DeleteButtonWrapper onPress={onOpen} />}
                   title={t('projects.sites.delete_site_modal.title')}
                   body={t('projects.sites.delete_site_modal.body', {
-                    siteName: latestRealSite.current?.name,
+                    siteName: site?.name,
                   })}
                   actionLabel={t(
                     'projects.sites.delete_site_modal.action_name',
