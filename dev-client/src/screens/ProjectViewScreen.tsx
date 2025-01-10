@@ -15,24 +15,50 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback, useState} from 'react';
+
+import {Project} from 'terraso-client-shared/project/projectTypes';
+
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {deleteProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useSelector} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {projectId: string};
 
 export const ProjectViewScreen = ({projectId}: Props) => {
-  const project = useSelector(state => state.project.projects[projectId]);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const project = useSelector(
+    state => state.project.projects[projectId],
+  ) as Project | null;
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
 
+  const [projectPurposelyDeleted, setProjectPurposelyDeleted] = useState(false);
+  const onDeleteProject = useCallback(async () => {
+    setProjectPurposelyDeleted(true);
+    await dispatch(deleteProject({id: projectId}));
+  }, [setProjectPurposelyDeleted, dispatch, projectId]);
+
+  const projectPurposelyMissing = projectPurposelyDeleted && !project;
+  const navToProjectsList = useCallback(() => {
+    navigation.pop();
+  }, [navigation]);
+
   const requirements = useMemoizedRequirements([
+    // Note: The requirements format is rather unintuitive here
+    // If you deleted the project, navigate and avoid showing the sync error
+    // (as this screen re-renders after project is deleted from redux but before the dispatched delete ends)
+    {data: !projectPurposelyMissing, doIfMissing: navToProjectsList},
     {data: project, doIfMissing: handleMissingProject},
   ]);
 
@@ -43,7 +69,10 @@ export const ProjectViewScreen = ({projectId}: Props) => {
           <ScreenScaffold
             AppBar={<AppBar title={project?.name} />}
             BottomNavigation={null}>
-            <ProjectTabNavigator projectId={projectId} />
+            <ProjectTabNavigator
+              projectId={projectId}
+              onDeleteProject={onDeleteProject}
+            />
           </ScreenScaffold>
         </ProjectRoleContextProvider>
       )}

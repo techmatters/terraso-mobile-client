@@ -38,6 +38,7 @@ export type TabStackParamList = {
   };
   [TabRoutes.SETTINGS]: {
     projectId: string;
+    onDeleteProject: () => Promise<void>;
   };
   [TabRoutes.SITES]: {
     projectId: string;
