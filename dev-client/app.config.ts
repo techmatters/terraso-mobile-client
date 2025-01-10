@@ -144,6 +144,23 @@ const defaultConfig: ExpoConfig = {
       },
     ],
     [
+      'expo-build-properties',
+      {
+        ios: {
+          extraPods: [
+            {
+              name: 'MMKV',
+              version: '1.3.9',
+            },
+            {
+              name: 'MMKVCore',
+              version: '1.3.9',
+            },
+          ],
+        },
+      },
+    ],
+    [
       ((modConfig: ExpoConfig): ExpoConfig => {
         // Avoid double signing with debug keychain when using GitHub actions.
         if (ENV_CONFIG.CI === 'true') {
