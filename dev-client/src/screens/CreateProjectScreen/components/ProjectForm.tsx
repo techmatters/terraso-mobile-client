@@ -15,9 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Formik, FormikProps} from 'formik';
+import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {TFunction} from 'i18next';
 import * as yup from 'yup';
 
@@ -100,7 +101,7 @@ type Props = {
 type FormValues = Omit<ProjectUpdateMutationInput, 'id'>;
 
 type FormProps = FormValues & {
-  onSubmit: (values: FormValues) => void;
+  onSubmit: (values: FormValues) => Promise<void>;
   userRole: ProjectMembershipProjectRoleChoices | null;
 };
 
@@ -112,6 +113,16 @@ export const EditProjectForm = ({
 }: Omit<FormProps, 'privacy'>) => {
   const {t} = useTranslation();
 
+  /* We reset the form after a successful submit to clear the dirty flag */
+  const onSubmitAndReset = useCallback(
+    (values: FormValues, helpers: FormikHelpers<FormValues>) => {
+      onSubmit(values).then(() => {
+        helpers.resetForm({values});
+      });
+    },
+    [onSubmit],
+  );
+
   // We are using a special textInputLabel prop instead of label. This is passed
   // from FormInput to TextInput.
   //
@@ -122,7 +133,7 @@ export const EditProjectForm = ({
       validationSchema={editProjectValidationSchema(t)}
       initialValues={{name, description}}
       validateOnMount={true}
-      onSubmit={onSubmit}>
+      onSubmit={onSubmitAndReset}>
       {({handleSubmit, isValid, isSubmitting, dirty}) => (
         <>
           <FormInput
