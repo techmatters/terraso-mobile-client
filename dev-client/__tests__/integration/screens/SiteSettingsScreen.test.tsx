@@ -27,7 +27,7 @@ import {AppState as ReduxAppState} from 'terraso-mobile-client/store';
 
 jest.mock('terraso-mobile-client/config/featureFlags', () => {
   const actual = jest.requireActual(
-    'terraso-mobile-client/navigation/hooks/useNavigation',
+    'terraso-mobile-client/config/featureFlags',
   );
   return {
     ...actual,
@@ -40,6 +40,17 @@ jest.mock('terraso-mobile-client/config/featureFlags', () => {
 jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
   return {
     useIsOffline: jest.fn(() => false),
+  };
+});
+
+const mockedNavigate = jest.fn();
+jest.mock('terraso-mobile-client/navigation/hooks/useNavigation', () => {
+  const actualNav = jest.requireActual(
+    'terraso-mobile-client/navigation/hooks/useNavigation',
+  );
+  return {
+    ...actualNav,
+    useNavigation: () => ({navigate: mockedNavigate}),
   };
 });
 
@@ -73,6 +84,10 @@ describe('SiteSettingsScreen', () => {
     },
   } as Partial<ReduxAppState>;
 
+  afterEach(() => {
+    mockedNavigate.mockClear();
+  });
+
   test('displays delete button and no error', () => {
     const screen = render(
       <SyncNotificationContextProvider>
@@ -84,7 +99,7 @@ describe('SiteSettingsScreen', () => {
       },
     );
 
-    expect(screen.getByText('Delete this site')).toBeOnTheScreen();
+    expect(mockedNavigate).not.toHaveBeenCalled();
     expect(screen.queryByTestId('error-dialog')).not.toBeOnTheScreen();
   });
 
@@ -99,7 +114,7 @@ describe('SiteSettingsScreen', () => {
       },
     );
 
-    expect(screen.queryByText('Delete this site')).toBeNull();
+    expect(mockedNavigate).toHaveBeenCalledWith('BOTTOM_TABS');
     expect(screen.getByTestId('error-dialog')).toBeOnTheScreen();
   });
 
@@ -134,7 +149,7 @@ describe('SiteSettingsScreen', () => {
       expect(mockApiCall).toHaveBeenCalled();
     });
 
-    expect(screen.getByText('Delete this site')).toBeOnTheScreen();
+    expect(mockedNavigate).toHaveBeenCalledWith('BOTTOM_TABS');
     expect(screen.queryByTestId('error-dialog')).not.toBeOnTheScreen();
   });
 });

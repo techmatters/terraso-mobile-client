@@ -99,8 +99,8 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const sitePurposelyMissing = sitePurposelyDeleted && !site;
   const requirements = useMemoizedRequirements([
     // Note: The requirements format is rather unintuitive here
-    // This aims to avoid showing the sync error if you just deleted the site
-    // (as this screen re-renders after site becomes null but before the dispatch await ends)
+    // If you just deleted the site, navigate and avoid showing the sync error
+    // (as this screen re-renders after site is deleted from redux but before the dispatched delete ends)
     {data: !sitePurposelyMissing, doIfMissing: navToBottomTabs},
     {data: site, doIfMissing: handleMissingSite},
     {data: userCanEditSite, doIfMissing: handleInsufficientPermissions},
