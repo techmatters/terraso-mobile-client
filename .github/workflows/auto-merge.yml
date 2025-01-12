@@ -9,7 +9,7 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]' && github.ref == 'refs/heads/depdendencies'
+    if: github.actor == 'dependabot[bot]' && github.ref == 'refs/heads/dependencies'
     steps:
       - name: Enable auto-merge for Dependabot PRs
         run: gh pr merge --auto --merge ${{ github.event.pull_request.number }}
