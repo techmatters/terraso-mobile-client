@@ -761,7 +761,7 @@
             "soilTexture": "Incluye clase de textura y volumen de fragmentos de roca"
         },
         "vertical_cracking": {
-            "description": "Las grietas se desarrollan en suelos ricos en arcilla después de que se sequen.",
+            "description": "Las grietas se desarrollan en suelos ricos en arcilla después de que se sequen. <bold>TKTK</bold>",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "25 cm",

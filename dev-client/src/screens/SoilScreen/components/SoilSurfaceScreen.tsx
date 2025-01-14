@@ -100,7 +100,14 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
               />
               <Box height="lg" />
 
-              <Paragraph>{t('soil.vertical_cracking.description')}</Paragraph>
+              <Paragraph>
+                <Trans
+                  i18nKey="soil.vertical_cracking.description"
+                  components={{
+                    bold: <Text bold />,
+                  }}
+                />
+              </Paragraph>
 
               <Paragraph>
                 <Trans
