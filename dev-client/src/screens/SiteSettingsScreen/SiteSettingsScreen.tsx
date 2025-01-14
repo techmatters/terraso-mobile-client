@@ -90,18 +90,21 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   }, [dispatch, site]);
 
   const userCanEditSite = useRoleCanEditSite(siteId);
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+
   const navToBottomTabs = useCallback(() => {
     navigation.navigate('BOTTOM_TABS');
   }, [navigation]);
+  const navToBottomTabsAndShowSyncError = useNavToBottomTabsAndShowSyncError();
+  // On purposeful delete, this screen re-renders with null site (but before
+  // the dispatched delete ends). Avoid showing error on purposeful delete.
+  const handleMissingSite = useCallback(() => {
+    sitePurposelyDeleted
+      ? navToBottomTabs()
+      : navToBottomTabsAndShowSyncError();
+  }, [sitePurposelyDeleted, navToBottomTabs, navToBottomTabsAndShowSyncError]);
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
 
-  const sitePurposelyMissing = sitePurposelyDeleted && !site;
   const requirements = useMemoizedRequirements([
-    // Note: The requirements format is rather unintuitive here
-    // If you just deleted the site, navigate and avoid showing the sync error
-    // (as this screen re-renders after site is deleted from redux but before the dispatched delete ends)
-    {data: !sitePurposelyMissing, doIfMissing: navToBottomTabs},
     {data: site, doIfMissing: handleMissingSite},
     {data: userCanEditSite, doIfMissing: handleInsufficientPermissions},
   ]);
