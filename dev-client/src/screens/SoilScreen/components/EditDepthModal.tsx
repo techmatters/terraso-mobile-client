@@ -113,19 +113,6 @@ export const EditDepthModal = ({
     [t, existingDepths],
   );
 
-  const updateSwitch = useCallback(
-    (method: SoilPitMethod) => (newValue: boolean) => {
-      dispatch(
-        updateSoilDataDepthInterval({
-          siteId,
-          depthInterval,
-          [methodEnabled(method)]: newValue,
-        }),
-      );
-    },
-    [dispatch, siteId, depthInterval],
-  );
-
   const onSubmit = useCallback(
     async (values: EditDepthFormInput) => {
       const {start, end} = depthInterval;
@@ -219,7 +206,7 @@ export const EditDepthModal = ({
                     <InputFormSwitch
                       method={method}
                       isRequired={requiredInputs.includes(method)}
-                      updateEnabled={updateSwitch(method)}
+                      updateEnabled={() => {}}
                       key={method}
                     />
                     {description && (
