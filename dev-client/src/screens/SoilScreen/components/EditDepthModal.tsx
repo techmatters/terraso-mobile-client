@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FormEvent, useCallback, useMemo, useRef} from 'react';
+import React, {FormEvent, useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
@@ -202,7 +202,7 @@ export const EditDepthModal = ({
                   : '';
 
                 return (
-                  <>
+                  <React.Fragment key={method}>
                     <InputFormSwitch
                       method={method}
                       isRequired={requiredInputs.includes(method)}
@@ -214,7 +214,7 @@ export const EditDepthModal = ({
                         {description}
                       </Text>
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
             </Column>
