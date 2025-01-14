@@ -20,13 +20,11 @@ import {useTranslation} from 'react-i18next';
 
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Column,
   Text,
-  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 
@@ -46,43 +44,32 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
   return (
     <Column space="1px" pb="23px">
       <Text variant="body1">{t('soil.soil_preset.info')}</Text>
-      <RadioBlock
-        labelProps={{variant: 'body1'}}
-        options={{
-          NRCS: {text: t('soil.soil_preset.NRCS')},
-          BLM: {text: t('soil.soil_preset.BLM')},
-          CUSTOM: {text: t('soil.soil_preset.CUSTOM')},
-        }}
-        groupProps={{
-          name: 'soil-preset',
-          value: selectedPreset,
-          onChange: (value: string) =>
-            updateSelectedPreset(
-              value as SoilIdSoilDataDepthIntervalPresetChoices,
-            ),
-        }}
+      <ConfirmModal
+        trigger={onOpen => (
+          <RadioBlock
+            labelProps={{variant: 'body1'}}
+            options={{
+              NRCS: {text: t('soil.soil_preset.NRCS')},
+              BLM: {text: t('soil.soil_preset.BLM')},
+              CUSTOM: {text: t('soil.soil_preset.CUSTOM')},
+            }}
+            groupProps={{
+              name: 'soil-preset',
+              value: selectedPreset,
+              onChange: (value: string) => {
+                updateSelectedPreset(
+                  value as SoilIdSoilDataDepthIntervalPresetChoices,
+                );
+                onOpen();
+              },
+            }}
+          />
+        )}
+        handleConfirm={onConfirm}
+        title={t('projects.inputs.depths.confirm_preset.title')}
+        body={t('projects.inputs.depths.confirm_preset.body')}
+        actionLabel={t('projects.inputs.depths.confirm_preset.confirm')}
       />
-      <View alignSelf="flex-end">
-        <ConfirmModal
-          trigger={onOpen => (
-            <ContainedButton
-              size="lg"
-              onPress={() => {
-                if (selectedPreset === selected) {
-                  modalHandle?.onClose();
-                } else {
-                  onOpen();
-                }
-              }}
-              label={t('general.save')}
-            />
-          )}
-          handleConfirm={onConfirm}
-          title={t('projects.inputs.depths.confirm_preset.title')}
-          body={t('projects.inputs.depths.confirm_preset.body')}
-          actionLabel={t('projects.inputs.depths.confirm_preset.confirm')}
-        />
-      </View>
     </Column>
   );
 };
