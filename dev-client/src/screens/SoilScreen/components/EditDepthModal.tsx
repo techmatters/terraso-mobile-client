@@ -179,7 +179,11 @@ export const EditDepthModal = ({
           onPress={onOpen}
         />
       )}
-      heading={<Heading variant="h6">{thisDepth.label}</Heading>}>
+      heading={
+        <Heading variant="h6">
+          {thisDepth?.label ? thisDepth.label : t('soil.depth.edit_title')}
+        </Heading>
+      }>
       <Formik
         validationSchema={schema}
         initialValues={{
