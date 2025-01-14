@@ -23,11 +23,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProjectMembership} from 'terraso-client-shared/project/projectTypes';
 
 import {AddButton} from 'terraso-mobile-client/components/buttons/common/AddButton';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {
-  ScreenDataRequirements,
-  useMemoizedRequirements,
-} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -44,10 +39,7 @@ import {
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {UserList} from 'terraso-mobile-client/screens/ProjectTeamScreen/components/UserList';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {
-  selectProject,
-  selectProjectMembershipsWithUsers,
-} from 'terraso-mobile-client/store/selectors';
+import {selectProjectMembershipsWithUsers} from 'terraso-mobile-client/store/selectors';
 
 type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.TEAM>;
 
@@ -97,46 +89,32 @@ export const ProjectTeamScreen = ({route}: Props) => {
     [navigation, route.params.projectId, userRole],
   );
 
-  const project = useSelector(selectProject(route.params.projectId));
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const requirements = useMemoizedRequirements([
-    {data: project, doIfMissing: handleMissingProject},
-  ]);
-
   return (
-    <ScreenDataRequirements requirements={requirements}>
-      {() => (
-        <Column
-          height="full"
-          p={4}
-          space={3}
-          backgroundColor="background.default">
-          <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
-            <Box alignSelf="flex-start">
-              <AddButton
-                label={t('projects.team.add')}
-                onPress={() =>
-                  navigation.navigate('ADD_USER_PROJECT', {
-                    projectId: route.params.projectId,
-                  })
-                }
-              />
-            </Box>
-          </RestrictByProjectRole>
-          <Heading variant="h6" py="20px">
-            {t('projects.team.manage_team')}
-          </Heading>
-          <ScrollView>
-            <UserList
-              memberships={members}
-              currentUserId={currentUser.data?.id}
-              removeUser={removeMembership}
-              memberAction={manageMember}
-              currentUserRole={currentUserRole}
-            />
-          </ScrollView>
-        </Column>
-      )}
-    </ScreenDataRequirements>
+    <Column height="full" p={4} space={3} backgroundColor="background.default">
+      <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
+        <Box alignSelf="flex-start">
+          <AddButton
+            label={t('projects.team.add')}
+            onPress={() =>
+              navigation.navigate('ADD_USER_PROJECT', {
+                projectId: route.params.projectId,
+              })
+            }
+          />
+        </Box>
+      </RestrictByProjectRole>
+      <Heading variant="h6" py="20px">
+        {t('projects.team.manage_team')}
+      </Heading>
+      <ScrollView>
+        <UserList
+          memberships={members}
+          currentUserId={currentUser.data?.id}
+          removeUser={removeMembership}
+          memberAction={manageMember}
+          currentUserRole={currentUserRole}
+        />
+      </ScrollView>
+    </Column>
   );
 };

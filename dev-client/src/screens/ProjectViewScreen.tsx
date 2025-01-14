@@ -66,6 +66,8 @@ export const ProjectViewScreen = ({projectId}: Props) => {
     projectPurposelyDeleted ? navigation.pop() : popNavAndShowSyncError();
   }, [projectPurposelyDeleted, navigation, popNavAndShowSyncError]);
 
+  // Child tabs don't need to duplicate the requirements here as long as their updates
+  // cause a rerender here
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
   ]);

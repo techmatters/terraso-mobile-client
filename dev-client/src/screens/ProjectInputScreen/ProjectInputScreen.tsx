@@ -25,11 +25,6 @@ import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {
-  ScreenDataRequirements,
-  useMemoizedRequirements,
-} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -79,79 +74,65 @@ export const ProjectInputScreen = ({
 
   const allowEditing = useMemo(() => userRole === 'MANAGER', [userRole]);
 
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const requirements = useMemoizedRequirements([
-    {data: project, doIfMissing: handleMissingProject},
-  ]);
-
   return (
-    <ScreenDataRequirements requirements={requirements}>
-      {() => (
-        <Column height="full" backgroundColor="background.default">
-          <ScrollView>
-            <Box p={4} alignItems="flex-start">
-              <Row pb={4}>
-                <RadioBlock
-                  label={
-                    <Row alignItems="center">
-                      <Text variant="body1" bold>
-                        {t('site.dashboard.privacy')}
-                      </Text>
-                      <HelpContentSpacer />
-                      <DataPrivacyInfoButton />
-                    </Row>
-                  }
-                  options={{
-                    PUBLIC: {text: t('privacy.public.title')},
-                    PRIVATE: {text: t('privacy.private.title')},
-                  }}
-                  groupProps={{
-                    name: 'project-privacy',
-                    onChange: onProjectPrivacyChanged,
-                    value: project?.privacy,
-                    ml: '0',
-                    variant: 'oneLine',
-                  }}
-                  allDisabled={!allowEditing}
-                />
-              </Row>
-              <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
-                <Text bold>{t('projects.inputs.instructions.title')}</Text>
-                <Text mb={2}>
-                  {t('projects.inputs.instructions.description')}
-                </Text>
-                <ContainedButton
-                  onPress={onEditPinnedNote}
-                  leftIcon="push-pin"
-                  label={t('projects.inputs.instructions.add_label')}
-                />
-              </RestrictByProjectRole>
-            </Box>
-            <Accordion
-              initiallyOpen={true}
-              Head={
-                <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
-                  {t('soil.pit')}
-                </Text>
-              }>
-              <SoilPitSettings projectId={projectId} />
-            </Accordion>
-            <Box height={4} />
-            <Accordion
-              initiallyOpen={true}
-              Head={
-                <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
-                  {t('soil.project_settings.required_data_title')}
-                </Text>
-              }>
-              <RequiredDataSettings
-                projectId={projectId}
-                enabled={allowEditing}
-              />
-            </Accordion>
-          </ScrollView>
-        </Column>
-      )}
-    </ScreenDataRequirements>
+    <Column height="full" backgroundColor="background.default">
+      <ScrollView>
+        <Box p={4} alignItems="flex-start">
+          <Row pb={4}>
+            <RadioBlock
+              label={
+                <Row alignItems="center">
+                  <Text variant="body1" bold>
+                    {t('site.dashboard.privacy')}
+                  </Text>
+                  <HelpContentSpacer />
+                  <DataPrivacyInfoButton />
+                </Row>
+              }
+              options={{
+                PUBLIC: {text: t('privacy.public.title')},
+                PRIVATE: {text: t('privacy.private.title')},
+              }}
+              groupProps={{
+                name: 'project-privacy',
+                onChange: onProjectPrivacyChanged,
+                value: project?.privacy,
+                ml: '0',
+                variant: 'oneLine',
+              }}
+              allDisabled={!allowEditing}
+            />
+          </Row>
+          <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
+            <Text bold>{t('projects.inputs.instructions.title')}</Text>
+            <Text mb={2}>{t('projects.inputs.instructions.description')}</Text>
+            <ContainedButton
+              onPress={onEditPinnedNote}
+              leftIcon="push-pin"
+              label={t('projects.inputs.instructions.add_label')}
+            />
+          </RestrictByProjectRole>
+        </Box>
+        <Accordion
+          initiallyOpen={true}
+          Head={
+            <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
+              {t('soil.pit')}
+            </Text>
+          }>
+          <SoilPitSettings projectId={projectId} />
+        </Accordion>
+        <Box height={4} />
+        <Accordion
+          initiallyOpen={true}
+          Head={
+            <Text pt={3} pb={3} fontSize="md" color="primary.contrast">
+              {t('soil.project_settings.required_data_title')}
+            </Text>
+          }>
+          <RequiredDataSettings projectId={projectId} enabled={allowEditing} />
+        </Accordion>
+      </ScrollView>
+    </Column>
   );
 };
