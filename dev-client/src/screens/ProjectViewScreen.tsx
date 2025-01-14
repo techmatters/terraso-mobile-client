@@ -15,66 +15,74 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useState,
+} from 'react';
 
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {usePopNavigationAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
-import {deleteProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {useSelector} from 'terraso-mobile-client/store';
+
+type ProjectDeletedState = [boolean, Dispatch<SetStateAction<boolean>>];
+
+export const ProjectDeletedContext = createContext<ProjectDeletedState>([
+  false,
+  () => {},
+]);
 
 type Props = {projectId: string};
 
 export const ProjectViewScreen = ({projectId}: Props) => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const project = useSelector(
     state => state.project.projects[projectId],
   ) as Project | null;
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
 
+  // FYI: I suspect if projectId could change within the same component instance,
+  // we'd want to track projectPurposelyDeleted independently for each project.
+  // But currently this isn't an issue because the projectId prop only changes
+  // when the whole screen gets unmounted and a new one gets mounted.
   const [projectPurposelyDeleted, setProjectPurposelyDeleted] = useState(false);
-  const onDeleteProject = useCallback(async () => {
-    setProjectPurposelyDeleted(true);
-    await dispatch(deleteProject({id: projectId}));
-  }, [setProjectPurposelyDeleted, dispatch, projectId]);
 
-  const projectPurposelyMissing = projectPurposelyDeleted && !project;
-  const navToProjectsList = useCallback(() => {
-    navigation.pop();
-  }, [navigation]);
+  const popNavAndShowSyncError = usePopNavigationAndShowSyncError();
+  const handleMissingProject = useCallback(() => {
+    // If *you* deleted the project, navigate and avoid showing the sync error
+    // (as this screen re-renders when project becomes null, but before the dispatched delete ends)
+    projectPurposelyDeleted ? navigation.pop() : popNavAndShowSyncError();
+  }, [projectPurposelyDeleted, navigation, popNavAndShowSyncError]);
 
   const requirements = useMemoizedRequirements([
-    // Note: The requirements format is rather unintuitive here
-    // If you deleted the project, navigate and avoid showing the sync error
-    // (as this screen re-renders after project is deleted from redux but before the dispatched delete ends)
-    {data: !projectPurposelyMissing, doIfMissing: navToProjectsList},
     {data: project, doIfMissing: handleMissingProject},
   ]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>
       {() => (
-        <ProjectRoleContextProvider projectId={projectId}>
-          <ScreenScaffold
-            AppBar={<AppBar title={project?.name} />}
-            BottomNavigation={null}>
-            <ProjectTabNavigator
-              projectId={projectId}
-              onDeleteProject={onDeleteProject}
-            />
-          </ScreenScaffold>
-        </ProjectRoleContextProvider>
+        <ProjectDeletedContext.Provider
+          value={[projectPurposelyDeleted, setProjectPurposelyDeleted]}>
+          <ProjectRoleContextProvider projectId={projectId}>
+            <ScreenScaffold
+              AppBar={<AppBar title={project?.name} />}
+              BottomNavigation={null}>
+              <ProjectTabNavigator projectId={projectId} />
+            </ScreenScaffold>
+          </ProjectRoleContextProvider>
+        </ProjectDeletedContext.Provider>
       )}
     </ScreenDataRequirements>
   );

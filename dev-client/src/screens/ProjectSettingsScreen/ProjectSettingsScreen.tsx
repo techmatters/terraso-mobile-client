@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback, useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 import {Divider} from 'react-native-paper';
@@ -25,7 +26,7 @@ import {ScrollView} from 'native-base';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {usePopNavigationAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
@@ -36,11 +37,13 @@ import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictio
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {updateProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
+import {deleteProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {
   TabRoutes,
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
 import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
+import {ProjectDeletedContext} from 'terraso-mobile-client/screens/ProjectViewScreen';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectProject} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';
@@ -49,7 +52,7 @@ type Props = NativeStackScreenProps<TabStackParamList, TabRoutes.SETTINGS>;
 
 export function ProjectSettingsScreen({
   route: {
-    params: {projectId, onDeleteProject},
+    params: {projectId},
   },
 }: Props) {
   const {t} = useTranslation();
@@ -61,11 +64,27 @@ export function ProjectSettingsScreen({
     await dispatch(updateProject({...values, id: projectId, privacy}));
   };
 
-  const userRole = useProjectRoleContext();
+  const [projectPurposelyDeleted, setProjectPurposelyDeleted] = useContext(
+    ProjectDeletedContext,
+  );
+  const onDeleteProject = useCallback(async () => {
+    setProjectPurposelyDeleted(true);
+    await dispatch(deleteProject({id: projectId}));
+  }, [setProjectPurposelyDeleted, dispatch, projectId]);
 
   // FYI we don't need to require role permissions to view this tab; that's handled
   // further up in the project tab navigator
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
+  const userRole = useProjectRoleContext();
+
+  const popNavAndShowSyncError = usePopNavigationAndShowSyncError();
+
+  const handleMissingProject = useCallback(() => {
+    // FYI navigation from purposeful delete is handled further up in ProjectViewScreen
+    if (!projectPurposelyDeleted) {
+      popNavAndShowSyncError();
+    }
+  }, [projectPurposelyDeleted, popNavAndShowSyncError]);
+
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
   ]);

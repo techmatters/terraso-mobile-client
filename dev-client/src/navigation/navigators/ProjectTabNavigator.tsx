@@ -38,12 +38,9 @@ type ScreenOptions = React.ComponentProps<
   (typeof Tab)['Navigator']
 >['screenOptions'];
 
-type Props = {
-  projectId: string;
-  onDeleteProject: () => Promise<void>;
-};
+type Props = {projectId: string};
 
-export const ProjectTabNavigator = ({projectId, onDeleteProject}: Props) => {
+export const ProjectTabNavigator = ({projectId}: Props) => {
   const defaultTabOptions = useDefaultTabOptions();
   const {t} = useTranslation();
 
@@ -104,7 +101,7 @@ export const ProjectTabNavigator = ({projectId, onDeleteProject}: Props) => {
         <Tab.Screen
           name={TabRoutes.SETTINGS}
           component={ProjectSettingsScreen}
-          initialParams={{projectId, onDeleteProject}}
+          initialParams={{projectId}}
         />,
       )}
     </Tab.Navigator>
