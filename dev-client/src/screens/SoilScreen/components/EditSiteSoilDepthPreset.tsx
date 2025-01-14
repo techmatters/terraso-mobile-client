@@ -47,7 +47,6 @@ export const EditSiteSoilDepthPreset = ({selected, updateChoice}: Props) => {
     <Column space="1px" pb="23px">
       <Text variant="body1">{t('soil.soil_preset.info')}</Text>
       <RadioBlock
-        label={t('soil.soil_preset.label')}
         labelProps={{variant: 'body1'}}
         options={{
           NRCS: {text: t('soil.soil_preset.NRCS')},
