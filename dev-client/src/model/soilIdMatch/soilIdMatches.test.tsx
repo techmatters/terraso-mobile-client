@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+
 import {
   coordsKey,
   dataEntryForMatches,
@@ -64,12 +66,17 @@ describe('locationEntryForStatus', () => {
 
 describe('locationEntryForMatches', () => {
   test('produces an entry with ready status and the given matches', () => {
+    const match = {rank: 1, score: 1};
+    const inputMatches = [{combinedMatch: match, dataSource: 'SSURGO'}];
     expect(
-      locationEntryForMatches({latitude: 1, longitude: 2}, ['match'] as any),
+      locationEntryForMatches(
+        {latitude: 1, longitude: 2},
+        inputMatches as DataBasedSoilMatch[],
+      ),
     ).toEqual({
       input: {latitude: 1, longitude: 2},
       status: 'ready',
-      matches: ['match'],
+      matches: [{match, dataSource: 'SSURGO'}],
     });
   });
 });
