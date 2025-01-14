@@ -57,7 +57,6 @@ import {
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
-import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
 import {
@@ -237,23 +236,24 @@ export const EditDepthModal = ({
             </Row>
 
             <Row justifyContent="flex-end" alignItems="center" space={5}>
-              {mutable && (
-                <ConfirmDeleteDepthModal
-                  onConfirm={deleteDepth}
-                  trigger={onOpen => (
-                    <DeleteButton
-                      label={t('soil.depth.delete_button')}
-                      onPress={onOpen}
-                    />
-                  )}
-                />
-              )}
               <ConfirmEditingModal
                 formNotReady={!isValid || isSubmitting}
                 handleSubmit={handleSubmit}
                 interval={depthInterval}
               />
             </Row>
+
+            {mutable && (
+              <ConfirmDeleteDepthModal
+                onConfirm={deleteDepth}
+                trigger={onOpen => (
+                  <DeleteButton
+                    label={t('soil.depth.delete_button')}
+                    onPress={onOpen}
+                  />
+                )}
+              />
+            )}
           </Column>
         )}
       </Formik>
