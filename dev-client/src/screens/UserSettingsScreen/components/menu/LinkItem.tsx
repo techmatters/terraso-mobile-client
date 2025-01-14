@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2025 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,33 +15,36 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Linking} from 'react-native';
 
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
-import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {validateUrl} from 'terraso-mobile-client/util';
 
-export function DeleteAccountItem() {
+type Props = {
+  labelI18nKey: string;
+  urlI18nKey: string;
+};
+
+export const LinkItem = ({labelI18nKey, urlI18nKey}: Props) => {
   const {t} = useTranslation();
-  const {isPending} = useUserDeletionRequests();
-  const navigation = useNavigation();
-  const onDeleteAccount = useCallback(
-    () => navigation.navigate('DELETE_ACCOUNT'),
-    [navigation],
-  );
+  const label = t(labelI18nKey);
+  const url = t(urlI18nKey);
 
-  const isDisabled = useIsOffline() || isPending;
+  const isValidUrl = useMemo(() => validateUrl(url), [url]);
+  const openUrl = useCallback(() => {
+    if (isValidUrl) {
+      Linking.openURL(url);
+    }
+  }, [url, isValidUrl]);
 
   return (
     <MenuItem
-      variant="destructive"
-      icon="delete"
-      label={t('settings.delete_account')}
-      disabled={isDisabled}
-      subLabel={isPending ? t('settings.delete_account_pending') : undefined}
-      onPress={onDeleteAccount}
+      variant="default"
+      icon="open-in-new"
+      label={label}
+      onPress={openUrl}
     />
   );
-}
+};
