@@ -449,7 +449,7 @@
             "data_portal_link_text": "LandPKS Data Portal",
             "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
             "privacy_policy_link_text": "Read more about our data privacy policy.",
-            "privacy_policy_label": "Privacy notice"
+            "privacy_policy_label": "Privacy Policy"
         },
         "required": "Required",
         "character_limit": "{{current}} / {{limit}} characters",

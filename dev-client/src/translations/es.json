@@ -450,7 +450,7 @@
             "data_portal_link_text": "Portal de datos LandPKS",
             "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
             "privacy_policy_link_text": "Lee más acerca de nuestras políticas de privacidad de datos.",
-            "privacy_policy_label": "Privacy notice TK"
+            "privacy_policy_label": "Privacy Policy TK"
         },
         "character_limit": "{{current}} / {{limit}} caracteres",
         "open_settings": "Ir a configuraciones",
