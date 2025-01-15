@@ -27,12 +27,27 @@ describe('ScreenDataRequirements', () => {
     const requirements = [
       {
         data: {dummyData: 1},
-        doIfMissing: () => (thingsDone += 'object1'),
+        doIfMissing: () => (thingsDone += 'object'),
       },
       {
         // This is an object, so it exists despite having only undefined properties
         data: {dummyData: undefined},
-        doIfMissing: () => (thingsDone += 'object2'),
+        doIfMissing: () => (thingsDone += 'object with undefined'),
+      },
+      {
+        // Some falsy things are still considered valid
+        data: 0,
+        doIfMissing: () => (thingsDone += '0'),
+      },
+      {
+        // Some falsy things are still considered valid
+        data: '',
+        doIfMissing: () => (thingsDone += 'empty string'),
+      },
+      {
+        // Some falsy things are still considered valid
+        data: NaN,
+        doIfMissing: () => (thingsDone += 'NaN'),
       },
     ];
 

@@ -22,8 +22,8 @@ type Requirement = {
   doIfMissing?: () => void;
 };
 
-const dataExists = (data: object | undefined | null) => {
-  return Boolean(data);
+const dataExists = (data: object | undefined | null | boolean) => {
+  return data !== undefined && data !== null && data !== false;
 };
 // First item should be the entity with the largest scope
 // Example: if EditSiteNoteScreen is missing the site and the site note,
