@@ -71,7 +71,7 @@ export const ErrorDialog = forwardRef<
             <ExternalLink
               type="alertError"
               label={t('general.support.label')}
-              url={supportUrl ?? t('general.support.label')}
+              url={supportUrl ?? t('general.help.url')}
             />
             <DialogButton
               type="alertError"
