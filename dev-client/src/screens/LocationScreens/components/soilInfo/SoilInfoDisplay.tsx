@@ -17,6 +17,8 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {TFunction} from 'i18next';
+
 import {
   LandCapabilityClass,
   SoilInfo,
@@ -36,7 +38,13 @@ type SoilInfoDisplayProps = {
   soilInfo: SoilInfo;
 };
 
-const renderLCCString = ({capabilityClass, subClass}: LandCapabilityClass) => {
+const renderLCCString = (
+  t: TFunction,
+  {capabilityClass, subClass}: LandCapabilityClass,
+) => {
+  if (!capabilityClass) {
+    return t('general.not_available');
+  }
   if (!subClass) {
     return capabilityClass;
   }
@@ -82,7 +90,7 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
       <Box>
         <TranslatedParagraph
           i18nKey="site.soil_id.soil_info.land_class_label"
-          values={{land: renderLCCString(soilInfo.landCapabilityClass)}}
+          values={{land: renderLCCString(t, soilInfo.landCapabilityClass)}}
         />
         <TranslatedParagraph
           i18nKey="site.soil_id.soil_info.data_source_label"
