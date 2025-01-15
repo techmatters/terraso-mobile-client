@@ -26,13 +26,14 @@ import {TranslatedBulletList} from 'terraso-mobile-client/components/content/typ
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {WELCOME_SCREEN_SEEN_KEY} from 'terraso-mobile-client/constants';
 import {useKVStorage} from 'terraso-mobile-client/hooks/useStorage';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 export const WelcomeScreen = () => {
   const {t} = useTranslation();
   const [, setWelcomeScreenAlreadySeen] = useKVStorage(
-    'welcomeScreenAlreadySeen',
+    WELCOME_SCREEN_SEEN_KEY,
     false,
   );
   const navigation = useNavigation();
