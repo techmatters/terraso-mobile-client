@@ -451,7 +451,7 @@
             "data_portal_link_text": "LandPKS Data Portal",
             "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
             "privacy_policy_link_text": "Read more about our data privacy policy.",
-            "privacy_policy_label": "Privacy Policy"
+            "privacy_policy_label": "Privacy policy"
         },
         "required": "Required",
         "character_limit": "{{current}} / {{limit}} characters",
@@ -467,7 +467,7 @@
             "url": "https://landpks.terraso.org/help/"
         },
         "tos": {
-            "label": "Terms of Service",
+            "label": "Terms of service",
             "url": "https://terraso.org/terms-of-service/"
         },
         "not_available_offine": "Not available offline",
