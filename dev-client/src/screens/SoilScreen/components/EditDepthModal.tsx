@@ -180,7 +180,7 @@ export const EditDepthModal = ({
           applyToAll: false,
         }}
         onSubmit={onSubmit}>
-        {({handleSubmit, isValid, isSubmitting}) => (
+        {({handleSubmit, isValid, isSubmitting, dirty}) => (
           <Column mb="23px">
             {mutable && (
               <>
@@ -228,7 +228,7 @@ export const EditDepthModal = ({
 
             <Row justifyContent="flex-end" alignItems="center" space={5}>
               <ConfirmEditingModal
-                formNotReady={!isValid || isSubmitting}
+                formNotReady={!isValid || isSubmitting || !dirty}
                 handleSubmit={handleSubmit}
                 interval={depthInterval}
               />
