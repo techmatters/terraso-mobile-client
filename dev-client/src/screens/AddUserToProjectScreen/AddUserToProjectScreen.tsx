@@ -47,12 +47,12 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
   // wanting to add multiple users at the same time.
 
-  const roleIsEditor = useRoleCanEditProject(projectId);
+  const userCanEditProject = useRoleCanEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
-    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
+    {data: userCanEditProject, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (

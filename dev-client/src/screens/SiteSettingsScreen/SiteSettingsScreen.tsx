@@ -88,12 +88,12 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
     navigation.navigate('BOTTOM_TABS');
   }, [dispatch, navigation, site]);
 
-  const roleIsEditor = useRoleCanEditSite(siteId);
+  const userCanEditSite = useRoleCanEditSite(siteId);
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
-    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
+    {data: userCanEditSite, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (

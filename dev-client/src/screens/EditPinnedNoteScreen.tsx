@@ -76,12 +76,12 @@ export const EditPinnedNoteScreen = ({projectId}: Props) => {
     await handleUpdateProject({content: ''});
   };
 
-  const roleIsEditor = useRoleCanEditProject(projectId);
+  const userCanEditProject = useRoleCanEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
-    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
+    {data: userCanEditProject, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (

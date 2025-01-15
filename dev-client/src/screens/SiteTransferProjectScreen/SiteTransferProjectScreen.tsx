@@ -197,12 +197,12 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     return navigation.pop();
   }, [dispatch, navigation, projectId, checkedSites]);
 
-  const roleIsEditor = useRoleCanEditProject(projectId);
+  const userCanEditProject = useRoleCanEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
-    {data: roleIsEditor, doIfMissing: handleInsufficientPermissions},
+    {data: userCanEditProject, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (
