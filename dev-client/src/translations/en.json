@@ -19,7 +19,9 @@
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",
         "link_url": "https://landpks.terraso.org/",
-        "terms": "By using LandPKS you accept our <tos /> and <privacy />.",
+        "terms": "By using LandPKS you accept our <privacy /> and <tos />.",
+        "privacy": "privacy policy",
+        "tos": "terms of service",
         "get_started": "Get started"
     },
     "info": {

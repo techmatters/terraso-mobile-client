@@ -19,7 +19,9 @@
         "learn_more": "Aprende más acerca del uso de proyectos",
         "link_text": "LandPKS de Terraso",
         "link_url": "https://landpks.terraso.org/",
-        "terms": "TK By using LandPKS you accept our <tos /> and <privacy />.",
+        "terms": "TK By using LandPKS you accept our <privacy /> and <tos />.",
+        "privacy": "TK privacy policy",
+        "tos": "TK terms of service",
         "get_started": "Comenzar"
     },
     "search": {
