@@ -461,9 +461,7 @@
         "next": "Next",
         "proceed": "Proceed",
         "offline_title": "You are offline",
-        "support": {
-            "label": "Support",
-        },
+        "support": "Support",
         "help": {
             "label": "Help and support",
             "url": "https://landpks.terraso.org/help/"
