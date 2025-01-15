@@ -24,7 +24,7 @@ import {
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useRoleMayEditSite} from 'terraso-mobile-client/hooks/permissionHooks';
+import {useRoleCanEditSite} from 'terraso-mobile-client/hooks/permissionHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -36,7 +36,7 @@ type Props = {
 export const SiteTeamSettingsScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
 
-  const roleIsEditor = useRoleMayEditSite(siteId);
+  const roleIsEditor = useRoleCanEditSite(siteId);
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([

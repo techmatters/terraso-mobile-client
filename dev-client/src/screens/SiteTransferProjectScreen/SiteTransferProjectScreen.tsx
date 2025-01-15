@@ -31,7 +31,7 @@ import {
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useRoleMayEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
+import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
 import {transferSites} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -197,7 +197,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     return navigation.pop();
   }, [dispatch, navigation, projectId, checkedSites]);
 
-  const roleIsEditor = useRoleMayEditProject(projectId);
+  const roleIsEditor = useRoleCanEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([

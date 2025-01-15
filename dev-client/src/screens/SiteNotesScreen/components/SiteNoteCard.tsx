@@ -26,7 +26,7 @@ import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {useUserMayEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
+import {useUserCanEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 
@@ -39,7 +39,7 @@ export const SiteNoteCard = ({note}: Props) => {
   const navigation = useNavigation();
 
   const isOffline = useIsOffline();
-  const userCanEditNote = useUserMayEditSiteNote({
+  const userCanEditNote = useUserCanEditSiteNote({
     siteId: note.siteId,
     noteId: note.id,
   });

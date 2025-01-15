@@ -43,19 +43,19 @@ export const useProjectUserRolesFilter = (
   );
 };
 
-export const useRoleMayEditProject = (projectId: string) => {
+export const useRoleCanEditProject = (projectId: string) => {
   const userRole = useSelector(state =>
     selectUserRoleProject(state, projectId),
   );
   return canEditProject(userRole);
 };
 
-export const useRoleMayEditSite = (siteId: string) => {
+export const useRoleCanEditSite = (siteId: string) => {
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
   return canEditSite(userRole);
 };
 
-export const useUserMayEditSiteNote = ({
+export const useUserCanEditSiteNote = ({
   siteId,
   noteId,
 }: {

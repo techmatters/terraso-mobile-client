@@ -32,15 +32,15 @@ jest.mock('terraso-mobile-client/navigation/hooks/useNavigation', () => {
   };
 });
 
-const mockedUserMayEditSiteNote = jest.spyOn(
+const mockedUserCanEditSiteNote = jest.spyOn(
   permissionHooks,
-  'useUserMayEditSiteNote',
+  'useUserCanEditSiteNote',
 );
-mockedUserMayEditSiteNote.mockReturnValue(true);
+mockedUserCanEditSiteNote.mockReturnValue(true);
 
 afterEach(() => {
   mockedNavigate.mockClear();
-  mockedUserMayEditSiteNote.mockReset();
+  mockedUserCanEditSiteNote.mockReset();
 });
 
 describe('EditSiteNoteScreen', () => {
@@ -90,7 +90,7 @@ describe('EditSiteNoteScreen', () => {
   });
 
   test('renders null if user does not have permissions to edit the note', () => {
-    mockedUserMayEditSiteNote.mockReturnValue(false);
+    mockedUserCanEditSiteNote.mockReturnValue(false);
 
     const screen = render(
       <EditSiteNoteScreen noteId="nonexistent-note" siteId="1" />,

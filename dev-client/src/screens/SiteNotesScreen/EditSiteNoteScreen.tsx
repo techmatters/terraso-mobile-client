@@ -27,7 +27,7 @@ import {
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
-import {useUserMayEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
+import {useUserCanEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {EditSiteNoteContent} from 'terraso-mobile-client/screens/SiteNotesScreen/components/EditSiteNoteContent';
@@ -45,7 +45,7 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
 
   const site = useSelector(state => selectSite(siteId)(state));
   const note = site?.notes[noteId];
-  const userCanEditNote = useUserMayEditSiteNote({siteId, noteId});
+  const userCanEditNote = useUserCanEditSiteNote({siteId, noteId});
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const handleMissingSiteNote = useCallback(() => {
     navigation.navigate('SITE_TABS', {

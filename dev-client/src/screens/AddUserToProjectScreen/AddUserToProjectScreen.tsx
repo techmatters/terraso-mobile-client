@@ -27,7 +27,7 @@ import {
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useRoleMayEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
+import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AddTeamMemberForm} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/AddTeamMemberForm';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -47,7 +47,7 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   // This was replaced, but we could refer back to `userRecord` in previous versions if we ever end up
   // wanting to add multiple users at the same time.
 
-  const roleIsEditor = useRoleMayEditProject(projectId);
+  const roleIsEditor = useRoleCanEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([

@@ -35,7 +35,7 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
-import {useRoleMayEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
+import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {updateProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
@@ -76,7 +76,7 @@ export const EditPinnedNoteScreen = ({projectId}: Props) => {
     await handleUpdateProject({content: ''});
   };
 
-  const roleIsEditor = useRoleMayEditProject(projectId);
+  const roleIsEditor = useRoleCanEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
