@@ -4,17 +4,17 @@
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "Capacidades sin conexión",
-            "bullet_2": "Mejoras en la visualización de datos",
-            "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
-            "bullet_4": "Fotos del sitio"
+            "bullet_1": "Mejoras en la visualización de datos",
+            "bullet_2": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
+            "bullet_3": "Fotos del sitio"
         },
         "version_includes": {
             "title": "Esta version incluye:",
             "bullet_1": "Identificación de suelos dentro de los EEUU",
             "bullet_2": "Observaciones de la pendiente y del suelo",
             "bullet_3": "Notas acerca del sitio",
-            "bullet_4": "El manejo de projectos"
+            "bullet_4": "El manejo de projectos",
+            "bullet_5": "Capacidades sin conexión"
         },
         "learn_more": "Aprende más acerca del uso de proyectos",
         "link_text": "LandPKS de Terraso",
