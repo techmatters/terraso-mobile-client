@@ -206,7 +206,6 @@ export const EditDepthModal = ({
                     <InputFormSwitch
                       method={method}
                       isRequired={requiredInputs.includes(method)}
-                      updateEnabled={() => {}}
                       key={method}
                     />
                     {description && (
@@ -305,15 +304,9 @@ const ConfirmEditingModal = ({
 type SwitchProps = {
   method: SoilPitMethod;
   isRequired: boolean;
-  updateEnabled: (newValue: boolean) => void;
 } & React.ComponentProps<typeof FormSwitch>;
 
-const InputFormSwitch = ({
-  method,
-  isRequired,
-  updateEnabled,
-  ...props
-}: SwitchProps) => {
+const InputFormSwitch = ({method, isRequired, ...props}: SwitchProps) => {
   const {t} = useTranslation();
 
   const label = useMemo(() => {
@@ -327,12 +320,11 @@ const InputFormSwitch = ({
 
   const formSwitchChange = useCallback(
     (newValue: boolean) => {
-      updateEnabled(newValue);
       if (onChange) {
         onChange(newValue);
       }
     },
-    [onChange, updateEnabled],
+    [onChange],
   );
 
   return (
