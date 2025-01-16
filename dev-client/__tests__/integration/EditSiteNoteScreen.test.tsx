@@ -28,7 +28,7 @@ jest.mock('terraso-mobile-client/navigation/hooks/useNavigation', () => {
   );
   return {
     ...actualNav,
-    useNavigation: () => ({navigate: mockedNavigate, pop: mockedNavigate}),
+    useNavigation: () => ({navigate: mockedNavigate}),
   };
 });
 
