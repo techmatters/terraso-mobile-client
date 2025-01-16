@@ -17,17 +17,9 @@
 
 import {useCallback} from 'react';
 
-import {DepthInterval} from 'terraso-client-shared/graphqlSchema/graphql';
-
-import {useMemoizedRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {useSelector} from 'terraso-mobile-client/store';
-import {
-  selectSite,
-  useSiteSoilInterval,
-} from 'terraso-mobile-client/store/selectors';
 
 export const useNavToBottomTabsAndShowSyncError = () => {
   const navigation = useNavigation();
@@ -63,19 +55,4 @@ export const useNavToSiteAndShowSyncError = (siteId: string) => {
       syncNotifications.showError();
     }
   }, [siteId, navigation, syncNotifications]);
-};
-
-export const useDefaultSiteDepthRequirements = (
-  siteId: string,
-  depthIntervalSpec: DepthInterval,
-) => {
-  const site = useSelector(selectSite(siteId));
-  const realDepthInterval = useSiteSoilInterval(siteId, depthIntervalSpec);
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const handleMissingDepth = useNavToSiteAndShowSyncError(siteId);
-  const requirements = useMemoizedRequirements([
-    {data: site, doIfMissing: handleMissingSite},
-    {data: realDepthInterval, doIfMissing: handleMissingDepth},
-  ]);
-  return requirements;
 };

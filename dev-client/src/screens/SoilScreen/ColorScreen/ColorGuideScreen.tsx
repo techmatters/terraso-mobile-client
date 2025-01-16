@@ -21,7 +21,7 @@ import {Image, ScrollView, StyleSheet} from 'react-native';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/commonRequirements';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   ImagePicker,
