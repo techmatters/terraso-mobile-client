@@ -88,14 +88,14 @@ jobs:
         working-directory: dev-client
         run: npm ci
 
-      - name: Restore iOS Expo cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            dev-client/ios
-            dev-client/node_modules
-          key: expo-cache-${{ runner.os }}-ios-${{ hashFiles('**/package-lock.json', '**/app.config.ts') }}
-          restore-keys: expo-cache-${{ runner.os }}-ios-
+      # - name: Restore iOS Expo cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       dev-client/ios
+      #       dev-client/node_modules
+      #     key: expo-cache-${{ runner.os }}-ios-${{ hashFiles('**/package-lock.json', '**/app.config.ts') }}
+      #     restore-keys: expo-cache-${{ runner.os }}-ios-
 
       - name: Generate ios directory
         working-directory: dev-client
