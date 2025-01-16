@@ -17,10 +17,11 @@
 
 import {useMMKVStorage} from 'react-native-mmkv-storage';
 
+import {WELCOME_SCREEN_SEEN_KEY} from 'terraso-mobile-client/constants';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
-if (!kvStorage.indexer.hasKey('welcomeScreenAlreadySeen')) {
-  kvStorage.setBool('welcomeScreenAlreadySeen', false);
+if (!kvStorage.indexer.hasKey(WELCOME_SCREEN_SEEN_KEY)) {
+  kvStorage.setBool(WELCOME_SCREEN_SEEN_KEY, false);
 }
 
 export const useKVStorage = (key: string, defaultValue: any) => {
