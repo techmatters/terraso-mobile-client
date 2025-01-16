@@ -65,12 +65,17 @@ export const locationEntryForStatus = (
 
 export const locationEntryForMatches = (
   input: Coords,
-  matches: LocationBasedSoilMatch[],
+  matches: DataBasedSoilMatch[],
 ): SoilIdLocationEntry => {
   return {
     input,
     status: 'ready',
-    matches: matches,
+    matches: matches.map(
+      ({dataMatch: _, locationMatch: __, combinedMatch, ...rest}) => ({
+        ...rest,
+        match: combinedMatch,
+      }),
+    ),
   };
 };
 
