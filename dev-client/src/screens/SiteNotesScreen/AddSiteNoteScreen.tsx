@@ -21,7 +21,10 @@ import {Keyboard} from 'react-native';
 
 import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
@@ -32,6 +35,7 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
+import {useRoleCanEditSite} from 'terraso-mobile-client/hooks/permissionHooks';
 import {addSiteNote} from 'terraso-mobile-client/model/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
@@ -74,9 +78,13 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
   };
 
   const site = useSelector(selectSite(siteId));
+  const userCanEditSite = useRoleCanEditSite(siteId);
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
+    {data: userCanEditSite, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (
