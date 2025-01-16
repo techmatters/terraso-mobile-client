@@ -1,15 +1,19 @@
 name: Dependabot auto-merge
 
 on:
-  schedule:
-    - cron: "0 2 * * 6"
-
+  pull_request:
+    branches:
+      - dependencies
+    types:
+      - closed
+      
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  dependabot:
+  make_branch:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Create dependencies branch
