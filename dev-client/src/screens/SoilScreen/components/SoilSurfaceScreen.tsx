@@ -89,6 +89,16 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
               <Heading variant="h6">
                 {t('soil.collection_method.verticalCracking')}
               </Heading>
+
+              <Paragraph>
+                <Trans
+                  i18nKey="soil.vertical_cracking.description"
+                  components={{
+                    bold: <Text bold />,
+                  }}
+                />
+              </Paragraph>
+
               <Select
                 disabled={isViewer}
                 nullable
@@ -100,14 +110,11 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
               />
               <Box height="lg" />
 
-              <Paragraph>
-                <Trans
-                  i18nKey="soil.vertical_cracking.description"
-                  components={{
-                    bold: <Text bold />,
-                  }}
+              <Box width="100%" alignItems="center">
+                <Image
+                  source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
                 />
-              </Paragraph>
+              </Box>
 
               <Paragraph>
                 <Trans
@@ -137,12 +144,6 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
                   }}
                 />
               </Paragraph>
-
-              <Box width="100%" alignItems="center">
-                <Image
-                  source={require('terraso-mobile-client/assets/surface/vertical-cracking.png')}
-                />
-              </Box>
             </Column>
             <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
               <Box position="absolute" bottom="0" right="0">
