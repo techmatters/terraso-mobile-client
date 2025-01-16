@@ -6,19 +6,22 @@
             "bullet_1": "Soil identification for US locations",
             "bullet_2": "Slope and soil observations",
             "bullet_3": "Site notes",
-            "bullet_4": "Project management"
+            "bullet_4": "Project management",
+            "bullet_5": "Offline capabilities"
         },
         "next": {
             "title": "What’s next?",
             "subtitle": "Future versions will include:",
-            "bullet_1": "Offline capabilities",
-            "bullet_2": "Data visualization enhancements",
-            "bullet_3": "Additional soil properties, such as soil structure and soil organic carbon",
-            "bullet_4": "Site photos"
+            "bullet_1": "Data visualization enhancements",
+            "bullet_2": "Additional soil properties, such as soil structure and soil organic carbon",
+            "bullet_3": "Site photos"
         },
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",
         "link_url": "https://landpks.terraso.org/",
+        "terms": "By using LandPKS you accept our <privacy /> and <tos />.",
+        "privacy": "privacy policy",
+        "tos": "terms of service",
         "get_started": "Get started"
     },
     "info": {
@@ -448,7 +451,7 @@
             "data_portal_link_text": "LandPKS Data Portal",
             "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
             "privacy_policy_link_text": "Read more about our data privacy policy.",
-            "privacy_policy_label": "Privacy notice"
+            "privacy_policy_label": "Privacy policy"
         },
         "required": "Required",
         "character_limit": "{{current}} / {{limit}} characters",
@@ -458,10 +461,7 @@
         "next": "Next",
         "proceed": "Proceed",
         "offline_title": "You are offline",
-        "support": {
-            "label": "Support",
-            "url": "https://landpks.terraso.org/"
-        },
+        "support": "Support",
         "help": {
             "label": "Help and support",
             "url": "https://landpks.terraso.org/help/"

@@ -24,6 +24,7 @@ import {
   setHasAccessTokenAsync,
 } from 'terraso-client-shared/account/accountSlice';
 
+import {WELCOME_SCREEN_SEEN_KEY} from 'terraso-mobile-client/constants';
 import {useKVStorage} from 'terraso-mobile-client/hooks/useStorage';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 import {
@@ -47,7 +48,7 @@ export const RootNavigator = () => {
   );
 
   const [welcomeScreenAlreadySeen] = useKVStorage(
-    'welcomeScreenAlreadySeen',
+    WELCOME_SCREEN_SEEN_KEY,
     false,
   );
 
