@@ -38,7 +38,7 @@ import {
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
 import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
-import {ProjectDeletedContext} from 'terraso-mobile-client/screens/ProjectViewScreen';
+import {ProjectDeletionContext} from 'terraso-mobile-client/screens/ProjectViewScreen';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectProject} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';
@@ -59,7 +59,7 @@ export function ProjectSettingsScreen({
     await dispatch(updateProject({...values, id: projectId, privacy}));
   };
 
-  const [_, setProjectPurposelyDeleted] = useContext(ProjectDeletedContext);
+  const setProjectPurposelyDeleted = useContext(ProjectDeletionContext);
   const onDeleteProject = useCallback(async () => {
     setProjectPurposelyDeleted(true);
     await dispatch(deleteProject({id: projectId}));
