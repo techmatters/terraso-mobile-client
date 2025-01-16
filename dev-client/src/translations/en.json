@@ -472,7 +472,8 @@
         },
         "not_available_offine": "Not available offline",
         "offline_sign_in_title": "Sign in not available offline",
-        "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online."
+        "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online.",
+        "not_available": "Not available"
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",
