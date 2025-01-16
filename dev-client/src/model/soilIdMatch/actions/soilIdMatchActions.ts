@@ -40,7 +40,8 @@ export const fetchLocationBasedSoilMatches = async (coords: Coords) => {
   // NOTE: we call the dataBasedSoilMatches endpoint here as a temporary workaround
   //       to make the pre and post site creation soil lists consistent. The ideal
   //       upstream fix would be to actually make the results of these endpoints
-  //       consistent for a fresh site
+  //       consistent for a fresh site.
+  //       Upstream bug: https://github.com/techmatters/soil-id-algorithm/issues/126
   const result = await soilIdService.fetchDataBasedSoilMatches(coords, {
     depthDependentData: [],
   });
