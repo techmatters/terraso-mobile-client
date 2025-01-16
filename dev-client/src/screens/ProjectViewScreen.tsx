@@ -37,12 +37,11 @@ import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/P
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 
-type ProjectDeletedState = [boolean, Dispatch<SetStateAction<boolean>>];
+type SetProjectDeletedState = Dispatch<SetStateAction<boolean>>;
 
-export const ProjectDeletedContext = createContext<ProjectDeletedState>([
-  false,
+export const ProjectDeletionContext = createContext<SetProjectDeletedState>(
   () => {},
-]);
+);
 
 type Props = {projectId: string};
 
@@ -75,8 +74,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
   return (
     <ScreenDataRequirements requirements={requirements}>
       {() => (
-        <ProjectDeletedContext.Provider
-          value={[projectPurposelyDeleted, setProjectPurposelyDeleted]}>
+        <ProjectDeletionContext.Provider value={setProjectPurposelyDeleted}>
           <ProjectRoleContextProvider projectId={projectId}>
             <ScreenScaffold
               AppBar={<AppBar title={project?.name} />}
@@ -84,7 +82,7 @@ export const ProjectViewScreen = ({projectId}: Props) => {
               <ProjectTabNavigator projectId={projectId} />
             </ScreenScaffold>
           </ProjectRoleContextProvider>
-        </ProjectDeletedContext.Provider>
+        </ProjectDeletionContext.Provider>
       )}
     </ScreenDataRequirements>
   );
