@@ -649,7 +649,6 @@
         },
         "depth": {
             "add_title": "Add depth",
-            "edit_title": "Depth",
             "data_inputs_title": "Soil Data Inputs",
             "label_help": "{{max}} characters max",
             "label_placeholder": "Label",
