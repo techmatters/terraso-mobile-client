@@ -74,15 +74,15 @@ jobs:
           cache: 'npm'
           cache-dependency-path: dev-client/package-lock.json
 
-      - name: Install and configure ccache
-        run: |
-          brew install ccache
-          ln -s $(which ccache) /usr/local/bin/gcc
-          ln -s $(which ccache) /usr/local/bin/g++
-          ln -s $(which ccache) /usr/local/bin/cc
-          ln -s $(which ccache) /usr/local/bin/c++
-          ln -s $(which ccache) /usr/local/bin/clang
-          ln -s $(which ccache) /usr/local/bin/clang++
+      # - name: Install and configure ccache
+      #   run: |
+      #     brew install ccache
+      #     ln -s $(which ccache) /usr/local/bin/gcc
+      #     ln -s $(which ccache) /usr/local/bin/g++
+      #     ln -s $(which ccache) /usr/local/bin/cc
+      #     ln -s $(which ccache) /usr/local/bin/c++
+      #     ln -s $(which ccache) /usr/local/bin/clang
+      #     ln -s $(which ccache) /usr/local/bin/clang++
 
       - name: Install Node dependencies
         working-directory: dev-client
