@@ -1,0 +1,24 @@
+name: Dependabot auto-merge
+
+on:
+  pull_request:
+    branches:
+      - dependencies
+    types:
+      - closed
+      
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  make_branch:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create dependencies branch
+        uses: peterjgrainger/action-create-branch@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: "dependencies"
