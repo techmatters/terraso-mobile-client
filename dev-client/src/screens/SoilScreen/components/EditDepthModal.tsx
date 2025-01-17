@@ -57,6 +57,7 @@ import {
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
+import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
 import {
@@ -168,7 +169,7 @@ export const EditDepthModal = ({
       )}
       heading={
         <Heading variant="h6">
-          {thisDepth?.label ? thisDepth.label : t('soil.depth.edit_title')}
+          {thisDepth?.label ? thisDepth.label : renderDepth(t, thisDepth)}
         </Heading>
       }>
       <Formik
