@@ -72,6 +72,8 @@ export function ProjectSettingsScreen({
 
   const userRole = useProjectRoleContext();
 
+  // FYI we don't need to require role permissions to view this tab; that's handled
+  // further up in the project tab navigator
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},

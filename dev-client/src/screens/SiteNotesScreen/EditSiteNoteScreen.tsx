@@ -17,13 +17,17 @@
 
 import {useCallback} from 'react';
 
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
+import {
+  useNavToBottomTabsAndShowSyncError,
+  usePopNavigationAndShowSyncError,
+} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
+import {useUserCanEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {EditSiteNoteContent} from 'terraso-mobile-client/screens/SiteNotesScreen/components/EditSiteNoteContent';
@@ -41,8 +45,7 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
 
   const site = useSelector(state => selectSite(siteId)(state));
   const note = site?.notes[noteId];
-  // TODO: Also handle the case where user no longer has permissions to edit notes
-
+  const userCanEditNote = useUserCanEditSiteNote({siteId, noteId});
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const handleMissingSiteNote = useCallback(() => {
     navigation.navigate('SITE_TABS', {
@@ -53,9 +56,11 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
       syncNotifications.showError();
     }
   }, [navigation, siteId, syncNotifications]);
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
     {data: note, doIfMissing: handleMissingSiteNote},
+    {data: userCanEditNote, doIfMissing: handleInsufficientPermissions},
   ]);
 
   return (

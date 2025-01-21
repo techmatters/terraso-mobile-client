@@ -38,6 +38,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {
   deleteUserFromProject,
   updateUserRole,
@@ -87,10 +88,13 @@ export const ManageTeamMemberScreen = ({
     navigation.pop();
   }, [dispatch, projectId, userId, selectedRole, navigation]);
 
+  const userCanEditProject = useRoleCanEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
   const handleMissingUser = usePopNavigationAndShowSyncError();
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
+    {data: userCanEditProject, doIfMissing: handleInsufficientPermissions},
     {data: user, doIfMissing: handleMissingUser},
   ]);
 
