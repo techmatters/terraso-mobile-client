@@ -37,6 +37,7 @@ import {
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {addUserToProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {TabRoutes} from 'terraso-mobile-client/navigation/constants';
@@ -57,27 +58,30 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
   const navigation = useNavigation();
 
   const project = useSelector(state => state.project.projects[projectId]);
-  const user = useSelector(state => state.account.users[userId]);
+  const newUser = useSelector(state => state.account.users[userId]);
 
   const [selectedRole, setSelectedRole] = useState<ProjectRole>('VIEWER');
 
   const addUser = useCallback(async () => {
     try {
       dispatch(
-        addUserToProject({userId: user.id, role: selectedRole, projectId}),
+        addUserToProject({userId: newUser.id, role: selectedRole, projectId}),
       );
     } catch (e) {
       console.error(e);
     }
     navigation.navigate('PROJECT_VIEW', {projectId: projectId});
     navigation.dispatch(TabActions.jumpTo(TabRoutes.TEAM));
-  }, [dispatch, projectId, user, selectedRole, navigation]);
+  }, [dispatch, projectId, newUser, selectedRole, navigation]);
 
+  const userCanEditProject = useRoleCanEditProject(projectId);
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const handleMissingUser = usePopNavigationAndShowSyncError();
+  const handleMissingNewUser = usePopNavigationAndShowSyncError();
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
-    {data: user, doIfMissing: handleMissingUser},
+    {data: userCanEditProject, doIfMissing: handleInsufficientPermissions},
+    {data: newUser, doIfMissing: handleMissingNewUser},
   ]);
 
   return (
@@ -87,7 +91,7 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
           <ScreenContentSection title={t('projects.add_user.heading')}>
             <Column>
               <Box ml="md" my="lg">
-                <MinimalUserDisplay user={user} />
+                <MinimalUserDisplay user={newUser} />
               </Box>
 
               <ProjectRoleRadioBlock

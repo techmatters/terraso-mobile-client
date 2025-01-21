@@ -55,18 +55,22 @@ export const isProjectViewer = (userRole: SiteUserRole | null) => {
   return Boolean(userRole && ['VIEWER'].includes(userRole.role));
 };
 
-export const isProjectEditor = (userRole: SiteUserRole | null) => {
+export const canEditSite = (userRole: SiteUserRole | null) => {
   return Boolean(
     userRole && ['MANAGER', 'CONTRIBUTOR', 'OWNER'].includes(userRole.role),
   );
 };
 
+export const canEditProject = (userRole: ProjectRole | null) => {
+  return Boolean(userRole && PROJECT_EDITOR_ROLES.includes(userRole));
+};
+
 export const userHasProjectRole = (
   currentUser: User | null,
-  project: Project,
+  project: Project | null,
   userRoles?: ProjectRole[],
 ) => {
-  if (!currentUser) {
+  if (!currentUser || !project) {
     return false;
   }
 

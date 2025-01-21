@@ -51,6 +51,14 @@ const RestrictByRole = <RoleType,>({
   return display ? <>{children}</> : <></>;
 };
 
+export const projectRolesEqual = (a: ProjectRole, b: ProjectRole) => {
+  return a === b;
+};
+
+export const siteRolesEqual = (a: SiteUserRole, b: SiteUserRole) => {
+  return a.kind === b.kind && a.role === b.role;
+};
+
 export const RestrictByProjectRole = ({
   role,
   children,
@@ -59,7 +67,7 @@ export const RestrictByProjectRole = ({
   return (
     <RestrictByRole
       userRole={userRole}
-      cmp={(a, b) => a === b}
+      cmp={projectRolesEqual}
       allowedRole={role}>
       {children}
     </RestrictByRole>
@@ -73,10 +81,7 @@ export const RestrictBySiteRole = ({
   const siteRole = useSiteRoleContext();
 
   return (
-    <RestrictByRole
-      userRole={siteRole}
-      cmp={(a, b) => a.kind === b.kind && a.role === b.role}
-      allowedRole={role}>
+    <RestrictByRole userRole={siteRole} cmp={siteRolesEqual} allowedRole={role}>
       {children}
     </RestrictByRole>
   );

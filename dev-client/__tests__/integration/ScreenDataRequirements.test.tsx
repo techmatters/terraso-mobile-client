@@ -27,12 +27,27 @@ describe('ScreenDataRequirements', () => {
     const requirements = [
       {
         data: {dummyData: 1},
-        doIfMissing: () => (thingsDone += 'object1'),
+        doIfMissing: () => (thingsDone += 'object'),
       },
       {
         // This is an object, so it exists despite having only undefined properties
         data: {dummyData: undefined},
-        doIfMissing: () => (thingsDone += 'object2'),
+        doIfMissing: () => (thingsDone += 'object with undefined'),
+      },
+      {
+        // Some falsy things are still considered valid
+        data: 0,
+        doIfMissing: () => (thingsDone += '0'),
+      },
+      {
+        // Some falsy things are still considered valid
+        data: '',
+        doIfMissing: () => (thingsDone += 'empty string'),
+      },
+      {
+        // Some falsy things are still considered valid
+        data: NaN,
+        doIfMissing: () => (thingsDone += 'NaN'),
       },
     ];
 
@@ -100,7 +115,7 @@ describe('ScreenDataRequirements', () => {
     expect(thingsDone).toEqual('null');
   });
 
-  test('renders children and triggers no action when required data exists, even if it is a boolean equal to false', () => {
+  test('does not render children and triggers action when required data is falsy', () => {
     let thingsDone = '';
     const requirements = [
       {
@@ -115,7 +130,7 @@ describe('ScreenDataRequirements', () => {
       </ScreenDataRequirements>,
     );
 
-    expect(queryByText('Hello world')).toBeTruthy();
-    expect(thingsDone).toEqual('');
+    expect(queryByText('Hello world')).toBeNull();
+    expect(thingsDone).toEqual('false');
   });
 });

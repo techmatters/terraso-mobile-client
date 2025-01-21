@@ -28,11 +28,8 @@ import {ContainedButton} from 'terraso-mobile-client/components/buttons/Containe
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {
-  ScreenDataRequirements,
-  useMemoizedRequirements,
-} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/commonRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   ImageRadio,
   radioImage,
@@ -67,7 +64,6 @@ import {TextureInfoContent} from 'terraso-mobile-client/screens/SoilScreen/compo
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   selectDepthDependentData,
-  selectSite,
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
 
@@ -160,11 +156,10 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
     [dispatch, siteId, depthInterval],
   );
 
-  const site = useSelector(selectSite(siteId));
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const requirements = useMemoizedRequirements([
-    {data: site, doIfMissing: handleMissingSite},
-  ]);
+  const requirements = useDefaultSiteDepthRequirements(
+    props.siteId,
+    props.depthInterval.depthInterval,
+  );
 
   return (
     <ScreenDataRequirements requirements={requirements}>

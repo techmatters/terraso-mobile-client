@@ -23,11 +23,8 @@ import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {
-  ScreenDataRequirements,
-  useMemoizedRequirements,
-} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/commonRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   Box,
   Column,
@@ -41,7 +38,7 @@ import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleCon
 import {isColorComplete} from 'terraso-mobile-client/model/color/colorConversions';
 import {MunsellColor} from 'terraso-mobile-client/model/color/types';
 import {
-  isProjectEditor,
+  canEditSite,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
@@ -57,7 +54,6 @@ import {
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   selectDepthDependentData,
-  selectSite,
   selectUserRoleSite,
 } from 'terraso-mobile-client/store/selectors';
 
@@ -84,7 +80,7 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
     selectUserRoleSite(state, props.siteId),
   );
 
-  const canDelete = useMemo(() => isProjectEditor(userRole), [userRole]);
+  const canDelete = useMemo(() => canEditSite(userRole), [userRole]);
 
   const onClearValues = useCallback(() => {
     dispatch(
@@ -103,12 +99,10 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
     [data],
   );
 
-  const site = useSelector(selectSite(props.siteId));
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  // TODO-cknipe: Require the depth interval to exist for the site/project
-  const requirements = useMemoizedRequirements([
-    {data: site, doIfMissing: handleMissingSite},
-  ]);
+  const requirements = useDefaultSiteDepthRequirements(
+    props.siteId,
+    props.depthInterval.depthInterval,
+  );
 
   return (
     <ScreenDataRequirements requirements={requirements}>
