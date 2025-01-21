@@ -38,7 +38,7 @@ import {
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
 import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
-import {ProjectDeletionContext} from 'terraso-mobile-client/screens/ProjectViewScreen';
+import {ProjectDeletionContext} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectDeletionContext';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectProject} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';

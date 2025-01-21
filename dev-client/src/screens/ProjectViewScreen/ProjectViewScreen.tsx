@@ -15,13 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useState,
-} from 'react';
+import {useCallback, useState} from 'react';
 
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
@@ -34,14 +28,9 @@ import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectR
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
+import {ProjectDeletionContext} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectDeletionContext';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
-
-type SetProjectDeletedState = Dispatch<SetStateAction<boolean>>;
-
-export const ProjectDeletionContext = createContext<SetProjectDeletedState>(
-  () => {},
-);
 
 type Props = {projectId: string};
 
