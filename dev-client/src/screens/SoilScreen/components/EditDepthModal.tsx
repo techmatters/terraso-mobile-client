@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FormEvent, useCallback, useMemo, useRef} from 'react';
+import React, {FormEvent, useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
@@ -114,19 +114,6 @@ export const EditDepthModal = ({
     [t, existingDepths],
   );
 
-  const updateSwitch = useCallback(
-    (method: SoilPitMethod) => (newValue: boolean) => {
-      dispatch(
-        updateSoilDataDepthInterval({
-          siteId,
-          depthInterval,
-          [methodEnabled(method)]: newValue,
-        }),
-      );
-    },
-    [dispatch, siteId, depthInterval],
-  );
-
   const onSubmit = useCallback(
     async (values: EditDepthFormInput) => {
       const {start, end} = depthInterval;
@@ -182,7 +169,7 @@ export const EditDepthModal = ({
       )}
       heading={
         <Heading variant="h6">
-          {mutable ? t('soil.depth.edit_title') : renderDepth(t, thisDepth)}
+          {thisDepth?.label ? thisDepth.label : renderDepth(t, thisDepth)}
         </Heading>
       }>
       <Formik
@@ -194,7 +181,7 @@ export const EditDepthModal = ({
           applyToAll: false,
         }}
         onSubmit={onSubmit}>
-        {({handleSubmit, isValid, isSubmitting}) => (
+        {({handleSubmit, isValid, isSubmitting, dirty}) => (
           <Column mb="23px">
             {mutable && (
               <>
@@ -216,11 +203,10 @@ export const EditDepthModal = ({
                   : '';
 
                 return (
-                  <>
+                  <React.Fragment key={method}>
                     <InputFormSwitch
                       method={method}
                       isRequired={requiredInputs.includes(method)}
-                      updateEnabled={updateSwitch(method)}
                       key={method}
                     />
                     {description && (
@@ -228,7 +214,7 @@ export const EditDepthModal = ({
                         {description}
                       </Text>
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
             </Column>
@@ -241,23 +227,24 @@ export const EditDepthModal = ({
             </Row>
 
             <Row justifyContent="flex-end" alignItems="center" space={5}>
-              {mutable && (
-                <ConfirmDeleteDepthModal
-                  onConfirm={deleteDepth}
-                  trigger={onOpen => (
-                    <DeleteButton
-                      label={t('soil.depth.delete_button')}
-                      onPress={onOpen}
-                    />
-                  )}
-                />
-              )}
               <ConfirmEditingModal
-                formNotReady={!isValid || isSubmitting}
+                formNotReady={!isValid || isSubmitting || !dirty}
                 handleSubmit={handleSubmit}
                 interval={depthInterval}
               />
             </Row>
+
+            {mutable && (
+              <ConfirmDeleteDepthModal
+                onConfirm={deleteDepth}
+                trigger={onOpen => (
+                  <DeleteButton
+                    label={t('soil.depth.delete_button')}
+                    onPress={onOpen}
+                  />
+                )}
+              />
+            )}
           </Column>
         )}
       </Formik>
@@ -318,15 +305,9 @@ const ConfirmEditingModal = ({
 type SwitchProps = {
   method: SoilPitMethod;
   isRequired: boolean;
-  updateEnabled: (newValue: boolean) => void;
 } & React.ComponentProps<typeof FormSwitch>;
 
-const InputFormSwitch = ({
-  method,
-  isRequired,
-  updateEnabled,
-  ...props
-}: SwitchProps) => {
+const InputFormSwitch = ({method, isRequired, ...props}: SwitchProps) => {
   const {t} = useTranslation();
 
   const label = useMemo(() => {
@@ -340,12 +321,11 @@ const InputFormSwitch = ({
 
   const formSwitchChange = useCallback(
     (newValue: boolean) => {
-      updateEnabled(newValue);
       if (onChange) {
         onChange(newValue);
       }
     },
-    [onChange, updateEnabled],
+    [onChange],
   );
 
   return (

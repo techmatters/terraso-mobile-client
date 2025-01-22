@@ -65,14 +65,14 @@ export const AddDepthModalBody = ({
         end: '',
       }}
       onSubmit={onSubmit}>
-      {({handleSubmit, isValid, isSubmitting}) => (
+      {({handleSubmit, isValid, isSubmitting, dirty}) => (
         <>
           <DepthForm />
           <Box height="50px" />
           <ContainedButton
             size="lg"
             onPress={() => handleSubmit()}
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid || isSubmitting || !dirty}
             label={t('general.add')}
           />
         </>
