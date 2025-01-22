@@ -393,8 +393,8 @@
     },
     "settings": {
         "unknown_user": "Unknown user",
-        "sign_out": "Sign Out",
-        "delete_account": "Delete Account",
+        "sign_out": "Sign out",
+        "delete_account": "Delete account",
         "delete_account_pending": "Pending",
         "unknown_version": "Untagged application version {{environment}}",
         "beta": "beta",
