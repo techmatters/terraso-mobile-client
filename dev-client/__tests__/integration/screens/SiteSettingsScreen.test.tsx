@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {userEvent, waitFor} from '@testing-library/react-native';
+import {userEvent} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
 
 import * as terrasoApi from 'terraso-client-shared/terrasoApi/api';
@@ -44,18 +44,32 @@ jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
 });
 
 const mockedNavigate = jest.fn();
+const mockedPopNav = jest.fn();
 jest.mock('terraso-mobile-client/navigation/hooks/useNavigation', () => {
   const actualNav = jest.requireActual(
     'terraso-mobile-client/navigation/hooks/useNavigation',
   );
   return {
     ...actualNav,
-    useNavigation: () => ({navigate: mockedNavigate}),
+    useNavigation: () => ({navigate: mockedNavigate, pop: mockedPopNav}),
   };
 });
 
 describe('SiteSettingsScreen', () => {
+  const currentUser = {
+    data: {
+      id: 'user1',
+      email: 'test@domain.com',
+      firstName: 'firstname',
+      lastName: 'lastname',
+      profileImage: '',
+      preferences: {},
+    },
+    fetching: false,
+  };
   const site1 = {
+    // Current user can edit this site
+    ownerId: 'user1',
     id: 'site1',
     name: 'Site 1',
     latitude: 0,
@@ -76,6 +90,12 @@ describe('SiteSettingsScreen', () => {
     notes: {},
   };
   const stateWithTwoSites = {
+    account: {
+      currentUser: currentUser,
+      users: {
+        user1: currentUser,
+      },
+    } as any,
     site: {
       sites: {
         site1: site1,
@@ -84,8 +104,9 @@ describe('SiteSettingsScreen', () => {
     },
   } as Partial<ReduxAppState>;
 
-  afterEach(() => {
+  beforeEach(() => {
     mockedNavigate.mockClear();
+    mockedPopNav.mockClear();
   });
 
   test('displays delete button and no error', () => {
@@ -118,10 +139,24 @@ describe('SiteSettingsScreen', () => {
     expect(screen.getByTestId('error-dialog')).toBeOnTheScreen();
   });
 
-  test('displays content and no error if site was deleted from this screen', async () => {
+  test('renders no content and displays error if no permissions to view site', () => {
     const screen = render(
       <SyncNotificationContextProvider>
         <SiteSettingsScreen siteId="site2" />
+      </SyncNotificationContextProvider>,
+      {
+        route: 'SITE_TABS',
+        initialState: stateWithTwoSites,
+      },
+    );
+    expect(mockedPopNav).toHaveBeenCalled();
+    expect(screen.queryByTestId('error-dialog')).toBeOnTheScreen();
+  });
+
+  test('displays content and no error if site was deleted from this screen', async () => {
+    const screen = render(
+      <SyncNotificationContextProvider>
+        <SiteSettingsScreen siteId="site1" />
       </SyncNotificationContextProvider>,
       {
         route: 'SITE_TABS',
@@ -141,14 +176,23 @@ describe('SiteSettingsScreen', () => {
 
     const deleteButton = screen.getByText('Delete this site');
     await userEvent.press(deleteButton);
+    // TODO-cknipe: Should this be act or await or nothing??
 
     const confirmDeleteButton = await screen.findByText('Delete');
+    // await act(async () => userEvent.press(confirmDeleteButton));
     await userEvent.press(confirmDeleteButton);
 
-    await waitFor(() => {
-      expect(mockApiCall).toHaveBeenCalled();
-    });
+    // Re-render screen to make the navigation happen
+    // I tried to waitFor mockedNavigate to have been called, but I think
+    // there's weirdness with the jest fake timers which made it quickly
+    // fail the expectation regardless of the timeout time specified
+    screen.rerender(
+      <SyncNotificationContextProvider>
+        <SiteSettingsScreen siteId="site1" />
+      </SyncNotificationContextProvider>,
+    );
 
+    expect(mockApiCall).toHaveBeenCalled();
     expect(mockedNavigate).toHaveBeenCalledWith('BOTTOM_TABS');
     expect(screen.queryByTestId('error-dialog')).not.toBeOnTheScreen();
   });
