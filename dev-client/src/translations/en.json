@@ -393,8 +393,8 @@
     },
     "settings": {
         "unknown_user": "Unknown user",
-        "sign_out": "Sign Out",
-        "delete_account": "Delete Account",
+        "sign_out": "Sign out",
+        "delete_account": "Delete account",
         "delete_account_pending": "Pending",
         "unknown_version": "Untagged application version {{environment}}",
         "beta": "beta",
@@ -620,7 +620,7 @@
             "soilTexture": "Includes texture class and rock fragment volume"
         },
         "vertical_cracking": {
-            "description": "Cracks develop in clay-rich soils after they dry out. <bold>Measure soil cracks when soil is dry.</bold>",
+            "description": "Cracks develop in clay-rich soils after they dry out. Cracks may be permanent, or they may disappear after some time. <bold>Measure soil cracks when soil is dry.</bold>",
             "no_cracks": "<bold>No Cracks</bold>\nNo cracks are visible on the soil surface.",
             "surface_cracks": "<bold>Surface Cracks</bold>\nSurface cracks are less than $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep.",
             "deep_vertical_cracks": "<bold>Deep Vertical Cracks</bold>\nDeep vertical cracks are at least $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) wide and $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) deep. You should be able to place a pencil inside the cracks.",

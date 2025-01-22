@@ -147,7 +147,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
             </Column>
             <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
               <Box position="absolute" bottom="0" right="0">
-                <DoneFab disabled={!cracking} />
+                <DoneFab />
               </Box>
             </RestrictBySiteRole>
           </SiteRoleContextProvider>
