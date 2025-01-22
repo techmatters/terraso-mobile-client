@@ -536,7 +536,6 @@
             },
             "bounds": "{{start}}–{{end}}{{units}}",
             "add_title": "Añadir produndidad",
-            "edit_title": "Profundidad",
             "data_inputs_title": "Entradas de datos sobre el suelo",
             "label_help": "{{max}} caracteres máximo",
             "label_placeholder": "Etiquetar",
