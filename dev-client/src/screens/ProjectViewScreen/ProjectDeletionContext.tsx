@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2025 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,16 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {testState} from '@testing/integration/data';
-import {render} from '@testing/integration/utils';
 
-import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectViewScreen';
+import {createContext, Dispatch, SetStateAction} from 'react';
 
-test('renders correctly', () => {
-  const screen = render(<ProjectViewScreen projectId="1" />, {
-    route: 'PROJECT_VIEW',
-    initialState: testState,
-  }).toJSON();
+type SetProjectDeletedState = Dispatch<SetStateAction<boolean>>;
 
-  expect(screen).toMatchSnapshot();
-});
+export const ProjectDeletionContext = createContext<SetProjectDeletedState>(
+  () => {},
+);

@@ -30,11 +30,6 @@ import {normalizeText} from 'terraso-client-shared/utils';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
-import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
-import {
-  ScreenDataRequirements,
-  useMemoizedRequirements,
-} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
   ListFilterModal,
   ListFilterProvider,
@@ -64,7 +59,6 @@ import {
 } from 'terraso-mobile-client/navigation/constants';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectProject} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';
 import {searchText} from 'terraso-mobile-client/util';
 
@@ -266,39 +260,29 @@ export function ProjectSitesScreen({
     </ListFilterProvider>
   );
 
-  const project = useSelector(selectProject(projectId));
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const requirements = useMemoizedRequirements([
-    {data: project, doIfMissing: handleMissingProject},
-  ]);
-
   return (
-    <ScreenDataRequirements requirements={requirements}>
-      {() => (
-        <Column
-          p={3}
-          pb={5}
-          space={3}
-          h="100%"
-          backgroundColor="background.tertiary">
-          {isEmpty && (
-            <>
-              <Text>{t('projects.sites.empty_viewer')}</Text>
-              <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
-                <Text>{t('projects.sites.empty_contributor')}</Text>
-              </RestrictByProjectRole>
-            </>
-          )}
+    <Column
+      p={3}
+      pb={5}
+      space={3}
+      h="100%"
+      backgroundColor="background.tertiary">
+      {isEmpty && (
+        <>
+          <Text>{t('projects.sites.empty_viewer')}</Text>
           <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
-            <ContainedButton
-              onPress={transferCallback}
-              label={t('projects.sites.transfer')}
-            />
+            <Text>{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
-          {!isEmpty && full}
-        </Column>
+        </>
       )}
-    </ScreenDataRequirements>
+      <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
+        <ContainedButton
+          onPress={transferCallback}
+          label={t('projects.sites.transfer')}
+        />
+      </RestrictByProjectRole>
+      {!isEmpty && full}
+    </Column>
   );
 }
 

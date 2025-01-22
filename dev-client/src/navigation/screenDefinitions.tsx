@@ -35,7 +35,7 @@ import {TemporaryLocationSoilIdScreen} from 'terraso-mobile-client/screens/Locat
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
-import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen';
+import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectViewScreen';
 import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/AddSiteNoteScreen';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/EditSiteNoteScreen';
 import {ReadPinnedNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/ReadPinnedNoteScreen';

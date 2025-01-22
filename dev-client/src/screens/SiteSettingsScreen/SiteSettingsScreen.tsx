@@ -78,19 +78,32 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const [name, setName] = useState(site?.name);
   const dirty = name !== site?.name;
 
-  const onSave = useCallback(
-    () => dispatch(updateSite({id: site.id, name})),
-    [dispatch, site, name],
-  );
+  const onSave = useCallback(() => {
+    dispatch(updateSite({id: site.id, name}));
+  }, [dispatch, site, name]);
 
+  const [sitePurposelyDeleted, setSitePurposelyDeleted] = useState(false);
   const onDelete = useCallback(async () => {
+    setSitePurposelyDeleted(true);
     await dispatch(deleteSite(site));
-    navigation.navigate('BOTTOM_TABS');
-  }, [dispatch, navigation, site]);
+    // Navigation will happen as part of requirements system
+  }, [dispatch, site]);
 
   const userCanEditSite = useRoleCanEditSite(siteId);
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+
+  const navToBottomTabs = useCallback(() => {
+    navigation.navigate('BOTTOM_TABS');
+  }, [navigation]);
+  const navToBottomTabsAndShowSyncError = useNavToBottomTabsAndShowSyncError();
+  // On purposeful delete, this screen re-renders with null site (but before
+  // the dispatched delete ends). Avoid showing error on purposeful delete.
+  const handleMissingSite = useCallback(() => {
+    sitePurposelyDeleted
+      ? navToBottomTabs()
+      : navToBottomTabsAndShowSyncError();
+  }, [sitePurposelyDeleted, navToBottomTabs, navToBottomTabsAndShowSyncError]);
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
     {data: userCanEditSite, doIfMissing: handleInsufficientPermissions},
@@ -127,7 +140,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                   trigger={onOpen => <DeleteButtonWrapper onPress={onOpen} />}
                   title={t('projects.sites.delete_site_modal.title')}
                   body={t('projects.sites.delete_site_modal.body', {
-                    siteName: site.name,
+                    siteName: site?.name,
                   })}
                   actionLabel={t(
                     'projects.sites.delete_site_modal.action_name',
