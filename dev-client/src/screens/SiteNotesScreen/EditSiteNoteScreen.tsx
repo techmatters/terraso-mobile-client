@@ -48,7 +48,7 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const userCanEditNote = useUserCanEditSiteNote({siteId, noteId});
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
   const handleMissingSiteNote = useCallback(() => {
-    navigation.navigate('SITE_TABS', {
+    navigation.popTo('SITE_TABS', {
       siteId: siteId,
       initialTab: 'NOTES' as SiteTabName,
     });
