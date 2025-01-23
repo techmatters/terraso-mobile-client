@@ -176,10 +176,8 @@ describe('SiteSettingsScreen', () => {
 
     const deleteButton = screen.getByText('Delete this site');
     await userEvent.press(deleteButton);
-    // TODO-cknipe: Should this be act or await or nothing??
 
     const confirmDeleteButton = await screen.findByText('Delete');
-    // await act(async () => userEvent.press(confirmDeleteButton));
     await userEvent.press(confirmDeleteButton);
 
     // Re-render screen to make the navigation happen
