@@ -70,7 +70,7 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
     } catch (e) {
       console.error(e);
     }
-    navigation.navigate('PROJECT_VIEW', {projectId: projectId});
+    navigation.popTo('PROJECT_VIEW', {projectId: projectId});
     navigation.dispatch(TabActions.jumpTo(TabRoutes.TEAM));
   }, [dispatch, projectId, newUser, selectedRole, navigation]);
 

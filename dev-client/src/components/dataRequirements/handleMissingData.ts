@@ -26,7 +26,7 @@ export const useNavToBottomTabsAndShowSyncError = () => {
   const syncNotifications = useSyncNotificationContext();
 
   return useCallback(() => {
-    navigation.navigate('BOTTOM_TABS');
+    navigation.popTo('BOTTOM_TABS');
     if (isFlagEnabled('FF_offline')) {
       syncNotifications.showError();
     }

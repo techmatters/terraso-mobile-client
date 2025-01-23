@@ -73,7 +73,10 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
         else {
           const user = userOrError as UserFields;
           const userId = user.id;
-          navigation.navigate('ADD_USER_PROJECT_ROLE', {projectId, userId});
+          navigation.navigate('ADD_USER_PROJECT_ROLE', {
+            projectId,
+            userId,
+          });
         }
       }
     } catch (e) {

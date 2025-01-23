@@ -36,7 +36,9 @@ export const ProjectPreviewCard = ({project}: Props) => {
   const navigation = useNavigation();
 
   const goToProject = useCallback(async () => {
-    return navigation.navigate('PROJECT_VIEW', {projectId: project.id});
+    return navigation.navigate('PROJECT_VIEW', {
+      projectId: project.id,
+    });
   }, [project, navigation]);
 
   return (
