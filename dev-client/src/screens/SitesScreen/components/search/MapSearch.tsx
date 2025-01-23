@@ -15,10 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useState} from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Keyboard} from 'react-native';
-import Autocomplete from 'react-native-autocomplete-input';
+import {Keyboard, StyleSheet, TextInputProps} from 'react-native';
+import Autocomplete, {
+  AutocompleteInputProps,
+} from 'react-native-autocomplete-input';
 import {Searchbar} from 'react-native-paper';
 
 import {Coords} from 'terraso-client-shared/types';
@@ -39,11 +48,34 @@ import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
 import {MapSearchOfflineAlertBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineAlertBox';
 import {MapSearchSuggestionBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
+import {Suggestion} from 'terraso-mobile-client/services/mapSearchService';
 
 type Props = {
   zoomTo?: (site: Coords) => void;
   zoomToUser?: () => void;
   toggleMapLayer?: () => void;
+};
+
+const ShowAutocompleteContext = createContext(false);
+
+export const MapSearchInput = ({value, ...props}: TextInputProps) => {
+  const isOffline = useIsOffline();
+  const showAutocomplete = useContext(ShowAutocompleteContext);
+
+  return (
+    <>
+      <Searchbar
+        {...props}
+        style={{
+          ...searchBarStyles.search,
+          ...searchBarStyles.wideSearchOverride,
+        }}
+        inputStyle={searchBarStyles.input}
+        value={value ?? ''}
+      />
+      {isOffline && showAutocomplete ? <MapSearchOfflineAlertBox /> : <></>}
+    </>
+  );
 };
 
 export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
@@ -77,6 +109,40 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
     [lookupFeature],
   );
 
+  const flatListProps: AutocompleteInputProps<Suggestion>['flatListProps'] =
+    useMemo(
+      () => ({
+        keyboardShouldPersistTaps: 'always',
+        keyExtractor: suggestion => suggestion.mapbox_id,
+        renderItem: ({item}) => (
+          <MapSearchSuggestionBox
+            name={item.name}
+            address={item.place_formatted}
+            mapboxId={item.mapbox_id}
+            onPress={selectQuery}
+          />
+        ),
+      }),
+      [selectQuery],
+    );
+
+  const onChangeText = useCallback(
+    (newText: string) => {
+      setQuery(newText);
+      querySuggestions(newText);
+    },
+    [setQuery, querySuggestions],
+  );
+
+  const onFocus = useCallback(() => {
+    setShowAutocomplete(true);
+    querySuggestions(query);
+  }, [query, setShowAutocomplete, querySuggestions]);
+
+  const onEndEditing = useCallback(() => {
+    setShowAutocomplete(false);
+  }, [setShowAutocomplete]);
+
   return (
     <Box
       flex={1}
@@ -90,52 +156,20 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
       pointerEvents="box-none">
       <Row space={3} pointerEvents="box-none">
         <View flex={1} pointerEvents="box-none">
-          <Autocomplete
-            data={suggestions}
-            hideResults={!showAutocomplete || isOffline}
-            flatListProps={{
-              keyboardShouldPersistTaps: 'always',
-              keyExtractor: suggestion => suggestion.mapbox_id,
-              renderItem: ({item}) => (
-                <MapSearchSuggestionBox
-                  name={item.name}
-                  address={item.place_formatted}
-                  mapboxId={item.mapbox_id}
-                  onPress={selectQuery}
-                />
-              ),
-            }}
-            inputContainerStyle={{borderWidth: 0}} // eslint-disable-line react-native/no-inline-styles
-            renderTextInput={() => (
-              <>
-                <Searchbar
-                  onChangeText={newText => {
-                    setQuery(newText);
-                    querySuggestions(newText);
-                  }}
-                  onFocus={() => {
-                    setShowAutocomplete(true);
-                    querySuggestions(query);
-                  }}
-                  onEndEditing={() => {
-                    setShowAutocomplete(false);
-                  }}
-                  value={query}
-                  placeholder={t('search.placeholder')}
-                  style={{
-                    ...searchBarStyles.search,
-                    ...searchBarStyles.wideSearchOverride,
-                  }}
-                  inputStyle={searchBarStyles.input}
-                />
-                {isOffline && showAutocomplete ? (
-                  <MapSearchOfflineAlertBox />
-                ) : (
-                  <></>
-                )}
-              </>
-            )}
-          />
+          <ShowAutocompleteContext.Provider value={showAutocomplete}>
+            <Autocomplete
+              data={suggestions}
+              hideResults={!showAutocomplete || isOffline}
+              flatListProps={flatListProps}
+              inputContainerStyle={styles.inputContainer}
+              onChangeText={onChangeText}
+              onFocus={onFocus}
+              onEndEditing={onEndEditing}
+              value={query}
+              placeholder={t('search.placeholder')}
+              renderTextInput={MapSearchInput}
+            />
+          </ShowAutocompleteContext.Provider>
         </View>
         <Column space={3}>
           <IconButton
@@ -163,3 +197,9 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
     </Box>
   );
 };
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    borderWidth: 0,
+  },
+});
