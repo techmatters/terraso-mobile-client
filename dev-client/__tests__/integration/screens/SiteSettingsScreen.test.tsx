@@ -43,15 +43,18 @@ jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
   };
 });
 
-const mockedNavigate = jest.fn();
 const mockedPopNav = jest.fn();
+const mockedPopTo = jest.fn();
 jest.mock('terraso-mobile-client/navigation/hooks/useNavigation', () => {
   const actualNav = jest.requireActual(
     'terraso-mobile-client/navigation/hooks/useNavigation',
   );
   return {
     ...actualNav,
-    useNavigation: () => ({navigate: mockedNavigate, pop: mockedPopNav}),
+    useNavigation: () => ({
+      pop: mockedPopNav,
+      popTo: mockedPopTo,
+    }),
   };
 });
 
@@ -105,7 +108,7 @@ describe('SiteSettingsScreen', () => {
   } as Partial<ReduxAppState>;
 
   beforeEach(() => {
-    mockedNavigate.mockClear();
+    mockedPopTo.mockClear();
     mockedPopNav.mockClear();
   });
 
@@ -120,7 +123,7 @@ describe('SiteSettingsScreen', () => {
       },
     );
 
-    expect(mockedNavigate).not.toHaveBeenCalled();
+    expect(mockedPopTo).not.toHaveBeenCalled();
     expect(screen.queryByTestId('error-dialog')).not.toBeOnTheScreen();
   });
 
@@ -135,7 +138,7 @@ describe('SiteSettingsScreen', () => {
       },
     );
 
-    expect(mockedNavigate).toHaveBeenCalledWith('BOTTOM_TABS');
+    expect(mockedPopTo).toHaveBeenCalledWith('BOTTOM_TABS');
     expect(screen.getByTestId('error-dialog')).toBeOnTheScreen();
   });
 
@@ -193,7 +196,7 @@ describe('SiteSettingsScreen', () => {
     );
 
     expect(mockApiCall).toHaveBeenCalled();
-    expect(mockedNavigate).toHaveBeenCalledWith('BOTTOM_TABS');
+    expect(mockedPopTo).toHaveBeenCalledWith('BOTTOM_TABS');
     expect(screen.queryByTestId('error-dialog')).not.toBeOnTheScreen();
   });
 });
