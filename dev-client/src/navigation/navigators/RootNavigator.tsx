@@ -25,13 +25,13 @@ import {
 } from 'terraso-client-shared/account/accountSlice';
 
 import {WELCOME_SCREEN_SEEN_KEY} from 'terraso-mobile-client/constants';
-import {useKVStorage} from 'terraso-mobile-client/hooks/useStorage';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 import {
   modalScreens,
   screens,
 } from 'terraso-mobile-client/navigation/screenDefinitions';
 import {RootStack} from 'terraso-mobile-client/navigation/types';
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 const modalScreenOptions: NativeStackNavigationOptions = {
@@ -47,7 +47,7 @@ export const RootNavigator = () => {
     state => state.account.currentUser.data !== null,
   );
 
-  const [welcomeScreenAlreadySeen] = useKVStorage(
+  const [welcomeScreenAlreadySeen] = kvStorage.useBool(
     WELCOME_SCREEN_SEEN_KEY,
     false,
   );
