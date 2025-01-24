@@ -21,14 +21,14 @@ import {render} from '@testing/integration/utils';
 import * as permissionHooks from 'terraso-mobile-client/hooks/permissionHooks';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/EditSiteNoteScreen';
 
-const mockedNavigate = jest.fn();
+const mockedPopTo = jest.fn();
 jest.mock('terraso-mobile-client/navigation/hooks/useNavigation', () => {
   const actualNav = jest.requireActual(
     'terraso-mobile-client/navigation/hooks/useNavigation',
   );
   return {
     ...actualNav,
-    useNavigation: () => ({navigate: mockedNavigate}),
+    useNavigation: () => ({popTo: mockedPopTo}),
   };
 });
 
@@ -39,7 +39,7 @@ const mockedUserCanEditSiteNote = jest.spyOn(
 mockedUserCanEditSiteNote.mockReturnValue(true);
 
 afterEach(() => {
-  mockedNavigate.mockClear();
+  mockedPopTo.mockClear();
   mockedUserCanEditSiteNote.mockReset();
 });
 
@@ -52,7 +52,7 @@ describe('EditSiteNoteScreen', () => {
 
     expect(screen.getByText('Site Note')).toBeOnTheScreen();
     expect(screen.getByDisplayValue('note 1 contents')).toBeOnTheScreen();
-    expect(mockedNavigate).toHaveBeenCalledTimes(0);
+    expect(mockedPopTo).toHaveBeenCalledTimes(0);
   });
 
   test('renders null if site missing', () => {
@@ -67,8 +67,8 @@ describe('EditSiteNoteScreen', () => {
     // Ideally would want to test that navigation worked, but I can't figure out how to do that
     expect(screen.queryByText('Site Note')).toBeNull();
     expect(screen.queryByText('note 1 contents')).toBeNull();
-    expect(mockedNavigate).toHaveBeenCalledTimes(1);
-    expect(mockedNavigate).toHaveBeenCalledWith('BOTTOM_TABS');
+    expect(mockedPopTo).toHaveBeenCalledTimes(1);
+    expect(mockedPopTo).toHaveBeenCalledWith('BOTTOM_TABS');
   });
 
   test('renders null if note missing', () => {
@@ -82,8 +82,8 @@ describe('EditSiteNoteScreen', () => {
 
     expect(screen.queryByText('Site Note')).toBeNull();
     expect(screen.queryByText('note 1 contents')).toBeNull();
-    expect(mockedNavigate).toHaveBeenCalledTimes(1);
-    expect(mockedNavigate).toHaveBeenCalledWith('SITE_TABS', {
+    expect(mockedPopTo).toHaveBeenCalledTimes(1);
+    expect(mockedPopTo).toHaveBeenCalledWith('SITE_TABS', {
       initialTab: 'NOTES',
       siteId: '1',
     });
@@ -102,8 +102,8 @@ describe('EditSiteNoteScreen', () => {
 
     expect(screen.queryByText('Site Note')).toBeNull();
     expect(screen.queryByText('note 1 contents')).toBeNull();
-    expect(mockedNavigate).toHaveBeenCalledTimes(1);
-    expect(mockedNavigate).toHaveBeenCalledWith('SITE_TABS', {
+    expect(mockedPopTo).toHaveBeenCalledTimes(1);
+    expect(mockedPopTo).toHaveBeenCalledWith('SITE_TABS', {
       initialTab: 'NOTES',
       siteId: '1',
     });
