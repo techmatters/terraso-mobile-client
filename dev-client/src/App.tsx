@@ -126,7 +126,10 @@ function App(): React.JSX.Element {
   return (
     <GestureHandlerRootView style={style}>
       <Provider store={store}>
-        <NavigationContainer>
+        <NavigationContainer
+        // uncomment to enable screen stack debugging
+        // onStateChange={console.log}
+        >
           <ConnectivityContextProvider>
             <HeaderHeightContext.Provider
               value={{headerHeight, setHeaderHeight}}>

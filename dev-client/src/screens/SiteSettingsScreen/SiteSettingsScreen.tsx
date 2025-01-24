@@ -92,7 +92,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const userCanEditSite = useRoleCanEditSite(siteId);
 
   const navToBottomTabs = useCallback(() => {
-    navigation.navigate('BOTTOM_TABS');
+    navigation.popTo('BOTTOM_TABS');
   }, [navigation]);
   const navToBottomTabsAndShowSyncError = useNavToBottomTabsAndShowSyncError();
   // On purposeful delete, this screen re-renders with null site (but before

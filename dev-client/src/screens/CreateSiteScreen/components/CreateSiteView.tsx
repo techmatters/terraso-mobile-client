@@ -63,7 +63,7 @@ export const CreateSiteView = ({
       const createdSite = await createSiteCallback({...site, elevation});
       if (createdSite !== undefined) {
         sitesScreen?.showSiteOnMap(createdSite);
-        navigation.navigate('BOTTOM_TABS');
+        navigation.popTo('BOTTOM_TABS');
       }
     },
     [createSiteCallback, navigation, validationSchema, sitesScreen, elevation],

@@ -41,7 +41,7 @@ export const WelcomeScreen = () => {
   // Welcome screen will only show on first time app is opened, so we expect user needs to log in next
   const onGetStarted = useCallback(() => {
     setWelcomeScreenAlreadySeen(true);
-    navigation.navigate('LOGIN');
+    navigation.popTo('LOGIN');
   }, [navigation, setWelcomeScreenAlreadySeen]);
 
   return (

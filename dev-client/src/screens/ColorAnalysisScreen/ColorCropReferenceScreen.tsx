@@ -38,7 +38,7 @@ export const ColorCropReferenceScreen = () => {
     (crop: CropResult) => {
       setState(state => ({...state, reference: crop}));
       if (soil !== undefined) {
-        colorAnalysisNavigation.navigate('COLOR_ANALYSIS_HOME');
+        colorAnalysisNavigation.popTo('COLOR_ANALYSIS_HOME');
       } else {
         colorAnalysisNavigation.navigate('COLOR_CROP_SOIL');
       }
