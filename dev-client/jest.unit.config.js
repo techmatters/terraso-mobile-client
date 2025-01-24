@@ -20,11 +20,7 @@ module.exports = {
   testMatch: ['**/src/**/*.test.[jt]s?(x)'],
   preset: 'jest-expo',
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: [
-    './node_modules/react-native-mmkv-storage/jest/mmkvJestSetup.js',
-    '<rootDir>/jest/unit/setup.ts',
-  ],
-  transformIgnorePatterns: ['/!node_modules\\/react-native-mmkv-storage/'],
+  setupFilesAfterEnv: ['<rootDir>/jest/unit/setup.ts'],
   clearMocks: true,
   moduleNameMapper: {
     '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
