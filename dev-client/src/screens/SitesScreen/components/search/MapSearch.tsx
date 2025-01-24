@@ -32,33 +32,19 @@ import {Searchbar} from 'react-native-paper';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
-import {UpdatedPermissionsRequestWrapper} from 'terraso-mobile-client/components/modals/PermissionsRequestWrapper';
-import {
-  Box,
-  Column,
-  Row,
-  View,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
-import {useUpdatedForegroundPermissions} from 'terraso-mobile-client/hooks/appPermissionsHooks';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
 import {MapSearchOfflineAlertBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineAlertBox';
 import {MapSearchSuggestionBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
 import {Suggestion} from 'terraso-mobile-client/services/mapSearchService';
 
-type Props = {
-  zoomTo?: (site: Coords) => void;
-  zoomToUser?: () => void;
-  toggleMapLayer?: () => void;
-};
-
 const ShowAutocompleteContext = createContext(false);
 
-export const MapSearchInput = ({value, ...props}: TextInputProps) => {
+const MapSearchInput = ({value, ...props}: TextInputProps) => {
   const isOffline = useIsOffline();
   const showAutocomplete = useContext(ShowAutocompleteContext);
 
@@ -72,13 +58,17 @@ export const MapSearchInput = ({value, ...props}: TextInputProps) => {
         }}
         inputStyle={searchBarStyles.input}
         value={value ?? ''}
+        testID="MAP_SEARCH_INPUT"
       />
       {isOffline && showAutocomplete ? <MapSearchOfflineAlertBox /> : <></>}
     </>
   );
 };
 
-export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
+type MapSearchProps = {
+  zoomTo?: (coords: Coords) => void;
+};
+export const MapSearch = ({zoomTo}: MapSearchProps) => {
   const isOffline = useIsOffline();
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
@@ -144,57 +134,22 @@ export const MapSearch = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
   }, [setShowAutocomplete]);
 
   return (
-    <Box
-      flex={1}
-      left={0}
-      position="absolute"
-      right={0}
-      top={0}
-      zIndex={1}
-      px={3}
-      py={3}
-      pointerEvents="box-none">
-      <Row space={3} pointerEvents="box-none">
-        <View flex={1} pointerEvents="box-none">
-          <ShowAutocompleteContext.Provider value={showAutocomplete}>
-            <Autocomplete
-              data={suggestions}
-              hideResults={!showAutocomplete || isOffline}
-              flatListProps={flatListProps}
-              inputContainerStyle={styles.inputContainer}
-              onChangeText={onChangeText}
-              onFocus={onFocus}
-              onEndEditing={onEndEditing}
-              value={query}
-              placeholder={t('search.placeholder')}
-              renderTextInput={MapSearchInput}
-            />
-          </ShowAutocompleteContext.Provider>
-        </View>
-        <Column space={3}>
-          <IconButton
-            name="layers"
-            variant="light-filled"
-            type="md"
-            onPress={toggleMapLayer}
-          />
-          <UpdatedPermissionsRequestWrapper
-            requestModalTitle={t('permissions.location_title')}
-            requestModalBody={t('permissions.location_body')}
-            permissionHook={useUpdatedForegroundPermissions}
-            permissionedAction={zoomToUser}>
-            {onRequest => (
-              <IconButton
-                name="my-location"
-                variant="light-filled"
-                type="md"
-                onPress={onRequest}
-              />
-            )}
-          </UpdatedPermissionsRequestWrapper>
-        </Column>
-      </Row>
-    </Box>
+    <View flex={1} pointerEvents="box-none">
+      <ShowAutocompleteContext.Provider value={showAutocomplete}>
+        <Autocomplete
+          data={suggestions}
+          hideResults={!showAutocomplete || isOffline}
+          flatListProps={flatListProps}
+          inputContainerStyle={styles.inputContainer}
+          onChangeText={onChangeText}
+          onFocus={onFocus}
+          onEndEditing={onEndEditing}
+          value={query}
+          placeholder={t('search.placeholder')}
+          renderTextInput={MapSearchInput}
+        />
+      </ShowAutocompleteContext.Provider>
+    </View>
   );
 };
 
