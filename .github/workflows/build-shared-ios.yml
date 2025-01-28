@@ -74,28 +74,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: dev-client/package-lock.json
 
-      # - name: Install and configure ccache
-      #   run: |
-      #     brew install ccache
-      #     ln -s $(which ccache) /usr/local/bin/gcc
-      #     ln -s $(which ccache) /usr/local/bin/g++
-      #     ln -s $(which ccache) /usr/local/bin/cc
-      #     ln -s $(which ccache) /usr/local/bin/c++
-      #     ln -s $(which ccache) /usr/local/bin/clang
-      #     ln -s $(which ccache) /usr/local/bin/clang++
-
       - name: Install Node dependencies
         working-directory: dev-client
         run: npm ci
-
-      # - name: Restore iOS Expo cache
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       dev-client/ios
-      #       dev-client/node_modules
-      #     key: expo-cache-${{ runner.os }}-ios-${{ hashFiles('**/package-lock.json', '**/app.config.ts') }}
-      #     restore-keys: expo-cache-${{ runner.os }}-ios-
 
       - name: Generate ios directory
         working-directory: dev-client
