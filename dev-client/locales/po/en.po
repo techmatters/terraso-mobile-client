@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-12-03T21:40:11.857Z\n"
-"PO-Revision-Date: 2024-12-03T21:40:11.858Z\n"
+"POT-Creation-Date: 2025-01-28T22:56:05.304Z\n"
+"PO-Revision-Date: 2025-01-28T22:56:05.304Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -26,6 +26,9 @@ msgstr "Site notes"
 msgid "welcome##version_includes##bullet_4"
 msgstr "Project management"
 
+msgid "welcome##version_includes##bullet_5"
+msgstr "Offline capabilities"
+
 msgid "welcome##next##title"
 msgstr "What’s next?"
 
@@ -33,15 +36,12 @@ msgid "welcome##next##subtitle"
 msgstr "Future versions will include:"
 
 msgid "welcome##next##bullet_1"
-msgstr "Offline capabilities"
-
-msgid "welcome##next##bullet_2"
 msgstr "Data visualization enhancements"
 
-msgid "welcome##next##bullet_3"
+msgid "welcome##next##bullet_2"
 msgstr "Additional soil properties, such as soil structure and soil organic carbon"
 
-msgid "welcome##next##bullet_4"
+msgid "welcome##next##bullet_3"
 msgstr "Site photos"
 
 msgid "welcome##learn_more"
@@ -53,6 +53,15 @@ msgstr "LandPKS from Terraso"
 msgid "welcome##link_url"
 msgstr "https://landpks.terraso.org/"
 
+msgid "welcome##terms"
+msgstr "By using LandPKS you accept our <privacy /> and <tos />."
+
+msgid "welcome##privacy"
+msgstr "privacy policy"
+
+msgid "welcome##tos"
+msgstr "terms of service"
+
 msgid "welcome##get_started"
 msgstr "Get started"
 
@@ -60,35 +69,29 @@ msgid "info##title"
 msgstr "Discover your land’s potential"
 
 msgid "info##description"
-msgstr ""
-"<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.\n"
-"\n"
-"<2>There are three ways to use the map:</2>"
-
-msgid "info##list1"
-msgstr "Tap the map to drop a pin and get more information about that location."
-
-msgid "info##list2"
-msgstr "Tap the location icon <icon/> to find your current GPS location."
-
-msgid "info##list3"
-msgstr "Enter coordinates, address, or search term in the search bar."
+msgstr "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more."
 
 msgid "info##description2"
 msgstr ""
 "<bold>Find more information and guides</bold> at:\n"
 "<icon />"
 
+msgid "info##get_started"
+msgstr "<bold>To get started, use the map to create a site:</bold>"
+
 msgid "info##link_label"
-msgstr "landpotential.org"
+msgstr "landpks.terraso.org"
 
 msgid "info##link_url"
-msgstr "https://landpotential.org/"
+msgstr "https://landpks.terraso.org/"
 
 msgid "search##placeholder"
 msgstr "Search map"
 
 msgid "site##list_title"
+msgstr "Site List"
+
+msgid "site##list_title_empty"
 msgstr "Create Site"
 
 msgid "site##last_updated"
@@ -127,23 +130,26 @@ msgstr "{{value}} {{units}}"
 msgid "site##elevation_unknown"
 msgstr "unknown"
 
-msgid "site##not_available_offine"
-msgstr "Not available offline"
-
 msgid "site##empty##info"
-msgstr "<bold>Three ways to create a site site:</bold>\n"
+msgstr "<bold>Three ways to create a site:</bold>\n"
 
 msgid "site##empty##map"
-msgstr "Tap anywhere on the map."
+msgstr "Tap anywhere on the map"
 
 msgid "site##empty##icon"
-msgstr "Tap the My Location icon."
+msgstr "Tap the My Location icon"
 
 msgid "site##empty##coords"
 msgstr "Enter coordinates, address, or search term in the map search bar"
 
 msgid "site##empty##summary"
-msgstr "A site lets you collect and save observations, learn more about the land and its potentnial, and share with others."
+msgstr "A site lets you collect and save observations, learn more about the land and its potential, and share with others."
+
+msgid "site##offline##alert_title"
+msgstr "You are offline"
+
+msgid "site##offline##alert_body"
+msgstr "Sites can only be created while online."
 
 msgid "site##create##title"
 msgstr "Create Site"
@@ -229,9 +235,6 @@ msgstr "Archive this site"
 msgid "site##dashboard##archive_button_help_text"
 msgstr "Mark this site read-only"
 
-msgid "site##dashboard##settings_title"
-msgstr "Site Settings"
-
 msgid "site##dashboard##delete_button"
 msgstr "Delete this site"
 
@@ -304,8 +307,8 @@ msgstr "nativeland.info"
 msgid "site##soil_id##matches##native_lands_url"
 msgstr "https://nativeland.info/"
 
-msgid "site##soil_id##matches##offline_body"
-msgstr "Soil matches will update here when you are online."
+msgid "site##soil_id##matches##offline"
+msgstr "Soil matches will update when you are online."
 
 msgid "site##soil_id##matches##selector"
 msgstr "This is the correct soil"
@@ -353,7 +356,7 @@ msgid "site##soil_id##site_data##soil_properties##rock_fragment"
 msgstr "Rock Fragment"
 
 msgid "site##soil_id##site_data##soil_properties##add_data"
-msgstr "Add soil data"
+msgstr "Enter properties"
 
 msgid "site##soil_id##soil_info##series_descr_url"
 msgstr "Soil Series Full Description"
@@ -452,7 +455,7 @@ msgid "site##notes##confirm_removal_title"
 msgstr "Delete note?"
 
 msgid "site##notes##confirm_removal_body"
-msgstr "This action cannot be undone."
+msgstr "This action can’t be undone."
 
 msgid "site##notes##min_length_error"
 msgstr "Must be at least {{min}} characters"
@@ -460,8 +463,11 @@ msgstr "Must be at least {{min}} characters"
 msgid "site##notes##placeholder_text"
 msgstr "Start typing your note…"
 
-msgid "site##notes##project_instructions"
+msgid "site##notes##pinned_note"
 msgstr "Pinned Note"
+
+msgid "site##notes##offline"
+msgstr "Creating and editing notes is only available online."
 
 msgid "site##search##placeholder"
 msgstr "Search sites"
@@ -477,6 +483,9 @@ msgstr "Filter sites by role"
 
 msgid "site##search##no_matches"
 msgstr "No sites match the current search and filter options."
+
+msgid "site##search##offline"
+msgstr "You are offline. Search is not available, but you can enter exact coordinates."
 
 msgid "site##search##sort##label"
 msgstr "Sort sites by"
@@ -521,7 +530,7 @@ msgid "projects##header"
 msgstr "Projects"
 
 msgid "projects##offline"
-msgstr "Project management is only available online"
+msgstr "Project management is only available online."
 
 msgid "projects##none##header"
 msgstr "You don’t have any projects."
@@ -626,7 +635,7 @@ msgid "projects##inputs##depths##confirm_preset##title"
 msgstr "Change depths?"
 
 msgid "projects##inputs##depths##confirm_preset##body"
-msgstr "Soil pit observations that have been entered will be deleted. This action cannot be undone."
+msgstr "Soil pit observations that have been entered will be deleted. This action can’t be undone."
 
 msgid "projects##inputs##depths##confirm_preset##confirm"
 msgstr "Change"
@@ -690,7 +699,7 @@ msgstr "Delete project?"
 
 msgid "projects##settings##delete_description"
 msgstr ""
-"This will permanently delete the project and its sites’ observations. This cannot be undone.\n"
+"This will permanently delete the project and its sites’ observations. This can’t be undone.\n"
 "\n"
 "Project managers have the option to transfer sites from this project to keep site observations."
 
@@ -725,7 +734,7 @@ msgid "projects##sites##delete_site_modal##title"
 msgstr "Delete site?"
 
 msgid "projects##sites##delete_site_modal##body"
-msgstr "This will permanently delete the site {{siteName}} and all of its observations. This cannot be undone."
+msgstr "This will permanently delete the site {{siteName}} and all of its observations. This can’t be undone."
 
 msgid "projects##sites##delete_site_modal##project"
 msgstr ""
@@ -752,7 +761,7 @@ msgid "projects##sites##transfer_site_modal##body"
 msgstr ""
 "Transferred sites will use the inputs, settings and team member roles from this project.\n"
 "\n"
-"If sites have observations entered at different depths than what is specified in this project, those observations will be deleted. This cannot be undone."
+"If sites have observations entered at different depths than what is specified in this project, those observations will be deleted. This can’t be undone."
 
 msgid "projects##sites##transfer_site_modal##action_name"
 msgstr "Transfer"
@@ -866,10 +875,10 @@ msgid "settings##unknown_user"
 msgstr "Unknown user"
 
 msgid "settings##sign_out"
-msgstr "Sign Out"
+msgstr "Sign out"
 
 msgid "settings##delete_account"
-msgstr "Delete Account"
+msgstr "Delete account"
 
 msgid "settings##delete_account_pending"
 msgstr "Pending"
@@ -896,9 +905,6 @@ msgid "general##users"
 msgstr "users"
 
 msgid "general##save"
-msgstr "Save"
-
-msgid "general##save_fab"
 msgstr "Save"
 
 msgid "general##dismiss"
@@ -953,21 +959,21 @@ msgid "general##add"
 msgstr "Add"
 
 msgid "general##submit"
-msgstr "submit"
+msgstr "Submit"
 
 msgid "general##change"
 msgstr "Change"
 
-msgid "general##cancel_fab"
-msgstr "Cancel"
+msgid "general##create"
+msgstr "Create"
 
-msgid "general##delete_fab"
+msgid "general##delete"
 msgstr "Delete"
 
 msgid "general##done"
 msgstr "Done"
 
-msgid "general##close_fab"
+msgid "general##close"
 msgstr "Close"
 
 msgid "general##filter##no_sort"
@@ -1009,6 +1015,9 @@ msgstr "https://techmatters.org/privacy-policy/"
 msgid "general##info##privacy_policy_link_text"
 msgstr "Read more about our data privacy policy."
 
+msgid "general##info##privacy_policy_label"
+msgstr "Privacy policy"
+
 msgid "general##required"
 msgstr "Required"
 
@@ -1033,11 +1042,32 @@ msgstr "Proceed"
 msgid "general##offline_title"
 msgstr "You are offline"
 
-msgid "general##support##label"
+msgid "general##support"
 msgstr "Support"
 
-msgid "general##support##url"
-msgstr "https://landpks.terraso.org/"
+msgid "general##help##label"
+msgstr "Help and support"
+
+msgid "general##help##url"
+msgstr "https://landpks.terraso.org/help/"
+
+msgid "general##tos##label"
+msgstr "Terms of service"
+
+msgid "general##tos##url"
+msgstr "https://terraso.org/terms-of-service/"
+
+msgid "general##not_available_offine"
+msgstr "Not available offline"
+
+msgid "general##offline_sign_in_title"
+msgstr "Sign in not available offline"
+
+msgid "general##offline_sign_in_body"
+msgstr "To use LandPKS Soil ID offline, you must first sign in while online."
+
+msgid "general##not_available"
+msgstr "Not available"
 
 msgid "permissions##camera_title"
 msgstr "LandPKS Soil ID needs to access your camera"
@@ -1065,6 +1095,9 @@ msgstr "Project conflict"
 
 msgid "errors##sync_conflict##body"
 msgstr "This project has changed. Learn more and get support at the LandPKS website."
+
+msgid "errors##sync_conflict##support_url"
+msgstr "https://landpks.terraso.org/help/synchronization-conflict/"
 
 msgid "screens##SITES"
 msgstr "LandPKS Soil ID"
@@ -1316,7 +1349,7 @@ msgid "soil##collection_method_description##soilTexture"
 msgstr "Includes texture class and rock fragment volume"
 
 msgid "soil##vertical_cracking##description"
-msgstr "Surface cracks develop in clay-rich soils after they dry out."
+msgstr "Cracks develop in clay-rich soils after they dry out. Cracks may be permanent, or they may disappear after some time. <bold>Measure soil cracks when soil is dry.</bold>"
 
 msgid "soil##vertical_cracking##no_cracks"
 msgstr ""
@@ -1384,9 +1417,6 @@ msgstr "Custom"
 msgid "soil##depth##add_title"
 msgstr "Add depth"
 
-msgid "soil##depth##edit_title"
-msgstr "Depth"
-
 msgid "soil##depth##data_inputs_title"
 msgstr "Soil Data Inputs"
 
@@ -1418,7 +1448,7 @@ msgid "soil##depth##update_modal##title"
 msgstr "Change depth?"
 
 msgid "soil##depth##update_modal##body"
-msgstr "Soil pit observations that has been entered at this depth will be deleted. This action cannot be undone."
+msgstr "Soil pit observations that has been entered at this depth will be deleted. This action can’t be undone."
 
 msgid "soil##depth##update_modal##action"
 msgstr "Change"
@@ -1427,7 +1457,7 @@ msgid "soil##depth##delete_modal##title"
 msgstr "Delete depth?"
 
 msgid "soil##depth##delete_modal##body"
-msgstr "Observations that have been entered at this depth will be deleted. This action cannot be undone."
+msgstr "Observations that have been entered at this depth will be deleted. This action can’t be undone."
 
 msgid "soil##depth##delete_modal##action"
 msgstr "Delete"
@@ -2064,7 +2094,7 @@ msgid "slope##shape##select_labels##LINEAR"
 msgstr "Linear"
 
 msgid "image##use_camera"
-msgstr "Take Photo"
+msgstr "Use Camera"
 
 msgid "image##choose_from_gallery"
-msgstr "Photo Library"
+msgstr "Choose from Gallery"
