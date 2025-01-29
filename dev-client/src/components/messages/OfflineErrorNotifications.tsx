@@ -32,20 +32,6 @@ export const offlineProjectScreenMessage: Message = {
   content: 'project-screen-accessed-offline',
 };
 
-export const OfflineSnackbar = ({visible, onDismiss}: OfflineSnackbarProps) => {
-  const {t} = useTranslation();
-
-  return (
-    <Snackbar
-      visible={visible}
-      onDismiss={onDismiss}
-      onIconPress={onDismiss}
-      duration={Infinity}>
-      {t('general.offline_cant_edit')}
-    </Snackbar>
-  );
-};
-
 export const OfflineErrorNotifications = () => {
   const dispatch = useDispatch();
   const isOffline = useIsOffline();
@@ -82,12 +68,13 @@ export const OfflineErrorNotifications = () => {
 
   return (
     <Portal>
-      <OfflineSnackbar visible={showSnackbar} onDismiss={onDismiss} />
+      <Snackbar
+        visible={showSnackbar}
+        onDismiss={onDismiss}
+        onIconPress={onDismiss}
+        duration={Infinity}>
+        {t('general.offline_cant_edit')}
+      </Snackbar>
     </Portal>
   );
-};
-
-type OfflineSnackbarProps = {
-  visible: boolean;
-  onDismiss: () => void;
 };
