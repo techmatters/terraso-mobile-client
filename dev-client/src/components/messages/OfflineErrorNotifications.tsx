@@ -45,22 +45,26 @@ export const OfflineErrorNotifications = () => {
 
   const messages = useSelector(state => state.notifications.messages);
 
-  // Only supports 1 snackbar at a time, even though it will delete all error messages
-  // TODO: figure out how the mobile client should manage state.notifications.messages
-  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
-  const onDismiss = () => setSnackbarMessage(null);
+  // Only supports 1 snackbar at a time; will not queue up snackbars
+  const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
+  const onDismiss = () => setShowSnackbar(false);
 
   useEffect(() => {
     // Get error messages
-    // If offline, show snackbar and delete
-    // If online, delete silently
+    // If offline, show snackbar and delete all errors
+    // If online, delete all errors silently
+    // --> NOTE: Once we start actually handling errors, we should change this
+    //     and have a more cohesive way of managing state.notifications.messages
 
     const errorMessages = Object.keys(messages).filter(
       messageKey => messages[messageKey].severity === 'error',
     );
 
     if (isOffline && errorMessages.length > 0) {
-      setSnackbarMessage(t('general.offline_cant_edit'));
+      setShowSnackbar(true);
+    }
+    if (!isOffline) {
+      setShowSnackbar(false);
     }
 
     errorMessages.forEach(messageKey => {
@@ -70,10 +74,7 @@ export const OfflineErrorNotifications = () => {
 
   return (
     <Portal>
-      <OfflineSnackbar
-        visible={snackbarMessage !== null}
-        onDismiss={onDismiss}
-      />
+      <OfflineSnackbar visible={showSnackbar} onDismiss={onDismiss} />
     </Portal>
   );
 };
