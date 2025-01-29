@@ -230,6 +230,7 @@
         "title": "Projects",
         "header": "Projects",
         "offline_create": "Projects can only be created and managed while online.",
+        "offline_cant_edit": "You are offline. Projects can't be edited.",
         "none": {
             "header": "You don’t have any projects.",
             "info": "Projects let you group sites, set requirements, and manage team members."
@@ -461,7 +462,6 @@
         "next": "Next",
         "proceed": "Proceed",
         "offline_title": "You are offline",
-        "offline_cant_edit": "You are offline. Projects can't be edited.",
         "support": "Support",
         "help": {
             "label": "Help and support",

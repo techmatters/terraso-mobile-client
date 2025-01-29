@@ -73,7 +73,7 @@ export const OfflineSnackbar = () => {
         onDismiss={onDismiss}
         onIconPress={onDismiss}
         duration={Infinity}>
-        {t('general.offline_cant_edit')}
+        {t('projects.offline_cant_edit')}
       </Snackbar>
     </Portal>
   );
