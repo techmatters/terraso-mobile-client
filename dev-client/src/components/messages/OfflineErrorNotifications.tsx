@@ -32,7 +32,7 @@ export const OfflineSnackbar = ({visible, onDismiss}: OfflineSnackbarProps) => {
       visible={visible}
       onDismiss={onDismiss}
       onIconPress={onDismiss}
-      duration={Snackbar.DURATION_LONG}>
+      duration={Infinity}>
       {t('general.offline_cant_edit')}
     </Snackbar>
   );
