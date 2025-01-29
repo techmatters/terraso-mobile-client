@@ -25,7 +25,7 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineErrorNotifications';
+import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';

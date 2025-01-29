@@ -32,7 +32,7 @@ export const offlineProjectScreenMessage: Message = {
   content: 'project-screen-accessed-offline',
 };
 
-export const OfflineErrorNotifications = () => {
+export const OfflineSnackbar = () => {
   const dispatch = useDispatch();
   const isOffline = useIsOffline();
   const {t} = useTranslation();
