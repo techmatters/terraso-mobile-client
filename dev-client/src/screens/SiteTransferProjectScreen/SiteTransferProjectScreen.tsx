@@ -19,6 +19,8 @@ import {useCallback, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native';
 
+import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
+
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {
@@ -29,8 +31,10 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineErrorNotifications';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useTextSearch} from 'terraso-mobile-client/hooks/useTextSearch';
 import {transferSites} from 'terraso-mobile-client/model/site/siteGlobalReducer';
@@ -54,6 +58,13 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const isOffline = useIsOffline();
+  useEffect(() => {
+    if (isOffline) {
+      dispatch(addMessage(offlineProjectScreenMessage));
+    }
+  }, [isOffline, dispatch]);
 
   UNAFFILIATED.projectName = t('projects.transfer_sites.unaffiliated');
 

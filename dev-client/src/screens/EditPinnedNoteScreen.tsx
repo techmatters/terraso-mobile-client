@@ -15,11 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
 
 import {
   useNavToBottomTabsAndShowSyncError,
@@ -29,12 +30,14 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineErrorNotifications';
 import {
   Box,
   Column,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {updateProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -53,6 +56,13 @@ export const EditPinnedNoteScreen = ({projectId}: Props) => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const project = useSelector(selectProject(projectId));
+  const isOffline = useIsOffline();
+
+  useEffect(() => {
+    if (isOffline) {
+      dispatch(addMessage(offlineProjectScreenMessage));
+    }
+  }, [isOffline, dispatch]);
 
   const handleUpdateProject = async ({content}: {content: string}) => {
     Keyboard.dismiss();

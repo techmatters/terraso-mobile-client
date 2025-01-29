@@ -19,10 +19,18 @@ import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Portal, Snackbar} from 'react-native-paper';
 
-import {removeMessage} from 'terraso-client-shared/notifications/notificationsSlice';
+import {
+  Message,
+  removeMessage,
+} from 'terraso-client-shared/notifications/notificationsSlice';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+
+export const offlineProjectScreenMessage: Message = {
+  severity: 'error',
+  content: 'project-screen-accessed-offline',
+};
 
 export const OfflineSnackbar = ({visible, onDismiss}: OfflineSnackbarProps) => {
   const {t} = useTranslation();
