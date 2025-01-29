@@ -88,6 +88,16 @@ export const ProjectViewScreen = ({projectId}: Props) => {
                 }}>
                 Can't do stuff on this screen offline
               </Snackbar>
+              {/* <Snackbar
+                visible={snackbarVisible}
+                onDismiss={() => setSnackbarVisible(false)}>
+                HIIII 2
+              </Snackbar>
+              <Snackbar
+                visible={snackbarVisible}
+                onDismiss={() => setSnackbarVisible(false)}>
+                HIIII 3
+              </Snackbar> */}
             </ScreenScaffold>
           </ProjectRoleContextProvider>
         </ProjectDeletionContext.Provider>
