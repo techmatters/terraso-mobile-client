@@ -23,7 +23,7 @@ import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 // 2) Add a FeatureFlagControl for it
 export const featureFlags = {
   FF_offline: {
-    defaultIsEnabled: false,
+    defaultIsEnabled: true,
     defaultIsEnabledInDevelopment: true,
     description: 'Enables support for offline mode',
   },
