@@ -461,7 +461,7 @@
         "next": "Next",
         "proceed": "Proceed",
         "offline_title": "You are offline",
-        "offline_cant_edit": "This cannot be edited offline",
+        "offline_cant_edit": "You are offline. Projects can't be edited.",
         "support": "Support",
         "help": {
             "label": "Help and support",

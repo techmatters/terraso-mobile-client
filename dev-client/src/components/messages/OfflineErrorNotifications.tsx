@@ -24,7 +24,6 @@ import {removeMessage} from 'terraso-client-shared/notifications/notificationsSl
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
-// TODO-cknipe: What if the "error saving soil id" happens too?? How does this play w Toast?
 export const OfflineSnackbar = ({visible, onDismiss}: OfflineSnackbarProps) => {
   const {t} = useTranslation();
 
@@ -32,10 +31,8 @@ export const OfflineSnackbar = ({visible, onDismiss}: OfflineSnackbarProps) => {
     <Snackbar
       visible={visible}
       onDismiss={onDismiss}
-      action={{
-        label: t('general.close'),
-        onPress: onDismiss,
-      }}>
+      onIconPress={onDismiss}
+      duration={Snackbar.DURATION_LONG}>
       {t('general.offline_cant_edit')}
     </Snackbar>
   );
@@ -48,14 +45,8 @@ export const OfflineErrorNotifications = () => {
 
   const messages = useSelector(state => state.notifications.messages);
 
-  console.log('--------------------');
-  for (const messageKey in messages) {
-    console.log('MESSAGE: ', messages[messageKey]);
-  }
-  console.log('--------------------');
-
-  // Only supports 1 snackbar at a time
-  // Does not currently support a queue of notifications
+  // Only supports 1 snackbar at a time, even though it will delete all error messages
+  // TODO: figure out how the mobile client should manage state.notifications.messages
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const onDismiss = () => setSnackbarMessage(null);
 
@@ -76,8 +67,6 @@ export const OfflineErrorNotifications = () => {
       dispatch(removeMessage(messageKey));
     });
   }, [messages, isOffline, dispatch, t]);
-
-  console.log('SNACKBAR:', snackbarMessage);
 
   return (
     <Portal>
