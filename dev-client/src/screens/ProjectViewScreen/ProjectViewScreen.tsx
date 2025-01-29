@@ -16,7 +16,6 @@
  */
 
 import {useCallback, useEffect, useState} from 'react';
-import {Snackbar} from 'react-native-paper';
 
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
@@ -25,6 +24,7 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {OfflineSnackbar} from 'terraso-mobile-client/components/messages/OfflineErrorNotifications';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -78,26 +78,10 @@ export const ProjectViewScreen = ({projectId}: Props) => {
               AppBar={<AppBar title={project?.name} />}
               BottomNavigation={null}>
               <ProjectTabNavigator projectId={projectId} />
-              <Snackbar
+              <OfflineSnackbar
                 visible={snackbarVisible}
                 onDismiss={() => setSnackbarVisible(false)}
-                duration={20000}
-                action={{
-                  label: 'Clear',
-                  onPress: () => console.log('Pressed Clear'),
-                }}>
-                Can't do stuff on this screen offline
-              </Snackbar>
-              {/* <Snackbar
-                visible={snackbarVisible}
-                onDismiss={() => setSnackbarVisible(false)}>
-                HIIII 2
-              </Snackbar>
-              <Snackbar
-                visible={snackbarVisible}
-                onDismiss={() => setSnackbarVisible(false)}>
-                HIIII 3
-              </Snackbar> */}
+              />
             </ScreenScaffold>
           </ProjectRoleContextProvider>
         </ProjectDeletionContext.Provider>

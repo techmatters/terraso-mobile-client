@@ -461,6 +461,7 @@
         "next": "Next",
         "proceed": "Proceed",
         "offline_title": "You are offline",
+        "offline_cant_edit": "This cannot be edited offline",
         "support": "Support",
         "help": {
             "label": "Help and support",

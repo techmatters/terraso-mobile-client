@@ -16,6 +16,7 @@
  */
 
 import {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {Portal, Snackbar} from 'react-native-paper';
 
 import {removeMessage} from 'terraso-client-shared/notifications/notificationsSlice';
@@ -23,16 +24,28 @@ import {removeMessage} from 'terraso-client-shared/notifications/notificationsSl
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
-// Does not currently support a queue of notifications
-
-// const AUTO_HIDE_DURATION = 10000;
-
 // TODO-cknipe: What if the "error saving soil id" happens too?? How does this play w Toast?
-export const ErrorNotifications = () => {
+export const OfflineSnackbar = ({visible, onDismiss}: OfflineSnackbarProps) => {
+  const {t} = useTranslation();
+
+  return (
+    <Snackbar
+      visible={visible}
+      onDismiss={onDismiss}
+      action={{
+        label: t('general.close'),
+        onPress: onDismiss,
+      }}>
+      {t('general.offline_cant_edit')}
+    </Snackbar>
+  );
+};
+
+export const OfflineErrorNotifications = () => {
   const dispatch = useDispatch();
   const isOffline = useIsOffline();
+  const {t} = useTranslation();
 
-  // Get the messages from the notification slice
   const messages = useSelector(state => state.notifications.messages);
 
   console.log('--------------------');
@@ -41,7 +54,8 @@ export const ErrorNotifications = () => {
   }
   console.log('--------------------');
 
-  // OPTION 1: Assume just 1 snackbar at a time
+  // Only supports 1 snackbar at a time
+  // Does not currently support a queue of notifications
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const onDismiss = () => setSnackbarMessage(null);
 
@@ -55,22 +69,27 @@ export const ErrorNotifications = () => {
     );
 
     if (isOffline && errorMessages.length > 0) {
-      // TODO-cknipe: Actual stringify
-      setSnackbarMessage("Can't OFFLINE");
+      setSnackbarMessage(t('general.offline_cant_edit'));
     }
 
     errorMessages.forEach(messageKey => {
       dispatch(removeMessage(messageKey));
     });
-  }, [messages, isOffline, dispatch]);
+  }, [messages, isOffline, dispatch, t]);
 
   console.log('SNACKBAR:', snackbarMessage);
 
   return (
     <Portal>
-      <Snackbar visible={snackbarMessage !== null} onDismiss={onDismiss}>
-        {snackbarMessage}
-      </Snackbar>
+      <OfflineSnackbar
+        visible={snackbarMessage !== null}
+        onDismiss={onDismiss}
+      />
     </Portal>
   );
+};
+
+type OfflineSnackbarProps = {
+  visible: boolean;
+  onDismiss: () => void;
 };
