@@ -15,7 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {MMKVLoader} from 'react-native-mmkv-storage';
+import {
+  MMKV,
+  useMMKVBoolean,
+  useMMKVNumber,
+  useMMKVObject,
+  useMMKVString,
+} from 'react-native-mmkv';
 
 // helpful things to know about MMKV:
 //
@@ -24,27 +30,16 @@ import {MMKVLoader} from 'react-native-mmkv-storage';
 // there's the underlying cross-platform native library:
 //   https://github.com/Tencent/MMKV
 // and then there's the react native wrapper library:
-//   https://www.npmjs.com/package/react-native-mmkv-storage
-// there is also a competing react native wrapper library:
 //   https://www.npmjs.com/package/react-native-mmkv
-//
-// the library we use simplifies encryption by automatically
-// generating an encryption key and storing it on the keychain,
-// which we would have to do manually if we were using the other
-// library. at time of writing there is not a well-documented
-// migration story from one to the other.
+// there is also a competing react native wrapper library, which
+// we used originally but abandoned due to slow maintenance:
+//   https://www.npmjs.com/package/react-native-mmkv-storage
 //
 // MMKV does not necessarily write to disk after every operation,
 // it will keep data in memory and only flush it when necessary
 // for performance reasons. I'm not sure if the RN API exposes a
 // way to manually flush to disk, there's a `clearMemoryCache`
 // method which presumably does this but haven't confirmed.
-//
-// `withEncryption` only has an effect when the device has never
-// initialized the MMKV store before. after first usage, the store
-// gets initialized with whatever settings it previously used.
-// there are additional methods available for changing the encryption
-// settings later: https://rnmmkv.vercel.app/#/workingwithencryption
 //
 // There is discussion on all of the libraries of a potential memory
 // use issue:
@@ -53,7 +48,43 @@ import {MMKVLoader} from 'react-native-mmkv-storage';
 //   https://github.com/Tencent/MMKV/issues/610
 // I ran a test in our environment and was unable to reproduce (persisted
 // entire redux state to storage in a loop for several hours), but leaving
-// here for context. There is also a `clearMemoryCache` method on storage
+// here for context. There is also a `trim` method on storage
 // object which may help.
 
-export const kvStorage = new MMKVLoader().withEncryption().initialize();
+const MMKV_STORAGE_ID = 'mmkv.storage';
+
+const mmkvStorage = new MMKV({id: MMKV_STORAGE_ID});
+
+export const kvStorage = {
+  setBool: (key: string, value: boolean) => mmkvStorage.set(key, value),
+  setString: (key: string, value: string) => mmkvStorage.set(key, value),
+  setNumber: (key: string, value: number) => mmkvStorage.set(key, value),
+  setObject: (key: string, value: object) =>
+    mmkvStorage.set(key, JSON.stringify(value)),
+  getBool: (key: string) => mmkvStorage.getBoolean(key),
+  getString: (key: string) => mmkvStorage.getString(key),
+  getNumber: (key: string) => mmkvStorage.getNumber(key),
+  getObject: <T extends object>(key: string) => {
+    const str = mmkvStorage.getString(key);
+    if (str === undefined) return str;
+    return JSON.parse(str) as T;
+  },
+  useBool: (key: string, defaultValue: boolean) => {
+    const [value, setValue] = useMMKVBoolean(key, mmkvStorage);
+    return [value ?? defaultValue, setValue] as const;
+  },
+  useString: (key: string, defaultValue: string) => {
+    const [value, setValue] = useMMKVString(key, mmkvStorage);
+    return [value ?? defaultValue, setValue] as const;
+  },
+  useNumber: (key: string, defaultValue: number) => {
+    const [value, setValue] = useMMKVNumber(key, mmkvStorage);
+    return [value ?? defaultValue, setValue] as const;
+  },
+  useObject: <T>(key: string, defaultValue: T) => {
+    const [value, setValue] = useMMKVObject<T>(key, mmkvStorage);
+    return [value ?? defaultValue, setValue] as const;
+  },
+  hasKey: mmkvStorage.contains,
+  remove: mmkvStorage.delete,
+};

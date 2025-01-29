@@ -46,9 +46,6 @@ jest.mock('terraso-mobile-client/config', () => ({
   APP_CONFIG: {},
 }));
 
-let mmkvMock = require('react-native-mmkv-storage/jest/dist/jest/memoryStore.js');
-mmkvMock.mock(); // Mock the storage
-
 setAPIConfig({
   terrasoAPIURL: 'http://127.0.0.1:8000',
   graphQLEndpoint: '/graphql/',
@@ -67,9 +64,3 @@ global.console.warn = jest.fn();
 // for native base animations. Would be nice to figure out how to disable this
 // For now, just silence
 global.console.error = jest.fn();
-
-beforeEach(() => {
-  // Install the in-memory adapter
-  mmkvMock.unmock(); // Cleanup if already mocked
-  mmkvMock.mock(); // Mock the storage
-});

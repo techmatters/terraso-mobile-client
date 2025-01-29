@@ -27,12 +27,12 @@ import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink'
 import {InternalLink} from 'terraso-mobile-client/components/links/InternalLink';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {WELCOME_SCREEN_SEEN_KEY} from 'terraso-mobile-client/constants';
-import {useKVStorage} from 'terraso-mobile-client/hooks/useStorage';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 export const WelcomeScreen = () => {
   const {t} = useTranslation();
-  const [, setWelcomeScreenAlreadySeen] = useKVStorage(
+  const [, setWelcomeScreenAlreadySeen] = kvStorage.useBool(
     WELCOME_SCREEN_SEEN_KEY,
     false,
   );

@@ -94,9 +94,6 @@ test('offline feature flag starts on in dev mode and can be disabled', () => {
 
     expect(isFlagEnabled('FF_offline')).toBe(true);
 
-    // This assertion fails due to a bug in the react-native-mmkv-storage library
-    // It can be commented back in when this is fixed:
-    // https://github.com/ammarahm-ed/react-native-mmkv-storage/issues/360
-    // expect(willFlagBeEnabledOnReload('FF_offline')).toBe(false);
+    expect(willFlagBeEnabledOnReload('FF_offline')).toBe(false);
   });
 });

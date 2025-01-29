@@ -34,10 +34,10 @@ setAPIConfig({
       return value === null ? undefined : value;
     },
     setToken: (name, value) => {
-      kvStorage.setStringAsync(name, value);
+      kvStorage.setString(name, value);
     },
     removeToken: name => {
-      kvStorage.removeItem(name);
+      kvStorage.remove(name);
     },
     initialToken: null,
   },

@@ -27,7 +27,7 @@ export const persistenceMiddleware: Middleware = store => next => action => {
   const result = next(action);
   if (isFlagEnabled('FF_offline')) {
     const newState = store.getState();
-    kvStorage.setMap(PERSISTED_STATE_KEY, newState);
+    kvStorage.setObject(PERSISTED_STATE_KEY, newState);
   }
   return result;
 };
@@ -35,7 +35,7 @@ export const persistenceMiddleware: Middleware = store => next => action => {
 export const loadPersistedReduxState = () => {
   if (isFlagEnabled('FF_offline')) {
     return (
-      kvStorage.getMap<Partial<AppState>>(PERSISTED_STATE_KEY) ?? undefined
+      kvStorage.getObject<Partial<AppState>>(PERSISTED_STATE_KEY) ?? undefined
     );
   }
 };

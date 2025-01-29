@@ -18,6 +18,6 @@
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 test('kvStorage mock works', () => {
-  kvStorage.setMap('map-key', {testKey: 'testValue'});
-  expect(kvStorage.getMap('map-key')).toEqual({testKey: 'testValue'});
+  kvStorage.setObject('map-key', {testKey: 'testValue'});
+  expect(kvStorage.getObject('map-key')).toEqual({testKey: 'testValue'});
 });
