@@ -41,7 +41,7 @@ import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenConte
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {MapSearch} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearch';
+import {MapHeader} from 'terraso-mobile-client/screens/SitesScreen/components/MapHeader';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/components/SiteListBottomSheet';
 import {
   MapRef,
@@ -168,7 +168,7 @@ export const SitesScreen = memo(() => {
       <ListFilterProvider items={siteList} filters={filters}>
         <Box flex={1}>
           <Box flex={1} zIndex={-1}>
-            <MapSearch
+            <MapHeader
               zoomTo={searchFunction}
               zoomToUser={moveToUserAndShowCallout}
               toggleMapLayer={toggleMapLayer}
