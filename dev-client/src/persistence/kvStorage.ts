@@ -85,6 +85,6 @@ export const kvStorage = {
     const [value, setValue] = useMMKVObject<T>(key, mmkvStorage);
     return [value ?? defaultValue, setValue] as const;
   },
-  hasKey: mmkvStorage.contains,
-  remove: mmkvStorage.delete,
+  hasKey: (key: string) => mmkvStorage.contains(key),
+  remove: (key: string) => mmkvStorage.delete(key),
 };
