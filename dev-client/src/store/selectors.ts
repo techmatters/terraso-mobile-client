@@ -284,8 +284,13 @@ export type AggregatedInterval = {
   interval: SoilDataDepthInterval;
 };
 
+export const pickSoilDataFromMap = (
+  siteId: string,
+  soilData: Record<string, SoilData | undefined>,
+) => soilData[siteId] ?? DEFAULT_SOIL_DATA;
+
 export const selectSoilData = (siteId: string) => (state: AppState) =>
-  state.soilData.soilData[siteId] ?? DEFAULT_SOIL_DATA;
+  pickSoilDataFromMap(siteId, state.soilData.soilData);
 
 export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
   const projectSettings = useSiteProjectSoilSettings(siteId);

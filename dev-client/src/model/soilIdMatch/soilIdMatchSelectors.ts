@@ -19,13 +19,13 @@ import {createSelector} from '@reduxjs/toolkit';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {DEFAULT_SOIL_DATA} from 'terraso-mobile-client/model/soilData/soilDataConstants';
 import {soilDataToIdInput} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchInputs';
 import {
   coordsKey,
   SoilIdLocationEntry,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
+import {pickSoilDataFromMap} from 'terraso-mobile-client/store/selectors';
 
 export const selectLocationBasedMatches = (
   coords: Coords,
@@ -70,7 +70,7 @@ export const selectNextDataBasedInputs = createSelector(
     /* Combine soil data with site IDs to extract relevant entries */
     (soilData, siteIds) =>
       Object.fromEntries(
-        siteIds.map(siteId => [siteId, soilData[siteId] ?? DEFAULT_SOIL_DATA]),
+        siteIds.map(siteId => [siteId, pickSoilDataFromMap(siteId, soilData)]),
       ),
   ),
   /* Pass site-specific soil data through input format converter */
