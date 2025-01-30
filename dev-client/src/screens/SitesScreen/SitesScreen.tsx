@@ -38,7 +38,6 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {MapHeader} from 'terraso-mobile-client/screens/SitesScreen/components/MapHeader';
@@ -54,9 +53,8 @@ import {
   siteCallout,
 } from 'terraso-mobile-client/screens/SitesScreen/SitesScreenCallout';
 import {getSitesScreenFilters} from 'terraso-mobile-client/screens/SitesScreen/utils/sitesScreenFilters';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {useSelector} from 'terraso-mobile-client/store';
 import {
-  selectCurrentUserID,
   selectSites,
   selectSitesAndUserRoles,
 } from 'terraso-mobile-client/store/selectors';
@@ -65,10 +63,8 @@ export const SitesScreen = memo(() => {
   const siteListBottomSheetRef = useRef<BottomSheet>(null);
   const [mapStyleURL, setMapStyleURL] = useState(Mapbox.StyleURL.Street);
   const [calloutState, setCalloutState] = useState<CalloutState>(noneCallout());
-  const currentUserID = useSelector(selectCurrentUserID);
   const sites = useSelector(selectSites);
   const siteList = useMemo(() => Object.values(sites), [sites]);
-  const dispatch = useDispatch();
   const mapRef = useRef<MapRef>(null);
   const siteProjectRoles = useSelector(selectSitesAndUserRoles);
   const sitesScreenContext = useContext(SitesScreenContext);
@@ -94,12 +90,6 @@ export const SitesScreen = memo(() => {
     }),
     [showSiteOnMap, collapseBottomSheet],
   );
-
-  useEffect(() => {
-    if (currentUserID !== undefined) {
-      dispatch(fetchSoilDataForUser(currentUserID));
-    }
-  }, [dispatch, currentUserID]);
 
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
 

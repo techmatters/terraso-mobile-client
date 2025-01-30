@@ -20,7 +20,8 @@ import {useEffect, useRef} from 'react';
 import _ from 'lodash';
 
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
 import {
   useDebouncedIsOffline,
   useSyncErrorSiteIds,
@@ -36,6 +37,16 @@ export const PullRequester = () => {
   useEffect(() => {
     dispatch(setPullRequested(true));
   }, [dispatch]);
+
+  // Request a pull when we login
+  const currentUserID = useSelector(selectCurrentUserID);
+  const previousCurrentUserID = useRef<string | undefined>(currentUserID);
+  useEffect(() => {
+    if (currentUserID !== undefined && previousCurrentUserID === undefined) {
+      dispatch(setPullRequested(true));
+    }
+    previousCurrentUserID.current = currentUserID;
+  }, [currentUserID, dispatch]);
 
   // Request a pull when we come online
   const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
