@@ -221,7 +221,8 @@
         "label": "Proyecto",
         "title": "Proyectos",
         "header": "Proyectos",
-        "offline": "TK Project management is only available online.",
+        "offline_create": "TK Projects can only be created and managed while online.",
+        "offline_cant_edit": "TK You are offline. Projects can't be edited.",
         "none": {
             "header": "No tienes ningún proyecto.",
             "info": "Los proyectos te permiten agrupar sitios, establecer necesidades de datos y administrar a los miembros del equipo."

@@ -87,92 +87,92 @@ export const ProjectListScreen = () => {
         flexShrink={0}
         flexBasis="70%"
         space="10px">
-        {isOffline ? (
-          <OfflineMessageBox message={t('projects.offline')} />
-        ) : (
-          <>
-            {isLoadingData ? (
-              <ActivityIndicator size="large" />
-            ) : (
-              activeProjects.length === 0 && (
-                <Box mb="md">
-                  <Text bold>{t('projects.none.header')}</Text>
-                  <Text>{t('projects.none.info')}</Text>
-                </Box>
-              )
-            )}
+        <>
+          {isLoadingData ? (
+            <ActivityIndicator size="large" />
+          ) : (
+            activeProjects.length === 0 && (
+              <Box mb="md">
+                <Text bold>{t('projects.none.header')}</Text>
+                <Text>{t('projects.none.info')}</Text>
+              </Box>
+            )
+          )}
+          {isOffline ? (
+            <OfflineMessageBox message={t('projects.offline_create')} />
+          ) : (
             <Box alignItems="flex-start" pb="md">
               <AddButton
                 label={t('projects.create_button')}
                 onPress={onPress}
               />
             </Box>
-            {activeProjects.length > 0 && (
-              <ListFilterProvider
-                items={activeProjects}
-                filters={{
-                  search: {
-                    kind: 'filter',
-                    f: searchText,
-                    preprocess: normalizeText,
-                    lookup: {key: 'name'},
-                    hide: true,
-                  },
-                  role: {
-                    kind: 'filter',
-                    f: equals,
-                    lookup: {key: 'id', record: projectRoleLookup},
-                  },
-                  sort: {
-                    kind: 'sorting',
-                    options: {
-                      nameAsc: {
-                        key: 'name',
-                        order: 'ascending',
-                      },
-                      nameDesc: {
-                        key: 'name',
-                        order: 'descending',
-                      },
-                      lastModAsc: {
-                        key: 'updatedAt',
-                        order: 'ascending',
-                      },
-                      lastModDesc: {
-                        key: 'updatedAt',
-                        order: 'descending',
-                      },
+          )}
+          {activeProjects.length > 0 && (
+            <ListFilterProvider
+              items={activeProjects}
+              filters={{
+                search: {
+                  kind: 'filter',
+                  f: searchText,
+                  preprocess: normalizeText,
+                  lookup: {key: 'name'},
+                  hide: true,
+                },
+                role: {
+                  kind: 'filter',
+                  f: equals,
+                  lookup: {key: 'id', record: projectRoleLookup},
+                },
+                sort: {
+                  kind: 'sorting',
+                  options: {
+                    nameAsc: {
+                      key: 'name',
+                      order: 'ascending',
+                    },
+                    nameDesc: {
+                      key: 'name',
+                      order: 'descending',
+                    },
+                    lastModAsc: {
+                      key: 'updatedAt',
+                      order: 'ascending',
+                    },
+                    lastModDesc: {
+                      key: 'updatedAt',
+                      order: 'descending',
                     },
                   },
-                }}>
-                <ListFilterModal
-                  searchInput={
-                    <TextInputFilter
-                      name="search"
-                      label={t('projects.search_label')}
-                      placeholder={t('projects.search.placeholder')}
-                    />
-                  }>
-                  <SelectFilter
-                    name="sort"
-                    label={t('projects.sort_label')}
-                    options={SORT_OPTIONS}
-                    renderValue={renderSortOption}
+                },
+              }}>
+              <ListFilterModal
+                searchInput={
+                  <TextInputFilter
+                    name="search"
+                    label={t('projects.search_label')}
+                    placeholder={t('projects.search.placeholder')}
                   />
-                  <SelectFilter
-                    name="role"
-                    label={t('projects.role_filter_label')}
-                    renderValue={renderRole}
-                    options={PROJECT_ROLES}
-                    unselectedLabel={t('general.filter.no_role')}
-                    nullable={true}
-                  />
-                </ListFilterModal>
-                <ProjectList />
-              </ListFilterProvider>
-            )}
-          </>
-        )}
+                }>
+                <SelectFilter
+                  name="sort"
+                  label={t('projects.sort_label')}
+                  options={SORT_OPTIONS}
+                  renderValue={renderSortOption}
+                />
+                <SelectFilter
+                  name="role"
+                  label={t('projects.role_filter_label')}
+                  renderValue={renderRole}
+                  options={PROJECT_ROLES}
+                  unselectedLabel={t('general.filter.no_role')}
+                  nullable={true}
+                />
+              </ListFilterModal>
+              <ProjectList />
+            </ListFilterProvider>
+          )}
+        </>
       </Column>
     </ScreenScaffold>
   );

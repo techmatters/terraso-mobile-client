@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
+import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {usePopNavigationAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
@@ -24,18 +25,28 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
 import {ProjectRoleContextProvider} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ProjectTabNavigator} from 'terraso-mobile-client/navigation/navigators/ProjectTabNavigator';
 import {ProjectDeletionContext} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectDeletionContext';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useSelector} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {projectId: string};
 
 export const ProjectViewScreen = ({projectId}: Props) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const isOffline = useIsOffline();
+
+  useEffect(() => {
+    if (isOffline) {
+      dispatch(addMessage(offlineProjectScreenMessage));
+    }
+  }, [isOffline, dispatch]);
 
   const project = useSelector(
     state => state.project.projects[projectId],

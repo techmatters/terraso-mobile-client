@@ -44,6 +44,7 @@ import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {captureConsoleIntegration} from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
+import {OfflineSnackbar} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
@@ -140,6 +141,7 @@ function App(): React.JSX.Element {
                       <BottomSheetModalProvider>
                         <GeospatialProvider>
                           <Toasts />
+                          <OfflineSnackbar />
                           <SitesScreenContextProvider>
                             <ForegroundPermissionsProvider>
                               <SyncNotificationContextProvider>

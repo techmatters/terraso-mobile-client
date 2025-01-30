@@ -15,9 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Divider} from 'react-native-paper';
+
+import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
@@ -31,6 +33,7 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Box,
@@ -38,6 +41,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {
   deleteUserFromProject,
@@ -68,6 +72,13 @@ export const ManageTeamMemberScreen = ({
   const project = useSelector(state => state.project.projects[projectId]);
   const user = useSelector(state => state.account.users[userId]);
   const membership = project?.memberships[membershipId];
+
+  const isOffline = useIsOffline();
+  useEffect(() => {
+    if (isOffline) {
+      dispatch(addMessage(offlineProjectScreenMessage));
+    }
+  }, [isOffline, dispatch]);
 
   const currentRole = membership ? membership.userRole : 'MANAGER';
   const [selectedRole, setSelectedRole] = useState(currentRole);
