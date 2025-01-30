@@ -4,9 +4,9 @@
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "Mejoras en la visualización de datos",
-            "bullet_2": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
-            "bullet_3": "Fotos del sitio"
+            "bullet_1": "Capacidades sin conexión",
+            "bullet_2": "Mejoras en la visualización de datos",
+            "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo"
         },
         "version_includes": {
             "title": "Esta version incluye:",
@@ -19,10 +19,10 @@
         "learn_more": "Aprende más acerca del uso de proyectos",
         "link_text": "LandPKS de Terraso",
         "link_url": "https://landpks.terraso.org/",
-        "terms": "TK By using LandPKS you accept our <privacy /> and <tos />.",
-        "privacy": "TK privacy policy",
-        "tos": "TK terms of service",
-        "get_started": "Comenzar"
+        "get_started": "Comenzar",
+        "terms": "Al utilizar LandPKS usted acepta nuestra <privacy /> y <tos />.",
+        "privacy": "Política de privacidad",
+        "tos": "Condiciones de servicio"
     },
     "search": {
         "placeholder": "Buscar en mapa"
@@ -32,11 +32,11 @@
         "members": "{{members}} Miembros",
         "coords": "{{lat}}, {{long}}",
         "empty": {
-            "info": "TK <bold>Three ways to create a site site:</bold>\n",
-            "map": "TK Tap anywhere on the map",
-            "icon": "TK Tap the My Location icon",
-            "coords": "TK Enter coordinates, address, or search term in the map search bar",
-            "summary": "TK A site lets you collect and save observations, learn more about the land and its potentnial, and share with others."
+            "info": "No tiene aún ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu suelo y su potencial, y compartir con otros.\n\n<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de utilizar el mapa para encontrar una ubicación para un sitio:",
+            "map": "Toca en cualquier lugar del mapa",
+            "icon": "Toca el icóno Mi ubicación",
+            "coords": "Introduce las coordenadas, la dirección o el término de búsqueda en la barra de búsqueda del mapa",
+            "summary": "Un sitio te permite recopilar y guardar observaciones, aprender más sobre el terreno y su potencial, y compartirlo con los demás."
         },
         "create": {
             "title": "Crear sitio",
@@ -83,7 +83,7 @@
             "min_length_error": "Debe tener al menos {{min}} caracteres",
             "placeholder_text": "Empieza a escribir tu nota…",
             "pinned_note": "Nota destacada",
-            "offline": "TK Creating and editing notes is only available online."
+            "offline": "La creación y edición de notas sólo está disponible en línea."
         },
         "search": {
             "placeholder": "Buscar sitios",
@@ -96,11 +96,11 @@
                 "distanceAsc": "Distancia (más cercana)",
                 "distanceDesc": "Distance (más lejana)"
             },
-            "offline": "You are offline. Search is not available, but you can enter exact coordinates. TK",
             "accessibility_label": "Ordenar sitios por nombre",
             "filter_projects": "Ordenar sitios por proyecto",
             "filter_role": "Ordenar sitios por rol",
-            "no_matches": "Ningún sitio coincide con las opciones de búsqueda y filtro actuales."
+            "no_matches": "Ningún sitio coincide con las opciones de búsqueda y filtro actuales.",
+            "offline": "No estás conectado. La búsqueda no está disponible, pero puedes introducir las coordenadas exactas."
         },
         "tabs": {
             "SITE": "Sitio",
@@ -109,7 +109,6 @@
             "NOTES": "Notas"
         },
         "list_title": "Lista de sitios",
-        "list_title_empty": "Crear sitio",
         "last_updated": "Última modificaión: {{date}} por {{name}}",
         "more_info": "Aprende más",
         "your_location": "Tu ubicación",
@@ -119,10 +118,6 @@
         "elevation_label": "Elevación",
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "desconocido",
-        "offline": {
-            "alert_title": "You are offline",
-            "alert_body": "Sites can only be created while online."
-        },
         "form": {
             "name_min_length_error": "El nombre del sitio debe tener un mínimo de {{min}} caracteres",
             "name_max_length_error": "El nombre del sitio debe tener un máximo de {{max}} caracteres",
@@ -146,7 +141,6 @@
                         "temp_location": "Los suelos enumerados son los más propensos de encontrarse en esta ubicación según los mapas de suelos del USDA NRCS.\n\nCrea un sitio aquí e introduce los datos recomendados para mejorar la precisión de las puntuaciones de coincidencia."
                     }
                 },
-                "match_score": "{{score}}",
                 "match": "coincidencia",
                 "error_generic_title": "No se puede obtener el mapa del suelo",
                 "error_generic_body": "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Vuelve a intentarlo más tarde.",
@@ -155,9 +149,10 @@
                 "native_lands_intro": "Recursos de suelos para las tierras indígenas:",
                 "native_lands_link": "nativeland.info",
                 "native_lands_url": "https://nativeland.info/",
-                "offline": "Las coincidencias de suelos se actualizarán aquí cuando estás sin conexión.",
-                "selector": "This is the correct soil",
-                "selected": "Selected Soil"
+                "match_score": "{{score}}",
+                "offline": "Las coincidencias de suelo se actualizarán cuando estés conectado.",
+                "selector": "Este es el suelo correcto",
+                "selected": "Suelo seleccionado"
             },
             "site_data": {
                 "title": "Datos del sitio",
@@ -165,10 +160,6 @@
                 "slope": {
                     "title": "Inclinación de pendiente",
                     "add_data": "Añadir pendiente"
-                },
-                "cracks": {
-                    "title": "TK Soil Cracks",
-                    "add_data": "TK Enter Cracks"
                 },
                 "soil_properties": {
                     "title": "Propiedades del suelo",
@@ -178,7 +169,11 @@
                     "texture": "Textura",
                     "color": "Color",
                     "rock_fragment": "Fragmento de roca",
-                    "add_data": "TK Enter properties"
+                    "add_data": "Añadir datos de suelo"
+                },
+                "cracks": {
+                    "title": "Grietas del suelo",
+                    "add_data": "Introducir grietas"
                 }
             },
             "soil_info": {
@@ -213,16 +208,19 @@
                     "4": "Pendiente del sitio",
                     "5": "Grietas del suelo"
                 },
-                "offline": "TK Soil properties score will update when you are online."
+                "offline": "La puntuación de las propiedades del suelo se actualizará cuando estés en línea."
             }
+        },
+        "list_title_empty": "Crear sitio",
+        "offline": {
+            "alert_title": "Estás fuera de linea",
+            "alert_body": "Los sitios sólo pueden crearse mientras estás en línea."
         }
     },
     "projects": {
         "label": "Proyecto",
         "title": "Proyectos",
         "header": "Proyectos",
-        "offline_create": "TK Projects can only be created and managed while online.",
-        "offline_cant_edit": "TK You are offline. Projects can't be edited.",
         "none": {
             "header": "No tienes ningún proyecto.",
             "info": "Los proyectos te permiten agrupar sitios, establecer necesidades de datos y administrar a los miembros del equipo."
@@ -382,7 +380,9 @@
             "description_min_length_error": "La descripción del proyecto debe tener un mínimo de {{min}} caracteres",
             "description_max_length_error": "La descripción del proyecto debe tener un máximo de {{max}} caracteres"
         },
-        "sort_label": "Ordenar proyectos por:"
+        "sort_label": "Ordenar proyectos por:",
+        "offline_create": "Los proyectos sólo pueden crearse y gestionarse mientras estás en línea.",
+        "offline_cant_edit": "Estás desconectado. Los proyectos no se pueden editar."
     },
     "settings": {
         "beta": "beta",
@@ -412,20 +412,13 @@
         "add": "Añadir",
         "submit": "enviar",
         "change": "Cambiar",
-        "create": "Create TK",
         "done": "Realizado",
         "required": "Obligatorio",
         "yes": "Sí",
         "no": "No",
         "next": "Siguiente",
         "proceed": "Proceder",
-        "offline_title": "Estás fuera de linea",
-        "not_available_offine": "Not available offline TK",
-        "offline_sign_in_title": "TK Sign in not available offline",
-        "offline_sign_in_body": "TK To use LandPKS Soil ID offline, you must first sign in while online.",
-        "not_available": "TK Not available",
         "last_modified": "Última modificación",
-        "dismiss": "Dismiss TK",
         "last_modified_by": "última modificación {{user}}, {{date}}",
         "select_all": "Seleccionar todo",
         "you_name": "{{name}} (tú)",
@@ -436,8 +429,6 @@
             "METRIC": "Métrico",
             "ENGLISH": "Inglés"
         },
-        "delete": "Eliminar",
-        "close": "Cerrar",
         "filter": {
             "no_sort": "Ninguno",
             "no_role": "Ninguno",
@@ -454,25 +445,34 @@
             "data_portal_link_text": "Portal de datos LandPKS",
             "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
             "privacy_policy_link_text": "Lee más acerca de nuestras políticas de privacidad de datos.",
-            "privacy_policy_label": "Privacy policy TK"
+            "privacy_policy_label": "Política de privacidad"
         },
         "character_limit": "{{current}} / {{limit}} caracteres",
         "open_settings": "Ir a configuraciones",
-        "support": "Support TK",
+        "dismiss": "Descartar",
+        "create": "Crear",
+        "delete": "Eliminar",
+        "close": "Cerrar",
+        "offline_title": "Estás fuera de linea",
+        "support": "Soporte",
         "help": {
-            "label": "Help and support TK",
+            "label": "Ayuda y soporte",
             "url": "https://landpks.terraso.org/help/"
         },
         "tos": {
-            "label": "Terms of service TK",
+            "label": "Condiciones de servicio",
             "url": "https://terraso.org/terms-of-service/"
-        }
+        },
+        "not_available_offine": "No disponible fuera de linea",
+        "offline_sign_in_title": "Inicio de sesión no disponible sin conexión",
+        "offline_sign_in_body": "Para utilizar LandPKS Soil ID sin conexión, primero debes iniciar sesión en línea.",
+        "not_available": "No disponible"
     },
     "errors": {
         "generic": "Error al guardar la informacion de la identificación del suelo.",
         "sync_conflict": {
-            "headline": "Project conflict TK",
-            "body": "This project has changed. Learn more and get support at the LandPKS website. TK",
+            "headline": "Conflicto de proyectos",
+            "body": "Este proyecto ha cambiado. Más información y ayuda en el sitio web de LandPKS.",
             "support_url": "https://landpks.terraso.org/help/synchronization-conflict/"
         }
     },
@@ -771,7 +771,7 @@
             "soilTexture": "Incluye clase de textura y volumen de fragmentos de roca"
         },
         "vertical_cracking": {
-            "description": "Las grietas se desarrollan en suelos ricos en arcilla después de que se sequen. <bold>TKTK</bold>",
+            "description": "Las grietas superficiales se desarrollan en suelos ricos en arcilla después de que se sequen.",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "25 cm",
@@ -922,15 +922,15 @@
         "text_input_label": "Filtrar lista por entrada de búsqueda"
     },
     "image": {
-        "use_camera": "Use Camera TK",
-        "choose_from_gallery": "Choose from Gallery TK"
+        "use_camera": "Sacar foto",
+        "choose_from_gallery": "Biblioteca de fotos"
     },
     "info": {
         "title": "Descubre el potencial de tu paisaje",
-        "description": "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.",
+        "description": "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.\n\n<2>Hay tres formas de utilizar el mapa:</2>",
         "description2": "<bold>Encuentra más información y guías</bold> en:\n<icon />",
-        "get_started": "TK <bold>To get started, use the map to create a site:</bold>",
-        "link_label": "landpks.terraso.org",
-        "link_url": "https://landpks.terraso.org/"
+        "link_label": "landpotential.org",
+        "link_url": "https://landpotential.org/",
+        "get_started": "<bold>Para empezar, utiliza el mapa para crear un sitio:</bold>"
     }
 }
