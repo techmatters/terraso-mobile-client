@@ -14,10 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {Divider, Switch} from 'react-native-paper';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
   Heading,
   Text,
@@ -32,17 +34,29 @@ import {
 } from 'terraso-mobile-client/config/featureFlags';
 
 export const FeatureFlagControlPanel = () => {
+  const [show, setShow] = useState(false);
+  const toggle = useCallback(() => setShow(!show), [show, setShow]);
   return (
     <>
       {APP_CONFIG.environment !== 'production' && (
-        <>
-          <Divider />
-          <View>
-            <Heading mb="10px">Feature Flags</Heading>
-            <FeatureFlagControl flag="FF_offline" />
-            <FeatureFlagControl flag="FF_testing" />
-          </View>
-        </>
+        <View>
+          <ContainedButton
+            label="Feature Flags: Show/Hide"
+            stretchToFit={true}
+            onPress={toggle}
+          />
+          {show && (
+            <>
+              <ScrollView>
+                <Heading mb="10px">Feature Flags</Heading>
+                <FeatureFlagControl flag="FF_offline" />
+                <View style={styles.spacer} />
+                <FeatureFlagControl flag="FF_testing" />
+                <Divider />
+              </ScrollView>
+            </>
+          )}
+        </View>
       )}
     </>
   );
@@ -85,4 +99,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  controlPanelContainer: {maxHeight: 300},
+  spacer: {paddingVertical: 6},
 });

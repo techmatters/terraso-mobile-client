@@ -36,6 +36,7 @@ export function UserSettingsScreen() {
       <RestrictByFlag flag="FF_testing">
         <UiComponentList />
       </RestrictByFlag>
+      <FeatureFlagControlPanel />
       <Column margin="12px">
         <UserIndicator />
         <MenuList>
@@ -46,7 +47,6 @@ export function UserSettingsScreen() {
           <DeleteAccountItem />
         </MenuList>
         <VersionIndicator />
-        <FeatureFlagControlPanel />
       </Column>
     </ScreenScaffold>
   );
