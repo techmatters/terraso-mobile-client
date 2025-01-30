@@ -55,7 +55,6 @@ import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScr
 import {SoilIdMatchContextProvider} from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNavigator';
-import {Toasts} from 'terraso-mobile-client/screens/Toasts';
 import {createStore} from 'terraso-mobile-client/store';
 import {
   loadPersistedReduxState,
@@ -140,7 +139,6 @@ function App(): React.JSX.Element {
                     <Portal.Host>
                       <BottomSheetModalProvider>
                         <GeospatialProvider>
-                          <Toasts />
                           <OfflineSnackbar />
                           <SitesScreenContextProvider>
                             <ForegroundPermissionsProvider>
