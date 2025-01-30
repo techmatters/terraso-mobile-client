@@ -15,7 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
+
+import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {
@@ -26,12 +29,14 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {AddTeamMemberForm} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/AddTeamMemberForm';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useSelector} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectProject} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
@@ -40,6 +45,14 @@ type Props = {
 
 export const AddUserToProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
+
+  const isOffline = useIsOffline();
+  useEffect(() => {
+    if (isOffline) {
+      dispatch(addMessage(offlineProjectScreenMessage));
+    }
+  }, [isOffline, dispatch]);
 
   const project = useSelector(selectProject(projectId));
 

@@ -229,7 +229,8 @@
         "label": "Project",
         "title": "Projects",
         "header": "Projects",
-        "offline": "Project management is only available online.",
+        "offline_create": "Projects can only be created and managed while online.",
+        "offline_cant_edit": "You are offline. Projects can't be edited.",
         "none": {
             "header": "You don’t have any projects.",
             "info": "Projects let you group sites, set requirements, and manage team members."

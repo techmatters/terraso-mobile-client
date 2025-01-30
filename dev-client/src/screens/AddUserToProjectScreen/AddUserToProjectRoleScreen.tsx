@@ -15,11 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {TabActions} from '@react-navigation/native';
 
+import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
 import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -32,11 +33,13 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
 import {
   Box,
   Column,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {addUserToProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -61,6 +64,13 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
   const newUser = useSelector(state => state.account.users[userId]);
 
   const [selectedRole, setSelectedRole] = useState<ProjectRole>('VIEWER');
+
+  const isOffline = useIsOffline();
+  useEffect(() => {
+    if (isOffline) {
+      dispatch(addMessage(offlineProjectScreenMessage));
+    }
+  }, [isOffline, dispatch]);
 
   const addUser = useCallback(async () => {
     try {
