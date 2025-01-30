@@ -147,11 +147,7 @@ describe('record', () => {
 
     test('record synced date', () => {
       const at = Date.now();
-      const result = errorRecord(
-        {},
-        {value: 'error', revisionId: 123},
-        Date.now(),
-      );
+      const result = errorRecord({}, {value: 'error', revisionId: 123}, at);
       expect(result.lastSyncedAt).toEqual(at);
     });
 
