@@ -277,7 +277,7 @@ export const useProjectSoilSettings = (projectId: string) =>
   useProjectSoilSettingsBase(projectId);
 
 export const useSiteProjectSoilSettings = (siteId: string) =>
-  useProjectSoilSettingsBase(useSelector(selectSite(siteId)).projectId);
+  useProjectSoilSettingsBase(useSelector(selectSite(siteId))?.projectId);
 
 export type AggregatedInterval = {
   isFromPreset: boolean;

@@ -74,7 +74,6 @@ type Props = {
 };
 
 export const SlopeSteepnessScreen = ({siteId}: Props) => {
-  const name = useSelector(state => state.site.sites[siteId].name);
   const {t} = useTranslation();
   const soilData = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
@@ -150,7 +149,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
     <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
-          AppBar={<AppBar title={name} />}
+          AppBar={<AppBar title={site.name} />}
           BottomNavigation={null}>
           <SiteRoleContextProvider siteId={siteId}>
             <ScrollView
