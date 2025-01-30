@@ -50,7 +50,7 @@ export const useNavToSiteAndShowSyncError = (siteId: string) => {
   const syncNotifications = useSyncNotificationContext();
 
   return useCallback(() => {
-    navigation.navigate('SITE_TABS', {siteId: siteId});
+    navigation.popTo('SITE_TABS', {siteId: siteId});
     if (isFlagEnabled('FF_offline')) {
       syncNotifications.showError();
     }
