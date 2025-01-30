@@ -21,3 +21,11 @@ test('kvStorage mock works', () => {
   kvStorage.setObject('map-key', {testKey: 'testValue'});
   expect(kvStorage.getObject('map-key')).toEqual({testKey: 'testValue'});
 });
+
+test('kvStorage can remove values', () => {
+  expect(kvStorage.hasKey('key')).toBe(false);
+  kvStorage.setBool('key', true);
+  expect(kvStorage.hasKey('key')).toBe(true);
+  kvStorage.remove('key');
+  expect(kvStorage.hasKey('key')).toBe(false);
+});
