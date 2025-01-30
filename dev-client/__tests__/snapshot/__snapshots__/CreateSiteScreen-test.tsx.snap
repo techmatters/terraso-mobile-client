@@ -81,14 +81,21 @@ exports[`renders correctly 1`] = `
           sheetLargestUndimmedDetentIndex={-1}
           stackPresentation="push"
           style={
-            {
-              "bottom": 0,
-              "left": 0,
-              "position": "absolute",
-              "right": 0,
-              "top": 0,
-              "zIndex": undefined,
-            }
+            [
+              [
+                {
+                  "bottom": 0,
+                  "left": 0,
+                  "position": "absolute",
+                  "right": 0,
+                  "top": 0,
+                },
+                undefined,
+              ],
+              {
+                "zIndex": undefined,
+              },
+            ]
           }
           swipeDirection="horizontal"
         >
@@ -342,20 +349,28 @@ exports[`renders correctly 1`] = `
                               <View
                                 collapsable={false}
                                 style={
-                                  {
-                                    "backgroundColor": "rgba(73, 69, 79, 1)",
-                                    "bottom": 0,
-                                    "height": 1,
-                                    "left": 0,
-                                    "position": "absolute",
-                                    "right": 0,
-                                    "transform": [
-                                      {
-                                        "scaleY": 0.5,
-                                      },
-                                    ],
-                                    "zIndex": 1,
-                                  }
+                                  [
+                                    {
+                                      "bottom": 0,
+                                      "height": 2,
+                                      "left": 0,
+                                      "position": "absolute",
+                                      "right": 0,
+                                      "zIndex": 1,
+                                    },
+                                    {
+                                      "height": 1,
+                                    },
+                                    {
+                                      "backgroundColor": "rgba(73, 69, 79, 1)",
+                                      "transform": [
+                                        {
+                                          "scaleY": 0.5,
+                                        },
+                                      ],
+                                    },
+                                    undefined,
+                                  ]
                                 }
                                 testID="text-input-underline"
                               />
@@ -622,20 +637,28 @@ exports[`renders correctly 1`] = `
                               <View
                                 collapsable={false}
                                 style={
-                                  {
-                                    "backgroundColor": "rgba(73, 69, 79, 1)",
-                                    "bottom": 0,
-                                    "height": 1,
-                                    "left": 0,
-                                    "position": "absolute",
-                                    "right": 0,
-                                    "transform": [
-                                      {
-                                        "scaleY": 0.5,
-                                      },
-                                    ],
-                                    "zIndex": 1,
-                                  }
+                                  [
+                                    {
+                                      "bottom": 0,
+                                      "height": 2,
+                                      "left": 0,
+                                      "position": "absolute",
+                                      "right": 0,
+                                      "zIndex": 1,
+                                    },
+                                    {
+                                      "height": 1,
+                                    },
+                                    {
+                                      "backgroundColor": "rgba(73, 69, 79, 1)",
+                                      "transform": [
+                                        {
+                                          "scaleY": 0.5,
+                                        },
+                                      ],
+                                    },
+                                    undefined,
+                                  ]
                                 }
                                 testID="text-input-underline"
                               />
@@ -858,20 +881,28 @@ exports[`renders correctly 1`] = `
                               <View
                                 collapsable={false}
                                 style={
-                                  {
-                                    "backgroundColor": "rgba(73, 69, 79, 1)",
-                                    "bottom": 0,
-                                    "height": 1,
-                                    "left": 0,
-                                    "position": "absolute",
-                                    "right": 0,
-                                    "transform": [
-                                      {
-                                        "scaleY": 0.5,
-                                      },
-                                    ],
-                                    "zIndex": 1,
-                                  }
+                                  [
+                                    {
+                                      "bottom": 0,
+                                      "height": 2,
+                                      "left": 0,
+                                      "position": "absolute",
+                                      "right": 0,
+                                      "zIndex": 1,
+                                    },
+                                    {
+                                      "height": 1,
+                                    },
+                                    {
+                                      "backgroundColor": "rgba(73, 69, 79, 1)",
+                                      "transform": [
+                                        {
+                                          "scaleY": 0.5,
+                                        },
+                                      ],
+                                    },
+                                    undefined,
+                                  ]
                                 }
                                 testID="text-input-underline"
                               />
