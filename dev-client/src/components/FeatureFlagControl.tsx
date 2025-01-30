@@ -20,6 +20,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Divider, Switch} from 'react-native-paper';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {
   Heading,
   Text,
@@ -48,11 +49,13 @@ export const FeatureFlagControlPanel = () => {
           {show && (
             <>
               <ScrollView>
-                <Heading mb="10px">Feature Flags</Heading>
-                <FeatureFlagControl flag="FF_offline" />
-                <View style={styles.spacer} />
-                <FeatureFlagControl flag="FF_testing" />
-                <Divider />
+                <ScreenContentSection>
+                  <Heading mb="10px">Feature Flags</Heading>
+                  <FeatureFlagControl flag="FF_offline" />
+                  <View style={styles.spacer} />
+                  <FeatureFlagControl flag="FF_testing" />
+                  <Divider />
+                </ScreenContentSection>
               </ScrollView>
             </>
           )}
