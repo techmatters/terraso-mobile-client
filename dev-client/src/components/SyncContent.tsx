@@ -32,9 +32,11 @@ export const SyncContent = () => {
   return (
     <>
       <RestrictByFlag flag="FF_offline">
-        <SyncButton />
-        <PullInfo />
-        <PushInfo />
+        <RestrictByFlag flag="FF_testing">
+          <SyncButton />
+          <PullInfo />
+          <PushInfo />
+        </RestrictByFlag>
       </RestrictByFlag>
     </>
   );
