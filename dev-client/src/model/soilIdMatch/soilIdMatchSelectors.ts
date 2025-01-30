@@ -25,7 +25,7 @@ import {
   SoilIdLocationEntry,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
-import {pickSoilDataFromMap} from 'terraso-mobile-client/store/selectors';
+import {getSoilDataForSite} from 'terraso-mobile-client/store/selectors';
 
 export const selectLocationBasedMatches = (
   coords: Coords,
@@ -60,6 +60,8 @@ export const selectDataBasedInputs = createSelector(
 /*
  * Memoized selector to let us select the upcoming data-based inputs for a set of site IDs (potentially expensive;
  * uses nested memoization to only recalculate input when source soil data changes)
+ *
+ * NOTE: these are the _next_ inputs for the soil ID algorithm, but the _current_ inputs for the site
  */
 export const selectNextDataBasedInputs = createSelector(
   createSelector(
@@ -70,7 +72,7 @@ export const selectNextDataBasedInputs = createSelector(
     /* Combine soil data with site IDs to extract relevant entries */
     (soilData, siteIds) =>
       Object.fromEntries(
-        siteIds.map(siteId => [siteId, pickSoilDataFromMap(siteId, soilData)]),
+        siteIds.map(siteId => [siteId, getSoilDataForSite(siteId, soilData)]),
       ),
   ),
   /* Pass site-specific soil data through input format converter */
