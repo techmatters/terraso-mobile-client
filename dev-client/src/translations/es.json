@@ -3,7 +3,10 @@
         "title": "Bienvenido a LandPKS Soil ID",
         "next": {
             "title": "¿Qué sigue?",
-            "subtitle": "Versiones futuras incluirán:"
+            "subtitle": "Versiones futuras incluirán:",
+            "bullet_1": "Capacidades sin conexión",
+            "bullet_2": "Mejoras en la visualización de datos",
+            "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo"
         },
         "version_includes": {
             "title": "Esta version incluye:",
@@ -28,6 +31,13 @@
         "progress": "Progreso: {{progress}}",
         "members": "{{members}} Miembros",
         "coords": "{{lat}}, {{long}}",
+        "empty": {
+            "info": "No tiene aún ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu suelo y su potencial, y compartir con otros.\n\n<bold>Utiliza el mapa para crear un sitio.</bold> Hay tres formas de utilizar el mapa para encontrar una ubicación para un sitio:",
+            "map": "Toca en cualquier lugar del mapa",
+            "icon": "Toca el icóno Mi ubicación",
+            "coords": "Introduce las coordenadas, la dirección o el término de búsqueda en la barra de búsqueda del mapa",
+            "summary": "Un sitio te permite recopilar y guardar observaciones, aprender más sobre el terreno y su potencial, y compartirlo con los demás."
+        },
         "create": {
             "title": "Crear sitio",
             "description": "Crea un sitio aquí para guardar esta ubicación, recopilar datos y ver informes más detallados.",
@@ -69,6 +79,7 @@
             "edit_title": "Nota acerca del sitio",
             "note_attribution": "{{createdAt}} por {{name}}",
             "confirm_removal_title": "¿Eliminar nota?",
+            "confirm_removal_body": "Esta acción no se puede deshacer.",
             "min_length_error": "Debe tener al menos {{min}} caracteres",
             "placeholder_text": "Empieza a escribir tu nota…",
             "pinned_note": "Nota destacada",
@@ -97,6 +108,7 @@
             "SOIL": "Suelo",
             "NOTES": "Notas"
         },
+        "list_title": "Lista de sitios",
         "last_updated": "Última modificaión: {{date}} por {{name}}",
         "more_info": "Aprende más",
         "your_location": "Tu ubicación",
@@ -146,7 +158,8 @@
                 "title": "Datos del sitio",
                 "description": "Mejora los resultados de Soil ID al introducir algunos datos para esta ubicación a sobre la marcha utilizando las guías útiles.",
                 "slope": {
-                    "title": "Inclinación de pendiente"
+                    "title": "Inclinación de pendiente",
+                    "add_data": "Añadir pendiente"
                 },
                 "soil_properties": {
                     "title": "Propiedades del suelo",
@@ -155,7 +168,8 @@
                     "depth_units_ENGLISH": "”",
                     "texture": "Textura",
                     "color": "Color",
-                    "rock_fragment": "Fragmento de roca"
+                    "rock_fragment": "Fragmento de roca",
+                    "add_data": "Añadir datos de suelo"
                 },
                 "cracks": {
                     "title": "Grietas del suelo",
@@ -198,12 +212,6 @@
             }
         },
         "list_title_empty": "Crear sitio",
-        "empty": {
-            "map": "Toca en cualquier lugar del mapa",
-            "icon": "Toca el icóno Mi ubicación",
-            "coords": "Introduce las coordenadas, la dirección o el término de búsqueda en la barra de búsqueda del mapa",
-            "summary": "Un sitio te permite recopilar y guardar observaciones, aprender más sobre el terreno y su potencial, y compartirlo con los demás."
-        },
         "offline": {
             "alert_title": "Estás fuera de linea",
             "alert_body": "Los sitios sólo pueden crearse mientras estás en línea."
@@ -255,6 +263,7 @@
                 "depth": "Profundidad ({{units}})",
                 "confirm_preset": {
                     "title": "¿Cambiar profundidades?",
+                    "body": "Se borrarán las observaciones de la fosa de suelo que se hayan introducido. Esta acción no se puede deshacer.",
                     "confirm": "Cambiar"
                 }
             },
@@ -285,7 +294,8 @@
             "archive_button_prompt": "¿Archivar proyecto?",
             "archive_description": "El proyecto se moverá a Proyectos archivados, por lo que será de sólo lectura. Los miembros del equipo podrán acceder a los datos, y los administradores del proyecto podrán restaurarlo en cualquier momento. Los proyectos públicos archivados seguirán siendo visibles en los portales de datos.",
             "delete_button": "Eliminar",
-            "delete_button_prompt": "¿Eliminar proyecto?"
+            "delete_button_prompt": "¿Eliminar proyecto?",
+            "delete_description": "Esto eliminará permanentemente el proyecto y las observaciones de sus sitios. Esto no se puede deshacer.\n\nLos jefes de proyecto tienen la opción de transferir los centros de este proyecto para conservar las observaciones de los centros."
         },
         "sites": {
             "add": "Añadir sitios",
@@ -309,6 +319,7 @@
             "delete_site": "Eliminar sitio",
             "delete_site_modal": {
                 "title": "¿Eliminar sitio?",
+                "body": "Esto eliminará permanentemente el sitio {{siteName}} y todas sus observaciones. Esto no se puede deshacer.",
                 "action_name": "Eliminar",
                 "project": "\n\nSi los sitios tienen datos ingresados con profundidades diferentes a lo especificado en este proyecto, esos datos se eliminarán. Esto no se puede deshacer."
             },
@@ -319,6 +330,7 @@
             },
             "transfer_site_modal": {
                 "title": "¿Transferir sitios?",
+                "body": "Los sitios transferidos utilizarán las entradas, ajustes y funciones de los miembros del equipo de este proyecto.\n\nSi los centros tienen observaciones introducidas a profundidades diferentes de las especificadas en este proyecto, esas observaciones se eliminarán. Esto no se puede deshacer.",
                 "action_name": "Transferir"
             }
         },
@@ -376,6 +388,8 @@
         "beta": "beta",
         "version": "Versión {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Usuario desconocido",
+        "sign_out": "Cerrar sesión",
+        "delete_account": "Eliminar cuenta",
         "delete_account_pending": "Pendiente",
         "unknown_version": "Versión de la aplicación sin etiquetar {{environment}}"
     },
@@ -396,6 +410,7 @@
         },
         "cancel": "Cancelar",
         "add": "Añadir",
+        "submit": "enviar",
         "change": "Cambiar",
         "done": "Realizado",
         "required": "Obligatorio",
@@ -533,10 +548,12 @@
             "depth_end": "profundidad final",
             "update_modal": {
                 "title": "¿Cambiar profunidad?",
+                "body": "Las observaciones de la fosa de suelo que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
                 "action": "Cambiar"
             },
             "delete_modal": {
                 "title": "¿Eliminar profundad?",
+                "body": "Las observaciones que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
                 "action": "Eliminar"
             },
             "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
@@ -754,6 +771,7 @@
             "soilTexture": "Incluye clase de textura y volumen de fragmentos de roca"
         },
         "vertical_cracking": {
+            "description": "Las grietas superficiales se desarrollan en suelos ricos en arcilla después de que se sequen.",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "25 cm",
@@ -903,9 +921,16 @@
         "clear_search_label": "Limpiar filtro de búsqueda",
         "text_input_label": "Filtrar lista por entrada de búsqueda"
     },
+    "image": {
+        "use_camera": "Sacar foto",
+        "choose_from_gallery": "Biblioteca de fotos"
+    },
     "info": {
         "title": "Descubre el potencial de tu paisaje",
+        "description": "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.\n\n<2>Hay tres formas de utilizar el mapa:</2>",
         "description2": "<bold>Encuentra más información y guías</bold> en:\n<icon />",
+        "link_label": "landpotential.org",
+        "link_url": "https://landpotential.org/",
         "get_started": "<bold>Para empezar, utiliza el mapa para crear un sitio:</bold>"
     }
 }
