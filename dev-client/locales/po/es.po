@@ -36,7 +36,6 @@ msgid "site##coords"
 msgstr "{{lat}}, {{long}}"
 
 #: 
-#, fuzzy
 msgid "site##empty##info"
 msgstr "No tiene aún ningún sitio. Un sitio te permite recopilar y guardar datos, aprender más sobre tu suelo y su potencial, y compartir con otros.\n"
 "\n"
@@ -341,7 +340,6 @@ msgid "general##add"
 msgstr "Añadir"
 
 #: 
-#, fuzzy
 msgid "general##submit"
 msgstr "enviar"
 
@@ -822,17 +820,14 @@ msgid "welcome##version_includes##bullet_4"
 msgstr "El manejo de projectos"
 
 #: 
-#, fuzzy
 msgid "welcome##next##bullet_1"
 msgstr "Capacidades sin conexión"
 
 #: 
-#, fuzzy
 msgid "welcome##next##bullet_2"
 msgstr "Mejoras en la visualización de datos"
 
 #: 
-#, fuzzy
 msgid "welcome##next##bullet_3"
 msgstr "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo"
 
@@ -853,7 +848,6 @@ msgid "welcome##get_started"
 msgstr "Comenzar"
 
 #: 
-#, fuzzy
 msgid "site##list_title"
 msgstr "Lista de sitios"
 
@@ -1075,7 +1069,6 @@ msgid "site##soil_id##site_data##slope##title"
 msgstr "Inclinación de pendiente"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##site_data##slope##add_data"
 msgstr "Añadir pendiente"
 
@@ -1108,7 +1101,6 @@ msgid "site##soil_id##site_data##soil_properties##rock_fragment"
 msgstr "Fragmento de roca"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##site_data##soil_properties##add_data"
 msgstr "Añadir datos de suelo"
 
@@ -1233,7 +1225,6 @@ msgid "site##notes##confirm_removal_title"
 msgstr "¿Eliminar nota?"
 
 #: 
-#, fuzzy
 msgid "site##notes##confirm_removal_body"
 msgstr "Esta acción no se puede deshacer."
 
@@ -1322,7 +1313,6 @@ msgid "projects##inputs##depths##confirm_preset##title"
 msgstr "¿Cambiar profundidades?"
 
 #: 
-#, fuzzy
 msgid "projects##inputs##depths##confirm_preset##body"
 msgstr "Se borrarán las observaciones de la fosa de suelo que se hayan introducido. Esta acción no se puede deshacer."
 
@@ -1383,7 +1373,6 @@ msgid "projects##settings##delete_button_prompt"
 msgstr "¿Eliminar proyecto?"
 
 #: 
-#, fuzzy
 msgid "projects##settings##delete_description"
 msgstr "Esto eliminará permanentemente el proyecto y las observaciones de sus sitios. Esto no se puede deshacer.\n"
 "\n"
@@ -1418,7 +1407,6 @@ msgid "projects##sites##delete_site_modal##title"
 msgstr "¿Eliminar sitio?"
 
 #: 
-#, fuzzy
 msgid "projects##sites##delete_site_modal##body"
 msgstr "Esto eliminará permanentemente el sitio {{siteName}} y todas sus observaciones. Esto no se puede deshacer."
 
@@ -1443,7 +1431,6 @@ msgid "projects##sites##transfer_site_modal##title"
 msgstr "¿Transferir sitios?"
 
 #: 
-#, fuzzy
 msgid "projects##sites##transfer_site_modal##body"
 msgstr "Los sitios transferidos utilizarán las entradas, ajustes y funciones de los miembros del equipo de este proyecto.\n"
 "\n"
@@ -1558,12 +1545,10 @@ msgid "settings##unknown_user"
 msgstr "Usuario desconocido"
 
 #: 
-#, fuzzy
 msgid "settings##sign_out"
 msgstr "Cerrar sesión"
 
 #: 
-#, fuzzy
 msgid "settings##delete_account"
 msgstr "Eliminar cuenta"
 
@@ -1937,7 +1922,6 @@ msgid "soil##collection_method_description##soilTexture"
 msgstr "Incluye clase de textura y volumen de fragmentos de roca"
 
 #: 
-#, fuzzy
 msgid "soil##vertical_cracking##description"
 msgstr "Las grietas superficiales se desarrollan en suelos ricos en arcilla después de que se sequen."
 
@@ -2038,7 +2022,6 @@ msgid "soil##depth##update_modal##title"
 msgstr "¿Cambiar profunidad?"
 
 #: 
-#, fuzzy
 msgid "soil##depth##update_modal##body"
 msgstr "Las observaciones de la fosa de suelo que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer."
 
@@ -2051,7 +2034,6 @@ msgid "soil##depth##delete_modal##title"
 msgstr "¿Eliminar profundad?"
 
 #: 
-#, fuzzy
 msgid "soil##depth##delete_modal##body"
 msgstr "Las observaciones que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer."
 
@@ -2545,12 +2527,10 @@ msgid "slope##shape##select_labels##LINEAR"
 msgstr "Lineal"
 
 #: 
-#, fuzzy
 msgid "image##use_camera"
 msgstr "Sacar foto"
 
 #: 
-#, fuzzy
 msgid "image##choose_from_gallery"
 msgstr "Biblioteca de fotos"
 
@@ -2559,7 +2539,6 @@ msgid "info##title"
 msgstr "Descubre el potencial de tu paisaje"
 
 #: 
-#, fuzzy
 msgid "info##description"
 msgstr "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.\n"
 "\n"
@@ -2571,12 +2550,10 @@ msgstr "<bold>Encuentra más información y guías</bold> en:\n"
 "<icon />"
 
 #: 
-#, fuzzy
 msgid "info##link_label"
 msgstr "landpotential.org"
 
 #: 
-#, fuzzy
 msgid "info##link_url"
 msgstr "https://landpotential.org/"
 
