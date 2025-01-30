@@ -30,6 +30,9 @@ test('feature flags can be enabled', () => {
       },
     }));
 
+    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
+    kvStorage.setBool('FF_offline', false);
+
     const {
       isFlagEnabled,
       willFlagBeEnabledOnReload,
@@ -54,9 +57,6 @@ test('feature flags can be disabled', () => {
       },
     }));
 
-    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
-    kvStorage.setBool('FF_offline', true);
-
     const {
       isFlagEnabled,
       willFlagBeEnabledOnReload,
@@ -73,7 +73,25 @@ test('feature flags can be disabled', () => {
   });
 });
 
-test('offline feature flag starts on in dev mode and can be disabled', () => {
+test('testing feature flag is disabled in production', () => {
+  jest.isolateModules(() => {
+    jest.mock('terraso-mobile-client/config/index', () => ({
+      APP_CONFIG: {
+        environment: 'production',
+      },
+    }));
+
+    const {
+      isFlagEnabled,
+      willFlagBeEnabledOnReload,
+    } = require('terraso-mobile-client/config/featureFlags');
+
+    expect(isFlagEnabled('FF_testing')).toBe(false);
+    expect(willFlagBeEnabledOnReload('FF_testing')).toBe(false);
+  });
+});
+
+test('testing feature flag starts on in dev mode and can be disabled', () => {
   jest.isolateModules(() => {
     jest.mock('terraso-mobile-client/config/index', () => ({
       APP_CONFIG: {
@@ -87,13 +105,13 @@ test('offline feature flag starts on in dev mode and can be disabled', () => {
       setFlagWillBeEnabledOnReload,
     } = require('terraso-mobile-client/config/featureFlags');
 
-    expect(isFlagEnabled('FF_offline')).toBe(true);
-    expect(willFlagBeEnabledOnReload('FF_offline')).toBe(true);
+    expect(isFlagEnabled('FF_testing')).toBe(true);
+    expect(willFlagBeEnabledOnReload('FF_testing')).toBe(true);
 
-    setFlagWillBeEnabledOnReload('FF_offline', false);
+    setFlagWillBeEnabledOnReload('FF_testing', false);
 
-    expect(isFlagEnabled('FF_offline')).toBe(true);
+    expect(isFlagEnabled('FF_testing')).toBe(true);
 
-    expect(willFlagBeEnabledOnReload('FF_offline')).toBe(false);
+    expect(willFlagBeEnabledOnReload('FF_testing')).toBe(false);
   });
 });
