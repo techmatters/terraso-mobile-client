@@ -79,7 +79,6 @@ type CombinedSlope =
   `${SoilIdSoilDataDownSlopeChoices}:${SoilIdSoilDataCrossSlopeChoices}`;
 
 export const SlopeShapeScreen = ({siteId}: Props) => {
-  const name = useSelector(state => state.site.sites[siteId].name);
   const {t} = useTranslation();
   const {downSlope, crossSlope} = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
@@ -160,7 +159,7 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
     <ScreenDataRequirements requirements={requirements}>
       {() => (
         <ScreenScaffold
-          AppBar={<AppBar title={name} />}
+          AppBar={<AppBar title={site.name} />}
           BottomNavigation={null}>
           <SiteRoleContextProvider siteId={siteId}>
             <ScrollView
