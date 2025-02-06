@@ -588,7 +588,6 @@ Slope is important in identifying the soil. It also helps determine the soil’s
                 "flexDirection": "row",
                 "justifyContent": "space-between",
                 "position": "absolute",
-                "top": "-100%",
                 "width": "100%",
               }
             }
