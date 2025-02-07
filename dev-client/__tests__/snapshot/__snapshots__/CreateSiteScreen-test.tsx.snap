@@ -509,8 +509,8 @@ exports[`renders correctly 1`] = `
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
-                                  placeholder=" "
-                                  placeholderTextColor="rgba(73, 69, 79, 1)"
+                                  placeholder="Site Name"
+                                  placeholderTextColor="transparent"
                                   selectionColor="#8B8B8B"
                                   style={
                                     [
@@ -789,8 +789,7 @@ exports[`renders correctly 1`] = `
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
-                                  placeholder=" "
-                                  placeholderTextColor="rgba(73, 69, 79, 1)"
+                                  placeholderTextColor="transparent"
                                   selectionColor="#8B8B8B"
                                   style={
                                     [
@@ -1025,8 +1024,7 @@ exports[`renders correctly 1`] = `
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
-                                  placeholder=" "
-                                  placeholderTextColor="rgba(73, 69, 79, 1)"
+                                  placeholderTextColor="transparent"
                                   selectionColor="#8B8B8B"
                                   style={
                                     [
