@@ -2281,7 +2281,6 @@ exports[`renders correctly 1`] = `
                 "flexDirection": "row",
                 "justifyContent": "space-between",
                 "position": "absolute",
-                "top": "-100%",
                 "width": "100%",
               }
             }
