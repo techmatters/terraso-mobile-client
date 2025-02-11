@@ -82,7 +82,7 @@
     "reduce-reducers": "^1.0.4",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#a4df832",
     "use-debounce": "^10.0.4",
-    "uuid": "^10.0.0",
+    "uuid": "^11.0.4",
     "yup": "^1.6.1"
   },
   "devDependencies": {
