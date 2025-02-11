@@ -292,54 +292,60 @@ export const getSoilDataForSite = (
 export const selectSoilData = (siteId: string) => (state: AppState) =>
   getSoilDataForSite(siteId, state.soilData.soilData);
 
+export const filterToExistingDepthIntervals = (
+  projectSettings: ProjectSoilSettings | undefined,
+  soilData: SoilData,
+) => {
+  const presetIntervals =
+    projectSettings?.depthIntervals ?? sitePresetIntervals(soilData);
+  return [
+    ...presetIntervals.map(interval => {
+      const existingInterval = soilData.depthIntervals.find(
+        sameDepth(interval),
+      );
+      const enabledInputs = fromEntries(
+        soilPitMethods.map(method => [
+          methodEnabled(method),
+          projectSettings?.[methodRequired(method)] ||
+            (existingInterval?.[methodEnabled(method)] ??
+              (!projectSettings &&
+                DEFAULT_ENABLED_SOIL_PIT_METHODS.includes(method))),
+        ]),
+      );
+      return {
+        isFromPreset: true,
+        interval: {
+          ...enabledInputs,
+          ...interval,
+        },
+      };
+    }),
+    ...soilData.depthIntervals
+      .filter(interval => !presetIntervals.some(overlaps(interval)))
+      .map(interval => ({
+        isFromPreset: false,
+        interval: {
+          ...interval,
+          ...fromEntries(
+            soilPitMethods.map(method => [
+              methodEnabled(method),
+              interval?.[methodEnabled(method)] ??
+                DEFAULT_ENABLED_SOIL_PIT_METHODS.includes(method),
+            ]),
+          ),
+        },
+      })),
+  ].sort(({interval: a}, {interval: b}) => compareInterval(a, b));
+};
+
 export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
   const projectSettings = useSiteProjectSoilSettings(siteId);
   const soilData = useSelector(selectSoilData(siteId));
 
-  const presetIntervals =
-    projectSettings?.depthIntervals ?? sitePresetIntervals(soilData);
-
   return useMemo(
-    () =>
-      [
-        ...presetIntervals.map(interval => {
-          const existingInterval = soilData.depthIntervals.find(
-            sameDepth(interval),
-          );
-          const enabledInputs = fromEntries(
-            soilPitMethods.map(method => [
-              methodEnabled(method),
-              projectSettings?.[methodRequired(method)] ||
-                (existingInterval?.[methodEnabled(method)] ??
-                  (!projectSettings &&
-                    DEFAULT_ENABLED_SOIL_PIT_METHODS.includes(method))),
-            ]),
-          );
-          return {
-            isFromPreset: true,
-            interval: {
-              ...enabledInputs,
-              ...interval,
-            },
-          };
-        }),
-        ...soilData.depthIntervals
-          .filter(interval => !presetIntervals.some(overlaps(interval)))
-          .map(interval => ({
-            isFromPreset: false,
-            interval: {
-              ...interval,
-              ...fromEntries(
-                soilPitMethods.map(method => [
-                  methodEnabled(method),
-                  interval?.[methodEnabled(method)] ??
-                    DEFAULT_ENABLED_SOIL_PIT_METHODS.includes(method),
-                ]),
-              ),
-            },
-          })),
-      ].sort(({interval: a}, {interval: b}) => compareInterval(a, b)),
-    [presetIntervals, projectSettings, soilData.depthIntervals],
+    () => filterToExistingDepthIntervals(projectSettings, soilData),
+    [projectSettings, soilData],
+    // [presetIntervals, projectSettings, soilData.depthIntervals],
   );
 };
 
