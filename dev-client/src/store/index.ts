@@ -37,6 +37,7 @@ import {AppState, rootReducer} from 'terraso-mobile-client/store/reducers';
 
 export type {AppState} from 'terraso-mobile-client/store/reducers';
 export type AppDispatch = DispatchFromStoreFactory<typeof createStore>;
+export type AppStore = ReturnType<typeof createStore>;
 
 export const useSelector: TypedUseSelectorHook<AppState> = reduxUseSelector;
 export const useDispatch: () => AppDispatch = reduxUseDispatch;

@@ -15,9 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createContext} from 'react';
+import {createContext, useMemo, useState} from 'react';
 
 export const HeaderHeightContext = createContext<{
   headerHeight: number | undefined;
   setHeaderHeight: (height: number) => void;
 }>({headerHeight: undefined, setHeaderHeight: () => {}});
+
+export const HeaderHeightProvider = ({children}: React.PropsWithChildren) => {
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const value = useMemo(
+    () => ({headerHeight, setHeaderHeight}),
+    [headerHeight, setHeaderHeight],
+  );
+
+  return (
+    <HeaderHeightContext.Provider value={value}>
+      {children}
+    </HeaderHeightContext.Provider>
+  );
+};
