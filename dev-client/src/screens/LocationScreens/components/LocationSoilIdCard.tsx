@@ -130,7 +130,8 @@ const MatchContent = ({
     <>
       <Text variant="body1" color="primary.contrast" mb="5px">
         <Text bold>
-          {t(isSelected ? 'site.soil_id.matches.selected' : 'soil.top_match')}:{' '}
+          {t(isSelected ? 'site.soil_id.matches.selected' : 'soil.top_match')}
+          :{' '}
         </Text>
         <SoilIdStatusDisplay
           status={status}
