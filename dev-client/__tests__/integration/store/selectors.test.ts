@@ -50,6 +50,7 @@ import {
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {createStore} from 'terraso-mobile-client/store';
 import {
+  getVisibleDepthIntervals,
   selectProjectMembershipsWithUsers,
   selectProjectsWithTransferrableSites,
   selectSitesAndUserRoles,
@@ -521,4 +522,156 @@ test('overlapping site intervals get the project values of the preset interval',
       interval: {...siteDepthIntervals[1], label: 'second'},
     },
   ]);
+});
+
+// TODO-cknipe: Move utils from top of file to their own file?
+
+describe('getVisibleDepthIntervals', () => {
+  test('should return custom project intervals', () => {
+    const project = generateProject();
+    const site = generateSite({project: project});
+
+    const projectDepthIntervals = [
+      {depthInterval: {start: 1, end: 2}, label: 'first'},
+      {depthInterval: {start: 5, end: 6}, label: 'second'},
+    ];
+
+    const projectSettings = createProjectSettings(project, {
+      depthIntervals: projectDepthIntervals,
+      depthIntervalPreset: 'CUSTOM',
+    });
+
+    const siteSoilData = {
+      depthIntervals: [],
+      depthDependentData: [],
+      depthIntervalPreset: 'CUSTOM',
+    } as SoilData;
+
+    const result = getVisibleDepthIntervals(
+      site.id,
+      {[site.id]: site},
+      {[site.id]: siteSoilData},
+      projectSettings,
+    );
+
+    expect(result).toHaveLength(2);
+    expect(result[0].interval.depthInterval.start).toEqual(1);
+    expect(result[0].interval.depthInterval.end).toEqual(2);
+    expect(result[1].interval.depthInterval.start).toEqual(5);
+    expect(result[1].interval.depthInterval.end).toEqual(6);
+  });
+
+  test('should return preset project intervals', () => {
+    const project = generateProject();
+    const site = generateSite({project: project});
+
+    const projectSettings = createProjectSettings(project, {
+      depthIntervals: [],
+      depthIntervalPreset: 'NRCS',
+    });
+
+    const siteSoilData = {
+      depthIntervals: [],
+      depthDependentData: [],
+      // FYI sites in projects may have an inaccurate preset
+      depthIntervalPreset: 'CUSTOM',
+    } as SoilData;
+
+    const result = getVisibleDepthIntervals(
+      site.id,
+      {[site.id]: site},
+      {[site.id]: siteSoilData},
+      projectSettings,
+    );
+
+    expect(result).toHaveLength(6);
+    expect(result[0].interval.depthInterval.start).toEqual(0);
+    expect(result[0].interval.depthInterval.end).toEqual(5);
+    expect(result[1].interval.depthInterval.start).toEqual(5);
+    expect(result[1].interval.depthInterval.end).toEqual(15);
+  });
+
+  test('should return project + additional site intervals', () => {
+    const project = generateProject();
+    const site = generateSite({project: project});
+    const projectDepthIntervals = [
+      {depthInterval: {start: 1, end: 2}, label: 'first'},
+    ];
+    const projectSettings = createProjectSettings(project, {
+      depthIntervals: projectDepthIntervals,
+      depthIntervalPreset: 'CUSTOM',
+    });
+
+    const siteDepthIntervals = [{depthInterval: {start: 3, end: 4}, label: ''}];
+
+    const siteSoilData = {
+      depthIntervals: siteDepthIntervals,
+      depthDependentData: [],
+      // FYI sites in projects may have an inaccurate preset
+      depthIntervalPreset: 'NRCS',
+    } as SoilData;
+
+    const result = getVisibleDepthIntervals(
+      site.id,
+      {[site.id]: site},
+      {[site.id]: siteSoilData},
+      projectSettings,
+    );
+
+    expect(result).toHaveLength(2);
+    expect(result[0].interval.depthInterval.start).toEqual(1);
+    expect(result[0].interval.depthInterval.end).toEqual(2);
+    expect(result[1].interval.depthInterval.start).toEqual(3);
+    expect(result[1].interval.depthInterval.end).toEqual(4);
+  });
+
+  test('should return preset site intervals', () => {
+    const site = generateSite();
+
+    const siteSoilData = {
+      depthIntervals: [],
+      depthDependentData: [],
+      depthIntervalPreset: 'NRCS',
+    } as SoilData;
+
+    const result = getVisibleDepthIntervals(
+      site.id,
+      {[site.id]: site},
+      {[site.id]: siteSoilData},
+      {},
+    );
+
+    expect(result).toHaveLength(6);
+    expect(result[0].interval.depthInterval.start).toEqual(0);
+    expect(result[0].interval.depthInterval.end).toEqual(5);
+    expect(result[1].interval.depthInterval.start).toEqual(5);
+    expect(result[1].interval.depthInterval.end).toEqual(15);
+  });
+
+  test('should return custom site intervals', () => {
+    const site = generateSite();
+    const siteDepthIntervals = [
+      {depthInterval: {start: 1, end: 2}, label: 'first'},
+      {depthInterval: {start: 3, end: 4}, label: 'second'},
+    ];
+
+    const siteSoilData = {
+      depthIntervals: siteDepthIntervals,
+      depthDependentData: [],
+      depthIntervalPreset: 'CUSTOM',
+    } as SoilData;
+
+    const result = getVisibleDepthIntervals(
+      site.id,
+      {[site.id]: site},
+      {[site.id]: siteSoilData},
+      {},
+    );
+
+    expect(result).toHaveLength(2);
+    expect(result[0].interval.depthInterval.start).toEqual(1);
+    expect(result[0].interval.depthInterval.end).toEqual(2);
+    expect(result[1].interval.depthInterval.start).toEqual(3);
+    expect(result[1].interval.depthInterval.end).toEqual(4);
+  });
 });

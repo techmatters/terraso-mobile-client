@@ -25,7 +25,7 @@ import {
   SoilIdLocationEntry,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
-import {getSoilDataForSite} from 'terraso-mobile-client/store/selectors';
+import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/selectors';
 
 export const selectLocationBasedMatches = (
   coords: Coords,
@@ -63,18 +63,27 @@ export const selectDataBasedInputs = createSelector(
  *
  * NOTE: these are the _next_ inputs for the soil ID algorithm, but the _current_ inputs for the site
  */
+
 export const selectNextDataBasedInputs = createSelector(
   createSelector(
     [
-      (state: AppState) => state.soilData.soilData,
       (_: AppState, siteIds: string[]) => siteIds,
+      (state: AppState) => state.site.sites, //TODO-cknipe: This will make everything update if any site updates I guess :\
+      (state: AppState) => state.soilData.soilData,
+      (state: AppState) => state.soilData.projectSettings, //TODO-cknipe: This will update when a project with no sites changes settings :(
     ],
     /* Combine soil data with site IDs to extract relevant entries */
-    (soilData, siteIds) =>
+    (siteIds, sites, soilData, projectSettings) =>
       Object.fromEntries(
-        siteIds.map(siteId => [siteId, getSoilDataForSite(siteId, soilData)]),
+        siteIds.map(siteId => {
+          return [
+            siteId,
+            getVisibleSoilDataForSite(siteId, sites, soilData, projectSettings),
+          ];
+        }),
       ),
   ),
+
   /* Pass site-specific soil data through input format converter */
   soilData =>
     Object.fromEntries(
