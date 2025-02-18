@@ -28,22 +28,21 @@ import {PullDispatcher} from 'terraso-mobile-client/store/sync/PullDispatcher';
 
 jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
   return {
+    ...jest.requireActual('terraso-mobile-client/hooks/connectivityHooks'),
     useIsOffline: jest.fn(),
   };
 });
 
 jest.mock('terraso-mobile-client/hooks/appStateHooks', () => {
   return {
+    ...jest.requireActual('terraso-mobile-client/hooks/appStateHooks'),
     useAppState: jest.fn(),
   };
 });
 
 jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
-  const actual = jest.requireActual(
-    'terraso-mobile-client/store/sync/hooks/syncHooks',
-  );
   return {
-    ...actual,
+    ...jest.requireActual('terraso-mobile-client/store/sync/hooks/syncHooks'),
     usePullDispatch: jest.fn(),
   };
 });
