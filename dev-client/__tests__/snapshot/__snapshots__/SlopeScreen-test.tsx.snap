@@ -1,85 +1,637 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders correctly 1`] = `
-<RNCSafeAreaProvider
-  onInsetsChange={[Function]}
+<View
   style={
-    [
-      {
-        "flex": 1,
-      },
-      undefined,
-    ]
+    {
+      "flex": 1,
+    }
   }
 >
-  <View
-    collapsable={false}
-    pointerEvents="box-none"
+  <RNCSafeAreaProvider
+    onInsetsChange={[Function]}
     style={
-      {
-        "flex": 1,
-      }
+      [
+        {
+          "flex": 1,
+        },
+        undefined,
+      ]
     }
   >
     <View
+      collapsable={false}
+      pointerEvents="box-none"
       style={
-        [
-          {
-            "flex": 1,
-          },
-          undefined,
-        ]
+        {
+          "flex": 1,
+        }
       }
     >
-      <RNSScreenStack
+      <RNCSafeAreaProvider
+        onInsetsChange={[Function]}
         style={
-          {
-            "flex": 1,
-          }
+          [
+            {
+              "flex": 1,
+            },
+            undefined,
+          ]
         }
       >
-        <RNSScreen
-          accessibilityElementsHidden={false}
-          activityState={2}
+        <View
           collapsable={false}
-          fullScreenSwipeShadowEnabled={true}
-          gestureResponseDistance={
+          pointerEvents="box-none"
+          style={
             {
-              "bottom": -1,
-              "end": -1,
-              "start": -1,
-              "top": -1,
+              "flex": 1,
             }
           }
-          hasLargeHeader={false}
-          importantForAccessibility="auto"
-          nativeBackButtonDismissalEnabled={false}
-          onAppear={[Function]}
-          onDisappear={[Function]}
-          onDismissed={[Function]}
-          onGestureCancel={[Function]}
-          onHeaderBackButtonClicked={[Function]}
-          onHeaderHeightChange={[Function]}
-          onNativeDismissCancelled={[Function]}
-          onSheetDetentChanged={[Function]}
-          onTransitionProgress={[Function]}
-          onWillAppear={[Function]}
-          onWillDisappear={[Function]}
-          replaceAnimation="push"
-          sheetAllowedDetents={
-            [
-              1,
-            ]
-          }
-          sheetCornerRadius={-1}
-          sheetElevation={24}
-          sheetExpandsWhenScrolledToEdge={true}
-          sheetGrabberVisible={false}
-          sheetInitialDetent={0}
-          sheetInitialDetentIndex={0}
-          sheetLargestUndimmedDetent={-1}
-          sheetLargestUndimmedDetentIndex={-1}
-          stackPresentation="push"
+        >
+          <View
+            style={
+              [
+                {
+                  "flex": 1,
+                },
+                undefined,
+              ]
+            }
+          >
+            <RNSScreenStack
+              style={
+                {
+                  "flex": 1,
+                }
+              }
+            >
+              <RNSScreen
+                accessibilityElementsHidden={false}
+                activityState={2}
+                collapsable={false}
+                fullScreenSwipeShadowEnabled={true}
+                gestureResponseDistance={
+                  {
+                    "bottom": -1,
+                    "end": -1,
+                    "start": -1,
+                    "top": -1,
+                  }
+                }
+                hasLargeHeader={false}
+                importantForAccessibility="auto"
+                nativeBackButtonDismissalEnabled={false}
+                onAppear={[Function]}
+                onDisappear={[Function]}
+                onDismissed={[Function]}
+                onGestureCancel={[Function]}
+                onHeaderBackButtonClicked={[Function]}
+                onHeaderHeightChange={[Function]}
+                onNativeDismissCancelled={[Function]}
+                onSheetDetentChanged={[Function]}
+                onTransitionProgress={[Function]}
+                onWillAppear={[Function]}
+                onWillDisappear={[Function]}
+                replaceAnimation="push"
+                sheetAllowedDetents={
+                  [
+                    1,
+                  ]
+                }
+                sheetCornerRadius={-1}
+                sheetElevation={24}
+                sheetExpandsWhenScrolledToEdge={true}
+                sheetGrabberVisible={false}
+                sheetInitialDetent={0}
+                sheetInitialDetentIndex={0}
+                sheetLargestUndimmedDetent={-1}
+                sheetLargestUndimmedDetentIndex={-1}
+                stackPresentation="push"
+                style={
+                  {
+                    "bottom": 0,
+                    "left": 0,
+                    "position": "absolute",
+                    "right": 0,
+                    "top": 0,
+                    "zIndex": undefined,
+                  }
+                }
+                swipeDirection="horizontal"
+              >
+                <RNSScreenContentWrapper
+                  collapsable={false}
+                  style={
+                    [
+                      {
+                        "flex": 1,
+                      },
+                      [
+                        {
+                          "backgroundColor": "rgb(242, 242, 242)",
+                        },
+                        undefined,
+                      ],
+                    ]
+                  }
+                >
+                  <RCTScrollView
+                    contentContainerStyle={
+                      [
+                        {},
+                        {
+                          "dataSet": {},
+                        },
+                        {},
+                      ]
+                    }
+                    dataSet={{}}
+                    style={
+                      {
+                        "backgroundColor": "#E0E0E0",
+                      }
+                    }
+                  >
+                    <View>
+                      <View
+                        style={
+                          [
+                            {
+                              "flexDirection": "row",
+                            },
+                            {
+                              "alignItems": "center",
+                              "backgroundColor": "#FFFFFF",
+                              "padding": 15,
+                            },
+                          ]
+                        }
+                      >
+                        <Text
+                          lineHeight="32px"
+                          style={
+                            {
+                              "color": "#1A202C",
+                              "fontSize": 20,
+                              "fontWeight": "500",
+                            }
+                          }
+                        >
+                          Slope
+                        </Text>
+                        <View
+                          style={
+                            {
+                              "marginLeft": 6,
+                            }
+                          }
+                        />
+                        <View>
+                          <View
+                            accessibilityRole="button"
+                            accessibilityState={
+                              {
+                                "busy": undefined,
+                                "checked": undefined,
+                                "disabled": undefined,
+                                "expanded": undefined,
+                                "selected": undefined,
+                              }
+                            }
+                            accessibilityValue={
+                              {
+                                "max": undefined,
+                                "min": undefined,
+                                "now": undefined,
+                                "text": undefined,
+                              }
+                            }
+                            accessible={true}
+                            collapsable={false}
+                            focusable={true}
+                            onBlur={[Function]}
+                            onClick={[Function]}
+                            onFocus={[Function]}
+                            onResponderGrant={[Function]}
+                            onResponderMove={[Function]}
+                            onResponderRelease={[Function]}
+                            onResponderTerminate={[Function]}
+                            onResponderTerminationRequest={[Function]}
+                            onStartShouldSetResponder={[Function]}
+                            style={
+                              [
+                                {
+                                  "alignSelf": "flex-start",
+                                },
+                                {
+                                  "borderRadius": 100,
+                                },
+                                {
+                                  "backgroundColor": "#00000000",
+                                },
+                              ]
+                            }
+                          >
+                            <Icon
+                              name="info"
+                              size={20}
+                              style={
+                                [
+                                  {
+                                    "textAlign": "center",
+                                    "verticalAlign": "middle",
+                                  },
+                                  {
+                                    "padding": 4,
+                                  },
+                                  {
+                                    "color": "#001923B3",
+                                  },
+                                ]
+                              }
+                            />
+                          </View>
+                        </View>
+                        <RCTScrollView
+                          focusHook={[Function]}
+                        >
+                          <View>
+                            <View
+                              style={
+                                {
+                                  "padding": 16,
+                                }
+                              }
+                            >
+                              <View
+                                style={
+                                  {
+                                    "alignContent": "space-evenly",
+                                    "alignItems": "center",
+                                    "flexDirection": "row",
+                                    "marginBottom": 16,
+                                  }
+                                }
+                              >
+                                <View
+                                  style={
+                                    {
+                                      "flex": 1,
+                                      "marginRight": "auto",
+                                    }
+                                  }
+                                >
+                                  <Text
+                                    lineHeight="32px"
+                                    style={
+                                      {
+                                        "color": "#1A202C",
+                                        "fontSize": 24,
+                                        "fontWeight": "700",
+                                      }
+                                    }
+                                  >
+                                    Slope
+                                  </Text>
+                                </View>
+                                <View>
+                                  <View
+                                    accessibilityRole="button"
+                                    accessibilityState={
+                                      {
+                                        "busy": undefined,
+                                        "checked": undefined,
+                                        "disabled": undefined,
+                                        "expanded": undefined,
+                                        "selected": undefined,
+                                      }
+                                    }
+                                    accessibilityValue={
+                                      {
+                                        "max": undefined,
+                                        "min": undefined,
+                                        "now": undefined,
+                                        "text": undefined,
+                                      }
+                                    }
+                                    accessible={true}
+                                    collapsable={false}
+                                    focusable={true}
+                                    onBlur={[Function]}
+                                    onClick={[Function]}
+                                    onFocus={[Function]}
+                                    onResponderGrant={[Function]}
+                                    onResponderMove={[Function]}
+                                    onResponderRelease={[Function]}
+                                    onResponderTerminate={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      [
+                                        {
+                                          "alignSelf": "flex-start",
+                                        },
+                                        {
+                                          "borderRadius": 100,
+                                        },
+                                        {
+                                          "backgroundColor": "#EEEEEE",
+                                        },
+                                      ]
+                                    }
+                                  >
+                                    <Icon
+                                      name="close"
+                                      size={24}
+                                      style={
+                                        [
+                                          {
+                                            "textAlign": "center",
+                                            "verticalAlign": "middle",
+                                          },
+                                          {
+                                            "padding": 12,
+                                          },
+                                          {
+                                            "color": "#001923B3",
+                                          },
+                                        ]
+                                      }
+                                    />
+                                  </View>
+                                </View>
+                              </View>
+                              <Text
+                                letterSpacing="0.15px"
+                                lineHeight="24px"
+                                style={
+                                  {
+                                    "color": "#1A202C",
+                                    "fontSize": 16,
+                                    "fontWeight": "400",
+                                  }
+                                }
+                              >
+                                Describe the characteristics of the slope of the land on which the site is located.
+
+Instructions on how to collect each data input are available by tapping on the input name.
+
+Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more.
+                              </Text>
+                            </View>
+                          </View>
+                        </RCTScrollView>
+                      </View>
+                      <View
+                        style={
+                          [
+                            {
+                              "backgroundColor": "#616161",
+                              "height": 0.5,
+                            },
+                            undefined,
+                            false,
+                            false,
+                            undefined,
+                          ]
+                        }
+                      />
+                      <View
+                        accessibilityState={
+                          {
+                            "busy": undefined,
+                            "checked": undefined,
+                            "disabled": undefined,
+                            "expanded": undefined,
+                            "selected": undefined,
+                          }
+                        }
+                        accessibilityValue={
+                          {
+                            "max": undefined,
+                            "min": undefined,
+                            "now": undefined,
+                            "text": undefined,
+                          }
+                        }
+                        accessible={true}
+                        collapsable={false}
+                        focusable={true}
+                        onBlur={[Function]}
+                        onClick={[Function]}
+                        onFocus={[Function]}
+                        onResponderGrant={[Function]}
+                        onResponderMove={[Function]}
+                        onResponderRelease={[Function]}
+                        onResponderTerminate={[Function]}
+                        onResponderTerminationRequest={[Function]}
+                        onStartShouldSetResponder={[Function]}
+                      >
+                        <View
+                          style={
+                            [
+                              {
+                                "flexDirection": "row",
+                              },
+                              {
+                                "backgroundColor": "#E2FFE5",
+                                "padding": 15,
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              {
+                                "width": 37,
+                              }
+                            }
+                          >
+                            <Icon
+                              color="#00582B"
+                              name="check-circle"
+                              size={24}
+                              style={
+                                {
+                                  "marginTop": -3,
+                                }
+                              }
+                            />
+                          </View>
+                          <Text
+                            letterSpacing="0.17px"
+                            lineHeight="20px"
+                            style={
+                              {
+                                "color": "#1A202C",
+                                "fontSize": 14,
+                                "fontWeight": "700",
+                                "textTransform": "uppercase",
+                              }
+                            }
+                          >
+                            Steepness
+                          </Text>
+                          <View
+                            style={
+                              {
+                                "flex": 1,
+                              }
+                            }
+                          />
+                          <Text
+                            letterSpacing="0.17px"
+                            lineHeight="20px"
+                            style={
+                              {
+                                "color": "#1A202C",
+                                "fontSize": 14,
+                                "fontWeight": "400",
+                              }
+                            }
+                          >
+                            Flat 0–2%
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={
+                          [
+                            {
+                              "backgroundColor": "#616161",
+                              "height": 0.5,
+                            },
+                            undefined,
+                            false,
+                            false,
+                            undefined,
+                          ]
+                        }
+                      />
+                      <View
+                        accessibilityState={
+                          {
+                            "busy": undefined,
+                            "checked": undefined,
+                            "disabled": undefined,
+                            "expanded": undefined,
+                            "selected": undefined,
+                          }
+                        }
+                        accessibilityValue={
+                          {
+                            "max": undefined,
+                            "min": undefined,
+                            "now": undefined,
+                            "text": undefined,
+                          }
+                        }
+                        accessible={true}
+                        collapsable={false}
+                        focusable={true}
+                        onBlur={[Function]}
+                        onClick={[Function]}
+                        onFocus={[Function]}
+                        onResponderGrant={[Function]}
+                        onResponderMove={[Function]}
+                        onResponderRelease={[Function]}
+                        onResponderTerminate={[Function]}
+                        onResponderTerminationRequest={[Function]}
+                        onStartShouldSetResponder={[Function]}
+                      >
+                        <View
+                          style={
+                            [
+                              {
+                                "flexDirection": "row",
+                              },
+                              {
+                                "backgroundColor": "#FFFFFF",
+                                "padding": 15,
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              {
+                                "width": 37,
+                              }
+                            }
+                          >
+                            <Icon
+                              name="radio-button-unchecked"
+                              size={24}
+                              style={
+                                {
+                                  "marginTop": -3,
+                                }
+                              }
+                            />
+                          </View>
+                          <Text
+                            letterSpacing="0.17px"
+                            lineHeight="20px"
+                            style={
+                              {
+                                "color": "#1A202C",
+                                "fontSize": 14,
+                                "fontWeight": "700",
+                                "textTransform": "uppercase",
+                              }
+                            }
+                          >
+                            Shape
+                          </Text>
+                          <View
+                            style={
+                              {
+                                "flex": 1,
+                              }
+                            }
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  </RCTScrollView>
+                </RNSScreenContentWrapper>
+                <RNSScreenStackHeaderConfig
+                  backButtonInCustomView={false}
+                  backTitleFontFamily="System"
+                  backTitleVisible={true}
+                  backgroundColor="rgb(255, 255, 255)"
+                  color="rgb(0, 122, 255)"
+                  direction="ltr"
+                  disableBackButtonMenu={false}
+                  hidden={false}
+                  hideBackButton={false}
+                  largeTitleFontFamily="System"
+                  largeTitleFontWeight="700"
+                  largeTitleHideShadow={false}
+                  pointerEvents="box-none"
+                  style={
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "justifyContent": "space-between",
+                      "position": "absolute",
+                      "width": "100%",
+                    }
+                  }
+                  title="SITE_TABS"
+                  titleColor="rgb(28, 28, 30)"
+                  titleFontFamily="System"
+                  titleFontWeight="600"
+                  topInsetEnabled={false}
+                  translucent={false}
+                />
+              </RNSScreen>
+            </RNSScreenStack>
+          </View>
+        </View>
+        <View
+          collapsable={false}
+          pointerEvents="box-none"
           style={
             {
               "bottom": 0,
@@ -87,520 +639,11 @@ exports[`renders correctly 1`] = `
               "position": "absolute",
               "right": 0,
               "top": 0,
-              "zIndex": undefined,
             }
           }
-          swipeDirection="horizontal"
-        >
-          <RNSScreenContentWrapper
-            collapsable={false}
-            style={
-              [
-                {
-                  "flex": 1,
-                },
-                [
-                  {
-                    "backgroundColor": "rgb(242, 242, 242)",
-                  },
-                  undefined,
-                ],
-              ]
-            }
-          >
-            <RCTScrollView
-              contentContainerStyle={
-                [
-                  {},
-                  {
-                    "dataSet": {},
-                  },
-                  {},
-                ]
-              }
-              dataSet={{}}
-              style={
-                {
-                  "backgroundColor": "#E0E0E0",
-                }
-              }
-            >
-              <View>
-                <View
-                  style={
-                    [
-                      {
-                        "flexDirection": "row",
-                      },
-                      {
-                        "alignItems": "center",
-                        "backgroundColor": "#FFFFFF",
-                        "padding": 15,
-                      },
-                    ]
-                  }
-                >
-                  <Text
-                    lineHeight="32px"
-                    style={
-                      {
-                        "color": "#1A202C",
-                        "fontSize": 20,
-                        "fontWeight": "500",
-                      }
-                    }
-                  >
-                    Slope
-                  </Text>
-                  <View
-                    style={
-                      {
-                        "marginLeft": 6,
-                      }
-                    }
-                  />
-                  <View>
-                    <View
-                      accessibilityRole="button"
-                      accessibilityState={
-                        {
-                          "busy": undefined,
-                          "checked": undefined,
-                          "disabled": undefined,
-                          "expanded": undefined,
-                          "selected": undefined,
-                        }
-                      }
-                      accessibilityValue={
-                        {
-                          "max": undefined,
-                          "min": undefined,
-                          "now": undefined,
-                          "text": undefined,
-                        }
-                      }
-                      accessible={true}
-                      collapsable={false}
-                      focusable={true}
-                      onBlur={[Function]}
-                      onClick={[Function]}
-                      onFocus={[Function]}
-                      onResponderGrant={[Function]}
-                      onResponderMove={[Function]}
-                      onResponderRelease={[Function]}
-                      onResponderTerminate={[Function]}
-                      onResponderTerminationRequest={[Function]}
-                      onStartShouldSetResponder={[Function]}
-                      style={
-                        [
-                          {
-                            "alignSelf": "flex-start",
-                          },
-                          {
-                            "borderRadius": 100,
-                          },
-                          {
-                            "backgroundColor": "#00000000",
-                          },
-                        ]
-                      }
-                    >
-                      <Icon
-                        name="info"
-                        size={20}
-                        style={
-                          [
-                            {
-                              "textAlign": "center",
-                              "verticalAlign": "middle",
-                            },
-                            {
-                              "padding": 4,
-                            },
-                            {
-                              "color": "#001923B3",
-                            },
-                          ]
-                        }
-                      />
-                    </View>
-                  </View>
-                  <RCTScrollView
-                    focusHook={[Function]}
-                  >
-                    <View>
-                      <View
-                        style={
-                          {
-                            "padding": 16,
-                          }
-                        }
-                      >
-                        <View
-                          style={
-                            {
-                              "alignContent": "space-evenly",
-                              "alignItems": "center",
-                              "flexDirection": "row",
-                              "marginBottom": 16,
-                            }
-                          }
-                        >
-                          <View
-                            style={
-                              {
-                                "flex": 1,
-                                "marginRight": "auto",
-                              }
-                            }
-                          >
-                            <Text
-                              lineHeight="32px"
-                              style={
-                                {
-                                  "color": "#1A202C",
-                                  "fontSize": 24,
-                                  "fontWeight": "700",
-                                }
-                              }
-                            >
-                              Slope
-                            </Text>
-                          </View>
-                          <View>
-                            <View
-                              accessibilityRole="button"
-                              accessibilityState={
-                                {
-                                  "busy": undefined,
-                                  "checked": undefined,
-                                  "disabled": undefined,
-                                  "expanded": undefined,
-                                  "selected": undefined,
-                                }
-                              }
-                              accessibilityValue={
-                                {
-                                  "max": undefined,
-                                  "min": undefined,
-                                  "now": undefined,
-                                  "text": undefined,
-                                }
-                              }
-                              accessible={true}
-                              collapsable={false}
-                              focusable={true}
-                              onBlur={[Function]}
-                              onClick={[Function]}
-                              onFocus={[Function]}
-                              onResponderGrant={[Function]}
-                              onResponderMove={[Function]}
-                              onResponderRelease={[Function]}
-                              onResponderTerminate={[Function]}
-                              onResponderTerminationRequest={[Function]}
-                              onStartShouldSetResponder={[Function]}
-                              style={
-                                [
-                                  {
-                                    "alignSelf": "flex-start",
-                                  },
-                                  {
-                                    "borderRadius": 100,
-                                  },
-                                  {
-                                    "backgroundColor": "#EEEEEE",
-                                  },
-                                ]
-                              }
-                            >
-                              <Icon
-                                name="close"
-                                size={24}
-                                style={
-                                  [
-                                    {
-                                      "textAlign": "center",
-                                      "verticalAlign": "middle",
-                                    },
-                                    {
-                                      "padding": 12,
-                                    },
-                                    {
-                                      "color": "#001923B3",
-                                    },
-                                  ]
-                                }
-                              />
-                            </View>
-                          </View>
-                        </View>
-                        <Text
-                          letterSpacing="0.15px"
-                          lineHeight="24px"
-                          style={
-                            {
-                              "color": "#1A202C",
-                              "fontSize": 16,
-                              "fontWeight": "400",
-                            }
-                          }
-                        >
-                          Describe the characteristics of the slope of the land on which the site is located.
-
-Instructions on how to collect each data input are available by tapping on the input name.
-
-Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more.
-                        </Text>
-                      </View>
-                    </View>
-                  </RCTScrollView>
-                </View>
-                <View
-                  style={
-                    [
-                      {
-                        "backgroundColor": "rgba(202, 196, 208, 1)",
-                        "height": 0.5,
-                      },
-                      undefined,
-                      false,
-                      false,
-                      undefined,
-                    ]
-                  }
-                />
-                <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
-                >
-                  <View
-                    style={
-                      [
-                        {
-                          "flexDirection": "row",
-                        },
-                        {
-                          "backgroundColor": "#E2FFE5",
-                          "padding": 15,
-                        },
-                      ]
-                    }
-                  >
-                    <View
-                      style={
-                        {
-                          "width": 37,
-                        }
-                      }
-                    >
-                      <Icon
-                        color="#00582B"
-                        name="check-circle"
-                        size={24}
-                        style={
-                          {
-                            "marginTop": -3,
-                          }
-                        }
-                      />
-                    </View>
-                    <Text
-                      letterSpacing="0.17px"
-                      lineHeight="20px"
-                      style={
-                        {
-                          "color": "#1A202C",
-                          "fontSize": 14,
-                          "fontWeight": "700",
-                          "textTransform": "uppercase",
-                        }
-                      }
-                    >
-                      Steepness
-                    </Text>
-                    <View
-                      style={
-                        {
-                          "flex": 1,
-                        }
-                      }
-                    />
-                    <Text
-                      letterSpacing="0.17px"
-                      lineHeight="20px"
-                      style={
-                        {
-                          "color": "#1A202C",
-                          "fontSize": 14,
-                          "fontWeight": "400",
-                        }
-                      }
-                    >
-                      Flat 0–2%
-                    </Text>
-                  </View>
-                </View>
-                <View
-                  style={
-                    [
-                      {
-                        "backgroundColor": "rgba(202, 196, 208, 1)",
-                        "height": 0.5,
-                      },
-                      undefined,
-                      false,
-                      false,
-                      undefined,
-                    ]
-                  }
-                />
-                <View
-                  accessibilityState={
-                    {
-                      "busy": undefined,
-                      "checked": undefined,
-                      "disabled": undefined,
-                      "expanded": undefined,
-                      "selected": undefined,
-                    }
-                  }
-                  accessibilityValue={
-                    {
-                      "max": undefined,
-                      "min": undefined,
-                      "now": undefined,
-                      "text": undefined,
-                    }
-                  }
-                  accessible={true}
-                  collapsable={false}
-                  focusable={true}
-                  onBlur={[Function]}
-                  onClick={[Function]}
-                  onFocus={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
-                >
-                  <View
-                    style={
-                      [
-                        {
-                          "flexDirection": "row",
-                        },
-                        {
-                          "backgroundColor": "#FFFFFF",
-                          "padding": 15,
-                        },
-                      ]
-                    }
-                  >
-                    <View
-                      style={
-                        {
-                          "width": 37,
-                        }
-                      }
-                    >
-                      <Icon
-                        name="radio-button-unchecked"
-                        size={24}
-                        style={
-                          {
-                            "marginTop": -3,
-                          }
-                        }
-                      />
-                    </View>
-                    <Text
-                      letterSpacing="0.17px"
-                      lineHeight="20px"
-                      style={
-                        {
-                          "color": "#1A202C",
-                          "fontSize": 14,
-                          "fontWeight": "700",
-                          "textTransform": "uppercase",
-                        }
-                      }
-                    >
-                      Shape
-                    </Text>
-                    <View
-                      style={
-                        {
-                          "flex": 1,
-                        }
-                      }
-                    />
-                  </View>
-                </View>
-              </View>
-            </RCTScrollView>
-          </RNSScreenContentWrapper>
-          <RNSScreenStackHeaderConfig
-            backButtonInCustomView={false}
-            backTitleFontFamily="System"
-            backTitleVisible={true}
-            backgroundColor="rgb(255, 255, 255)"
-            color="rgb(0, 122, 255)"
-            direction="ltr"
-            disableBackButtonMenu={false}
-            hidden={false}
-            hideBackButton={false}
-            largeTitleFontFamily="System"
-            largeTitleFontWeight="700"
-            largeTitleHideShadow={false}
-            pointerEvents="box-none"
-            style={
-              {
-                "alignItems": "center",
-                "flexDirection": "row",
-                "justifyContent": "space-between",
-                "position": "absolute",
-                "width": "100%",
-              }
-            }
-            title="SITE_TABS"
-            titleColor="rgb(28, 28, 30)"
-            titleFontFamily="System"
-            titleFontWeight="600"
-            topInsetEnabled={false}
-            translucent={false}
-          />
-        </RNSScreen>
-      </RNSScreenStack>
+        />
+      </RNCSafeAreaProvider>
     </View>
-  </View>
-</RNCSafeAreaProvider>
+  </RNCSafeAreaProvider>
+</View>
 `;
