@@ -46,7 +46,7 @@ export const WelcomeScreen = () => {
 
   return (
     <>
-      <ScrollView>
+      <ScrollView testID="welcome-screen">
         <Box backgroundColor="background.secondary" height="175px">
           <Box alignSelf="center" pt="68px">
             <LandPKSTerrasoLogo />
