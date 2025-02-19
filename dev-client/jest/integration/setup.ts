@@ -44,9 +44,25 @@ jest.mock('react-native/src/private/animated/NativeAnimatedHelper');
 // setting it to a stable value to get stable snapshot tests
 jest.mock('nanoid/non-secure', () => ({nanoid: () => 'stable-nanoid-id'}));
 
-jest.mock('@gorhom/bottom-sheet', () => require('@gorhom/bottom-sheet/mock'));
+// note that the `{__esModule: true}` is necessary for the default import to work properly
+//   https://github.com/gorhom/react-native-bottom-sheet/issues/56#issuecomment-1465990183
+jest.mock('@gorhom/bottom-sheet', () => ({
+  __esModule: true,
+  ...require('@gorhom/bottom-sheet/mock'),
+}));
 
 jest.mock('@expo/vector-icons/MaterialIcons', () => 'Icon');
+
+// workaround described here:
+//   https://github.com/callstack/react-native-testing-library/issues/1712#issuecomment-2506715214
+jest.mock('expo-font', () => {
+  const module: typeof import('expo-font') = {
+    ...jest.requireActual('expo-font'),
+    isLoaded: jest.fn(() => true),
+  };
+
+  return module;
+});
 
 jest.mock('terraso-mobile-client/config', () => ({
   APP_CONFIG: {},
