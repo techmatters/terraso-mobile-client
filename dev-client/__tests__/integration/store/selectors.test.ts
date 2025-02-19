@@ -300,8 +300,6 @@ test('overlapping site intervals get the project values of the preset interval',
   ]);
 });
 
-// TODO-cknipe: Move utils from top of file to their own file?
-
 describe('getVisibleDepthIntervals', () => {
   test('should return custom site intervals', () => {
     const site = generateSite();

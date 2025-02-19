@@ -59,18 +59,20 @@ export const selectDataBasedInputs = createSelector(
 
 /*
  * Memoized selector to let us select the upcoming data-based inputs for a set of site IDs (potentially expensive;
- * uses nested memoization to only recalculate input when source soil data changes)
+ * uses nested memoization to only recalculate input when relevant data changes)
  *
  * NOTE: these are the _next_ inputs for the soil ID algorithm, but the _current_ inputs for the site
  */
 
+// TODO-cknipe: We'd prefer not to recalculate when sites or projectSettings change
+// Is there a better way to access those without using them as selectors?
 export const selectNextDataBasedInputs = createSelector(
   createSelector(
     [
       (_: AppState, siteIds: string[]) => siteIds,
-      (state: AppState) => state.site.sites, //TODO-cknipe: This will make everything update if any site updates I guess :\
+      (state: AppState) => state.site.sites,
       (state: AppState) => state.soilData.soilData,
-      (state: AppState) => state.soilData.projectSettings, //TODO-cknipe: This will update when a project with no sites changes settings :(
+      (state: AppState) => state.soilData.projectSettings,
     ],
     /* Combine soil data with site IDs to extract relevant entries */
     (siteIds, sites, soilData, projectSettings) =>

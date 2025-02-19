@@ -316,7 +316,6 @@ export const getVisibleSoilDataForSite = (
     ? getProjectSoilSettingsBase(allProjectSettings[projectId])
     : undefined;
   const effectiveSoilData = getSoilDataForSite(siteId, allSoilData);
-  // TODO-cknipe: How avoid duplication
   const visibleDepthIntervals = getVisibleDepthIntervalsAfterNormalizing(
     effectiveProjectSettings,
     effectiveSoilData,
@@ -330,7 +329,6 @@ export const getVisibleSoilDataForSite = (
       .find(sameDepth(depthData)),
   );
 
-  // TODO-cknipe: If we make a new object, it will trigger re-renders. Is that fine?
   return {...effectiveSoilData, depthDependentData: filteredDepthData};
 };
 
@@ -418,7 +416,6 @@ export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
   return useMemo(
     () => getVisibleDepthIntervalsAfterNormalizing(projectSettings, soilData),
     [projectSettings, soilData],
-    // [presetIntervals, projectSettings, soilData.depthIntervals],
   );
 };
 

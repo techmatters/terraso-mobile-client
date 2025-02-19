@@ -76,8 +76,6 @@ export const fetchSiteDataBasedSoilMatches = async (
     return dataEntryForStatus(input, 'error');
   }
 
-  // TODO-cknipe: Filter input to only send depthDependentData for existing intervals
-
   const coords = {latitude: site.latitude, longitude: site.longitude};
   const result = await soilIdService.fetchDataBasedSoilMatches(coords, input);
 
