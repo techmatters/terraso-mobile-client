@@ -39,6 +39,8 @@ jest.mock('react-native-reanimated', () => {
 });
 jest.useFakeTimers();
 jest.mock('react-native/src/private/animated/NativeAnimatedHelper');
+jest.mock('expo-font');
+jest.mock('expo-asset');
 
 // nanoid is a randomness source used by react navigation, here we are
 // setting it to a stable value to get stable snapshot tests
