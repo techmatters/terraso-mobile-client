@@ -42,7 +42,7 @@ export const AppWrappers = ({store, children}: Props) => {
   /*
    * Notes on app root stack ordering:
    * - Provider should be above all other content, since it exposes our Redux store
-   * - HeaderHeightContext needs to be above bottom sheets, so they can access its height values for sizing
+   * - HeaderHeightProvider needs to be above bottom sheets, so they can access its height values for sizing
    * - NavigationContainer needs to be above any app content (including modals) since content may include
    *    functionality that navigates to new screens
    * - There currently need to be two BottomSheetModalProvider instances, one below

@@ -47,6 +47,7 @@ describe('app launch flows', () => {
   test('welcome screen no longer displays after navigating to login screen', async () => {
     const app = render(<AppContent />);
 
+    expect(app.queryByTestId('welcome-screen')).not.toBeOnTheScreen();
     expect(app.getByTestId('login-screen')).toBeOnTheScreen();
   });
 
