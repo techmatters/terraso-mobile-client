@@ -25,7 +25,7 @@ module.exports = {
     '<rootDir>/jest/integration/setup.ts',
   ],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|react-native-cookies|uuid|react-native-autocomplete-input|expo(nent)?|@expo(nent)?/.*)|expo-constants|@rnmapbox/)',
+    'node_modules/(?!(react-native|@react-native|react-native-cookies|uuid|react-native-autocomplete-input|expo(nent)?|@expo(nent)?/.*)|expo-constants|@rnmapbox|@sentry/react-native/)',
   ],
   moduleNameMapper: {
     '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':

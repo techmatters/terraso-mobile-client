@@ -132,7 +132,10 @@ export const LoginScreen = () => {
         styles.safeAreaContainer,
         {backgroundColor: theme.colors.primary.main},
       ]}>
-      <Column height="full" justifyContent="space-between">
+      <Column
+        testID="login-screen"
+        height="full"
+        justifyContent="space-between">
         <Column alignItems="center" flexGrow={1} justifyContent="center">
           <LandPKSLogo width="144px" height="144px" />
           <Heading

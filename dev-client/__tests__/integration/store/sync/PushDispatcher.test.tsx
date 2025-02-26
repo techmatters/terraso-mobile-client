@@ -28,6 +28,7 @@ import {
 
 jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
   return {
+    ...jest.requireActual('terraso-mobile-client/store/sync/hooks/syncHooks'),
     useDebouncedIsOffline: jest.fn(),
     useDebouncedUnsyncedSiteIds: jest.fn(),
     useIsLoggedIn: jest.fn(),
@@ -36,7 +37,12 @@ jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
   };
 });
 jest.mock('terraso-mobile-client/context/SyncNotificationContext', () => {
-  return {useSyncNotificationContext: jest.fn()};
+  return {
+    ...jest.requireActual(
+      'terraso-mobile-client/context/SyncNotificationContext',
+    ),
+    useSyncNotificationContext: jest.fn(),
+  };
 });
 
 describe('PushDispatcher', () => {
