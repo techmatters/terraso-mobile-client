@@ -156,7 +156,7 @@ export const SitesScreen = memo(() => {
     <ScreenScaffold
       AppBar={<AppBar LeftButton={null} RightButton={<LandPKSInfoButton />} />}>
       <ListFilterProvider items={siteList} filters={filters}>
-        <Box flex={1}>
+        <Box testID="sites-screen" flex={1}>
           <Box flex={1} zIndex={-1}>
             <MapHeader
               zoomTo={searchFunction}

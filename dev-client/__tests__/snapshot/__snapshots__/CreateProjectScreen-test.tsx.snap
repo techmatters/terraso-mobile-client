@@ -1,158 +1,156 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders correctly 1`] = `
-<RNCSafeAreaProvider
-  onInsetsChange={[Function]}
+<View
   style={
-    [
-      {
-        "flex": 1,
-      },
-      undefined,
-    ]
+    {
+      "flex": 1,
+    }
   }
 >
-  <View
-    collapsable={false}
-    pointerEvents="box-none"
+  <RNCSafeAreaProvider
+    onInsetsChange={[Function]}
     style={
-      {
-        "flex": 1,
-      }
+      [
+        {
+          "flex": 1,
+        },
+        undefined,
+      ]
     }
   >
     <View
+      collapsable={false}
+      pointerEvents="box-none"
       style={
-        [
-          {
-            "flex": 1,
-          },
-          undefined,
-        ]
+        {
+          "flex": 1,
+        }
       }
     >
-      <RNSScreenStack
+      <RNCSafeAreaProvider
+        onInsetsChange={[Function]}
         style={
-          {
-            "flex": 1,
-          }
+          [
+            {
+              "flex": 1,
+            },
+            undefined,
+          ]
         }
       >
-        <RNSScreen
-          accessibilityElementsHidden={false}
-          activityState={2}
+        <View
           collapsable={false}
-          fullScreenSwipeShadowEnabled={true}
-          gestureResponseDistance={
-            {
-              "bottom": -1,
-              "end": -1,
-              "start": -1,
-              "top": -1,
-            }
-          }
-          hasLargeHeader={false}
-          importantForAccessibility="auto"
-          nativeBackButtonDismissalEnabled={false}
-          onAppear={[Function]}
-          onDisappear={[Function]}
-          onDismissed={[Function]}
-          onGestureCancel={[Function]}
-          onHeaderBackButtonClicked={[Function]}
-          onHeaderHeightChange={[Function]}
-          onNativeDismissCancelled={[Function]}
-          onSheetDetentChanged={[Function]}
-          onTransitionProgress={[Function]}
-          onWillAppear={[Function]}
-          onWillDisappear={[Function]}
-          replaceAnimation="push"
-          sheetAllowedDetents={
-            [
-              1,
-            ]
-          }
-          sheetCornerRadius={-1}
-          sheetElevation={24}
-          sheetExpandsWhenScrolledToEdge={true}
-          sheetGrabberVisible={false}
-          sheetInitialDetent={0}
-          sheetInitialDetentIndex={0}
-          sheetLargestUndimmedDetent={-1}
-          sheetLargestUndimmedDetentIndex={-1}
-          stackPresentation="push"
+          pointerEvents="box-none"
           style={
             {
-              "bottom": 0,
-              "left": 0,
-              "position": "absolute",
-              "right": 0,
-              "top": 0,
-              "zIndex": undefined,
+              "flex": 1,
             }
           }
-          swipeDirection="horizontal"
         >
-          <RNSScreenContentWrapper
-            collapsable={false}
+          <View
             style={
               [
                 {
                   "flex": 1,
                 },
-                [
-                  {
-                    "backgroundColor": "rgb(242, 242, 242)",
-                  },
-                  undefined,
-                ],
+                undefined,
               ]
             }
           >
-            <RNCSafeAreaView
-              edges={
-                {
-                  "bottom": "off",
-                  "left": "additive",
-                  "right": "additive",
-                  "top": "additive",
-                }
-              }
+            <RNSScreenStack
               style={
-                [
-                  {
-                    "flex": 1,
-                  },
-                  {
-                    "backgroundColor": "#00582B",
-                  },
-                ]
+                {
+                  "flex": 1,
+                }
               }
             >
-              <View
-                style={
+              <RNSScreen
+                accessibilityElementsHidden={false}
+                activityState={2}
+                collapsable={false}
+                fullScreenSwipeShadowEnabled={true}
+                gestureResponseDistance={
+                  {
+                    "bottom": -1,
+                    "end": -1,
+                    "start": -1,
+                    "top": -1,
+                  }
+                }
+                hasLargeHeader={false}
+                importantForAccessibility="auto"
+                nativeBackButtonDismissalEnabled={false}
+                onAppear={[Function]}
+                onDisappear={[Function]}
+                onDismissed={[Function]}
+                onGestureCancel={[Function]}
+                onHeaderBackButtonClicked={[Function]}
+                onHeaderHeightChange={[Function]}
+                onNativeDismissCancelled={[Function]}
+                onSheetDetentChanged={[Function]}
+                onTransitionProgress={[Function]}
+                onWillAppear={[Function]}
+                onWillDisappear={[Function]}
+                replaceAnimation="push"
+                sheetAllowedDetents={
                   [
-                    {
-                      "flexDirection": "column",
-                    },
-                    {
-                      "backgroundColor": "#FFFFFF",
-                      "flex": 1,
-                    },
+                    1,
                   ]
                 }
+                sheetCornerRadius={-1}
+                sheetElevation={24}
+                sheetExpandsWhenScrolledToEdge={true}
+                sheetGrabberVisible={false}
+                sheetInitialDetent={0}
+                sheetInitialDetentIndex={0}
+                sheetLargestUndimmedDetent={-1}
+                sheetLargestUndimmedDetentIndex={-1}
+                stackPresentation="push"
+                style={
+                  {
+                    "bottom": 0,
+                    "left": 0,
+                    "position": "absolute",
+                    "right": 0,
+                    "top": 0,
+                    "zIndex": undefined,
+                  }
+                }
+                swipeDirection="horizontal"
               >
-                <View
-                  onLayout={[Function]}
+                <RNSScreenContentWrapper
+                  collapsable={false}
+                  style={
+                    [
+                      {
+                        "flex": 1,
+                      },
+                      [
+                        {
+                          "backgroundColor": "rgb(242, 242, 242)",
+                        },
+                        undefined,
+                      ],
+                    ]
+                  }
                 >
-                  <View
+                  <RNCSafeAreaView
+                    edges={
+                      {
+                        "bottom": "off",
+                        "left": "additive",
+                        "right": "additive",
+                        "top": "additive",
+                      }
+                    }
                     style={
                       [
                         {
-                          "flexDirection": "column",
+                          "flex": 1,
                         },
                         {
                           "backgroundColor": "#00582B",
-                          "paddingHorizontal": 8,
                         },
                       ]
                     }
@@ -161,161 +159,40 @@ exports[`renders correctly 1`] = `
                       style={
                         [
                           {
-                            "flexDirection": "row",
+                            "flexDirection": "column",
                           },
                           {
-                            "minHeight": 56,
-                            "paddingVertical": 4,
+                            "backgroundColor": "#FFFFFF",
+                            "flex": 1,
                           },
                         ]
                       }
                     >
                       <View
-                        style={
-                          [
-                            {
-                              "flexDirection": "row",
-                            },
-                            {
-                              "alignItems": "center",
-                              "columnGap": 24,
-                              "flex": 1,
-                            },
-                          ]
-                        }
+                        onLayout={[Function]}
                       >
-                        <View>
-                          <View
-                            accessibilityRole="button"
-                            accessibilityState={
-                              {
-                                "busy": undefined,
-                                "checked": undefined,
-                                "disabled": undefined,
-                                "expanded": undefined,
-                                "selected": undefined,
-                              }
-                            }
-                            accessibilityValue={
-                              {
-                                "max": undefined,
-                                "min": undefined,
-                                "now": undefined,
-                                "text": undefined,
-                              }
-                            }
-                            accessible={true}
-                            collapsable={false}
-                            focusable={true}
-                            onBlur={[Function]}
-                            onClick={[Function]}
-                            onFocus={[Function]}
-                            onResponderGrant={[Function]}
-                            onResponderMove={[Function]}
-                            onResponderRelease={[Function]}
-                            onResponderTerminate={[Function]}
-                            onResponderTerminationRequest={[Function]}
-                            onStartShouldSetResponder={[Function]}
-                            style={
-                              [
-                                {
-                                  "alignSelf": "flex-start",
-                                },
-                                {
-                                  "borderRadius": 100,
-                                },
-                                {
-                                  "backgroundColor": "#00000000",
-                                },
-                              ]
-                            }
-                          >
-                            <Icon
-                              name="close"
-                              size={24}
-                              style={
-                                [
-                                  {
-                                    "textAlign": "center",
-                                    "verticalAlign": "middle",
-                                  },
-                                  {
-                                    "padding": 12,
-                                  },
-                                  {
-                                    "color": "#FFFFFF",
-                                  },
-                                ]
-                              }
-                            />
-                          </View>
-                        </View>
-                        <Text
-                          lineHeight="32px"
-                          style={
-                            {
-                              "color": "#FFFFFF",
-                              "fontSize": 20,
-                              "fontWeight": "500",
-                            }
-                          }
-                        >
-                          Create Project
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-                <View
-                  style={
-                    {
-                      "flex": 1,
-                    }
-                  }
-                >
-                  <View
-                    dataSet={{}}
-                    onLayout={[Function]}
-                    style={
-                      {
-                        "flex": 1,
-                      }
-                    }
-                  >
-                    <RCTScrollView
-                      contentContainerStyle={
-                        [
-                          {},
-                          {
-                            "dataSet": {},
-                          },
-                          {},
-                        ]
-                      }
-                      dataSet={{}}
-                      style={
-                        {
-                          "backgroundColor": "#FFFFFF",
-                        }
-                      }
-                    >
-                      <View>
                         <View
                           style={
-                            {
-                              "marginHorizontal": 20,
-                              "paddingTop": 16,
-                            }
+                            [
+                              {
+                                "flexDirection": "column",
+                              },
+                              {
+                                "backgroundColor": "#00582B",
+                                "paddingHorizontal": 8,
+                              },
+                            ]
                           }
                         >
                           <View
                             style={
                               [
                                 {
-                                  "flexDirection": "column",
+                                  "flexDirection": "row",
                                 },
                                 {
-                                  "rowGap": 20,
+                                  "minHeight": 56,
+                                  "paddingVertical": 4,
                                 },
                               ]
                             }
@@ -324,752 +201,693 @@ exports[`renders correctly 1`] = `
                               style={
                                 [
                                   {
-                                    "backgroundColor": "rgba(231, 224, 236, 1)",
-                                    "borderTopLeftRadius": 4,
-                                    "borderTopRightRadius": 4,
-                                  },
-                                  {
-                                    "backgroundColor": "#efefef",
-                                    "minHeight": undefined,
-                                    "width": "100%",
-                                  },
-                                ]
-                              }
-                            >
-                              <View
-                                collapsable={false}
-                                style={
-                                  {
-                                    "backgroundColor": "rgba(73, 69, 79, 1)",
-                                    "bottom": 0,
-                                    "height": 1,
-                                    "left": 0,
-                                    "position": "absolute",
-                                    "right": 0,
-                                    "transform": [
-                                      {
-                                        "scaleY": 0.5,
-                                      },
-                                    ],
-                                    "zIndex": 1,
-                                  }
-                                }
-                                testID="text-input-underline"
-                              />
-                              <View
-                                onLayout={[Function]}
-                                style={
-                                  [
-                                    {
-                                      "flexGrow": 1,
-                                      "paddingBottom": 0,
-                                      "paddingTop": 0,
-                                    },
-                                    {
-                                      "minHeight": 56,
-                                    },
-                                  ]
-                                }
-                              >
-                                <View
-                                  pointerEvents="none"
-                                  style={
-                                    [
-                                      {
-                                        "bottom": 0,
-                                        "left": 0,
-                                        "position": "absolute",
-                                        "right": 0,
-                                        "top": 0,
-                                      },
-                                      {
-                                        "overflow": "hidden",
-                                      },
-                                    ]
-                                  }
-                                >
-                                  <View
-                                    collapsable={false}
-                                    pointerEvents="none"
-                                    style={
-                                      {
-                                        "bottom": 0,
-                                        "left": 0,
-                                        "opacity": 1,
-                                        "position": "absolute",
-                                        "right": 0,
-                                        "top": 0,
-                                        "transform": [
-                                          {
-                                            "translateX": 0,
-                                          },
-                                        ],
-                                        "width": 750,
-                                        "zIndex": 3,
-                                      }
-                                    }
-                                  >
-                                    <View
-                                      style={
-                                        {
-                                          "width": 73,
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        collapsable={false}
-                                        maxFontSizeMultiplier={1.5}
-                                        numberOfLines={1}
-                                        onLayout={[Function]}
-                                        onTextLayout={[Function]}
-                                        style={
-                                          {
-                                            "color": "#8B8B8B",
-                                            "fontFamily": "System",
-                                            "fontSize": 16,
-                                            "fontWeight": undefined,
-                                            "left": 0,
-                                            "letterSpacing": 0.15,
-                                            "lineHeight": undefined,
-                                            "maxWidth": 73,
-                                            "opacity": 0,
-                                            "paddingLeft": 16,
-                                            "paddingRight": 16,
-                                            "position": "absolute",
-                                            "textAlign": "left",
-                                            "top": 30,
-                                            "transform": [
-                                              {
-                                                "translateX": 0,
-                                              },
-                                              {
-                                                "translateY": 0,
-                                              },
-                                              {
-                                                "scale": 1,
-                                              },
-                                            ],
-                                            "writingDirection": "ltr",
-                                          }
-                                        }
-                                        testID="text-input-flat-label-active"
-                                      >
-                                        Project Name
-                                      </Text>
-                                      <Text
-                                        collapsable={false}
-                                        maxFontSizeMultiplier={1.5}
-                                        numberOfLines={1}
-                                        style={
-                                          {
-                                            "color": "rgba(73, 69, 79, 1)",
-                                            "fontFamily": "System",
-                                            "fontSize": 16,
-                                            "fontWeight": undefined,
-                                            "left": 0,
-                                            "letterSpacing": 0.15,
-                                            "lineHeight": undefined,
-                                            "maxWidth": 73,
-                                            "opacity": 0,
-                                            "paddingLeft": 16,
-                                            "paddingRight": 16,
-                                            "position": "absolute",
-                                            "textAlign": "left",
-                                            "top": 30,
-                                            "transform": [
-                                              {
-                                                "translateX": 0,
-                                              },
-                                              {
-                                                "translateY": 0,
-                                              },
-                                              {
-                                                "scale": 1,
-                                              },
-                                            ],
-                                            "writingDirection": "ltr",
-                                          }
-                                        }
-                                        testID="text-input-flat-label-inactive"
-                                      >
-                                        Project Name
-                                      </Text>
-                                    </View>
-                                  </View>
-                                </View>
-                                <TextInput
-                                  cursorColor="#8B8B8B"
-                                  editable={true}
-                                  maxFontSizeMultiplier={1.5}
-                                  maxLength={50}
-                                  multiline={false}
-                                  onBlur={[Function]}
-                                  onChangeText={[Function]}
-                                  onFocus={[Function]}
-                                  placeholder="Project Name"
-                                  placeholderTextColor="transparent"
-                                  selectionColor="#8B8B8B"
-                                  style={
-                                    [
-                                      {
-                                        "flexGrow": 1,
-                                        "margin": 0,
-                                      },
-                                      {},
-                                      {
-                                        "paddingBottom": 4,
-                                        "paddingTop": 24,
-                                      },
-                                      {
-                                        "color": "rgba(28, 27, 31, 1)",
-                                        "fontFamily": "System",
-                                        "fontSize": 16,
-                                        "fontWeight": undefined,
-                                        "letterSpacing": 0.15,
-                                        "lineHeight": undefined,
-                                        "minWidth": 65,
-                                        "paddingLeft": 16,
-                                        "paddingRight": 16,
-                                        "textAlign": "left",
-                                        "textAlignVertical": "center",
-                                      },
-                                      false,
-                                      [
-                                        {},
-                                      ],
-                                      undefined,
-                                    ]
-                                  }
-                                  testID="text-input-flat"
-                                  underlineColorAndroid="transparent"
-                                />
-                              </View>
-                            </View>
-                            <View
-                              style={
-                                [
-                                  {
-                                    "backgroundColor": "rgba(231, 224, 236, 1)",
-                                    "borderTopLeftRadius": 4,
-                                    "borderTopRightRadius": 4,
-                                  },
-                                  {
-                                    "backgroundColor": "#efefef",
-                                    "minHeight": 100,
-                                    "width": "100%",
-                                  },
-                                ]
-                              }
-                            >
-                              <View
-                                collapsable={false}
-                                style={
-                                  {
-                                    "backgroundColor": "rgba(73, 69, 79, 1)",
-                                    "bottom": 0,
-                                    "height": 1,
-                                    "left": 0,
-                                    "position": "absolute",
-                                    "right": 0,
-                                    "transform": [
-                                      {
-                                        "scaleY": 0.5,
-                                      },
-                                    ],
-                                    "zIndex": 1,
-                                  }
-                                }
-                                testID="text-input-underline"
-                              />
-                              <View
-                                onLayout={[Function]}
-                                style={
-                                  [
-                                    {
-                                      "flexGrow": 1,
-                                      "paddingBottom": 0,
-                                      "paddingTop": 0,
-                                    },
-                                    {
-                                      "minHeight": 56,
-                                    },
-                                  ]
-                                }
-                              >
-                                <View
-                                  pointerEvents="none"
-                                  style={
-                                    [
-                                      {
-                                        "bottom": 0,
-                                        "left": 0,
-                                        "position": "absolute",
-                                        "right": 0,
-                                        "top": 0,
-                                      },
-                                      {
-                                        "height": 24,
-                                        "zIndex": 2,
-                                      },
-                                      {
-                                        "backgroundColor": "#efefef",
-                                        "left": 16,
-                                        "right": 16,
-                                      },
-                                    ]
-                                  }
-                                  testID="patch-container"
-                                />
-                                <View
-                                  pointerEvents="none"
-                                  style={
-                                    [
-                                      {
-                                        "bottom": 0,
-                                        "left": 0,
-                                        "position": "absolute",
-                                        "right": 0,
-                                        "top": 0,
-                                      },
-                                      {
-                                        "overflow": "hidden",
-                                      },
-                                    ]
-                                  }
-                                >
-                                  <View
-                                    collapsable={false}
-                                    pointerEvents="none"
-                                    style={
-                                      {
-                                        "bottom": 0,
-                                        "left": 0,
-                                        "opacity": 1,
-                                        "position": "absolute",
-                                        "right": 0,
-                                        "top": 0,
-                                        "transform": [
-                                          {
-                                            "translateX": 0,
-                                          },
-                                        ],
-                                        "width": 750,
-                                        "zIndex": 3,
-                                      }
-                                    }
-                                  >
-                                    <View
-                                      style={
-                                        {
-                                          "width": 73,
-                                        }
-                                      }
-                                    >
-                                      <Text
-                                        collapsable={false}
-                                        maxFontSizeMultiplier={1.5}
-                                        numberOfLines={1}
-                                        onLayout={[Function]}
-                                        onTextLayout={[Function]}
-                                        style={
-                                          {
-                                            "color": "#8B8B8B",
-                                            "fontFamily": "System",
-                                            "fontSize": 16,
-                                            "fontWeight": undefined,
-                                            "left": 0,
-                                            "letterSpacing": 0.15,
-                                            "lineHeight": undefined,
-                                            "maxWidth": 73,
-                                            "opacity": 0,
-                                            "paddingLeft": 16,
-                                            "paddingRight": 16,
-                                            "position": "absolute",
-                                            "textAlign": "left",
-                                            "top": 30,
-                                            "transform": [
-                                              {
-                                                "translateX": 0,
-                                              },
-                                              {
-                                                "translateY": 0,
-                                              },
-                                              {
-                                                "scale": 1,
-                                              },
-                                            ],
-                                            "writingDirection": "ltr",
-                                          }
-                                        }
-                                        testID="text-input-flat-label-active"
-                                      >
-                                        Project Description
-                                      </Text>
-                                      <Text
-                                        collapsable={false}
-                                        maxFontSizeMultiplier={1.5}
-                                        numberOfLines={1}
-                                        style={
-                                          {
-                                            "color": "rgba(73, 69, 79, 1)",
-                                            "fontFamily": "System",
-                                            "fontSize": 16,
-                                            "fontWeight": undefined,
-                                            "left": 0,
-                                            "letterSpacing": 0.15,
-                                            "lineHeight": undefined,
-                                            "maxWidth": 73,
-                                            "opacity": 0,
-                                            "paddingLeft": 16,
-                                            "paddingRight": 16,
-                                            "position": "absolute",
-                                            "textAlign": "left",
-                                            "top": 30,
-                                            "transform": [
-                                              {
-                                                "translateX": 0,
-                                              },
-                                              {
-                                                "translateY": 0,
-                                              },
-                                              {
-                                                "scale": 1,
-                                              },
-                                            ],
-                                            "writingDirection": "ltr",
-                                          }
-                                        }
-                                        testID="text-input-flat-label-inactive"
-                                      >
-                                        Project Description
-                                      </Text>
-                                    </View>
-                                  </View>
-                                </View>
-                                <TextInput
-                                  autoComplete="off"
-                                  cursorColor="#8B8B8B"
-                                  editable={true}
-                                  maxFontSizeMultiplier={1.5}
-                                  maxLength={72}
-                                  multiline={true}
-                                  numberOfLines={3}
-                                  onBlur={[Function]}
-                                  onChangeText={[Function]}
-                                  onFocus={[Function]}
-                                  placeholder="Project Description"
-                                  placeholderTextColor="transparent"
-                                  selectionColor="#8B8B8B"
-                                  style={
-                                    [
-                                      {
-                                        "flexGrow": 1,
-                                        "margin": 0,
-                                      },
-                                      {},
-                                      {
-                                        "paddingBottom": 4,
-                                        "paddingTop": 31,
-                                      },
-                                      {
-                                        "color": "rgba(28, 27, 31, 1)",
-                                        "fontFamily": "System",
-                                        "fontSize": 16,
-                                        "fontWeight": undefined,
-                                        "letterSpacing": 0.15,
-                                        "lineHeight": undefined,
-                                        "minWidth": 65,
-                                        "paddingLeft": 16,
-                                        "paddingRight": 16,
-                                        "textAlign": "left",
-                                        "textAlignVertical": "top",
-                                      },
-                                      false,
-                                      [
-                                        {},
-                                      ],
-                                      undefined,
-                                    ]
-                                  }
-                                  testID="text-input-flat"
-                                  underlineColorAndroid="transparent"
-                                />
-                              </View>
-                            </View>
-                            <View
-                              dataSet={{}}
-                              style={
-                                {
-                                  "width": "100%",
-                                }
-                              }
-                            >
-                              <View
-                                dataSet={{}}
-                                feedbackId="field-1-feedback"
-                                hasFeedbackText={false}
-                                hasHelpText={false}
-                                helpTextId="field-1-helptext"
-                                isDisabled={false}
-                                isInvalid={false}
-                                isReadOnly={false}
-                                isRequired={false}
-                                labelId="field-1-label"
-                                nativeID="field-1-label"
-                                setHasFeedbackText={[Function]}
-                                setHasHelpText={[Function]}
-                                style={
-                                  {
                                     "flexDirection": "row",
-                                    "justifyContent": "flex-start",
-                                    "marginBottom": 4,
-                                    "marginTop": 4,
-                                  }
-                                }
-                              >
+                                  },
+                                  {
+                                    "alignItems": "center",
+                                    "columnGap": 24,
+                                    "flex": 1,
+                                  },
+                                ]
+                              }
+                            >
+                              <View>
                                 <View
+                                  accessibilityRole="button"
+                                  accessibilityState={
+                                    {
+                                      "busy": undefined,
+                                      "checked": undefined,
+                                      "disabled": undefined,
+                                      "expanded": undefined,
+                                      "selected": undefined,
+                                    }
+                                  }
+                                  accessibilityValue={
+                                    {
+                                      "max": undefined,
+                                      "min": undefined,
+                                      "now": undefined,
+                                      "text": undefined,
+                                    }
+                                  }
+                                  accessible={true}
+                                  collapsable={false}
+                                  focusable={true}
+                                  onBlur={[Function]}
+                                  onClick={[Function]}
+                                  onFocus={[Function]}
+                                  onResponderGrant={[Function]}
+                                  onResponderMove={[Function]}
+                                  onResponderRelease={[Function]}
+                                  onResponderTerminate={[Function]}
+                                  onResponderTerminationRequest={[Function]}
+                                  onStartShouldSetResponder={[Function]}
                                   style={
                                     [
                                       {
-                                        "flexDirection": "row",
+                                        "alignSelf": "flex-start",
                                       },
                                       {
-                                        "alignItems": "center",
+                                        "borderRadius": 100,
+                                      },
+                                      {
+                                        "backgroundColor": "#00000000",
                                       },
                                     ]
                                   }
                                 >
-                                  <Text
-                                    lineHeight="32px"
+                                  <Icon
+                                    name="close"
+                                    size={24}
                                     style={
-                                      {
-                                        "color": "#1A202C",
-                                        "fontSize": 16,
-                                        "fontWeight": "bold",
-                                      }
-                                    }
-                                  >
-                                    Data Privacy
-                                  </Text>
-                                  <View
-                                    style={
-                                      {
-                                        "marginLeft": 6,
-                                      }
+                                      [
+                                        {
+                                          "textAlign": "center",
+                                          "verticalAlign": "middle",
+                                        },
+                                        {
+                                          "padding": 12,
+                                        },
+                                        {
+                                          "color": "#FFFFFF",
+                                        },
+                                      ]
                                     }
                                   />
-                                  <View>
+                                </View>
+                              </View>
+                              <Text
+                                lineHeight="32px"
+                                style={
+                                  {
+                                    "color": "#FFFFFF",
+                                    "fontSize": 20,
+                                    "fontWeight": "500",
+                                  }
+                                }
+                              >
+                                Create Project
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                      <View
+                        style={
+                          {
+                            "flex": 1,
+                          }
+                        }
+                      >
+                        <View
+                          dataSet={{}}
+                          onLayout={[Function]}
+                          style={
+                            {
+                              "flex": 1,
+                            }
+                          }
+                        >
+                          <RCTScrollView
+                            contentContainerStyle={
+                              [
+                                {},
+                                {
+                                  "dataSet": {},
+                                },
+                                {},
+                              ]
+                            }
+                            dataSet={{}}
+                            style={
+                              {
+                                "backgroundColor": "#FFFFFF",
+                              }
+                            }
+                          >
+                            <View>
+                              <View
+                                style={
+                                  {
+                                    "marginHorizontal": 20,
+                                    "paddingTop": 16,
+                                  }
+                                }
+                              >
+                                <View
+                                  style={
+                                    [
+                                      {
+                                        "flexDirection": "column",
+                                      },
+                                      {
+                                        "rowGap": 20,
+                                      },
+                                    ]
+                                  }
+                                >
+                                  <View
+                                    style={
+                                      [
+                                        {
+                                          "backgroundColor": "rgba(231, 224, 236, 1)",
+                                          "borderTopLeftRadius": 4,
+                                          "borderTopRightRadius": 4,
+                                        },
+                                        {
+                                          "backgroundColor": "#efefef",
+                                          "minHeight": undefined,
+                                          "width": "100%",
+                                        },
+                                      ]
+                                    }
+                                  >
                                     <View
-                                      accessibilityRole="button"
-                                      accessibilityState={
-                                        {
-                                          "busy": undefined,
-                                          "checked": undefined,
-                                          "disabled": undefined,
-                                          "expanded": undefined,
-                                          "selected": undefined,
-                                        }
-                                      }
-                                      accessibilityValue={
-                                        {
-                                          "max": undefined,
-                                          "min": undefined,
-                                          "now": undefined,
-                                          "text": undefined,
-                                        }
-                                      }
-                                      accessible={true}
                                       collapsable={false}
-                                      focusable={true}
-                                      onBlur={[Function]}
-                                      onClick={[Function]}
-                                      onFocus={[Function]}
-                                      onResponderGrant={[Function]}
-                                      onResponderMove={[Function]}
-                                      onResponderRelease={[Function]}
-                                      onResponderTerminate={[Function]}
-                                      onResponderTerminationRequest={[Function]}
-                                      onStartShouldSetResponder={[Function]}
+                                      style={
+                                        {
+                                          "backgroundColor": "rgba(73, 69, 79, 1)",
+                                          "bottom": 0,
+                                          "height": 1,
+                                          "left": 0,
+                                          "position": "absolute",
+                                          "right": 0,
+                                          "transform": [
+                                            {
+                                              "scaleY": 0.5,
+                                            },
+                                          ],
+                                          "zIndex": 1,
+                                        }
+                                      }
+                                      testID="text-input-underline"
+                                    />
+                                    <View
+                                      onLayout={[Function]}
                                       style={
                                         [
                                           {
-                                            "alignSelf": "flex-start",
+                                            "flexGrow": 1,
+                                            "paddingBottom": 0,
+                                            "paddingTop": 0,
                                           },
                                           {
-                                            "borderRadius": 100,
-                                          },
-                                          {
-                                            "backgroundColor": "#00000000",
+                                            "minHeight": 56,
                                           },
                                         ]
                                       }
                                     >
-                                      <Icon
-                                        name="info"
-                                        size={20}
+                                      <View
+                                        pointerEvents="none"
                                         style={
                                           [
                                             {
-                                              "textAlign": "center",
-                                              "verticalAlign": "middle",
+                                              "bottom": 0,
+                                              "left": 0,
+                                              "position": "absolute",
+                                              "right": 0,
+                                              "top": 0,
                                             },
                                             {
-                                              "padding": 4,
-                                            },
-                                            {
-                                              "color": "#001923B3",
+                                              "overflow": "hidden",
                                             },
                                           ]
                                         }
+                                      >
+                                        <View
+                                          collapsable={false}
+                                          pointerEvents="none"
+                                          style={
+                                            {
+                                              "bottom": 0,
+                                              "left": 0,
+                                              "opacity": 1,
+                                              "position": "absolute",
+                                              "right": 0,
+                                              "top": 0,
+                                              "transform": [
+                                                {
+                                                  "translateX": 0,
+                                                },
+                                              ],
+                                              "width": 750,
+                                              "zIndex": 3,
+                                            }
+                                          }
+                                        >
+                                          <View
+                                            style={
+                                              {
+                                                "width": 73,
+                                              }
+                                            }
+                                          >
+                                            <Text
+                                              collapsable={false}
+                                              maxFontSizeMultiplier={1.5}
+                                              numberOfLines={1}
+                                              onLayout={[Function]}
+                                              onTextLayout={[Function]}
+                                              style={
+                                                {
+                                                  "color": "#8B8B8B",
+                                                  "fontFamily": "System",
+                                                  "fontSize": 16,
+                                                  "fontWeight": undefined,
+                                                  "left": 0,
+                                                  "letterSpacing": 0.15,
+                                                  "lineHeight": undefined,
+                                                  "maxWidth": 73,
+                                                  "opacity": 0,
+                                                  "paddingLeft": 16,
+                                                  "paddingRight": 16,
+                                                  "position": "absolute",
+                                                  "textAlign": "left",
+                                                  "top": 30,
+                                                  "transform": [
+                                                    {
+                                                      "translateX": 0,
+                                                    },
+                                                    {
+                                                      "translateY": 0,
+                                                    },
+                                                    {
+                                                      "scale": 1,
+                                                    },
+                                                  ],
+                                                  "writingDirection": "ltr",
+                                                }
+                                              }
+                                              testID="text-input-flat-label-active"
+                                            >
+                                              Project Name
+                                            </Text>
+                                            <Text
+                                              collapsable={false}
+                                              maxFontSizeMultiplier={1.5}
+                                              numberOfLines={1}
+                                              style={
+                                                {
+                                                  "color": "rgba(73, 69, 79, 1)",
+                                                  "fontFamily": "System",
+                                                  "fontSize": 16,
+                                                  "fontWeight": undefined,
+                                                  "left": 0,
+                                                  "letterSpacing": 0.15,
+                                                  "lineHeight": undefined,
+                                                  "maxWidth": 73,
+                                                  "opacity": 0,
+                                                  "paddingLeft": 16,
+                                                  "paddingRight": 16,
+                                                  "position": "absolute",
+                                                  "textAlign": "left",
+                                                  "top": 30,
+                                                  "transform": [
+                                                    {
+                                                      "translateX": 0,
+                                                    },
+                                                    {
+                                                      "translateY": 0,
+                                                    },
+                                                    {
+                                                      "scale": 1,
+                                                    },
+                                                  ],
+                                                  "writingDirection": "ltr",
+                                                }
+                                              }
+                                              testID="text-input-flat-label-inactive"
+                                            >
+                                              Project Name
+                                            </Text>
+                                          </View>
+                                        </View>
+                                      </View>
+                                      <TextInput
+                                        cursorColor="#8B8B8B"
+                                        editable={true}
+                                        maxFontSizeMultiplier={1.5}
+                                        maxLength={50}
+                                        multiline={false}
+                                        onBlur={[Function]}
+                                        onChangeText={[Function]}
+                                        onFocus={[Function]}
+                                        placeholder="Project Name"
+                                        placeholderTextColor="transparent"
+                                        selectionColor="#8B8B8B"
+                                        style={
+                                          [
+                                            {
+                                              "flexGrow": 1,
+                                              "margin": 0,
+                                            },
+                                            {},
+                                            {
+                                              "paddingBottom": 4,
+                                              "paddingTop": 24,
+                                            },
+                                            {
+                                              "color": "rgba(28, 27, 31, 1)",
+                                              "fontFamily": "System",
+                                              "fontSize": 16,
+                                              "fontWeight": undefined,
+                                              "letterSpacing": 0.15,
+                                              "lineHeight": undefined,
+                                              "minWidth": 65,
+                                              "paddingLeft": 16,
+                                              "paddingRight": 16,
+                                              "textAlign": "left",
+                                              "textAlignVertical": "center",
+                                            },
+                                            false,
+                                            [
+                                              {},
+                                            ],
+                                            undefined,
+                                          ]
+                                        }
+                                        testID="text-input-flat"
+                                        underlineColorAndroid="transparent"
                                       />
                                     </View>
                                   </View>
-                                  <RCTScrollView
-                                    focusHook={[Function]}
+                                  <View
+                                    style={
+                                      [
+                                        {
+                                          "backgroundColor": "rgba(231, 224, 236, 1)",
+                                          "borderTopLeftRadius": 4,
+                                          "borderTopRightRadius": 4,
+                                        },
+                                        {
+                                          "backgroundColor": "#efefef",
+                                          "minHeight": 100,
+                                          "width": "100%",
+                                        },
+                                      ]
+                                    }
                                   >
-                                    <View>
-                                      <View
-                                        style={
+                                    <View
+                                      collapsable={false}
+                                      style={
+                                        {
+                                          "backgroundColor": "rgba(73, 69, 79, 1)",
+                                          "bottom": 0,
+                                          "height": 1,
+                                          "left": 0,
+                                          "position": "absolute",
+                                          "right": 0,
+                                          "transform": [
+                                            {
+                                              "scaleY": 0.5,
+                                            },
+                                          ],
+                                          "zIndex": 1,
+                                        }
+                                      }
+                                      testID="text-input-underline"
+                                    />
+                                    <View
+                                      onLayout={[Function]}
+                                      style={
+                                        [
                                           {
-                                            "padding": 16,
-                                          }
+                                            "flexGrow": 1,
+                                            "paddingBottom": 0,
+                                            "paddingTop": 0,
+                                          },
+                                          {
+                                            "minHeight": 56,
+                                          },
+                                        ]
+                                      }
+                                    >
+                                      <View
+                                        pointerEvents="none"
+                                        style={
+                                          [
+                                            {
+                                              "bottom": 0,
+                                              "left": 0,
+                                              "position": "absolute",
+                                              "right": 0,
+                                              "top": 0,
+                                            },
+                                            {
+                                              "height": 24,
+                                              "zIndex": 2,
+                                            },
+                                            {
+                                              "backgroundColor": "#efefef",
+                                              "left": 16,
+                                              "right": 16,
+                                            },
+                                          ]
+                                        }
+                                        testID="patch-container"
+                                      />
+                                      <View
+                                        pointerEvents="none"
+                                        style={
+                                          [
+                                            {
+                                              "bottom": 0,
+                                              "left": 0,
+                                              "position": "absolute",
+                                              "right": 0,
+                                              "top": 0,
+                                            },
+                                            {
+                                              "overflow": "hidden",
+                                            },
+                                          ]
                                         }
                                       >
                                         <View
+                                          collapsable={false}
+                                          pointerEvents="none"
                                           style={
                                             {
-                                              "alignContent": "space-evenly",
-                                              "alignItems": "center",
-                                              "flexDirection": "row",
-                                              "marginBottom": 16,
+                                              "bottom": 0,
+                                              "left": 0,
+                                              "opacity": 1,
+                                              "position": "absolute",
+                                              "right": 0,
+                                              "top": 0,
+                                              "transform": [
+                                                {
+                                                  "translateX": 0,
+                                                },
+                                              ],
+                                              "width": 750,
+                                              "zIndex": 3,
                                             }
                                           }
                                         >
                                           <View
                                             style={
                                               {
-                                                "flex": 1,
-                                                "marginRight": "auto",
+                                                "width": 73,
                                               }
                                             }
                                           >
                                             <Text
-                                              lineHeight="32px"
-                                              style={
-                                                {
-                                                  "color": "#1A202C",
-                                                  "fontSize": 24,
-                                                  "fontWeight": "700",
-                                                }
-                                              }
-                                            >
-                                              LandPKS Data Privacy
-                                            </Text>
-                                          </View>
-                                          <View>
-                                            <View
-                                              accessibilityRole="button"
-                                              accessibilityState={
-                                                {
-                                                  "busy": undefined,
-                                                  "checked": undefined,
-                                                  "disabled": undefined,
-                                                  "expanded": undefined,
-                                                  "selected": undefined,
-                                                }
-                                              }
-                                              accessibilityValue={
-                                                {
-                                                  "max": undefined,
-                                                  "min": undefined,
-                                                  "now": undefined,
-                                                  "text": undefined,
-                                                }
-                                              }
-                                              accessible={true}
                                               collapsable={false}
-                                              focusable={true}
-                                              onBlur={[Function]}
-                                              onClick={[Function]}
-                                              onFocus={[Function]}
-                                              onResponderGrant={[Function]}
-                                              onResponderMove={[Function]}
-                                              onResponderRelease={[Function]}
-                                              onResponderTerminate={[Function]}
-                                              onResponderTerminationRequest={[Function]}
-                                              onStartShouldSetResponder={[Function]}
+                                              maxFontSizeMultiplier={1.5}
+                                              numberOfLines={1}
+                                              onLayout={[Function]}
+                                              onTextLayout={[Function]}
                                               style={
-                                                [
-                                                  {
-                                                    "alignSelf": "flex-start",
-                                                  },
-                                                  {
-                                                    "borderRadius": 100,
-                                                  },
-                                                  {
-                                                    "backgroundColor": "#EEEEEE",
-                                                  },
-                                                ]
-                                              }
-                                            >
-                                              <Icon
-                                                name="close"
-                                                size={24}
-                                                style={
-                                                  [
+                                                {
+                                                  "color": "#8B8B8B",
+                                                  "fontFamily": "System",
+                                                  "fontSize": 16,
+                                                  "fontWeight": undefined,
+                                                  "left": 0,
+                                                  "letterSpacing": 0.15,
+                                                  "lineHeight": undefined,
+                                                  "maxWidth": 73,
+                                                  "opacity": 0,
+                                                  "paddingLeft": 16,
+                                                  "paddingRight": 16,
+                                                  "position": "absolute",
+                                                  "textAlign": "left",
+                                                  "top": 30,
+                                                  "transform": [
                                                     {
-                                                      "textAlign": "center",
-                                                      "verticalAlign": "middle",
+                                                      "translateX": 0,
                                                     },
                                                     {
-                                                      "padding": 12,
+                                                      "translateY": 0,
                                                     },
                                                     {
-                                                      "color": "#001923B3",
+                                                      "scale": 1,
                                                     },
-                                                  ]
+                                                  ],
+                                                  "writingDirection": "ltr",
                                                 }
-                                              />
-                                            </View>
+                                              }
+                                              testID="text-input-flat-label-active"
+                                            >
+                                              Project Description
+                                            </Text>
+                                            <Text
+                                              collapsable={false}
+                                              maxFontSizeMultiplier={1.5}
+                                              numberOfLines={1}
+                                              style={
+                                                {
+                                                  "color": "rgba(73, 69, 79, 1)",
+                                                  "fontFamily": "System",
+                                                  "fontSize": 16,
+                                                  "fontWeight": undefined,
+                                                  "left": 0,
+                                                  "letterSpacing": 0.15,
+                                                  "lineHeight": undefined,
+                                                  "maxWidth": 73,
+                                                  "opacity": 0,
+                                                  "paddingLeft": 16,
+                                                  "paddingRight": 16,
+                                                  "position": "absolute",
+                                                  "textAlign": "left",
+                                                  "top": 30,
+                                                  "transform": [
+                                                    {
+                                                      "translateX": 0,
+                                                    },
+                                                    {
+                                                      "translateY": 0,
+                                                    },
+                                                    {
+                                                      "scale": 1,
+                                                    },
+                                                  ],
+                                                  "writingDirection": "ltr",
+                                                }
+                                              }
+                                              testID="text-input-flat-label-inactive"
+                                            >
+                                              Project Description
+                                            </Text>
                                           </View>
                                         </View>
-                                        <View
-                                          style={
+                                      </View>
+                                      <TextInput
+                                        autoComplete="off"
+                                        cursorColor="#8B8B8B"
+                                        editable={true}
+                                        maxFontSizeMultiplier={1.5}
+                                        maxLength={72}
+                                        multiline={true}
+                                        numberOfLines={3}
+                                        onBlur={[Function]}
+                                        onChangeText={[Function]}
+                                        onFocus={[Function]}
+                                        placeholder="Project Description"
+                                        placeholderTextColor="transparent"
+                                        selectionColor="#8B8B8B"
+                                        style={
+                                          [
+                                            {
+                                              "flexGrow": 1,
+                                              "margin": 0,
+                                            },
+                                            {},
+                                            {
+                                              "paddingBottom": 4,
+                                              "paddingTop": 31,
+                                            },
+                                            {
+                                              "color": "rgba(28, 27, 31, 1)",
+                                              "fontFamily": "System",
+                                              "fontSize": 16,
+                                              "fontWeight": undefined,
+                                              "letterSpacing": 0.15,
+                                              "lineHeight": undefined,
+                                              "minWidth": 65,
+                                              "paddingLeft": 16,
+                                              "paddingRight": 16,
+                                              "textAlign": "left",
+                                              "textAlignVertical": "top",
+                                            },
+                                            false,
                                             [
-                                              {
-                                                "flexDirection": "column",
-                                              },
-                                              {
-                                                "rowGap": 12,
-                                              },
-                                            ]
+                                              {},
+                                            ],
+                                            undefined,
+                                          ]
+                                        }
+                                        testID="text-input-flat"
+                                        underlineColorAndroid="transparent"
+                                      />
+                                    </View>
+                                  </View>
+                                  <View
+                                    dataSet={{}}
+                                    style={
+                                      {
+                                        "width": "100%",
+                                      }
+                                    }
+                                  >
+                                    <View
+                                      dataSet={{}}
+                                      feedbackId="field-1-feedback"
+                                      hasFeedbackText={false}
+                                      hasHelpText={false}
+                                      helpTextId="field-1-helptext"
+                                      isDisabled={false}
+                                      isInvalid={false}
+                                      isReadOnly={false}
+                                      isRequired={false}
+                                      labelId="field-1-label"
+                                      nativeID="field-1-label"
+                                      setHasFeedbackText={[Function]}
+                                      setHasHelpText={[Function]}
+                                      style={
+                                        {
+                                          "flexDirection": "row",
+                                          "justifyContent": "flex-start",
+                                          "marginBottom": 4,
+                                          "marginTop": 4,
+                                        }
+                                      }
+                                    >
+                                      <View
+                                        style={
+                                          [
+                                            {
+                                              "flexDirection": "row",
+                                            },
+                                            {
+                                              "alignItems": "center",
+                                            },
+                                          ]
+                                        }
+                                      >
+                                        <Text
+                                          lineHeight="32px"
+                                          style={
+                                            {
+                                              "color": "#1A202C",
+                                              "fontSize": 16,
+                                              "fontWeight": "bold",
+                                            }
                                           }
                                         >
-                                          <Text
-                                            letterSpacing="0.15px"
-                                            lineHeight="24px"
-                                            style={
-                                              {
-                                                "color": "#1A202C",
-                                                "fontSize": 16,
-                                                "fontWeight": "400",
-                                              }
+                                          Data Privacy
+                                        </Text>
+                                        <View
+                                          style={
+                                            {
+                                              "marginLeft": 6,
                                             }
-                                          >
-                                            <Text
-                                              style={
-                                                {
-                                                  "fontWeight": "bold",
-                                                }
-                                              }
-                                            >
-                                              Public sites
-                                            </Text>
-                                             are visible to anyone on the LandPKS data portal.
-                                          </Text>
+                                          }
+                                        />
+                                        <View>
                                           <View
-                                            accessibilityLabel="LandPKS Data Portal"
-                                            accessibilityRole="link"
+                                            accessibilityRole="button"
                                             accessibilityState={
                                               {
                                                 "busy": undefined,
@@ -1100,824 +918,1049 @@ exports[`renders correctly 1`] = `
                                             onResponderTerminationRequest={[Function]}
                                             onStartShouldSetResponder={[Function]}
                                             style={
-                                              {
-                                                "alignItems": "center",
-                                                "alignSelf": "flex-start",
-                                                "flexDirection": "row",
-                                                "paddingHorizontal": 12,
-                                                "paddingVertical": 8,
-                                              }
+                                              [
+                                                {
+                                                  "alignSelf": "flex-start",
+                                                },
+                                                {
+                                                  "borderRadius": 100,
+                                                },
+                                                {
+                                                  "backgroundColor": "#00000000",
+                                                },
+                                              ]
                                             }
                                           >
-                                            <Text
-                                              style={
-                                                [
-                                                  {
-                                                    "fontSize": 15,
-                                                    "fontWeight": "500",
-                                                    "lineHeight": 26,
-                                                    "textTransform": "uppercase",
-                                                  },
-                                                  {
-                                                    "color": "#028843",
-                                                  },
-                                                ]
-                                              }
-                                            >
-                                              LandPKS Data Portal
-                                            </Text>
                                             <Icon
-                                              name="open-in-new"
-                                              size={24}
+                                              name="info"
+                                              size={20}
                                               style={
                                                 [
-                                                  [
-                                                    {
-                                                      "marginRight": 8,
-                                                    },
-                                                    {
-                                                      "color": "#028843",
-                                                    },
-                                                  ],
-                                                  {},
+                                                  {
+                                                    "textAlign": "center",
+                                                    "verticalAlign": "middle",
+                                                  },
+                                                  {
+                                                    "padding": 4,
+                                                  },
+                                                  {
+                                                    "color": "#001923B3",
+                                                  },
                                                 ]
                                               }
                                             />
                                           </View>
-                                          <Text
-                                            letterSpacing="0.15px"
-                                            lineHeight="24px"
-                                            style={
-                                              {
-                                                "color": "#1A202C",
-                                                "fontSize": 16,
-                                                "fontWeight": "400",
-                                              }
-                                            }
-                                          >
-                                            All observations entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII).
-                                          </Text>
-                                          <Text
-                                            letterSpacing="0.15px"
-                                            lineHeight="24px"
-                                            style={
-                                              {
-                                                "color": "#1A202C",
-                                                "fontSize": 16,
-                                                "fontWeight": "400",
-                                              }
-                                            }
-                                          >
-                                            <Text
+                                        </View>
+                                        <RCTScrollView
+                                          focusHook={[Function]}
+                                        >
+                                          <View>
+                                            <View
                                               style={
                                                 {
-                                                  "fontWeight": "bold",
+                                                  "padding": 16,
                                                 }
                                               }
                                             >
-                                              A private site
-                                            </Text>
-                                             not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. 
-                                          </Text>
-                                          <Text
-                                            letterSpacing="0.15px"
-                                            lineHeight="24px"
+                                              <View
+                                                style={
+                                                  {
+                                                    "alignContent": "space-evenly",
+                                                    "alignItems": "center",
+                                                    "flexDirection": "row",
+                                                    "marginBottom": 16,
+                                                  }
+                                                }
+                                              >
+                                                <View
+                                                  style={
+                                                    {
+                                                      "flex": 1,
+                                                      "marginRight": "auto",
+                                                    }
+                                                  }
+                                                >
+                                                  <Text
+                                                    lineHeight="32px"
+                                                    style={
+                                                      {
+                                                        "color": "#1A202C",
+                                                        "fontSize": 24,
+                                                        "fontWeight": "700",
+                                                      }
+                                                    }
+                                                  >
+                                                    LandPKS Data Privacy
+                                                  </Text>
+                                                </View>
+                                                <View>
+                                                  <View
+                                                    accessibilityRole="button"
+                                                    accessibilityState={
+                                                      {
+                                                        "busy": undefined,
+                                                        "checked": undefined,
+                                                        "disabled": undefined,
+                                                        "expanded": undefined,
+                                                        "selected": undefined,
+                                                      }
+                                                    }
+                                                    accessibilityValue={
+                                                      {
+                                                        "max": undefined,
+                                                        "min": undefined,
+                                                        "now": undefined,
+                                                        "text": undefined,
+                                                      }
+                                                    }
+                                                    accessible={true}
+                                                    collapsable={false}
+                                                    focusable={true}
+                                                    onBlur={[Function]}
+                                                    onClick={[Function]}
+                                                    onFocus={[Function]}
+                                                    onResponderGrant={[Function]}
+                                                    onResponderMove={[Function]}
+                                                    onResponderRelease={[Function]}
+                                                    onResponderTerminate={[Function]}
+                                                    onResponderTerminationRequest={[Function]}
+                                                    onStartShouldSetResponder={[Function]}
+                                                    style={
+                                                      [
+                                                        {
+                                                          "alignSelf": "flex-start",
+                                                        },
+                                                        {
+                                                          "borderRadius": 100,
+                                                        },
+                                                        {
+                                                          "backgroundColor": "#EEEEEE",
+                                                        },
+                                                      ]
+                                                    }
+                                                  >
+                                                    <Icon
+                                                      name="close"
+                                                      size={24}
+                                                      style={
+                                                        [
+                                                          {
+                                                            "textAlign": "center",
+                                                            "verticalAlign": "middle",
+                                                          },
+                                                          {
+                                                            "padding": 12,
+                                                          },
+                                                          {
+                                                            "color": "#001923B3",
+                                                          },
+                                                        ]
+                                                      }
+                                                    />
+                                                  </View>
+                                                </View>
+                                              </View>
+                                              <View
+                                                style={
+                                                  [
+                                                    {
+                                                      "flexDirection": "column",
+                                                    },
+                                                    {
+                                                      "rowGap": 12,
+                                                    },
+                                                  ]
+                                                }
+                                              >
+                                                <Text
+                                                  letterSpacing="0.15px"
+                                                  lineHeight="24px"
+                                                  style={
+                                                    {
+                                                      "color": "#1A202C",
+                                                      "fontSize": 16,
+                                                      "fontWeight": "400",
+                                                    }
+                                                  }
+                                                >
+                                                  <Text
+                                                    style={
+                                                      {
+                                                        "fontWeight": "bold",
+                                                      }
+                                                    }
+                                                  >
+                                                    Public sites
+                                                  </Text>
+                                                   are visible to anyone on the LandPKS data portal.
+                                                </Text>
+                                                <View
+                                                  accessibilityLabel="LandPKS Data Portal"
+                                                  accessibilityRole="link"
+                                                  accessibilityState={
+                                                    {
+                                                      "busy": undefined,
+                                                      "checked": undefined,
+                                                      "disabled": undefined,
+                                                      "expanded": undefined,
+                                                      "selected": undefined,
+                                                    }
+                                                  }
+                                                  accessibilityValue={
+                                                    {
+                                                      "max": undefined,
+                                                      "min": undefined,
+                                                      "now": undefined,
+                                                      "text": undefined,
+                                                    }
+                                                  }
+                                                  accessible={true}
+                                                  collapsable={false}
+                                                  focusable={true}
+                                                  onBlur={[Function]}
+                                                  onClick={[Function]}
+                                                  onFocus={[Function]}
+                                                  onResponderGrant={[Function]}
+                                                  onResponderMove={[Function]}
+                                                  onResponderRelease={[Function]}
+                                                  onResponderTerminate={[Function]}
+                                                  onResponderTerminationRequest={[Function]}
+                                                  onStartShouldSetResponder={[Function]}
+                                                  style={
+                                                    {
+                                                      "alignItems": "center",
+                                                      "alignSelf": "flex-start",
+                                                      "flexDirection": "row",
+                                                      "paddingHorizontal": 12,
+                                                      "paddingVertical": 8,
+                                                    }
+                                                  }
+                                                >
+                                                  <Text
+                                                    style={
+                                                      [
+                                                        {
+                                                          "fontSize": 15,
+                                                          "fontWeight": "500",
+                                                          "lineHeight": 26,
+                                                          "textTransform": "uppercase",
+                                                        },
+                                                        {
+                                                          "color": "#028843",
+                                                        },
+                                                      ]
+                                                    }
+                                                  >
+                                                    LandPKS Data Portal
+                                                  </Text>
+                                                  <Icon
+                                                    name="open-in-new"
+                                                    size={24}
+                                                    style={
+                                                      [
+                                                        [
+                                                          {
+                                                            "marginRight": 8,
+                                                          },
+                                                          {
+                                                            "color": "#028843",
+                                                          },
+                                                        ],
+                                                        {},
+                                                      ]
+                                                    }
+                                                  />
+                                                </View>
+                                                <Text
+                                                  letterSpacing="0.15px"
+                                                  lineHeight="24px"
+                                                  style={
+                                                    {
+                                                      "color": "#1A202C",
+                                                      "fontSize": 16,
+                                                      "fontWeight": "400",
+                                                    }
+                                                  }
+                                                >
+                                                  All observations entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII).
+                                                </Text>
+                                                <Text
+                                                  letterSpacing="0.15px"
+                                                  lineHeight="24px"
+                                                  style={
+                                                    {
+                                                      "color": "#1A202C",
+                                                      "fontSize": 16,
+                                                      "fontWeight": "400",
+                                                    }
+                                                  }
+                                                >
+                                                  <Text
+                                                    style={
+                                                      {
+                                                        "fontWeight": "bold",
+                                                      }
+                                                    }
+                                                  >
+                                                    A private site
+                                                  </Text>
+                                                   not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. 
+                                                </Text>
+                                                <Text
+                                                  letterSpacing="0.15px"
+                                                  lineHeight="24px"
+                                                  style={
+                                                    {
+                                                      "color": "#1A202C",
+                                                      "fontSize": 16,
+                                                      "fontWeight": "400",
+                                                    }
+                                                  }
+                                                >
+                                                  <Text
+                                                    style={
+                                                      {
+                                                        "fontWeight": "bold",
+                                                      }
+                                                    }
+                                                  >
+                                                    A project’s privacy setting determines the privacy of its affiliated sites.
+                                                  </Text>
+                                                   Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. 
+                                                </Text>
+                                                <Text
+                                                  accessibilityRole="link"
+                                                  letterSpacing="0.15px"
+                                                  lineHeight="24px"
+                                                  onPress={[Function]}
+                                                  onPressIn={[Function]}
+                                                  onPressOut={[Function]}
+                                                  style={
+                                                    {
+                                                      "color": "#028843",
+                                                      "fontSize": 16,
+                                                      "fontWeight": "700",
+                                                      "textDecorationLine": "underline",
+                                                    }
+                                                  }
+                                                >
+                                                  Read more about our data privacy policy.
+                                                </Text>
+                                              </View>
+                                            </View>
+                                          </View>
+                                        </RCTScrollView>
+                                      </View>
+                                    </View>
+                                    <View
+                                      aria-disabled={false}
+                                      colorScheme="primary"
+                                      dataSet={{}}
+                                      name="data-privacy"
+                                      onChange={[Function]}
+                                      role="radiogroup"
+                                      style={
+                                        {
+                                          "alignItems": "flex-start",
+                                          "flexDirection": "row",
+                                        }
+                                      }
+                                      value="PRIVATE"
+                                    >
+                                      <View
+                                        accessibilityRole="radio"
+                                        accessibilityState={
+                                          {
+                                            "busy": undefined,
+                                            "checked": false,
+                                            "disabled": false,
+                                            "expanded": undefined,
+                                            "selected": undefined,
+                                          }
+                                        }
+                                        accessibilityValue={
+                                          {
+                                            "max": undefined,
+                                            "min": undefined,
+                                            "now": undefined,
+                                            "text": undefined,
+                                          }
+                                        }
+                                        accessible={true}
+                                        checked={false}
+                                        collapsable={false}
+                                        dataSet={{}}
+                                        feedbackId="field-1-feedback"
+                                        focusable={true}
+                                        formControlContext={
+                                          {
+                                            "feedbackId": "field-1-feedback",
+                                            "hasFeedbackText": false,
+                                            "hasHelpText": false,
+                                            "helpTextId": "field-1-helptext",
+                                            "isDisabled": false,
+                                            "isInvalid": false,
+                                            "isReadOnly": false,
+                                            "isRequired": false,
+                                            "labelId": "field-1-label",
+                                            "nativeID": "field-1",
+                                            "setHasFeedbackText": [Function],
+                                            "setHasHelpText": [Function],
+                                          }
+                                        }
+                                        hasFeedbackText={false}
+                                        hasHelpText={false}
+                                        helpTextId="field-1-helptext"
+                                        isInvalid={false}
+                                        isReadOnly={false}
+                                        isRequired={false}
+                                        labelId="field-1-label"
+                                        nativeID="field-1"
+                                        onBlur={[Function]}
+                                        onClick={[Function]}
+                                        onFocus={[Function]}
+                                        onResponderGrant={[Function]}
+                                        onResponderMove={[Function]}
+                                        onResponderRelease={[Function]}
+                                        onResponderTerminate={[Function]}
+                                        onResponderTerminationRequest={[Function]}
+                                        onStartShouldSetResponder={[Function]}
+                                        role="radio"
+                                        setHasFeedbackText={[Function]}
+                                        setHasHelpText={[Function]}
+                                        state={
+                                          {
+                                            "lastFocusedValue": null,
+                                            "name": "data-privacy",
+                                            "selectedValue": "PRIVATE",
+                                            "setLastFocusedValue": [Function],
+                                            "setSelectedValue": [Function],
+                                          }
+                                        }
+                                        style={{}}
+                                        value="PUBLIC"
+                                      >
+                                        <View
+                                          dataSet={{}}
+                                          style={
+                                            {
+                                              "alignItems": "center",
+                                              "flexDirection": "row",
+                                            }
+                                          }
+                                        >
+                                          <View
+                                            dataSet={{}}
                                             style={
                                               {
-                                                "color": "#1A202C",
-                                                "fontSize": 16,
-                                                "fontWeight": "400",
+                                                "alignItems": "center",
+                                                "display": "flex",
+                                                "justifyContent": "center",
                                               }
                                             }
                                           >
-                                            <Text
-                                              style={
+                                            <View
+                                              dataSet={{}}
+                                              style={{}}
+                                            />
+                                            <View
+                                              colorScheme="primary"
+                                              dataSet={{}}
+                                              defaultIsChecked={false}
+                                              feedbackId="field-1-feedback"
+                                              formControlContext={
                                                 {
-                                                  "fontWeight": "bold",
+                                                  "feedbackId": "field-1-feedback",
+                                                  "hasFeedbackText": false,
+                                                  "hasHelpText": false,
+                                                  "helpTextId": "field-1-helptext",
+                                                  "isDisabled": false,
+                                                  "isInvalid": false,
+                                                  "isReadOnly": false,
+                                                  "isRequired": false,
+                                                  "labelId": "field-1-label",
+                                                  "nativeID": "field-1",
+                                                  "setHasFeedbackText": [Function],
+                                                  "setHasHelpText": [Function],
                                                 }
                                               }
+                                              hasFeedbackText={false}
+                                              hasHelpText={false}
+                                              helpTextId="field-1-helptext"
+                                              isDisabled={false}
+                                              isInvalid={false}
+                                              isReadOnly={false}
+                                              isRequired={false}
+                                              labelId="field-1-label"
+                                              nativeID="field-1"
+                                              setHasFeedbackText={[Function]}
+                                              setHasHelpText={[Function]}
+                                              state={
+                                                {
+                                                  "lastFocusedValue": null,
+                                                  "name": "data-privacy",
+                                                  "selectedValue": "PRIVATE",
+                                                  "setLastFocusedValue": [Function],
+                                                  "setSelectedValue": [Function],
+                                                }
+                                              }
+                                              style={
+                                                {
+                                                  "alignItems": "center",
+                                                  "backgroundColor": "#fafafa",
+                                                  "borderColor": "#a3a3a3",
+                                                  "borderRadius": 9999,
+                                                  "borderWidth": 2,
+                                                  "display": "flex",
+                                                  "fontSize": 16,
+                                                  "fontWeight": "400",
+                                                  "justifyContent": "center",
+                                                  "letterSpacing": 0.15,
+                                                  "lineHeight": 24,
+                                                  "marginBottom": 8,
+                                                  "marginLeft": 8,
+                                                  "marginRight": 0,
+                                                  "marginTop": 8,
+                                                  "paddingBottom": 4,
+                                                  "paddingLeft": 4,
+                                                  "paddingRight": 4,
+                                                  "paddingTop": 4,
+                                                }
+                                              }
+                                              value="PUBLIC"
                                             >
-                                              A project’s privacy setting determines the privacy of its affiliated sites.
-                                            </Text>
-                                             Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. 
-                                          </Text>
-                                          <Text
-                                            accessibilityRole="link"
-                                            letterSpacing="0.15px"
-                                            lineHeight="24px"
-                                            onPress={[Function]}
-                                            onPressIn={[Function]}
-                                            onPressOut={[Function]}
+                                              <RNSVGSvgView
+                                                accessibilityRole="image"
+                                                align="xMidYMid"
+                                                bbHeight={12}
+                                                bbWidth={12}
+                                                dataSet={{}}
+                                                focusable={false}
+                                                meetOrSlice={0}
+                                                minX={0}
+                                                minY={0}
+                                                stroke=""
+                                                style={
+                                                  [
+                                                    {
+                                                      "backgroundColor": "transparent",
+                                                      "borderWidth": 0,
+                                                    },
+                                                    {
+                                                      "color": "#737373",
+                                                      "height": 12,
+                                                      "opacity": 0,
+                                                      "width": 12,
+                                                    },
+                                                    {
+                                                      "flex": 0,
+                                                      "height": 12,
+                                                      "width": 12,
+                                                    },
+                                                  ]
+                                                }
+                                                vbHeight={24}
+                                                vbWidth={24}
+                                              >
+                                                <RNSVGGroup
+                                                  color="#737373"
+                                                  fill={
+                                                    {
+                                                      "payload": 4278190080,
+                                                      "type": 0,
+                                                    }
+                                                  }
+                                                  opacity={0}
+                                                  propList={
+                                                    [
+                                                      "stroke",
+                                                    ]
+                                                  }
+                                                  stroke={null}
+                                                >
+                                                  <RNSVGGroup
+                                                    fill={
+                                                      {
+                                                        "payload": 4278190080,
+                                                        "type": 0,
+                                                      }
+                                                    }
+                                                  >
+                                                    <RNSVGPath
+                                                      d="M0 12C-2.34822e-08 13.5759 0.310389 15.1363 0.913445 16.5922C1.5165 18.0481 2.40042 19.371 3.51472 20.4853C4.62902 21.5996 5.95189 22.4835 7.4078 23.0866C8.86371 23.6896 10.4241 24 12 24C13.5759 24 15.1363 23.6896 16.5922 23.0866C18.0481 22.4835 19.371 21.5996 20.4853 20.4853C21.5996 19.371 22.4835 18.0481 23.0866 16.5922C23.6896 15.1363 24 13.5759 24 12C24 10.4241 23.6896 8.86371 23.0866 7.4078C22.4835 5.95189 21.5996 4.62902 20.4853 3.51472C19.371 2.40042 18.0481 1.5165 16.5922 0.913446C15.1363 0.310389 13.5759 0 12 0C10.4241 0 8.86371 0.310389 7.4078 0.913446C5.95189 1.5165 4.62902 2.40042 3.51472 3.51472C2.40042 4.62902 1.5165 5.95189 0.913445 7.4078C0.310389 8.86371 -2.34822e-08 10.4241 0 12Z"
+                                                      fill={
+                                                        {
+                                                          "type": 2,
+                                                        }
+                                                      }
+                                                      propList={
+                                                        [
+                                                          "fill",
+                                                          "stroke",
+                                                        ]
+                                                      }
+                                                      stroke={null}
+                                                    />
+                                                  </RNSVGGroup>
+                                                </RNSVGGroup>
+                                              </RNSVGSvgView>
+                                            </View>
+                                          </View>
+                                          <View
+                                            dataSet={{}}
                                             style={
                                               {
-                                                "color": "#028843",
+                                                "width": 8,
+                                              }
+                                            }
+                                          />
+                                          <Text
+                                            dataSet={{}}
+                                            style={
+                                              {
+                                                "backgroundColor": undefined,
+                                                "color": "#171717",
+                                                "fontFamily": undefined,
                                                 "fontSize": 16,
-                                                "fontWeight": "700",
-                                                "textDecorationLine": "underline",
+                                                "fontStyle": "normal",
+                                                "fontWeight": "400",
+                                                "letterSpacing": 0,
+                                                "lineHeight": 24,
+                                                "textDecorationLine": undefined,
                                               }
                                             }
                                           >
-                                            Read more about our data privacy policy.
+                                            Public
+                                          </Text>
+                                        </View>
+                                      </View>
+                                      <View
+                                        dataSet={{}}
+                                        style={
+                                          {
+                                            "width": 26,
+                                          }
+                                        }
+                                      />
+                                      <View
+                                        accessibilityRole="radio"
+                                        accessibilityState={
+                                          {
+                                            "busy": undefined,
+                                            "checked": true,
+                                            "disabled": false,
+                                            "expanded": undefined,
+                                            "selected": undefined,
+                                          }
+                                        }
+                                        accessibilityValue={
+                                          {
+                                            "max": undefined,
+                                            "min": undefined,
+                                            "now": undefined,
+                                            "text": undefined,
+                                          }
+                                        }
+                                        accessible={true}
+                                        checked={true}
+                                        collapsable={false}
+                                        dataSet={{}}
+                                        feedbackId="field-1-feedback"
+                                        focusable={true}
+                                        formControlContext={
+                                          {
+                                            "feedbackId": "field-1-feedback",
+                                            "hasFeedbackText": false,
+                                            "hasHelpText": false,
+                                            "helpTextId": "field-1-helptext",
+                                            "isDisabled": false,
+                                            "isInvalid": false,
+                                            "isReadOnly": false,
+                                            "isRequired": false,
+                                            "labelId": "field-1-label",
+                                            "nativeID": "field-1",
+                                            "setHasFeedbackText": [Function],
+                                            "setHasHelpText": [Function],
+                                          }
+                                        }
+                                        hasFeedbackText={false}
+                                        hasHelpText={false}
+                                        helpTextId="field-1-helptext"
+                                        isInvalid={false}
+                                        isReadOnly={false}
+                                        isRequired={false}
+                                        labelId="field-1-label"
+                                        nativeID="field-1"
+                                        onBlur={[Function]}
+                                        onClick={[Function]}
+                                        onFocus={[Function]}
+                                        onResponderGrant={[Function]}
+                                        onResponderMove={[Function]}
+                                        onResponderRelease={[Function]}
+                                        onResponderTerminate={[Function]}
+                                        onResponderTerminationRequest={[Function]}
+                                        onStartShouldSetResponder={[Function]}
+                                        role="radio"
+                                        setHasFeedbackText={[Function]}
+                                        setHasHelpText={[Function]}
+                                        state={
+                                          {
+                                            "lastFocusedValue": null,
+                                            "name": "data-privacy",
+                                            "selectedValue": "PRIVATE",
+                                            "setLastFocusedValue": [Function],
+                                            "setSelectedValue": [Function],
+                                          }
+                                        }
+                                        style={{}}
+                                        value="PRIVATE"
+                                      >
+                                        <View
+                                          dataSet={{}}
+                                          style={
+                                            {
+                                              "alignItems": "center",
+                                              "flexDirection": "row",
+                                            }
+                                          }
+                                        >
+                                          <View
+                                            dataSet={{}}
+                                            style={
+                                              {
+                                                "alignItems": "center",
+                                                "display": "flex",
+                                                "justifyContent": "center",
+                                              }
+                                            }
+                                          >
+                                            <View
+                                              dataSet={{}}
+                                              style={{}}
+                                            />
+                                            <View
+                                              colorScheme="primary"
+                                              dataSet={{}}
+                                              defaultIsChecked={false}
+                                              feedbackId="field-1-feedback"
+                                              formControlContext={
+                                                {
+                                                  "feedbackId": "field-1-feedback",
+                                                  "hasFeedbackText": false,
+                                                  "hasHelpText": false,
+                                                  "helpTextId": "field-1-helptext",
+                                                  "isDisabled": false,
+                                                  "isInvalid": false,
+                                                  "isReadOnly": false,
+                                                  "isRequired": false,
+                                                  "labelId": "field-1-label",
+                                                  "nativeID": "field-1",
+                                                  "setHasFeedbackText": [Function],
+                                                  "setHasHelpText": [Function],
+                                                }
+                                              }
+                                              hasFeedbackText={false}
+                                              hasHelpText={false}
+                                              helpTextId="field-1-helptext"
+                                              isDisabled={false}
+                                              isInvalid={false}
+                                              isReadOnly={false}
+                                              isRequired={false}
+                                              labelId="field-1-label"
+                                              nativeID="field-1"
+                                              setHasFeedbackText={[Function]}
+                                              setHasHelpText={[Function]}
+                                              state={
+                                                {
+                                                  "lastFocusedValue": null,
+                                                  "name": "data-privacy",
+                                                  "selectedValue": "PRIVATE",
+                                                  "setLastFocusedValue": [Function],
+                                                  "setSelectedValue": [Function],
+                                                }
+                                              }
+                                              style={
+                                                {
+                                                  "alignItems": "center",
+                                                  "backgroundColor": "#fafafa",
+                                                  "borderColor": "#028843",
+                                                  "borderRadius": 9999,
+                                                  "borderWidth": 2,
+                                                  "display": "flex",
+                                                  "fontSize": 16,
+                                                  "fontWeight": "400",
+                                                  "justifyContent": "center",
+                                                  "letterSpacing": 0.15,
+                                                  "lineHeight": 24,
+                                                  "marginBottom": 8,
+                                                  "marginLeft": 8,
+                                                  "marginRight": 0,
+                                                  "marginTop": 8,
+                                                  "paddingBottom": 4,
+                                                  "paddingLeft": 4,
+                                                  "paddingRight": 4,
+                                                  "paddingTop": 4,
+                                                }
+                                              }
+                                              value="PRIVATE"
+                                            >
+                                              <RNSVGSvgView
+                                                accessibilityRole="image"
+                                                align="xMidYMid"
+                                                bbHeight={12}
+                                                bbWidth={12}
+                                                dataSet={{}}
+                                                focusable={false}
+                                                meetOrSlice={0}
+                                                minX={0}
+                                                minY={0}
+                                                stroke=""
+                                                style={
+                                                  [
+                                                    {
+                                                      "backgroundColor": "transparent",
+                                                      "borderWidth": 0,
+                                                    },
+                                                    {
+                                                      "color": "#028843",
+                                                      "height": 12,
+                                                      "opacity": 1,
+                                                      "width": 12,
+                                                    },
+                                                    {
+                                                      "flex": 0,
+                                                      "height": 12,
+                                                      "width": 12,
+                                                    },
+                                                  ]
+                                                }
+                                                vbHeight={24}
+                                                vbWidth={24}
+                                              >
+                                                <RNSVGGroup
+                                                  color="#028843"
+                                                  fill={
+                                                    {
+                                                      "payload": 4278190080,
+                                                      "type": 0,
+                                                    }
+                                                  }
+                                                  opacity={1}
+                                                  propList={
+                                                    [
+                                                      "stroke",
+                                                    ]
+                                                  }
+                                                  stroke={null}
+                                                >
+                                                  <RNSVGGroup
+                                                    fill={
+                                                      {
+                                                        "payload": 4278190080,
+                                                        "type": 0,
+                                                      }
+                                                    }
+                                                  >
+                                                    <RNSVGPath
+                                                      d="M0 12C-2.34822e-08 13.5759 0.310389 15.1363 0.913445 16.5922C1.5165 18.0481 2.40042 19.371 3.51472 20.4853C4.62902 21.5996 5.95189 22.4835 7.4078 23.0866C8.86371 23.6896 10.4241 24 12 24C13.5759 24 15.1363 23.6896 16.5922 23.0866C18.0481 22.4835 19.371 21.5996 20.4853 20.4853C21.5996 19.371 22.4835 18.0481 23.0866 16.5922C23.6896 15.1363 24 13.5759 24 12C24 10.4241 23.6896 8.86371 23.0866 7.4078C22.4835 5.95189 21.5996 4.62902 20.4853 3.51472C19.371 2.40042 18.0481 1.5165 16.5922 0.913446C15.1363 0.310389 13.5759 0 12 0C10.4241 0 8.86371 0.310389 7.4078 0.913446C5.95189 1.5165 4.62902 2.40042 3.51472 3.51472C2.40042 4.62902 1.5165 5.95189 0.913445 7.4078C0.310389 8.86371 -2.34822e-08 10.4241 0 12Z"
+                                                      fill={
+                                                        {
+                                                          "type": 2,
+                                                        }
+                                                      }
+                                                      propList={
+                                                        [
+                                                          "fill",
+                                                          "stroke",
+                                                        ]
+                                                      }
+                                                      stroke={null}
+                                                    />
+                                                  </RNSVGGroup>
+                                                </RNSVGGroup>
+                                              </RNSVGSvgView>
+                                            </View>
+                                          </View>
+                                          <View
+                                            dataSet={{}}
+                                            style={
+                                              {
+                                                "width": 8,
+                                              }
+                                            }
+                                          />
+                                          <Text
+                                            dataSet={{}}
+                                            style={
+                                              {
+                                                "backgroundColor": undefined,
+                                                "color": "#171717",
+                                                "fontFamily": undefined,
+                                                "fontSize": 16,
+                                                "fontStyle": "normal",
+                                                "fontWeight": "400",
+                                                "letterSpacing": 0,
+                                                "lineHeight": 24,
+                                                "textDecorationLine": undefined,
+                                              }
+                                            }
+                                          >
+                                            Private
                                           </Text>
                                         </View>
                                       </View>
                                     </View>
-                                  </RCTScrollView>
+                                  </View>
                                 </View>
                               </View>
                               <View
-                                aria-disabled={false}
-                                colorScheme="primary"
-                                dataSet={{}}
-                                name="data-privacy"
-                                onChange={[Function]}
-                                role="radiogroup"
                                 style={
                                   {
-                                    "alignItems": "flex-start",
-                                    "flexDirection": "row",
+                                    "alignItems": "flex-end",
+                                    "margin": 20,
                                   }
                                 }
-                                value="PRIVATE"
                               >
-                                <View
-                                  accessibilityRole="radio"
-                                  accessibilityState={
-                                    {
-                                      "busy": undefined,
-                                      "checked": false,
-                                      "disabled": false,
-                                      "expanded": undefined,
-                                      "selected": undefined,
-                                    }
-                                  }
-                                  accessibilityValue={
-                                    {
-                                      "max": undefined,
-                                      "min": undefined,
-                                      "now": undefined,
-                                      "text": undefined,
-                                    }
-                                  }
-                                  accessible={true}
-                                  checked={false}
-                                  collapsable={false}
-                                  dataSet={{}}
-                                  feedbackId="field-1-feedback"
-                                  focusable={true}
-                                  formControlContext={
-                                    {
-                                      "feedbackId": "field-1-feedback",
-                                      "hasFeedbackText": false,
-                                      "hasHelpText": false,
-                                      "helpTextId": "field-1-helptext",
-                                      "isDisabled": false,
-                                      "isInvalid": false,
-                                      "isReadOnly": false,
-                                      "isRequired": false,
-                                      "labelId": "field-1-label",
-                                      "nativeID": "field-1",
-                                      "setHasFeedbackText": [Function],
-                                      "setHasHelpText": [Function],
-                                    }
-                                  }
-                                  hasFeedbackText={false}
-                                  hasHelpText={false}
-                                  helpTextId="field-1-helptext"
-                                  isInvalid={false}
-                                  isReadOnly={false}
-                                  isRequired={false}
-                                  labelId="field-1-label"
-                                  nativeID="field-1"
-                                  onBlur={[Function]}
-                                  onClick={[Function]}
-                                  onFocus={[Function]}
-                                  onResponderGrant={[Function]}
-                                  onResponderMove={[Function]}
-                                  onResponderRelease={[Function]}
-                                  onResponderTerminate={[Function]}
-                                  onResponderTerminationRequest={[Function]}
-                                  onStartShouldSetResponder={[Function]}
-                                  role="radio"
-                                  setHasFeedbackText={[Function]}
-                                  setHasHelpText={[Function]}
-                                  state={
-                                    {
-                                      "lastFocusedValue": null,
-                                      "name": "data-privacy",
-                                      "selectedValue": "PRIVATE",
-                                      "setLastFocusedValue": [Function],
-                                      "setSelectedValue": [Function],
-                                    }
-                                  }
-                                  style={{}}
-                                  value="PUBLIC"
-                                >
+                                <View>
                                   <View
-                                    dataSet={{}}
-                                    style={
+                                    accessibilityLabel="Create"
+                                    accessibilityRole="button"
+                                    accessibilityState={
                                       {
-                                        "alignItems": "center",
-                                        "flexDirection": "row",
+                                        "busy": undefined,
+                                        "checked": undefined,
+                                        "disabled": false,
+                                        "expanded": undefined,
+                                        "selected": undefined,
                                       }
                                     }
-                                  >
-                                    <View
-                                      dataSet={{}}
-                                      style={
-                                        {
-                                          "alignItems": "center",
-                                          "display": "flex",
-                                          "justifyContent": "center",
-                                        }
+                                    accessibilityValue={
+                                      {
+                                        "max": undefined,
+                                        "min": undefined,
+                                        "now": undefined,
+                                        "text": undefined,
                                       }
-                                    >
-                                      <View
-                                        dataSet={{}}
-                                        style={{}}
-                                      />
-                                      <View
-                                        colorScheme="primary"
-                                        dataSet={{}}
-                                        defaultIsChecked={false}
-                                        feedbackId="field-1-feedback"
-                                        formControlContext={
-                                          {
-                                            "feedbackId": "field-1-feedback",
-                                            "hasFeedbackText": false,
-                                            "hasHelpText": false,
-                                            "helpTextId": "field-1-helptext",
-                                            "isDisabled": false,
-                                            "isInvalid": false,
-                                            "isReadOnly": false,
-                                            "isRequired": false,
-                                            "labelId": "field-1-label",
-                                            "nativeID": "field-1",
-                                            "setHasFeedbackText": [Function],
-                                            "setHasHelpText": [Function],
-                                          }
-                                        }
-                                        hasFeedbackText={false}
-                                        hasHelpText={false}
-                                        helpTextId="field-1-helptext"
-                                        isDisabled={false}
-                                        isInvalid={false}
-                                        isReadOnly={false}
-                                        isRequired={false}
-                                        labelId="field-1-label"
-                                        nativeID="field-1"
-                                        setHasFeedbackText={[Function]}
-                                        setHasHelpText={[Function]}
-                                        state={
-                                          {
-                                            "lastFocusedValue": null,
-                                            "name": "data-privacy",
-                                            "selectedValue": "PRIVATE",
-                                            "setLastFocusedValue": [Function],
-                                            "setSelectedValue": [Function],
-                                          }
-                                        }
-                                        style={
+                                    }
+                                    accessible={true}
+                                    collapsable={false}
+                                    focusable={true}
+                                    onBlur={[Function]}
+                                    onClick={[Function]}
+                                    onFocus={[Function]}
+                                    onResponderGrant={[Function]}
+                                    onResponderMove={[Function]}
+                                    onResponderRelease={[Function]}
+                                    onResponderTerminate={[Function]}
+                                    onResponderTerminationRequest={[Function]}
+                                    onStartShouldSetResponder={[Function]}
+                                    style={
+                                      [
+                                        {
+                                          "overflow": "hidden",
+                                        },
+                                        [
                                           {
                                             "alignItems": "center",
-                                            "backgroundColor": "#fafafa",
-                                            "borderColor": "#a3a3a3",
-                                            "borderRadius": 9999,
-                                            "borderWidth": 2,
-                                            "display": "flex",
-                                            "fontSize": 16,
-                                            "fontWeight": "400",
+                                            "alignSelf": "flex-start",
+                                            "borderRadius": 4,
+                                            "borderWidth": 1,
+                                            "flexDirection": "row",
                                             "justifyContent": "center",
-                                            "letterSpacing": 0.15,
-                                            "lineHeight": 24,
-                                            "marginBottom": 8,
-                                            "marginLeft": 8,
-                                            "marginRight": 0,
-                                            "marginTop": 8,
-                                            "paddingBottom": 4,
-                                            "paddingLeft": 4,
-                                            "paddingRight": 4,
-                                            "paddingTop": 4,
-                                          }
-                                        }
-                                        value="PUBLIC"
-                                      >
-                                        <RNSVGSvgView
-                                          accessibilityRole="image"
-                                          align="xMidYMid"
-                                          bbHeight={12}
-                                          bbWidth={12}
-                                          dataSet={{}}
-                                          focusable={false}
-                                          meetOrSlice={0}
-                                          minX={0}
-                                          minY={0}
-                                          stroke=""
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "borderWidth": 0,
-                                              },
-                                              {
-                                                "color": "#737373",
-                                                "height": 12,
-                                                "opacity": 0,
-                                                "width": 12,
-                                              },
-                                              {
-                                                "flex": 0,
-                                                "height": 12,
-                                                "width": 12,
-                                              },
-                                            ]
-                                          }
-                                          vbHeight={24}
-                                          vbWidth={24}
-                                        >
-                                          <RNSVGGroup
-                                            color="#737373"
-                                            fill={
-                                              {
-                                                "payload": 4278190080,
-                                                "type": 0,
-                                              }
-                                            }
-                                            opacity={0}
-                                            propList={
-                                              [
-                                                "stroke",
-                                              ]
-                                            }
-                                            stroke={null}
-                                          >
-                                            <RNSVGGroup
-                                              fill={
-                                                {
-                                                  "payload": 4278190080,
-                                                  "type": 0,
-                                                }
-                                              }
-                                            >
-                                              <RNSVGPath
-                                                d="M0 12C-2.34822e-08 13.5759 0.310389 15.1363 0.913445 16.5922C1.5165 18.0481 2.40042 19.371 3.51472 20.4853C4.62902 21.5996 5.95189 22.4835 7.4078 23.0866C8.86371 23.6896 10.4241 24 12 24C13.5759 24 15.1363 23.6896 16.5922 23.0866C18.0481 22.4835 19.371 21.5996 20.4853 20.4853C21.5996 19.371 22.4835 18.0481 23.0866 16.5922C23.6896 15.1363 24 13.5759 24 12C24 10.4241 23.6896 8.86371 23.0866 7.4078C22.4835 5.95189 21.5996 4.62902 20.4853 3.51472C19.371 2.40042 18.0481 1.5165 16.5922 0.913446C15.1363 0.310389 13.5759 0 12 0C10.4241 0 8.86371 0.310389 7.4078 0.913446C5.95189 1.5165 4.62902 2.40042 3.51472 3.51472C2.40042 4.62902 1.5165 5.95189 0.913445 7.4078C0.310389 8.86371 -2.34822e-08 10.4241 0 12Z"
-                                                fill={
-                                                  {
-                                                    "type": 2,
-                                                  }
-                                                }
-                                                propList={
-                                                  [
-                                                    "fill",
-                                                    "stroke",
-                                                  ]
-                                                }
-                                                stroke={null}
-                                              />
-                                            </RNSVGGroup>
-                                          </RNSVGGroup>
-                                        </RNSVGSvgView>
-                                      </View>
-                                    </View>
-                                    <View
-                                      dataSet={{}}
-                                      style={
-                                        {
-                                          "width": 8,
-                                        }
-                                      }
-                                    />
-                                    <Text
-                                      dataSet={{}}
-                                      style={
-                                        {
-                                          "backgroundColor": undefined,
-                                          "color": "#171717",
-                                          "fontFamily": undefined,
-                                          "fontSize": 16,
-                                          "fontStyle": "normal",
-                                          "fontWeight": "400",
-                                          "letterSpacing": 0,
-                                          "lineHeight": 24,
-                                          "textDecorationLine": undefined,
-                                        }
-                                      }
-                                    >
-                                      Public
-                                    </Text>
-                                  </View>
-                                </View>
-                                <View
-                                  dataSet={{}}
-                                  style={
-                                    {
-                                      "width": 26,
-                                    }
-                                  }
-                                />
-                                <View
-                                  accessibilityRole="radio"
-                                  accessibilityState={
-                                    {
-                                      "busy": undefined,
-                                      "checked": true,
-                                      "disabled": false,
-                                      "expanded": undefined,
-                                      "selected": undefined,
-                                    }
-                                  }
-                                  accessibilityValue={
-                                    {
-                                      "max": undefined,
-                                      "min": undefined,
-                                      "now": undefined,
-                                      "text": undefined,
-                                    }
-                                  }
-                                  accessible={true}
-                                  checked={true}
-                                  collapsable={false}
-                                  dataSet={{}}
-                                  feedbackId="field-1-feedback"
-                                  focusable={true}
-                                  formControlContext={
-                                    {
-                                      "feedbackId": "field-1-feedback",
-                                      "hasFeedbackText": false,
-                                      "hasHelpText": false,
-                                      "helpTextId": "field-1-helptext",
-                                      "isDisabled": false,
-                                      "isInvalid": false,
-                                      "isReadOnly": false,
-                                      "isRequired": false,
-                                      "labelId": "field-1-label",
-                                      "nativeID": "field-1",
-                                      "setHasFeedbackText": [Function],
-                                      "setHasHelpText": [Function],
-                                    }
-                                  }
-                                  hasFeedbackText={false}
-                                  hasHelpText={false}
-                                  helpTextId="field-1-helptext"
-                                  isInvalid={false}
-                                  isReadOnly={false}
-                                  isRequired={false}
-                                  labelId="field-1-label"
-                                  nativeID="field-1"
-                                  onBlur={[Function]}
-                                  onClick={[Function]}
-                                  onFocus={[Function]}
-                                  onResponderGrant={[Function]}
-                                  onResponderMove={[Function]}
-                                  onResponderRelease={[Function]}
-                                  onResponderTerminate={[Function]}
-                                  onResponderTerminationRequest={[Function]}
-                                  onStartShouldSetResponder={[Function]}
-                                  role="radio"
-                                  setHasFeedbackText={[Function]}
-                                  setHasHelpText={[Function]}
-                                  state={
-                                    {
-                                      "lastFocusedValue": null,
-                                      "name": "data-privacy",
-                                      "selectedValue": "PRIVATE",
-                                      "setLastFocusedValue": [Function],
-                                      "setSelectedValue": [Function],
-                                    }
-                                  }
-                                  style={{}}
-                                  value="PRIVATE"
-                                >
-                                  <View
-                                    dataSet={{}}
-                                    style={
-                                      {
-                                        "alignItems": "center",
-                                        "flexDirection": "row",
-                                      }
-                                    }
-                                  >
-                                    <View
-                                      dataSet={{}}
-                                      style={
-                                        {
-                                          "alignItems": "center",
-                                          "display": "flex",
-                                          "justifyContent": "center",
-                                        }
-                                      }
-                                    >
-                                      <View
-                                        dataSet={{}}
-                                        style={{}}
-                                      />
-                                      <View
-                                        colorScheme="primary"
-                                        dataSet={{}}
-                                        defaultIsChecked={false}
-                                        feedbackId="field-1-feedback"
-                                        formControlContext={
+                                          },
                                           {
-                                            "feedbackId": "field-1-feedback",
-                                            "hasFeedbackText": false,
-                                            "hasHelpText": false,
-                                            "helpTextId": "field-1-helptext",
-                                            "isDisabled": false,
-                                            "isInvalid": false,
-                                            "isReadOnly": false,
-                                            "isRequired": false,
-                                            "labelId": "field-1-label",
-                                            "nativeID": "field-1",
-                                            "setHasFeedbackText": [Function],
-                                            "setHasHelpText": [Function],
-                                          }
-                                        }
-                                        hasFeedbackText={false}
-                                        hasHelpText={false}
-                                        helpTextId="field-1-helptext"
-                                        isDisabled={false}
-                                        isInvalid={false}
-                                        isReadOnly={false}
-                                        isRequired={false}
-                                        labelId="field-1-label"
-                                        nativeID="field-1"
-                                        setHasFeedbackText={[Function]}
-                                        setHasHelpText={[Function]}
-                                        state={
+                                            "paddingHorizontal": 22,
+                                            "paddingVertical": 8,
+                                          },
+                                          undefined,
                                           {
-                                            "lastFocusedValue": null,
-                                            "name": "data-privacy",
-                                            "selectedValue": "PRIVATE",
-                                            "setLastFocusedValue": [Function],
-                                            "setSelectedValue": [Function],
-                                          }
-                                        }
-                                        style={
-                                          {
-                                            "alignItems": "center",
-                                            "backgroundColor": "#fafafa",
+                                            "backgroundColor": "#028843",
                                             "borderColor": "#028843",
-                                            "borderRadius": 9999,
-                                            "borderWidth": 2,
-                                            "display": "flex",
-                                            "fontSize": 16,
-                                            "fontWeight": "400",
-                                            "justifyContent": "center",
-                                            "letterSpacing": 0.15,
-                                            "lineHeight": 24,
-                                            "marginBottom": 8,
-                                            "marginLeft": 8,
-                                            "marginRight": 0,
-                                            "marginTop": 8,
-                                            "paddingBottom": 4,
-                                            "paddingLeft": 4,
-                                            "paddingRight": 4,
-                                            "paddingTop": 4,
-                                          }
-                                        }
-                                        value="PRIVATE"
-                                      >
-                                        <RNSVGSvgView
-                                          accessibilityRole="image"
-                                          align="xMidYMid"
-                                          bbHeight={12}
-                                          bbWidth={12}
-                                          dataSet={{}}
-                                          focusable={false}
-                                          meetOrSlice={0}
-                                          minX={0}
-                                          minY={0}
-                                          stroke=""
-                                          style={
-                                            [
-                                              {
-                                                "backgroundColor": "transparent",
-                                                "borderWidth": 0,
-                                              },
-                                              {
-                                                "color": "#028843",
-                                                "height": 12,
-                                                "opacity": 1,
-                                                "width": 12,
-                                              },
-                                              {
-                                                "flex": 0,
-                                                "height": 12,
-                                                "width": 12,
-                                              },
-                                            ]
-                                          }
-                                          vbHeight={24}
-                                          vbWidth={24}
-                                        >
-                                          <RNSVGGroup
-                                            color="#028843"
-                                            fill={
-                                              {
-                                                "payload": 4278190080,
-                                                "type": 0,
-                                              }
-                                            }
-                                            opacity={1}
-                                            propList={
-                                              [
-                                                "stroke",
-                                              ]
-                                            }
-                                            stroke={null}
-                                          >
-                                            <RNSVGGroup
-                                              fill={
-                                                {
-                                                  "payload": 4278190080,
-                                                  "type": 0,
-                                                }
-                                              }
-                                            >
-                                              <RNSVGPath
-                                                d="M0 12C-2.34822e-08 13.5759 0.310389 15.1363 0.913445 16.5922C1.5165 18.0481 2.40042 19.371 3.51472 20.4853C4.62902 21.5996 5.95189 22.4835 7.4078 23.0866C8.86371 23.6896 10.4241 24 12 24C13.5759 24 15.1363 23.6896 16.5922 23.0866C18.0481 22.4835 19.371 21.5996 20.4853 20.4853C21.5996 19.371 22.4835 18.0481 23.0866 16.5922C23.6896 15.1363 24 13.5759 24 12C24 10.4241 23.6896 8.86371 23.0866 7.4078C22.4835 5.95189 21.5996 4.62902 20.4853 3.51472C19.371 2.40042 18.0481 1.5165 16.5922 0.913446C15.1363 0.310389 13.5759 0 12 0C10.4241 0 8.86371 0.310389 7.4078 0.913446C5.95189 1.5165 4.62902 2.40042 3.51472 3.51472C2.40042 4.62902 1.5165 5.95189 0.913445 7.4078C0.310389 8.86371 -2.34822e-08 10.4241 0 12Z"
-                                                fill={
-                                                  {
-                                                    "type": 2,
-                                                  }
-                                                }
-                                                propList={
-                                                  [
-                                                    "fill",
-                                                    "stroke",
-                                                  ]
-                                                }
-                                                stroke={null}
-                                              />
-                                            </RNSVGGroup>
-                                          </RNSVGGroup>
-                                        </RNSVGSvgView>
-                                      </View>
-                                    </View>
-                                    <View
-                                      dataSet={{}}
-                                      style={
-                                        {
-                                          "width": 8,
-                                        }
-                                      }
-                                    />
+                                          },
+                                        ],
+                                      ]
+                                    }
+                                  >
                                     <Text
-                                      dataSet={{}}
                                       style={
-                                        {
-                                          "backgroundColor": undefined,
-                                          "color": "#171717",
-                                          "fontFamily": undefined,
-                                          "fontSize": 16,
-                                          "fontStyle": "normal",
-                                          "fontWeight": "400",
-                                          "letterSpacing": 0,
-                                          "lineHeight": 24,
-                                          "textDecorationLine": undefined,
-                                        }
+                                        [
+                                          [
+                                            {
+                                              "fontWeight": "500",
+                                              "textTransform": "uppercase",
+                                            },
+                                            {
+                                              "fontSize": 15,
+                                              "lineHeight": 26,
+                                            },
+                                          ],
+                                          {
+                                            "color": "#FFFFFF",
+                                          },
+                                        ]
                                       }
                                     >
-                                      Private
+                                      Create
                                     </Text>
                                   </View>
                                 </View>
                               </View>
                             </View>
-                          </View>
-                        </View>
-                        <View
-                          style={
-                            {
-                              "alignItems": "flex-end",
-                              "margin": 20,
-                            }
-                          }
-                        >
-                          <View>
-                            <View
-                              accessibilityLabel="Create"
-                              accessibilityRole="button"
-                              accessibilityState={
-                                {
-                                  "busy": undefined,
-                                  "checked": undefined,
-                                  "disabled": false,
-                                  "expanded": undefined,
-                                  "selected": undefined,
-                                }
-                              }
-                              accessibilityValue={
-                                {
-                                  "max": undefined,
-                                  "min": undefined,
-                                  "now": undefined,
-                                  "text": undefined,
-                                }
-                              }
-                              accessible={true}
-                              collapsable={false}
-                              focusable={true}
-                              onBlur={[Function]}
-                              onClick={[Function]}
-                              onFocus={[Function]}
-                              onResponderGrant={[Function]}
-                              onResponderMove={[Function]}
-                              onResponderRelease={[Function]}
-                              onResponderTerminate={[Function]}
-                              onResponderTerminationRequest={[Function]}
-                              onStartShouldSetResponder={[Function]}
-                              style={
-                                [
-                                  {
-                                    "overflow": "hidden",
-                                  },
-                                  [
-                                    {
-                                      "alignItems": "center",
-                                      "alignSelf": "flex-start",
-                                      "borderRadius": 4,
-                                      "borderWidth": 1,
-                                      "flexDirection": "row",
-                                      "justifyContent": "center",
-                                    },
-                                    {
-                                      "paddingHorizontal": 22,
-                                      "paddingVertical": 8,
-                                    },
-                                    undefined,
-                                    {
-                                      "backgroundColor": "#028843",
-                                      "borderColor": "#028843",
-                                    },
-                                  ],
-                                ]
-                              }
-                            >
-                              <Text
-                                style={
-                                  [
-                                    [
-                                      {
-                                        "fontWeight": "500",
-                                        "textTransform": "uppercase",
-                                      },
-                                      {
-                                        "fontSize": 15,
-                                        "lineHeight": 26,
-                                      },
-                                    ],
-                                    {
-                                      "color": "#FFFFFF",
-                                    },
-                                  ]
-                                }
-                              >
-                                Create
-                              </Text>
-                            </View>
-                          </View>
+                          </RCTScrollView>
                         </View>
                       </View>
-                    </RCTScrollView>
-                  </View>
-                </View>
-              </View>
-            </RNCSafeAreaView>
-          </RNSScreenContentWrapper>
-          <RNSScreenStackHeaderConfig
-            backButtonInCustomView={false}
-            backTitleFontFamily="System"
-            backTitleVisible={true}
-            backgroundColor="rgb(255, 255, 255)"
-            color="rgb(0, 122, 255)"
-            direction="ltr"
-            disableBackButtonMenu={false}
-            hidden={false}
-            hideBackButton={false}
-            largeTitleFontFamily="System"
-            largeTitleFontWeight="700"
-            largeTitleHideShadow={false}
-            pointerEvents="box-none"
-            style={
-              {
-                "alignItems": "center",
-                "flexDirection": "row",
-                "justifyContent": "space-between",
-                "position": "absolute",
-                "width": "100%",
-              }
+                    </View>
+                  </RNCSafeAreaView>
+                </RNSScreenContentWrapper>
+                <RNSScreenStackHeaderConfig
+                  backButtonInCustomView={false}
+                  backTitleFontFamily="System"
+                  backTitleVisible={true}
+                  backgroundColor="rgb(255, 255, 255)"
+                  color="rgb(0, 122, 255)"
+                  direction="ltr"
+                  disableBackButtonMenu={false}
+                  hidden={false}
+                  hideBackButton={false}
+                  largeTitleFontFamily="System"
+                  largeTitleFontWeight="700"
+                  largeTitleHideShadow={false}
+                  pointerEvents="box-none"
+                  style={
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "justifyContent": "space-between",
+                      "position": "absolute",
+                      "width": "100%",
+                    }
+                  }
+                  title="CREATE_PROJECT"
+                  titleColor="rgb(28, 28, 30)"
+                  titleFontFamily="System"
+                  titleFontWeight="600"
+                  topInsetEnabled={false}
+                  translucent={false}
+                />
+              </RNSScreen>
+            </RNSScreenStack>
+          </View>
+        </View>
+        <View
+          collapsable={false}
+          pointerEvents="box-none"
+          style={
+            {
+              "bottom": 0,
+              "left": 0,
+              "position": "absolute",
+              "right": 0,
+              "top": 0,
             }
-            title="CREATE_PROJECT"
-            titleColor="rgb(28, 28, 30)"
-            titleFontFamily="System"
-            titleFontWeight="600"
-            topInsetEnabled={false}
-            translucent={false}
-          />
-        </RNSScreen>
-      </RNSScreenStack>
+          }
+        />
+      </RNCSafeAreaProvider>
     </View>
-  </View>
-</RNCSafeAreaProvider>
+  </RNCSafeAreaProvider>
+</View>
 `;
