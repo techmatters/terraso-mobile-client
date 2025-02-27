@@ -203,7 +203,7 @@ describe('Offline snackbar', () => {
     console.log('------ TEST: dismiss + shown when thunk fails offline ------');
     useIsOfflineMock.mockReturnValue(true);
     
-    const projectId = 'project1';
+    const projectId = '1';
     const initialState = {
       project: {
         projects: {
@@ -243,7 +243,7 @@ describe('Offline snackbar', () => {
         <Portal.Host>
           <TestButton />
           <OfflineSnackbar />
-          <ProjectViewScreen projectId="1" />
+          <ProjectViewScreen projectId={projectId} />
         </Portal.Host>
       </PaperProvider>,
       {route: 'PROJECT_VIEW', initialState},
@@ -255,38 +255,47 @@ describe('Offline snackbar', () => {
  
     // Dismiss snackbar
     fireEvent(snackbar, 'onDismiss');
+
+    // Question 0: If we await act, the entire suite fails in the same way as in Question 1 below. 
+    // Why would that make a difference?
     act(() => {
-      // jest.advanceTimersByTime(1500)
       jest.runAllTimers()
     })
     console.log("3")
 
-    // Confirm snackbar is gone
-    // This fails the entire test suite, though the snackbar was rendering with visible=false
-    // Question 1: Why would an expect call cause the entire suite to fail, not just the single test?
-    //             expect(undefined).toBeTruthy();    also fails the entire suite 
-    // Question 2: Why this would fail if I don't explicitly call rerender? 
-    //             Shouldn't rerenders be automatically triggered?
-    // Tried: calling rerender with the same components as the first render. This passed, but I think
-    //        it was just because it created a new OfflineSnackbar with visible initialized to false
+    // Question 1: Why would `expect(undefined).toBeTruthy();` here cause the entire suite to fail, not just the single test?
+    //   If put further up in the test, or in other tests, it only fails the single test, not the entire suite. 
+    //
+    // Output from `npm run test OfflineSnackbar`: 
+    //   Test suite failed to run
+    //   TypeError: Cannot set properties of undefined (setting 'message')
+    //     at node_modules/jest-circus/build/formatNodeAssertErrors.js:47:25
+    //         at Array.map (<anonymous>)
+    //   Test Suites: 1 failed, 1 total
+    //   Tests:       0 total
+    // I suspect this is the erroring line in the test library: 
+    // https://github.com/jestjs/jest/blob/main/packages/jest-circus/src/formatNodeAssertErrors.ts#L58
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
 
     // Fire the test button event to make a server request. The request is mocked to fail, 
     // which should add a message to the notificationsSlice and trigger the snackbar
     fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
-    act(() => {
-      // jest.advanceTimersByTime(1500)
+    await act(() => {
       jest.runAllTimers();
     });
     console.log("4")
 
-    // This passes if the failing expect is removed, but it may only be because we never actually
-    // remove the snackbar, so it's still on the screen from the first render? 
-    // But also the last console.log reports the snackbar with visible=false, so I'm 
-    // just confused
+    // Question 2: When should an act call be awaited or not? 
+    // The expect below fails if we do not await the act above -- even though the IDE says `await` has
+    // no effect on the expression. I had thought you'd only need to await if the function passed in
+    // is async, but perhaps I'm wrong. Why would this make a difference at all, and what is special about
+    // this part of the test that it doesn't make a difference in other tests or earlier in the test?
+    // Output:
+    //   expect(received).toBeOnTheScreen()
+    //   received value must be a host element.
+    //   Received has value: null
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
-    
 });
 
   // test('is not shown when thunk fails online', () => {});
