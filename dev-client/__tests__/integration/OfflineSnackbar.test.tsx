@@ -67,8 +67,6 @@ describe('Offline snackbar', () => {
   const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
   const deleteProjectMock = jest.mocked(projectService.deleteProject);
 
-  // TODO-cknipe: Use only one of these
-  const snackbarText = "You are offline. Projects can't be edited.";
   const snackbarTestId = 'offline-snackbar';
 
   beforeEach(() => {
@@ -162,23 +160,7 @@ describe('Offline snackbar', () => {
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
   });
 
-  // TODO-cknipe: 
-  // Issue: I expect the snackbar to be on the screen after the first render (this is passing), 
-  // but not to be on the screen at the end (this is failing).
-  // - Putting a console.log in the snackbar component shows the component's visible prop is false on the
-  //   last render before the test's expect statement.
-  // - I hypothesized maybe this is because the snackbar is still in React's virtual DOM, but not visible. 
-  //   - In tests it seems like if the snackbar doesn't start on the screen, it's (correctly) not detected 
-  //     by toBeOnTheScreen(). But once it has been put on the screen, I have not found a way to stop it
-  //     being detected, even when I try to remove it. This behavior seems incongruent with the behavior of
-  //     both the Components hierarchy, and of what the user sees.
-  //   - When I look in the product with React Native DevTools, if the snackbar is visible to the user, 
-  //     there is a Snackbar in the Components hierarchy with visible: true. 
-  //     If it is not visible, there is a Snackbar in the Components hierarchy with visible: false.
-  //   - The presence of the Portal seems irrelevant, at least removing the Portal.Host has no
-  //     effect on the outcome of the tests.
   test('disappears when returning online', async () => {
-    console.log('------- TEST: Disappears when returning online -------');
     useIsOfflineMock.mockReturnValue(true);
 
     const screen = render(
@@ -196,10 +178,6 @@ describe('Offline snackbar', () => {
 
     expect(screen.queryByTestId(snackbarTestId)).toBeTruthy();
 
-    // This fails, and doesn't seem like an ideal way to test this anyway
-    // expect(screen.queryByTestId(snackbarTestId).props.visible).toBe(true);
-
-    console.log('Starting 2nd render');
     useIsOfflineMock.mockReturnValue(false);
     screen.rerender(
       <PaperProvider>
@@ -210,35 +188,19 @@ describe('Offline snackbar', () => {
       </PaperProvider>,
     );
 
-    // await waitForElementToBeRemoved(screen.queryByTestId(snackbarTestId))
-    //   .then(() => {
-    //     console.log('Yup'); // This does not happen
-    //   })
-    //   .catch(() => {
-    //     console.log('Nope'); // This happens
-    //   });
-
     act(() => {
-      // jest.advanceTimersByTime(1500);
       jest.runAllTimers();
     })
 
-    // These all fail
-    expect(screen.queryByText(snackbarText)).toBeFalsy();
-    expect(screen.queryByText(snackbarText)).not.toBeOnTheScreen();
-    expect(screen.queryByTestId(snackbarTestId)).toBeFalsy();
-    expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
+    const snackbar = screen.queryByTestId(snackbarTestId);
+    expect(snackbar).not.toBeOnTheScreen();
   });
 
-  // TODO-cknipe: Issues: 
-  // 1. I can't figure out a way to dismiss the snackbar (this may be the same issue as the previous test)
-  // 2. I suspect there may also be issues with the snackbar showing again
+
   test('can be dismissed, and is shown when thunk fails offline', async () => {
     console.log('------ TEST: dismiss + shown when thunk fails offline ------');
-    // Mock being Offline
     useIsOfflineMock.mockReturnValue(true);
-    deleteProjectMock.mockReturnValue(Promise.reject(['rejected']));
-
+    
     const projectId = 'project1';
     const initialState = {
       project: {
@@ -257,8 +219,9 @@ describe('Offline snackbar', () => {
         },
       },
     } as Partial<AppState>;
-
-    // Make a button that will dispatch something to server
+    
+    // Button that simulates dispatching something to server
+    deleteProjectMock.mockReturnValue(Promise.reject(['rejected']));
     const TestButton = () => {
       const dispatch = useDispatch();
       return (
@@ -273,7 +236,6 @@ describe('Offline snackbar', () => {
       );
     };
 
-    console.log("1")
     const screen = render(
         <PaperProvider>
         <Portal.Host>
@@ -291,7 +253,6 @@ describe('Offline snackbar', () => {
  
     // Dismiss snackbar
     fireEvent(snackbar, 'onDismiss');
-    // jest.runAllTimers();
     act(() => {
       // jest.advanceTimersByTime(1500)
       jest.runAllTimers()
@@ -312,7 +273,7 @@ describe('Offline snackbar', () => {
     // Fire the test button event to make a server request. The request is mocked to fail, 
     // which should add a message to the notificationsSlice and trigger the snackbar
     fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
-    await act(() => {
+    act(() => {
       // jest.advanceTimersByTime(1500)
       jest.runAllTimers();
     });
