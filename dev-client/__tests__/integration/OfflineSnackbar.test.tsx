@@ -188,12 +188,14 @@ describe('Offline snackbar', () => {
       </PaperProvider>,
     );
 
+    // FYI: Because the snackbar has an animation transition before hiding and returning null,
+    // Need to run the jest timers, and  wrap it in act() to make sureresulting state updates 
+    // are fully applied
     act(() => {
       jest.runAllTimers();
     })
 
-    const snackbar = screen.queryByTestId(snackbarTestId);
-    expect(snackbar).not.toBeOnTheScreen();
+    expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
   });
 
 
