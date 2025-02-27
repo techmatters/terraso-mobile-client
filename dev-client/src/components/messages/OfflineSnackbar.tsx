@@ -41,7 +41,12 @@ export const OfflineSnackbar = () => {
 
   // Only supports 1 snackbar at a time; will not queue up snackbars
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
-  const onDismiss = () => setShowSnackbar(false);
+  console.log('Snackbar showing? ', showSnackbar);
+
+  const onDismiss = () => {
+    console.log('dismiss snackbar');
+    setShowSnackbar(false);
+  };
 
   useEffect(() => {
     // Get error messages
@@ -55,13 +60,16 @@ export const OfflineSnackbar = () => {
     );
 
     if (isOffline && errorMessages.length > 0) {
+      console.log('Show snackbar because error message happened offline');
       setShowSnackbar(true);
     }
     if (!isOffline) {
+      console.log('not offline, so snackbar should not be showing');
       setShowSnackbar(false);
     }
 
     errorMessages.forEach(messageKey => {
+      console.log('Removing message:', messages[messageKey]);
       dispatch(removeMessage(messageKey));
     });
   }, [messages, isOffline, dispatch, t]);
@@ -72,7 +80,8 @@ export const OfflineSnackbar = () => {
         visible={showSnackbar}
         onDismiss={onDismiss}
         onIconPress={onDismiss}
-        duration={Infinity}>
+        duration={Infinity}
+        testID="offline-snackbar">
         {t('projects.offline_cant_edit')}
       </Snackbar>
     </Portal>
