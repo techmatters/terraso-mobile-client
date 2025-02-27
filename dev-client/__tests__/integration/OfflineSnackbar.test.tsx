@@ -53,14 +53,6 @@ jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
   };
 });
 
-jest.mock('terraso-client-shared/terrasoApi/api', () => {
-  const actual = jest.requireActual('terraso-client-shared/terrasoApi/api');
-  return {
-    ...actual,
-    requestGraphQL: jest.fn(),
-  };
-});
-
 jest.mock('terraso-client-shared/project/projectService', () => {
   const actual = jest.requireActual(
     'terraso-client-shared/project/projectService',
@@ -73,15 +65,6 @@ jest.mock('terraso-client-shared/project/projectService', () => {
 
 describe('Offline snackbar', () => {
   const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
-
-  // TODO-cknipe: Uhh maybe remove this? Or look at the debugger to find what to retun
-  // const requestGraphQLMock = jest.mocked(api.requestGraphQL);
-  // type GraphQLResponseType = ReturnType<typeof api.requestGraphQL>;
-  // const graphQLError = Promise.reject([
-  //   'terraso_api.error_unexpected',
-  // ]) as GraphQLResponseType;
-  // const graphQLSuccess = Promise.resolve() as GraphQLResponseType;
-
   const deleteProjectMock = jest.mocked(projectService.deleteProject);
 
   // TODO-cknipe: Use only one of these
@@ -90,7 +73,6 @@ describe('Offline snackbar', () => {
 
   beforeEach(() => {
     useIsOfflineMock.mockReset().mockReturnValue(false);
-    // requestGraphQLMock.mockReset();
     deleteProjectMock.mockReset();
   });
 
