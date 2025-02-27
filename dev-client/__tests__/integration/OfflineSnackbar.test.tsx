@@ -21,7 +21,7 @@ import 'terraso-mobile-client/config';
 import { Button } from 'react-native';
 import { PaperProvider, Portal } from 'react-native-paper';
 
-import { fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react-native';
+import { act, fireEvent } from '@testing-library/react-native';
 import { testState } from '@testing/integration/data';
 import { render } from '@testing/integration/utils';
 
@@ -210,13 +210,18 @@ describe('Offline snackbar', () => {
       </PaperProvider>,
     );
 
-    await waitForElementToBeRemoved(screen.queryByTestId(snackbarTestId))
-      .then(() => {
-        console.log('Yup'); // This does not happen
-      })
-      .catch(() => {
-        console.log('Nope'); // This happens
-      });
+    // await waitForElementToBeRemoved(screen.queryByTestId(snackbarTestId))
+    //   .then(() => {
+    //     console.log('Yup'); // This does not happen
+    //   })
+    //   .catch(() => {
+    //     console.log('Nope'); // This happens
+    //   });
+
+    act(() => {
+      // jest.advanceTimersByTime(1500);
+      jest.runAllTimers();
+    })
 
     // These all fail
     expect(screen.queryByText(snackbarText)).toBeFalsy();
@@ -286,7 +291,11 @@ describe('Offline snackbar', () => {
  
     // Dismiss snackbar
     fireEvent(snackbar, 'onDismiss');
-    jest.runAllTimers();
+    // jest.runAllTimers();
+    act(() => {
+      // jest.advanceTimersByTime(1500)
+      jest.runAllTimers()
+    })
     console.log("3")
 
     // Confirm snackbar is gone
@@ -297,21 +306,24 @@ describe('Offline snackbar', () => {
     //             Shouldn't rerenders be automatically triggered?
     // Tried: calling rerender with the same components as the first render. This passed, but I think
     //        it was just because it created a new OfflineSnackbar with visible initialized to false
-    //expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
+    expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
 
     // Fire the test button event to make a server request. The request is mocked to fail, 
     // which should add a message to the notificationsSlice and trigger the snackbar
     fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
+    await act(() => {
+      // jest.advanceTimersByTime(1500)
+      jest.runAllTimers();
+    });
     console.log("4")
 
     // This passes if the failing expect is removed, but it may only be because we never actually
     // remove the snackbar, so it's still on the screen from the first render? 
     // But also the last console.log reports the snackbar with visible=false, so I'm 
     // just confused
-    await waitFor(() => {
-      expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
-    });  
+    expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
+    
 });
 
   // test('is not shown when thunk fails online', () => {});
