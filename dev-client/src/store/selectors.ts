@@ -361,6 +361,14 @@ export const getVisibleDepthIntervals = (
   );
 };
 
+/*
+ * In some cases, the depth intervals on the project settings and soil data may
+ * not include the visible depth intervals (for example, depthIntervals can be
+ * empty when there is a preset).
+ * "After normalizing" here means that this function expects the input project
+ * settings and soil data to already have had their depth intervals expanded in
+ * these cases, which is also referred to here as "effective" settings or data.
+ */
 const getVisibleDepthIntervalsAfterNormalizing = (
   effectiveProjectSettings: ProjectSoilSettings | undefined,
   effectiveSoilData: SoilData,
