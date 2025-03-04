@@ -25,7 +25,7 @@ import {
   SoilIdLocationEntry,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
-import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/selectors';
+import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
 export const selectLocationBasedMatches = (
   coords: Coords,
@@ -65,7 +65,7 @@ export const selectDataBasedInputs = createSelector(
  */
 
 // TODO-cknipe: We'd prefer not to recalculate when sites or projectSettings change
-// Is there a better way to access those without using them as selectors?
+// Is there a better way to access those?
 export const selectNextDataBasedInputs = createSelector(
   createSelector(
     [

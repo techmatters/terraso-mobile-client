@@ -28,8 +28,8 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {DepthEditor} from 'terraso-mobile-client/screens/SoilScreen/components/DepthEditor';
 import {pitMethodSummary} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useSelector} from 'terraso-mobile-client/store';
+import {AggregatedInterval} from 'terraso-mobile-client/store/depthIntervalHelpers';
 import {
-  AggregatedInterval,
   selectDepthDependentData,
   useSiteProjectSoilSettings,
 } from 'terraso-mobile-client/store/selectors';
