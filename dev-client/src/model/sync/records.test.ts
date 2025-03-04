@@ -454,12 +454,7 @@ describe('record', () => {
 
     test('records error state', () => {
       const at = Date.now();
-      markEntityError(
-        records,
-        'a',
-        {value: 'error', revisionId: 123},
-        Date.now(),
-      );
+      markEntityError(records, 'a', {value: 'error', revisionId: 123}, at);
       expect(records.a.lastSyncedError).toEqual('error');
       expect(records.a.lastSyncedRevisionId).toEqual(123);
       expect(records.a.lastSyncedAt).toEqual(at);
