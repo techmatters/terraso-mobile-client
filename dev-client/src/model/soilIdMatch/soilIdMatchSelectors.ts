@@ -25,7 +25,7 @@ import {
   SoilIdLocationEntry,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
-import {getSoilDataForSite} from 'terraso-mobile-client/store/selectors';
+import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
 export const selectLocationBasedMatches = (
   coords: Coords,
@@ -59,22 +59,33 @@ export const selectDataBasedInputs = createSelector(
 
 /*
  * Memoized selector to let us select the upcoming data-based inputs for a set of site IDs (potentially expensive;
- * uses nested memoization to only recalculate input when source soil data changes)
+ * uses nested memoization to only recalculate input when relevant data changes)
  *
  * NOTE: these are the _next_ inputs for the soil ID algorithm, but the _current_ inputs for the site
  */
+
+// TODO-cknipe: We'd prefer not to recalculate when sites or projectSettings change
+// Is there a better way to access those?
 export const selectNextDataBasedInputs = createSelector(
   createSelector(
     [
-      (state: AppState) => state.soilData.soilData,
       (_: AppState, siteIds: string[]) => siteIds,
+      (state: AppState) => state.site.sites,
+      (state: AppState) => state.soilData.soilData,
+      (state: AppState) => state.soilData.projectSettings,
     ],
     /* Combine soil data with site IDs to extract relevant entries */
-    (soilData, siteIds) =>
+    (siteIds, sites, soilData, projectSettings) =>
       Object.fromEntries(
-        siteIds.map(siteId => [siteId, getSoilDataForSite(siteId, soilData)]),
+        siteIds.map(siteId => {
+          return [
+            siteId,
+            getVisibleSoilDataForSite(siteId, sites, soilData, projectSettings),
+          ];
+        }),
       ),
   ),
+
   /* Pass site-specific soil data through input format converter */
   soilData =>
     Object.fromEntries(

@@ -32,31 +32,20 @@ import {
 import {
   DepthDependentSoilData,
   ProjectSoilSettings,
-  SoilDataDepthInterval,
-  soilPitMethods,
 } from 'terraso-client-shared/soilId/soilIdTypes';
-import {
-  exists,
-  filterValues,
-  fromEntries,
-  mapValues,
-} from 'terraso-client-shared/utils';
+import {exists, filterValues, mapValues} from 'terraso-client-shared/utils';
 
+import {DEFAULT_PROJECT_SETTINGS} from 'terraso-mobile-client/model/soilData/soilDataConstants';
 import {
-  DEFAULT_ENABLED_SOIL_PIT_METHODS,
-  DEFAULT_PROJECT_SETTINGS,
-  DEFAULT_SOIL_DATA,
-  DEPTH_INTERVAL_PRESETS,
-} from 'terraso-mobile-client/model/soilData/soilDataConstants';
-import {
-  compareInterval,
   DepthInterval,
-  methodEnabled,
-  methodRequired,
-  overlaps,
   sameDepth,
-  SoilData,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {
+  AggregatedInterval,
+  getSoilDataForSite,
+  getVisibleDepthIntervalsAfterNormalizing,
+  projectIntervals,
+} from 'terraso-mobile-client/store/depthIntervalHelpers';
 import {type AppState} from 'terraso-mobile-client/store/index';
 
 const useSelector = reduxUseSelector as TypedUseSelectorHook<AppState>;
@@ -226,28 +215,6 @@ export const selectUserRoleProject = createSelector(
   },
 );
 
-const projectIntervals = (settings: ProjectSoilSettings) => {
-  switch (settings.depthIntervalPreset) {
-    case 'NRCS':
-    case 'BLM':
-      return DEPTH_INTERVAL_PRESETS[settings.depthIntervalPreset];
-    case 'CUSTOM':
-      return settings.depthIntervals;
-    case 'NONE':
-      return [];
-  }
-};
-
-const sitePresetIntervals = (soilData: SoilData) => {
-  switch (soilData.depthIntervalPreset) {
-    case 'NRCS':
-    case 'BLM':
-      return DEPTH_INTERVAL_PRESETS[soilData.depthIntervalPreset];
-    default:
-      return [];
-  }
-};
-
 const useProjectSoilSettingsBase = <ID extends string | undefined>(
   projectId: ID,
 ): ID extends undefined ? undefined : ProjectSoilSettings => {
@@ -279,16 +246,6 @@ export const useProjectSoilSettings = (projectId: string) =>
 export const useSiteProjectSoilSettings = (siteId: string) =>
   useProjectSoilSettingsBase(useSelector(selectSite(siteId))?.projectId);
 
-export type AggregatedInterval = {
-  isFromPreset: boolean;
-  interval: SoilDataDepthInterval;
-};
-
-export const getSoilDataForSite = (
-  siteId: string,
-  soilData: Record<string, SoilData | undefined>,
-) => soilData[siteId] ?? DEFAULT_SOIL_DATA;
-
 export const selectSoilData = (siteId: string) => (state: AppState) =>
   getSoilDataForSite(siteId, state.soilData.soilData);
 
@@ -296,50 +253,9 @@ export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
   const projectSettings = useSiteProjectSoilSettings(siteId);
   const soilData = useSelector(selectSoilData(siteId));
 
-  const presetIntervals =
-    projectSettings?.depthIntervals ?? sitePresetIntervals(soilData);
-
   return useMemo(
-    () =>
-      [
-        ...presetIntervals.map(interval => {
-          const existingInterval = soilData.depthIntervals.find(
-            sameDepth(interval),
-          );
-          const enabledInputs = fromEntries(
-            soilPitMethods.map(method => [
-              methodEnabled(method),
-              projectSettings?.[methodRequired(method)] ||
-                (existingInterval?.[methodEnabled(method)] ??
-                  (!projectSettings &&
-                    DEFAULT_ENABLED_SOIL_PIT_METHODS.includes(method))),
-            ]),
-          );
-          return {
-            isFromPreset: true,
-            interval: {
-              ...enabledInputs,
-              ...interval,
-            },
-          };
-        }),
-        ...soilData.depthIntervals
-          .filter(interval => !presetIntervals.some(overlaps(interval)))
-          .map(interval => ({
-            isFromPreset: false,
-            interval: {
-              ...interval,
-              ...fromEntries(
-                soilPitMethods.map(method => [
-                  methodEnabled(method),
-                  interval?.[methodEnabled(method)] ??
-                    DEFAULT_ENABLED_SOIL_PIT_METHODS.includes(method),
-                ]),
-              ),
-            },
-          })),
-      ].sort(({interval: a}, {interval: b}) => compareInterval(a, b)),
-    [presetIntervals, projectSettings, soilData.depthIntervals],
+    () => getVisibleDepthIntervalsAfterNormalizing(projectSettings, soilData),
+    [projectSettings, soilData],
   );
 };
 

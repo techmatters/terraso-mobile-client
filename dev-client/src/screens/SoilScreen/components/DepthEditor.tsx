@@ -25,7 +25,7 @@ import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permiss
 import {soilPitMethods} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {EditDepthModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthModal';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
-import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
+import {AggregatedInterval} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
 export type DepthEditorProps = {
   siteId: string;
