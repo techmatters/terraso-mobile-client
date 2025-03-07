@@ -199,7 +199,7 @@ describe('Offline snackbar', () => {
   });
 });
 
-describe('Offline snackbar (with mocked backend call)', () => {
+describe('Offline snackbar (with mocked async thunk call)', () => {
   const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
   const deleteProjectMock = jest.mocked(projectService.deleteProject);
 
@@ -330,7 +330,62 @@ describe('Offline snackbar (with mocked backend call)', () => {
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
   });
 
-  test('is not shown when thunk succeeds offline', async () => {});
+  test('is not shown when thunk succeeds offline', async () => {
+    useIsOfflineMock.mockReturnValue(true);
+
+    const projectId = '1';
+    const initialState = makeAppStateWithProject(projectId);
+
+    // Button that simulates dispatching something to server
+    // FYI: Need to mockImplementation, not just mockReturn for async reasons
+    deleteProjectMock.mockImplementation(async () =>
+      Promise.resolve('unused test success message'),
+    );
+    const TestButton = () => {
+      const dispatch = useDispatch();
+      return (
+        <Button
+          title="dispatch"
+          testID="test-delete-project-btn"
+          onPress={() => {
+            dispatch(deleteProject({id: projectId}));
+          }}
+        />
+      );
+    };
+
+    const screen = render(
+      <PaperProvider>
+        <Portal.Host>
+          <TestButton />
+          <OfflineSnackbar />
+          <ProjectViewScreen projectId={projectId} />
+        </Portal.Host>
+      </PaperProvider>,
+      {route: 'PROJECT_VIEW', initialState},
+    );
+
+    const snackbar = screen.queryByTestId(snackbarTestId);
+    expect(snackbar).toBeOnTheScreen();
+
+    // Dismiss snackbar
+    // FYI: run timers so snackbar's dismissal animation completes
+    await act(async () => {
+      fireEvent(snackbar, 'onDismiss');
+    });
+    await act(async () => {
+      jest.runAllTimers();
+    });
+
+    expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
+
+    // Fire the test button event to make a server request.
+    await act(async () => {
+      fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
+    });
+
+    expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
+  });
 
   // test('is not shown when thunk succeeds online', async () => {});
 });
