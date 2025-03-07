@@ -189,21 +189,29 @@ describe('Offline snackbar', () => {
     );
 
     // FYI: Because the snackbar has an animation transition before hiding and returning null,
-    // Need to run the jest timers, and  wrap it in act() to make sureresulting state updates
-    // are fully applied
-    act(() => {
+    // Need to run the jest timers, and  wrap it in act() to make sure resulting state updates
+    // are fully applied. And React recommends using act with await and an async function.
+    await act(async () => {
       jest.runAllTimers();
     });
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
   });
+});
 
-  test('can be dismissed, and is shown when thunk fails offline', async () => {
-    console.log('------ TEST: dismiss + shown when thunk fails offline ------');
-    useIsOfflineMock.mockReturnValue(true);
+describe('Offline snackbar (with mocked backend call)', () => {
+  const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
+  const deleteProjectMock = jest.mocked(projectService.deleteProject);
 
-    const projectId = '1';
-    const initialState = {
+  const snackbarTestId = 'offline-snackbar';
+
+  beforeEach(() => {
+    useIsOfflineMock.mockReset().mockReturnValue(false);
+    deleteProjectMock.mockReset();
+  });
+
+  const makeAppStateWithProject = (projectId: string) => {
+    return {
       project: {
         projects: {
           [projectId]: {
@@ -220,9 +228,19 @@ describe('Offline snackbar', () => {
         },
       },
     } as Partial<AppState>;
+  };
+
+  test('can be dismissed, and is shown when thunk fails offline', async () => {
+    useIsOfflineMock.mockReturnValue(true);
+
+    const projectId = '1';
+    const initialState = makeAppStateWithProject(projectId);
 
     // Button that simulates dispatching something to server
-    deleteProjectMock.mockReturnValue(Promise.reject(['rejected']));
+    // FYI: Need to mockImplementation, not just mockReturn for async reasons
+    deleteProjectMock.mockImplementation(async () =>
+      Promise.reject(['rejected']),
+    );
     const TestButton = () => {
       const dispatch = useDispatch();
       return (
@@ -230,7 +248,6 @@ describe('Offline snackbar', () => {
           title="dispatch"
           testID="test-delete-project-btn"
           onPress={() => {
-            console.log('PRESSED test button');
             dispatch(deleteProject({id: projectId}));
           }}
         />
@@ -247,57 +264,72 @@ describe('Offline snackbar', () => {
       </PaperProvider>,
       {route: 'PROJECT_VIEW', initialState},
     );
-    console.log('2');
 
     const snackbar = screen.queryByTestId(snackbarTestId);
     expect(snackbar).toBeOnTheScreen();
 
     // Dismiss snackbar
-    fireEvent(snackbar, 'onDismiss');
+    // TODO-cknipe: Should we be using userEvent instead?
 
-    // Question 0: If we await act, the entire suite fails in the same way as in Question 1 below.
-    // Why would that make a difference?
-    act(() => {
+    // Option 1 - Good, test passes
+    // fireEvent(snackbar, 'onDismiss');
+    // act(() => {
+    //   jest.runAllTimers();
+    // });
+
+    // Option 2 - Good, test passes
+    // fireEvent(snackbar, 'onDismiss');
+    // await act(async () => {
+    //   jest.runAllTimers();
+    // });
+
+    // Option 3 - Bad, test fails with snackbar still found on the screen
+    // await act(async () => {
+    //   fireEvent(snackbar, 'onDismiss');
+    //   jest.runAllTimers();
+    // });
+
+    // Option 4 - Good, test passes
+    await act(async () => {
+      fireEvent(snackbar, 'onDismiss');
+    });
+    await act(async () => {
+      // Need snackbar's dismissal animation to complete
       jest.runAllTimers();
     });
-    console.log('3');
 
-    // Question 1: Why would `expect(undefined).toBeTruthy();` here cause the entire suite to fail, not just the single test?
-    //   If put further up in the test, or in other tests, it only fails the single test, not the entire suite.
-    //
-    // Output from `npm run test OfflineSnackbar`:
-    //   Test suite failed to run
-    //   TypeError: Cannot set properties of undefined (setting 'message')
-    //     at node_modules/jest-circus/build/formatNodeAssertErrors.js:47:25
-    //         at Array.map (<anonymous>)
-    //   Test Suites: 1 failed, 1 total
-    //   Tests:       0 total
-    // I suspect this is the erroring line in the test library:
-    // https://github.com/jestjs/jest/blob/main/packages/jest-circus/src/formatNodeAssertErrors.ts#L58
+    // Option 5 - Bad, test fails with snackbar still found on the screen
+    // await act(async () => {
+    //   fireEvent(snackbar, 'onDismiss');
+    //   await jest.runAllTimersAsync();
+    // });
+
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
     // Fire the test button event to make a server request. The request is mocked to fail,
-    // which should add a message to the notificationsSlice and trigger the snackbar
-    fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
-    await act(() => {
-      jest.runAllTimers();
+    // which should add a message to the notificationsSlice and trigger the snackbar.
+
+    // Option 1 - Bad, test fails with snackbar not on the screen
+    // fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
+    // act(() => {
+    //   jest.runAllTimers();
+    // });
+
+    // Option 2 - Good, test passes
+    // fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
+    // await act(async () => {
+    //   jest.runAllTimers();
+    // });
+
+    // Option 3 - Good, test passes
+    await act(async () => {
+      fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
     });
 
-    console.log('4');
-
-    // Question 2: When should an act call be awaited or not?
-    // The expect below fails if we do not await the act above -- even though the IDE says `await` has
-    // no effect on the expression. I had thought you'd only need to await if the function passed in
-    // is async, but perhaps I'm wrong. Why would this make a difference at all, and what is special about
-    // this part of the test that it doesn't make a difference in other tests or earlier in the test?
-    // Output:
-    //   expect(received).toBeOnTheScreen()
-    //   received value must be a host element.
-    //   Received has value: null
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
   });
 
-  // test('is not shown when thunk fails online', () => {});
-  // test('is not shown when thunk succeeds online', () => {});
-  // test('is not shown when thunk succeeds offline', () => {});
+  // test('is not shown when thunk fails online', async () => {});
+  // test('is not shown when thunk succeeds online', async () => {});
+  // test('is not shown when thunk succeeds offline', async () => {});
 });
