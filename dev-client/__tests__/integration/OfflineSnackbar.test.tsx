@@ -204,55 +204,51 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
   const deleteProjectMock = jest.mocked(projectService.deleteProject);
 
   const snackbarTestId = 'offline-snackbar';
+  const projectId = '1';
+  const initialAppState = {
+    project: {
+      projects: {
+        [projectId]: {
+          id: projectId,
+          name: projectId,
+          privacy: 'PRIVATE',
+          archived: false,
+          updatedAt: '',
+          measurementUnits: 'METRIC',
+          description: 'desc',
+          memberships: {},
+          sites: {},
+        },
+      },
+    },
+  } as Partial<AppState>;
+
+  // Button component that simulates dispatching something to server
+  const TestButton = () => {
+    const dispatch = useDispatch();
+    return (
+      <Button
+        title="dispatch"
+        testID="test-delete-project-btn"
+        onPress={() => {
+          dispatch(deleteProject({id: projectId}));
+        }}
+      />
+    );
+  };
 
   beforeEach(() => {
     useIsOfflineMock.mockReset().mockReturnValue(false);
     deleteProjectMock.mockReset();
   });
 
-  const makeAppStateWithProject = (projectId: string) => {
-    return {
-      project: {
-        projects: {
-          [projectId]: {
-            id: projectId,
-            name: '1',
-            privacy: 'PRIVATE',
-            archived: false,
-            updatedAt: '',
-            measurementUnits: 'METRIC',
-            description: 'desc',
-            memberships: {},
-            sites: {},
-          },
-        },
-      },
-    } as Partial<AppState>;
-  };
-
   test('can be dismissed, and is shown when thunk fails offline', async () => {
     useIsOfflineMock.mockReturnValue(true);
 
-    const projectId = '1';
-    const initialState = makeAppStateWithProject(projectId);
-
-    // Button that simulates dispatching something to server
     // FYI: Need to mockImplementation, not just mockReturn for async reasons
     deleteProjectMock.mockImplementation(async () =>
       Promise.reject(['rejected']),
     );
-    const TestButton = () => {
-      const dispatch = useDispatch();
-      return (
-        <Button
-          title="dispatch"
-          testID="test-delete-project-btn"
-          onPress={() => {
-            dispatch(deleteProject({id: projectId}));
-          }}
-        />
-      );
-    };
 
     const screen = render(
       <PaperProvider>
@@ -262,7 +258,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
           <ProjectViewScreen projectId={projectId} />
         </Portal.Host>
       </PaperProvider>,
-      {route: 'PROJECT_VIEW', initialState},
+      {route: 'PROJECT_VIEW', initialState: initialAppState},
     );
 
     const snackbar = screen.queryByTestId(snackbarTestId);
@@ -290,25 +286,9 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
 
   test('is not shown when thunk fails online', async () => {
     useIsOfflineMock.mockReturnValue(false);
-
-    const projectId = '1';
-    const initialState = makeAppStateWithProject(projectId);
-
     deleteProjectMock.mockImplementation(async () =>
       Promise.reject(['rejected']),
     );
-    const TestButton = () => {
-      const dispatch = useDispatch();
-      return (
-        <Button
-          title="dispatch"
-          testID="test-delete-project-btn"
-          onPress={() => {
-            dispatch(deleteProject({id: projectId}));
-          }}
-        />
-      );
-    };
 
     const screen = render(
       <PaperProvider>
@@ -318,7 +298,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
           <ProjectViewScreen projectId={projectId} />
         </Portal.Host>
       </PaperProvider>,
-      {route: 'PROJECT_VIEW', initialState},
+      {route: 'PROJECT_VIEW', initialState: initialAppState},
     );
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
@@ -332,27 +312,9 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
 
   test('is not shown when thunk succeeds offline', async () => {
     useIsOfflineMock.mockReturnValue(true);
-
-    const projectId = '1';
-    const initialState = makeAppStateWithProject(projectId);
-
-    // Button that simulates dispatching something to server
-    // FYI: Need to mockImplementation, not just mockReturn for async reasons
     deleteProjectMock.mockImplementation(async () =>
       Promise.resolve('unused test success message'),
     );
-    const TestButton = () => {
-      const dispatch = useDispatch();
-      return (
-        <Button
-          title="dispatch"
-          testID="test-delete-project-btn"
-          onPress={() => {
-            dispatch(deleteProject({id: projectId}));
-          }}
-        />
-      );
-    };
 
     const screen = render(
       <PaperProvider>
@@ -362,7 +324,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
           <ProjectViewScreen projectId={projectId} />
         </Portal.Host>
       </PaperProvider>,
-      {route: 'PROJECT_VIEW', initialState},
+      {route: 'PROJECT_VIEW', initialState: initialAppState},
     );
 
     const snackbar = screen.queryByTestId(snackbarTestId);
@@ -379,13 +341,11 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
-    // Fire the test button event to make a server request.
+    // Fire the test button event
     await act(async () => {
       fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
     });
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
   });
-
-  // test('is not shown when thunk succeeds online', async () => {});
 });
