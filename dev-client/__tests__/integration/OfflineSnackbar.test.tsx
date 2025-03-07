@@ -271,25 +271,25 @@ describe('Offline snackbar (with mocked backend call)', () => {
     // Dismiss snackbar
     // TODO-cknipe: Should we be using userEvent instead?
 
-    // Option 1 - Good, test passes
+    // A: Option 1 - Good, test passes
     // fireEvent(snackbar, 'onDismiss');
     // act(() => {
     //   jest.runAllTimers();
     // });
 
-    // Option 2 - Good, test passes
+    // A: Option 2 - Good, test passes
     // fireEvent(snackbar, 'onDismiss');
     // await act(async () => {
     //   jest.runAllTimers();
     // });
 
-    // Option 3 - Bad, test fails with snackbar still found on the screen
+    // A: Option 3 - Bad, test fails with snackbar still found on the screen
     // await act(async () => {
     //   fireEvent(snackbar, 'onDismiss');
     //   jest.runAllTimers();
     // });
 
-    // Option 4 - Good, test passes
+    // A: Option 4 - Good, test passes
     await act(async () => {
       fireEvent(snackbar, 'onDismiss');
     });
@@ -298,7 +298,7 @@ describe('Offline snackbar (with mocked backend call)', () => {
       jest.runAllTimers();
     });
 
-    // Option 5 - Bad, test fails with snackbar still found on the screen
+    // A: Option 5 - Bad, test fails with snackbar still found on the screen
     // await act(async () => {
     //   fireEvent(snackbar, 'onDismiss');
     //   await jest.runAllTimersAsync();
@@ -309,22 +309,25 @@ describe('Offline snackbar (with mocked backend call)', () => {
     // Fire the test button event to make a server request. The request is mocked to fail,
     // which should add a message to the notificationsSlice and trigger the snackbar.
 
-    // Option 1 - Bad, test fails with snackbar not on the screen
+    // B: Option 1 - Bad, test fails with snackbar not on the screen
     // fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
     // act(() => {
     //   jest.runAllTimers();
     // });
 
-    // Option 2 - Good, test passes
+    // B: Option 2 - Good, test passes
     // fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
     // await act(async () => {
     //   jest.runAllTimers();
     // });
 
-    // Option 3 - Good, test passes
+    // B: Option 3 - Good, test passes
     await act(async () => {
       fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
     });
+
+    // B: Option 4 - Bad, test fails with snackbar not on the screen
+    // fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
 
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
   });
