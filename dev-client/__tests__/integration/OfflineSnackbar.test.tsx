@@ -269,65 +269,21 @@ describe('Offline snackbar (with mocked backend call)', () => {
     expect(snackbar).toBeOnTheScreen();
 
     // Dismiss snackbar
-    // TODO-cknipe: Should we be using userEvent instead?
-
-    // A: Option 1 - Good, test passes
-    // fireEvent(snackbar, 'onDismiss');
-    // act(() => {
-    //   jest.runAllTimers();
-    // });
-
-    // A: Option 2 - Good, test passes
-    // fireEvent(snackbar, 'onDismiss');
-    // await act(async () => {
-    //   jest.runAllTimers();
-    // });
-
-    // A: Option 3 - Bad, test fails with snackbar still found on the screen
-    // await act(async () => {
-    //   fireEvent(snackbar, 'onDismiss');
-    //   jest.runAllTimers();
-    // });
-
-    // A: Option 4 - Good, test passes
+    // FYI: run timers so snackbar's dismissal animation completes
     await act(async () => {
       fireEvent(snackbar, 'onDismiss');
     });
     await act(async () => {
-      // Need snackbar's dismissal animation to complete
       jest.runAllTimers();
     });
-
-    // A: Option 5 - Bad, test fails with snackbar still found on the screen
-    // await act(async () => {
-    //   fireEvent(snackbar, 'onDismiss');
-    //   await jest.runAllTimersAsync();
-    // });
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
     // Fire the test button event to make a server request. The request is mocked to fail,
     // which should add a message to the notificationsSlice and trigger the snackbar.
-
-    // B: Option 1 - Bad, test fails with snackbar not on the screen
-    // fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
-    // act(() => {
-    //   jest.runAllTimers();
-    // });
-
-    // B: Option 2 - Good, test passes
-    // fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
-    // await act(async () => {
-    //   jest.runAllTimers();
-    // });
-
-    // B: Option 3 - Good, test passes
     await act(async () => {
       fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
     });
-
-    // B: Option 4 - Bad, test fails with snackbar not on the screen
-    // fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
 
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
   });
@@ -374,6 +330,7 @@ describe('Offline snackbar (with mocked backend call)', () => {
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
   });
 
+  test('is not shown when thunk succeeds offline', async () => {});
+
   // test('is not shown when thunk succeeds online', async () => {});
-  // test('is not shown when thunk succeeds offline', async () => {});
 });
