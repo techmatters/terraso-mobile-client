@@ -332,7 +332,48 @@ describe('Offline snackbar (with mocked backend call)', () => {
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
   });
 
-  // test('is not shown when thunk fails online', async () => {});
+  test('is not shown when thunk fails online', async () => {
+    useIsOfflineMock.mockReturnValue(false);
+
+    const projectId = '1';
+    const initialState = makeAppStateWithProject(projectId);
+
+    deleteProjectMock.mockImplementation(async () =>
+      Promise.reject(['rejected']),
+    );
+    const TestButton = () => {
+      const dispatch = useDispatch();
+      return (
+        <Button
+          title="dispatch"
+          testID="test-delete-project-btn"
+          onPress={() => {
+            dispatch(deleteProject({id: projectId}));
+          }}
+        />
+      );
+    };
+
+    const screen = render(
+      <PaperProvider>
+        <Portal.Host>
+          <TestButton />
+          <OfflineSnackbar />
+          <ProjectViewScreen projectId={projectId} />
+        </Portal.Host>
+      </PaperProvider>,
+      {route: 'PROJECT_VIEW', initialState},
+    );
+
+    expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
+
+    await act(async () => {
+      fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
+    });
+
+    expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
+  });
+
   // test('is not shown when thunk succeeds online', async () => {});
   // test('is not shown when thunk succeeds offline', async () => {});
 });
