@@ -341,7 +341,6 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
-    // Fire the test button event
     await act(async () => {
       fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
     });

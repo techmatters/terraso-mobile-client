@@ -42,9 +42,7 @@ export const OfflineSnackbar = () => {
   // Only supports 1 snackbar at a time; will not queue up snackbars
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
 
-  const onDismiss = () => {
-    setShowSnackbar(false);
-  };
+  const onDismiss = () => setShowSnackbar(false);
 
   useEffect(() => {
     // Get error messages
