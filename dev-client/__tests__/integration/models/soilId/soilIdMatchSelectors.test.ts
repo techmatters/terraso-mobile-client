@@ -15,11 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {
+  createProjectSettings,
+  generateProject,
+  generateSite,
+  generateSiteInterval,
+} from '@testing/integration/modelUtils';
 import {renderSelectorHook} from '@testing/integration/utils';
 
 import {initialState as accountInitialState} from 'terraso-client-shared/account/accountSlice';
 
 import {DEFAULT_SOIL_DATA} from 'terraso-mobile-client/model/soilData/soilDataConstants';
+import {SoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {soilDataToIdInput} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchInputs';
 import {selectNextDataBasedInputs} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
 import {initialState as syncInitialState} from 'terraso-mobile-client/model/sync/syncSlice';
@@ -54,14 +61,100 @@ const appState = (): AppState => {
 describe('selectNextDataBasedInputs', () => {
   test('supplies default soil data for newly created sites', () => {
     const state = appState();
-
     const selected = renderSelectorHook(
       () => useSelector(s => selectNextDataBasedInputs(s, ['id'])),
       state,
     );
-
     expect(selected).toEqual({
       id: soilDataToIdInput(DEFAULT_SOIL_DATA),
+    });
+  });
+
+  test('only includes data for custom site depths that are visible', () => {
+    const baseAppState = appState();
+    const site = generateSite();
+    const soilData = {
+      [site.id]: {
+        depthIntervals: [
+          generateSiteInterval({start: 1, end: 2}),
+          generateSiteInterval({start: 3, end: 4}),
+        ],
+        depthDependentData: [
+          generateSiteInterval({start: 1, end: 2}),
+          generateSiteInterval({start: 5, end: 6}),
+        ],
+        depthIntervalPreset: 'CUSTOM',
+      },
+    } as Record<string, SoilData | undefined>;
+
+    const state = {
+      ...baseAppState,
+      site: {sites: {[site.id]: site}},
+      soilData: {
+        ...baseAppState.soilData,
+        soilData: soilData,
+      },
+    };
+    const selected = renderSelectorHook(
+      () => useSelector(s => selectNextDataBasedInputs(s, [site.id])),
+      state,
+    );
+    expect(selected[site.id]).toBeTruthy();
+    expect(selected[site.id]?.depthDependentData).toHaveLength(1);
+    expect(selected[site.id]?.depthDependentData[0].depthInterval).toEqual({
+      start: 1,
+      end: 2,
+    });
+  });
+
+  test('includes data at custom project depths', () => {
+    const baseAppState = appState();
+
+    const project = generateProject();
+    const site = generateSite({project});
+
+    const projectDepthIntervals = [
+      {depthInterval: {start: 1, end: 2}, label: 'first'},
+      {depthInterval: {start: 5, end: 6}, label: 'second'},
+    ];
+
+    const projectSettings = createProjectSettings(project, {
+      depthIntervals: projectDepthIntervals,
+      depthIntervalPreset: 'CUSTOM',
+    });
+
+    const siteDepthIntervals = [
+      {depthInterval: {start: 1, end: 2}, label: 'first'},
+      {depthInterval: {start: 3, end: 4}, label: 'second'},
+    ];
+    const soilData = {
+      [site.id]: {
+        depthIntervals: [],
+        depthDependentData: siteDepthIntervals,
+        // FYI sites in projects may have an inaccurate preset
+        depthIntervalPreset: 'BLM',
+      },
+    } as Record<string, SoilData | undefined>;
+
+    const state = {
+      ...baseAppState,
+      site: {sites: {[site.id]: site}},
+      project: {projects: {[project.id]: project}},
+      soilData: {
+        ...baseAppState.soilData,
+        projectSettings: projectSettings,
+        soilData: soilData,
+      },
+    };
+    const selected = renderSelectorHook(
+      () => useSelector(s => selectNextDataBasedInputs(s, [site.id])),
+      state,
+    );
+    expect(selected[site.id]).toBeTruthy();
+    expect(selected[site.id]?.depthDependentData).toHaveLength(1);
+    expect(selected[site.id]?.depthDependentData[0].depthInterval).toEqual({
+      start: 1,
+      end: 2,
     });
   });
 });

@@ -32,7 +32,7 @@ import {
   munsellToString,
 } from 'terraso-mobile-client/model/color/colorConversions';
 import {sameDepth} from 'terraso-mobile-client/model/soilData/soilDataSlice';
-import {AggregatedInterval} from 'terraso-mobile-client/store/selectors';
+import {AggregatedInterval} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
 export type SoilPropertiesDataTableRow = {
   depth: DepthInterval;

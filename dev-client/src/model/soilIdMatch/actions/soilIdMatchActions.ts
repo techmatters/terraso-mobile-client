@@ -76,7 +76,8 @@ export const fetchSiteDataBasedSoilMatches = async (
     return dataEntryForStatus(input, 'error');
   }
 
-  const result = await soilIdService.fetchDataBasedSoilMatches(site, input);
+  const coords = {latitude: site.latitude, longitude: site.longitude};
+  const result = await soilIdService.fetchDataBasedSoilMatches(coords, input);
 
   if (result.__typename === 'SoilIdFailure') {
     return dataEntryForStatus(input, result.reason);
