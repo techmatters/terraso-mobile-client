@@ -39,8 +39,6 @@ jest.mock('react-native-reanimated', () => {
 });
 jest.useFakeTimers();
 jest.mock('react-native/src/private/animated/NativeAnimatedHelper');
-jest.mock('expo-font');
-jest.mock('expo-asset');
 
 // nanoid is a randomness source used by react navigation, here we are
 // setting it to a stable value to get stable snapshot tests
@@ -52,6 +50,8 @@ jest.mock('@gorhom/bottom-sheet', () => ({
   __esModule: true,
   ...require('@gorhom/bottom-sheet/mock'),
 }));
+
+jest.mock('expo-asset');
 
 jest.mock('@expo/vector-icons/MaterialIcons', () => 'Icon');
 
@@ -65,6 +65,7 @@ jest.mock('expo-font', () => {
 
   return module;
 });
+
 
 jest.mock('terraso-mobile-client/config', () => ({
   APP_CONFIG: {},
