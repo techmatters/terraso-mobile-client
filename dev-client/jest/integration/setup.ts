@@ -51,6 +51,8 @@ jest.mock('@gorhom/bottom-sheet', () => ({
   ...require('@gorhom/bottom-sheet/mock'),
 }));
 
+jest.mock('expo-asset');
+
 jest.mock('@expo/vector-icons/MaterialIcons', () => 'Icon');
 
 // workaround described here:
@@ -63,6 +65,7 @@ jest.mock('expo-font', () => {
 
   return module;
 });
+
 
 jest.mock('terraso-mobile-client/config', () => ({
   APP_CONFIG: {},
