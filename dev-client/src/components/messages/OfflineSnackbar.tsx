@@ -41,6 +41,7 @@ export const OfflineSnackbar = () => {
 
   // Only supports 1 snackbar at a time; will not queue up snackbars
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
+
   const onDismiss = () => setShowSnackbar(false);
 
   useEffect(() => {
@@ -72,7 +73,8 @@ export const OfflineSnackbar = () => {
         visible={showSnackbar}
         onDismiss={onDismiss}
         onIconPress={onDismiss}
-        duration={Infinity}>
+        duration={Infinity}
+        testID="offline-snackbar">
         {t('projects.offline_cant_edit')}
       </Snackbar>
     </Portal>
