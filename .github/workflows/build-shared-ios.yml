@@ -106,7 +106,7 @@ jobs:
           scheme: LandPKSSoilID
 
       - name: Upload app to TestFlight
-        uses: apple-actions/upload-testflight-build@v1
+        uses: apple-actions/upload-testflight-build@v2
         if: ${{ inputs.upload == 'true' }}
         with:
           app-path: "output.ipa"
