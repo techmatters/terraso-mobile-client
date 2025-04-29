@@ -63,6 +63,15 @@ jest.mock('terraso-client-shared/project/projectService', () => {
   };
 });
 
+const createJSXWithSnackbar = (ui: React.ReactNode) => (
+  <PaperProvider>
+    <Portal.Host>
+      <OfflineSnackbar />
+      {ui}
+    </Portal.Host>
+  </PaperProvider>
+);
+
 describe('Offline snackbar', () => {
   const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
   const deleteProjectMock = jest.mocked(projectService.deleteProject);
@@ -78,12 +87,7 @@ describe('Offline snackbar', () => {
     useIsOfflineMock.mockReturnValue(true);
 
     const screen = render(
-      <PaperProvider>
-        <Portal.Host>
-          <OfflineSnackbar />
-          <ProjectViewScreen projectId="1" />
-        </Portal.Host>
-      </PaperProvider>,
+      createJSXWithSnackbar(<ProjectViewScreen projectId="1" />),
       {
         route: 'PROJECT_VIEW',
         initialState: testState,
@@ -97,12 +101,7 @@ describe('Offline snackbar', () => {
     useIsOfflineMock.mockReturnValue(false);
 
     const screen = render(
-      <PaperProvider>
-        <Portal.Host>
-          <OfflineSnackbar />
-          <ProjectViewScreen projectId="1" />
-        </Portal.Host>
-      </PaperProvider>,
+      createJSXWithSnackbar(<ProjectViewScreen projectId="1" />),
       {
         route: 'PROJECT_VIEW',
         initialState: testState,
@@ -115,18 +114,10 @@ describe('Offline snackbar', () => {
   test('does not appear when offline on non-project-specific screen', () => {
     useIsOfflineMock.mockReturnValue(true);
 
-    const screen = render(
-      <PaperProvider>
-        <Portal.Host>
-          <OfflineSnackbar />
-          <ProjectListScreen />
-        </Portal.Host>
-      </PaperProvider>,
-      {
-        route: 'BOTTOM_TABS',
-        initialState: testState,
-      },
-    );
+    const screen = render(createJSXWithSnackbar(<ProjectListScreen />), {
+      route: 'BOTTOM_TABS',
+      initialState: testState,
+    });
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
   });
@@ -135,12 +126,7 @@ describe('Offline snackbar', () => {
     useIsOfflineMock.mockReturnValue(false);
 
     const screen = render(
-      <PaperProvider>
-        <Portal.Host>
-          <OfflineSnackbar />
-          <ProjectViewScreen projectId="1" />
-        </Portal.Host>
-      </PaperProvider>,
+      createJSXWithSnackbar(<ProjectViewScreen projectId="1" />),
       {
         route: 'PROJECT_VIEW',
         initialState: testState,
@@ -148,14 +134,7 @@ describe('Offline snackbar', () => {
     );
 
     useIsOfflineMock.mockReset().mockReturnValue(true);
-    screen.rerender(
-      <PaperProvider>
-        <Portal.Host>
-          <OfflineSnackbar />
-          <ProjectViewScreen projectId="1" />
-        </Portal.Host>
-      </PaperProvider>,
-    );
+    screen.rerender(createJSXWithSnackbar(<ProjectViewScreen projectId="1" />));
 
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
   });
@@ -164,12 +143,7 @@ describe('Offline snackbar', () => {
     useIsOfflineMock.mockReturnValue(true);
 
     const screen = render(
-      <PaperProvider>
-        <Portal.Host>
-          <OfflineSnackbar />
-          <ProjectViewScreen projectId="1" />
-        </Portal.Host>
-      </PaperProvider>,
+      createJSXWithSnackbar(<ProjectViewScreen projectId="1" />),
       {
         route: 'PROJECT_VIEW',
         initialState: testState,
@@ -179,14 +153,7 @@ describe('Offline snackbar', () => {
     expect(screen.queryByTestId(snackbarTestId)).toBeTruthy();
 
     useIsOfflineMock.mockReturnValue(false);
-    screen.rerender(
-      <PaperProvider>
-        <Portal.Host>
-          <OfflineSnackbar />
-          <ProjectViewScreen projectId="1" />
-        </Portal.Host>
-      </PaperProvider>,
-    );
+    screen.rerender(createJSXWithSnackbar(<ProjectViewScreen projectId="1" />));
 
     // FYI: Because the snackbar has an animation transition before hiding and returning null,
     // Need to run the jest timers, and  wrap it in act() to make sure resulting state updates
@@ -251,13 +218,12 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     );
 
     const screen = render(
-      <PaperProvider>
-        <Portal.Host>
+      createJSXWithSnackbar(
+        <>
           <TestButton />
-          <OfflineSnackbar />
           <ProjectViewScreen projectId={projectId} />
-        </Portal.Host>
-      </PaperProvider>,
+        </>,
+      ),
       {route: 'PROJECT_VIEW', initialState: initialAppState},
     );
 
@@ -291,13 +257,12 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     );
 
     const screen = render(
-      <PaperProvider>
-        <Portal.Host>
+      createJSXWithSnackbar(
+        <>
           <TestButton />
-          <OfflineSnackbar />
           <ProjectViewScreen projectId={projectId} />
-        </Portal.Host>
-      </PaperProvider>,
+        </>,
+      ),
       {route: 'PROJECT_VIEW', initialState: initialAppState},
     );
 
@@ -317,13 +282,12 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     );
 
     const screen = render(
-      <PaperProvider>
-        <Portal.Host>
+      createJSXWithSnackbar(
+        <>
           <TestButton />
-          <OfflineSnackbar />
           <ProjectViewScreen projectId={projectId} />
-        </Portal.Host>
-      </PaperProvider>,
+        </>,
+      ),
       {route: 'PROJECT_VIEW', initialState: initialAppState},
     );
 
