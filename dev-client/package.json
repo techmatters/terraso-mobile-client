@@ -102,7 +102,7 @@
     "@types/delta-e": "^0.0.2",
     "@types/haversine": "^1.1.8",
     "@types/jest": "^29.5.14",
-    "@types/lodash": "^4.17.15",
+    "@types/lodash": "^4.17.16",
     "@types/quantize": "^1.0.2",
     "@types/react": "^18.3.12",
     "@types/uuid": "^10.0.0",
