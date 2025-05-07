@@ -381,7 +381,6 @@ exports[`renders correctly 1`] = `
                               }
                             >
                               <RCTScrollView
-                                accessibilityRole="tablist"
                                 alwaysBounceHorizontal={false}
                                 automaticallyAdjustContentInsets={false}
                                 collapsable={false}
@@ -447,6 +446,7 @@ exports[`renders correctly 1`] = `
                                 overScrollMode="never"
                                 removeClippedSubviews={false}
                                 renderItem={[Function]}
+                                role="tablist"
                                 scrollEnabled={true}
                                 scrollEventThrottle={16}
                                 scrollsToTop={false}
@@ -477,7 +477,6 @@ exports[`renders correctly 1`] = `
                                   >
                                     <View
                                       accessibilityLabel="Site"
-                                      accessibilityRole="tab"
                                       accessibilityState={
                                         {
                                           "busy": undefined,
@@ -509,6 +508,7 @@ exports[`renders correctly 1`] = `
                                       onResponderTerminate={[Function]}
                                       onResponderTerminationRequest={[Function]}
                                       onStartShouldSetResponder={[Function]}
+                                      role="tab"
                                       style={
                                         [
                                           {
@@ -654,7 +654,6 @@ exports[`renders correctly 1`] = `
                                   >
                                     <View
                                       accessibilityLabel="Slope"
-                                      accessibilityRole="tab"
                                       accessibilityState={
                                         {
                                           "busy": undefined,
@@ -686,6 +685,7 @@ exports[`renders correctly 1`] = `
                                       onResponderTerminate={[Function]}
                                       onResponderTerminationRequest={[Function]}
                                       onStartShouldSetResponder={[Function]}
+                                      role="tab"
                                       style={
                                         [
                                           {
@@ -831,7 +831,6 @@ exports[`renders correctly 1`] = `
                                   >
                                     <View
                                       accessibilityLabel="Soil"
-                                      accessibilityRole="tab"
                                       accessibilityState={
                                         {
                                           "busy": undefined,
@@ -863,6 +862,7 @@ exports[`renders correctly 1`] = `
                                       onResponderTerminate={[Function]}
                                       onResponderTerminationRequest={[Function]}
                                       onStartShouldSetResponder={[Function]}
+                                      role="tab"
                                       style={
                                         [
                                           {
@@ -1008,7 +1008,6 @@ exports[`renders correctly 1`] = `
                                   >
                                     <View
                                       accessibilityLabel="Notes"
-                                      accessibilityRole="tab"
                                       accessibilityState={
                                         {
                                           "busy": undefined,
@@ -1040,6 +1039,7 @@ exports[`renders correctly 1`] = `
                                       onResponderTerminate={[Function]}
                                       onResponderTerminationRequest={[Function]}
                                       onStartShouldSetResponder={[Function]}
+                                      role="tab"
                                       style={
                                         [
                                           {
@@ -1210,8 +1210,7 @@ exports[`renders correctly 1`] = `
                               }
                             >
                               <View
-                                accessibilityElementsHidden={false}
-                                importantForAccessibility="auto"
+                                aria-hidden={false}
                                 style={
                                   [
                                     {
@@ -2172,8 +2171,7 @@ exports[`renders correctly 1`] = `
                               }
                             >
                               <View
-                                accessibilityElementsHidden={true}
-                                importantForAccessibility="no-hide-descendants"
+                                aria-hidden={true}
                                 style={
                                   [
                                     {
@@ -2213,8 +2211,7 @@ exports[`renders correctly 1`] = `
                               }
                             >
                               <View
-                                accessibilityElementsHidden={true}
-                                importantForAccessibility="no-hide-descendants"
+                                aria-hidden={true}
                                 style={
                                   [
                                     {
@@ -2254,8 +2251,7 @@ exports[`renders correctly 1`] = `
                               }
                             >
                               <View
-                                accessibilityElementsHidden={true}
-                                importantForAccessibility="no-hide-descendants"
+                                aria-hidden={true}
                                 style={
                                   [
                                     {
