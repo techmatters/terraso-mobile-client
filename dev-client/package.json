@@ -78,7 +78,7 @@
     "react-native-reanimated": "^3.16.7",
     "react-native-safe-area-context": "^5.2.0",
     "react-native-screens": "^4.6.0",
-    "react-native-svg": "^15.11.1",
+    "react-native-svg": "^15.11.2",
     "react-native-tab-view": "^4.0.5",
     "reduce-reducers": "^1.0.4",
     "terraso-client-shared": "github:techmatters/terraso-client-shared#a4df832",
