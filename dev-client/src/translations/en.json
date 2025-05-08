@@ -63,7 +63,7 @@
         },
         "create": {
             "title": "Create Site",
-            "description": "Create a site here to save this location, collect data, and see more detailed reports.",
+            "description": "Create a site here to save this location, enter observations, and see more detailed reports.",
             "button_label": "Create Site Here",
             "gps": "Use my current location (GPS)",
             "pin": "Use map pin",
@@ -106,16 +106,16 @@
         "soil_id": {
             "title": "Soil ID",
             "description": {
-                "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter data and improve the results.",
-                "site": "LandPKS Soil ID uses data from soil maps and data entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties."
+                "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter observations and improve the results.",
+                "site": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties."
             },
             "matches": {
                 "title": "Top Soil Matches",
                 "info": {
                     "title": "Top soil matches",
                     "description": {
-                        "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil data to improve accuracy of the match scores. When this data is entered, the list will automatically update.",
-                        "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended data to improve accuracy of the match scores."
+                        "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
+                        "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores."
                     }
                 },
                 "match_score": "{{score}}",
@@ -123,7 +123,7 @@
                 "error_generic_title": "Can’t fetch soil map",
                 "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
                 "no_map_data_title": "No soil map data",
-                "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Data can still be collected for this site, and if soil map data becomes available in the future, soil matches will appear here.",
+                "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Observations can still be entered for this site, and if soil map data becomes available in the future, soil matches will appear here.",
                 "native_lands_intro": "Soil resources for Native lands:",
                 "native_lands_link": "nativeland.info",
                 "native_lands_url": "https://nativeland.info/",
@@ -132,8 +132,8 @@
                 "selected": "Selected Soil"
             },
             "site_data": {
-                "title": "Site Data",
-                "description": "Improve Soil ID results by entering some data for this site using the helpful guides along the way.",
+                "title": "Site Observations",
+                "description": "Improve Soil ID results by entering some observations for this site using the helpful guides along the way.",
                 "slope": {
                     "title": "Slope Steepness",
                     "add_data": "Enter steepness"
@@ -150,7 +150,7 @@
                     "texture": "Texture",
                     "color": "Color",
                     "rock_fragment": "Rock Fragment",
-                    "add_data": "Enter properties"
+                    "add_data": "Add soil properties"
                 }
             },
             "soil_info": {
@@ -168,16 +168,16 @@
             },
             "location_score_info": {
                 "header": "Location Score",
-                "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account data that has been entered by users at the site.",
-                "p2": "LandPKS Soil ID bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
-                "p3": "The <bold>location score</bold> for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
+                "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account observations that have been entered by users at the site.",
+                "p2": "LandPKS bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p3": "The location score for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
             },
             "soil_properties_score_info": {
                 "header": "Soil Properties Score",
-                "p1": "Soil Properties Score reflects the similarity between the soil match and the data entered for this site.",
-                "p2": "A higher Soil Properties Score means that the user-entered data is similar to the soil match. A low score means the two are less similar, and it is less likely for this match to be the correct soil ID for the site.",
-                "p3": "The more data entered for a site, the more reliable the Soil Properties Score will be.",
-                "p4": "LandPKS Soil ID considers the following properties in calculating Soil Properties Score:",
+                "p1": "Soil Properties Score reflects the similarity between the soil match and the observations entered for this site.",
+                "p2": "A higher Soil Properties Score means that the user-entered observations are similar to the soil match. A low score means the two are less similar, and it is less likely for this match to be the correct soil ID for the site.",
+                "p3": "The more observations entered for a site, the more reliable the Soil Properties Score will be.",
+                "p4": "LandPKS considers the following in calculating Soil Properties Score:",
                 "bullets": {
                     "1": "Soil texture by depth",
                     "2": "Rock fragment by depth",
@@ -327,7 +327,7 @@
             "delete_site": "Delete Site",
             "delete_site_modal": {
                 "title": "Delete site?",
-                "body": "This will permanently delete the site {{siteName}} and all of its observations. This can’t be undone.",
+                "body": "This will permanently delete the site's data and observations. This can’t be undone.",
                 "project": "\n\nProject managers can remove the site from this project to retain its data.",
                 "action_name": "Delete"
             },
@@ -642,7 +642,7 @@
         },
         "soil_preset": {
             "header": "Change soil pit depths",
-            "info": "Data already entered for a depth will be deleted when the depth is changed.",
+            "info": "Observations already entered for a depth will be deleted when the depth is changed.",
             "label": "Depths",
             "NRCS": "NRCS/GSP (default)",
             "BLM": "BLM Monitoring Standard",
@@ -650,7 +650,7 @@
         },
         "depth": {
             "add_title": "Add depth",
-            "data_inputs_title": "Soil Data Inputs",
+            "data_inputs_title": "Show/hide soil observations",
             "label_help": "{{max}} characters max",
             "label_placeholder": "Label",
             "apply_to_all_label": "Apply to all depths",
@@ -783,7 +783,7 @@
             },
             "confirm_delete": {
                 "title": "Delete data?",
-                "body": "This will delete the soil color data associated with this depth.",
+                "body": "This will delete the soil color from this depth.",
                 "action_name": "Delete"
             },
             "unexpected_color": {
@@ -861,7 +861,7 @@
         "title": "Slope",
         "info": {
             "title": "Slope",
-            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each data input are available by tapping on the input name.\n\nSlope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
+            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each observation are available on each observation entry screen.\n\nSlope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
         },
         "steepness": {
             "short_title": "Steepness",
@@ -870,7 +870,7 @@
             "manual_label": "Manual",
             "manual_help": "Enter steepness percentage or degree:",
             "confirm_title": "Change slope?",
-            "confirm_body": "Are you sure you want to override the slope data?",
+            "confirm_body": "Are you sure you want to override the slope steepness?",
             "percentage_placeholder": "Percentage",
             "percentage_help": "0%–999%",
             "degree": "{{value}}°",
