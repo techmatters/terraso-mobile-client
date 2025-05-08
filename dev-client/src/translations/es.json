@@ -129,15 +129,15 @@
         "soil_id": {
             "title": "Identificación de suelos",
             "description": {
-                "temp_location": "LandPKS Soil ID utiliza datos de mapas de suelos para calcular predicciones para el suelo en esta ubicación. Crea un sitio en esta ubicación para introducir datos y mejorar los resultados.",
-                "site": "LankPKS Soil ID usa datos de mapas de suelos y observaciones ingresadas acerca del sitio para calcular las mejores coincidencias para el suelo del sitio. Elige la mejor coincidencia de suelo para esta ubicación para aprender acerca de su sitio ecológico y otras propiedades."
+                "temp_location": "LandPKS Soil ID utiliza datos de mapas de suelos para calcular predicciones para el suelo en esta ubicación. Crea un sitio en esta ubicación para introducir observaciones y mejorar los resultados.",
+                "site": "LandPKS Soil ID usa datos de mapas de suelos y observaciones ingresadas acerca del sitio para calcular las mejores coincidencias para el suelo del sitio. Elige la mejor coincidencia de suelo para esta ubicación para aprender acerca de su sitio ecológico y otras propiedades."
             },
             "matches": {
                 "title": "Mejores coincidencias de suelo",
                 "info": {
                     "title": "Mejores coincidencias de suelo",
                     "description": {
-                        "site": "Los suelos enumerados son los más propensos de encontrarse en el lugar según los mapas de suelos del USDA NRCS para esta ubicación.\n\nIntroduce el pendiente y los datos del suelo recomendados para mejorar la precisión de las puntuaciones de coincidencia. Al introductir estos datos,  la lista se actualizará automáticamente.",
+                        "site": "Los suelos enumerados son los más propensos de encontrarse en el lugar según los mapas de suelos del USDA NRCS para esta ubicación.\n\nIntroduce el pendiente y las observaciones del suelo recomendados para mejorar la precisión de las puntuaciones de coincidencia. Al introductir estas observaciones, la lista se actualizará automáticamente.",
                         "temp_location": "Los suelos enumerados son los más propensos de encontrarse en esta ubicación según los mapas de suelos del USDA NRCS.\n\nCrea un sitio aquí e introduce las observaciones recomendadas para mejorar la precisión de las puntuaciones de coincidencia."
                     }
                 },
@@ -145,7 +145,7 @@
                 "error_generic_title": "No se puede obtener el mapa del suelo",
                 "error_generic_body": "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Vuelve a intentarlo más tarde.",
                 "no_map_data_title": "Sin datos en el mapa de suelos",
-                "no_map_data_body": "No hay datos de mapas de suelos disponibles para este sitio, por lo que LandPKS no puede generar coincidencias de suelo para este sitio. De todos modos, se pueden recopilar datos para este sitio, y si los datos del mapa de suelos están disponibles en el futuro, las coincidencias de suelo aparecerán aquí.",
+                "no_map_data_body": "No hay datos de mapas de suelos disponibles para este sitio, por lo que LandPKS no puede generar coincidencias de suelo para este sitio. De todos modos, se pueden TK recopilar observaciones TK para este sitio, y si los datos del mapa de suelos están disponibles en el futuro, las coincidencias de suelo aparecerán aquí.",
                 "native_lands_intro": "Recursos de suelos para las tierras indígenas:",
                 "native_lands_link": "nativeland.info",
                 "native_lands_url": "https://nativeland.info/",
@@ -192,15 +192,15 @@
             "location_score_info": {
                 "header": "Calificación de ubicación",
                 "p1": "La calificación de la ubicación se basa únicamente en los mapas del suelos y en la ubicación del lugar. No tiene en cuenta las observaciones que han introducido los usuarios en el lugar.",
-                "p2": "LandPKS Soil ID basa las coincidencias de suelo en los mapas de suelos creados por el USDA NRCS. Los mapas de suelos tradicionales no predicen un único suelo para cada ubicación, sino que se organizan en “unidades cartográficas de suelos” que contienen múltiples suelos posibles. Se estima que cada posible suelo de una unidad cartográfica cubre un determinado porcentaje de la unidad.",
-                "p3": "La <bold>calificación de ubicación</bold> de una coincidencia de suelo se basa en el porcentaje de la unidad cartográfica que cubre el suelo. A continuación, se le resta un valor proporcional a la distancia de la unidad cartográfica del sitio. En otras palabras, los suelos de la unidad cartográfica del sitio reciben generalmente una puntuación de ubicación más alta que los suelos de una unidad cartográfica vecina. Del mismo modo, los suelos que constituyen un porcentaje mayor de la unidad cartográfica reciben una puntuación de ubicación más alta que los suelos que constituyen un porcentaje menor de la unidad cartográfica."
+                "p2": "LandPKS basa las coincidencias de suelo en los mapas de suelos creados por el USDA NRCS. Los mapas de suelos tradicionales no predicen un único suelo para cada ubicación, sino que se organizan en “unidades cartográficas de suelos” que contienen múltiples suelos posibles. Se estima que cada posible suelo de una unidad cartográfica cubre un determinado porcentaje de la unidad.",
+                "p3": "La calificación de ubicación de una coincidencia de suelo se basa en el porcentaje de la unidad cartográfica que cubre el suelo. A continuación, se le resta un valor proporcional a la distancia de la unidad cartográfica del sitio. En otras palabras, los suelos de la unidad cartográfica del sitio reciben generalmente una puntuación de ubicación más alta que los suelos de una unidad cartográfica vecina. Del mismo modo, los suelos que constituyen un porcentaje mayor de la unidad cartográfica reciben una puntuación de ubicación más alta que los suelos que constituyen un porcentaje menor de la unidad cartográfica."
             },
             "soil_properties_score_info": {
                 "header": "Puntuación de las propiedades del suelo",
                 "p1": "La puntuación de las propiedades del suelo refleja la similitud entre el suelo compatible y las observaciones introducidas para este sitio.",
                 "p2": "Una puntuación más alta de las propiedades del suelo significa que las observaciones introducidas por el usuario son similares a la coincidencia del suelo. Una puntuación baja significa que los dos son menos similares y es menos probable que esta coincidencia sea la identificación de suelo correcta para el desplazamiento.",
                 "p3": "Cuantos más observaciones se introduzcan para un sitio, más fiable será la puntuación de las propiedades del suelo.",
-                "p4": "LandPKS Soil ID considera TK las siguientes propiedades TK en el cálculo de la puntuación de las propiedades del suelo:",
+                "p4": "LandPKS considera TK las siguientes propiedades TK en el cálculo de la puntuación de las propiedades del suelo:",
                 "bullets": {
                     "1": "Textura del suelo por profundidad",
                     "2": "Fragmento de roca por profundidad",
@@ -319,7 +319,7 @@
             "delete_site": "Eliminar sitio",
             "delete_site_modal": {
                 "title": "¿Eliminar sitio?",
-                "body": "Esto eliminará permanentemente el sitio {{siteName}} y todas sus observaciones. Esto no se puede deshacer.",
+                "body": "Esto eliminará permanentemente TK el sitio y sus observaciones TK. Esto no se puede deshacer.",
                 "action_name": "Eliminar",
                 "project": "\n\nSi los sitios tienen datos ingresados con profundidades diferentes a lo especificado en este proyecto, esos datos se eliminarán. Esto no se puede deshacer."
             },
@@ -712,7 +712,7 @@
             "analyze": "Analizar",
             "confirm_delete": {
                 "title": "¿Eliminar datos?",
-                "body": "Esto eliminará los datos del color del suelo asociados con esta profundidad.",
+                "body": "Esto eliminará TK los datos del color del suelo asociados con esta profundidad. TK",
                 "action_name": "Eliminar"
             },
             "unexpected_color": {
@@ -817,7 +817,7 @@
             "manual_label": "Manual",
             "manual_help": "Introduce el porcentaje o grado de inclinación",
             "confirm_title": "¿Cambiar pendiente?",
-            "confirm_body": "¿Estás seguro de que quieres anular los datos de la pendiente?",
+            "confirm_body": "¿Estás seguro de que quieres anular el nivel de inclinación de la pendiente?",
             "percentage_placeholder": "Porcentaje",
             "percentage_help": "0%–999%",
             "degree_help": "0°–89°\n",
