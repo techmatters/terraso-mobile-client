@@ -313,7 +313,7 @@
             "delete": "Delete this project",
             "delete_button": "Delete",
             "delete_button_prompt": "Delete project?",
-            "delete_description": "This will permanently delete the project and its sites’ observations. This can’t be undone.\n\nProject managers have the option to transfer sites from this project to keep site observations."
+            "delete_description": "This will permanently delete the project {{projectName}} and its sites’ observations. This can’t be undone.\n\nProject managers have the option to transfer sites from this project to keep site observations."
         },
         "sites": {
             "empty_viewer": "This project has no sites yet.",
@@ -327,7 +327,7 @@
             "delete_site": "Delete Site",
             "delete_site_modal": {
                 "title": "Delete site?",
-                "body": "This will permanently delete the site's data and observations. This can’t be undone.",
+                "body": "This will permanently delete the site {{siteName}} and all of its observations. This can’t be undone.",
                 "project": "\n\nProject managers can remove the site from this project to retain its data.",
                 "action_name": "Delete"
             },
