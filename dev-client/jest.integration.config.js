@@ -32,7 +32,5 @@ module.exports = {
       '<rootDir>/__mocks__/fileMock.ts',
     '^@testing/(.*)': '<rootDir>/jest/$1',
     '^terraso-mobile-client/(.*)': '<rootDir>/src/$1',
-    // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
-    uuid: require.resolve('uuid'),
   },
 };
