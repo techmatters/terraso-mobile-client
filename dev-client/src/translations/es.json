@@ -295,7 +295,7 @@
             "archive_description": "El proyecto se moverá a Proyectos archivados, por lo que será de sólo lectura. Los miembros del equipo podrán acceder a los datos, y los administradores del proyecto podrán restaurarlo en cualquier momento. Los proyectos públicos archivados seguirán siendo visibles en los portales de datos.",
             "delete_button": "Eliminar",
             "delete_button_prompt": "¿Eliminar proyecto?",
-            "delete_description": "Esto eliminará permanentemente el proyecto y las observaciones de sus sitios. Esto no se puede deshacer.\n\nLos jefes de proyecto tienen la opción de transferir los centros de este proyecto para conservar las observaciones de los centros."
+            "delete_description": "Esto eliminará permanentemente el proyecto {{projectName}} y las observaciones de sus sitios. Esto no se puede deshacer.\n\nLos jefes de proyecto tienen la opción de transferir los centros de este proyecto para conservar las observaciones de los centros."
         },
         "sites": {
             "add": "Añadir sitios",
@@ -319,7 +319,7 @@
             "delete_site": "Eliminar sitio",
             "delete_site_modal": {
                 "title": "¿Eliminar sitio?",
-                "body": "Esto eliminará permanentemente TK el sitio y sus observaciones TK. Esto no se puede deshacer.",
+                "body": "Esto eliminará permanentemente el sitio {{siteName}} y todas sus observaciones. Esto no se puede deshacer.",
                 "action_name": "Eliminar",
                 "project": "\n\nSi los sitios tienen datos ingresados con profundidades diferentes a lo especificado en este proyecto, esos datos se eliminarán. Esto no se puede deshacer."
             },
