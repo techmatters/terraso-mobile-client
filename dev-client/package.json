@@ -147,11 +147,11 @@
     "jest"
   ],
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --max-warnings 0 --ignore-path .gitignore --fix"
+    "dev-client/**/*.{ts,tsx}": [
+      "sh -c 'cd dev-client && npm run eslint'"
     ],
-    "*.{json,ts,tsx,html}": [
-      "prettier --write --ignore-unknown"
+    "dev-client/**/*.{json,ts,tsx,html}": [
+      "sh -c 'cd dev-client && npm run prettier'"
     ]
   },
   "engines": {
