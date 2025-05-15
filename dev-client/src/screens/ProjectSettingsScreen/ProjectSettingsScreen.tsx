@@ -83,7 +83,9 @@ export function ProjectSettingsScreen({
           <ConfirmModal
             title={t('projects.settings.delete_button_prompt')}
             actionLabel={t('projects.settings.delete_button')}
-            body={t('projects.settings.delete_description')}
+            body={t('projects.settings.delete_description', {
+              projectName: project.name,
+            })}
             handleConfirm={onDeleteProject}
             trigger={onOpen => (
               <DeleteButton
