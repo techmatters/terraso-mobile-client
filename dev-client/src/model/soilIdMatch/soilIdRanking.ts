@@ -15,33 +15,35 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {SoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
-  SoilIdResults,
   SoilMatchForLocationOnly,
   SoilMatchForLocationWithData,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export const getTopMatch = (
-  results: SoilIdResults,
+  results: SoilIdOutput,
 ): SoilMatchForLocationOnly | SoilMatchForLocationWithData | undefined => {
-  const locationBased = results.locationBasedMatches;
-  const dataBased = results.dataBasedMatches;
-
-  console.log('DATA BASED: ', dataBased);
-  console.log('LOCATION BASED: ', locationBased);
-  dataBased.forEach(match => {
-    console.log('DataMatch ', match.dataMatch);
-  });
-
-  if (dataBased.length > 0 /* TODO-cknipe: Or if anything is null?? */) {
-    return dataBased.reduce(getBetterDataMatch);
-  } else if (locationBased.length > 0) {
-    return locationBased.reduce(getBetterLocationMatch);
+  if (results.matches.length > 0 && results.withData === true) {
+    return results.matches.reduce((a, b) =>
+      getBetterDataMatch(
+        a as SoilMatchForLocationWithData,
+        b as SoilMatchForLocationWithData,
+      ),
+    );
+  } else if (results.matches.length > 0 && results.withData === false) {
+    return results.matches.reduce((a, b) =>
+      getBetterLocationMatch(
+        a as SoilMatchForLocationOnly,
+        b as SoilMatchForLocationOnly,
+      ),
+    );
   } else {
     return undefined;
   }
 };
 
+// TODO-cknipe: Delete these
 const getBetterDataMatch = (
   a: SoilMatchForLocationWithData,
   b: SoilMatchForLocationWithData,
@@ -63,8 +65,10 @@ const getBetterLocationMatch = (
   return a.locationMatch.rank < b.locationMatch.rank ? a : b;
 };
 
-export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) => {
-  return [...soilIdData.dataBasedMatches].sort((a, b) => {
+export const getSortedMatchesWithData = (
+  matches: SoilMatchForLocationWithData[],
+) => {
+  return matches.sort((a, b) => {
     if (a.combinedMatch && b.combinedMatch) {
       return a.combinedMatch.rank - b.combinedMatch.rank;
     } else {
@@ -73,7 +77,21 @@ export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) => {
   });
 };
 
-export const getSortedLocationBasedMatches = (soilIdData: SoilIdResults) =>
-  [...soilIdData.locationBasedMatches].sort(
-    (a, b) => a.locationMatch.rank - b.locationMatch.rank,
-  );
+export const getSortedMatchesForLocation = (
+  matches: SoilMatchForLocationOnly[],
+) => matches.sort((a, b) => a.locationMatch.rank - b.locationMatch.rank);
+
+// export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) => {
+//   return [...soilIdData.dataBasedMatches].sort((a, b) => {
+//     if (a.combinedMatch && b.combinedMatch) {
+//       return a.combinedMatch.rank - b.combinedMatch.rank;
+//     } else {
+//       return a.locationMatch.rank - b.locationMatch.rank;
+//     }
+//   });
+// };
+
+// export const getSortedLocationBasedMatches = (soilIdData: SoilIdResults) =>
+//   [...soilIdData.locationBasedMatches].sort(
+//     (a, b) => a.locationMatch.rank - b.locationMatch.rank,
+//   );

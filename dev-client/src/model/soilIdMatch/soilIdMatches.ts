@@ -28,11 +28,13 @@ import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
 
 export type CoordsKey = `(${string}, ${string})`;
 
+export type DataRegion = SoilIdDataRegionChoices | undefined;
+
 export type SoilIdEntry = {
-  dataRegion: SoilIdDataRegionChoices | undefined;
+  dataRegion: DataRegion;
   withData: boolean | undefined; //TODO-cknipe: Do we use this, and/or do we use types?
   input: SoilIdInputData | Coords;
-  matches: SoilMatchForLocationOnly[] | SoilMatchForLocationWithData[];
+  matches: SoilMatchesGeneral;
   status: SoilIdStatus;
 };
 
@@ -42,6 +44,12 @@ export type SoilIdEntry = {
 //    TODO-cknipe: ...wellll except that they can be null
 //    So maybe name it "ForSite" if the data ones can still be null?
 // The idea is the backend responds with DataBasedSoilMatch, and in the client we clarify which it is
+export type SoilMatchGeneral =
+  | SoilMatchForLocationOnly
+  | SoilMatchForLocationWithData;
+export type SoilMatchesGeneral =
+  | SoilMatchForLocationOnly[]
+  | SoilMatchForLocationWithData[];
 export type SoilMatchForLocationOnly = Omit<
   DataBasedSoilMatch,
   'combinedMatch' | 'dataMatch'
@@ -51,6 +59,7 @@ export type SoilMatchForLocationWithData = SoilMatchForLocationOnly & {
   dataMatch: SoilMatchInfo;
 };
 
+// There's a hook for this, so we can get it from components
 export type SoilIdResults = {
   locationBasedMatches: SoilMatchForLocationOnly[];
   dataBasedMatches: SoilMatchForLocationWithData[];

@@ -169,7 +169,8 @@
             "location_score_info": {
                 "header": "Location Score",
                 "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account observations that have been entered by users at the site.",
-                "p2": "LandPKS bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p2": "LandPKS bases soil matches on soil maps created by the {{soilMapSource}}. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p2_region_unknown": "LandPKS bases soil matches on soil maps [[TODO-cknipe]]. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
                 "p3": "The location score for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
             },
             "soil_properties_score_info": {

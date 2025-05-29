@@ -21,7 +21,8 @@ import {ScreenContentSection} from 'terraso-mobile-client/components/content/Scr
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {SoilMatchForLocationWithData} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
@@ -33,10 +34,10 @@ export const SoilIdSelectionSection = ({
   siteId,
   coords,
 }: SoilIdSelectionSectionProps) => {
-  const soilIdData = useSoilIdData(coords, siteId);
+  const soilIdOutput = useSoilIdOutput(coords, siteId);
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
-    soilIdData.dataBasedMatches,
+    soilIdOutput.matches as SoilMatchForLocationWithData[],
     selectedSoilId,
   );
 

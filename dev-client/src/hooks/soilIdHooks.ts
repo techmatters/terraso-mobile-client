@@ -21,17 +21,27 @@ import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useActiveSoilIdData} from 'terraso-mobile-client/context/SoilIdMatchContext';
-import {SoilIdResults} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {
+  SoilIdEntry,
+  SoilIdResults,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
   useLocationBasedMatches,
   useSiteDataBasedMatches,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
 
+// TODO-cknipe: Do we use this anymore?
 export type SoilIdData = SoilIdResults & {
   status: SoilIdStatus;
 };
 
-export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
+export type SoilIdOutput = Omit<SoilIdEntry, 'input'>;
+
+// TODO-cknipe: Can we refactor everything to this and delete the one below for SoilIdData??
+export const useSoilIdOutput = (
+  coords: Coords,
+  siteId?: string,
+): SoilIdOutput => {
   /* Request active soil ID data based on this hook's input parameters */
   const isDataBased = !!siteId;
   const {addCoords, addSite} = useActiveSoilIdData();
@@ -45,15 +55,45 @@ export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
   const dataEntry = useSiteDataBasedMatches(siteId);
   if (isDataBased) {
     return {
-      locationBasedMatches: [],
-      dataBasedMatches: dataEntry?.matches ?? [],
+      dataRegion: dataEntry?.dataRegion,
+      withData: true,
+      matches: dataEntry?.matches ?? [],
       status: dataEntry?.status ?? 'loading',
     };
   } else {
     return {
-      locationBasedMatches: locationEntry?.matches ?? [],
-      dataBasedMatches: [],
+      dataRegion: dataEntry?.dataRegion,
+      withData: false,
+      matches: locationEntry?.matches ?? [],
       status: locationEntry?.status ?? 'loading',
     };
   }
 };
+
+// TODO-cknipe: Can we remove this?
+// export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
+//   /* Request active soil ID data based on this hook's input parameters */
+//   const isDataBased = !!siteId;
+//   const { addCoords, addSite } = useActiveSoilIdData();
+//   useEffect(() => {
+//     const activeData = isDataBased ? addSite(siteId) : addCoords(coords);
+//     return activeData.remove;
+//   }, [isDataBased, coords, siteId, addSite, addCoords]);
+
+//   /* Select entries for relevant inputs and return the requested one */
+//   const locationEntry = useLocationBasedMatches(coords);
+//   const dataEntry = useSiteDataBasedMatches(siteId);
+//   if (isDataBased) {
+//     return {
+//       locationBasedMatches: [],
+//       dataBasedMatches: dataEntry?.matches ?? [],
+//       status: dataEntry?.status ?? 'loading',
+//     };
+//   } else {
+//     return {
+//       locationBasedMatches: locationEntry?.matches ?? [],
+//       dataBasedMatches: [],
+//       status: locationEntry?.status ?? 'loading',
+//     };
+//   }
+// };

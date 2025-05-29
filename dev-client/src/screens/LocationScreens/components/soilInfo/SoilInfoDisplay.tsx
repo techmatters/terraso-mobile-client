@@ -52,7 +52,10 @@ const renderLCCString = (
   return `${capabilityClass}${subClass}`;
 };
 
-export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
+export function SoilInfoDisplayUS({
+  dataSource,
+  soilInfo,
+}: SoilInfoDisplayProps) {
   const {t} = useTranslation();
 
   return (
@@ -61,10 +64,12 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
         {soilInfo.soilSeries.taxonomySubgroup}
       </Heading>
       <Text variant="body1">{soilInfo.soilSeries.description}</Text>
-      <ExternalLink
-        label={t('site.soil_id.soil_info.series_descr_url')}
-        url={soilInfo.soilSeries.fullDescriptionUrl}
-      />
+      {soilInfo.soilSeries.fullDescriptionUrl && (
+        <ExternalLink
+          label={t('site.soil_id.soil_info.series_descr_url')}
+          url={soilInfo.soilSeries.fullDescriptionUrl}
+        />
+      )}
       {soilInfo.ecologicalSite && (
         <>
           <Box>
@@ -87,18 +92,20 @@ export function SoilInfoDisplay({dataSource, soilInfo}: SoilInfoDisplayProps) {
           />
         </>
       )}
-      <Box>
-        <TranslatedParagraph
-          i18nKey="site.soil_id.soil_info.land_class_label"
-          values={{land: renderLCCString(t, soilInfo.landCapabilityClass)}}
-        />
-        <TranslatedParagraph
-          i18nKey="site.soil_id.soil_info.data_source_label"
-          values={{
-            source: dataSource,
-          }}
-        />
-      </Box>
+      {soilInfo.landCapabilityClass && (
+        <Box>
+          <TranslatedParagraph
+            i18nKey="site.soil_id.soil_info.land_class_label"
+            values={{land: renderLCCString(t, soilInfo.landCapabilityClass)}}
+          />
+          <TranslatedParagraph
+            i18nKey="site.soil_id.soil_info.data_source_label"
+            values={{
+              source: dataSource,
+            }}
+          />
+        </Box>
+      )}
     </Column>
   );
 }

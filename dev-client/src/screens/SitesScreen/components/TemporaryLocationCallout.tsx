@@ -36,14 +36,11 @@ import {
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
-import {
-  SoilMatchForLocationOnly,
-  SoilMatchForLocationWithData,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {SoilMatchForLocationOnly} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CalloutDetail} from 'terraso-mobile-client/screens/SitesScreen/components/CalloutDetail';
@@ -65,8 +62,11 @@ export const TemporaryLocationCallout = ({
   const isOffline = useIsOffline();
 
   const elevation = useElevationData(coords);
-  const soilIdData = useSoilIdData(coords);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+  const soilIdOutput = useSoilIdOutput(coords);
+  const topSoilMatch = useMemo(
+    () => getTopMatch(soilIdOutput),
+    [soilIdOutput],
+  ) as SoilMatchForLocationOnly;
 
   const onLearnMore = useCallback(() => {
     navigation.navigate('TEMP_LOCATION', {
@@ -89,7 +89,7 @@ export const TemporaryLocationCallout = ({
             label={t('site.soil_id_prediction')}
             value={
               <TopSoilMatchDisplay
-                status={soilIdData.status}
+                status={soilIdOutput.status}
                 topSoilMatch={topSoilMatch}
                 t={t}
               />
@@ -100,7 +100,7 @@ export const TemporaryLocationCallout = ({
             label={t('site.ecological_site_prediction')}
             value={
               <EcologicalSiteMatchDisplay
-                status={soilIdData.status}
+                status={soilIdOutput.status}
                 topSoilMatch={topSoilMatch}
                 t={t}
               />
@@ -152,10 +152,7 @@ const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
 
 type SoilIdStatusDisplayTopMatchProps = {
   status: SoilIdStatus;
-  topSoilMatch:
-    | SoilMatchForLocationOnly
-    | SoilMatchForLocationWithData
-    | undefined;
+  topSoilMatch: SoilMatchForLocationOnly | undefined;
   t: TFunction;
 };
 

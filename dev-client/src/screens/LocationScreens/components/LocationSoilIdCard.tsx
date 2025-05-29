@@ -28,9 +28,10 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {
+  DataRegion as SoilIdDataRegion,
   SoilMatchForLocationOnly,
   SoilMatchForLocationWithData,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
@@ -87,27 +88,36 @@ export const LocationSoilIdCard = ({
 type LocationMatchDisplayProps = {coords: Coords};
 
 const TempLocationMatchContent = ({coords}: LocationMatchDisplayProps) => {
-  const soilIdData = useSoilIdData(coords);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+  const soilIdOutput = useSoilIdOutput(coords);
+  const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
 
-  return <MatchContent status={soilIdData.status} match={topSoilMatch} />;
+  return (
+    <MatchContent
+      status={soilIdOutput.status}
+      dataRegion={soilIdOutput.dataRegion}
+      match={topSoilMatch}
+    />
+  );
 };
 
 type SiteMatchDisplayProps = {coords: Coords; siteId: string};
 
 const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
-  const soilIdData = useSoilIdData(coords, siteId);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+  const soilIdOutput = useSoilIdOutput(coords, siteId);
+  const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
+  // TODO-cknipe: Cache the dataRegion for a site. Start as unknown. If received, set it.
+  // you may want to add this to the siteSlice in shared client -_-
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
-    soilIdData.dataBasedMatches,
+    soilIdOutput.matches as SoilMatchForLocationWithData[],
     selectedSoilId,
   );
 
   return (
     <MatchContent
-      status={soilIdData.status}
+      status={soilIdOutput.status}
       match={selectedSoilMatch || topSoilMatch}
+      dataRegion={soilIdOutput.dataRegion}
       isSelected={!!selectedSoilMatch}
     />
   );
@@ -115,16 +125,19 @@ const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
 
 type MatchContentProps = {
   status: SoilIdStatus;
+  dataRegion: SoilIdDataRegion;
   match: SoilMatchForLocationOnly | SoilMatchForLocationWithData | undefined;
   isSelected?: boolean;
 };
 
 const MatchContent = ({
   status,
+  dataRegion,
   match,
   isSelected = false,
 }: MatchContentProps) => {
   const {t} = useTranslation();
+  console.log('----> DATA REGION: ', dataRegion);
 
   return (
     <>
