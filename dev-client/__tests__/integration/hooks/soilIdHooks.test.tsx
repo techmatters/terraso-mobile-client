@@ -17,14 +17,14 @@
 
 import {renderHook} from '@testing-library/react-native';
 
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import * as SoilIdMatchContext from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {
+  SoilMatchForLocationOnly,
+  SoilMatchForLocationWithData,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import * as soilIdMatchHooks from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
 
 jest.mock('terraso-mobile-client/context/SoilIdMatchContext', () => {
@@ -48,7 +48,7 @@ const renderSoilIdHook = (initialCoords: Coords, initialSiteId?: string) => {
   );
 };
 
-const dataBasedMatchWithName = (name: string): DataBasedSoilMatch => {
+const dataBasedMatchWithName = (name: string): SoilMatchForLocationWithData => {
   return {
     ...locationBasedMatchWithName(name),
     combinedMatch: {
@@ -66,7 +66,7 @@ const dataBasedMatchWithName = (name: string): DataBasedSoilMatch => {
   };
 };
 
-const locationBasedMatchWithName = (name: string): LocationBasedSoilMatch => {
+const locationBasedMatchWithName = (name: string): SoilMatchForLocationOnly => {
   return {
     soilInfo: {
       landCapabilityClass: {capabilityClass: '', subClass: ''},
@@ -79,7 +79,7 @@ const locationBasedMatchWithName = (name: string): LocationBasedSoilMatch => {
       },
     },
     distanceToNearestMapUnitM: 0,
-    match: {
+    locationMatch: {
       rank: 0,
       score: 0,
     },

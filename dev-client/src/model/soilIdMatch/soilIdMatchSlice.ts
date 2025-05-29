@@ -26,13 +26,12 @@ import {
   dataEntryForStatus,
   flushErrorEntries,
   locationEntryForStatus,
-  SoilIdDataEntry,
-  SoilIdLocationEntry,
+  SoilIdEntry,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export type SoilState = {
-  locationBasedMatches: Record<CoordsKey, SoilIdLocationEntry>;
-  siteDataBasedMatches: Record<string, SoilIdDataEntry>;
+  locationBasedMatches: Record<CoordsKey, SoilIdEntry>;
+  siteDataBasedMatches: Record<string, SoilIdEntry>;
 };
 
 export const initialState: SoilState = {
@@ -109,6 +108,10 @@ const soilIdMatchSlice = createSlice({
 export const {flushLocationCache, flushDataCacheErrors} =
   soilIdMatchSlice.actions;
 
+// TODO-cknipe: Standardize names
+// Is it: LocationBased / DataBased
+// Or: SoilMatchForLocationOnly / SoilMatchForLocationWithData
+// ??
 export const fetchLocationBasedSoilMatches = createAsyncThunk(
   'soilId/fetchLocationBasedSoilMatches',
   soilIdActions.fetchLocationBasedSoilMatchesThunk,

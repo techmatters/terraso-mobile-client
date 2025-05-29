@@ -20,16 +20,11 @@ import {createSelector} from '@reduxjs/toolkit';
 import {Coords} from 'terraso-client-shared/types';
 
 import {soilDataToIdInput} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchInputs';
-import {
-  coordsKey,
-  SoilIdLocationEntry,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
-export const selectLocationBasedMatches = (
-  coords: Coords,
-): ((state: AppState) => SoilIdLocationEntry | undefined) => {
+export const selectLocationBasedMatches = (coords: Coords) => {
   const key = coordsKey(coords);
   return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];
 };

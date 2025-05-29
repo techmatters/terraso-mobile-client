@@ -18,11 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-  SoilMatchInfo,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatchInfo} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
@@ -35,13 +31,17 @@ import {
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  SoilMatchForLocationOnly,
+  SoilMatchForLocationWithData,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {getSoilWebUrl} from 'terraso-mobile-client/util';
 
 type LocationScoreDisplayProps = {
   isSite: boolean;
-  match: LocationBasedSoilMatch | DataBasedSoilMatch;
+  match: SoilMatchForLocationOnly | SoilMatchForLocationWithData;
   matchInfo: SoilMatchInfo;
   coords: Coords;
 };

@@ -21,10 +21,6 @@ import {ActivityIndicator, Divider} from 'react-native-paper';
 
 import {TFunction} from 'i18next';
 
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -44,6 +40,10 @@ import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {
+  SoilMatchForLocationOnly,
+  SoilMatchForLocationWithData,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CalloutDetail} from 'terraso-mobile-client/screens/SitesScreen/components/CalloutDetail';
@@ -152,7 +152,10 @@ const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
 
 type SoilIdStatusDisplayTopMatchProps = {
   status: SoilIdStatus;
-  topSoilMatch: LocationBasedSoilMatch | DataBasedSoilMatch | undefined;
+  topSoilMatch:
+    | SoilMatchForLocationOnly
+    | SoilMatchForLocationWithData
+    | undefined;
   t: TFunction;
 };
 

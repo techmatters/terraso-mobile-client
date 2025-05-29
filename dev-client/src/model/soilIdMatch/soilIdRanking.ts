@@ -16,19 +16,24 @@
  */
 
 import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-
-import {SoilIdResults} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+  SoilIdResults,
+  SoilMatchForLocationOnly,
+  SoilMatchForLocationWithData,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export const getTopMatch = (
   results: SoilIdResults,
-): LocationBasedSoilMatch | DataBasedSoilMatch | undefined => {
+): SoilMatchForLocationOnly | SoilMatchForLocationWithData | undefined => {
   const locationBased = results.locationBasedMatches;
   const dataBased = results.dataBasedMatches;
 
-  if (dataBased.length > 0) {
+  console.log('DATA BASED: ', dataBased);
+  console.log('LOCATION BASED: ', locationBased);
+  dataBased.forEach(match => {
+    console.log('DataMatch ', match.dataMatch);
+  });
+
+  if (dataBased.length > 0 /* TODO-cknipe: Or if anything is null?? */) {
     return dataBased.reduce(getBetterDataMatch);
   } else if (locationBased.length > 0) {
     return locationBased.reduce(getBetterLocationMatch);
@@ -38,25 +43,37 @@ export const getTopMatch = (
 };
 
 const getBetterDataMatch = (
-  a: DataBasedSoilMatch,
-  b: DataBasedSoilMatch,
-): DataBasedSoilMatch => {
-  return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
+  a: SoilMatchForLocationWithData,
+  b: SoilMatchForLocationWithData,
+): SoilMatchForLocationWithData => {
+  // TODO-cknipe: Are we ok that combinedMatch can be null? For sites with no data yet
+  // Are there any other places that assume this exists? Should change the type definition?
+  // TODO-cknipe: If we do it like this, probably want to do it a level up, not for each a/b?
+  if (a.combinedMatch && b.combinedMatch) {
+    return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
+  } else {
+    return a.locationMatch.rank < b.locationMatch.rank ? a : b;
+  }
 };
 
 const getBetterLocationMatch = (
-  a: LocationBasedSoilMatch,
-  b: LocationBasedSoilMatch,
-): LocationBasedSoilMatch => {
-  return a.match.rank < b.match.rank ? a : b;
+  a: SoilMatchForLocationOnly,
+  b: SoilMatchForLocationOnly,
+): SoilMatchForLocationOnly => {
+  return a.locationMatch.rank < b.locationMatch.rank ? a : b;
 };
 
-export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) =>
-  [...soilIdData.dataBasedMatches].sort(
-    (a, b) => a.combinedMatch.rank - b.combinedMatch.rank,
-  );
+export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) => {
+  return [...soilIdData.dataBasedMatches].sort((a, b) => {
+    if (a.combinedMatch && b.combinedMatch) {
+      return a.combinedMatch.rank - b.combinedMatch.rank;
+    } else {
+      return a.locationMatch.rank - b.locationMatch.rank;
+    }
+  });
+};
 
 export const getSortedLocationBasedMatches = (soilIdData: SoilIdResults) =>
   [...soilIdData.locationBasedMatches].sort(
-    (a, b) => a.match.rank - b.match.rank,
+    (a, b) => a.locationMatch.rank - b.locationMatch.rank,
   );

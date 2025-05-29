@@ -18,17 +18,16 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {LocationBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
-
 import {
   Column,
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
+import {SoilMatchForLocationOnly} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 type PropertiesDisplayProps = {
-  match: LocationBasedSoilMatch;
+  match: SoilMatchForLocationOnly;
 };
 
 export function PropertiesDisplay({match}: PropertiesDisplayProps) {

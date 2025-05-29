@@ -18,10 +18,6 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
@@ -34,6 +30,10 @@ import {
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {
+  SoilMatchForLocationOnly,
+  SoilMatchForLocationWithData,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
@@ -115,7 +115,7 @@ const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
 
 type MatchContentProps = {
   status: SoilIdStatus;
-  match: LocationBasedSoilMatch | DataBasedSoilMatch | undefined;
+  match: SoilMatchForLocationOnly | SoilMatchForLocationWithData | undefined;
   isSelected?: boolean;
 };
 

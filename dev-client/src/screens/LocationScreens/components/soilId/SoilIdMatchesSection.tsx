@@ -119,7 +119,7 @@ const MatchTiles = ({siteId, coords}: SoilIdMatchesSectionProps) => {
             trigger={onOpen => (
               <SoilMatchTile
                 soilName={locationMatch.soilInfo.soilSeries.name}
-                score={locationMatch.match.score}
+                score={locationMatch.locationMatch.score}
                 onPress={onOpen}
               />
             )}>
