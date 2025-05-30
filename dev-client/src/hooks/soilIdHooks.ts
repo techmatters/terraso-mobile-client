@@ -50,6 +50,7 @@ export const useSoilIdOutput = (
     return activeData.remove;
   }, [isDataBased, coords, siteId, addSite, addCoords]);
 
+  // TODO-cknipe: Refactor so they're not separate hooks??
   /* Select entries for relevant inputs and return the requested one */
   const locationEntry = useLocationBasedMatches(coords);
   const dataEntry = useSiteDataBasedMatches(siteId);
@@ -62,7 +63,7 @@ export const useSoilIdOutput = (
     };
   } else {
     return {
-      dataRegion: dataEntry?.dataRegion,
+      dataRegion: locationEntry?.dataRegion,
       withData: false,
       matches: locationEntry?.matches ?? [],
       status: locationEntry?.status ?? 'loading',

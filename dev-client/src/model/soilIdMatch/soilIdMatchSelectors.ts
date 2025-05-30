@@ -24,6 +24,7 @@ import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
+// TODO-cknipe: Why wouldn't this be possibly undefined?
 export const selectLocationBasedMatches = (coords: Coords) => {
   const key = coordsKey(coords);
   return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];

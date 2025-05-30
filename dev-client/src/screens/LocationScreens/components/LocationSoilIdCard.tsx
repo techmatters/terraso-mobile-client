@@ -31,7 +31,7 @@ import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatus
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {
-  DataRegion as SoilIdDataRegion,
+  DataRegion,
   SoilMatchForLocationOnly,
   SoilMatchForLocationWithData,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
@@ -105,8 +105,6 @@ type SiteMatchDisplayProps = {coords: Coords; siteId: string};
 const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
   const soilIdOutput = useSoilIdOutput(coords, siteId);
   const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
-  // TODO-cknipe: Cache the dataRegion for a site. Start as unknown. If received, set it.
-  // you may want to add this to the siteSlice in shared client -_-
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
     soilIdOutput.matches as SoilMatchForLocationWithData[],
@@ -125,7 +123,7 @@ const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
 
 type MatchContentProps = {
   status: SoilIdStatus;
-  dataRegion: SoilIdDataRegion;
+  dataRegion: DataRegion;
   match: SoilMatchForLocationOnly | SoilMatchForLocationWithData | undefined;
   isSelected?: boolean;
 };
