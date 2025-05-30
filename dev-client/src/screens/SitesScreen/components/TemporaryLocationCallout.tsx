@@ -95,17 +95,21 @@ export const TemporaryLocationCallout = ({
               />
             }
           />
-          <Divider />
-          <CalloutDetail
-            label={t('site.ecological_site_prediction')}
-            value={
-              <EcologicalSiteMatchDisplay
-                status={soilIdOutput.status}
-                topSoilMatch={topSoilMatch}
-                t={t}
+          {soilIdOutput.dataRegion === 'US' && (
+            <>
+              <Divider />
+              <CalloutDetail
+                label={t('site.ecological_site_prediction')}
+                value={
+                  <EcologicalSiteMatchDisplay
+                    status={soilIdOutput.status}
+                    topSoilMatch={topSoilMatch}
+                    t={t}
+                  />
+                }
               />
-            }
-          />
+            </>
+          )}
           <Divider />
         </>
         <CalloutDetail

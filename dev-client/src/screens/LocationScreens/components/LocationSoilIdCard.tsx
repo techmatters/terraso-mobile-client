@@ -135,7 +135,6 @@ const MatchContent = ({
   isSelected = false,
 }: MatchContentProps) => {
   const {t} = useTranslation();
-  console.log('----> DATA REGION: ', dataRegion);
 
   return (
     <>
@@ -157,21 +156,25 @@ const MatchContent = ({
           }
         />
       </Text>
-      <Text variant="body1" color="primary.contrast" mb="25px">
-        <Text bold>{t('soil.ecological_site_name')}: </Text>
-        <SoilIdStatusDisplay
-          status={status}
-          offline={<Text italic>{t('general.not_available_offine')}</Text>}
-          loading={<Text>{t('soil.loading')}</Text>}
-          error={<Text>{t('soil.error')}</Text>}
-          noData={<Text>{t('soil.no_matches')}</Text>}
-          data={
-            <Text>
-              {match?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
-            </Text>
-          }
-        />
-      </Text>
+      {dataRegion === 'US' ? (
+        <Text variant="body1" color="primary.contrast" mb="25px">
+          <Text bold>{t('soil.ecological_site_name')}: </Text>
+          <SoilIdStatusDisplay
+            status={status}
+            offline={<Text italic>{t('general.not_available_offine')}</Text>}
+            loading={<Text>{t('soil.loading')}</Text>}
+            error={<Text>{t('soil.error')}</Text>}
+            noData={<Text>{t('soil.no_matches')}</Text>}
+            data={
+              <Text>
+                {match?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
+              </Text>
+            }
+          />
+        </Text>
+      ) : (
+        <Box mb="25px" />
+      )}
     </>
   );
 };
