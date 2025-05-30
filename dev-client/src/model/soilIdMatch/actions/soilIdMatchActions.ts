@@ -26,7 +26,7 @@ import {
   dataEntryForStatus,
   locationEntryForMatches,
   locationEntryForStatus,
-  SoilIdDataEntry,
+  SoilIdEntry,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 
@@ -48,7 +48,7 @@ export const fetchLocationBasedSoilMatches = async (coords: Coords) => {
   if (result.__typename === 'SoilIdFailure') {
     return locationEntryForStatus(coords, result.reason);
   } else {
-    return locationEntryForMatches(coords, result.matches);
+    return locationEntryForMatches(coords, result.matches, result.dataRegion);
   }
 };
 
@@ -67,7 +67,7 @@ export const fetchSiteDataBasedSoilMatches = async (
   siteId: string,
   input: SoilIdInputData,
   state: AppState,
-): Promise<SoilIdDataEntry> => {
+): Promise<SoilIdEntry> => {
   const site = state.site.sites[siteId];
 
   /* Nothing to fetch if the site doesn't exist */
@@ -82,6 +82,6 @@ export const fetchSiteDataBasedSoilMatches = async (
   if (result.__typename === 'SoilIdFailure') {
     return dataEntryForStatus(input, result.reason);
   } else {
-    return dataEntryForMatches(input, result.matches);
+    return dataEntryForMatches(input, result.matches, result.dataRegion);
   }
 };
