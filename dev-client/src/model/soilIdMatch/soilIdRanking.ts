@@ -68,7 +68,7 @@ const getBetterLocationMatch = (
 export const getSortedMatchesWithData = (
   matches: SoilMatchForLocationWithData[],
 ) => {
-  return matches.sort((a, b) => {
+  return matches.slice().sort((a, b) => {
     if (a.combinedMatch && b.combinedMatch) {
       return a.combinedMatch.rank - b.combinedMatch.rank;
     } else {
@@ -79,7 +79,8 @@ export const getSortedMatchesWithData = (
 
 export const getSortedMatchesForLocation = (
   matches: SoilMatchForLocationOnly[],
-) => matches.sort((a, b) => a.locationMatch.rank - b.locationMatch.rank);
+) =>
+  matches.slice().sort((a, b) => a.locationMatch.rank - b.locationMatch.rank);
 
 // export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) => {
 //   return [...soilIdData.dataBasedMatches].sort((a, b) => {

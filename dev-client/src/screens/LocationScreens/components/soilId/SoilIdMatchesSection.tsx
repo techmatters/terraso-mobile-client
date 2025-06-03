@@ -96,7 +96,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
     case 'loading':
       return isOffline ? <></> : <ActivityIndicator size="small" />;
     case 'ready': {
-      if (isSite && soilIdOutput.withData /* TODO-cknipe: Redundant? */) {
+      if (isSite && soilIdOutput.withData) {
         return getSortedMatchesWithData(
           soilIdOutput.matches as SoilMatchForLocationWithData[],
         ).map(dataMatch => (
