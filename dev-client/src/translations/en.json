@@ -117,7 +117,9 @@
                         "site": "The soils listed are the most likely to be found at the site based on {{soilMapSource}} soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
                         "site_region_unknown": "The soils listed are the most likely to be found at the site based on soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
                         "temp_location": "The soils listed are the most likely to be found at this location based on {{soilMapSource}} soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
-                        "temp_location_region_unknown": "The soils listed are the most likely to be found at this location based on soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores."
+                        "temp_location_region_unknown": "The soils listed are the most likely to be found at this location based on soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
+                        "need_help": "\n<bold>Need help?</bold>\nConsult a soil expert to help interpret the observations and determine a soil match. You can learn more about soil map predictions and Soil ID matches on the website:",
+                        "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
                 "match_score": "{{score}}",
@@ -477,7 +479,8 @@
         "not_available_offine": "Not available offline",
         "offline_sign_in_title": "Sign in not available offline",
         "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online.",
-        "not_available": "Not available"
+        "not_available": "Not available",
+        "learn_more": "Learn more"
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",

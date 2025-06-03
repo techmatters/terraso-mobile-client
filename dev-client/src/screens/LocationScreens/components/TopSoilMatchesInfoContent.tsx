@@ -15,8 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   DataRegion,
   getSoilMapSource,
@@ -28,8 +31,19 @@ type Props = {
 };
 
 export const TopSoilMatchesInfoContent = ({isSite, dataRegion}: Props) => {
+  const {t} = useTranslation();
+
   return (
-    <Text variant="body1">{getInfoTextComponent(isSite, dataRegion)}</Text>
+    <Column space="12px">
+      <Column space="0px">
+        {getInfoTextComponent(isSite, dataRegion)}
+        <TranslatedParagraph i18nKey="site.soil_id.matches.info.description.need_help" />
+      </Column>
+      <ExternalLink
+        label={t('general.learn_more')}
+        url={t('site.soil_id.matches.info.description.learn_more_url')}
+      />
+    </Column>
   );
 };
 
