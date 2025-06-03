@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
@@ -31,7 +33,9 @@ export function LocationScoreInfoContent({
   isSite,
   dataRegion,
 }: LocationScoreInfoContentProps) {
-  const soilMapSource = getSoilMapSource(dataRegion);
+  const {t} = useTranslation();
+  const soilMapSource = t(getSoilMapSource(dataRegion));
+
   return (
     <Column space={3}>
       {isSite && (

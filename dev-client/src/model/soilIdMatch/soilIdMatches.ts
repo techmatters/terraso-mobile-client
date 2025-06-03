@@ -137,7 +137,7 @@ export const flushErrorEntries = (entries: Record<string, SoilIdEntry>) => {
 };
 
 export function getSoilMapSource(dataRegion: DataRegion): string {
-  if (dataRegion === 'GLOBAL') return 'FAO HWSD';
-  else if (dataRegion === 'US') return 'USDA NRCS';
+  if (dataRegion === 'GLOBAL') return 'site.soil_id.soil_info.FAO_HWSD';
+  else if (dataRegion === 'US') return 'site.soil_id.soil_info.USDA_NRCS';
   else return '';
 }
