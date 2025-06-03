@@ -15,22 +15,49 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  DataRegion,
+  getSoilMapSource,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 type Props = {
   isSite: boolean;
+  dataRegion: DataRegion;
 };
 
-export const TopSoilMatchesInfoContent = ({isSite}: Props) => {
-  const {t} = useTranslation();
-
+export const TopSoilMatchesInfoContent = ({isSite, dataRegion}: Props) => {
   return (
-    <Text variant="body1">
-      {isSite
-        ? t('site.soil_id.matches.info.description.site')
-        : t('site.soil_id.matches.info.description.temp_location')}
-    </Text>
+    <Text variant="body1">{getInfoTextComponent(isSite, dataRegion)}</Text>
   );
 };
+
+function getInfoTextComponent(isSite: boolean, dataRegion: DataRegion) {
+  const soilMapSource = getSoilMapSource(dataRegion);
+  if (isSite) {
+    if (dataRegion) {
+      return (
+        <TranslatedParagraph
+          i18nKey="site.soil_id.matches.info.description.site"
+          values={{soilMapSource}}
+        />
+      );
+    } else
+      return (
+        <TranslatedParagraph i18nKey="site.soil_id.matches.info.description.site_region_unknown" />
+      );
+  } else {
+    if (dataRegion) {
+      return (
+        <TranslatedParagraph
+          i18nKey="site.soil_id.matches.info.description.temp_location"
+          values={{soilMapSource}}
+        />
+      );
+    } else
+      return (
+        <TranslatedParagraph i18nKey="site.soil_id.matches.info.description.temp_location_region_unknown" />
+      );
+  }
+}

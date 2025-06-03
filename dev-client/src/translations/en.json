@@ -114,8 +114,10 @@
                 "info": {
                     "title": "Top soil matches",
                     "description": {
-                        "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
-                        "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores."
+                        "site": "The soils listed are the most likely to be found at the site based on {{soilMapSource}} soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
+                        "site_region_unknown": "The soils listed are the most likely to be found at the site based on soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
+                        "temp_location": "The soils listed are the most likely to be found at this location based on {{soilMapSource}} soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
+                        "temp_location_region_unknown": "The soils listed are the most likely to be found at this location based on soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores."
                     }
                 },
                 "match_score": "{{score}}",
@@ -170,7 +172,7 @@
                 "header": "Location Score",
                 "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account observations that have been entered by users at the site.",
                 "p2": "LandPKS bases soil matches on soil maps created by the {{soilMapSource}}. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
-                "p2_region_unknown": "LandPKS bases soil matches on soil maps [[TODO-cknipe]]. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p2_region_unknown": "LandPKS bases soil matches on soil maps. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
                 "p3": "The location score for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
             },
             "soil_properties_score_info": {

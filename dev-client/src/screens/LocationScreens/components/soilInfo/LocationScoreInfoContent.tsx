@@ -17,7 +17,10 @@
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {
+  DataRegion,
+  getSoilMapSource,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 type LocationScoreInfoContentProps = {
   isSite: boolean;
@@ -28,12 +31,7 @@ export function LocationScoreInfoContent({
   isSite,
   dataRegion,
 }: LocationScoreInfoContentProps) {
-  const soilMapSource =
-    dataRegion === 'GLOBAL'
-      ? 'FAO HWSD'
-      : dataRegion === 'US'
-        ? 'USDA NRCS'
-        : '';
+  const soilMapSource = getSoilMapSource(dataRegion);
   return (
     <Column space={3}>
       {isSite && (

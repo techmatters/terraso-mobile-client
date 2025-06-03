@@ -56,7 +56,10 @@ export const SoilIdMatchesSection = ({
   coords,
 }: SoilIdMatchesSectionProps) => {
   const {t} = useTranslation();
+  const soilIdOutput = useSoilIdOutput(coords, siteId);
+  const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
+  console.log('DATAREGION: ', dataRegion);
 
   return (
     <ScreenContentSection backgroundColor="grey.200">
@@ -67,7 +70,7 @@ export const SoilIdMatchesSection = ({
           sheetHeading={
             <TranslatedHeading i18nKey="site.soil_id.matches.info.title" />
           }>
-          <TopSoilMatchesInfoContent isSite={isSite} />
+          <TopSoilMatchesInfoContent isSite={isSite} dataRegion={dataRegion} />
         </InfoButton>
       </Row>
       <RestrictByConnectivity offline={true}>
