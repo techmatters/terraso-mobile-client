@@ -91,10 +91,12 @@ export function LocationScoreDisplay({
         </Column>
         <ScoreTile score={matchInfo.score} />
       </Row>
-      <ExternalLink
-        label={t('site.soil_id.soil_info.location_url')}
-        url={soilWebUrl}
-      />
+      {dataRegion === 'US' && (
+        <ExternalLink
+          label={t('site.soil_id.soil_info.location_url')}
+          url={soilWebUrl}
+        />
+      )}
     </Column>
   );
 }
