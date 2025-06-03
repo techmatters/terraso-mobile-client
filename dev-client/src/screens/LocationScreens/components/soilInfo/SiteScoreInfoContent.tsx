@@ -27,7 +27,7 @@ import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreen
 import {PropertiesScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesScoreDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
 import {SoilIdMatchSelector} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilIdMatchSelector';
-import {SoilInfoDisplayUS} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
+import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
 
 type SiteScoreInfoContentProps = {
   siteId: string;
@@ -44,7 +44,8 @@ export function SiteScoreInfoContent({
 }: SiteScoreInfoContentProps) {
   return (
     <ScoreInfoContainer>
-      <SoilInfoDisplayUS
+      <SoilInfoDisplay
+        dataRegion={dataRegion}
         dataSource={dataMatch.dataSource}
         soilInfo={dataMatch.soilInfo}
       />

@@ -32,8 +32,10 @@ import {
   Heading,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 type SoilInfoDisplayProps = {
+  dataRegion: DataRegion;
   dataSource: string;
   soilInfo: SoilInfo;
 };
@@ -52,10 +54,55 @@ const renderLCCString = (
   return `${capabilityClass}${subClass}`;
 };
 
-export function SoilInfoDisplayUS({
+export function SoilInfoDisplay({
+  dataRegion,
   dataSource,
   soilInfo,
 }: SoilInfoDisplayProps) {
+  if (dataRegion === 'US')
+    return <SoilInfoDisplayUS dataSource={dataSource} soilInfo={soilInfo} />;
+  else return <SoilInfoDisplayGlobal soilInfo={soilInfo} />;
+}
+
+type SoilInfoDisplayGlobalProps = {
+  soilInfo: SoilInfo;
+};
+
+type SoilInfoDisplayUSProps = {
+  dataSource: string;
+  soilInfo: SoilInfo;
+};
+
+export function SoilInfoDisplayGlobal({soilInfo}: SoilInfoDisplayGlobalProps) {
+  const {t} = useTranslation();
+
+  return (
+    <Column space="0px">
+      {soilInfo.soilSeries.description && (
+        <>
+          <TranslatedParagraph i18nKey="site.soil_id.soil_info.description_title" />
+          <Text variant="body1">{soilInfo.soilSeries.description}</Text>
+          <Box height="12px" />
+        </>
+      )}
+      {soilInfo.soilSeries.management && (
+        <>
+          <TranslatedParagraph i18nKey="site.soil_id.soil_info.management_title" />
+          <Text variant="body1">{soilInfo.soilSeries.management}</Text>
+        </>
+      )}
+      <TranslatedParagraph
+        i18nKey="site.soil_id.soil_info.data_source_label"
+        values={{source: t('site.soil_id.soil_info.FAO_HWSD')}}
+      />
+    </Column>
+  );
+}
+
+export function SoilInfoDisplayUS({
+  dataSource,
+  soilInfo,
+}: SoilInfoDisplayUSProps) {
   const {t} = useTranslation();
 
   return (

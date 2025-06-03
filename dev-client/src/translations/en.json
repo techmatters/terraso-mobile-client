@@ -158,6 +158,8 @@
                 }
             },
             "soil_info": {
+                "description_title": "<bold>Description</bold>",
+                "management_title": "<bold>Management</bold>",
                 "series_descr_url": "Soil Series Full Description",
                 "eco_descr_url": "Ecological Site Full Description",
                 "eco_name_label": "<bold>Ecological Site Name:</bold> {{name}}",
@@ -168,7 +170,9 @@
                 "inside_map_label": "In soil map unit",
                 "outside_map_label": "In adjacent map unit, {{distance}} {{units}} distance",
                 "map_units_METRIC": "meters",
-                "properties_header": "Soil Properties"
+                "properties_header": "Soil Properties",
+                "FAO_HWSD": "FAO HWSD",
+                "USDA_NRCS": "USDA NRCS"
             },
             "location_score_info": {
                 "header": "Location Score",

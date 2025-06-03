@@ -26,7 +26,7 @@ import {
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
-import {SoilInfoDisplayUS} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
+import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
 
 // TODO-cknipe: update locationMatch --> soilMatch in call site
 type TempScoreInfoContentProps = {
@@ -42,7 +42,8 @@ export function TempScoreInfoContent({
 }: TempScoreInfoContentProps) {
   return (
     <ScoreInfoContainer>
-      <SoilInfoDisplayUS
+      <SoilInfoDisplay
+        dataRegion={dataRegion}
         dataSource={locationMatch.dataSource}
         soilInfo={locationMatch.soilInfo}
       />
