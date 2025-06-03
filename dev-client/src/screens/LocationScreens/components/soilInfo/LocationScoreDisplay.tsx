@@ -32,6 +32,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
+  DataRegion,
   SoilMatchForLocationOnly,
   SoilMatchForLocationWithData,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
@@ -41,6 +42,7 @@ import {getSoilWebUrl} from 'terraso-mobile-client/util';
 
 type LocationScoreDisplayProps = {
   isSite: boolean;
+  dataRegion: DataRegion;
   match: SoilMatchForLocationOnly | SoilMatchForLocationWithData;
   matchInfo: SoilMatchInfo;
   coords: Coords;
@@ -48,6 +50,7 @@ type LocationScoreDisplayProps = {
 
 export function LocationScoreDisplay({
   isSite,
+  dataRegion,
   match,
   matchInfo,
   coords,
@@ -68,7 +71,10 @@ export function LocationScoreDisplay({
               sheetHeading={
                 <TranslatedHeading i18nKey="site.soil_id.location_score_info.header" />
               }>
-              <LocationScoreInfoContent isSite={isSite} />
+              <LocationScoreInfoContent
+                isSite={isSite}
+                dataRegion={dataRegion}
+              />
             </InfoButton>
           </Row>
           <TranslatedParagraph

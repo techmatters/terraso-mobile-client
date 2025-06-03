@@ -19,7 +19,10 @@ import {Divider} from 'react-native-paper';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {SoilMatchForLocationWithData} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {
+  DataRegion,
+  SoilMatchForLocationWithData,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesScoreDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
@@ -29,12 +32,14 @@ import {SoilInfoDisplayUS} from 'terraso-mobile-client/screens/LocationScreens/c
 type SiteScoreInfoContentProps = {
   siteId: string;
   coords: Coords;
+  dataRegion: DataRegion;
   dataMatch: SoilMatchForLocationWithData;
 };
 
 export function SiteScoreInfoContent({
   siteId,
   coords,
+  dataRegion,
   dataMatch,
 }: SiteScoreInfoContentProps) {
   return (
@@ -46,6 +51,7 @@ export function SiteScoreInfoContent({
       <Divider />
       <LocationScoreDisplay
         isSite={true}
+        dataRegion={dataRegion}
         match={dataMatch}
         matchInfo={dataMatch.locationMatch}
         coords={coords}

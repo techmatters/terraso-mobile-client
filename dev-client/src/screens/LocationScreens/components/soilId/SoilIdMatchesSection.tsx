@@ -32,7 +32,10 @@ import {RestrictByConnectivity} from 'terraso-mobile-client/components/restricti
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {
+  SoilIdOutput,
+  useSoilIdOutput,
+} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
   SoilMatchForLocationOnly,
   SoilMatchForLocationWithData,
@@ -76,15 +79,17 @@ export const SoilIdMatchesSection = ({
       <RestrictByConnectivity offline={true}>
         <OfflineMessageBox message={t('site.soil_id.matches.offline')} />
       </RestrictByConnectivity>
-      <MatchTiles siteId={siteId} coords={coords} />
+      <MatchTiles siteId={siteId} coords={coords} soilIdOutput={soilIdOutput} />
     </ScreenContentSection>
   );
 };
 
-const MatchTiles = ({siteId, coords}: SoilIdMatchesSectionProps) => {
+type MatchTilesProps = SoilIdMatchesSectionProps & {soilIdOutput: SoilIdOutput};
+
+const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   const isOffline = useIsOffline();
-  const soilIdOutput = useSoilIdOutput(coords, siteId);
   const status = soilIdOutput.status;
+  const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
 
   switch (status) {
@@ -109,9 +114,10 @@ const MatchTiles = ({siteId, coords}: SoilIdMatchesSectionProps) => {
             )}>
             <SiteRoleContextProvider siteId={siteId}>
               <SiteScoreInfoContent
-                dataMatch={dataMatch}
                 siteId={siteId}
                 coords={coords}
+                dataRegion={dataRegion}
+                dataMatch={dataMatch}
               />
             </SiteRoleContextProvider>
           </InfoSheet>
@@ -135,8 +141,9 @@ const MatchTiles = ({siteId, coords}: SoilIdMatchesSectionProps) => {
               />
             )}>
             <TempScoreInfoContent
-              locationMatch={locationMatch}
               coords={coords}
+              dataRegion={dataRegion}
+              locationMatch={locationMatch}
             />
           </InfoSheet>
         ));
