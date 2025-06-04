@@ -26,8 +26,8 @@ import {
   SoilIdResults,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
-  useLocationBasedMatches,
-  useSiteDataBasedMatches,
+  useSiteMatches,
+  useTempLocationMatches,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
 
 // TODO-cknipe: Do we use this anymore?
@@ -43,58 +43,31 @@ export const useSoilIdOutput = (
   siteId?: string,
 ): SoilIdOutput => {
   /* Request active soil ID data based on this hook's input parameters */
-  const isDataBased = !!siteId;
+  const isSiteBased = !!siteId;
   const {addCoords, addSite} = useActiveSoilIdData();
   useEffect(() => {
-    const activeData = isDataBased ? addSite(siteId) : addCoords(coords);
+    const activeData = isSiteBased ? addSite(siteId) : addCoords(coords);
     return activeData.remove;
-  }, [isDataBased, coords, siteId, addSite, addCoords]);
+  }, [isSiteBased, coords, siteId, addSite, addCoords]);
 
   // TODO-cknipe: Refactor so they're not separate hooks??
   /* Select entries for relevant inputs and return the requested one */
-  const locationEntry = useLocationBasedMatches(coords);
-  const dataEntry = useSiteDataBasedMatches(siteId);
-  if (isDataBased) {
+  const tempLocationEntry = useTempLocationMatches(coords);
+  const siteEntry = useSiteMatches(siteId);
+
+  if (isSiteBased) {
+    console.log('SITE BASED');
     return {
-      dataRegion: dataEntry?.dataRegion,
-      withData: true,
-      matches: dataEntry?.matches ?? [],
-      status: dataEntry?.status ?? 'loading',
+      dataRegion: siteEntry?.dataRegion ?? undefined,
+      matches: siteEntry?.matches ?? [],
+      status: siteEntry?.status ?? 'loading',
     };
   } else {
+    console.log('TEMP LOCATION BASED');
     return {
-      dataRegion: locationEntry?.dataRegion,
-      withData: false,
-      matches: locationEntry?.matches ?? [],
-      status: locationEntry?.status ?? 'loading',
+      dataRegion: tempLocationEntry?.dataRegion ?? undefined,
+      matches: tempLocationEntry?.matches ?? [],
+      status: tempLocationEntry?.status ?? 'loading',
     };
   }
 };
-
-// TODO-cknipe: Can we remove this?
-// export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
-//   /* Request active soil ID data based on this hook's input parameters */
-//   const isDataBased = !!siteId;
-//   const { addCoords, addSite } = useActiveSoilIdData();
-//   useEffect(() => {
-//     const activeData = isDataBased ? addSite(siteId) : addCoords(coords);
-//     return activeData.remove;
-//   }, [isDataBased, coords, siteId, addSite, addCoords]);
-
-//   /* Select entries for relevant inputs and return the requested one */
-//   const locationEntry = useLocationBasedMatches(coords);
-//   const dataEntry = useSiteDataBasedMatches(siteId);
-//   if (isDataBased) {
-//     return {
-//       locationBasedMatches: [],
-//       dataBasedMatches: dataEntry?.matches ?? [],
-//       status: dataEntry?.status ?? 'loading',
-//     };
-//   } else {
-//     return {
-//       locationBasedMatches: locationEntry?.matches ?? [],
-//       dataBasedMatches: [],
-//       status: locationEntry?.status ?? 'loading',
-//     };
-//   }
-// };

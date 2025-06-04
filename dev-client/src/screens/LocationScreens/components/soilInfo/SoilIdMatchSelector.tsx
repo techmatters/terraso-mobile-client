@@ -24,12 +24,12 @@ import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typo
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
-import {SoilMatchForLocationWithData} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {SoilMatchForSite} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 
 type SoilIdMatchSelectorProps = {
-  match: SoilMatchForLocationWithData;
+  match: SoilMatchForSite;
   siteId: string;
 };
 

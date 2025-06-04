@@ -19,7 +19,6 @@ import {
   DataBasedSoilMatch,
   SoilIdDataRegionChoices,
   SoilIdInputData,
-  SoilMatchInfo,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
@@ -32,37 +31,25 @@ export type DataRegion = SoilIdDataRegionChoices | undefined;
 
 export type SoilIdEntry = {
   dataRegion: DataRegion;
-  withData: boolean | undefined; //TODO-cknipe: Do we use this, and/or do we use types?
   input: SoilIdInputData | Coords;
   matches: SoilMatchesGeneral;
   status: SoilIdStatus;
 };
 
-// DataBasedSoilMatch means "it could be either"
-// SoilMatchForLocationOnly means "it definitely doesn't have the data fields"
-// SoilMatchForLocationWithData means "it definitely does have the data fields"...
-//    TODO-cknipe: ...wellll except that they can be null
-//    So maybe name it "ForSite" if the data ones can still be null?
-// The idea is the backend responds with DataBasedSoilMatch, and in the client we clarify which it is
-export type SoilMatchGeneral =
-  | SoilMatchForLocationOnly
-  | SoilMatchForLocationWithData;
 export type SoilMatchesGeneral =
-  | SoilMatchForLocationOnly[]
-  | SoilMatchForLocationWithData[];
-export type SoilMatchForLocationOnly = Omit<
+  | SoilMatchForTempLocation[]
+  | SoilMatchForSite[];
+export type SoilMatchForTempLocation = Omit<
   DataBasedSoilMatch,
   'combinedMatch' | 'dataMatch'
 >;
-export type SoilMatchForLocationWithData = SoilMatchForLocationOnly & {
-  combinedMatch: SoilMatchInfo;
-  dataMatch: SoilMatchInfo;
-};
+export type SoilMatchForSite = DataBasedSoilMatch;
 
 // There's a hook for this, so we can get it from components
+// TODO-cknipe: Is this used any more?
 export type SoilIdResults = {
-  locationBasedMatches: SoilMatchForLocationOnly[];
-  dataBasedMatches: SoilMatchForLocationWithData[];
+  locationBasedMatches: SoilMatchForTempLocation[];
+  dataBasedMatches: SoilMatchForSite[];
 };
 
 export const isErrorStatus = (status: SoilIdStatus): boolean => {
@@ -73,40 +60,37 @@ export const coordsKey = (coords: Coords): CoordsKey => {
   return `(${coords.longitude.toFixed(COORDINATE_PRECISION)}, ${coords.latitude.toFixed(COORDINATE_PRECISION)})`;
 };
 
-export const locationEntryForStatus = (
+export const tempLocationEntryForStatus = (
   input: Coords,
   status: SoilIdStatus,
 ): SoilIdEntry => {
   return {
     dataRegion: undefined,
-    withData: undefined,
     input,
     status,
     matches: [],
   };
 };
 
-export const locationEntryForMatches = (
+export const tempLocationEntryForMatches = (
   input: Coords,
   matches: DataBasedSoilMatch[],
   dataRegion: SoilIdDataRegionChoices,
 ): SoilIdEntry => {
   return {
     dataRegion: dataRegion,
-    withData: matches.every(match => match.combinedMatch && match.dataMatch),
     input,
     matches: matches,
     status: 'ready',
   };
 };
 
-export const dataEntryForStatus = (
+export const siteEntryForStatus = (
   input: SoilIdInputData,
   status: SoilIdStatus,
 ): SoilIdEntry => {
   return {
     dataRegion: undefined,
-    withData: undefined,
     input,
     status: status,
     matches: [],
@@ -114,14 +98,13 @@ export const dataEntryForStatus = (
 };
 
 // TODO-cknipe: Combo this and location?
-export const dataEntryForMatches = (
+export const siteEntryForMatches = (
   input: SoilIdInputData,
   matches: DataBasedSoilMatch[],
   dataRegion: SoilIdDataRegionChoices,
 ): SoilIdEntry => {
   return {
     dataRegion: dataRegion,
-    withData: matches.every(match => match.combinedMatch && match.dataMatch),
     input,
     status: 'ready',
     matches: matches,

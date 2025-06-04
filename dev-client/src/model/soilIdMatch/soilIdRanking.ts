@@ -17,25 +17,22 @@
 
 import {SoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
-  SoilMatchForLocationOnly,
-  SoilMatchForLocationWithData,
+  SoilMatchForSite,
+  SoilMatchForTempLocation,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export const getTopMatch = (
   results: SoilIdOutput,
-): SoilMatchForLocationOnly | SoilMatchForLocationWithData | undefined => {
-  if (results.matches.length > 0 && results.withData === true) {
+): SoilMatchForTempLocation | SoilMatchForSite | undefined => {
+  if (results.matches.length > 0) {
     return results.matches.reduce((a, b) =>
-      getBetterDataMatch(
-        a as SoilMatchForLocationWithData,
-        b as SoilMatchForLocationWithData,
-      ),
+      getBetterSiteMatch(a as SoilMatchForSite, b as SoilMatchForSite),
     );
-  } else if (results.matches.length > 0 && results.withData === false) {
+  } else if (results.matches.length > 0) {
     return results.matches.reduce((a, b) =>
-      getBetterLocationMatch(
-        a as SoilMatchForLocationOnly,
-        b as SoilMatchForLocationOnly,
+      getBetterTempLocationMatch(
+        a as SoilMatchForTempLocation,
+        b as SoilMatchForTempLocation,
       ),
     );
   } else {
@@ -44,10 +41,10 @@ export const getTopMatch = (
 };
 
 // TODO-cknipe: Delete these
-const getBetterDataMatch = (
-  a: SoilMatchForLocationWithData,
-  b: SoilMatchForLocationWithData,
-): SoilMatchForLocationWithData => {
+const getBetterSiteMatch = (
+  a: SoilMatchForSite,
+  b: SoilMatchForSite,
+): SoilMatchForSite => {
   // TODO-cknipe: Are we ok that combinedMatch can be null? For sites with no data yet
   // Are there any other places that assume this exists? Should change the type definition?
   // TODO-cknipe: If we do it like this, probably want to do it a level up, not for each a/b?
@@ -58,16 +55,14 @@ const getBetterDataMatch = (
   }
 };
 
-const getBetterLocationMatch = (
-  a: SoilMatchForLocationOnly,
-  b: SoilMatchForLocationOnly,
-): SoilMatchForLocationOnly => {
+const getBetterTempLocationMatch = (
+  a: SoilMatchForTempLocation,
+  b: SoilMatchForTempLocation,
+): SoilMatchForTempLocation => {
   return a.locationMatch.rank < b.locationMatch.rank ? a : b;
 };
 
-export const getSortedMatchesWithData = (
-  matches: SoilMatchForLocationWithData[],
-) => {
+export const getSortedMatchesForSite = (matches: SoilMatchForSite[]) => {
   return matches.slice().sort((a, b) => {
     if (a.combinedMatch && b.combinedMatch) {
       return a.combinedMatch.rank - b.combinedMatch.rank;
@@ -77,22 +72,7 @@ export const getSortedMatchesWithData = (
   });
 };
 
-export const getSortedMatchesForLocation = (
-  matches: SoilMatchForLocationOnly[],
+export const getSortedMatchesForTempLocation = (
+  matches: SoilMatchForTempLocation[],
 ) =>
   matches.slice().sort((a, b) => a.locationMatch.rank - b.locationMatch.rank);
-
-// export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) => {
-//   return [...soilIdData.dataBasedMatches].sort((a, b) => {
-//     if (a.combinedMatch && b.combinedMatch) {
-//       return a.combinedMatch.rank - b.combinedMatch.rank;
-//     } else {
-//       return a.locationMatch.rank - b.locationMatch.rank;
-//     }
-//   });
-// };
-
-// export const getSortedLocationBasedMatches = (soilIdData: SoilIdResults) =>
-//   [...soilIdData.locationBasedMatches].sort(
-//     (a, b) => a.locationMatch.rank - b.locationMatch.rank,
-//   );

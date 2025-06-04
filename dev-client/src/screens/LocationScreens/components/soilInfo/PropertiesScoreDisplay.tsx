@@ -31,13 +31,13 @@ import {
 import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {SoilMatchForLocationWithData} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {SoilMatchForSite} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 
 type PropertiesScoreDisplayProps = {
-  match: SoilMatchForLocationWithData;
+  match: SoilMatchForSite;
   matchInfo: SoilMatchInfo;
 };
 

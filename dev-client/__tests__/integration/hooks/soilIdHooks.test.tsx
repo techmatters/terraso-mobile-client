@@ -22,8 +22,8 @@ import {Coords} from 'terraso-client-shared/types';
 import * as SoilIdMatchContext from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
-  SoilMatchForLocationOnly,
-  SoilMatchForLocationWithData,
+  SoilMatchForSite,
+  SoilMatchForTempLocation,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import * as soilIdMatchHooks from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
 
@@ -48,7 +48,7 @@ const renderSoilIdHook = (initialCoords: Coords, initialSiteId?: string) => {
   );
 };
 
-const dataBasedMatchWithName = (name: string): SoilMatchForLocationWithData => {
+const dataBasedMatchWithName = (name: string): SoilMatchForSite => {
   return {
     ...locationBasedMatchWithName(name),
     combinedMatch: {
@@ -66,7 +66,7 @@ const dataBasedMatchWithName = (name: string): SoilMatchForLocationWithData => {
   };
 };
 
-const locationBasedMatchWithName = (name: string): SoilMatchForLocationOnly => {
+const locationBasedMatchWithName = (name: string): SoilMatchForTempLocation => {
   return {
     soilInfo: {
       landCapabilityClass: {capabilityClass: '', subClass: ''},

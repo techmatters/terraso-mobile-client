@@ -24,26 +24,25 @@ import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
-// TODO-cknipe: Why wouldn't this be possibly undefined?
-export const selectLocationBasedMatches = (coords: Coords) => {
+export const selectTempLocationMatches = (coords: Coords) => {
   const key = coordsKey(coords);
   return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];
 };
 
-export const selectSiteDataBasedMatches = (siteId?: string) => {
+export const selectSiteMatches = (siteId?: string) => {
   return (state: AppState) =>
     siteId ? state.soilIdMatch.siteDataBasedMatches[siteId] : undefined;
 };
 
 /* Memoized selector to let us select the current keys for location-based matches */
-export const selectLocationBasedKeys = createSelector(
+export const selectTempLocationKeys = createSelector(
   [(state: AppState) => state.soilIdMatch.locationBasedMatches],
   /* Extract location-based match keys */
   entries => Object.keys(entries),
 );
 
 /* Memoized selector to let us select the current data-based inputs for a set of site IDs (potentially expensive) */
-export const selectDataBasedInputs = createSelector(
+export const selectSiteInputs = createSelector(
   [
     (state: AppState) => state.soilIdMatch.siteDataBasedMatches,
     (_: AppState, siteIds: string[]) => siteIds,

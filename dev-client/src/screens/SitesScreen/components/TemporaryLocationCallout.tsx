@@ -40,7 +40,7 @@ import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
-import {SoilMatchForLocationOnly} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {SoilMatchForTempLocation} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {CalloutDetail} from 'terraso-mobile-client/screens/SitesScreen/components/CalloutDetail';
@@ -66,7 +66,7 @@ export const TemporaryLocationCallout = ({
   const topSoilMatch = useMemo(
     () => getTopMatch(soilIdOutput),
     [soilIdOutput],
-  ) as SoilMatchForLocationOnly;
+  ) as SoilMatchForTempLocation;
 
   const onLearnMore = useCallback(() => {
     navigation.navigate('TEMP_LOCATION', {
@@ -156,7 +156,7 @@ const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
 
 type SoilIdStatusDisplayTopMatchProps = {
   status: SoilIdStatus;
-  topSoilMatch: SoilMatchForLocationOnly | undefined;
+  topSoilMatch: SoilMatchForTempLocation | undefined;
   t: TFunction;
 };
 

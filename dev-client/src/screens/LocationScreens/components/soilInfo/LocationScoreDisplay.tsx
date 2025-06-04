@@ -33,8 +33,8 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
   DataRegion,
-  SoilMatchForLocationOnly,
-  SoilMatchForLocationWithData,
+  SoilMatchForSite,
+  SoilMatchForTempLocation,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreInfoContent';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
@@ -43,7 +43,7 @@ import {getSoilWebUrl} from 'terraso-mobile-client/util';
 type LocationScoreDisplayProps = {
   isSite: boolean;
   dataRegion: DataRegion;
-  match: SoilMatchForLocationOnly | SoilMatchForLocationWithData;
+  match: SoilMatchForTempLocation | SoilMatchForSite;
   matchInfo: SoilMatchInfo;
   coords: Coords;
 };

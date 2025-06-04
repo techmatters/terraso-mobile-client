@@ -23,14 +23,16 @@ import * as soilIdActions from 'terraso-mobile-client/model/soilIdMatch/actions/
 import {
   CoordsKey,
   coordsKey,
-  dataEntryForStatus,
   flushErrorEntries,
-  locationEntryForStatus,
+  siteEntryForStatus,
   SoilIdEntry,
+  tempLocationEntryForStatus,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export type SoilState = {
   locationBasedMatches: Record<CoordsKey, SoilIdEntry>;
+
+  // FYI: All site soil matches go here, even if there's no collected site data (and therefore no data match score)
   siteDataBasedMatches: Record<string, SoilIdEntry>;
 };
 
@@ -60,66 +62,68 @@ const soilIdMatchSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(fetchLocationBasedSoilMatches.pending, (state, action) => {
-      const coords = action.meta.arg;
-      const key = coordsKey(coords);
-      state.locationBasedMatches[key] = locationEntryForStatus(
-        coords,
-        'loading',
-      );
-    });
-
-    builder.addCase(fetchLocationBasedSoilMatches.rejected, (state, action) => {
-      const coords = action.meta.arg;
-      const key = coordsKey(coords);
-      state.locationBasedMatches[key] = locationEntryForStatus(coords, 'error');
-    });
+    builder.addCase(
+      fetchTempLocationBasedSoilMatches.pending,
+      (state, action) => {
+        const coords = action.meta.arg;
+        const key = coordsKey(coords);
+        state.locationBasedMatches[key] = tempLocationEntryForStatus(
+          coords,
+          'loading',
+        );
+      },
+    );
 
     builder.addCase(
-      fetchLocationBasedSoilMatches.fulfilled,
+      fetchTempLocationBasedSoilMatches.rejected,
+      (state, action) => {
+        const coords = action.meta.arg;
+        const key = coordsKey(coords);
+        state.locationBasedMatches[key] = tempLocationEntryForStatus(
+          coords,
+          'error',
+        );
+      },
+    );
+
+    builder.addCase(
+      fetchTempLocationBasedSoilMatches.fulfilled,
       (state, action) => {
         const key = coordsKey(action.meta.arg);
         state.locationBasedMatches[key] = action.payload;
       },
     );
 
-    builder.addCase(fetchSiteDataBasedSoilMatches.pending, (state, action) => {
+    builder.addCase(fetchSiteBasedSoilMatches.pending, (state, action) => {
       const siteId = action.meta.arg.siteId;
       const input = action.meta.arg.input;
-      state.siteDataBasedMatches[siteId] = dataEntryForStatus(input, 'loading');
+      state.siteDataBasedMatches[siteId] = siteEntryForStatus(input, 'loading');
     });
 
-    builder.addCase(fetchSiteDataBasedSoilMatches.rejected, (state, action) => {
+    builder.addCase(fetchSiteBasedSoilMatches.rejected, (state, action) => {
       const siteId = action.meta.arg.siteId;
       const input = action.meta.arg.input;
-      state.siteDataBasedMatches[siteId] = dataEntryForStatus(input, 'error');
+      state.siteDataBasedMatches[siteId] = siteEntryForStatus(input, 'error');
     });
 
-    builder.addCase(
-      fetchSiteDataBasedSoilMatches.fulfilled,
-      (state, action) => {
-        const siteId = action.meta.arg.siteId;
-        state.siteDataBasedMatches[siteId] = action.payload;
-      },
-    );
+    builder.addCase(fetchSiteBasedSoilMatches.fulfilled, (state, action) => {
+      const siteId = action.meta.arg.siteId;
+      state.siteDataBasedMatches[siteId] = action.payload;
+    });
   },
 });
 
 export const {flushLocationCache, flushDataCacheErrors} =
   soilIdMatchSlice.actions;
 
-// TODO-cknipe: Standardize names
-// Is it: LocationBased / DataBased
-// Or: SoilMatchForLocationOnly / SoilMatchForLocationWithData
-// ??
-export const fetchLocationBasedSoilMatches = createAsyncThunk(
+export const fetchTempLocationBasedSoilMatches = createAsyncThunk(
   'soilId/fetchLocationBasedSoilMatches',
-  soilIdActions.fetchLocationBasedSoilMatchesThunk,
+  soilIdActions.fetchTempLocationBasedSoilMatchesThunk,
 );
 
-export const fetchSiteDataBasedSoilMatches = createAsyncThunk(
+export const fetchSiteBasedSoilMatches = createAsyncThunk(
   'soilId/fetchDataBasedSoilMatches',
-  soilIdActions.fetchSiteDataBasedSoilMatchesThunk,
+  soilIdActions.fetchSiteBasedSoilMatchesThunk,
 );
 
 export default soilIdMatchSlice.reducer;

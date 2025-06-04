@@ -37,12 +37,12 @@ import {
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
-  SoilMatchForLocationOnly,
-  SoilMatchForLocationWithData,
+  SoilMatchForSite,
+  SoilMatchForTempLocation,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
-  getSortedMatchesForLocation,
-  getSortedMatchesWithData,
+  getSortedMatchesForSite,
+  getSortedMatchesForTempLocation,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {NoMapDataAlertMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/NoMapDataAlertMessageBox';
 import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
@@ -96,19 +96,22 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
     case 'loading':
       return isOffline ? <></> : <ActivityIndicator size="small" />;
     case 'ready': {
-      if (isSite && soilIdOutput.withData) {
-        return getSortedMatchesWithData(
-          soilIdOutput.matches as SoilMatchForLocationWithData[],
-        ).map(dataMatch => (
+      if (isSite) {
+        return getSortedMatchesForSite(
+          soilIdOutput.matches as SoilMatchForSite[],
+        ).map(siteMatch => (
           <InfoSheet
-            key={dataMatch.soilInfo.soilSeries.name}
+            key={siteMatch.soilInfo.soilSeries.name}
             heading={
-              <TranslatedHeading i18nKey={dataMatch.soilInfo.soilSeries.name} />
+              <TranslatedHeading i18nKey={siteMatch.soilInfo.soilSeries.name} />
             }
             trigger={onOpen => (
               <SoilMatchTile
-                soilName={dataMatch.soilInfo.soilSeries.name}
-                score={dataMatch.combinedMatch.score}
+                soilName={siteMatch.soilInfo.soilSeries.name}
+                score={
+                  siteMatch.combinedMatch?.score ??
+                  siteMatch.locationMatch.score
+                }
                 onPress={onOpen}
               />
             )}>
@@ -117,14 +120,14 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
                 siteId={siteId}
                 coords={coords}
                 dataRegion={dataRegion}
-                dataMatch={dataMatch}
+                siteMatch={siteMatch}
               />
             </SiteRoleContextProvider>
           </InfoSheet>
         ));
       } else {
-        return getSortedMatchesForLocation(
-          soilIdOutput.matches as SoilMatchForLocationOnly[],
+        return getSortedMatchesForTempLocation(
+          soilIdOutput.matches as SoilMatchForTempLocation[],
         ).map(locationMatch => (
           <InfoSheet
             key={locationMatch.soilInfo.soilSeries.name}

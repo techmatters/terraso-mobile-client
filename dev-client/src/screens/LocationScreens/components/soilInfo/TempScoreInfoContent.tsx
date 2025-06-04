@@ -21,7 +21,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {
   DataRegion,
-  SoilMatchForLocationOnly,
+  SoilMatchForTempLocation,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
@@ -32,7 +32,7 @@ import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/com
 type TempScoreInfoContentProps = {
   coords: Coords;
   dataRegion: DataRegion;
-  locationMatch: SoilMatchForLocationOnly;
+  locationMatch: SoilMatchForTempLocation;
 };
 
 export function TempScoreInfoContent({

@@ -22,7 +22,7 @@ import {TranslatedHeading} from 'terraso-mobile-client/components/content/typogr
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
-import {SoilMatchForLocationWithData} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {SoilMatchForSite} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
@@ -37,7 +37,7 @@ export const SoilIdSelectionSection = ({
   const soilIdOutput = useSoilIdOutput(coords, siteId);
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
-    soilIdOutput.matches as SoilMatchForLocationWithData[],
+    soilIdOutput.matches as SoilMatchForSite[],
     selectedSoilId,
   );
 
@@ -56,16 +56,20 @@ export const SoilIdSelectionSection = ({
         trigger={onOpen => (
           <SoilMatchTile
             soilName={selectedSoilMatch.soilInfo.soilSeries.name}
-            score={selectedSoilMatch.combinedMatch.score}
+            score={
+              selectedSoilMatch.combinedMatch?.score ??
+              selectedSoilMatch.locationMatch.score
+            }
             isSelected={true}
             onPress={onOpen}
           />
         )}>
         <SiteRoleContextProvider siteId={siteId}>
           <SiteScoreInfoContent
-            dataMatch={selectedSoilMatch}
             siteId={siteId}
             coords={coords}
+            dataRegion={soilIdOutput.dataRegion}
+            siteMatch={selectedSoilMatch}
           />
         </SiteRoleContextProvider>
       </InfoSheet>

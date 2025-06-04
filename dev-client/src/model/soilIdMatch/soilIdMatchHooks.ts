@@ -18,13 +18,13 @@
 import {Coords} from 'terraso-client-shared/types';
 
 import {
-  selectLocationBasedMatches,
-  selectSiteDataBasedMatches,
+  selectSiteMatches,
+  selectTempLocationMatches,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
 import {useSelector} from 'terraso-mobile-client/store';
 
-export const useLocationBasedMatches = (coords: Coords) =>
-  useSelector(selectLocationBasedMatches(coords));
+export const useTempLocationMatches = (coords: Coords) =>
+  useSelector(selectTempLocationMatches(coords));
 
-export const useSiteDataBasedMatches = (siteId?: string) =>
-  useSelector(selectSiteDataBasedMatches(siteId));
+export const useSiteMatches = (siteId?: string) =>
+  useSelector(selectSiteMatches(siteId));

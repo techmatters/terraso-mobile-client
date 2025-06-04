@@ -32,8 +32,8 @@ import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {
   DataRegion,
-  SoilMatchForLocationOnly,
-  SoilMatchForLocationWithData,
+  SoilMatchForSite,
+  SoilMatchForTempLocation,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
@@ -107,7 +107,7 @@ const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
   const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
-    soilIdOutput.matches as SoilMatchForLocationWithData[],
+    soilIdOutput.matches as SoilMatchForSite[],
     selectedSoilId,
   );
 
@@ -124,7 +124,7 @@ const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
 type MatchContentProps = {
   status: SoilIdStatus;
   dataRegion: DataRegion;
-  match: SoilMatchForLocationOnly | SoilMatchForLocationWithData | undefined;
+  match: SoilMatchForTempLocation | SoilMatchForSite | undefined;
   isSelected?: boolean;
 };
 
