@@ -44,7 +44,6 @@ export const fetchTempLocationBasedSoilMatches = async (coords: Coords) => {
     depthDependentData: [],
   });
 
-  console.log('LOCATION ONLY: ', result);
   if (result.__typename === 'SoilIdFailure') {
     return tempLocationEntryForStatus(coords, result.reason);
   } else {
@@ -81,7 +80,6 @@ export const fetchSiteBasedSoilMatches = async (
 
   const coords = {latitude: site.latitude, longitude: site.longitude};
   const result = await soilIdService.fetchDataBasedSoilMatches(coords, input);
-  console.log('SITE DATA BASED: ', result);
 
   if (result.__typename === 'SoilIdFailure') {
     return siteEntryForStatus(input, result.reason);

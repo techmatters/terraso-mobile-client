@@ -56,14 +56,12 @@ export const useSoilIdOutput = (
   const siteEntry = useSiteMatches(siteId);
 
   if (isSiteBased) {
-    console.log('SITE BASED');
     return {
       dataRegion: siteEntry?.dataRegion ?? undefined,
       matches: siteEntry?.matches ?? [],
       status: siteEntry?.status ?? 'loading',
     };
   } else {
-    console.log('TEMP LOCATION BASED');
     return {
       dataRegion: tempLocationEntry?.dataRegion ?? undefined,
       matches: tempLocationEntry?.matches ?? [],

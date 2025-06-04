@@ -62,7 +62,6 @@ export const SoilIdMatchesSection = ({
   const soilIdOutput = useSoilIdOutput(coords, siteId);
   const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
-  console.log('DATAREGION: ', dataRegion);
 
   return (
     <ScreenContentSection backgroundColor="grey.200">
@@ -104,6 +103,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
             key={siteMatch.soilInfo.soilSeries.name}
             heading={
               <TranslatedHeading i18nKey={siteMatch.soilInfo.soilSeries.name} />
+              // <TranslatedHeading i18nKey="general.last_modified" />
             }
             trigger={onOpen => (
               <SoilMatchTile
