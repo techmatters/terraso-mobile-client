@@ -45,13 +45,6 @@ export type SoilMatchForTempLocation = Omit<
 >;
 export type SoilMatchForSite = DataBasedSoilMatch;
 
-// There's a hook for this, so we can get it from components
-// TODO-cknipe: Is this used any more?
-export type SoilIdResults = {
-  locationBasedMatches: SoilMatchForTempLocation[];
-  dataBasedMatches: SoilMatchForSite[];
-};
-
 export const isErrorStatus = (status: SoilIdStatus): boolean => {
   return status !== 'loading' && status !== 'ready';
 };
