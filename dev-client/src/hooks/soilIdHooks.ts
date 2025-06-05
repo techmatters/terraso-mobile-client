@@ -17,23 +17,14 @@
 
 import {useEffect} from 'react';
 
-import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useActiveSoilIdData} from 'terraso-mobile-client/context/SoilIdMatchContext';
-import {
-  SoilIdEntry,
-  SoilIdResults,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {SoilIdEntry} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
   useSiteMatches,
   useTempLocationMatches,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
-
-// TODO-cknipe: Do we use this anymore?
-export type SoilIdData = SoilIdResults & {
-  status: SoilIdStatus;
-};
 
 export type SoilIdOutput = Omit<SoilIdEntry, 'input'>;
 
