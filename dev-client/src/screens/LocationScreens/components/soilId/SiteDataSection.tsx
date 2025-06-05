@@ -19,19 +19,27 @@ import {useTranslation} from 'react-i18next';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {SiteSlopeDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteSlopeDataSection';
 import {SiteSoilCracksSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteSoilCracksSection';
 import {SiteSoilPropertiesDataSection} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SiteSoilPropertiesDataSection';
 
-type Props = {siteId: string};
+type Props = {
+  siteId: string;
+};
 
 export const SiteDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
 
+  const soilIdOutput = useSoilIdOutput({siteId});
+  const dataRegion = soilIdOutput.dataRegion;
+
   return (
     <ScreenContentSection title={t('site.soil_id.site_data.title')}>
       <Text variant="body1">{t('site.soil_id.site_data.description')}</Text>
-      <SiteSlopeDataSection siteId={siteId} />
+      {dataRegion === 'GLOBAL' ? null : (
+        <SiteSlopeDataSection siteId={siteId} />
+      )}
       <SiteSoilCracksSection siteId={siteId} />
       <SiteSoilPropertiesDataSection siteId={siteId} />
     </ScreenContentSection>

@@ -15,48 +15,64 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {SoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-
-import {SoilIdResults} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+  SoilMatchForSite,
+  SoilMatchForTempLocation,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export const getTopMatch = (
-  results: SoilIdResults,
-): LocationBasedSoilMatch | DataBasedSoilMatch | undefined => {
-  const locationBased = results.locationBasedMatches;
-  const dataBased = results.dataBasedMatches;
-
-  if (dataBased.length > 0) {
-    return dataBased.reduce(getBetterDataMatch);
-  } else if (locationBased.length > 0) {
-    return locationBased.reduce(getBetterLocationMatch);
+  results: SoilIdOutput,
+): SoilMatchForTempLocation | SoilMatchForSite | undefined => {
+  if (results.matches.length > 0) {
+    return results.matches.reduce((a, b) =>
+      getBetterSiteMatch(a as SoilMatchForSite, b as SoilMatchForSite),
+    );
+  } else if (results.matches.length > 0) {
+    return results.matches.reduce((a, b) =>
+      getBetterTempLocationMatch(
+        a as SoilMatchForTempLocation,
+        b as SoilMatchForTempLocation,
+      ),
+    );
   } else {
     return undefined;
   }
 };
 
-const getBetterDataMatch = (
-  a: DataBasedSoilMatch,
-  b: DataBasedSoilMatch,
-): DataBasedSoilMatch => {
-  return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
+// TODO-cknipe: Delete these
+const getBetterSiteMatch = (
+  a: SoilMatchForSite,
+  b: SoilMatchForSite,
+): SoilMatchForSite => {
+  // TODO-cknipe: Are we ok that combinedMatch can be null? For sites with no data yet
+  // Are there any other places that assume this exists? Should change the type definition?
+  // TODO-cknipe: If we do it like this, probably want to do it a level up, not for each a/b?
+  if (a.combinedMatch && b.combinedMatch) {
+    return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
+  } else {
+    return a.locationMatch.rank < b.locationMatch.rank ? a : b;
+  }
 };
 
-const getBetterLocationMatch = (
-  a: LocationBasedSoilMatch,
-  b: LocationBasedSoilMatch,
-): LocationBasedSoilMatch => {
-  return a.match.rank < b.match.rank ? a : b;
+const getBetterTempLocationMatch = (
+  a: SoilMatchForTempLocation,
+  b: SoilMatchForTempLocation,
+): SoilMatchForTempLocation => {
+  return a.locationMatch.rank < b.locationMatch.rank ? a : b;
 };
 
-export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) =>
-  [...soilIdData.dataBasedMatches].sort(
-    (a, b) => a.combinedMatch.rank - b.combinedMatch.rank,
-  );
+export const getSortedMatchesForSite = (matches: SoilMatchForSite[]) => {
+  return matches.slice().sort((a, b) => {
+    if (a.combinedMatch && b.combinedMatch) {
+      return a.combinedMatch.rank - b.combinedMatch.rank;
+    } else {
+      return a.locationMatch.rank - b.locationMatch.rank;
+    }
+  });
+};
 
-export const getSortedLocationBasedMatches = (soilIdData: SoilIdResults) =>
-  [...soilIdData.locationBasedMatches].sort(
-    (a, b) => a.match.rank - b.match.rank,
-  );
+export const getSortedMatchesForTempLocation = (
+  matches: SoilMatchForTempLocation[],
+) =>
+  matches.slice().sort((a, b) => a.locationMatch.rank - b.locationMatch.rank);
