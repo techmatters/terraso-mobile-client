@@ -88,7 +88,7 @@ export const LocationSoilIdCard = ({
 type LocationMatchDisplayProps = {coords: Coords};
 
 const TempLocationMatchContent = ({coords}: LocationMatchDisplayProps) => {
-  const soilIdOutput = useSoilIdOutput(coords);
+  const soilIdOutput = useSoilIdOutput({coords});
   const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
 
   return (
@@ -102,8 +102,8 @@ const TempLocationMatchContent = ({coords}: LocationMatchDisplayProps) => {
 
 type SiteMatchDisplayProps = {coords: Coords; siteId: string};
 
-const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
-  const soilIdOutput = useSoilIdOutput(coords, siteId);
+const SiteMatchContent = ({siteId}: SiteMatchDisplayProps) => {
+  const soilIdOutput = useSoilIdOutput({siteId});
   const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(

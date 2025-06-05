@@ -59,7 +59,8 @@ export const SoilIdMatchesSection = ({
   coords,
 }: SoilIdMatchesSectionProps) => {
   const {t} = useTranslation();
-  const soilIdOutput = useSoilIdOutput(coords, siteId);
+  const soilIdInput = siteId ? {siteId} : {coords};
+  const soilIdOutput = useSoilIdOutput(soilIdInput);
   const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
 

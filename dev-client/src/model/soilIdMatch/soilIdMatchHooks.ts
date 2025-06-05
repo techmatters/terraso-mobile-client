@@ -23,7 +23,7 @@ import {
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
 import {useSelector} from 'terraso-mobile-client/store';
 
-export const useTempLocationMatches = (coords: Coords) =>
+export const useTempLocationMatches = (coords?: Coords) =>
   useSelector(selectTempLocationMatches(coords));
 
 export const useSiteMatches = (siteId?: string) =>

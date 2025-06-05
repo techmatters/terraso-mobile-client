@@ -28,20 +28,22 @@ import {
 
 export type SoilIdOutput = Omit<SoilIdEntry, 'input'>;
 
-// TODO-cknipe: Can we refactor everything to this and delete the one below for SoilIdData??
-export const useSoilIdOutput = (
-  coords: Coords,
-  siteId?: string,
-): SoilIdOutput => {
+/* We expect to only ever use the following hook with one of coords or siteId */
+type Input = WithCoords | WithSiteId;
+type WithCoords = {coords: Coords; siteId?: never};
+type WithSiteId = {coords?: never; siteId: string};
+
+export const useSoilIdOutput = (input: Input): SoilIdOutput => {
   /* Request active soil ID data based on this hook's input parameters */
+  const coords = 'coords' in input ? input.coords : undefined;
+  const siteId = 'siteId' in input ? input.siteId : undefined;
   const isSiteBased = !!siteId;
   const {addCoords, addSite} = useActiveSoilIdData();
   useEffect(() => {
-    const activeData = isSiteBased ? addSite(siteId) : addCoords(coords);
+    const activeData = isSiteBased ? addSite(siteId) : addCoords(coords!);
     return activeData.remove;
   }, [isSiteBased, coords, siteId, addSite, addCoords]);
 
-  // TODO-cknipe: Refactor so they're not separate hooks??
   /* Select entries for relevant inputs and return the requested one */
   const tempLocationEntry = useTempLocationMatches(coords);
   const siteEntry = useSiteMatches(siteId);

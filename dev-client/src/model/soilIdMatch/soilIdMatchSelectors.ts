@@ -24,9 +24,14 @@ import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
-export const selectTempLocationMatches = (coords: Coords) => {
-  const key = coordsKey(coords);
-  return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];
+export const selectTempLocationMatches = (coords?: Coords) => {
+  if (coords) {
+    const key = coordsKey(coords);
+    return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];
+  } else {
+    // TODO-cknipe: is this bad to do?
+    return () => undefined;
+  }
 };
 
 export const selectSiteMatches = (siteId?: string) => {

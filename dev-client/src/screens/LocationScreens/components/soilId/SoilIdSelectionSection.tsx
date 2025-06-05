@@ -34,7 +34,7 @@ export const SoilIdSelectionSection = ({
   siteId,
   coords,
 }: SoilIdSelectionSectionProps) => {
-  const soilIdOutput = useSoilIdOutput(coords, siteId);
+  const soilIdOutput = useSoilIdOutput({siteId});
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
     soilIdOutput.matches as SoilMatchForSite[],

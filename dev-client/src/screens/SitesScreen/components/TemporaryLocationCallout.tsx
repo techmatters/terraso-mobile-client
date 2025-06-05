@@ -62,7 +62,7 @@ export const TemporaryLocationCallout = ({
   const isOffline = useIsOffline();
 
   const elevation = useElevationData(coords);
-  const soilIdOutput = useSoilIdOutput(coords);
+  const soilIdOutput = useSoilIdOutput({coords});
   const topSoilMatch = useMemo(
     () => getTopMatch(soilIdOutput),
     [soilIdOutput],
