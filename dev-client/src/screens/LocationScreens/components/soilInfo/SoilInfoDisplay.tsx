@@ -89,6 +89,7 @@ export function SoilInfoDisplayGlobal({soilInfo}: SoilInfoDisplayGlobalProps) {
         <>
           <TranslatedParagraph i18nKey="site.soil_id.soil_info.management_title" />
           <Text variant="body1">{soilInfo.soilSeries.management}</Text>
+          <Box height="12px" />
         </>
       )}
       <TranslatedParagraph
