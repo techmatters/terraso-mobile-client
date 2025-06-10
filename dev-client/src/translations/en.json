@@ -107,7 +107,8 @@
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter observations and improve the results.",
-                "site": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties."
+                "site_US": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties.",
+                "site_global_or_unknown": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about soil characteristics and other descriptions."
             },
             "matches": {
                 "title": "Top Soil Matches",
@@ -236,7 +237,7 @@
         "title": "Projects",
         "header": "Projects",
         "offline_create": "Projects can only be created and managed while online.",
-        "offline_cant_edit": "You are offline. Projects can't be edited.",
+        "offline_cant_edit": "You are offline. Projects can’t be edited.",
         "none": {
             "header": "You don’t have any projects.",
             "info": "Projects let you group sites, set requirements, and manage team members."
@@ -868,7 +869,9 @@
         "title": "Slope",
         "info": {
             "title": "Slope",
-            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each observation are available on each observation entry screen.\n\nSlope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
+            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each observation are available on each observation entry screen.\n\n{{data_region_text}}",
+            "data_region_text_US": "Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more.",
+            "data_region_text_global_or_unknown": "Slope characteristics help determine the soil’s erosion potential, ability to hold water, and more."
         },
         "steepness": {
             "short_title": "Steepness",

@@ -17,9 +17,25 @@
 import {useTranslation} from 'react-i18next';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 
-export const SlopeInfoContent = () => {
+type SlopeInfoContentProps = {siteId: string};
+
+export const SlopeInfoContent = ({siteId}: SlopeInfoContentProps) => {
   const {t} = useTranslation();
+  const soilIdOutput = useSoilIdOutput({siteId});
+  const dataRegion = soilIdOutput.dataRegion;
 
-  return <Text>{t('slope.info.description')}</Text>;
+  return (
+    <>
+      <Text>
+        {t('slope.info.description', {
+          data_region_text:
+            dataRegion === 'US'
+              ? t('slope.info.data_region_text_US')
+              : t('slope.info.data_region_text_global_or_unknown'),
+        })}
+      </Text>
+    </>
+  );
 };
