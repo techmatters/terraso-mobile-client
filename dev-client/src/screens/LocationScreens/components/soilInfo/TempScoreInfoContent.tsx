@@ -17,12 +17,10 @@
 
 import {Divider} from 'react-native-paper';
 
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
-import {
-  DataRegion,
-  SoilMatchForTempLocation,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
@@ -32,7 +30,7 @@ import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/com
 type TempScoreInfoContentProps = {
   coords: Coords;
   dataRegion: DataRegion;
-  locationMatch: SoilMatchForTempLocation;
+  locationMatch: DataBasedSoilMatch;
 };
 
 export function TempScoreInfoContent({

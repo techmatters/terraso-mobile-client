@@ -15,26 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+
 import {SoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
-import {
-  SoilMatchForSite,
-  SoilMatchForTempLocation,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export const getTopMatch = (
   results: SoilIdOutput,
-): SoilMatchForTempLocation | SoilMatchForSite | undefined => {
+): DataBasedSoilMatch | undefined => {
   if (results.matches.length > 0) {
-    return results.matches.reduce((a, b) =>
-      getBetterSiteMatch(a as SoilMatchForSite, b as SoilMatchForSite),
-    );
+    return results.matches.reduce((a, b) => getBetterSiteMatch(a, b));
   } else if (results.matches.length > 0) {
-    return results.matches.reduce((a, b) =>
-      getBetterTempLocationMatch(
-        a as SoilMatchForTempLocation,
-        b as SoilMatchForTempLocation,
-      ),
-    );
+    return results.matches.reduce((a, b) => getBetterTempLocationMatch(a, b));
   } else {
     return undefined;
   }
@@ -42,9 +33,9 @@ export const getTopMatch = (
 
 // TODO-cknipe: Delete these
 const getBetterSiteMatch = (
-  a: SoilMatchForSite,
-  b: SoilMatchForSite,
-): SoilMatchForSite => {
+  a: DataBasedSoilMatch,
+  b: DataBasedSoilMatch,
+): DataBasedSoilMatch => {
   // TODO-cknipe: Are we ok that combinedMatch can be null? For sites with no data yet
   // Are there any other places that assume this exists? Should change the type definition?
   // TODO-cknipe: If we do it like this, probably want to do it a level up, not for each a/b?
@@ -56,13 +47,13 @@ const getBetterSiteMatch = (
 };
 
 const getBetterTempLocationMatch = (
-  a: SoilMatchForTempLocation,
-  b: SoilMatchForTempLocation,
-): SoilMatchForTempLocation => {
+  a: DataBasedSoilMatch,
+  b: DataBasedSoilMatch,
+): DataBasedSoilMatch => {
   return a.locationMatch.rank < b.locationMatch.rank ? a : b;
 };
 
-export const getSortedMatchesForSite = (matches: SoilMatchForSite[]) => {
+export const getSortedMatchesForSite = (matches: DataBasedSoilMatch[]) => {
   return matches.slice().sort((a, b) => {
     if (a.combinedMatch && b.combinedMatch) {
       return a.combinedMatch.rank - b.combinedMatch.rank;
@@ -73,6 +64,6 @@ export const getSortedMatchesForSite = (matches: SoilMatchForSite[]) => {
 };
 
 export const getSortedMatchesForTempLocation = (
-  matches: SoilMatchForTempLocation[],
+  matches: DataBasedSoilMatch[],
 ) =>
   matches.slice().sort((a, b) => a.locationMatch.rank - b.locationMatch.rank);

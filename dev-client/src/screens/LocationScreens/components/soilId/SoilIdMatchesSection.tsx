@@ -37,10 +37,6 @@ import {
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
 import {
-  SoilMatchForSite,
-  SoilMatchForTempLocation,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
-import {
   getSortedMatchesForSite,
   getSortedMatchesForTempLocation,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
@@ -97,9 +93,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
       return isOffline ? <></> : <ActivityIndicator size="small" />;
     case 'ready': {
       if (isSite) {
-        return getSortedMatchesForSite(
-          soilIdOutput.matches as SoilMatchForSite[],
-        ).map(siteMatch => (
+        return getSortedMatchesForSite(soilIdOutput.matches).map(siteMatch => (
           <InfoSheet
             key={siteMatch.soilInfo.soilSeries.name}
             heading={
@@ -127,30 +121,30 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
           </InfoSheet>
         ));
       } else {
-        return getSortedMatchesForTempLocation(
-          soilIdOutput.matches as SoilMatchForTempLocation[],
-        ).map(locationMatch => (
-          <InfoSheet
-            key={locationMatch.soilInfo.soilSeries.name}
-            heading={
-              <Heading variant="h4">
-                {locationMatch.soilInfo.soilSeries.name}
-              </Heading>
-            }
-            trigger={onOpen => (
-              <SoilMatchTile
-                soilName={locationMatch.soilInfo.soilSeries.name}
-                score={locationMatch.locationMatch.score}
-                onPress={onOpen}
+        return getSortedMatchesForTempLocation(soilIdOutput.matches).map(
+          locationMatch => (
+            <InfoSheet
+              key={locationMatch.soilInfo.soilSeries.name}
+              heading={
+                <Heading variant="h4">
+                  {locationMatch.soilInfo.soilSeries.name}
+                </Heading>
+              }
+              trigger={onOpen => (
+                <SoilMatchTile
+                  soilName={locationMatch.soilInfo.soilSeries.name}
+                  score={locationMatch.locationMatch.score}
+                  onPress={onOpen}
+                />
+              )}>
+              <TempScoreInfoContent
+                coords={coords}
+                dataRegion={dataRegion}
+                locationMatch={locationMatch}
               />
-            )}>
-            <TempScoreInfoContent
-              coords={coords}
-              dataRegion={dataRegion}
-              locationMatch={locationMatch}
-            />
-          </InfoSheet>
-        ));
+            </InfoSheet>
+          ),
+        );
       }
     }
     case 'DATA_UNAVAILABLE':

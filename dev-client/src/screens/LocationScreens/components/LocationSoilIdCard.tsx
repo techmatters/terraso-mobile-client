@@ -18,6 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
@@ -30,11 +31,7 @@ import {
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
-import {
-  DataRegion,
-  SoilMatchForSite,
-  SoilMatchForTempLocation,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
@@ -107,7 +104,7 @@ const SiteMatchContent = ({siteId}: SiteMatchDisplayProps) => {
   const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
-    soilIdOutput.matches as SoilMatchForSite[],
+    soilIdOutput.matches,
     selectedSoilId,
   );
 
@@ -124,7 +121,7 @@ const SiteMatchContent = ({siteId}: SiteMatchDisplayProps) => {
 type MatchContentProps = {
   status: SoilIdStatus;
   dataRegion: DataRegion;
-  match: SoilMatchForTempLocation | SoilMatchForSite | undefined;
+  match: DataBasedSoilMatch | undefined;
   isSelected?: boolean;
 };
 

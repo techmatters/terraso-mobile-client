@@ -18,7 +18,10 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {SoilMatchInfo} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  DataBasedSoilMatch,
+  SoilMatchInfo,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
@@ -31,13 +34,12 @@ import {
 import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {SoilMatchForSite} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 
 type PropertiesScoreDisplayProps = {
-  match: SoilMatchForSite;
+  match: DataBasedSoilMatch;
   matchInfo: SoilMatchInfo;
 };
 

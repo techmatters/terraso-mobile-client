@@ -15,16 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {SoilMatchForSite} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
-export const getMatchSelectionId = (match: SoilMatchForSite) => {
+export const getMatchSelectionId = (match: DataBasedSoilMatch) => {
   return match.soilInfo.soilSeries.name;
 };
 
 export const findSelectedMatch = (
-  matches: SoilMatchForSite[],
+  matches: DataBasedSoilMatch[],
   selectedSoilId: string | undefined | null,
-): SoilMatchForSite | undefined => {
+): DataBasedSoilMatch | undefined => {
   if (!selectedSoilId) {
     return undefined;
   }

@@ -32,18 +32,9 @@ export type DataRegion = SoilIdDataRegionChoices | undefined;
 export type SoilIdEntry = {
   dataRegion: DataRegion;
   input: SoilIdInputData | Coords;
-  matches: SoilMatchesGeneral;
+  matches: DataBasedSoilMatch[];
   status: SoilIdStatus;
 };
-
-export type SoilMatchesGeneral =
-  | SoilMatchForTempLocation[]
-  | SoilMatchForSite[];
-export type SoilMatchForTempLocation = Omit<
-  DataBasedSoilMatch,
-  'combinedMatch' | 'dataMatch'
->;
-export type SoilMatchForSite = DataBasedSoilMatch;
 
 export const isErrorStatus = (status: SoilIdStatus): boolean => {
   return status !== 'loading' && status !== 'ready';
