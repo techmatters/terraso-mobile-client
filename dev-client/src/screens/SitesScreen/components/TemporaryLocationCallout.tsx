@@ -63,7 +63,10 @@ export const TemporaryLocationCallout = ({
 
   const elevation = useElevationData(coords);
   const soilIdOutput = useSoilIdOutput({coords});
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
+  const topSoilMatch = useMemo(
+    () => getTopMatch(soilIdOutput.matches),
+    [soilIdOutput],
+  );
 
   const onLearnMore = useCallback(() => {
     navigation.navigate('TEMP_LOCATION', {

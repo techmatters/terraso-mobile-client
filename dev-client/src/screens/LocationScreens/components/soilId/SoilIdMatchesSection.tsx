@@ -36,10 +36,7 @@ import {
   SoilIdOutput,
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
-import {
-  getSortedMatchesForSite,
-  getSortedMatchesForTempLocation,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
+import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {NoMapDataAlertMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/NoMapDataAlertMessageBox';
 import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {SoilMatchesErrorMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/SoilMatchesErrorMessageBox';
@@ -93,12 +90,11 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
       return isOffline ? <></> : <ActivityIndicator size="small" />;
     case 'ready': {
       if (isSite) {
-        return getSortedMatchesForSite(soilIdOutput.matches).map(siteMatch => (
+        return getSortedMatches(soilIdOutput.matches).map(siteMatch => (
           <InfoSheet
             key={siteMatch.soilInfo.soilSeries.name}
             heading={
               <TranslatedHeading i18nKey={siteMatch.soilInfo.soilSeries.name} />
-              // <TranslatedHeading i18nKey="general.last_modified" />
             }
             trigger={onOpen => (
               <SoilMatchTile
@@ -121,30 +117,28 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
           </InfoSheet>
         ));
       } else {
-        return getSortedMatchesForTempLocation(soilIdOutput.matches).map(
-          locationMatch => (
-            <InfoSheet
-              key={locationMatch.soilInfo.soilSeries.name}
-              heading={
-                <Heading variant="h4">
-                  {locationMatch.soilInfo.soilSeries.name}
-                </Heading>
-              }
-              trigger={onOpen => (
-                <SoilMatchTile
-                  soilName={locationMatch.soilInfo.soilSeries.name}
-                  score={locationMatch.locationMatch.score}
-                  onPress={onOpen}
-                />
-              )}>
-              <TempScoreInfoContent
-                coords={coords}
-                dataRegion={dataRegion}
-                locationMatch={locationMatch}
+        return getSortedMatches(soilIdOutput.matches).map(locationMatch => (
+          <InfoSheet
+            key={locationMatch.soilInfo.soilSeries.name}
+            heading={
+              <Heading variant="h4">
+                {locationMatch.soilInfo.soilSeries.name}
+              </Heading>
+            }
+            trigger={onOpen => (
+              <SoilMatchTile
+                soilName={locationMatch.soilInfo.soilSeries.name}
+                score={locationMatch.locationMatch.score}
+                onPress={onOpen}
               />
-            </InfoSheet>
-          ),
-        );
+            )}>
+            <TempScoreInfoContent
+              coords={coords}
+              dataRegion={dataRegion}
+              locationMatch={locationMatch}
+            />
+          </InfoSheet>
+        ));
       }
     }
     case 'DATA_UNAVAILABLE':

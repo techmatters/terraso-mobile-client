@@ -29,11 +29,11 @@ import {
 export type SoilIdOutput = Omit<SoilIdEntry, 'input'>;
 
 /* We expect to only ever use the following hook with one of coords or siteId */
-type Input = WithCoords | WithSiteId;
+export type SoilIdLocationInput = WithCoords | WithSiteId;
 type WithCoords = {coords: Coords; siteId?: never};
 type WithSiteId = {coords?: never; siteId: string};
 
-export const useSoilIdOutput = (input: Input): SoilIdOutput => {
+export const useSoilIdOutput = (input: SoilIdLocationInput): SoilIdOutput => {
   /* Request active soil ID data based on this hook's input parameters */
   const coords = 'coords' in input ? input.coords : undefined;
   const siteId = 'siteId' in input ? input.siteId : undefined;

@@ -67,16 +67,18 @@ describe('locationEntryForStatus', () => {
 describe('locationEntryForMatches', () => {
   test('produces an entry with ready status and the given matches', () => {
     const match = {rank: 1, score: 1};
-    const inputMatches = [{combinedMatch: match, dataSource: 'SSURGO'}];
+    const inputMatches = [{locationMatch: match, dataSource: 'SSURGO'}];
     expect(
       tempLocationEntryForMatches(
         {latitude: 1, longitude: 2},
         inputMatches as DataBasedSoilMatch[],
+        'GLOBAL',
       ),
     ).toEqual({
       input: {latitude: 1, longitude: 2},
       status: 'ready',
-      matches: [{match, dataSource: 'SSURGO'}],
+      matches: [{locationMatch: match, dataSource: 'SSURGO'}],
+      dataRegion: 'GLOBAL',
     });
   });
 });
@@ -93,11 +95,14 @@ describe('dataEntryForStatus', () => {
 
 describe('dataEntryForMatches', () => {
   test('produces an entry with ready status and the given matches', () => {
-    expect(siteEntryForMatches('input' as any, ['match'] as any)).toEqual({
-      status: 'ready',
-      input: 'input',
-      matches: ['match'],
-    });
+    expect(siteEntryForMatches('input' as any, ['match'] as any, 'US')).toEqual(
+      {
+        status: 'ready',
+        input: 'input',
+        matches: ['match'],
+        dataRegion: 'US',
+      },
+    );
   });
 });
 

@@ -17,28 +17,20 @@
 
 import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {SoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
-
 export const getTopMatch = (
-  results: SoilIdOutput,
+  matches: DataBasedSoilMatch[],
 ): DataBasedSoilMatch | undefined => {
-  if (results.matches.length > 0) {
-    return results.matches.reduce((a, b) => getBetterSiteMatch(a, b));
-  } else if (results.matches.length > 0) {
-    return results.matches.reduce((a, b) => getBetterTempLocationMatch(a, b));
+  if (matches.length > 0) {
+    return matches.reduce((a, b) => getBetterMatch(a, b));
   } else {
     return undefined;
   }
 };
 
-// TODO-cknipe: Delete these
-const getBetterSiteMatch = (
+const getBetterMatch = (
   a: DataBasedSoilMatch,
   b: DataBasedSoilMatch,
 ): DataBasedSoilMatch => {
-  // TODO-cknipe: Are we ok that combinedMatch can be null? For sites with no data yet
-  // Are there any other places that assume this exists? Should change the type definition?
-  // TODO-cknipe: If we do it like this, probably want to do it a level up, not for each a/b?
   if (a.combinedMatch && b.combinedMatch) {
     return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
   } else {
@@ -46,14 +38,7 @@ const getBetterSiteMatch = (
   }
 };
 
-const getBetterTempLocationMatch = (
-  a: DataBasedSoilMatch,
-  b: DataBasedSoilMatch,
-): DataBasedSoilMatch => {
-  return a.locationMatch.rank < b.locationMatch.rank ? a : b;
-};
-
-export const getSortedMatchesForSite = (matches: DataBasedSoilMatch[]) => {
+export const getSortedMatches = (matches: DataBasedSoilMatch[]) => {
   return matches.slice().sort((a, b) => {
     if (a.combinedMatch && b.combinedMatch) {
       return a.combinedMatch.rank - b.combinedMatch.rank;
@@ -62,8 +47,3 @@ export const getSortedMatchesForSite = (matches: DataBasedSoilMatch[]) => {
     }
   });
 };
-
-export const getSortedMatchesForTempLocation = (
-  matches: DataBasedSoilMatch[],
-) =>
-  matches.slice().sort((a, b) => a.locationMatch.rank - b.locationMatch.rank);

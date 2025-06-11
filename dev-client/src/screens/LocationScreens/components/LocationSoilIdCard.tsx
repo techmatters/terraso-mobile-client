@@ -86,7 +86,10 @@ type LocationMatchDisplayProps = {coords: Coords};
 
 const TempLocationMatchContent = ({coords}: LocationMatchDisplayProps) => {
   const soilIdOutput = useSoilIdOutput({coords});
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
+  const topSoilMatch = useMemo(
+    () => getTopMatch(soilIdOutput.matches),
+    [soilIdOutput],
+  );
 
   return (
     <MatchContent
@@ -101,7 +104,10 @@ type SiteMatchDisplayProps = {coords: Coords; siteId: string};
 
 const SiteMatchContent = ({siteId}: SiteMatchDisplayProps) => {
   const soilIdOutput = useSoilIdOutput({siteId});
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdOutput), [soilIdOutput]);
+  const topSoilMatch = useMemo(
+    () => getTopMatch(soilIdOutput.matches),
+    [soilIdOutput],
+  );
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
     soilIdOutput.matches,
