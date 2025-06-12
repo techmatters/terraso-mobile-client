@@ -81,7 +81,6 @@ export const siteEntryForStatus = (
   };
 };
 
-// TODO-cknipe: Combo this and location?
 export const siteEntryForMatches = (
   input: SoilIdInputData,
   matches: DataBasedSoilMatch[],
@@ -90,8 +89,8 @@ export const siteEntryForMatches = (
   return {
     dataRegion: dataRegion,
     input,
-    status: 'ready',
     matches: matches,
+    status: 'ready',
   };
 };
 

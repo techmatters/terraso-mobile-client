@@ -73,7 +73,7 @@ type SoilInfoDisplayUSProps = {
   soilInfo: SoilInfo;
 };
 
-export function SoilInfoDisplayGlobal({soilInfo}: SoilInfoDisplayGlobalProps) {
+function SoilInfoDisplayGlobal({soilInfo}: SoilInfoDisplayGlobalProps) {
   const {t} = useTranslation();
 
   return (
@@ -100,10 +100,7 @@ export function SoilInfoDisplayGlobal({soilInfo}: SoilInfoDisplayGlobalProps) {
   );
 }
 
-export function SoilInfoDisplayUS({
-  dataSource,
-  soilInfo,
-}: SoilInfoDisplayUSProps) {
+function SoilInfoDisplayUS({dataSource, soilInfo}: SoilInfoDisplayUSProps) {
   const {t} = useTranslation();
 
   return (

@@ -26,35 +26,34 @@ import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/c
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
 import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
 
-// TODO-cknipe: update locationMatch --> soilMatch in call site
 type TempScoreInfoContentProps = {
   coords: Coords;
   dataRegion: DataRegion;
-  locationMatch: DataBasedSoilMatch;
+  tempLocationMatch: DataBasedSoilMatch;
 };
 
 export function TempScoreInfoContent({
   coords,
   dataRegion,
-  locationMatch,
+  tempLocationMatch,
 }: TempScoreInfoContentProps) {
   return (
     <ScoreInfoContainer>
       <SoilInfoDisplay
         dataRegion={dataRegion}
-        dataSource={locationMatch.dataSource}
-        soilInfo={locationMatch.soilInfo}
+        dataSource={tempLocationMatch.dataSource}
+        soilInfo={tempLocationMatch.soilInfo}
       />
       <Divider />
       <LocationScoreDisplay
         isSite={false}
         dataRegion={dataRegion}
-        match={locationMatch}
-        matchInfo={locationMatch.locationMatch}
+        match={tempLocationMatch}
+        matchInfo={tempLocationMatch.locationMatch}
         coords={coords}
       />
       <Divider />
-      <PropertiesDisplay match={locationMatch} />
+      <PropertiesDisplay match={tempLocationMatch} />
     </ScoreInfoContainer>
   );
 }

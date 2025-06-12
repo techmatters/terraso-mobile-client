@@ -29,8 +29,7 @@ export const selectTempLocationMatches = (coords?: Coords) => {
     const key = coordsKey(coords);
     return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];
   } else {
-    // TODO-cknipe: is this bad to do?
-    return () => undefined;
+    return (_: AppState) => undefined;
   }
 };
 

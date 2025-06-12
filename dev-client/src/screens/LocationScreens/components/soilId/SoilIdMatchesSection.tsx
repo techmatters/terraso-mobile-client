@@ -135,7 +135,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
             <TempScoreInfoContent
               coords={coords}
               dataRegion={dataRegion}
-              locationMatch={locationMatch}
+              tempLocationMatch={locationMatch}
             />
           </InfoSheet>
         ));
