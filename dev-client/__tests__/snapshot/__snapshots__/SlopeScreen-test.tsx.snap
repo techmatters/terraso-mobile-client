@@ -376,7 +376,7 @@ exports[`renders correctly 1`] = `
 
 Instructions on how to collect each observation are available on each observation entry screen.
 
-Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more.
+Slope characteristics help determine the soil’s erosion potential, ability to hold water, and more.
                               </Text>
                             </View>
                           </View>

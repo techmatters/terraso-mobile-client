@@ -2016,38 +2016,13 @@ exports[`renders correctly 1`] = `
                                             Not available offline
                                           </Text>
                                         </Text>
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
+                                        <View
                                           style={
                                             {
-                                              "color": "#FFFFFF",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
                                               "marginBottom": 25,
                                             }
                                           }
-                                        >
-                                          <Text
-                                            style={
-                                              {
-                                                "fontWeight": "bold",
-                                              }
-                                            }
-                                          >
-                                            Ecological Site Name
-                                            : 
-                                          </Text>
-                                          <Text
-                                            style={
-                                              {
-                                                "fontStyle": "italic",
-                                              }
-                                            }
-                                          >
-                                            Not available offline
-                                          </Text>
-                                        </Text>
+                                        />
                                         <View>
                                           <View
                                             accessibilityLabel="Explore the data"

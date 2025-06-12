@@ -15,9 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+
 import {
-  getSortedDataBasedMatches,
-  getSortedLocationBasedMatches,
+  getSortedMatches,
   getTopMatch,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 
@@ -25,7 +26,7 @@ const locationBasedMatchWithRank = (rank: number) => {
   return {
     dataSource: `Data source ${rank}`,
     distanceToNearestMapUnitM: 5,
-    match: {
+    locationMatch: {
       rank: rank,
       score: 0.5,
     },
@@ -96,27 +97,21 @@ describe('location based matches', () => {
   const locationBasedSoil2 = locationBasedMatchWithRank(2);
 
   test('get top match by rank', () => {
-    const inputSoilIdResults = {
-      locationBasedMatches: [
-        locationBasedSoil2,
-        locationBasedSoil1,
-        locationBasedSoil0,
-      ],
-      dataBasedMatches: [],
-    };
-    expect(getTopMatch(inputSoilIdResults)).toEqual(locationBasedSoil0);
+    const soilIdOutputMatches = [
+      locationBasedSoil2,
+      locationBasedSoil1,
+      locationBasedSoil0,
+    ];
+    expect(getTopMatch(soilIdOutputMatches)).toEqual(locationBasedSoil0);
   });
 
   test('sort by rank', () => {
-    const inputSoilIdResults = {
-      locationBasedMatches: [
-        locationBasedSoil1,
-        locationBasedSoil2,
-        locationBasedSoil0,
-      ],
-      dataBasedMatches: [],
-    };
-    const sortedMatches = getSortedLocationBasedMatches(inputSoilIdResults);
+    const soilIdOutputMatches = [
+      locationBasedSoil1,
+      locationBasedSoil2,
+      locationBasedSoil0,
+    ];
+    const sortedMatches = getSortedMatches(soilIdOutputMatches);
     expect(sortedMatches).toEqual([
       locationBasedSoil0,
       locationBasedSoil1,
@@ -126,10 +121,6 @@ describe('location based matches', () => {
 });
 
 describe('data based matches', () => {
-  const locationBasedSoil0 = locationBasedMatchWithRank(0);
-  const locationBasedSoil1 = locationBasedMatchWithRank(1);
-  const locationBasedSoil2 = locationBasedMatchWithRank(2);
-
   const dataBasedSoil0 = dataBasedMatchWithRanks({
     combinedRank: 0,
     dataRank: 1,
@@ -147,61 +138,37 @@ describe('data based matches', () => {
   });
 
   test('get top match by combined match rank', () => {
-    const inputSoilIdResults = {
-      dataBasedMatches: [dataBasedSoil1, dataBasedSoil2, dataBasedSoil0],
-      locationBasedMatches: [],
-    };
-    expect(getTopMatch(inputSoilIdResults)).toEqual(dataBasedSoil0);
+    const soilIdOutputMatches = [
+      dataBasedSoil1,
+      dataBasedSoil2,
+      dataBasedSoil0,
+    ];
+    expect(getTopMatch(soilIdOutputMatches)).toEqual(dataBasedSoil0);
   });
 
   test('sort by combined match rank', () => {
-    const inputSoilIdResults = {
-      dataBasedMatches: [dataBasedSoil2, dataBasedSoil1, dataBasedSoil0],
-      locationBasedMatches: [],
-    };
-    const sortedMatches = getSortedDataBasedMatches(inputSoilIdResults);
+    const soilIdOutputMatches = [
+      dataBasedSoil2,
+      dataBasedSoil1,
+      dataBasedSoil0,
+    ];
+    const sortedMatches = getSortedMatches(soilIdOutputMatches);
     expect(sortedMatches).toEqual([
       dataBasedSoil0,
       dataBasedSoil1,
       dataBasedSoil2,
     ]);
   });
-
-  test('for getTopMatch take precedence over location based matches if both exist', () => {
-    const inputSoilIdResults = {
-      dataBasedMatches: [dataBasedSoil0, dataBasedSoil1, dataBasedSoil2],
-      locationBasedMatches: [
-        locationBasedSoil0,
-        locationBasedSoil1,
-        locationBasedSoil2,
-      ],
-    };
-    expect(getTopMatch(inputSoilIdResults)).toEqual(dataBasedSoil0);
-  });
 });
 
 describe('empty matches', () => {
-  test('get top match as undefined', () => {
-    const inputSoilIdResults = {
-      dataBasedMatches: [],
-      locationBasedMatches: [],
-    };
-    expect(getTopMatch(inputSoilIdResults)).toBeUndefined();
+  test('top match is undefined', () => {
+    const soilIdOutputMatches: DataBasedSoilMatch[] = [];
+    expect(getTopMatch(soilIdOutputMatches)).toBeUndefined();
   });
 
-  test('sort location based matches and return empty list', () => {
-    const inputSoilIdResults = {
-      dataBasedMatches: [],
-      locationBasedMatches: [],
-    };
-    expect(getSortedLocationBasedMatches(inputSoilIdResults)).toEqual([]);
-  });
-
-  test('sort data based matches and return empty list', () => {
-    const inputSoilIdResults = {
-      dataBasedMatches: [],
-      locationBasedMatches: [],
-    };
-    expect(getSortedDataBasedMatches(inputSoilIdResults)).toEqual([]);
+  test('sorting returns empty list', () => {
+    const soilIdOutputMatches: DataBasedSoilMatch[] = [];
+    expect(getSortedMatches(soilIdOutputMatches)).toEqual([]);
   });
 });

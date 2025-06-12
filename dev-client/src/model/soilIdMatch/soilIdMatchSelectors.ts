@@ -20,34 +20,33 @@ import {createSelector} from '@reduxjs/toolkit';
 import {Coords} from 'terraso-client-shared/types';
 
 import {soilDataToIdInput} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchInputs';
-import {
-  coordsKey,
-  SoilIdLocationEntry,
-} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
-export const selectLocationBasedMatches = (
-  coords: Coords,
-): ((state: AppState) => SoilIdLocationEntry | undefined) => {
-  const key = coordsKey(coords);
-  return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];
+export const selectTempLocationMatches = (coords?: Coords) => {
+  if (coords) {
+    const key = coordsKey(coords);
+    return (state: AppState) => state.soilIdMatch.locationBasedMatches[key];
+  } else {
+    return (_: AppState) => undefined;
+  }
 };
 
-export const selectSiteDataBasedMatches = (siteId?: string) => {
+export const selectSiteMatches = (siteId?: string) => {
   return (state: AppState) =>
     siteId ? state.soilIdMatch.siteDataBasedMatches[siteId] : undefined;
 };
 
 /* Memoized selector to let us select the current keys for location-based matches */
-export const selectLocationBasedKeys = createSelector(
+export const selectTempLocationKeys = createSelector(
   [(state: AppState) => state.soilIdMatch.locationBasedMatches],
   /* Extract location-based match keys */
   entries => Object.keys(entries),
 );
 
 /* Memoized selector to let us select the current data-based inputs for a set of site IDs (potentially expensive) */
-export const selectDataBasedInputs = createSelector(
+export const selectSiteInputs = createSelector(
   [
     (state: AppState) => state.soilIdMatch.siteDataBasedMatches,
     (_: AppState, siteIds: string[]) => siteIds,

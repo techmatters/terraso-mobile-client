@@ -18,10 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
@@ -32,8 +29,9 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
@@ -87,27 +85,40 @@ export const LocationSoilIdCard = ({
 type LocationMatchDisplayProps = {coords: Coords};
 
 const TempLocationMatchContent = ({coords}: LocationMatchDisplayProps) => {
-  const soilIdData = useSoilIdData(coords);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+  const soilIdOutput = useSoilIdOutput({coords});
+  const topSoilMatch = useMemo(
+    () => getTopMatch(soilIdOutput.matches),
+    [soilIdOutput],
+  );
 
-  return <MatchContent status={soilIdData.status} match={topSoilMatch} />;
+  return (
+    <MatchContent
+      status={soilIdOutput.status}
+      dataRegion={soilIdOutput.dataRegion}
+      match={topSoilMatch}
+    />
+  );
 };
 
 type SiteMatchDisplayProps = {coords: Coords; siteId: string};
 
-const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
-  const soilIdData = useSoilIdData(coords, siteId);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+const SiteMatchContent = ({siteId}: SiteMatchDisplayProps) => {
+  const soilIdOutput = useSoilIdOutput({siteId});
+  const topSoilMatch = useMemo(
+    () => getTopMatch(soilIdOutput.matches),
+    [soilIdOutput],
+  );
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
-    soilIdData.dataBasedMatches,
+    soilIdOutput.matches,
     selectedSoilId,
   );
 
   return (
     <MatchContent
-      status={soilIdData.status}
+      status={soilIdOutput.status}
       match={selectedSoilMatch || topSoilMatch}
+      dataRegion={soilIdOutput.dataRegion}
       isSelected={!!selectedSoilMatch}
     />
   );
@@ -115,12 +126,14 @@ const SiteMatchContent = ({coords, siteId}: SiteMatchDisplayProps) => {
 
 type MatchContentProps = {
   status: SoilIdStatus;
-  match: LocationBasedSoilMatch | DataBasedSoilMatch | undefined;
+  dataRegion: DataRegion;
+  match: DataBasedSoilMatch | undefined;
   isSelected?: boolean;
 };
 
 const MatchContent = ({
   status,
+  dataRegion,
   match,
   isSelected = false,
 }: MatchContentProps) => {
@@ -146,21 +159,25 @@ const MatchContent = ({
           }
         />
       </Text>
-      <Text variant="body1" color="primary.contrast" mb="25px">
-        <Text bold>{t('soil.ecological_site_name')}: </Text>
-        <SoilIdStatusDisplay
-          status={status}
-          offline={<Text italic>{t('general.not_available_offine')}</Text>}
-          loading={<Text>{t('soil.loading')}</Text>}
-          error={<Text>{t('soil.error')}</Text>}
-          noData={<Text>{t('soil.no_matches')}</Text>}
-          data={
-            <Text>
-              {match?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
-            </Text>
-          }
-        />
-      </Text>
+      {dataRegion === 'US' ? (
+        <Text variant="body1" color="primary.contrast" mb="25px">
+          <Text bold>{t('soil.ecological_site_name')}: </Text>
+          <SoilIdStatusDisplay
+            status={status}
+            offline={<Text italic>{t('general.not_available_offine')}</Text>}
+            loading={<Text>{t('soil.loading')}</Text>}
+            error={<Text>{t('soil.error')}</Text>}
+            noData={<Text>{t('soil.no_matches')}</Text>}
+            data={
+              <Text>
+                {match?.soilInfo.ecologicalSite?.name ?? t('soil.no_matches')}
+              </Text>
+            }
+          />
+        </Text>
+      ) : (
+        <Box mb="25px" />
+      )}
     </>
   );
 };

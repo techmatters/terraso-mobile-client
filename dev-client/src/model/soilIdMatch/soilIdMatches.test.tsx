@@ -19,12 +19,12 @@ import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
   coordsKey,
-  dataEntryForMatches,
-  dataEntryForStatus,
   flushErrorEntries,
   isErrorStatus,
-  locationEntryForMatches,
-  locationEntryForStatus,
+  siteEntryForMatches,
+  siteEntryForStatus,
+  tempLocationEntryForMatches,
+  tempLocationEntryForStatus,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 describe('isErrorStatus', () => {
@@ -55,7 +55,7 @@ describe('coordsKey', () => {
 describe('locationEntryForStatus', () => {
   test('produces an entry with the given status and empty matches', () => {
     expect(
-      locationEntryForStatus({latitude: 1, longitude: 2}, 'error'),
+      tempLocationEntryForStatus({latitude: 1, longitude: 2}, 'error'),
     ).toEqual({
       input: {latitude: 1, longitude: 2},
       status: 'error',
@@ -67,23 +67,25 @@ describe('locationEntryForStatus', () => {
 describe('locationEntryForMatches', () => {
   test('produces an entry with ready status and the given matches', () => {
     const match = {rank: 1, score: 1};
-    const inputMatches = [{combinedMatch: match, dataSource: 'SSURGO'}];
+    const inputMatches = [{locationMatch: match, dataSource: 'SSURGO'}];
     expect(
-      locationEntryForMatches(
+      tempLocationEntryForMatches(
         {latitude: 1, longitude: 2},
         inputMatches as DataBasedSoilMatch[],
+        'GLOBAL',
       ),
     ).toEqual({
       input: {latitude: 1, longitude: 2},
       status: 'ready',
-      matches: [{match, dataSource: 'SSURGO'}],
+      matches: [{locationMatch: match, dataSource: 'SSURGO'}],
+      dataRegion: 'GLOBAL',
     });
   });
 });
 
 describe('dataEntryForStatus', () => {
   test('produces an entry with the given status and the given matches', () => {
-    expect(dataEntryForStatus('input' as any, 'error')).toEqual({
+    expect(siteEntryForStatus('input' as any, 'error')).toEqual({
       status: 'error',
       input: 'input',
       matches: [],
@@ -93,11 +95,14 @@ describe('dataEntryForStatus', () => {
 
 describe('dataEntryForMatches', () => {
   test('produces an entry with ready status and the given matches', () => {
-    expect(dataEntryForMatches('input' as any, ['match'] as any)).toEqual({
-      status: 'ready',
-      input: 'input',
-      matches: ['match'],
-    });
+    expect(siteEntryForMatches('input' as any, ['match'] as any, 'US')).toEqual(
+      {
+        status: 'ready',
+        input: 'input',
+        matches: ['match'],
+        dataRegion: 'US',
+      },
+    );
   });
 });
 
@@ -105,11 +110,11 @@ describe('flushErrorEntries', () => {
   test('removes entries with error statuses', () => {
     const coords = {latitude: 1, longitude: 2};
     const entries = {
-      a: locationEntryForStatus(coords, 'loading'),
-      b: locationEntryForStatus(coords, 'ready'),
-      c: locationEntryForStatus(coords, 'error'),
-      d: locationEntryForStatus(coords, 'ALGORITHM_FAILURE'),
-      e: locationEntryForStatus(coords, 'DATA_UNAVAILABLE'),
+      a: tempLocationEntryForStatus(coords, 'loading'),
+      b: tempLocationEntryForStatus(coords, 'ready'),
+      c: tempLocationEntryForStatus(coords, 'error'),
+      d: tempLocationEntryForStatus(coords, 'ALGORITHM_FAILURE'),
+      e: tempLocationEntryForStatus(coords, 'DATA_UNAVAILABLE'),
     };
 
     flushErrorEntries(entries);
