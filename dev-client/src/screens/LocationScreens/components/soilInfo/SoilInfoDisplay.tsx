@@ -17,11 +17,12 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {TFunction} from 'i18next';
+import {i18n as i18nType, TFunction} from 'i18next';
 
 import {
   LandCapabilityClass,
   SoilInfo,
+  SoilSeries,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -73,22 +74,67 @@ type SoilInfoDisplayUSProps = {
   soilInfo: SoilInfo;
 };
 
+function getNormalizedSoilName(soilSeriesName: string) {
+  return soilSeriesName.trim().toLowerCase().replace(/ /g, '_');
+}
+
+function getSoilSeriesDisplayText(
+  soilSeries: SoilSeries,
+  t: TFunction,
+  i18n: i18nType,
+) {
+  // As of 2025-07 we only expect global (not US) soil match descriptions to come from the local i18n files
+  let normalizedSoilName = getNormalizedSoilName(soilSeries.name);
+
+  // Typo that really should be fixed in the database instead of here
+  if (normalizedSoilName === 'albic_luvsiols') {
+    normalizedSoilName = 'albic_luvisols';
+  }
+
+  const soilKey = `soil.match_info.${normalizedSoilName}`;
+  console.log('SOIL KEY: ', soilKey);
+
+  if (i18n.exists(soilKey)) {
+    const soilSeriesTextForDisplay: SoilSeries = {
+      name: i18n.exists(`${soilKey}.name`)
+        ? t(`${soilKey}.name`)
+        : soilSeries.name,
+      description: i18n.exists(`${soilKey}.description`)
+        ? t(`${soilKey}.description`)
+        : soilSeries.description,
+      management: i18n.exists(`${soilKey}.management`)
+        ? t(`${soilKey}.management`)
+        : soilSeries.management,
+      fullDescriptionUrl: soilSeries.fullDescriptionUrl ?? undefined,
+      taxonomySubgroup: soilSeries.taxonomySubgroup ?? undefined,
+    };
+    return soilSeriesTextForDisplay;
+  } else {
+    return soilSeries;
+  }
+}
+
 function SoilInfoDisplayGlobal({soilInfo}: SoilInfoDisplayGlobalProps) {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+  const displaySoilSeries = getSoilSeriesDisplayText(
+    soilInfo.soilSeries,
+    t,
+    i18n,
+  );
 
   return (
     <Column space="0px">
-      {soilInfo.soilSeries.description && (
+      {displaySoilSeries?.description && (
         <>
           <TranslatedParagraph i18nKey="site.soil_id.soil_info.description_title" />
-          <Text variant="body1">{soilInfo.soilSeries.description}</Text>
+          <Text variant="body1">{displaySoilSeries.description}</Text>
           <Box height="12px" />
         </>
       )}
-      {soilInfo.soilSeries.management && (
+      {displaySoilSeries?.management && (
         <>
           <TranslatedParagraph i18nKey="site.soil_id.soil_info.management_title" />
-          <Text variant="body1">{soilInfo.soilSeries.management}</Text>
+          <Text variant="body1">{displaySoilSeries.management}</Text>
           <Box height="12px" />
         </>
       )}
