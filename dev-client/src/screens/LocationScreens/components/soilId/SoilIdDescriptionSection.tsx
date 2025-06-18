@@ -17,24 +17,46 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {TFunction} from 'i18next';
+
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
-type SoilIdDescriptionSectionProps = {siteId?: string; coords: Coords};
+type SoilIdDescriptionSectionProps = {
+  siteId?: string;
+  coords: Coords;
+};
 
 export const SoilIdDescriptionSection = ({
   siteId,
+  coords,
 }: SoilIdDescriptionSectionProps) => {
   const {t} = useTranslation();
+  const input = siteId ? {siteId} : {coords};
+  const soilIdOutput = useSoilIdOutput(input);
+  const dataRegion = soilIdOutput.dataRegion;
+
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
-      <Text variant="body1">
-        {siteId
-          ? t('site.soil_id.description.site')
-          : t('site.soil_id.description.temp_location')}
-      </Text>
+      <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
     </ScreenContentSection>
   );
+};
+
+const getText = (
+  siteId: string | undefined,
+  dataRegion: DataRegion,
+  t: TFunction,
+) => {
+  if (siteId) {
+    return dataRegion === 'US'
+      ? t('site.soil_id.description.site_US')
+      : t('site.soil_id.description.site_global_or_unknown');
+  } else {
+    return t('site.soil_id.description.temp_location');
+  }
 };

@@ -107,15 +107,20 @@
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter observations and improve the results.",
-                "site": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties."
+                "site_US": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties.",
+                "site_global_or_unknown": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about soil characteristics and other descriptions."
             },
             "matches": {
                 "title": "Top Soil Matches",
                 "info": {
                     "title": "Top soil matches",
                     "description": {
-                        "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
-                        "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores."
+                        "site": "The soils listed are the most likely to be found at the site based on {{soilMapSource}} soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
+                        "site_region_unknown": "The soils listed are the most likely to be found at the site based on soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
+                        "temp_location": "The soils listed are the most likely to be found at this location based on {{soilMapSource}} soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
+                        "temp_location_region_unknown": "The soils listed are the most likely to be found at this location based on soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
+                        "need_help": "\n<bold>Need help?</bold>\nConsult a soil expert to help interpret the observations and determine a soil match. You can learn more about soil map predictions and Soil ID matches on the website:",
+                        "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
                 "match_score": "{{score}}",
@@ -124,9 +129,6 @@
                 "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
                 "no_map_data_title": "No soil map data",
                 "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Observations can still be entered for this site, and if soil map data becomes available in the future, soil matches will appear here.",
-                "native_lands_intro": "Soil resources for Native lands:",
-                "native_lands_link": "nativeland.info",
-                "native_lands_url": "https://nativeland.info/",
                 "offline": "Soil matches will update when you are online.",
                 "selector": "This is the correct soil",
                 "selected": "Selected Soil"
@@ -154,6 +156,8 @@
                 }
             },
             "soil_info": {
+                "description_title": "<bold>Description</bold>",
+                "management_title": "<bold>Management</bold>",
                 "series_descr_url": "Soil Series Full Description",
                 "eco_descr_url": "Ecological Site Full Description",
                 "eco_name_label": "<bold>Ecological Site Name:</bold> {{name}}",
@@ -164,12 +168,15 @@
                 "inside_map_label": "In soil map unit",
                 "outside_map_label": "In adjacent map unit, {{distance}} {{units}} distance",
                 "map_units_METRIC": "meters",
-                "properties_header": "Soil Properties"
+                "properties_header": "Soil Properties",
+                "FAO_HWSD": "FAO HWSD",
+                "USDA_NRCS": "USDA NRCS"
             },
             "location_score_info": {
                 "header": "Location Score",
                 "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account observations that have been entered by users at the site.",
-                "p2": "LandPKS bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p2": "LandPKS bases soil matches on soil maps created by the {{soilMapSource}}. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p2_region_unknown": "LandPKS bases soil matches on soil maps. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
                 "p3": "The location score for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
             },
             "soil_properties_score_info": {
@@ -230,7 +237,7 @@
         "title": "Projects",
         "header": "Projects",
         "offline_create": "Projects can only be created and managed while online.",
-        "offline_cant_edit": "You are offline. Projects can't be edited.",
+        "offline_cant_edit": "You are offline. Projects can’t be edited.",
         "none": {
             "header": "You don’t have any projects.",
             "info": "Projects let you group sites, set requirements, and manage team members."
@@ -474,7 +481,8 @@
         "not_available_offine": "Not available offline",
         "offline_sign_in_title": "Sign in not available offline",
         "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online.",
-        "not_available": "Not available"
+        "not_available": "Not available",
+        "learn_more": "Learn more"
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",
@@ -861,7 +869,9 @@
         "title": "Slope",
         "info": {
             "title": "Slope",
-            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each observation are available on each observation entry screen.\n\nSlope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
+            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each observation are available on each observation entry screen.\n\n{{data_region_text}}",
+            "data_region_text_US": "Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more.",
+            "data_region_text_global_or_unknown": "Slope characteristics help determine the soil’s erosion potential, ability to hold water, and more."
         },
         "steepness": {
             "short_title": "Steepness",

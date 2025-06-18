@@ -36,13 +36,13 @@ import {useValueSet} from 'terraso-mobile-client/hooks/useValueSet';
 import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
 import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
-  selectDataBasedInputs,
-  selectLocationBasedKeys,
   selectNextDataBasedInputs,
+  selectSiteInputs,
+  selectTempLocationKeys,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
 import {
-  fetchLocationBasedSoilMatches,
-  fetchSiteDataBasedSoilMatches,
+  fetchSiteBasedSoilMatches,
+  fetchTempLocationBasedSoilMatches,
   flushDataCacheErrors,
   flushLocationCache,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
@@ -123,7 +123,7 @@ const useCacheFlushing = () => {
 
 const useCoordsToFetch = (coords: Coords[]) => {
   /* Look up the keys of already-fetched coordinates */
-  const fetchedKeys = useSelector(state => selectLocationBasedKeys(state));
+  const fetchedKeys = useSelector(state => selectTempLocationKeys(state));
 
   /* Determine which ones are missing by comparing coords keys */
   return useMemo(() => {
@@ -139,7 +139,7 @@ const useCoordFetching = (coords: Coords[]) => {
   useEffect(() => {
     if (!isOffline) {
       for (const coord of coords) {
-        dispatch(fetchLocationBasedSoilMatches(coord));
+        dispatch(fetchTempLocationBasedSoilMatches(coord));
       }
     }
   }, [dispatch, isOffline, coords]);
@@ -147,9 +147,7 @@ const useCoordFetching = (coords: Coords[]) => {
 
 const useSiteInputsToFetch = (siteIds: string[]) => {
   /* Select last-fetched and upcoming inputs for active sites */
-  const fetchedInputs = useSelector(state =>
-    selectDataBasedInputs(state, siteIds),
-  );
+  const fetchedInputs = useSelector(state => selectSiteInputs(state, siteIds));
   const nextInputs = useSelector(state =>
     selectNextDataBasedInputs(state, siteIds),
   );
@@ -191,7 +189,7 @@ const useSiteFetching = (siteInputs: Record<string, SoilIdInputData>) => {
     if (!isOffline) {
       for (const [siteId, input] of Object.entries(siteInputs)) {
         if (input) {
-          dispatch(siteId, fetchSiteDataBasedSoilMatches({siteId, input}));
+          dispatch(siteId, fetchSiteBasedSoilMatches({siteId, input}));
         }
       }
     }
