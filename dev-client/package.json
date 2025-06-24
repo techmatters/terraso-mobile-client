@@ -148,7 +148,7 @@
   ],
   "lint-staged": {
     "dev-client/**/*.{ts,tsx}": [
-      "sh -c 'cd dev-client && npm run eslint'"
+      "sh -c 'cd dev-client && npm run eslint && npm run check-ts'"
     ],
     "dev-client/**/*.{json,ts,tsx,html}": [
       "sh -c 'cd dev-client && npm run prettier'"
