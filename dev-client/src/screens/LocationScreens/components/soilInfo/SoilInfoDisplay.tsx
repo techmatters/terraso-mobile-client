@@ -183,20 +183,21 @@ function SoilInfoDisplayUS({dataSource, soilInfo}: SoilInfoDisplayUSProps) {
           />
         </>
       )}
-      {soilInfo.landCapabilityClass && (
-        <Box>
+
+      <Box>
+        {soilInfo.landCapabilityClass && (
           <TranslatedParagraph
             i18nKey="site.soil_id.soil_info.land_class_label"
             values={{land: renderLCCString(t, soilInfo.landCapabilityClass)}}
           />
-          <TranslatedParagraph
-            i18nKey="site.soil_id.soil_info.data_source_label"
-            values={{
-              source: dataSource,
-            }}
-          />
-        </Box>
-      )}
+        )}
+        <TranslatedParagraph
+          i18nKey="site.soil_id.soil_info.data_source_label"
+          values={{
+            source: dataSource,
+          }}
+        />
+      </Box>
     </Column>
   );
 }
