@@ -75,7 +75,17 @@ type SoilInfoDisplayUSProps = {
 };
 
 function getNormalizedSoilName(soilSeriesName: string) {
-  return soilSeriesName.trim().toLowerCase().replace(/ /g, '_');
+  let normalizedSoilName = soilSeriesName
+    .trim()
+    .toLowerCase()
+    .replace(/ /g, '_');
+
+  // TODO: Fix this typo in the database instead of handling it here
+  if (normalizedSoilName === 'albic_luvsiols') {
+    normalizedSoilName = 'albic_luvisols';
+  }
+
+  return normalizedSoilName;
 }
 
 function getSoilSeriesDisplayText(
@@ -83,16 +93,8 @@ function getSoilSeriesDisplayText(
   t: TFunction,
   i18n: i18nType,
 ) {
-  // As of 2025-07 we only expect global (not US) soil match descriptions to come from the local i18n files
-  let normalizedSoilName = getNormalizedSoilName(soilSeries.name);
-
-  // Typo that really should be fixed in the database instead of here
-  if (normalizedSoilName === 'albic_luvsiols') {
-    normalizedSoilName = 'albic_luvisols';
-  }
-
-  const soilKey = `soil.match_info.${normalizedSoilName}`;
-  console.log('SOIL KEY: ', soilKey);
+  // As of 2025-07 we only expect global (not US) soil match descriptions to come from the client-side i18n files
+  const soilKey = `soil.match_info.${getNormalizedSoilName(soilSeries.name)}`;
 
   if (i18n.exists(soilKey)) {
     const soilSeriesTextForDisplay: SoilSeries = {

@@ -1,4 +1,20 @@
-// SiteScoreInfoContent.test.tsx
+/*
+ * Copyright © 2025 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
 import {render} from '@testing/integration/utils';
 
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
@@ -113,17 +129,7 @@ test('renders expected components when Global and only has location match', () =
   ).not.toBeOnTheScreen();
   expect(screen.queryAllByText(/FAO HWSD/)).not.toHaveLength(0);
 
-  expect(screen.queryAllByText('Location Score')).not.toHaveLength(0); //toBeOnTheScreen();
+  expect(screen.queryAllByText('Location Score')).not.toHaveLength(0);
   expect(screen.queryByText('20%')).toBeOnTheScreen();
   expect(screen.queryAllByText('Soil Properties Score')).toHaveLength(0);
-
-  /* Expect:
-        Title
-        Description
-        Management
-        FAO HWSD
-        Location score to exist
-        Data score not to exist
-        Url, eco site stuff not to exist
-  */
 });
