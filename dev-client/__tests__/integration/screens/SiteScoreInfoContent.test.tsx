@@ -116,4 +116,14 @@ test('renders expected components when Global and only has location match', () =
   expect(screen.queryAllByText('Location Score')).not.toHaveLength(0); //toBeOnTheScreen();
   expect(screen.queryByText('20%')).toBeOnTheScreen();
   expect(screen.queryAllByText('Soil Properties Score')).toHaveLength(0);
+
+  /* Expect:
+        Title
+        Description
+        Management
+        FAO HWSD
+        Location score to exist
+        Data score not to exist
+        Url, eco site stuff not to exist
+  */
 });
