@@ -17,8 +17,6 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {TFunction} from 'i18next';
-
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -38,7 +36,7 @@ export const TopSoilMatchesInfoContent = ({isSite, dataRegion}: Props) => {
   return (
     <Column space="12px">
       <Column space="0px">
-        {getInfoTextComponent(isSite, dataRegion, t)}
+        <TopSoilMatchesInfoParagraph isSite={isSite} dataRegion={dataRegion} />
         <TranslatedParagraph i18nKey="site.soil_id.matches.info.description.need_help" />
       </Column>
       <ExternalLink
@@ -49,12 +47,11 @@ export const TopSoilMatchesInfoContent = ({isSite, dataRegion}: Props) => {
   );
 };
 
-function getInfoTextComponent(
-  isSite: boolean,
-  dataRegion: DataRegion,
-  t: TFunction,
-) {
+const TopSoilMatchesInfoParagraph = ({isSite, dataRegion}: Props) => {
+  const {t} = useTranslation();
+
   const soilMapSource = t(getSoilMapSource(dataRegion));
+
   if (isSite) {
     if (dataRegion) {
       return (
@@ -80,4 +77,4 @@ function getInfoTextComponent(
         <TranslatedParagraph i18nKey="site.soil_id.matches.info.description.temp_location_region_unknown" />
       );
   }
-}
+};
