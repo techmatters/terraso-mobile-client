@@ -39,7 +39,7 @@ const getBetterMatch = (
 };
 
 export const getSortedMatches = (matches: DataBasedSoilMatch[]) => {
-  return matches.slice().sort((a, b) => {
+  return [...matches].sort((a, b) => {
     if (a.combinedMatch && b.combinedMatch) {
       return a.combinedMatch.rank - b.combinedMatch.rank;
     } else {
