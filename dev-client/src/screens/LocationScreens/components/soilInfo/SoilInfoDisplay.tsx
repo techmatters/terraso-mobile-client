@@ -126,14 +126,14 @@ function SoilInfoDisplayGlobal({soilInfo}: SoilInfoDisplayGlobalProps) {
 
   return (
     <Column space="0px">
-      {displaySoilSeries?.description && (
+      {displaySoilSeries.description && (
         <>
           <TranslatedParagraph i18nKey="site.soil_id.soil_info.description_title" />
           <Text variant="body1">{displaySoilSeries.description}</Text>
           <Box height="12px" />
         </>
       )}
-      {displaySoilSeries?.management && (
+      {displaySoilSeries.management && (
         <>
           <TranslatedParagraph i18nKey="site.soil_id.soil_info.management_title" />
           <Text variant="body1">{displaySoilSeries.management}</Text>
