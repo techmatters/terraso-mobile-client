@@ -17,11 +17,12 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {TFunction} from 'i18next';
+import {i18n as i18nType, TFunction} from 'i18next';
 
 import {
   LandCapabilityClass,
   SoilInfo,
+  SoilSeries,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -73,22 +74,69 @@ type SoilInfoDisplayUSProps = {
   soilInfo: SoilInfo;
 };
 
+function getNormalizedSoilName(soilSeriesName: string) {
+  let normalizedSoilName = soilSeriesName
+    .trim()
+    .toLowerCase()
+    .replace(/ /g, '_');
+
+  // TODO: Fix this typo in the database instead of handling it here
+  if (normalizedSoilName === 'albic_luvsiols') {
+    normalizedSoilName = 'albic_luvisols';
+  }
+
+  return normalizedSoilName;
+}
+
+function getSoilSeriesDisplayText(
+  soilSeries: SoilSeries,
+  t: TFunction,
+  i18n: i18nType,
+) {
+  // As of 2025-07 we only expect global (not US) soil match descriptions to come from the client-side i18n files
+  const soilKey = `soil.match_info.${getNormalizedSoilName(soilSeries.name)}`;
+
+  if (i18n.exists(soilKey)) {
+    const soilSeriesTextForDisplay: SoilSeries = {
+      name: i18n.exists(`${soilKey}.name`)
+        ? t(`${soilKey}.name`)
+        : soilSeries.name,
+      description: i18n.exists(`${soilKey}.description`)
+        ? t(`${soilKey}.description`)
+        : soilSeries.description,
+      management: i18n.exists(`${soilKey}.management`)
+        ? t(`${soilKey}.management`)
+        : soilSeries.management,
+      fullDescriptionUrl: soilSeries.fullDescriptionUrl ?? undefined,
+      taxonomySubgroup: soilSeries.taxonomySubgroup ?? undefined,
+    };
+    return soilSeriesTextForDisplay;
+  } else {
+    return soilSeries;
+  }
+}
+
 function SoilInfoDisplayGlobal({soilInfo}: SoilInfoDisplayGlobalProps) {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+  const displaySoilSeries = getSoilSeriesDisplayText(
+    soilInfo.soilSeries,
+    t,
+    i18n,
+  );
 
   return (
     <Column space="0px">
-      {soilInfo.soilSeries.description && (
+      {displaySoilSeries.description && (
         <>
           <TranslatedParagraph i18nKey="site.soil_id.soil_info.description_title" />
-          <Text variant="body1">{soilInfo.soilSeries.description}</Text>
+          <Text variant="body1">{displaySoilSeries.description}</Text>
           <Box height="12px" />
         </>
       )}
-      {soilInfo.soilSeries.management && (
+      {displaySoilSeries.management && (
         <>
           <TranslatedParagraph i18nKey="site.soil_id.soil_info.management_title" />
-          <Text variant="body1">{soilInfo.soilSeries.management}</Text>
+          <Text variant="body1">{displaySoilSeries.management}</Text>
           <Box height="12px" />
         </>
       )}
@@ -137,20 +185,21 @@ function SoilInfoDisplayUS({dataSource, soilInfo}: SoilInfoDisplayUSProps) {
           />
         </>
       )}
-      {soilInfo.landCapabilityClass && (
-        <Box>
+
+      <Box>
+        {soilInfo.landCapabilityClass && (
           <TranslatedParagraph
             i18nKey="site.soil_id.soil_info.land_class_label"
             values={{land: renderLCCString(t, soilInfo.landCapabilityClass)}}
           />
-          <TranslatedParagraph
-            i18nKey="site.soil_id.soil_info.data_source_label"
-            values={{
-              source: dataSource,
-            }}
-          />
-        </Box>
-      )}
+        )}
+        <TranslatedParagraph
+          i18nKey="site.soil_id.soil_info.data_source_label"
+          values={{
+            source: dataSource,
+          }}
+        />
+      </Box>
     </Column>
   );
 }
