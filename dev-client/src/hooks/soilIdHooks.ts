@@ -17,43 +17,48 @@
 
 import {useEffect} from 'react';
 
-import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useActiveSoilIdData} from 'terraso-mobile-client/context/SoilIdMatchContext';
-import {SoilIdResults} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {SoilIdEntry} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
-  useLocationBasedMatches,
-  useSiteDataBasedMatches,
+  useSiteMatches,
+  useTempLocationMatches,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchHooks';
 
-export type SoilIdData = SoilIdResults & {
-  status: SoilIdStatus;
-};
+export type SoilIdOutput = Omit<SoilIdEntry, 'input'>;
 
-export const useSoilIdData = (coords: Coords, siteId?: string): SoilIdData => {
+/* We expect to only ever use the following hook with one of coords or siteId */
+export type SoilIdLocationInput = WithCoords | WithSiteId;
+type WithCoords = {coords: Coords; siteId?: never};
+type WithSiteId = {coords?: never; siteId: string};
+
+export const useSoilIdOutput = (input: SoilIdLocationInput): SoilIdOutput => {
   /* Request active soil ID data based on this hook's input parameters */
-  const isDataBased = !!siteId;
+  const coords = 'coords' in input ? input.coords : undefined;
+  const siteId = 'siteId' in input ? input.siteId : undefined;
+  const isSiteBased = !!siteId;
   const {addCoords, addSite} = useActiveSoilIdData();
   useEffect(() => {
-    const activeData = isDataBased ? addSite(siteId) : addCoords(coords);
+    const activeData = isSiteBased ? addSite(siteId) : addCoords(coords!);
     return activeData.remove;
-  }, [isDataBased, coords, siteId, addSite, addCoords]);
+  }, [isSiteBased, coords, siteId, addSite, addCoords]);
 
   /* Select entries for relevant inputs and return the requested one */
-  const locationEntry = useLocationBasedMatches(coords);
-  const dataEntry = useSiteDataBasedMatches(siteId);
-  if (isDataBased) {
+  const tempLocationEntry = useTempLocationMatches(coords);
+  const siteEntry = useSiteMatches(siteId);
+
+  if (isSiteBased) {
     return {
-      locationBasedMatches: [],
-      dataBasedMatches: dataEntry?.matches ?? [],
-      status: dataEntry?.status ?? 'loading',
+      dataRegion: siteEntry?.dataRegion ?? undefined,
+      matches: siteEntry?.matches ?? [],
+      status: siteEntry?.status ?? 'loading',
     };
   } else {
     return {
-      locationBasedMatches: locationEntry?.matches ?? [],
-      dataBasedMatches: [],
-      status: locationEntry?.status ?? 'loading',
+      dataRegion: tempLocationEntry?.dataRegion ?? undefined,
+      matches: tempLocationEntry?.matches ?? [],
+      status: tempLocationEntry?.status ?? 'loading',
     };
   }
 };

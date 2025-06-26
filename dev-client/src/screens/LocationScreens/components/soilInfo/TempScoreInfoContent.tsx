@@ -17,38 +17,43 @@
 
 import {Divider} from 'react-native-paper';
 
-import {LocationBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
 import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
 
 type TempScoreInfoContentProps = {
-  locationMatch: LocationBasedSoilMatch;
   coords: Coords;
+  dataRegion: DataRegion;
+  tempLocationMatch: DataBasedSoilMatch;
 };
 
 export function TempScoreInfoContent({
-  locationMatch,
   coords,
+  dataRegion,
+  tempLocationMatch,
 }: TempScoreInfoContentProps) {
   return (
     <ScoreInfoContainer>
       <SoilInfoDisplay
-        dataSource={locationMatch.dataSource}
-        soilInfo={locationMatch.soilInfo}
+        dataRegion={dataRegion}
+        dataSource={tempLocationMatch.dataSource}
+        soilInfo={tempLocationMatch.soilInfo}
       />
       <Divider />
       <LocationScoreDisplay
         isSite={false}
-        match={locationMatch}
-        matchInfo={locationMatch.match}
+        dataRegion={dataRegion}
+        match={tempLocationMatch}
+        matchInfo={tempLocationMatch.locationMatch}
         coords={coords}
       />
       <Divider />
-      <PropertiesDisplay match={locationMatch} />
+      <PropertiesDisplay match={tempLocationMatch} />
     </ScoreInfoContainer>
   );
 }

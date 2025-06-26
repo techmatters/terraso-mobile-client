@@ -15,48 +15,35 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-
-import {SoilIdResults} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
 export const getTopMatch = (
-  results: SoilIdResults,
-): LocationBasedSoilMatch | DataBasedSoilMatch | undefined => {
-  const locationBased = results.locationBasedMatches;
-  const dataBased = results.dataBasedMatches;
-
-  if (dataBased.length > 0) {
-    return dataBased.reduce(getBetterDataMatch);
-  } else if (locationBased.length > 0) {
-    return locationBased.reduce(getBetterLocationMatch);
+  matches: DataBasedSoilMatch[],
+): DataBasedSoilMatch | undefined => {
+  if (matches.length > 0) {
+    return matches.reduce((a, b) => getBetterMatch(a, b));
   } else {
     return undefined;
   }
 };
 
-const getBetterDataMatch = (
+const getBetterMatch = (
   a: DataBasedSoilMatch,
   b: DataBasedSoilMatch,
 ): DataBasedSoilMatch => {
-  return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
+  if (a.combinedMatch && b.combinedMatch) {
+    return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
+  } else {
+    return a.locationMatch.rank < b.locationMatch.rank ? a : b;
+  }
 };
 
-const getBetterLocationMatch = (
-  a: LocationBasedSoilMatch,
-  b: LocationBasedSoilMatch,
-): LocationBasedSoilMatch => {
-  return a.match.rank < b.match.rank ? a : b;
+export const getSortedMatches = (matches: DataBasedSoilMatch[]) => {
+  return [...matches].sort((a, b) => {
+    if (a.combinedMatch && b.combinedMatch) {
+      return a.combinedMatch.rank - b.combinedMatch.rank;
+    } else {
+      return a.locationMatch.rank - b.locationMatch.rank;
+    }
+  });
 };
-
-export const getSortedDataBasedMatches = (soilIdData: SoilIdResults) =>
-  [...soilIdData.dataBasedMatches].sort(
-    (a, b) => a.combinedMatch.rank - b.combinedMatch.rank,
-  );
-
-export const getSortedLocationBasedMatches = (soilIdData: SoilIdResults) =>
-  [...soilIdData.locationBasedMatches].sort(
-    (a, b) => a.match.rank - b.match.rank,
-  );

@@ -17,20 +17,64 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
+import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  DataRegion,
+  getSoilMapSource,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 type Props = {
   isSite: boolean;
+  dataRegion: DataRegion;
 };
 
-export const TopSoilMatchesInfoContent = ({isSite}: Props) => {
+export const TopSoilMatchesInfoContent = ({isSite, dataRegion}: Props) => {
   const {t} = useTranslation();
 
   return (
-    <Text variant="body1">
-      {isSite
-        ? t('site.soil_id.matches.info.description.site')
-        : t('site.soil_id.matches.info.description.temp_location')}
-    </Text>
+    <Column space="12px">
+      <Column space="0px">
+        <TopSoilMatchesInfoParagraph isSite={isSite} dataRegion={dataRegion} />
+        <TranslatedParagraph i18nKey="site.soil_id.matches.info.description.need_help" />
+      </Column>
+      <ExternalLink
+        label={t('general.learn_more')}
+        url={t('site.soil_id.matches.info.description.learn_more_url')}
+      />
+    </Column>
   );
+};
+
+const TopSoilMatchesInfoParagraph = ({isSite, dataRegion}: Props) => {
+  const {t} = useTranslation();
+
+  const soilMapSource = t(getSoilMapSource(dataRegion));
+
+  if (isSite) {
+    if (dataRegion) {
+      return (
+        <TranslatedParagraph
+          i18nKey="site.soil_id.matches.info.description.site"
+          values={{soilMapSource}}
+        />
+      );
+    } else
+      return (
+        <TranslatedParagraph i18nKey="site.soil_id.matches.info.description.site_region_unknown" />
+      );
+  } else {
+    if (dataRegion) {
+      return (
+        <TranslatedParagraph
+          i18nKey="site.soil_id.matches.info.description.temp_location"
+          values={{soilMapSource}}
+        />
+      );
+    } else
+      return (
+        <TranslatedParagraph i18nKey="site.soil_id.matches.info.description.temp_location_region_unknown" />
+      );
+  }
 };

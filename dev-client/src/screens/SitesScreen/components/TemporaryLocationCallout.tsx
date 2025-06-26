@@ -21,10 +21,7 @@ import {ActivityIndicator, Divider} from 'react-native-paper';
 
 import {TFunction} from 'i18next';
 
-import {
-  DataBasedSoilMatch,
-  LocationBasedSoilMatch,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -40,7 +37,7 @@ import {
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {useSoilIdData} from 'terraso-mobile-client/hooks/soilIdHooks';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
@@ -65,8 +62,11 @@ export const TemporaryLocationCallout = ({
   const isOffline = useIsOffline();
 
   const elevation = useElevationData(coords);
-  const soilIdData = useSoilIdData(coords);
-  const topSoilMatch = useMemo(() => getTopMatch(soilIdData), [soilIdData]);
+  const soilIdOutput = useSoilIdOutput({coords});
+  const topSoilMatch = useMemo(
+    () => getTopMatch(soilIdOutput.matches),
+    [soilIdOutput],
+  );
 
   const onLearnMore = useCallback(() => {
     navigation.navigate('TEMP_LOCATION', {
@@ -89,23 +89,27 @@ export const TemporaryLocationCallout = ({
             label={t('site.soil_id_prediction')}
             value={
               <TopSoilMatchDisplay
-                status={soilIdData.status}
+                status={soilIdOutput.status}
                 topSoilMatch={topSoilMatch}
                 t={t}
               />
             }
           />
-          <Divider />
-          <CalloutDetail
-            label={t('site.ecological_site_prediction')}
-            value={
-              <EcologicalSiteMatchDisplay
-                status={soilIdData.status}
-                topSoilMatch={topSoilMatch}
-                t={t}
+          {soilIdOutput.dataRegion === 'US' && (
+            <>
+              <Divider />
+              <CalloutDetail
+                label={t('site.ecological_site_prediction')}
+                value={
+                  <EcologicalSiteMatchDisplay
+                    status={soilIdOutput.status}
+                    topSoilMatch={topSoilMatch}
+                    t={t}
+                  />
+                }
               />
-            }
-          />
+            </>
+          )}
           <Divider />
         </>
         <CalloutDetail
@@ -152,7 +156,7 @@ const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
 
 type SoilIdStatusDisplayTopMatchProps = {
   status: SoilIdStatus;
-  topSoilMatch: LocationBasedSoilMatch | DataBasedSoilMatch | undefined;
+  topSoilMatch: DataBasedSoilMatch | undefined;
   t: TFunction;
 };
 
