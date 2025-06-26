@@ -17,7 +17,6 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -30,13 +29,6 @@ export const NoMapDataAlertMessageBox = () => {
         <Text variant="body1" mb="sm">
           {t('site.soil_id.matches.no_map_data_body')}
         </Text>
-        <Text variant="body1">
-          {t('site.soil_id.matches.native_lands_intro')}
-        </Text>
-        <ExternalLink
-          label={t('site.soil_id.matches.native_lands_link')}
-          url={t('site.soil_id.matches.native_lands_url')}
-        />
       </Box>
     </AlertMessageBox>
   );

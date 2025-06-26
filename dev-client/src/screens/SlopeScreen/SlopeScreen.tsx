@@ -80,7 +80,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
             <HelpContentSpacer />
             <InfoButton
               sheetHeading={<TranslatedHeading i18nKey="slope.info.title" />}>
-              <SlopeInfoContent />
+              <SlopeInfoContent siteId={siteId} />
             </InfoButton>
           </Row>
           <Divider />

@@ -17,7 +17,7 @@
 
 import {
   DataBasedSoilMatch,
-  LocationBasedSoilMatch,
+  SoilIdDataRegionChoices,
   SoilIdInputData,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
@@ -27,21 +27,13 @@ import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
 
 export type CoordsKey = `(${string}, ${string})`;
 
-export type SoilIdLocationEntry = {
-  input: Coords;
-  matches: LocationBasedSoilMatch[];
-  status: SoilIdStatus;
-};
+export type DataRegion = SoilIdDataRegionChoices | undefined;
 
-export type SoilIdDataEntry = {
-  input: SoilIdInputData;
+export type SoilIdEntry = {
+  dataRegion: DataRegion;
+  input: SoilIdInputData | Coords;
   matches: DataBasedSoilMatch[];
   status: SoilIdStatus;
-};
-
-export type SoilIdResults = {
-  locationBasedMatches: LocationBasedSoilMatch[];
-  dataBasedMatches: DataBasedSoilMatch[];
 };
 
 export const isErrorStatus = (status: SoilIdStatus): boolean => {
@@ -52,63 +44,66 @@ export const coordsKey = (coords: Coords): CoordsKey => {
   return `(${coords.longitude.toFixed(COORDINATE_PRECISION)}, ${coords.latitude.toFixed(COORDINATE_PRECISION)})`;
 };
 
-export const locationEntryForStatus = (
+export const tempLocationEntryForStatus = (
   input: Coords,
   status: SoilIdStatus,
-): SoilIdLocationEntry => {
+): SoilIdEntry => {
   return {
+    dataRegion: undefined,
     input,
     status,
     matches: [],
   };
 };
 
-export const locationEntryForMatches = (
+export const tempLocationEntryForMatches = (
   input: Coords,
   matches: DataBasedSoilMatch[],
-): SoilIdLocationEntry => {
+  dataRegion: SoilIdDataRegionChoices,
+): SoilIdEntry => {
   return {
+    dataRegion: dataRegion,
     input,
+    matches: matches,
     status: 'ready',
-    matches: matches.map(
-      ({dataMatch: _, locationMatch: __, combinedMatch, ...rest}) => ({
-        ...rest,
-        match: combinedMatch,
-      }),
-    ),
   };
 };
 
-export const dataEntryForStatus = (
+export const siteEntryForStatus = (
   input: SoilIdInputData,
   status: SoilIdStatus,
-): SoilIdDataEntry => {
+): SoilIdEntry => {
   return {
+    dataRegion: undefined,
     input,
     status: status,
     matches: [],
   };
 };
 
-export const dataEntryForMatches = (
+export const siteEntryForMatches = (
   input: SoilIdInputData,
   matches: DataBasedSoilMatch[],
-): SoilIdDataEntry => {
+  dataRegion: SoilIdDataRegionChoices,
+): SoilIdEntry => {
   return {
+    dataRegion: dataRegion,
     input,
-    status: 'ready',
     matches: matches,
+    status: 'ready',
   };
 };
 
-export const flushErrorEntries = (
-  entries:
-    | Record<string, SoilIdLocationEntry>
-    | Record<string, SoilIdDataEntry>,
-) => {
+export const flushErrorEntries = (entries: Record<string, SoilIdEntry>) => {
   for (const id of Object.keys(entries)) {
     if (isErrorStatus(entries[id].status)) {
       delete entries[id];
     }
   }
 };
+
+export function getSoilMapSource(dataRegion: DataRegion): string {
+  if (dataRegion === 'GLOBAL') return 'site.soil_id.soil_info.FAO_HWSD';
+  else if (dataRegion === 'US') return 'site.soil_id.soil_info.USDA_NRCS';
+  else return '';
+}

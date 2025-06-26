@@ -22,66 +22,68 @@ import {ThunkAPI} from 'terraso-client-shared/store/utils';
 import {Coords} from 'terraso-client-shared/types';
 
 import {
-  dataEntryForMatches,
-  dataEntryForStatus,
-  locationEntryForMatches,
-  locationEntryForStatus,
-  SoilIdDataEntry,
+  siteEntryForMatches,
+  siteEntryForStatus,
+  SoilIdEntry,
+  tempLocationEntryForMatches,
+  tempLocationEntryForStatus,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 
-export const fetchLocationBasedSoilMatchesThunk = async (
+export const fetchTempLocationBasedSoilMatchesThunk = async (
   coords: Coords,
   _: User | null,
   __: ThunkAPI,
-) => fetchLocationBasedSoilMatches(coords);
+) => fetchTempLocationBasedSoilMatches(coords);
 
-export const fetchLocationBasedSoilMatches = async (coords: Coords) => {
-  // NOTE: we call the dataBasedSoilMatches endpoint here as a temporary workaround
-  //       to make the pre and post site creation soil lists consistent. The ideal
-  //       upstream fix would be to actually make the results of these endpoints
-  //       consistent for a fresh site.
+export const fetchTempLocationBasedSoilMatches = async (coords: Coords) => {
+  // NOTE: we call the dataBasedSoilMatches endpoint here to make the
+  //       pre and post site creation soil lists consistent.
   //       Upstream bug: https://github.com/techmatters/soil-id-algorithm/issues/126
   const result = await soilIdService.fetchDataBasedSoilMatches(coords, {
     depthDependentData: [],
   });
 
   if (result.__typename === 'SoilIdFailure') {
-    return locationEntryForStatus(coords, result.reason);
+    return tempLocationEntryForStatus(coords, result.reason);
   } else {
-    return locationEntryForMatches(coords, result.matches);
+    return tempLocationEntryForMatches(
+      coords,
+      result.matches,
+      result.dataRegion,
+    );
   }
 };
 
-export const fetchSiteDataBasedSoilMatchesThunk = async (
+export const fetchSiteBasedSoilMatchesThunk = async (
   params: {siteId: string; input: SoilIdInputData},
   _: User | null,
   thunkApi: ThunkAPI,
 ) =>
-  fetchSiteDataBasedSoilMatches(
+  fetchSiteBasedSoilMatches(
     params.siteId,
     params.input,
     thunkApi.getState() as AppState,
   );
 
-export const fetchSiteDataBasedSoilMatches = async (
+export const fetchSiteBasedSoilMatches = async (
   siteId: string,
   input: SoilIdInputData,
   state: AppState,
-): Promise<SoilIdDataEntry> => {
+): Promise<SoilIdEntry> => {
   const site = state.site.sites[siteId];
 
   /* Nothing to fetch if the site doesn't exist */
   if (!site) {
-    return dataEntryForStatus(input, 'error');
+    return siteEntryForStatus(input, 'error');
   }
 
   const coords = {latitude: site.latitude, longitude: site.longitude};
   const result = await soilIdService.fetchDataBasedSoilMatches(coords, input);
 
   if (result.__typename === 'SoilIdFailure') {
-    return dataEntryForStatus(input, result.reason);
+    return siteEntryForStatus(input, result.reason);
   } else {
-    return dataEntryForMatches(input, result.matches);
+    return siteEntryForMatches(input, result.matches, result.dataRegion);
   }
 };

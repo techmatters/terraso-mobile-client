@@ -107,15 +107,20 @@
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter observations and improve the results.",
-                "site": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties."
+                "site_US": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties.",
+                "site_global_or_unknown": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about soil characteristics and other descriptions."
             },
             "matches": {
                 "title": "Top Soil Matches",
                 "info": {
                     "title": "Top soil matches",
                     "description": {
-                        "site": "The soils listed are the most likely to be found at the site based on USDA NRCS soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
-                        "temp_location": "The soils listed are the most likely to be found at this location based on USDA NRCS soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores."
+                        "site": "The soils listed are the most likely to be found at the site based on {{soilMapSource}} soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
+                        "site_region_unknown": "The soils listed are the most likely to be found at the site based on soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
+                        "temp_location": "The soils listed are the most likely to be found at this location based on {{soilMapSource}} soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
+                        "temp_location_region_unknown": "The soils listed are the most likely to be found at this location based on soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
+                        "need_help": "\n<bold>Need help?</bold>\nConsult a soil expert to help interpret the observations and determine a soil match. You can learn more about soil map predictions and Soil ID matches on the website:",
+                        "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
                 "match_score": "{{score}}",
@@ -124,9 +129,6 @@
                 "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
                 "no_map_data_title": "No soil map data",
                 "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Observations can still be entered for this site, and if soil map data becomes available in the future, soil matches will appear here.",
-                "native_lands_intro": "Soil resources for Native lands:",
-                "native_lands_link": "nativeland.info",
-                "native_lands_url": "https://nativeland.info/",
                 "offline": "Soil matches will update when you are online.",
                 "selector": "This is the correct soil",
                 "selected": "Selected Soil"
@@ -154,6 +156,8 @@
                 }
             },
             "soil_info": {
+                "description_title": "<bold>Description</bold>",
+                "management_title": "<bold>Management</bold>",
                 "series_descr_url": "Soil Series Full Description",
                 "eco_descr_url": "Ecological Site Full Description",
                 "eco_name_label": "<bold>Ecological Site Name:</bold> {{name}}",
@@ -164,12 +168,15 @@
                 "inside_map_label": "In soil map unit",
                 "outside_map_label": "In adjacent map unit, {{distance}} {{units}} distance",
                 "map_units_METRIC": "meters",
-                "properties_header": "Soil Properties"
+                "properties_header": "Soil Properties",
+                "FAO_HWSD": "FAO HWSD",
+                "USDA_NRCS": "USDA NRCS"
             },
             "location_score_info": {
                 "header": "Location Score",
                 "p1": "Location score is based solely on soil maps and the site’s location. This does not take into account observations that have been entered by users at the site.",
-                "p2": "LandPKS bases soil matches on soil maps created by the USDA NRCS. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p2": "LandPKS bases soil matches on soil maps created by the {{soilMapSource}}. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
+                "p2_region_unknown": "LandPKS bases soil matches on soil maps. Traditional soil maps don’t predict a single soil for each location; they are organized into “soil map units” that each contain multiple possible soils. Each possible soil in a map unit is estimated to cover a certain percentage of the unit.",
                 "p3": "The location score for a soil match is based on the percentage of the map unit that the soil covers. It is then reduced by a value proportional to the distance of the map unit from the site. In other words, soils in the site’s map unit generally receive a higher location score than soils in a neighboring map unit. Similarly, soils that make up a larger percentage of the map unit receive a higher location score than soils that make up a smaller percentage of the map unit."
             },
             "soil_properties_score_info": {
@@ -230,7 +237,7 @@
         "title": "Projects",
         "header": "Projects",
         "offline_create": "Projects can only be created and managed while online.",
-        "offline_cant_edit": "You are offline. Projects can't be edited.",
+        "offline_cant_edit": "You are offline. Projects can’t be edited.",
         "none": {
             "header": "You don’t have any projects.",
             "info": "Projects let you group sites, set requirements, and manage team members."
@@ -474,7 +481,8 @@
         "not_available_offine": "Not available offline",
         "offline_sign_in_title": "Sign in not available offline",
         "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online.",
-        "not_available": "Not available"
+        "not_available": "Not available",
+        "learn_more": "Learn more"
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",
@@ -855,13 +863,902 @@
                 "EVEN": "Yes",
                 "UNEVEN": "No"
             }
+        },
+        "match_info": {
+            "acrisols": {
+                "name": "Acrisols",
+                "description": "Acrisols are acidic and relatively infertile soils. Supplemental fertilization and liming will be needed to create a productive soil for crop use. These soils are also high in soluble aluminum (Al) which is toxic to plants.",
+                "management": "Because the soil tends to be acidic (has a low soil pH) and high in Al, phosphorus fertilizer is quickly “fixed” by the soil, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Application of nitrogen (N) is essential, and this can be accomplished either through application of correct rates of fertilizer (such as urea), or through use of cover crops, green manures and rotations. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Even with cover crops or similar practices, supplemental N fertilization will likely be needed as organic N will not be converted to the crop-needed inorganic N in sufficient quantities in the cropping year. Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate, which will take Al out of solution) can help to reduce aluminum toxicity. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. "
+            },
+            "haplic_acrisols": {
+                "name": "Haplic Acrisols",
+                "description": "Haplic Acrisols are acidic and relatively infertile soils. Supplemental fertilization and liming will be needed to create a productive soil for crop use. These soils are also high in soluble aluminum (Al) which is toxic to plants.",
+                "management": "Because the soil tends to be acidic (has a low soil pH) and high in Al, phosphorus fertilizer is quickly “fixed” by the soil, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Application of nitrogen (N) is essential, and this can be accomplished either through application of correct rates of fertilizer (such as urea), or through use of cover crops, green manures and rotations. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Even with cover crops or similar practices, supplemental N fertilization will likely be needed as organic N will not be converted to the crop-needed inorganic N in sufficient quantities in the cropping year. Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate, which will take Al out of solution) can help to reduce aluminum toxicity. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. "
+            },
+            "ferric_acrisols": {
+                "name": "Ferric Acrisols",
+                "description": "Ferric Acrisols are acidic and relatively infertile soils. Supplemental fertilization and liming will be needed to create a productive soil for crop use. These soils are also high in soluble aluminum (Al) which is toxic to plants. These soils are high in iron and iron nodules are commonly present.",
+                "management": "Because the soil tends to be acidic (has a low soil pH) and high in Al, phosphorus fertilizer is quickly “fixed” by the soil, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Application of nitrogen (N) is essential, and this can be accomplished either through application of correct rates of fertilizer (such as urea), or through use of cover crops, green manures and rotations. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Even with cover crops or similar practices, supplemental N fertilization will likely be needed as organic N will not be converted to the crop-needed inorganic N in sufficient quantities in the cropping year. Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which will take Al out of solution, can help to reduce aluminum toxicity. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. "
+            },
+            "gleyic_acrisols": {
+                "name": "Gleyic Acrisols",
+                "description": "Gleyic Acrisols are acidic and relatively infertile soils. Supplemental fertilization and liming will be needed to create a productive soil for crop use. These soils are also high in soluble aluminum (Al) which is toxic to plants. Gleyic Acrisols have a seasonal high-water table resulting in saturation during some time of the year.",
+                "management": "Because the soil tends to be acidic (has a low soil pH) and high in Al, phosphorus fertilizer is quickly “fixed” by the soil, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Application of nitrogen (N) is essential, and this can be accomplished either through application of correct rates of fertilizer (such as urea), or through use of cover crops, green manures and rotations. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Even with cover crops or similar practices, supplemental N fertilization will likely be needed as organic N will not be converted to the crop-needed inorganic N in sufficient quantities in the cropping year. Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate) which will take Al out of solution, can help to reduce aluminum toxicity. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Periods of saturation limit root growth and increase nitrogen loss. To prevent N loss from leaching anddenitrification consider use of slow-release N fertilizers (sulfur-coated urea (SCU), for example), if those slow-release products are  available, or use manures or other organic wastes for their slow-release properties. Drainage of these soils may be needed, but this can be problematic, as the wetness is due to the high water table. "
+            },
+            "humic_acrisols": {
+                "name": "Humic Acrisols",
+                "description": "Humic Acrisols are acidic and relatively infertile soils. Supplemental fertilization and liming will be needed to create a productive soil for crop use. These soils are also high in soluble aluminum (Al) which is toxic to plants. Humic Acrisols contain large amounts of organic matter in the upper soil layer. They often have poor structure, but will become more productive in systems that include crop rotations, cover crops or green manures. ",
+                "management": "Because the soil tends to be acidic (has a low soil pH) and high in Al, phosphorus fertilizer is quickly “fixed” by the soil, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Application of nitrogen (N) is essential, and this can be accomplished either through application of correct rates of fertilizer (such as urea), or through use of cover crops, green manures and rotations. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Even with cover crops or similar practices, supplemental N fertilization will likely be needed as organic N will not be converted to the crop-needed inorganic N in sufficient quantities in the cropping year. Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate) which will take Al out of solution, can help to reduce aluminum toxicity. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. "
+            },
+            "plinthic_acrisols": {
+                "name": "Plinthic Acrisols",
+                "description": "Plinthic Acrisols are acidic and relatively infertile soils. Supplemental fertilization and liming will be needed to create a productive soil for crop use. These soils are also high in soluble aluminum (Al) which is toxic to plants. Plinthic Acrisols contain an iron rich clay layer (the ‘plinthic layer’) that hardens when exposed to air andrepeated wetting. They often have poor structure and will become more productive in systems that include crop rotations, cover crops or green manures. ",
+                "management": "Because the soil tends to be acidic (has a low soil pH) and high in Al, phosphorus fertilizer is quickly “fixed” by the soil, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Application of nitrogen is essential, and this can be accomplished either through application of correct rates of fertilizer (such as urea), or through use of cover crops, green manures and rotations. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Even with cover crops or similar practices, supplemental N fertilization will likely be needed as organic N will not be converted to the crop-needed inorganic N in sufficient quantities in the cropping year. Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate) which will help take Al out of solution, can help to reduce aluminum toxicity. Land management practices should maximize soil cover, crop rotation and agroforestry. Agronomic practices that protect the soil surface and avoid erosion, so that the iron rich clay layer is not exposed, are critical. Use of rotations and inclusion of deep-rooted crops is also recommended to help penetrate the clay layer. "
+            },
+            "haplic_alisols": {
+                "name": "Haplic Alisols",
+                "description": "Haplic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. They also have high levels of soluble aluminum, which is toxic to plants. They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. ",
+                "management": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. Because they are shallow these soils are not well suited for cultivation for crops, and so use for grazing should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotations andcover crops, or other means of organic matter addition for the development of improved fertility and water holding capacity.  "
+            },
+            "ferric_alisols": {
+                "name": "Ferric Alisols",
+                "description": "Ferric Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. They also have high levels of soluble aluminum, which is toxic to plants. They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. These soils are high in iron and iron nodules are commonly present. ",
+                "management": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. Because they are shallow these soils are not well suited for cultivation for crops, and so use for grazing should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotations andcover crops, or other means of organic matter addition for the development of improved fertility and water holding capacity."
+            },
+            "gleyic_alisols": {
+                "name": "Gleyic Alisols",
+                "description": "Gleyic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. They also have high levels of soluble aluminum, which is toxic to plants. They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. These soils experience prolonged saturation from shallow groundwater. ",
+                "management": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotation andcover crops, or other means of organic matter addition for the development of improved fertility and water holding capacity. Drainage of these soils may be needed. However, since this is saturation via groundwater this may not be possible, and thus shallow-rooted crops should be considered. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers. "
+            },
+            "humic_alisols": {
+                "name": "Humic Alisols",
+                "description": "Humic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. They also have high levels of soluble aluminum, which is toxic to plants. They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. These soils have a high amount of organic matter in the top layer of soil. ",
+                "management": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotation andcover crops, or other means of organic matter addition for the development of improved soil fertility and water holding capacity.  "
+            },
+            "plinthic_alisols": {
+                "name": "Plinthic Alisols",
+                "description": "Plinthic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. They also have high levels of soluble aluminum, which is toxic to plants. They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. These soils have an iron-rich clay layer, which can harden when exposed to air. ",
+                "management": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. Because they are shallow these soils are not well suited for cultivation for crops, and so use for grazing should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotation andcover crops, or other means of organic matter addition for the development of improved soil fertility and water holding capacity. Agronomic practices that protect the soil surface and avoid erosion, so that the iron-rich clay layer is not exposed, are critical. "
+            },
+            "stagnic_alisols": {
+                "name": "Stagnic Alisols",
+                "description": "Stagnic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. They also have high levels of soluble aluminum, which is toxic to plants. They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. Stagnic Alisols have visible evidence of prolonged waterlogging by surface water. ",
+                "management": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. Because they are shallow these soils are not well suited for cultivation for crops, and so use for grazing should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Although not usually recommended, if the soil is used for cultivated cropping then  fertilization should be combined with crop rotation andcover crops, or other means of organic matter addition for the development of improved soil fertility and water-holding capacity. Drainage of these soils may be needed. Since saturation is caused by surface water, surface drainage andmaintenance of cover to improve infiltration and water holding could be useful. Consider the use of shallow rooted crops. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers. "
+            },
+            "andosols": {
+                "name": "Andosols",
+                "description": "Andosols form in volcanic materials. These soils are highly erodible and have high P fixation, but most have relatively good water holding capacity and soil fertility. ",
+                "management": "Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover. Because these soils are formed from volcanic materials a part of their soil charge is positive, which means they can ‘fix’ phosphorus, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Agroforestry systems can help minimize erosion. "
+            },
+            "haplic_andosols": {
+                "name": "Haplic Andosols",
+                "description": "Haplic Andosols form in volcanic materials. These soils are highly erodible and have high P fixation, but most have relatively good water holding capacity and soil fertility. ",
+                "management": "Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover. Because these soils are formed from volcanic materials a part of their soil charge is positive, which means they can ‘fix’ phosphorus, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Agroforestry systems can help minimize erosion. "
+            },
+            "mollic_andosols": {
+                "name": "Mollic Andosols",
+                "description": "Mollic Andosols form in volcanic materials. These soils are highly erodible and have high P fixation, but most have relatively good water holding capacity and soil fertility. Mollic Andosols have a thick surface horizon high in organic matter and nutrients.  It is usually dark in color. ",
+                "management": "Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover. Because these soils are formed from volcanic materials a part of their soil charge is positive, which means they can ‘fix’ phosphorus, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Agroforestry systems can help minimize erosion. "
+            },
+            "umbric_andosols": {
+                "name": "Umbric Andosols",
+                "description": "Umbric Andosols form in volcanic materials. These soils are highly erodible and have high P fixation, but most have relatively good water holding capacity and soil fertility. Umbric Andosols have a thick surface horizon but soils are wetter and have fewer nutrients than Mollic Andosols. ",
+                "management": "Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover. Because these soils are formed from volcanic materials a part of their soil charge is positive, which means they can ‘fix’ phosphorus, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Agroforestry systems can help minimize erosion. Additional drainage may make these soils more productive. Fertilization will be essential for effective crop production. "
+            },
+            "vitric_andosols": {
+                "name": "Vitric Andosols",
+                "description": "Vitric Andosols form in volcanic materials. These soils are highly erodible and have high P fixation, but most have relatively good water holding capacity and soil fertility. Vitric Andosols have slightly coarser (are higher in sand) textures and lower water retention than other Andosols. ",
+                "management": "Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover. Because these soils are formed from volcanic materials a part of their soil charge is positive, which means they can ‘fix’ phosphorus, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Agroforestry systems can help minimize erosion. Cover crops or other means for organic matter addition will help to retain soil moisture for crop use. "
+            },
+            "gleyic_andosols": {
+                "name": "Gleyic Andosols",
+                "description": "Gleyic Andosols form in volcanic materials. These soils are highly erodible and have high P fixation, but most have relatively good water holding capacity and soil fertility. Gleyic Andosols are saturated with shallow groundwater above one meter. ",
+                "management": "Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover. Because these soils are formed from volcanic materials a part of their soil charge is positive, which means they can ‘fix’ phosphorus, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Agroforestry systems can help minimize erosion. Drainage will be needed to make these soils most productive. Nitrogen fertilization should be done when soils are not saturated so as to avoid N loss by denitrification andleaching. If available, use of slow release N sources could help reduce such N loss. "
+            },
+            "gelic_andosols": {
+                "name": "Gelic Andosols",
+                "description": "Gelic Andosols form in volcanic materials. These soils are highly erodible and have high P fixation, but most have relatively good water holding capacity and soil fertility. Gelic Andosols have permafrost above two meters and are generally unsuitable for cultivation.",
+                "management": "Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover. Because these soils are formed from volcanic materials a part of their soil charge is positive, which means they can ‘fix’ phosphorus, making it unavailable to plants in the cropping season. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Agroforestry systems can help minimize erosion. If used for production care should be taken to maintain organic matter, for when the permafrost is opened soil subsidence will occur. "
+            },
+            "anthrosols": {
+                "name": "Anthrosols",
+                "description": "Anthrosols are a broad group of soils that have been modified substantially by human activities. These soils are highly cultivated with horizons mixed in the upper portions of the soil.",
+                "management": "Because these soils have had long-term human disruptionthey are highly variable in characteristics, and few general management guidelines can be assigned. Producers should carefully study their fields, and examine variability across their areas to determine different management needs. Management should be used to ensure that soil structure and porosity are preserved in these soils. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. For best yield fertilization is recommended. "
+            },
+            "aric_anthrosols": {
+                "name": "Aric Anthrosols",
+                "description": "Aric Anthrosols are a broad group of soils that have been modified substantially by human activities. These soils are highly cultivated with horizons mixed in the upper portions of the soil.",
+                "management": "Because these soils have had long-term human disruptionthey are highly variable in characteristics, and few general management guidelines can be assigned. Producers should carefully study their fields, and examine variability across their areas to determine different management needs. Management should be used to ensure that soil structure and porosity are preserved in these soils. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. For best yield fertilization is recommended. "
+            },
+            "cumulic_anthrosols": {
+                "name": "Cumulic Anthrosols",
+                "description": "Cumulic Anthrosols are a broad group of soils that have been modified substantially by human activities. These soils have fine textured (high in clay) surface horizons from long term irrigation andadditions.",
+                "management": "Because these soils have had long-term human disruptionthey are highly variable in characteristics, and few general management guidelines can be assigned. Producers should carefully study their fields, and examine variability across their areas to determine different management needs. For best yield fertilization is recommended. Because of the fine texture of these soils care should be taken to maximize infiltration, by inclusion of organic matter, rotations, and deep-rooted crops. "
+            },
+            "cambic_arenosols": {
+                "name": "Cambic Arenosols",
+                "description": "Cambic Arenosols are sandy soils with minimal soil development. They are inherently low in nutrients and water holding capacity. Cambic Arenosols have a minimally developed subsoil horizon that can retain slightly higher amounts of nutrients and water.",
+                "management": "Since these soils have poor water and nutrient retention they must be fertilized and irrigated for optimal productivity. Management practices to improve nutrient supply and water holding capacity include the addition of organic matter, and use of cover crops and crop rotation. Best productivity will be achieved through the use of supplemental irrigation, use of tools such as mulches or covers to preserve soil moisture, and fertilization. "
+            },
+            "fimic_anthrosols": {
+                "name": "Fimic Anthrosols",
+                "description": "Fimic Anthrosols are a broad group of soils that have been modified substantially by human activities. These soils have surfaces resulting from long term manuring and similar additions. Phosphorous concentrations are usually high.",
+                "management": "Because these soils have had long-term human disruptionthey are highly variable in general characteristics, and few general management guidelines can be assigned. Producers should carefully study their fields, and examine variability across their areas to determine different management needs. Avoid any additional application of P fertilizer, following soil tests for guidance. "
+            },
+            "urbic_anthrosols": {
+                "name": "Urbic Anthrosols",
+                "description": "Urbic Anthrosols are a broad group of soils that have been modified substantially by human activities. These soils are highly disturbed soils formed from fill material from mines, development, waste disposal and other land use activities. Properties vary and are related to the source of materials. ",
+                "management": "Because these soils have had long-term human disruptionthey are highly variable in general characteistics, and few general management guidelines can be assigned. Producers should carefully study their fields, and examine variability across their areas to determine different management needs. Because these soils may be disturbed over very small areas, soil testing will be needed to properly evaluate variability in properties within a field. If plant productivity is poor further investigation into the source of the fill material may be needed – heavy metals, salt-affected wastes, or other types of unusual human-made additions are possibilities. "
+            },
+            "arenosols": {
+                "name": "Arenosols",
+                "description": "Arenosols are sandy soils with minimal soil development. They are inherently low in nutrients and water holding capacity.",
+                "management": "Since these soils have poor water and nutrient retention they must be fertilized and irrigated for optimal productivity. Management practices to improve nutrient supply and water holding capacity include the addition of organic matter, and use of cover crops and crop rotation. Best productivity will be achieved through the use of supplemental irrigation, use of tools such as mulches or covers to preserve soil moisture, and fertilization. "
+            },
+            "haplic_arenosols": {
+                "name": "Haplic Arenosols",
+                "description": "Haplic Arenosols are sandy soils with minimal soil development. They are inherently low in nutrients and water holding capacity.",
+                "management": "Since these soils have poor water and nutrient retention they must be fertilized and irrigated for optimal productivity. Management practices to improve nutrient supply and water holding capacity include the addition of organic matter, and use of cover crops and crop rotation. Best productivity will be achieved through the use of supplemental irrigation, use of tools such as mulches or covers to preserve soil moisture, and fertilization. "
+            },
+            "luvic_arenosols": {
+                "name": "Luvic Arenosols",
+                "description": "Luvic Arenosols are sandy soils with minimal soil development. They are inherently low in nutrients and water holding capacity. Luvic Arenosols have slightly increased clay content with depth and thus increased moisture and nutrient retention.",
+                "management": "Since these soils have poor water and nutrient retention they must be fertilized and irrigated for optimal productivity. Management practices to improve nutrient supply and water holding capacity include the addition of organic matter, and use of cover crops and crop rotation. Best productivity will be achieved through the use of supplemental irrigation, use of tools such as mulches or covers to preserve soil moisture, and fertilization. "
+            },
+            "ferralic_arenosols": {
+                "name": "Ferralic Arenosols",
+                "description": "Ferralic Arenosols are sandy soils with minimal soil development. They are inherently low in nutrients and water holding capacity. These soils are high in iron and have low nutrient retention.",
+                "management": "Since these soils have poor water and nutrient retention they must be fertilized and irrigated for optimal productivity. Management practices to improve nutrient supply and water holding capacity include the addition of organic matter, and use of cover crops and crop rotation. Best productivity will be achieved through the use of supplemental irrigation, use of tools such as mulches or covers to preserve soil moisture, and fertilization. Increased attention to the supply of phosphorus may be needed, as excessive iron may increase P fixation in these soils. "
+            },
+            "albic_arenosols": {
+                "name": "Albic Arenosols",
+                "description": "Albic Arenosols are sandy soils with minimal soil development. They are inherently low in nutrients and water holding capacity. These soils are highly leached with low nutrients and available water.",
+                "management": "Since these soils have poor water and nutrient retention they must be fertilized and irrigated for optimal productivity. Management practices to improve nutrient supply and water holding capacity include the addition of organic matter, and use of cover crops and crop rotation. Best productivity will be achieved through the use of supplemental irrigation, use of tools such as mulches or covers to preserve soil moisture, and fertilization. These soils should have particular attention paid to minimizing nutrient loss during fertilization. If available, slow release N sources should be considered, or more frequent application of N at lower rates. "
+            },
+            "calcaric_arenosols": {
+                "name": "Calcaric Arenosols",
+                "description": "Calcaric Arenosols are sandy soils with minimal soil development. They are inherently low in nutrients and water holding capacity. These soils have carbonates above 50 cm.",
+                "management": "Since these soils have poor water and nutrient retention they must be fertilized and irrigated for optimal productivity. Management practices to improve nutrient supply and water holding capacity include the addition of organic matter, and use of cover crops and crop rotation. Best productivity will be achieved through the use of supplemental irrigation, use of tools such as mulches or covers to preserve soil moisture, and fertilization. The presence of carbonates will not greatly affect productivity. "
+            },
+            "gleyic_arenosols": {
+                "name": "Gleyic Arenosols",
+                "description": "Gleyic Arenosols are sandy soils with minimal soil development. They are inherently low in nutrients and water holding capacity. These soils are saturated with shallow groundwater above one meter.",
+                "management": "Since these soils have poor water and nutrient retention they must be fertilized and irrigated for optimal productivity. Management practices to improve nutrient supply and water holding capacity include the addition of organic matter, and use of cover crops and crop rotation. Best productivity will be achieved through the use of supplemental irrigation, use of tools such as mulches or covers to preserve soil moisture, and fertilization. Drainage of these soils may be needed. However, since this is saturation from groundwater installation of drainage lines may not be possible, and thus shallow-rooted crops should be considered. If fertilized and not drained the loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available). "
+            },
+            "calcisols": {
+                "name": "Calcisols",
+                "description": "Calcisols mostly occur in semiarid and arid climates.  They are calcareous soils, with high base saturation, pH, and P fixation. Many have gravelly surface horizons. ",
+                "management": "These soils have low organic matter content, are dry, and often stony. They are calcareous, and will have high base saturation (Ca, Mg and K) and high soil pH. If used, the soils are best suited for grazing or limited use with drought tolerant crops. At best they could be cultivated every-other or every-third year, with fallow in the years in which the soils are not used for crops. If irrigated, care must be taken so that the soils do not become high in salts (saline). High quality irrigation water that is low in salts would be needed to prevent salinization."
+            },
+            "haplic_calcisols": {
+                "name": "Haplic Calcisols",
+                "description": "Haplic Calcisols mostly occur in semiarid and arid climates.  They are calcareous soils, with high base saturation, pH, and P fixation. Many have gravelly surface horizons. ",
+                "management": "These soils have low organic matter content, are dry, and often stony. They are calcareous, and will have high base saturation (Ca, Mg and K) and high soil pH. If used, the soils are best suited for grazing or limited use with drought tolerant crops. At best they could be cultivated every-other or every-third year, with fallow in the years in which the soils are not used for crops. If irrigated, care must be taken so that the soils do not become high in salts (saline). High quality irrigation water that is low in salts would be needed to prevent salinization."
+            },
+            "luvic_calcisols": {
+                "name": "Luvic Calcisols",
+                "description": "Luvic Calcisols mostly occur in semiarid and arid climates, and are calcareous soils with high base saturation, pH, and P fixation. Many have gravelly surface horizons. Luvic Calcisols have increasing clay with depth and thus increased moisture and nutrient retention. ",
+                "management": "These soils have low organic matter content, are dry, and often stony. They are calcareous, and will have high base saturation (Ca, Mg and K) and high soil pH. These soils have a moderate-to-high water holding capacity and if used are best suited for grazing or limited use with drought tolerant crops. At best they could be cultivated every-other or every-third year, with fallow in the years in which the soils are not used for crops. If irrigated, care must be taken so that the soils do not become high in salts (saline).  High quality irrigation water that is low in salts would be needed to prevent salinization."
+            },
+            "petric_calcisols": {
+                "name": "Petric Calcisols",
+                "description": "Petric Calcisols mostly occur in semiarid and arid climates and are calcareous soils with high base saturation, pH, and P fixation. Many have gravelly surface horizons. Petric Calcisols have a root-limiting, cemented, petrocalcic horizon within 1 m of the soil surface. ",
+                "management": "These soils have low organic matter content, are dry, and often stony. They are calcareous, and will have high base saturation (Ca, Mg and K) and high soil pH. Due to their root-limiting layer, these soils should be used for grazing, or limited cultivation of drought tolerant, shallow rooted crops. At best they could be cultivated every-other or every-third year, with fallow in the years in which the soils are not used for crops. If irrigated, care must be taken so that the soils do not become high in salts (saline) and high quality irrigation water that is low in salts would be needed to prevent salinization."
+            },
+            "cambisols": {
+                "name": "Cambisols",
+                "description": "Cambisols are widely occurring soils with limited soil development. These are productive soils with high base saturation (Ca, Mg and K) in the upper portion of soil. ",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. Cambisols will have high base saturation, which means that the available soil nutrients will be predominantly calcium, potassium, and magnesium. These soils are well suited for crop production, and can be intensively used. Fertilization should be used to improve productivity, and irrigation can be included to further boost productivity. "
+            },
+            "eutric_cambisols": {
+                "name": "Eutric Cambisols",
+                "description": "Eutric Cambisols are widely occurring soils with limited soil development. These are productive soils with high base saturation (Ca, Mg and K) in the upper portion of soil. ",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. Eutric Cambisols will have high base saturation, which means that the available soil nutrients will be predominantly calcium, potassium, and magnesium. These soils are well suited for crop production, and can be intensively used. Fertilization should be used to improve productivity, and irrigation can be included to further boost productivity. "
+            },
+            "dystric_cambisols": {
+                "name": "Dystric Cambisols",
+                "description": "Dystric Cambisols are widely occurring soils with limited soil development. These are less productive soils with low base saturation in the upper portion of soil.",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. Because this soil has a low base saturation, the application of bases (through fertlization) may be needed for most productive crop yield. If the soil pH is low calcium (and possibly magnesium, if dolomitic lime is used) can be supplied through the addition of lime. If the soil pH is suitable for crop production then gypsum (CaSO4) can be used as the Ca source, if needed, or other sources such as MgSO4 could be applied (if soil test indicates a need). Proper fertilization will also supply potassium, if soil test indicates a need. "
+            },
+            "humic_cambisols": {
+                "name": "Humic Cambisols",
+                "description": "Humic Cambisols are widely occurring soils with limited soil development. These soils have higher organic matter in surface horizons. When climate and landscape are favorable, these soils can be productive. ",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. These soils are well suited for crop production, and can be intensively used. Fertilization should be used to improve productivity, and irrigation can be included to further boost productivity. "
+            },
+            "calcaric_cambisols": {
+                "name": "Calcaric Cambisols",
+                "description": "Calcaric Cambisols are widely occurring soils with limited soil development. These soils are calcareous in a soil layer below the surface.",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. These soils are well suited for crop production, and can be intensively used. Fertilization should be used to improve productivity, and irrigation can be included to further boost productivity. "
+            },
+            "chromic_cambisols": {
+                "name": "Chromic Cambisols",
+                "description": "Chromic Cambisols are widely occurring soils with limited soil development. These are well drained soils, with intense color. When climate and landscape are favorable, they can be productive soils. ",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. These soils are well suited for crop production, and can be intensively used. Fertilization should be used to improve productivity, and irrigation can be included to further boost productivity. "
+            },
+            "vertic_cambisols": {
+                "name": "Vertic Cambisols",
+                "description": "Vertic Cambisols are widely occurring soils with limited soil development. These soils are clayey soils that are sticky and plastic when wet, with poor soil physical properties. ",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. The clay type in this soil will expand when wetted and shrink when dry. Although fertile, care should be taken to not excessively till these soils, as soil structure could be negatively affected. "
+            },
+            "ferralic_cambisols": {
+                "name": "Ferralic Cambisols",
+                "description": "Ferralic Cambisols are widely occurring soils with limited soil development. These soils have a poor ability to retain nutrients due to low cation exchange capacity.  Because they retain fewer nutrients they are typically less productive.",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. The clay type in this soil is extremely weathered, and as such will have low nutrient supplying capacity. Fertilization will be required to improve productivity. "
+            },
+            "gleyic_cambisols": {
+                "name": "Gleyic Cambisols",
+                "description": "Gleyic Cambisols are widely occurring soils with limited soil development. These soils are saturated with shallow groundwater above one meter of soil depth.",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. Drainage of these soils may be needed. However, since this is saturation from groundwater installation of drainage lines may not be possible, and thus shallow-rooted crops should be considered. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available). "
+            },
+            "gelic_cambisols": {
+                "name": "Gelic Cambisols",
+                "description": "Gelic Cambisols are widely occurring soils with limited soil development. Gelic Cambisols have permafrost above two meters and are generally unsuitable for cultivation.",
+                "management": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. If used for production care should be taken to maintain organic matter, for as the permafrost is opened soil subsidence will occur. "
+            },
+            "chernozems": {
+                "name": "Chernozems",
+                "description": "Chernozems are highly productive soils with good physical and chemical properties. They have high soil quality, and dark and rich topsoil layers.  ",
+                "management": "These are, in general, excellent soils for crop production. They have excellent porosity and water holding capacity, and are suitable for a wide range of crop production systems."
+            },
+            "haplic_chernozems": {
+                "name": "Haplic Chernozems",
+                "description": "Haplic Chernozems are highly productive soils with good physical and chemical properties. They have high soil quality, and dark and rich topsoil layers.  ",
+                "management": "These are, in general, excellent soils for crop production. They have excellent porosity and water holding capacity, and are suitable for a wide range of crop production systems."
+            },
+            "calcic_chernozems": {
+                "name": "Calcic Chernozems",
+                "description": "Calcic Chernozems are highly productive soils with good physical and chemical properties. They have high soil quality and dark and rich topsoil layers. Calcic Chernozems have carbonates and high pH in the upper portion of soil.",
+                "management": "These are, in general, excellent soils for crop production. They have excellent porosity and water holding, and are suitable for a wide range of crop production systems. Some specialty crops may be sensitive to being grown in higher pH soils, and supplemental iron may be needed. Use of fertilizers may be needed. Because they have a calcareous subsoil they can fix phosphorus, and thus proper P fertilization may be needed. "
+            },
+            "luvic_chernozems": {
+                "name": "Luvic Chernozems",
+                "description": "Luvic Chernozems are highly productive soils with good physical and chemical properties. They have high soil quality and dark and rich topsoil layers. Luvic Chernozems have increasing clay with depth and thus increased moisture and nutrient retention.",
+                "management": "These are, in general, excellent soils for crop production. They have excellent porosity and water holding, and are suitable for a wide range of crop production systems. These soils have a moderate-to-high water holding capacity, and thus could be suitable for dryland production systems. "
+            },
+            "glossic_chernozems": {
+                "name": "Glossic Chernozems",
+                "description": "Glossic Chernozems are highly productive soils with good physical and chemical properties. They have high soil quality and dark and rich topsoil layers. Glossic Chernozems have high organic matter, which  extends into subsurface horizons. ",
+                "management": "These are, in general, excellent soils for crop production. They have excellent porosity and water holding, and are suitable for a wide range of crop production systems."
+            },
+            "gleyic_chernozems": {
+                "name": "Gleyic Chernozems",
+                "description": "Gleyic Chernozems are highly productive soils with good physical and chemical properties. They have high soil quality, and dark and rich topsoil layers. Gleyic Chernozems are saturated with shallow groundwater above one meter of soil depth. ",
+                "management": "These are, in general, excellent soils for crop production. They have excellent porosity and water holding, and are suitable for a wide range of crop production systems. Drainage of these soils may be needed. However, since this is saturation from groundwater, installation of drainage lines may not be possible, and thus shallow-rooted crops should be considered. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available). "
+            },
+            "ferralsols": {
+                "name": "Ferralsols",
+                "description": "Ferralsols are well developed soils in humid, warm climates that are dominated by low activity minerals such as kaolinite and iron and aluminum oxides. They often have good physical properties but are acid, relatively infertile, have high P fixation, and have limited ability to retain nutrients. ",
+                "management": "soils are prone to phosphorus fixation, and most soil P will not be immediately available for crop uptake and use. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. High levels of soluble aluminum can also be present in these soils, and it is toxic to plants. Application of lime (which both increases soil pH and ties up soluble aluminum) can help to reduce aluminum toxicity. Since these soils are infertile they will require applications of plant nutrients for best crop performance, applied either by fertilization or inclusion of crop residues, manures or other nutrient-rich organic material. These soils have a limited ability to retain nitrogen fertilizer. Slow-release nitrogen sources should be considered, if available, or more frequent application of soluble sources at a lower rate with each application could be used."
+            },
+            "haplic_ferralsols": {
+                "name": "Haplic Ferralsols",
+                "description": "Haplic Ferralsols are well developed soils in humid, warm climates that are dominated by low activity minerals such as kaolinite and iron and aluminum oxides. They often have good physical properties but are acid, relatively infertile, have high P fixation, and have limited ability to retain nutrients.",
+                "management": "soils are prone to phosphorus fixation, and most soil P will not be immediately available for crop uptake and use. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. High levels of soluble aluminum can also be present in these soils, and it is toxic to plants. Application of lime (which both increases soil pH and ties up soluble aluminum) can help to reduce aluminum toxicity. Since these soils are infertile they will require applications of plant nutrients for best crop performance, applied either by fertilization or inclusion of crop residues, manures or other nutrient-rich organic material. These soils have a limited ability to retain nitrogen fertilizer. Slow-release nitrogen sources should be considered, if available, or more frequent application of soluble sources at a lower rate with each application could be used."
+            },
+            "xanthic_ferralsols": {
+                "name": "Xanthic Ferralsols",
+                "description": "Xanthic Ferralsols are well developed soils in humid, warm climates that are dominated by low activity minerals such as kaolinite and iron and aluminum oxides. They often have good physical properties but are acid, relatively infertile, have high P fixation, and have limited ability to retain nutrients. Xanthic Ferralsols have yellow colored subsoils indicating slightly higher moisture retention. ",
+                "management": "soils are prone to phosphorus fixation, and applied fertilizer P or most soil P will not be immediately available for crop uptake and use. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. High levels of soluble aluminum can also be present in these soils, and it is toxic to plants. Application of lime (which both increases soil pH and ties up soluble aluminum) can help to reduce aluminum toxicity. Since these soils are infertile they will require applications of plant nutrients for best crop performance, applied either by fertilization or inclusion of crop residues, manures or other nutrient-rich organic material. These soils have a limited ability to retain nitrogen fertilizer. Slow-release nitrogen sources should be considered, if available, or more frequent application of soluble sources at a lower rate with each application could be used."
+            },
+            "rhodic_ferralsols": {
+                "name": "Rhodic Ferralsols",
+                "description": "Rhodic Ferralsols are well developed soils in humid, warm climates that are dominated by low activity minerals such as kaolinite and iron and aluminum oxides. They often have good physical properties but are acid, relatively infertile, have high P fixation, and have limited ability to retain nutrients. Rhodic Ferralsols have dark red subsoils with good soil structure. ",
+                "management": "soils are prone to phosphorus fixation, and applied fertilizer P or most soil P will not be immediately available for crop uptake and use. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. High levels of soluble aluminum can also be present in these soils, and it is toxic to plants. Application of lime (which both increases soil pH and ties up soluble aluminum) can help to reduce aluminum toxicity. Since these soils are infertile they will require applications of plant nutrients for best crop performance, applied either by fertilization or inclusion of crop residues, manures or other nutrient-rich organic material. These soils have a limited ability to retain nitrogen fertilizer. Slow-release nitrogen sources should be considered, if available, or more frequent application of soluble sources at a lower rate with each application could be used."
+            },
+            "humic_ferralsols": {
+                "name": "Humic Ferralsols",
+                "description": "Humic Ferralsols are well developed soils in humid, warm climates that are dominated by low activity minerals such as kaolinite and iron and aluminum oxides. They often have good physical properties but are acid, relatively infertile, have high P fixation, and have limited ability to retain nutrients. Humic Ferralsols have slightly higher organic matter in the upper portions of the soil. ",
+                "management": "soils are prone to phosphorus fixation, and applied fertilizer P or most soil P will not be immediately available for crop uptake and use. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. High levels of soluble aluminum can also be present in these soils, and it is toxic to plants. Application of lime (which both increases soil pH and ties up soluble aluminum) can help to reduce aluminum toxicity. Since these soils are infertile they will require applications of plant nutrients for best crop performance, applied either by fertilization or inclusion of crop residues, manures or other nutrient-rich organic material. These soils have a limited ability to retain nitrogen fertilizer. Slow-release nitrogen sources should be considered, if available, or more frequent application of soluble sources at a lower rate with each application could be used."
+            },
+            "geric_ferralsols": {
+                "name": "Geric Ferralsols",
+                "description": "Geric Ferralsols are well developed soils in humid, warm climates that are dominated by low activity minerals such as kaolinite and iron and aluminum oxides. They often have good physical properties but are acid, relatively infertile, have high P fixation, and have limited ability to retain nutrients. Geric Ferralsols have an extremely limited ability to retain nutrients. ",
+                "management": " These soils are prone to phosphorus fixation, and applied fertilizer P or most soil P will not be immediately available for crop uptake and use. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. High levels of soluble aluminum can also be present in these soils, and it is toxic to plants. Application of lime (which both increases soil pH and ties up soluble aluminum) can help to reduce aluminum toxicity. Since these soils are infertile they will require applications of plant nutrients for best crop performance, applied either by fertilization or inclusion of crop residues, manures or other nutrient-rich organic material. These soils have a limited ability to retain nitrogen fertilizer. Slow-release nitrogen sources should be considered, if available, or more frequent application of soluble sources at a lower rate with each application could be used. While downward movement of P is likely not a concern, loss of other nutrients from the root zone could be a concern. "
+            },
+            "plinthic_ferralsols": {
+                "name": "Plinthic Ferralsols",
+                "description": "Plinthic Ferralsols are well developed soils in humid, warm climates that are dominated by low activity minerals such as kaolinite and iron and aluminum oxides. They often have good physical properties but are acid, relatively infertile, have high P fixation, and have limited ability to retain nutrients. Plinthic Ferralsols have plinthite, an iron-rich humus-poor aggregate, in the subsoil. Plinthite can irreversibly harden to ironstone when erosion exposes plinthite at the soil surface. ",
+                "management": "soils are prone to phosphorus fixation, and applied fertilizer P or most soil P will not be immediately available for crop uptake and use. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. Additional fertilization and lime application, in addition to P, will also be needed to ensure adequate crop growth and yield. High levels of soluble aluminum can also be present in these soils, and it is toxic to plants. Application of lime (which both increases soil pH and ties up soluble aluminum) can help to reduce aluminum toxicity. Since these soils are infertile they will require applications of plant nutrients for best crop performance, applied either by fertilization or inclusion of crop residues, manures or other nutrient-rich organic material. These soils have a limited ability to retain nitrogen fertilizer. Slow-release nitrogen sources should be considered, if available, or more frequent application of soluble sources at a lower rate with each application could be used. Agronomic practices that protect the soil surface and avoid erosion, so that the iron-rich clay layer is not exposed, are critical. "
+            },
+            "fluvisols": {
+                "name": "Fluvisols",
+                "description": "Fluvisols are mostly found in floodplains and coastal areas, and have limited profile development with a range of properties. Hydrological management is essential for production. Fluvisols are productive soils with high base saturation in the upper portion of soil. ",
+                "management": "These soils are all naturally fertile and productive. Drainage and management of floodwaters can make them suitable for continuous cultivation. However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. Once under continuous cultivation care should be taken to avoid soil erosion. Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered."
+            },
+            "eutric_fluvisols": {
+                "name": "Eutric Fluvisols",
+                "description": "Eutric Fluvisols are mostly found in floodplains and coastal areas, and have limited profile development with a range of properties. Hydrological management is essential for production. Eutric Fluvisols are productive soils with high base saturation in the upper portion of soil. ",
+                "management": "These soils are all naturally fertile and productive. Drainage and management of floodwaters can make them suitable for continuous cultivation. However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. Once under continuous cultivation care should be taken to avoid soil erosion. Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered."
+            },
+            "calcaric_fluvisols": {
+                "name": "Calcaric Fluvisols",
+                "description": "Calcaric Fluvisols are mostly found in floodplains and coastal areas and have limited profile development with a range of properties. Hydrological management is essential for production. Calcaric Fluvisols have carbonates and high pH in the upper portion of soil.",
+                "management": "These soils are all naturally fertile and productive. Drainage and management of floodwaters can make them suitable for continuous cultivation. Once under continuous cultivation care should be taken to avoid soil erosion. Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered."
+            },
+            "dystric_fluvisols": {
+                "name": "Dystric Fluvisols",
+                "description": "Dystric Fluvisols are mostly found in floodplains and coastal areas and have limited profile development with a range of properties. Hydrological management is essential for production. Dystric Fluvisols are less productive soils with low base saturation in the upper portion of soil.",
+                "management": "These soils are all naturally fertile and productive. Drainage and management of floodwaters can make them suitable for continuous cultivation. However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. Once under continuous cultivation care should be taken to avoid soil erosion. Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered. A low base saturation (presence of Ca, Mg, K) indicates that the soil pH may be low, and liming may be warranted. "
+            },
+            "mollic_fluvisols": {
+                "name": "Mollic Fluvisols",
+                "description": "Mollic Fluvisols are mostly found in floodplains and coastal areas and have limited profile development with a range of properties. Hydrological management is essential for production. Mollic Fluvisols have relatively higher organic matter and nutrients in surface horizons.",
+                "management": "These soils are all naturally fertile and productive. Drainage and management of floodwaters can make them suitable for continuous cultivation. However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. Once under continuous cultivation care should be taken to avoid soil erosion. Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered."
+            },
+            "umbric_fluvisols": {
+                "name": "Umbric Fluvisols",
+                "description": "Umbric Fluvisols  are mostly found in floodplains and coastal areas and have limited profile development with a range of properties. Hydrological management is essential for production. Umbric Fluvisols have relatively higher organic matter but lower nutrients in surface horizons.",
+                "management": "These soils are all naturally fertile and productive. Drainage and management of floodwaters can make them suitable for continuous cultivation. However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. Once under continuous cultivation care should be taken to avoid soil erosion. Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered. These soils have a surface horizon with a low soil pH (< 5.5) Liming is a key for productivity. "
+            },
+            "thionic_fluvisols": {
+                "name": "Thionic Fluvisols",
+                "description": "Thionic Fluvisols are mostly found in floodplains and coastal areas and have limited profile development with a range of properties. Hydrological management is essential for production. Thionic Fluvisols have extremely low pH (high acidity) or the potential for extremely low pH if drained due to sulfide oxidation.",
+                "management": "These soils are all naturally fertile and productive. Drainage and management of floodwaters can make them suitable for continuous cultivation. However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. Once under continuous cultivation care should be taken to avoid soil erosion. Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered. Application of lime will be required for these soils. They will be high in sulfur, and once drained liming will be needed to keep the soil pH at a suitable level for crop production. "
+            },
+            "salic_fluvisols": {
+                "name": "Salic Fluvisols",
+                "description": "Salic Fluvisols are mostly found in floodplains and coastal areas and have limited profile development with a range of properties. Hydrological management is essential for production. Salic Fluvisols have high salinity in the upper portion of soil.",
+                "management": "These soils are all naturally fertile and productive. Drainage and management of floodwaters can make them suitable for continuous cultivation. However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. Once under continuous cultivation care should be taken to avoid soil erosion. Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered. Leaching with a high quality (low salinity) water source will be needed to move salts out of the rooting zone. Use of salt tolerant crops and varieties is also recommended. Last, management of fertilization programs to avoid overapplication and accumulation of salts is needed. "
+            },
+            "gleysols": {
+                "name": "Gleysols",
+                "description": "Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Gleysols are productive soils with high base saturation in the upper portion of soil.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. Once drained, liming may be required as organic matter begins to decompose. "
+            },
+            "eutric_gleysols": {
+                "name": "Eutric Gleysols",
+                "description": "Eutric Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Eutric Gleysols are productive soils with high base saturation in the upper portion of soil.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. Once drained, liming may be required as organic matter begins to decompose. "
+            },
+            "calcic_gleysols": {
+                "name": "Calcic Gleysols",
+                "description": "Calcic Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Calcic Gleysols have carbonates and high pH in the upper portion of soil.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. "
+            },
+            "dystric_gleysols": {
+                "name": "Dystric Gleysols",
+                "description": "Dystric Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Dystric Gleysols are less productive soils with low base saturation in the upper portion of soil.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. Once drained, liming may be required as organic matter begins to decompose. These soils have little available calcium, magnesium or other bases in the soil, and may require supplemental fertilization. If needed, liming will supply  the calcium, and possibly the magnesium (dolomitic lime).. "
+            },
+            "andic_gleysols": {
+                "name": "Andic Gleysols",
+                "description": "Andic Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Andic Gleysols have low bulk density and high P fixation.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. Once drained, liming may be required as organic matter begins to decompose. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. "
+            },
+            "mollic_gleysols": {
+                "name": "Mollic Gleysols",
+                "description": "Mollic Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Mollic Gleysols have relatively higher organic matter and nutrients in surface horizons.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. Once drained, liming may be required as organic matter begins to decompose. "
+            },
+            "umbric_gleysols": {
+                "name": "Umbric Gleysols",
+                "description": "Umbric Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Umbric Gleysols have relatively higher organic matter but lower nutrients in surface horizons.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. Once drained, liming may be required as organic matter begins to decompose. The surface soil pH is low in these soils, and liming will likely be required. "
+            },
+            "thionic_gleysols": {
+                "name": "Thionic Gleysols",
+                "description": "Thionic Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Thionic Gleysols have extremely low pH and high acidity or the potential for extremely low pH if drained due to sulfide oxidation.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. Once drained, liming may be required as organic matter begins to decompose. The surface soil pH is low in these soils, and liming will be required. "
+            },
+            "gelic_gleysols": {
+                "name": "Gelic Gleysols",
+                "description": "Gelic Gleysols have shallow groundwater and are saturated for significant portions of the year. Deep drainage is necessary for cultivation. Gelic Gleysols have permafrost above two meters and are generally unsuitable for cultivation.",
+                "management": "These soils are saturated, and if they are cultivated significant drainage is required. Once drained, these soils can be highly productive. The water table must be lowered using deep drainage. Once drained, liming may be required as organic matter begins to decompose. If used for production care should be taken to maintain organic matter, for as the permafrost is opened soil subsidence will occur. "
+            },
+            "haplic_greyzems": {
+                "name": "Haplic Greyzems",
+                "description": "Haplic Greyzems are transitional soils between grass and forest lands in cooler climates. They can be relatively productive soils, with surface horizons with high organic matter and nutrients, and relatively clayey subsoils that can retain water and nutrients. ",
+                "management": "These soils are prone to structural deterioration, and so activities that maintain soil structure are needed. This would include the maintenance of organic matter on the surface, and incorporation of organic matter. Excessive tillage should not be practiced. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Although the clayey subsoil will help to retain nutrients, the soil will require additional liming and fertilization (especially phosphate) for best productivity."
+            },
+            "gleyic_greyzems": {
+                "name": "Gleyic Greyzems",
+                "description": "Gleyic Greyzems are transitional soils between grass and forest lands in cooler climates. They can be relatively productive soils with surface horizons with high organic matter and nutrients and relatively clayey subsoils that can retain water and nutrients. Gleyic Greyzems are saturated with shallow groundwater found within one meter of the soil surface.",
+                "management": "These soils are prone to structural deterioration, and so activities that maintain soil structure are needed. This would include the maintenance of organic matter on the surface, and incorporation of organic matter. Excessive tillage should not be practiced. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover, crop rotation and agroforestry. Cover crops and rotations that include legumes and inclusion of crops with high biomass would be beneficial, adding organic matter and nitrogen for the subsequent crop. Although the clayey subsoil will help to retain nutrients, the soil will require additional liming and fertilization (especially phosphate) for best productivity. Periods of saturation limit root growth and increase potential nitrogen loss. Nitrogen loss can occur when the soils are saturated for a period of time. To prevent this N loss (from leaching anddenitrification) consider use of slow-release N fertilizers (sulfur-coated urea (SCU), for example), as available, or use manures or other organic wastes for slow-release properties. More frequent application of lower rates of soluble N sources may also be a management option. Drainage of these soils may be needed, but this can be problematic, as the wetness is due to the high water table. "
+            },
+            "gypsisols": {
+                "name": "Gypsisols",
+                "description": "Gypsisols occur in arid climates with subsoil accumulations of gypsum. Although the dry climate restricts cultivation of these soils, the soils can be productive when gypsum content is relatively low in surface and subsurface horizons and irrigation is possible. ",
+                "management": "These soils have poor productivity, and require regular irrigation. Without irrigation these soils should not be cultivated, and would best be managed with native vegetation, or some type of arid-adapted vegetation. "
+            },
+            "haplic_gypsisols": {
+                "name": "Haplic Gypsisols",
+                "description": "Haplic Gypsisols occur in arid climates with subsoil accumulations of gypsum. Although the dry climate restricts cultivation of these soils, the soils can be productive when gypsum content is relatively low in surface and subsurface horizons and irrigation is possible. ",
+                "management": "These soils have poor productivity, and require regular irrigation. Without irrigation these soils should not be cultivated, and would best be managed with native vegetation, or some type of arid-adapted vegetation. "
+            },
+            "calcic_gypsisols": {
+                "name": "Calcic Gypsisols",
+                "description": "Calcic Gypsisols occur in arid climates with subsoil accumulations of gypsum. Although the dry climate restricts cultivation of these soils, the soils can be productive when gypsum content is relatively low in surface and subsurface horizons and irrigation is possible. Calcic Gypsisols have calcareous subsoils. ",
+                "management": "These soils have poor productivity, and require regular irrigation. Without irrigation these soils should not be cultivated, and would best be managed with native vegetation, or some type of arid-adapted vegetation. "
+            },
+            "luvic_gypsisols": {
+                "name": "Luvic Gypsisols",
+                "description": "Luvic Gypsisols occur in arid climates with subsoil accumulations of gypsum. Although the dry climate restricts cultivation of these soils, the soils can be productive when gypsum content is relatively low in surface and subsurface horizons and irrigation is possible. Luvic Gypsisols have increasing clay with depth and thus increased moisture and nutrient retention. ",
+                "management": "These soils have poor productivity, and require regular irrigation. Without irrigation these soils should not be cultivated, and would best be managed with native vegetation, or some type of arid-adapted vegetation. The higher clay content in the subsoil may aid in water retention. However, these soils should not be farmed without irrigation. "
+            },
+            "petric_gypsisols": {
+                "name": "Petric Gypsisols",
+                "description": "Petric Gypsisols occur in arid climates with subsoil accumulations of gypsum. Although the dry climate restricts cultivation of these soils, the soils can be productive when gypsum content is relatively low in surface and subsurface horizons and irrigation is possible. Petric Gypsisols have a root-limiting, cemented, petrocalcic horizon within 1 m of the soil surface. ",
+                "management": "These soils have poor productivity, and require regular irrigation. Without irrigation these soils should not be cultivated, and would best be managed with native vegetation, or some type of arid-adapted vegetation. "
+            },
+            "histosols": {
+                "name": "Histosols",
+                "description": "Histosols are organic soils that typically form in wet environments. Their properties are largely dependent on the type and degree of decomposition of the organic soil materials. The soils can be productive with intensive management including soil drainage, but their fragile nature and habitat suggests preservation of these soils is warranted where possible. When cultivated, subsidence and sulfide oxidation present management challenges. ",
+                "management": "These soils can be some of our most productive soils, especially for specialty crops such as vegetables. However, they must be drained for use, and this will lead to subsidence of the soil, as exposed peat is rapidly mineralized, and organic matter content quickly drops. This will lead to increasingly acid soils, and thus regular liming will be needed. These organic soils must be managed differently from mineral soils, and techniques that minimize organic matter degradation are a priority. Maintenance of native vegetation is the best use. "
+            },
+            "folic_histosols": {
+                "name": "Folic Histosols",
+                "description": "Folic Histosols are organic soils that typically form in wet environments. Their properties are largely dependent on the type and degree of decomposition of the organic soil materials. The soils can be productive with intensive management including soil drainage, but their fragile nature and habitat suggests preservation of these soils  is warranted where possible. When cultivated, subsidence and sulfide oxidation present management challenges. Folic Histosols form in cold climates that restrict productivity. They are well drained and never saturated for more than a few days.. ",
+                "management": "These soils can be some of our most productive soils, especially for specialty crops such as vegetables. However, they must be drained for use, and this will lead to subsidence of the soil, as exposed peat is rapidly mineralized, and organic matter content quickly drops. This will lead to increasingly acid soils, and thus regular liming will be needed. These organic soils must be managed differently from mineral soils, and techniques that minimize organic matter degradation are a priority. The cold climate under which these soils are formed will limit their use for cultivation. Maintenance of native vegetation is the best use. "
+            },
+            "terric_histosols": {
+                "name": "Terric Histosols",
+                "description": "Terric Histosols are organic soils that typically form in wet environments. Their properties are largely dependent on the type and degree of decomposition of the organic soil materials. The soils can be productive with intensive management including soil drainage but their fragile nature and habitat suggests preservation of these soils  is warranted where possible. When cultivated, subsidence and sulfide oxidation present management challenges. Terric Histosols form on reclaimed (drained and cropped) peatlands and have highly decomposed organic soil materials. Thus, they have a slightly higher bulk density and lower water content. ",
+                "management": "These soils can be some of our most productive soils, especially for specialty crops such as vegetables. However, they must be drained for use, and this will lead to subsidence of the soil, as exposed peat is rapidly mineralized, and organic matter content quickly drops. This will lead to increasingly acid soils, and thus regular liming will be needed. These organic soils must be managed differently from mineral soils, and techniques that minimize organic matter degradation are a priority. Surface soils are highly decomposed due to drainage and cultivation. As such, soil P will likely be high, and additions of that nutrient may not be needed. "
+            },
+            "fibric_histosols": {
+                "name": "Fibric Histosols",
+                "description": "Fibric Histosols are organic soils that typically form in wet environments. Their properties are largely dependent on the type and degree of decomposition of the organic soil materials. The soils can be productive with intensive management including soil drainage but their fragile nature and habitat suggests preservation of these soils is warranted where possible. When cultivated, subsidence and sulfide oxidation present management challenges. Fibric Histosols have relatively undecomposed organic soil materials. Thus, they have a slightly lower bulk density and higher water content. ",
+                "management": "These soils can be some of our most productive soils, especially for specialty crops such as vegetables. However, they must be drained for use, and this will lead to subsidence of the soil, as exposed peat is rapidly mineralized, and organic matter content quickly drops. This will lead to increasingly acid soils, and thus regularliming will be needed. These organic soils must be managed differently from mineral soils, and techniques that minimize organic matter degradation are a priority. "
+            },
+            "thionic_histosols": {
+                "name": "Thionic Histosols",
+                "description": "Thionic Histosols are organic soils that typically form in wet environments. Their properties are largely dependent on the type and degree of decomposition of the organic soil materials. The soils can be productive with intensive management including soil drainage but their fragile nature and habitat suggests preservation of these soils is warranted where possible. When cultivated, subsidence and sulfide oxidation present management challenges. Thionic Histosols have extremely low pH and high acidity or the potential for extremely low pH if drained due to sulfide oxidation. ",
+                "management": "These soils can be some of our most productive soils, especially for specialty crops such as vegetables. However, they must be drained for use, and this will lead to subsidence of the soil, as exposed peat is rapidly mineralized, and organic matter content quickly drops. This will lead to increasingly acid soils, and thus regular liming will be needed. These organic soils must be managed differently from mineral soils, and techniques that minimize organic matter degradation are a priority. These soils are most prone of all the Histosols to having a low soil pH, if drained. Liming will be needed. "
+            },
+            "gelic_histosols": {
+                "name": "Gelic Histosols",
+                "description": "Gelic Histosols are organic soils that typically form in wet environments. Their properties are largely dependent on the type and degree of decomposition of the organic soil materials. The soils can be productive with intensive management including soil drainage but their fragile nature and habitat suggests preservation of these soils is warranted where possible. When cultivated, subsidence and sulfide oxidation present management challenges. Gelic Histosols have permafrost above two meters and are generally unsuitable for cultivation. ",
+                "management": "These soils can be some of our most productive soils, especially for specialty crops such as vegetables. However, they must be drained for use, and this will lead to subsidence of the soil, as exposed peat is rapidly mineralized, and organic matter content quickly drops. This will lead to increasingly acid soils, and thus regular liming will be needed. These organic soils must be managed differently from mineral soils, and techniques that minimize organic matter degradation are a priority. If used for production care should be taken to maintain organic matter, for as the permafrost is opened soil subsidence will occur. "
+            },
+            "kastanozems": {
+                "name": "Kastanozems",
+                "description": "Kastanozems grassland soils found in relatively dry climates with high organic matter in surface horizons and often calcareous subsoils. Surface horizons are thinner than those found in Chernozems.",
+                "management": "These are productive soils, with clay and carbonate accumulations. Productivity will be improved with fertilization (especially phosphorus) and irrigation. "
+            },
+            "haplic_kastanozems": {
+                "name": "Haplic Kastanozems",
+                "description": "Haplic Kastanozems grassland soils found in relatively dry climates with high organic matter in surface horizons and often calcareous subsoils. Surface horizons are thinner than those found in Chernozems.",
+                "management": "These are productive soils, with clay and carbonate accumulations. Productivity will be improved with fertilization (especially phosphorus) and irrigation. "
+            },
+            "luvic_kastanozems": {
+                "name": "Luvic Kastanozems",
+                "description": "Luvic Kastanozems grassland soils found in relatively dry climates with high organic matter in surface horizons and often calcareous subsoils. Surface horizons are thinner than those found in Chernozems. Luvic Kastanozems have increasing clay with depth and thus increased moisture and nutrient retention.",
+                "management": "These are productive soils, with clay and carbonate accumulations. Productivity will be improved with fertilization (especially phosphorus) and irrigation. The increased clay content in this soil may assist with water holding for crop production. "
+            },
+            "calcic_kastanozems": {
+                "name": "Calcic Kastanozems",
+                "description": "Calcic Kastanozems grassland soils found in relatively dry climates with high organic matter in surface horizons and often calcareous subsoils. Surface horizons are thinner than those found in Chernozems. Calcic Kastanozems are calcareous in a soil layer below the surface.",
+                "management": "These are productive soils, with clay and carbonate accumulations. Productivity will be improved with fertilization (especially phosphorus) and irrigation. The soil pH will be high (> 7.0) in the lower soil horizons."
+            },
+            "gypsic_kastanozems": {
+                "name": "Gypsic Kastanozems",
+                "description": "Gypsic Kastanozems grassland soils found in relatively dry climates with high organic matter in surface horizons and often calcareous subsoils. Surface horizons are thinner than those found in Chernozems. Gypsic Kastanozems have gypsum (calcium sulfate) in a soil layer below the surface.",
+                "management": "These are productive soils, with clay and carbonate accumulations. Productivity will be improved with fertilization (especially phosphorus) and irrigation. "
+            },
+            "leptosols": {
+                "name": "Leptosols",
+                "description": "Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. Leptosols on steep slopes are highly erodible. ",
+                "management": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. Practices to maintain organic matter and cover should be used. Only uses for grazing or agroforestry should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. These soils can be productive for agriculture, but the focus should be on use for grazing. Any use for cropping must be limited and combined with soil conservation practices. "
+            },
+            "eutric_leptosols": {
+                "name": "Eutric Leptosols",
+                "description": "Eutric Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. Leptosols on steep slopes are highly erodible. Eutric Leptosols have high base saturation over the shallow root limiting layer. ",
+                "management": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. Practices to maintain organic matter and cover should be used. Onlyuses for grazing or agroforestry should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. These soils can be productive for agriculture, but the focus should be on use for grazing. Any use for cropping must be limited and combined with soil conservation practices. "
+            },
+            "dystric_leptosols": {
+                "name": "Dystric Leptosols",
+                "description": "Dystric Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. Leptosols on steep slopes are highly erodible. Dystic Leptosols have low base saturation over the shallow root limiting layer. ",
+                "management": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. Practices to maintain organic matter and cover should be used. Only  uses for grazing or agroforestry should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. This soil has virtually no calcium available for plant use. Any agricultural use should be for grazing or agroforestry, with cover continuously maintained. "
+            },
+            "rendzic_leptosols": {
+                "name": "Rendzic Leptosols",
+                "description": "Rendzic Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. Leptosols on steep slopes are highly erodible. Rendzic Leptosols are highly calcareous at the soil surface. ",
+                "management": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. Practices to maintain organic matter and cover should be used. Only uses for grazing or agroforestry should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Soil pH will be high (> 7.0) in these soils, and no liming will be needed. Any agricultural use should be for grazing or agroforestry, with cover continuously maintained. "
+            },
+            "mollic_leptosols": {
+                "name": "Mollic Leptosols",
+                "description": "Mollic Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. Leptosols on steep slopes are highly erodible. Mollic Leptosols have a thick surface horizon with high organic matter and base saturation overlying a root limiting layer. ",
+                "management": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. Practices to maintain organic matter and cover should be used. Only uses for grazing or agroforestry should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. These soils can be productive for agriculture, but the focus should be on use for grazing. Any use for cropping must be limited and combined with soil conservation practices. "
+            },
+            "umbric_leptosols": {
+                "name": "Umbric Leptosols",
+                "description": "Umbric Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. Leptosols on steep slopes are highly erodible. Umbric Leptosols have a thick surface horizon with high organic matter and low base saturation overlying a root limiting layer. ",
+                "management": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. Practices to maintain organic matter and cover should be used. Only uses for grazing or agroforestry should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. The surface horizon soil pH will be low (< 5.0) and liming will be needed for grazing or agroforestry use. Any agricultural use should be for grazing or agroforestry, with cover continuously maintained. "
+            },
+            "lithic_leptosols": {
+                "name": "Lithic Leptosols",
+                "description": "Lithic Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. Leptosols on steep slopes are highly erodible. Lithic Leptosols have hard rock within 10 cm of the soil surface. ",
+                "management": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. Practices to maintain organic matter and cover should be used. Only uses for grazing or agroforestry should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. Land management practices should maximize soil cover. Any agricultural use should be for grazing, with cover continuously maintained. "
+            },
+            "gelic_leptosols": {
+                "name": "Gelic Leptosols",
+                "description": "Gelic Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. Leptosols on steep slopes are highly erodible. Gelic Leptosols have permafrost above two meters and are generally unsuitable for cultivation.",
+                "management": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. Practices to maintain organic matter and cover should be used. Only uses for grazing or agroforestry should be considered. Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. If used for grazing care should be taken to maintain organic matter, for as the permafrost is opened soil subsidence will occur. "
+            },
+            "lixisols": {
+                "name": "Lixisols",
+                "description": "Lixisols form in warm climates with relatively clayey subsoils dominated by kaolinite and iron oxides, but relatively high base saturation. ",
+                "management": "These soils are heavily weathered soils, which means that fertilization (and possibly lime) will be needed for production. Although they do have kaolinite clay and iron oxides, they have fairly low aluminum toxicity. Best production practices for this soil will include regular fertilization, and consistent cropping in perennial crops or forestry. The soils are sensitive to erosion, and so practices that maintain surface cover are important. "
+            },
+            "haplic_lixisols": {
+                "name": "Haplic Lixisols",
+                "description": "Haplic Lixisols form in warm climates with relatively clayey subsoils dominated by kaolinite and iron oxides, but relatively high base saturation. ",
+                "management": "These soils are heavily weathered soils, which means that fertilization (and possibly lime) will be needed for production. Although they do have kaolinite clay and iron oxides, they have fairly low aluminum toxicity. Best production practices for this soil will include regular fertilization, and consistent cropping in perennial crops or forestry. The soils are sensitive to erosion, and so practices that maintain surface cover are important. "
+            },
+            "ferric_lixisols": {
+                "name": "Ferric Lixisols",
+                "description": "Ferric Lixisols form in warm climates with relatively clayey subsoils dominated by kaolinite and iron oxides, but relatively high base saturation. Ferric Lixisols have soft and cemented iron concentrations in subsoils, and poorly developed structure between iron concentrations which can be susceptible to compaction. ",
+                "management": "These soils are heavily weathered soils, which means that fertilization (and possibly lime) will be needed for production. Although they do have kaolinite clay and iron oxides, they have fairly low aluminum toxicity. Best production practices for this soil will include regular fertilization, and consistent cropping in perennial crops or forestry. These soils are particularly sensitive to erosion, and so practices that work to maintain surface cover and strong soil structure (such as perennial crops) are needed. "
+            },
+            "plinthic_lixisols": {
+                "name": "Plinthic Lixisols",
+                "description": "Plinthic Lixisols form in warm climates with relatively clayey subsoils dominated by kaolinite and iron oxides, but relatively high base saturation. Plinthic Lixisols have iron rich, humus poor concentrations of iron in subsoils that irreversibly harden when exposed at the surface. ",
+                "management": "These soils are heavily weathered soils, which means that fertilization (and possibly lime) will be needed for production. Although they do have kaolinite clay and iron oxides, they have fairly low aluminum toxicity. Best production practices for this soil will include regular fertilization, and consistent cropping in perennial crops or forestry. The soils are sensitive to erosion, and so practices that maintain surface cover are important. Agronomic practices that protect the soil surface and avoid erosion, so that the iron rich clay layer is not exposed, are critical. Use of rotations and inclusion of deep-rooted crops is also recommended, to help penetrate the clay layer. "
+            },
+            "albic_lixisols": {
+                "name": "Albic Lixisols",
+                "description": "Albic Lixisols form in warm climates with relatively clayey subsoils dominated by kaolinite and iron oxides, but relatively high base saturation. Albic Lixisols have highly leached subsurface horizons above clayey subsoils. ",
+                "management": "These soils are heavily weathered soils, which means that fertilization (and possibly lime) will be needed for production. Although they do have kaolinite clay and iron oxides, they have fairly low aluminum toxicity. Best production practices for this soil will include regular fertilization, and consistent cropping in perennial crops or forestry. The soils are sensitive to erosion, and so practices that maintain surface cover are important. Fertilization of the upper soil horizon will be needed. "
+            },
+            "stagnic_lixisols": {
+                "name": "Stagnic Lixisols",
+                "description": "Stagnic Lixisols form in warm climates with relatively clayey subsoils dominated by kaolinite and iron oxides, but relatively high base saturation. Stagnic Lixisols have ponded water and are saturated in and above surface horizons during wet times of the year. ",
+                "management": "These soils are heavily weathered soils, which means that fertilization (and possibly lime) will be needed for production. Although they do have kaolinite clay and iron oxides, they have fairly low aluminum toxicity. Best production practices for this soil will include regular fertilization, and consistent cropping in perennial crops or forestry. The soils are sensitive to erosion, and so practices that maintain surface cover are important. Drainage of these soils may be needed. Since saturation is caused by surface water, surface drainage andmaintenance of cover to improve infiltration and water holding could be useful. Consider use of shallow rooted crops. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available).   "
+            },
+            "gleyic_lixisols": {
+                "name": "Gleyic Lixisols",
+                "description": "Gleyic Lixisols form in warm climates with relatively clayey subsoils dominated by kaolinite and iron oxides, but relatively high base saturation. Gleyic Lixisols are saturated with shallow groundwater above one meter. ",
+                "management": "These soils are heavily weathered soils, which means that fertilization (and possibly lime) will be needed for production. Although they do have kaolinite clay and iron oxides, they have fairly low aluminum toxicity. Best production practices for this soil will include regular fertilization, and consistent cropping in perennial crops or forestry. The soils are sensitive to erosion, and so practices that maintain surface cover are important. Drainage of these soils may be needed. However, since this is saturation via groundwater this may not be possible, and thus shallow-rooted crops must be considered. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available). "
+            },
+            "luvisols": {
+                "name": "Luvisols",
+                "description": "Luvisols are productive soils with high base saturation and relatively clayey subsoils.",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops."
+            },
+            "haplic_luvisols": {
+                "name": "Haplic Luvisols",
+                "description": "Haplic Luvisols are productive soils with high base saturation and relatively clayey subsoils.",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops."
+            },
+            "ferric_luvisols": {
+                "name": "Ferric Luvisols",
+                "description": "Ferric Luvisols are productive soils with high base saturation and relatively clayey subsoils. Ferric Luvisols have soft and cemented iron concentrations in subsoils, and poorly developed structure between iron concentrations which can be susceptible to compaction. ",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops. Soils with poorly developed structure may be further aided by the inclusion of deep rooted and perennial crops. "
+            },
+            "chromic_luvisols": {
+                "name": "Chromic Luvisols",
+                "description": "Chromic Luvisols are productive soils with high base saturation and relatively clayey subsoils. Chromic Luvisols have an iron rich subsoil.",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops."
+            },
+            "calcic_luvisols": {
+                "name": "Calcic Luvisols",
+                "description": "Calcic Luvisols are productive soils with high base saturation and relatively clayey subsoils. Calcic Luvisols have calcareous subsoils.",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops. These soils will have large amounts of free calcium carbonate in the subsample, and thus the soil pH will be > 7.0. "
+            },
+            "vertic_luvisols": {
+                "name": "Vertic Luvisols",
+                "description": "Vertic Luvisols are productive soils with high base saturation and relatively clayey subsoils. Vertic Luvisols are clayey soils with high shrink-swell clays that are plastic when wet and hard and massive when dry. These soils have high cation exchange capacity.",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops. The clay type in this soil will expand when wetted and shrink when dry. Although fertile, care should be taken to not excessively till these soils, as soil structure could be negatively affected. "
+            },
+            "albic_luvisols": {
+                "name": "Albic Luvisols",
+                "description": "Albic Luvisols are productive soils with high base saturation and relatively clayey subsoils. Albic Luvisols have highly leached subsurface horizons above clayey subsoils.",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops. An upper soil horizon will be light in color, indicating that nutrients, clay and organic matter have been leached. Attention to more frequent fertilization may be needed, to ensure that nutrients are not lost by downward movement through the soil. "
+            },
+            "stagnic_luvisols": {
+                "name": "Stagnic Luvisols",
+                "description": "Stagnic Luvisols are productive soils with high base saturation and relatively clayey subsoils. Stagnic Luvisols are ponded and saturated in and above surface horizons during wet times of the year.",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops. Drainage of these soils may be needed. Since saturation is caused by surface water, surface drainage andmaintenance of cover to improve infiltration and water holding could be useful. Consider use of shallow rooted crops. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available). "
+            },
+            "gleyic_luvisols": {
+                "name": "Gleyic Luvisols",
+                "description": "Gleyic Luvisols are productive soils with high base saturation and relatively clayey subsoils. Gleyic Luvisols are saturated with shallow groundwater in the upper one meter of the soil profile.",
+                "management": "These soils are fertile, and can be used for a wide range of cropping practices. However, they are sensitive to soil loss through erosion, and care must be taken to protect the soil from loss. If the soil is already eroded they may best be suited for grazing andtree crops. Drainage of these soils may be needed. However, since this is saturation via groundwater this may not be possible, and thus shallow-rooted crops must be considered. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available). "
+            },
+            "nitisols": {
+                "name": "Nitisols",
+                "description": "Nitisols are the most productive humid subtropical and tropical soils. They have well developed structure with relatively clayey and iron enriched subsoils which retain water and nutrients.",
+                "management": "These are productive soils, and can be used for crop production. They have excellent internal drainage and good water holding capacity. These soils do have a high degree of phosphorus sorption, and will fix phosphorus, making it unavailable for plant uptake during the cropping season. Phosphorus fertilization will be needed for best productivity. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation."
+            },
+            "haplic_nitisols": {
+                "name": "Haplic Nitisols",
+                "description": "Haplic Nitisols are the most productive humid subtropical and tropical soils. They have well developed structure with relatively clayey and iron enriched subsoils which retain water and nutrients.",
+                "management": "These are productive soils, and can be used for crop production. They have excellent internal drainage and good water holding capacity. These soils do have a high degree of phosphorus sorption, and will fix phosphorus, making it unavailable for plant uptake during the cropping season. Phosphorus fertilization will be needed for best productivity. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation."
+            },
+            "rhodic_nitisols": {
+                "name": "Rhodic Nitisols",
+                "description": "Rhodic Nitisols are the most productive humid subtropical and tropical soils. They have well developed structure with relatively clayey and iron enriched subsoils which retain water and nutrients. Rhodic Nitisols have dark red subsoils with high P sorption.",
+                "management": "These are productive soils, and can be used for crop production. They have excellent internal drainage and good water holding capacity. These soils do have a high degree of phosphorus sorption, and will fix phosphorus, making it unavailable for plant uptake during the cropping season. Phosphorus fertilization will be needed for best productivity. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation. It is especially important that P fertilization be used on these soils, which are specifically noted for having high P sorption. "
+            },
+            "humic_nitisols": {
+                "name": "Humic Nitisols",
+                "description": "Humic Nitisols are the most productive humid subtropical and tropical soils. They have well developed structure with relatively clayey and iron enriched subsoils which retain water and nutrients. Humic Nitisols have relatively higher organic matter in surface horizons.",
+                "management": "These are productive soils, and can be used for crop production. They have excellent internal drainage and good water holding capacity. These soils do have a high degree of phosphorus sorption, and will fix phosphorus, making it unavailable for plant uptake during the cropping season. Phosphorus fertilization will be needed for best productivity. Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation."
+            },
+            "phaeozems": {
+                "name": "Phaeozems",
+                "description": "Phaeozems are fertile and productive soils of grasslands with relatively high organic matter and base saturation. Their occurrence in dry climates means that irrigation is likely needed for production.",
+                "management": "These soils are highly productive and fertile, and make excellent cropland. They are rich in organic matter. However, they are at risk for soil loss through both wind and water erosion. Thus, practices to maintain soil cover (mulches, conservation tillage, windbreaks) are needed."
+            },
+            "haplic_phaeozems": {
+                "name": "Haplic Phaeozems",
+                "description": "Haplic Phaeozems are fertile and productive soils of grasslands with relatively high organic matter and base saturation. Their occurrence in dry climates means that irrigation is likely needed for production.",
+                "management": "These soils are highly productive and fertile, and make excellent cropland. They are rich in organic matter. However, they are at risk for soil loss through both wind and water erosion. Thus, practices to maintain soil cover (mulches, conservation tillage, windbreaks) are needed."
+            },
+            "calcaric_phaeozems": {
+                "name": "Calcaric Phaeozems",
+                "description": "Calcaric Phaeozems are fertile and productive soils of grasslands with relatively high organic matter and base saturation. Their occurrence in dry climates means that irrigation is likely needed for production. Calcaric Phaeozems are calcareous in the upper portion of the subsoil.",
+                "management": "These soils are highly productive and fertile, and make excellent cropland. They are rich in organic matter. However, they are at risk for soil loss through both wind and water erosion. Thus, practices to maintain soil cover (mulches, conservation tillage, windbreaks) are needed. These soils will have large amounts of free calcium carbonate in the upper soil horizon, and thus the soil pH will be > 7.0. "
+            },
+            "luvic_phaeozems": {
+                "name": "Luvic Phaeozems",
+                "description": "Luvic Phaeozems are fertile and productive soils of grasslands with relatively high organic matter and base saturation. Their occurrence in dry climates means that irrigation is likely needed for production. Luvic Phaeozems have relatively higher clay content in subsoils.",
+                "management": "These soils are highly productive and fertile, and make excellent cropland. They are rich in organic matter. However, they are at risk for soil loss through both wind and water erosion. Thus, practices to maintain soil cover (mulches, conservation tillage, windbreaks) are needed. The increased clay content in this soil may assist with water holding for crop production. "
+            },
+            "stagnic_phaeozems": {
+                "name": "Stagnic Phaeozems",
+                "description": "Stagnic Phaeozems are fertile and productive soils of grasslands with relatively high organic matter and base saturation. Their occurrence in dry climates means that irrigation is likely needed for production. Stagnic Phaeozems are ponded and saturated in and above surface horizons during wet times of the year.",
+                "management": "These soils are highly productive and fertile, and make excellent cropland. They are rich in organic matter. However, they are at risk for soil loss through both wind and water erosion. Thus, practices to maintain soil cover (mulches, conservation tillage, windbreaks) are needed. Drainage of these soils may be needed. Since saturation is caused by surface water, surface drainage andmaintenance of cover to improve infiltration and water holding could be useful. Consider use of shallow rooted crops. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available). "
+            },
+            "gleyic_phaeozems": {
+                "name": "Gleyic Phaeozems",
+                "description": "Gleyic Phaeozems are fertile and productive soils of grasslands with relatively high organic matter and base saturation. Their occurrence in dry climates means that irrigation is likely needed for production. Gleyic Phaeozems are saturated with shallow groundwater within one meter of the soil surface.",
+                "management": "These soils are highly productive and fertile, and make excellent cropland. They are rich in organic matter. However, they are at risk for soil loss through both wind and water erosion. Thus, practices to maintain soil cover (mulches, conservation tillage, windbreaks) are needed. Drainage of these soils may be needed. However, since this is saturation via groundwater this may not be possible, and thus shallow-rooted crops must be considered. If fertilized and not drained, loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers (if available). "
+            },
+            "planosols": {
+                "name": "Planosols",
+                "description": "Planosols are seasonally ponded or saturated with water in the upper portion due to a slowly permeable, clay-rich subsoil. These soils are prone to compaction and require drainage for crop production.",
+                "management": "Located on flat land, these soils are best suited for paddy rice production. Drainage will be required for production. Highest yields will require additional fertilization."
+            },
+            "eutric_planosols": {
+                "name": "Eutric Planosols",
+                "description": "Eutric Planosols are seasonally ponded or saturated with water in the upper portion due to a slowly permeable, clay-rich subsoil. These soils are prone to compaction and require drainage for crop production. Eutric Planosols are relatively productive soils with high base saturation in the subsoil.",
+                "management": "Located on flat land, these soils are best suited for paddy rice production. Drainage will be required for production. Highest yields will require additional fertilization."
+            },
+            "dystric_planosols": {
+                "name": "Dystric Planosols",
+                "description": "Dystric Planosols are seasonally ponded or saturated with water in the upper portion due to a slowly permeable, clay-rich subsoil. These soils are prone to compaction and require drainage for crop production. Dystric Planosols are less productive soils with low base saturation in the subsoil.",
+                "management": "Located on flat land, these soils are best suited for paddy rice production. Drainage will be required for production. Highest yields will require additional fertilization. Very low levels of calcium are available in the lower profile of this soil. Supplemental fertilization will be needed."
+            },
+            "mollic_planosols": {
+                "name": "Mollic Planosols",
+                "description": "Mollic Planosols are seasonally ponded or saturated with water in the upper portion due to a slowly permeable, clay-rich subsoil. These soils are prone to compaction and require drainage for crop production. Mollic Planosols have higher organic matter and base saturation in surface horizons.",
+                "management": "Located on flat land, these soils are best suited for paddy rice production. Drainage will be required for production. Highest yields will require additional fertilization."
+            },
+            "umbric_planosols": {
+                "name": "Umbric Planosols",
+                "description": "Umbric Planosols are seasonally ponded or saturated with water in the upper portion due to a slowly permeable, clay-rich subsoil. These soils are prone to compaction and require drainage for crop production. Umbric Planosols have higher organic matter and lower base saturation in surface horizons.",
+                "management": "Located on flat land, these soils are best suited for paddy rice production. Drainage will be required for production. Highest yields will require additional fertilization. This Planosol has a dark colored surface layer, and will be highly productive for rice production."
+            },
+            "plinthosols": {
+                "name": "Plinthosols",
+                "description": "Plinthosols are relatively unproductive soils found in subtropical or tropical regions with high amounts of iron-rich, humus-poor concentrations of variable hardness and cementation. Softer iron concentrations irreversibly harden when exposed at the surface. These soils have low rooting volume and are relatively acid, infertile, highly erodible, and often wet.",
+                "management": "This soil is not well suited for farming. The combination of hard iron and cementation make this soil most suitable for construction. It has poor soil fertility, which when combined with shallow and rocky soil makes arable farming not possible. These soils should be used for things such as surface materials for roads."
+            },
+            "eutric_plinthosols": {
+                "name": "Eutric Plinthosols",
+                "description": "Eutric Plinthosols are relatively unproductive soils found in subtropical or tropical regions with high amounts of iron-rich, humus poor concentrations of variable hardness and cementation. Softer iron concentrations irreversibly harden when exposed at the surface. These soils have low rooting volume and are relatively acid, infertile, highly erodible, and often wet. Eutric Plinthosols are have high base saturation in subsoils.",
+                "management": "This soil is not well suited for farming. The combination of hard iron and cementation make this soil most suitable for construction. It has poor soil fertility, which when combined with shallow and rocky soil makes arable farming not possible. These soils should be used for things such as surface materials for roads."
+            },
+            "dystric_plinthosols": {
+                "name": "Dystric Plinthosols",
+                "description": "Dystric Plinthosols are relatively unproductive soils found in subtropical or tropical regions with high amounts of iron-rich, humus poor concentrations of variable hardness and cementation. Softer iron concentrations irreversibly harden when exposed at the surface. These soils have low rooting volume and are relatively acid, infertile, highly erodible, and often wet. Dystric Plinthosols are unproductive soils with low base saturation in subsoils.",
+                "management": "This soil is not well suited for farming. The combination of hard iron and cementation make this soil most suitable for construction. It has poor soil fertility, which when combined with shallow and rocky soil makes arable farming not possible. These soils should be used for things such as surface materials for roads. This soil has virtually no available calcium in the subsoil."
+            },
+            "humic_plinthosols": {
+                "name": "Humic Plinthosols",
+                "description": "Humic Plinthosols are relatively unproductive soils found in subtropical or tropical regions with high amounts of iron-rich, humus poor concentrations of variable hardness and cementation. Softer iron concentrations irreversibly harden when exposed at the surface. These soils have low rooting volume and are relatively acid, infertile, highly erodible, and often wet. Humic Cambisols have higher organic matter in surface horizons.",
+                "management": "This soil is not well suited for farming. The combination of hard iron and cementation make this soil most suitable for construction. It has poor soil fertility, which when combined with shallow and rocky soil makes arable farming not possible. These soils should be used for things such as surface materials for roads."
+            },
+            "albic_plinthosols": {
+                "name": "Albic Plinthosols",
+                "description": "Albic Plinthosols are relatively unproductive soils found in subtropical or tropical regions with high amounts of iron-rich, humus poor concentrations of variable hardness and cementation. Softer iron concentrations irreversibly harden when exposed at the surface. These soils have low rooting volume and are relatively acid, infertile, highly erodible, and often wet. Albic Plinthosols are wet soils that have highly leached subsurface horizons above clayey subsoils.",
+                "management": "This soil is not well suited for farming. The combination of hard iron and cementation make this soil most suitable for construction. It has poor soil fertility, which when combined with shallow and rocky soil makes arable farming not possible. These soils should be used for things such as surface materials for roads. The upper soil horizon is white in color due to extensive leaching."
+            },
+            "podzols": {
+                "name": "Podzols",
+                "description": "Podzols are coarse textured, acidic, unproductive soils with highly leached surface horizons overlying subsoils containing accumulated organic matter and metals (aluminum and iron). In flat coastal plain landscapes, these soils are also wet.",
+                "management": "Podzols are highly leached, and as such are low in soil fertility. The surface layers are usually quite acidic (pH < 4.5) and thus liming is needed. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended."
+            },
+            "haplic_podzols": {
+                "name": "Haplic Podzols",
+                "description": "Haplic Podzols are coarse textured, acidic, unproductive soils with highly leached surface horizons overlying subsoils containing accumulated organic matter and metals (aluminum and iron). In flat coastal plain landscapes, these soils are also wet.",
+                "management": "Podzols are highly leached, and as such are low in soil fertility. The surface layers are usually quite acidic (pH < 4.5) and thus liming is needed. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended."
+            },
+            "cambic_podzols": {
+                "name": "Cambic Podzols",
+                "description": "Cambic Podzols are coarse textured, acidic, unproductive soils with highly leached surface horizons overlying subsoils containing accumulated organic matter and metals (aluminum and iron). In flat coastal plain landscapes, these soils are also wet. Cambic Podzols are not as intensively leached in surface horizons and have relatively lower organic matter in subsoils.",
+                "management": "Podzols are highly leached, and as such are low in soil fertility. The surface layers are usually quite acidic (pH < 4.5) and thus liming is needed. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended."
+            },
+            "ferric_podzols": {
+                "name": "Ferric Podzols",
+                "description": "Ferric Podzols are coarse textured, acidic, unproductive soils with highly leached surface horizons overlying subsoils containing accumulated organic matter and metals (aluminum and iron). In flat coastal plain landscapes, these soils are also wet. Ferric Podzols have relatively high amounts of iron in subsoils.",
+                "management": "Podzols are highly leached, and as such are low in soil fertility. The surface layers are usually quite acidic (pH < 4.5) and thus liming is needed. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended."
+            },
+            "carbic_podzols": {
+                "name": "Carbic Podzols",
+                "description": "Carbic Podzols are coarse textured, acidic, unproductive soils with highly leached surface horizons overlying subsoils containing accumulated organic matter and metals (aluminum and iron). In flat coastal plain landscapes, these soils are also wet. Carbic Podzols have relatively high amounts of organic matter in subsoils.",
+                "management": "Podzols are highly leached, and as such are low in soil fertility. The surface layers are usually quite acidic (pH < 4.5) and thus liming is needed. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies.Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended."
+            },
+            "gelic_podzols": {
+                "name": "Gelic Podzols",
+                "description": "Gelic Podzols are coarse textured, acidic, unproductive soils with highly leached surface horizons overlying subsoils containing accumulated organic matter and metals (aluminum and iron). In flat coastal plain landscapes, these soils are also wet. Gelic Podzols has permafrost within 2 meters of the soil surface.",
+                "management": "Podzols are highly leached, and as such are low in soil fertility. The surface layers are usually quite acidic (pH < 4.5) and thus liming is needed. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies.Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended. If used for cultivation care should be taken to maintain organic matter, for as the permafrost is opened soil subsidence will occur."
+            },
+            "gleyic_podzols": {
+                "name": "Gleyic Podzols",
+                "description": "Gleyic Podzols are coarse textured, acidic, unproductive soils with highly leached surface horizons overlying subsoils containing accumulated organic matter and metals (aluminum and iron). In flat coastal plain landscapes, these soils are also wet. Gleyic Podzols are saturated with shallow groundwater above one meter.",
+                "management": "Podzols are highly leached, and as such are low in soil fertility. The surface layers are usually quite acidic (pH < 4.5) and thus liming is needed. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies.Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended. Drainage of these soils may be needed. However, since this is saturation via groundwater this may not be possible, especially given the need for deep plowing to break subsoil layers. If fertilized and not drained loss of applied nitrogen (N) by denitrification or leaching is possible. This careful N management must be coupled with liming and P management as well."
+            },
+            "eutric_podzoluvisols": {
+                "name": "Eutric Podzoluvisols",
+                "description": "Eutric Podzoluvisols are mostly forested soils in cooler or cold climates that are acidic and infertile with leached surface horizons and clayey subsoils. These soils have a high base saturation in the subsoil.",
+                "management": "These soils have a bleached subsurface soil horizon that will respond to fertilization, and in some cases, drainage. Soil surface horizons are usually acidic (pH < 4.5) and will need liming. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended."
+            },
+            "dystric_podzoluvisols": {
+                "name": "Dystric Podzoluvisols",
+                "description": "Dystric Podzoluvisols are mostly forested soils in cooler or cold climates that are acidic and infertile with leached surface horizons and clayey subsoils. Dystric Podzoluvisols have lower base saturation in subsoils.",
+                "management": "These soils have a bleached subsurface soil horizon that will respond to fertilization, and in some cases, drainage. Soil surface horizons are usually acidic (pH < 4.5) and will need liming. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended. This soil has little available soil calcium in soil horizons. Application of gypsum could be one solution to provide supplemental Ca, if liming does not already fix the issue."
+            },
+            "stagnic_podzoluvisols": {
+                "name": "Stagnic Podzoluvisols",
+                "description": "Stagnic Podzoluvisols are mostly forested soils in cooler or cold climates that are acidic and infertile with leached surface horizons and clayey subsoils. Stagnic Podzoluvisols are ponded and saturated in and above surface horizons during wet times of the year.",
+                "management": "These soils have a bleached subsurface soil horizon that will respond to fertilization, and in some cases, drainage. Soil surface horizons are usually acidic (pH < 4.5) and will need liming. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended. Drainage of these soils may be needed. Since saturation is caused by surface water, surface drainage andmaintenance of cover to improve infiltration and water holding could be useful. Consider use of shallow rooted crops. If fertilized and not drained loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers, if available."
+            },
+            "gleyic_podzoluvisols": {
+                "name": "Gleyic Podzoluvisols",
+                "description": "Gleyic Podzoluvisols are mostly forested soils in cooler or cold climates that are acidic and infertile with leached surface horizons and clayey subsoils. Gleyic Podzoluvisols are saturated with shallow groundwater above one meter.",
+                "management": "These soils have a bleached subsurface soil horizon that will respond to fertilization, and in some cases, drainage. Soil surface horizons are usually acidic (pH < 4.5) and will need liming. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended. Drainage of these soils may be needed. However, since this is saturation via groundwater this may not be possible, and thus shallow-rooted crops should be considered.If fertilized and not drained loss of applied nitrogen (N) by denitrification or leaching is possible. More efficient crop N use in these soils can be achieved by:  1) drainage, and, 2) use of slow-release N fertilizers, if available."
+            },
+            "gelic_podzoluvisols": {
+                "name": "Gelic Podzoluvisols",
+                "description": "Gelic Podzoluvisols are mostly forested soils in cooler or cold climates that are acidic and infertile with leached surface horizons and clayey subsoils. These soils have permafrost above two meters and are generally unsuitable for cultivation.",
+                "management": "These soils have a bleached subsurface soil horizon that will respond to fertilization, and in some cases, drainage. Soil surface horizons are usually acidic (pH < 4.5) and will need liming. Because of the high degree of weathering the soils are also high in soluble aluminum and will fix phosphorus, creating P deficiencies. Although not recommended, if these soils are used for cultivation they will need deep plowing (to break subsoil layers), liming and fertilization. Specific care with P fertilization will be needed, and use of band on on-seed placement of P is recommended. Care should be taken to maintain organic matter, for as the permafrost is opened soil subsidence will occur."
+            },
+            "regosols": {
+                "name": "Regosols",
+                "description": "Regosols are weakly developed soils that commonly are too dry, or are on steeper slopes which limit productivity. ",
+                "management": "These soils have low water holding capacity, and are very sensitive to drought. This soil can be productive, if irrigation and fertilization are provided. They are prone to erosion, especially in areas with slope. The combination of drought sensitivity and high erosion potential makes these soils best suited for grazing or other uses with constant soil cover. Even when used for grazing, irrigation will be needed due to the low water holding capacity and high permeability of these soils. "
+            },
+            "eutric_regosols": {
+                "name": "Eutric Regosols",
+                "description": "Eutric Regosols are weakly developed soils that commonly are too dry, or are on steeper slopes which limit productivity. Eutric Regosols have high base saturation in the subsoil. ",
+                "management": "These soils have low water holding capacity, and are very sensitive to drought. This soil can be productive, if irrigation and fertilization are provided. They are prone to erosion, especially in areas with slope. The combination of drought sensitivity and high erosion potential makes these soils best suited for grazing or other uses with constant soil cover. Even when used for grazing, irrigation will be needed due to the low water holding capacity and high permeability of these soils. "
+            },
+            "calcaric_regosols": {
+                "name": "Calcaric Regosols",
+                "description": "Calcaric Regosols are weakly developed soils that commonly are too dry, or are on steeper slopes which limit productivity. Calcaric Regosols are calcareous in the upper portion of the subsoil. ",
+                "management": "These soils have low water holding capacity, and are very sensitive to drought. They are prone to erosion, especially in areas with slope. The combination of drought sensitivity and high erosion potential makes these soils best suited for grazing or other uses with constant soil cover. Even when used for grazing, irrigation will be needed due to the low water holding capacity and high permeability of these soils. "
+            },
+            "gypsic_regosols": {
+                "name": "Gypsic Regosols",
+                "description": "Gypsic Regosols are weakly developed soils that commonly are too dry, or are on steeper slopes which limit productivity. Gypsic Regosols have gypsum in a soil layer below the surface.",
+                "management": "These soils have low water holding capacity, and are very sensitive to drought. They are prone to erosion, especially in areas with slope. The combination of drought sensitivity and high erosion potential makes these soils best suited for grazing or other uses with constant soil cover. Even when used for grazing, irrigation will be needed due to the low water holding capacity and high permeability of these soils. "
+            },
+            "dystric_regosols": {
+                "name": "Dystric Regosols",
+                "description": "Dystric Regosols are weakly developed soils that commonly are too dry, or are on steeper slopes which limit productivity. Dystric Regosols have low base saturation in the subsoil. ",
+                "management": "These soils have low water holding capacity, and are very sensitive to drought. They are prone to erosion, especially in areas with slope. The combination of drought sensitivity and high erosion potential makes these soils best suited for grazing or other uses with constant soil cover. Even when used for grazing, irrigation will be needed due to the low water holding capacity and high permeability of these soils. With a low base saturation these soils may respond to addition of bases such as potassium, calcium or magnesium.  "
+            },
+            "umbric_regosols": {
+                "name": "Umbric Regosols",
+                "description": "Umbric Regosols are weakly developed soils that commonly are too dry, or are on steeper slopes which limit productivity. Umbric Regosols have higher organic matter and lower base saturation in surface horizons. ",
+                "management": "These soils have low water holding capacity, and are very sensitive to drought. They are prone to erosion, especially in areas with slope. The combination of drought sensitivity and high erosion potential makes these soils best suited for grazing or other uses with constant soil cover. Even when used for grazing, irrigation will be needed due to the low water holding capacity and high permeability of these soils. The soil pH in the upper soil layer will be low (pH < 5.0), indicating that the application of lime will be needed for best crop productivity. Application of lime will supply calcium, and possibly magnesium if dolomitic lime is used."
+            },
+            "gelic_regosols": {
+                "name": "Gelic Regosols",
+                "description": "Gelic Regosols are weakly developed soils that commonly are too dry, or are on steeper slopes which limit productivity. Gelic Regosols have permafrost within two meters of the soil surface and are generally unsuitable for cultivation.",
+                "management": "These soils have low water holding capacity, and are very sensitive to drought. They are prone to erosion, especially in areas with slope. The combination of drought sensitivity and high erosion potential makes these soils best suited for grazing or other uses with constant soil cover. Even when used for grazing irrigation will be needed, due to the  low water holding capacity and high permeability of these soils. If used for grazing care should be taken to maintain organic matter, for as the permafrost is opened soil subsidence will occur. "
+            },
+            "solonchaks": {
+                "name": "Solonchaks",
+                "description": "Solonchaks are soils that contain salts at or near the soil surface.  These soils form in either deserts or close to coastlines.",
+                "management": "These soils are typically high in total salts. They have very poor productivity, and cannot be used unless high quality irrigation is available to remove accumulated salts. These soils are not well suited for agriculture and are best used for grazing, or left fallow. "
+            },
+            "haplic_solonchaks": {
+                "name": "Haplic Solonchaks",
+                "description": "Haplic Solonchaks are soils that contain salts at or near the soil surface.  These soils form in either deserts or close to coastlines.",
+                "management": "These soils are typically high in total salts. They have very poor productivity, and cannot be used unless high quality irrigation is available to remove accumulated salts. These soils are not well suited for agriculture and are best used for grazing, or left fallow. "
+            },
+            "mollic_solonchaks": {
+                "name": "Mollic Solonchaks",
+                "description": "Mollic Solonchaks are soils that contain salts at or near the soil surface that form in either deserts or close to coastlines. Mollic Solonchaks have higher organic matter and base saturation in surface horizons.",
+                "management": "These soils are typically high in total salts. They have very poor productivity, and cannot be used unless high quality irrigation is available to remove accumulated salts. These soils are not well suited for agriculture and are best used for grazing, or left fallow. Elimination of any saline issues, and use of drainage could improve this soil for use in grazing systems. "
+            },
+            "calcic_solonchaks": {
+                "name": "Calcic Solonchaks",
+                "description": "Calcic Solonchaks are soils that contain salts at or near the soil surface that form in either deserts or close to coastlines. Calcic Solonchaks are calcareous in a soil layer below the surface.",
+                "management": "These soils are typically high in total salts. They have very poor productivity, and cannot be used unless high quality irrigation is available to remove accumulated salts. These soils are not well suited for agriculture and are best used for grazing, or left fallow. The soil pH in the upper soil layer will be high (> 7.0) "
+            },
+            "gypsic_solonchaks": {
+                "name": "Gypsic Solonchaks",
+                "description": "Gypsic Solonchaks are soils that contain salts at or near the soil surface that form in either deserts or close to coastlines. Gypsic Solonchaks have gypsum in a soil layer below the surface.",
+                "management": "These soils are typically high in total salts. They have very poor productivity, and cannot be used unless high quality irrigation is available to remove accumulated salts. These soils are not well suited for agriculture and are best used for grazing, or left fallow. These soils may be high in total salts, but will likely not be sodic (high in sodium), as exchangeable Ca levels will be high. "
+            },
+            "sodic_solonchaks": {
+                "name": "Sodic Solonchaks",
+                "description": "Sodic Solonchaks are soils that contain salts at or near the soil surface that form in either deserts or close to coastlines. These soils have high exchangeable sodium in surface andsubsurface horizons.",
+                "management": "These soils are typically high in total salts and have accumulated sodium as the primary salt (sodic). Due to high sodium these soil will appear wet when they are not, and plants will wilt. They have very poor productivity, and cannot be used unless remediated by the application of gypsum to displace sodium, followed by leaching with higher quality water to move the displaced sodium from the rooting zone. If remediation cannot be performed the soils are best left fallow, or grazed with whatever tolerance species are present. "
+            },
+            "gleyic_solonchaks": {
+                "name": "Gleyic Solonchaks",
+                "description": "Gleyic Solonchaks are soils that contain salts at or near the soil surface that form in either deserts or close to coastlines. These soils are saturated with shallow groundwater within one meter of the soil surface.",
+                "management": "These soils are typically high in total salts. They have very poor productivity, and cannot be used unless high quality irrigation is available to remove accumulated salts. Drainage of these soils will be needed, both to eliminate standing water and remediate salinity issues. These soils are not well suited for agriculture and are best used for grazing, or left fallow."
+            },
+            "gelic_solonchaks": {
+                "name": "Gelic Solonchaks",
+                "description": "Gelic Solonchaks are soils that contain salts at or near the soil surface that form in either deserts or close to coastlines. These soils have permafrost above two meters and are generally unsuitable for cultivation.",
+                "management": "These soils are typically high in total salts. They have very poor productivity, and cannot be used unless high quality irrigation is available to remove accumulated salts. These soils are not well suited for agriculture and are best used for grazing, or left fallow. If cultivated, care should be taken to maintain organic matter, for as the permafrost is opened soil subsidence will occur. "
+            },
+            "solonetz": {
+                "name": "Solonetz",
+                "description": "Solonetzs have strongly structured clay rich subsoils with high exchangeable sodium. Productivity of these soils depends on the depth of surface horizons above these subsoils.",
+                "management": "These are likely to have high sodium in subsurface horizons which results in poor soil structure and poor infiltration. The soils will appear wet, but plants will wilt. To improve internal drainage, gypsum should be applied to displace the sodium, followed by leaching with higher quality water to move the displaced sodium from the rooting zone. If the soils can be reclaimed by the application of gypsum and leaching of sodium, they may be suitable for grazing or cultivation. Selection of sodium tolerant crops is also an option, and should be used for maintenance. Cultivation is more suited when these soils are located in temperate regions, and the surface soil is higher in organic matter. "
+            },
+            "haplic_solonetz": {
+                "name": "Haplic Solonetz",
+                "description": "Haplic Solonetzs have strongly structured clay rich subsoils with high exchangeable sodium. Productivity of these soils depends on the depth of surface horizons above these subsoils.",
+                "management": "These are likely to have high sodium in subsurface horizons which results in poor soil structure and poor infiltration. The soils will appear wet, but plants will wilt. To improve internal drainage, gypsum should be applied to displace the sodium, followed by leaching with higher quality water to move the displaced sodium from the rooting zone. If the soils can be reclaimed by the application of gypsum and leaching of sodium, they may be suitable for grazing or cultivation. Selection of sodium tolerant crops is also an option, and should be used for maintenance. Cultivation is more suited when these soils are located in temperate regions, and the surface soil is higher in organic matter. "
+            },
+            "mollic_solonetz": {
+                "name": "Mollic Solonetz",
+                "description": "Mollic Solonetzs have strongly structured clay rich subsoils with high exchangeable sodium. Productivity of these soils depends on the depth of surface horizons above these subsoils. Mollic Solonetzs have higher organic matter and base saturation in surface horizons.",
+                "management": "These are likely to have high sodium in subsurface horizons which results in poor soil structure and poor infiltration. The soils will appear wet, but plants will wilt. To improve internal drainage, gypsum should be applied to displace the sodium, followed by leaching with higher quality water to move the displaced sodium from the rooting zone. If the soils can be reclaimed by the application of gypsum and leaching of sodium, they may be suitable for grazing or cultivation. Selection of sodium tolerant crops is also an option, and should be used for maintenance. Cultivation is more suited when these soils are located in temperate regions."
+            },
+            "calcic_solonetz": {
+                "name": "Calcic Solonetz",
+                "description": "Calcic Solonetzs have strongly structured clay rich subsoils with high exchangeable sodium. Productivity of these soils depends on the depth of surface horizons above these subsoils. Calcic Solonetz are calcareous in a soil layer below the surface.",
+                "management": "These are likely to have high sodium in subsurface horizons which results in poor soil structure and poor infiltration. The soils will appear wet, but plants will wilt. To improve internal drainage, gypsum should be applied to displace the sodium, followed by leaching with higher quality water to move the displaced sodium from the rooting zone. If the soils can be reclaimed by the application of gypsum and leaching of sodium, they may be suitable for grazing or cultivation. Selection of sodium tolerant crops is also an option, and should be used for maintenance. Cultivation is more suited when these soils are located in temperate regions, and the surface soil is higher in organic matter. "
+            },
+            "gypsic_solonetz": {
+                "name": "Gypsic Solonetz",
+                "description": "Gypsic Solonetz have strongly structured clay rich subsoils with high exchangeable sodium. Productivity of these soils depends on the depth of surface horizons above these subsoils. Gypsic Solonetz have gypsum in a soil layer below the surface.",
+                "management": "These are likely to have high sodium in subsurface horizons which results in poor soil structure and poor infiltration. The soils will appear wet, but plants will wilt. To improve internal drainage, gypsum should be applied to displace the sodium, followed by leaching with higher quality water to move the displaced sodium from the rooting zone. If the soils can be reclaimed by the application of gypsum and leaching of sodium, they may be suitable for grazing or cultivation. Selection of sodium tolerant crops is also an option, and should be used for maintenance. Cultivation is more suited when these soils are located in temperate regions, and the surface soil is higher in organic matter. "
+            },
+            "stagnic_solonetz": {
+                "name": "Stagnic Solonetz",
+                "description": "Stagnic Solonetz have strongly structured clay rich subsoils with high exchangeable sodium. Productivity of these soils depends on the depth of surface horizons above these subsoils. Stagnic Solonetz are ponded and saturated in and above surface horizons during wet times of the year.",
+                "management": "These are likely to have high sodium in subsurface horizons which results in poor soil structure and poor infiltration. The soils will appear wet, but plants will wilt. Drainage of these soils will be needed to remove surface water and to improve infiltration. To further improve internal drainage, gypsum should be applied to displace the sodium, followed by leaching with higher quality water to move the displaced sodium from the rooting zone. If the soils can be reclaimed by the application of gypsum and leaching of sodium, they may be suitable for grazing or cultivation. Selection of sodium tolerant crops is also an option, and should be used for maintenance. Cultivation is more suited when these soils are located in temperate regions, and the surface soil is "
+            },
+            "gleyic_solonetz": {
+                "name": "Gleyic Solonetz",
+                "description": "Gleyic Solonetz have strongly structured clay rich subsoils with high exchangeable sodium. Productivity of these soils depends on the depth of surface horizons above these subsoils. Gleyic Solonetz are saturated with shallow groundwater within one meter of the soil surface.",
+                "management": "These are likely to have high sodium in subsurface horizons which results in poor soil structure and poor infiltration. The soils will appear wet, but plants will wilt. Drainage of these soils will be needed, both to eliminate standing water and remediate sodicity issues. To further improve internal drainage, gypsum should be applied to displace the sodium, followed by leaching with higher quality water to move the displaced sodium from the rooting zone. If the soils can be reclaimed by the application of gypsum and leaching of sodium, they may be suitable for grazing or cultivation. Selection of sodium tolerant crops is also an option, and should be used for maintenance. Cultivation is more suited when these soils are located in temperate regions, and the surface soil is higher in organic matter. "
+            },
+            "vertisols": {
+                "name": "Vertisols",
+                "description": "Vertisols are clayey soils that are sticky and plastic when wet and hard and massive when dry. These soils generally have favorable chemical properties but the high amount of expansive clay presents challenging physical properties particularly with regard to water management.",
+                "management": "Vertisols can be highly productive soils, yet the characteristics of the clay in this soil can make management an issue. Due to the clay type these soils swell when wet and shrink when dry, creating issues for cultivation (avoid excessive tillage when wet), or other issues such as construction. Their fertility makes them suitable for agriculture, but additional fertilization will be needed for best productivity. Additionally, water management is a key, and practices that promote drainage and water infiltration are needed. "
+            },
+            "eutric_vertisols": {
+                "name": "Eutric Vertisols",
+                "description": "Eutric Vertisols are clayey soils that are sticky and plastic when wet and hard and massive when dry. These soils generally have favorable chemical properties but the high amount of expansive clay presents challenging physical properties particularly with regard to water management. Eutric Vertisols are relatively productive soils with high base saturation in the subsoil.",
+                "management": "Vertisols can be highly productive soils, yet the characteristics of the clay in this soil can make management an issue. Due to the clay type these soils swell when wet and shrink when dry, creating issues for cultivation (avoid excessive tillage when wet), or other issues such as construction. Their fertility makes them suitable for agriculture, but additional fertilization will be needed for best productivity. Additionally, water management is a key, and practices that promote drainage and water infiltration are needed. With proper drainage and water management, these soils can be highly productive, as the native soil fertility is high. "
+            },
+            "dystric_vertisols": {
+                "name": "Dystric Vertisols",
+                "description": "Dystric Vertisols are clayey soils that are sticky and plastic when wet and hard and massive when dry. These soils generally have favorable chemical properties but the high amount of expansive clay presents challenging physical properties particularly with regard to water management. Dystric Vertisols are less productive soils with low base saturation in the subsoil.",
+                "management": "Vertisols can be highly productive soils, yet the characteristics of the clay in this soil can make management an issue. Due to the clay type these soils swell when wet and shrink when dry, creating issues for cultivation (avoid excessive tillage when wet), or other issues such as construction. Their fertility makes them suitable for agriculture, but additional fertilization will be needed for best productivity. Additionally, water management is a key, and practices that promote drainage and water infiltration are needed. This soil will likely need supplemental fertilization when used for crop production. "
+            },
+            "calcic_vertisols": {
+                "name": "Calcic Vertisols",
+                "description": "Calcic Vertisols are clayey soils that are sticky and plastic when wet and hard and massive when dry. These soils generally have favorable chemical properties but the high amount of expansive clay presents challenging physical properties particularly with regard to water management. Calcic Vertisols are calcareous in a soil layer below the surface.",
+                "management": "Vertisols can be highly productive soils, yet the characteristics of the clay in this soil can make management an issue. Due to the clay type these soils swell when wet and shrink when dry, creating issues for cultivation (avoid excessive tillage when wet), or other issues such as construction. Their fertility makes them suitable for agriculture, but additional fertilization will be needed for best productivity. Additionally, water management is a key, and practices that promote drainage and water infiltration are needed. "
+            },
+            "gypsic_vertisols": {
+                "name": "Gypsic Vertisols",
+                "description": "Gypsic Vertisols are clayey soils that are sticky and plastic when wet and hard and massive when dry. These soils generally have favorable chemical properties but the high amount of expansive clay presents challenging physical properties particularly with regard to water management. Gypsic Vertisols have a subsurface horizon enriched in gypsum (calcium sulfate).",
+                "management": "Vertisols can be highly productive soils, yet the characteristics of the clay in this soil can make management an issue. Due to the clay type these soils swell when wet and shrink when dry, creating issues for cultivation (avoid excessive tillage when wet), or other issues such as construction. Their fertility makes them suitable for agriculture, but additional fertilization will be needed for best productivity. Additionally, water management is a key, and practices that promote drainage and water infiltration are needed."
+            }
         }
     },
     "slope": {
         "title": "Slope",
         "info": {
             "title": "Slope",
-            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each observation are available on each observation entry screen.\n\nSlope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more."
+            "description": "Describe the characteristics of the slope of the land on which the site is located.\n\nInstructions on how to collect each observation are available on each observation entry screen.\n\n{{data_region_text}}",
+            "data_region_text_US": "Slope is important in identifying the soil. It also helps determine the soil’s erosion potential, ability to hold water, and more.",
+            "data_region_text_global_or_unknown": "Slope characteristics help determine the soil’s erosion potential, ability to hold water, and more."
         },
         "steepness": {
             "short_title": "Steepness",

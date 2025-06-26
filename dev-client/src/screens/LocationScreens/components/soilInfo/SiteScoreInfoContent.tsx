@@ -20,7 +20,9 @@ import {Divider} from 'react-native-paper';
 import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
+import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
 import {PropertiesScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesScoreDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
 import {SoilIdMatchSelector} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilIdMatchSelector';
@@ -29,33 +31,41 @@ import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/com
 type SiteScoreInfoContentProps = {
   siteId: string;
   coords: Coords;
-  dataMatch: DataBasedSoilMatch;
+  dataRegion: DataRegion;
+  siteMatch: DataBasedSoilMatch;
 };
 
 export function SiteScoreInfoContent({
   siteId,
   coords,
-  dataMatch,
+  dataRegion,
+  siteMatch,
 }: SiteScoreInfoContentProps) {
   return (
     <ScoreInfoContainer>
       <SoilInfoDisplay
-        dataSource={dataMatch.dataSource}
-        soilInfo={dataMatch.soilInfo}
+        dataRegion={dataRegion}
+        dataSource={siteMatch.dataSource}
+        soilInfo={siteMatch.soilInfo}
       />
       <Divider />
       <LocationScoreDisplay
         isSite={true}
-        match={dataMatch}
-        matchInfo={dataMatch.locationMatch}
+        dataRegion={dataRegion}
+        match={siteMatch}
+        matchInfo={siteMatch.locationMatch}
         coords={coords}
       />
       <Divider />
-      <PropertiesScoreDisplay
-        match={dataMatch}
-        matchInfo={dataMatch.dataMatch}
-      />
-      <SoilIdMatchSelector siteId={siteId} match={dataMatch} />
+      {siteMatch.dataMatch ? (
+        <PropertiesScoreDisplay
+          match={siteMatch}
+          matchInfo={siteMatch.dataMatch ?? undefined}
+        />
+      ) : (
+        <PropertiesDisplay match={siteMatch} />
+      )}
+      <SoilIdMatchSelector siteId={siteId} match={siteMatch} />
     </ScoreInfoContainer>
   );
 }

@@ -15,22 +15,40 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  DataRegion,
+  getSoilMapSource,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 type LocationScoreInfoContentProps = {
   isSite: boolean;
+  dataRegion: DataRegion;
 };
 
 export function LocationScoreInfoContent({
   isSite,
+  dataRegion,
 }: LocationScoreInfoContentProps) {
+  const {t} = useTranslation();
+  const soilMapSource = t(getSoilMapSource(dataRegion));
+
   return (
     <Column space={3}>
       {isSite && (
         <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p1" />
       )}
-      <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p2" />
+      {dataRegion ? (
+        <TranslatedParagraph
+          i18nKey="site.soil_id.location_score_info.p2"
+          values={{soilMapSource}}
+        />
+      ) : (
+        <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p2_region_unknown" />
+      )}
       <TranslatedParagraph i18nKey="site.soil_id.location_score_info.p3" />
     </Column>
   );
