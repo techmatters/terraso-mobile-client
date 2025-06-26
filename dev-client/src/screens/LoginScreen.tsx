@@ -46,6 +46,7 @@ import {
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {OfflineSignInBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineSignInBox';
+import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {theme} from 'terraso-mobile-client/theme';
 
@@ -169,6 +170,9 @@ export const LoginScreen = () => {
           ) : (
             <LoginButtons onPress={onPress} />
           )}
+          <Text color="primary.contrast" mt="md">
+            <VersionIndicator />
+          </Text>
         </Column>
         <Column alignItems="center">
           <Row alignItems="flex-end" mb="6px">
