@@ -376,6 +376,31 @@ exports[`renders correctly 1`] = `
                     }
                   />
                 </View>
+                <Text
+                  letterSpacing="0.15px"
+                  lineHeight="24px"
+                  style={
+                    {
+                      "color": "#FFFFFF",
+                      "fontSize": 16,
+                      "fontWeight": "400",
+                      "marginTop": 16,
+                    }
+                  }
+                >
+                  <Text
+                    letterSpacing="0.17px"
+                    lineHeight="20px"
+                    style={
+                      {
+                        "fontSize": 14,
+                        "fontWeight": "400",
+                      }
+                    }
+                  >
+                    (Untagged application version )
+                  </Text>
+                </Text>
               </View>
               <View
                 style={
