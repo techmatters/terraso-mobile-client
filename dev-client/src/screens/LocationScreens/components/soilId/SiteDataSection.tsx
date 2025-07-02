@@ -37,7 +37,7 @@ export const SiteDataSection = ({siteId}: Props) => {
   return (
     <ScreenContentSection title={t('site.soil_id.site_data.title')}>
       <Text variant="body1">{t('site.soil_id.site_data.description')}</Text>
-      {dataRegion === 'US' && <SiteSlopeDataSection siteId={siteId} />}
+      {dataRegion !== 'GLOBAL' && <SiteSlopeDataSection siteId={siteId} />}
       <SiteSoilCracksSection siteId={siteId} />
       <SiteSoilPropertiesDataSection siteId={siteId} />
     </ScreenContentSection>
