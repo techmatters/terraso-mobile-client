@@ -41,8 +41,10 @@ import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 import {CalloutDetail} from 'terraso-mobile-client/screens/SitesScreen/components/CalloutDetail';
 import {LatLngDetail} from 'terraso-mobile-client/screens/SitesScreen/components/LatLngDetail';
 
@@ -91,7 +93,7 @@ export const TemporaryLocationCallout = ({
               <TopSoilMatchDisplay
                 status={soilIdOutput.status}
                 topSoilMatch={topSoilMatch}
-                t={t}
+                dataRegion={soilIdOutput.dataRegion}
               />
             }
           />
@@ -104,7 +106,6 @@ export const TemporaryLocationCallout = ({
                   <EcologicalSiteMatchDisplay
                     status={soilIdOutput.status}
                     topSoilMatch={topSoilMatch}
-                    t={t}
                   />
                 }
               />
@@ -157,14 +158,26 @@ const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
 type SoilIdStatusDisplayTopMatchProps = {
   status: SoilIdStatus;
   topSoilMatch: DataBasedSoilMatch | undefined;
-  t: TFunction;
+};
+type TopSoilMatchDisplayProps = SoilIdStatusDisplayTopMatchProps & {
+  dataRegion: DataRegion;
 };
 
 const TopSoilMatchDisplay = ({
   status,
   topSoilMatch,
-  t,
-}: SoilIdStatusDisplayTopMatchProps) => {
+  dataRegion,
+}: TopSoilMatchDisplayProps) => {
+  const {t, i18n} = useTranslation();
+  const soilNameDisplayText = topSoilMatch
+    ? getSoilNameDisplayText(
+        topSoilMatch.soilInfo.soilSeries.name,
+        dataRegion,
+        t,
+        i18n,
+      )
+    : t('soil.no_matches');
+
   return (
     <SoilIdStatusDisplay
       status={status}
@@ -182,7 +195,7 @@ const TopSoilMatchDisplay = ({
       }
       data={
         <Text bold textTransform="uppercase">
-          {topSoilMatch?.soilInfo.soilSeries.name ?? t('soil.no_matches')}
+          {soilNameDisplayText}
         </Text>
       }
     />
@@ -192,8 +205,8 @@ const TopSoilMatchDisplay = ({
 const EcologicalSiteMatchDisplay = ({
   status,
   topSoilMatch,
-  t,
 }: SoilIdStatusDisplayTopMatchProps) => {
+  const {t} = useTranslation();
   return (
     <SoilIdStatusDisplay
       status={status}

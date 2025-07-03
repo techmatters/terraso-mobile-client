@@ -15,15 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
 import {Pressable} from 'react-native';
 
 import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 import {formatPercent} from 'terraso-mobile-client/util';
 
 type Props = {
   soilName: string;
+  dataRegion: DataRegion;
   score: number;
   isSelected?: boolean;
   onPress: () => void;
@@ -31,10 +35,13 @@ type Props = {
 
 export const SoilMatchTile = ({
   soilName,
+  dataRegion,
   score,
   isSelected,
   onPress,
 }: Props) => {
+  const {t, i18n} = useTranslation();
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -78,7 +85,7 @@ export const SoilMatchTile = ({
         </Box>
         <Box flex={1} mr="12px" my="8px" flexDirection="row">
           <Text variant="match-tile-name" color="primary.contrast">
-            {soilName}
+            {getSoilNameDisplayText(soilName, dataRegion, t, i18n)}
           </Text>
         </Box>
         <Icon name="chevron-right" color="primary.contrast" mr="12px" />
