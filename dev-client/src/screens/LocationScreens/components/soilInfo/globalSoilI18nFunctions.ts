@@ -27,8 +27,12 @@ export function getSoilDisplayNameText(
   soilSeriesName: string,
   dataRegion: DataRegion,
   t: TFunction,
+  i18n: i18nType,
 ) {
-  if (dataRegion === 'GLOBAL') {
+  if (
+    dataRegion === 'GLOBAL' &&
+    i18n.exists(getGlobalSoilI18nNameKey(soilSeriesName))
+  ) {
     return t(getGlobalSoilI18nNameKey(soilSeriesName));
   } else {
     return soilSeriesName;

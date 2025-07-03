@@ -40,7 +40,7 @@ export const SoilMatchTile = ({
   isSelected,
   onPress,
 }: Props) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
 
   return (
     <Pressable
@@ -85,7 +85,7 @@ export const SoilMatchTile = ({
         </Box>
         <Box flex={1} mr="12px" my="8px" flexDirection="row">
           <Text variant="match-tile-name" color="primary.contrast">
-            {getSoilDisplayNameText(soilName, dataRegion, t)}
+            {getSoilDisplayNameText(soilName, dataRegion, t, i18n)}
           </Text>
         </Box>
         <Icon name="chevron-right" color="primary.contrast" mr="12px" />

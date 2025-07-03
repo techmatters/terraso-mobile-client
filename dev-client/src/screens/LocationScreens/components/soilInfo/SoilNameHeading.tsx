@@ -30,10 +30,10 @@ export const SoilNameHeading = ({
   soilName,
   dataRegion,
 }: SoilNameHeadingProps) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   return (
     <Heading variant="h4">
-      {getSoilDisplayNameText(soilName, dataRegion, t)}
+      {getSoilDisplayNameText(soilName, dataRegion, t, i18n)}
     </Heading>
   );
 };

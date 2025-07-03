@@ -138,10 +138,15 @@ const MatchContent = ({
   match,
   isSelected = false,
 }: MatchContentProps) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
 
   const soilDisplayNameText = match
-    ? getSoilDisplayNameText(match.soilInfo.soilSeries.name, dataRegion, t)
+    ? getSoilDisplayNameText(
+        match.soilInfo.soilSeries.name,
+        dataRegion,
+        t,
+        i18n,
+      )
     : t('soil.no_matches');
 
   return (

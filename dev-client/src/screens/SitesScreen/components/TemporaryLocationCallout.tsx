@@ -94,7 +94,6 @@ export const TemporaryLocationCallout = ({
                 status={soilIdOutput.status}
                 topSoilMatch={topSoilMatch}
                 dataRegion={soilIdOutput.dataRegion}
-                t={t}
               />
             }
           />
@@ -107,7 +106,6 @@ export const TemporaryLocationCallout = ({
                   <EcologicalSiteMatchDisplay
                     status={soilIdOutput.status}
                     topSoilMatch={topSoilMatch}
-                    t={t}
                   />
                 }
               />
@@ -160,7 +158,6 @@ const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
 type SoilIdStatusDisplayTopMatchProps = {
   status: SoilIdStatus;
   topSoilMatch: DataBasedSoilMatch | undefined;
-  t: TFunction;
 };
 type TopSoilMatchDisplayProps = SoilIdStatusDisplayTopMatchProps & {
   dataRegion: DataRegion;
@@ -170,13 +167,14 @@ const TopSoilMatchDisplay = ({
   status,
   topSoilMatch,
   dataRegion,
-  t,
 }: TopSoilMatchDisplayProps) => {
+  const {t, i18n} = useTranslation();
   const soilDisplayNameText = topSoilMatch
     ? getSoilDisplayNameText(
         topSoilMatch.soilInfo.soilSeries.name,
         dataRegion,
         t,
+        i18n,
       )
     : t('soil.no_matches');
 
@@ -207,8 +205,8 @@ const TopSoilMatchDisplay = ({
 const EcologicalSiteMatchDisplay = ({
   status,
   topSoilMatch,
-  t,
 }: SoilIdStatusDisplayTopMatchProps) => {
+  const {t} = useTranslation();
   return (
     <SoilIdStatusDisplay
       status={status}
