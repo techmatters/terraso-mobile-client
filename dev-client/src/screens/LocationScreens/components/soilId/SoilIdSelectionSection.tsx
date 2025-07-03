@@ -18,7 +18,7 @@
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
@@ -48,9 +48,9 @@ export const SoilIdSelectionSection = ({
     <ScreenContentSection backgroundColor="grey.200">
       <InfoSheet
         heading={
-          <Heading variant="h4">
-            {selectedSoilMatch.soilInfo.soilSeries.name}
-          </Heading>
+          <TranslatedHeading
+            i18nKey={selectedSoilMatch.soilInfo.soilSeries.name}
+          />
         }
         trigger={onOpen => (
           <SoilMatchTile
