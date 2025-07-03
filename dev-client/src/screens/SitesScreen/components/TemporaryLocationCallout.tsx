@@ -44,7 +44,7 @@ import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {getSoilDisplayNameText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
+import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 import {CalloutDetail} from 'terraso-mobile-client/screens/SitesScreen/components/CalloutDetail';
 import {LatLngDetail} from 'terraso-mobile-client/screens/SitesScreen/components/LatLngDetail';
 
@@ -169,8 +169,8 @@ const TopSoilMatchDisplay = ({
   dataRegion,
 }: TopSoilMatchDisplayProps) => {
   const {t, i18n} = useTranslation();
-  const soilDisplayNameText = topSoilMatch
-    ? getSoilDisplayNameText(
+  const soilNameDisplayText = topSoilMatch
+    ? getSoilNameDisplayText(
         topSoilMatch.soilInfo.soilSeries.name,
         dataRegion,
         t,
@@ -195,7 +195,7 @@ const TopSoilMatchDisplay = ({
       }
       data={
         <Text bold textTransform="uppercase">
-          {soilDisplayNameText}
+          {soilNameDisplayText}
         </Text>
       }
     />

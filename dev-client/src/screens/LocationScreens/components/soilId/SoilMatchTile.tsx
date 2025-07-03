@@ -22,7 +22,7 @@ import {TranslatedContent} from 'terraso-mobile-client/components/content/typogr
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
-import {getSoilDisplayNameText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
+import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 import {formatPercent} from 'terraso-mobile-client/util';
 
 type Props = {
@@ -85,7 +85,7 @@ export const SoilMatchTile = ({
         </Box>
         <Box flex={1} mr="12px" my="8px" flexDirection="row">
           <Text variant="match-tile-name" color="primary.contrast">
-            {getSoilDisplayNameText(soilName, dataRegion, t, i18n)}
+            {getSoilNameDisplayText(soilName, dataRegion, t, i18n)}
           </Text>
         </Box>
         <Icon name="chevron-right" color="primary.contrast" mr="12px" />

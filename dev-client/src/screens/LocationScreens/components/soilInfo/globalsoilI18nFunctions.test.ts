@@ -21,7 +21,7 @@ import {SoilSeries} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
   getGlobalSoilSeriesDisplayText,
-  getSoilDisplayNameText,
+  getSoilNameDisplayText,
 } from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 
 // There may be some better way to mock the react-i18next objects?
@@ -41,25 +41,25 @@ const mockI18n = {
     ),
 } as i18nType;
 
-describe('getSoilDisplayNameText', () => {
+describe('getSoilNameDisplayText', () => {
   test('returns the translated name if global and exists', () => {
     expect(
-      getSoilDisplayNameText('Haplic Acrisols', 'GLOBAL', mockT, mockI18n),
+      getSoilNameDisplayText('Haplic Acrisols', 'GLOBAL', mockT, mockI18n),
     ).toEqual('Name for Haplic Acrisols (translated)');
   });
   test('returns the given name if US', () => {
     expect(
-      getSoilDisplayNameText('Haplic Acrisols', 'US', mockT, mockI18n),
+      getSoilNameDisplayText('Haplic Acrisols', 'US', mockT, mockI18n),
     ).toEqual('Haplic Acrisols');
   });
   test('returns the given name if dataRegion unknown', () => {
     expect(
-      getSoilDisplayNameText('Haplic Acrisols', undefined, mockT, mockI18n),
+      getSoilNameDisplayText('Haplic Acrisols', undefined, mockT, mockI18n),
     ).toEqual('Haplic Acrisols');
   });
   test('returns the given name if it doesnt exist in i18n', () => {
     expect(
-      getSoilDisplayNameText(
+      getSoilNameDisplayText(
         'Soil that does not have translation',
         'GLOBAL',
         mockT,

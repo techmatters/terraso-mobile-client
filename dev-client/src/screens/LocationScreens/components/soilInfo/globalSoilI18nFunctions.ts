@@ -23,7 +23,7 @@ import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches'
 
 // As of 2025-07 we only expect global (not US) soil match descriptions to come from the client-side i18n files.
 
-export function getSoilDisplayNameText(
+export function getSoilNameDisplayText(
   soilSeriesName: string,
   dataRegion: DataRegion,
   t: TFunction,
@@ -37,10 +37,6 @@ export function getSoilDisplayNameText(
   } else {
     return soilSeriesName;
   }
-}
-
-export function getGlobalSoilI18nNameKey(soilSeriesName: string) {
-  return `${getGlobalSoilI18nKey(soilSeriesName)}.name`;
 }
 
 export function getGlobalSoilSeriesDisplayText(
@@ -70,15 +66,14 @@ export function getGlobalSoilSeriesDisplayText(
   }
 }
 
+function getGlobalSoilI18nNameKey(soilSeriesName: string) {
+  return `${getGlobalSoilI18nKey(soilSeriesName)}.name`;
+}
+
 function getGlobalSoilI18nKey(soilSeriesName: string) {
   return `soil.match_info.${getNormalizedSoilName(soilSeriesName)}`;
 }
 
 function getNormalizedSoilName(soilSeriesName: string) {
-  let normalizedSoilName = soilSeriesName
-    .trim()
-    .toLowerCase()
-    .replace(/ /g, '_');
-
-  return normalizedSoilName;
+  return soilSeriesName.trim().toLowerCase().replace(/ /g, '_');
 }

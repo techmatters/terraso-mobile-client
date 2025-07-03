@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
-import {getSoilDisplayNameText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
+import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 
 type SoilNameHeadingProps = {
   soilName: string;
@@ -33,7 +33,7 @@ export const SoilNameHeading = ({
   const {t, i18n} = useTranslation();
   return (
     <Heading variant="h4">
-      {getSoilDisplayNameText(soilName, dataRegion, t, i18n)}
+      {getSoilNameDisplayText(soilName, dataRegion, t, i18n)}
     </Heading>
   );
 };
