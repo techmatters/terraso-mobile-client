@@ -35,6 +35,7 @@ import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches'
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
+import {getSoilDisplayNameText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 
 type LocationSoilIdCardProps = {
   coords: Coords;
@@ -139,6 +140,10 @@ const MatchContent = ({
 }: MatchContentProps) => {
   const {t} = useTranslation();
 
+  const soilDisplayNameText = match
+    ? getSoilDisplayNameText(match.soilInfo.soilSeries.name, dataRegion, t)
+    : t('soil.no_matches');
+
   return (
     <>
       <Text variant="body1" color="primary.contrast" mb="5px">
@@ -152,11 +157,7 @@ const MatchContent = ({
           loading={<Text>{t('soil.loading')}</Text>}
           error={<Text>{t('soil.error')}</Text>}
           noData={<Text>{t('soil.no_matches')}</Text>}
-          data={
-            <Text>
-              {match?.soilInfo.soilSeries.name ?? t('soil.no_matches')}
-            </Text>
-          }
+          data={<Text>{soilDisplayNameText}</Text>}
         />
       </Text>
       {dataRegion === 'US' ? (

@@ -41,8 +41,10 @@ import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
 import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {getSoilDisplayNameText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 import {CalloutDetail} from 'terraso-mobile-client/screens/SitesScreen/components/CalloutDetail';
 import {LatLngDetail} from 'terraso-mobile-client/screens/SitesScreen/components/LatLngDetail';
 
@@ -91,6 +93,7 @@ export const TemporaryLocationCallout = ({
               <TopSoilMatchDisplay
                 status={soilIdOutput.status}
                 topSoilMatch={topSoilMatch}
+                dataRegion={soilIdOutput.dataRegion}
                 t={t}
               />
             }
@@ -159,12 +162,24 @@ type SoilIdStatusDisplayTopMatchProps = {
   topSoilMatch: DataBasedSoilMatch | undefined;
   t: TFunction;
 };
+type TopSoilMatchDisplayProps = SoilIdStatusDisplayTopMatchProps & {
+  dataRegion: DataRegion;
+};
 
 const TopSoilMatchDisplay = ({
   status,
   topSoilMatch,
+  dataRegion,
   t,
-}: SoilIdStatusDisplayTopMatchProps) => {
+}: TopSoilMatchDisplayProps) => {
+  const soilDisplayNameText = topSoilMatch
+    ? getSoilDisplayNameText(
+        topSoilMatch.soilInfo.soilSeries.name,
+        dataRegion,
+        t,
+      )
+    : t('soil.no_matches');
+
   return (
     <SoilIdStatusDisplay
       status={status}
@@ -182,7 +197,7 @@ const TopSoilMatchDisplay = ({
       }
       data={
         <Text bold textTransform="uppercase">
-          {topSoilMatch?.soilInfo.soilSeries.name ?? t('soil.no_matches')}
+          {soilDisplayNameText}
         </Text>
       }
     />
