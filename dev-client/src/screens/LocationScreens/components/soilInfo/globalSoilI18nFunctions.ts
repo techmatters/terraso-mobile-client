@@ -76,10 +76,5 @@ function getNormalizedSoilName(soilSeriesName: string) {
     .toLowerCase()
     .replace(/ /g, '_');
 
-  // TODO: Fix this typo in the database instead of handling it here
-  if (normalizedSoilName === 'albic_luvsiols') {
-    normalizedSoilName = 'albic_luvisols';
-  }
-
   return normalizedSoilName;
 }
