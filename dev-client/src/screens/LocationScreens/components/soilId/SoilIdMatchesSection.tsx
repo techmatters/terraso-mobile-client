@@ -94,9 +94,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
           <InfoSheet
             key={siteMatch.soilInfo.soilSeries.name}
             heading={
-              <Heading variant="h4">
-                {siteMatch.soilInfo.soilSeries.name}
-              </Heading>
+              <TranslatedHeading i18nKey={siteMatch.soilInfo.soilSeries.name} />
             }
             trigger={onOpen => (
               <SoilMatchTile
