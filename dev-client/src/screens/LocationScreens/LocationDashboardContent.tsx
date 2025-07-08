@@ -38,6 +38,7 @@ import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {updateSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {LocationSoilIdCard} from 'terraso-mobile-client/screens/LocationScreens/components/LocationSoilIdCard';
@@ -71,6 +72,10 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const soilIdOutput = useSoilIdOutput(
+    site?.id ? {siteId: site.id} : {coords: coords},
+  );
+  const dataRegion = soilIdOutput.dataRegion;
 
   const project = useSelector(state =>
     site?.projectId === undefined
@@ -109,10 +114,13 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
           label={t('geo.longitude.title')}
           value={formatCoordinate(coords?.longitude)}
         />
-        <LocationDetail
-          label={t('geo.elevation.title')}
-          value={renderElevation(t, elevation)}
-        />
+        {(elevation || dataRegion === 'US') && (
+          // TODO: Remove the conditional once mobile-client bug 2664 is done
+          <LocationDetail
+            label={t('geo.elevation.title')}
+            value={renderElevation(t, elevation)}
+          />
+        )}
         {!site && (
           <Box>
             <Box paddingVertical="20px" alignItems="center">

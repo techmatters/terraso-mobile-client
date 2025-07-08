@@ -110,12 +110,17 @@ export const TemporaryLocationCallout = ({
               />
             </>
           )}
-          <Divider />
         </>
-        <CalloutDetail
-          label={t('site.elevation_label')}
-          value={<ElevationDisplay elevation={elevation} t={t} />}
-        />
+        {(elevation.value || soilIdOutput.dataRegion === 'US') && (
+          // TODO: Remove the conditional once mobile-client bug 2664 is done
+          <>
+            <Divider />
+            <CalloutDetail
+              label={t('site.elevation_label')}
+              value={<ElevationDisplay elevation={elevation} t={t} />}
+            />
+          </>
+        )}
         <Divider />
         <Row justifyContent="flex-end">
           <CreateSiteButton
