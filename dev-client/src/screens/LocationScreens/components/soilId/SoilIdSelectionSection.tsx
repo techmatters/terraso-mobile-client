@@ -18,7 +18,6 @@
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
@@ -26,6 +25,7 @@ import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMe
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
+import {SoilNameHeading} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilNameHeading';
 
 type SoilIdSelectionSectionProps = {siteId: string; coords: Coords};
 
@@ -39,6 +39,7 @@ export const SoilIdSelectionSection = ({
     soilIdOutput.matches,
     selectedSoilId,
   );
+  const dataRegion = soilIdOutput.dataRegion;
 
   if (!selectedSoilMatch) {
     return <></>;
@@ -48,13 +49,15 @@ export const SoilIdSelectionSection = ({
     <ScreenContentSection backgroundColor="grey.200">
       <InfoSheet
         heading={
-          <TranslatedHeading
-            i18nKey={selectedSoilMatch.soilInfo.soilSeries.name}
+          <SoilNameHeading
+            soilName={selectedSoilMatch.soilInfo.soilSeries.name}
+            dataRegion={dataRegion}
           />
         }
         trigger={onOpen => (
           <SoilMatchTile
             soilName={selectedSoilMatch.soilInfo.soilSeries.name}
+            dataRegion={dataRegion}
             score={
               selectedSoilMatch.combinedMatch?.score ??
               selectedSoilMatch.locationMatch.score
