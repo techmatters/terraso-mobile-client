@@ -777,7 +777,7 @@ msgstr "La forma de la pendiente se refiere a la forma en que se curva el terren
 "\n"
 "En segundo lugar, determine la forma de la pendiente para cada dirección.\n"
 "\n"
-"<bold>Cóncava</bold> significa que el terreno se inclina cada vez más hacia arriba a medida que te alejas de tu punto a lo largo de la <bold>pendiente transversal</bold> o de la <bold>pendiente descendente</bold>. Por ejemplo, la pendiente descendente suele ser cóncava al pie de una colina, ya que pasa de una pendiente pronunciada a otra más superficial.\n"
+"<bold>Cóncava</bold> significa que el terreno se inclina cada vez más hacia arriba a medida que te alejas de tu punto a lo largo de la pendiente transversal o de la pendiente descendente. Por ejemplo, la pendiente descendente suele ser cóncava al pie de una colina, ya que pasa de una pendiente pronunciada a otra más superficial.\n"
 "\n"
 "<bold>Convexa</bold> significa que el terreno se inclina cada vez más hacia abajo a medida que se aleja de su punto a lo largo de una dirección determinada. Por ejemplo, la pendiente descendente suele ser convexa en la cima de una colina al pasar de una pendiente poco profunda a otra más pronunciada.\n"
 "\n"
@@ -1141,7 +1141,7 @@ msgstr "LandPKS basa las coincidencias de suelos en los mapas creados por {{soil
 
 #: 
 msgid "site##soil_id##location_score_info##p3"
-msgstr "La <bold>calificación de ubicación</bold> de una coincidencia de suelo se basa en el porcentaje de la unidad cartográfica que el suelo cubre. Luego, se reduce por un valor proporcional a la distancia de la unidad de mapeo desde el sitio. En otras palabras, los suelos en la unidad de mapeo del sitio generalmente reciben un puntaje de ubicación más alto que los suelos en una unidad de mapeo vecina. De manera similar, los suelos que representan un mayor porcentaje de la unidad de mapeo reciben un puntaje de ubicación más alto que los suelos que representan un porcentaje menor de la unidad de mapeo."
+msgstr "La calificación de ubicación de una coincidencia de suelo se basa en el porcentaje de la unidad cartográfica que el suelo cubre. Luego, se reduce por un valor proporcional a la distancia de la unidad de mapeo desde el sitio. En otras palabras, los suelos en la unidad de mapeo del sitio generalmente reciben un puntaje de ubicación más alto que los suelos en una unidad de mapeo vecina. De manera similar, los suelos que representan un mayor porcentaje de la unidad de mapeo reciben un puntaje de ubicación más alto que los suelos que representan un porcentaje menor de la unidad de mapeo."
 
 #: 
 msgid "site##soil_id##soil_properties_score_info##header"
@@ -1609,7 +1609,7 @@ msgstr "<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo
 
 #: 
 msgid "general##info##privacy_item4"
-msgstr "La configuración de privacidad de un proyecto determina la privacidad de sus sitios afiliados.</bold> Los sitios que pertenecen a un proyecto privado son visibles para los miembros del equipo del proyecto. Un administrador de proyectos puede cambiar la privacidad en cualquier momento."
+msgstr "<bold>La configuración de privacidad de un proyecto determina la privacidad de sus sitios afiliados.</bold> Los sitios que pertenecen a un proyecto privado son visibles para los miembros del equipo del proyecto. Un administrador de proyectos puede cambiar la privacidad en cualquier momento."
 
 #: 
 msgid "general##info##data_portal_link_url"
