@@ -19,7 +19,7 @@ import {StyleSheet, View} from 'react-native';
 
 import CheckBox from '@react-native-community/checkbox';
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {DisableableText} from 'terraso-mobile-client/components/content/typography/DisableableText';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -30,7 +30,7 @@ import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soil
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 
 type SoilIdMatchSelectorProps = {
-  match: DataBasedSoilMatch;
+  match: SoilMatch;
   siteId: string;
 };
 

@@ -18,7 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
   Column,
@@ -28,7 +28,7 @@ import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilPr
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 
 type PropertiesDisplayProps = {
-  match: DataBasedSoilMatch;
+  match: SoilMatch;
 };
 
 export function PropertiesDisplay({match}: PropertiesDisplayProps) {

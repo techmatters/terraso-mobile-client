@@ -17,7 +17,7 @@
 
 import {renderHook} from '@testing-library/react-native';
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import * as SoilIdMatchContext from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {
@@ -45,7 +45,7 @@ const renderSoilIdHook = (input: SoilIdLocationInput) => {
   });
 };
 
-const dataBasedMatchWithName = (name: string): DataBasedSoilMatch => {
+const dataBasedMatchWithName = (name: string): SoilMatch => {
   return {
     ...locationBasedMatchWithName(name),
     combinedMatch: {
@@ -63,7 +63,7 @@ const dataBasedMatchWithName = (name: string): DataBasedSoilMatch => {
   };
 };
 
-const locationBasedMatchWithName = (name: string): DataBasedSoilMatch => {
+const locationBasedMatchWithName = (name: string): SoilMatch => {
   return {
     soilInfo: {
       landCapabilityClass: {capabilityClass: '', subClass: ''},
