@@ -42,6 +42,7 @@ import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/c
 import {SoilMatchesErrorMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/SoilMatchesErrorMessageBox';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
+import {SoilNameHeading} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilNameHeading';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 
@@ -94,11 +95,15 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
           <InfoSheet
             key={siteMatch.soilInfo.soilSeries.name}
             heading={
-              <TranslatedHeading i18nKey={siteMatch.soilInfo.soilSeries.name} />
+              <SoilNameHeading
+                soilName={siteMatch.soilInfo.soilSeries.name}
+                dataRegion={dataRegion}
+              />
             }
             trigger={onOpen => (
               <SoilMatchTile
                 soilName={siteMatch.soilInfo.soilSeries.name}
+                dataRegion={dataRegion}
                 score={
                   siteMatch.combinedMatch?.score ??
                   siteMatch.locationMatch.score
@@ -121,13 +126,15 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
           <InfoSheet
             key={locationMatch.soilInfo.soilSeries.name}
             heading={
-              <Heading variant="h4">
-                {locationMatch.soilInfo.soilSeries.name}
-              </Heading>
+              <SoilNameHeading
+                soilName={locationMatch.soilInfo.soilSeries.name}
+                dataRegion={dataRegion}
+              />
             }
             trigger={onOpen => (
               <SoilMatchTile
                 soilName={locationMatch.soilInfo.soilSeries.name}
+                dataRegion={dataRegion}
                 score={locationMatch.locationMatch.score}
                 onPress={onOpen}
               />
