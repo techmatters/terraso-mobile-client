@@ -18,10 +18,8 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  DataBasedSoilMatch,
-  SoilMatchInfo,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatchInfo} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
@@ -39,7 +37,7 @@ import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/component
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 
 type PropertiesScoreDisplayProps = {
-  match: DataBasedSoilMatch;
+  match: SoilMatch;
   matchInfo: SoilMatchInfo;
 };
 

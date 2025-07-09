@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
   coordsKey,
@@ -71,7 +71,7 @@ describe('locationEntryForMatches', () => {
     expect(
       tempLocationEntryForMatches(
         {latitude: 1, longitude: 2},
-        inputMatches as DataBasedSoilMatch[],
+        inputMatches as SoilMatch[],
         'GLOBAL',
       ),
     ).toEqual({

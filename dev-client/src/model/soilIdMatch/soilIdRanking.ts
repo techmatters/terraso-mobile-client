@@ -15,11 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 
-export const getTopMatch = (
-  matches: DataBasedSoilMatch[],
-): DataBasedSoilMatch | undefined => {
+export const getTopMatch = (matches: SoilMatch[]): SoilMatch | undefined => {
   if (matches.length > 0) {
     return matches.reduce((a, b) => getBetterMatch(a, b));
   } else {
@@ -27,10 +25,7 @@ export const getTopMatch = (
   }
 };
 
-const getBetterMatch = (
-  a: DataBasedSoilMatch,
-  b: DataBasedSoilMatch,
-): DataBasedSoilMatch => {
+const getBetterMatch = (a: SoilMatch, b: SoilMatch): SoilMatch => {
   if (a.combinedMatch && b.combinedMatch) {
     return a.combinedMatch.rank < b.combinedMatch.rank ? a : b;
   } else {
@@ -38,7 +33,7 @@ const getBetterMatch = (
   }
 };
 
-export const getSortedMatches = (matches: DataBasedSoilMatch[]) => {
+export const getSortedMatches = (matches: SoilMatch[]) => {
   return [...matches].sort((a, b) => {
     if (a.combinedMatch && b.combinedMatch) {
       return a.combinedMatch.rank - b.combinedMatch.rank;

@@ -21,7 +21,7 @@ import {ActivityIndicator, Divider} from 'react-native-paper';
 
 import {TFunction} from 'i18next';
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -162,7 +162,7 @@ const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
 
 type SoilIdStatusDisplayTopMatchProps = {
   status: SoilIdStatus;
-  topSoilMatch: DataBasedSoilMatch | undefined;
+  topSoilMatch: SoilMatch | undefined;
 };
 type TopSoilMatchDisplayProps = SoilIdStatusDisplayTopMatchProps & {
   dataRegion: DataRegion;
