@@ -17,7 +17,7 @@
 
 import {Divider} from 'react-native-paper';
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
@@ -32,7 +32,7 @@ type SiteScoreInfoContentProps = {
   siteId: string;
   coords: Coords;
   dataRegion: DataRegion;
-  siteMatch: DataBasedSoilMatch;
+  siteMatch: SoilMatch;
 };
 
 export function SiteScoreInfoContent({

@@ -18,7 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
@@ -128,7 +128,7 @@ const SiteMatchContent = ({siteId}: SiteMatchDisplayProps) => {
 type MatchContentProps = {
   status: SoilIdStatus;
   dataRegion: DataRegion;
-  match: DataBasedSoilMatch | undefined;
+  match: SoilMatch | undefined;
   isSelected?: boolean;
 };
 

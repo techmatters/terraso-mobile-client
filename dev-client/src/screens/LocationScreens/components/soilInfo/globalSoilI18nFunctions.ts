@@ -39,6 +39,10 @@ export function getSoilNameDisplayText(
   }
 }
 
+export type SoilSeriesForDisplay = SoilSeries & {
+  management: string | undefined;
+};
+
 export function getGlobalSoilSeriesDisplayText(
   soilSeries: SoilSeries,
   t: TFunction,
@@ -47,7 +51,7 @@ export function getGlobalSoilSeriesDisplayText(
   const globalSoilKey = getGlobalSoilI18nKey(soilSeries.name);
 
   if (i18n.exists(globalSoilKey)) {
-    const soilSeriesTextForDisplay: SoilSeries = {
+    const soilSeriesTextForDisplay: SoilSeriesForDisplay = {
       name: i18n.exists(`${globalSoilKey}.name`)
         ? t(`${globalSoilKey}.name`)
         : soilSeries.name,
@@ -56,13 +60,13 @@ export function getGlobalSoilSeriesDisplayText(
         : soilSeries.description,
       management: i18n.exists(`${globalSoilKey}.management`)
         ? t(`${globalSoilKey}.management`)
-        : soilSeries.management,
+        : undefined,
       fullDescriptionUrl: soilSeries.fullDescriptionUrl ?? undefined,
       taxonomySubgroup: soilSeries.taxonomySubgroup ?? undefined,
     };
     return soilSeriesTextForDisplay;
   } else {
-    return soilSeries;
+    return {management: undefined, ...soilSeries};
   }
 }
 

@@ -16,11 +16,13 @@
  */
 
 import {
-  DataBasedSoilMatch,
   SoilIdDataRegionChoices,
   SoilIdInputData,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
+import {
+  SoilIdStatus,
+  SoilMatch,
+} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
@@ -32,7 +34,7 @@ export type DataRegion = SoilIdDataRegionChoices | undefined;
 export type SoilIdEntry = {
   dataRegion: DataRegion;
   input: SoilIdInputData | Coords;
-  matches: DataBasedSoilMatch[];
+  matches: SoilMatch[];
   status: SoilIdStatus;
 };
 
@@ -58,7 +60,7 @@ export const tempLocationEntryForStatus = (
 
 export const tempLocationEntryForMatches = (
   input: Coords,
-  matches: DataBasedSoilMatch[],
+  matches: SoilMatch[],
   dataRegion: SoilIdDataRegionChoices,
 ): SoilIdEntry => {
   return {
@@ -83,7 +85,7 @@ export const siteEntryForStatus = (
 
 export const siteEntryForMatches = (
   input: SoilIdInputData,
-  matches: DataBasedSoilMatch[],
+  matches: SoilMatch[],
   dataRegion: SoilIdDataRegionChoices,
 ): SoilIdEntry => {
   return {

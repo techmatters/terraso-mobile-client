@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {DataBasedSoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
   getSortedMatches,
@@ -163,12 +163,12 @@ describe('data based matches', () => {
 
 describe('empty matches', () => {
   test('top match is undefined', () => {
-    const soilIdOutputMatches: DataBasedSoilMatch[] = [];
+    const soilIdOutputMatches: SoilMatch[] = [];
     expect(getTopMatch(soilIdOutputMatches)).toBeUndefined();
   });
 
   test('sorting returns empty list', () => {
-    const soilIdOutputMatches: DataBasedSoilMatch[] = [];
+    const soilIdOutputMatches: SoilMatch[] = [];
     expect(getSortedMatches(soilIdOutputMatches)).toEqual([]);
   });
 });
