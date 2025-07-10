@@ -18,11 +18,9 @@
 import {
   SoilIdDataRegionChoices,
   SoilIdInputData,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-import {
-  SoilIdStatus,
   SoilMatch,
-} from 'terraso-client-shared/soilId/soilIdTypes';
+} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';

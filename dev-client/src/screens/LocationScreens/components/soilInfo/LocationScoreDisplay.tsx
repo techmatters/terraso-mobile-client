@@ -18,8 +18,10 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {SoilMatchInfo} from 'terraso-client-shared/graphqlSchema/graphql';
-import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
+import {
+  SoilMatch,
+  SoilMatchInfo,
+} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';

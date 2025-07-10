@@ -17,7 +17,7 @@
 
 import {Divider} from 'react-native-paper';
 
-import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';

@@ -18,7 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import StackedBarChart from 'terraso-mobile-client/assets/stacked-bar.svg';
