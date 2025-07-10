@@ -18,7 +18,7 @@
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
   Column,

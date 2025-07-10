@@ -21,7 +21,7 @@ import {ActivityIndicator, Divider} from 'react-native-paper';
 
 import {TFunction} from 'i18next';
 
-import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';

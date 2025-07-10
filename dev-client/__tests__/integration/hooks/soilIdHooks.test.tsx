@@ -17,7 +17,7 @@
 
 import {renderHook} from '@testing-library/react-native';
 
-import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import * as SoilIdMatchContext from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {

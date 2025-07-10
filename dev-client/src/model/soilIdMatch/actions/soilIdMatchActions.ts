@@ -37,10 +37,7 @@ export const fetchTempLocationBasedSoilMatchesThunk = async (
 ) => fetchTempLocationBasedSoilMatches(coords);
 
 export const fetchTempLocationBasedSoilMatches = async (coords: Coords) => {
-  // NOTE: we call the dataBasedSoilMatches endpoint here to make the
-  //       pre and post site creation soil lists consistent.
-  //       Upstream bug: https://github.com/techmatters/soil-id-algorithm/issues/126
-  const result = await soilIdService.fetchDataBasedSoilMatches(coords, {
+  const result = await soilIdService.fetchSoilMatches(coords, {
     depthDependentData: [],
   });
 
@@ -79,7 +76,7 @@ export const fetchSiteBasedSoilMatches = async (
   }
 
   const coords = {latitude: site.latitude, longitude: site.longitude};
-  const result = await soilIdService.fetchDataBasedSoilMatches(coords, input);
+  const result = await soilIdService.fetchSoilMatches(coords, input);
 
   if (result.__typename === 'SoilIdFailure') {
     return siteEntryForStatus(input, result.reason);

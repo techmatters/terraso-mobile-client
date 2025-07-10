@@ -19,7 +19,7 @@ import {StyleSheet, View} from 'react-native';
 
 import CheckBox from '@react-native-community/checkbox';
 
-import {SoilMatch} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {DisableableText} from 'terraso-mobile-client/components/content/typography/DisableableText';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
