@@ -98,6 +98,7 @@ export const soilDataToIdInput = (data: SoilData): SoilIdInputData => {
       soilDepthDependentDataToIdInput,
     ),
     slope: soilDataSlopePercent(data),
+    surfaceCracks: data.surfaceCracksSelect,
   };
 };
 
