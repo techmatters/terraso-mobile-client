@@ -3880,7 +3880,7 @@ msgstr "Son suelos productivos, con acumulaciones de arcilla y carbonatos. La pr
 
 #: 
 msgid "soil##match_info##haplic_kastanozems##name"
-msgstr "kKastanozems Háplicos"
+msgstr "Kastanozems Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_kastanozems##description"
