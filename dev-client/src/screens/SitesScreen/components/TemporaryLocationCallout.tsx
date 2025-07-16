@@ -112,8 +112,7 @@ export const TemporaryLocationCallout = ({
             </>
           )}
         </>
-        {(elevation.value || soilIdOutput.dataRegion === 'US') && (
-          // TODO: Remove the conditional once mobile-client bug 2664 is done
+        {elevation.value && (
           <>
             <Divider />
             <CalloutDetail
