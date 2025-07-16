@@ -29,7 +29,7 @@ export const OfflineMessageBox = ({message}: OfflineMessageBoxProps) => {
 
   return (
     <AlertMessageBox title={t('general.offline_title')}>
-      <Text variant="body1" mb="sm">
+      <Text variant="body1" mb="sm" color="warning.content">
         {message}
       </Text>
     </AlertMessageBox>

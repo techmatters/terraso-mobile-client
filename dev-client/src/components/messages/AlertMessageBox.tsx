@@ -41,7 +41,7 @@ export const AlertMessageBox = ({title, children}: MessageBoxProps) => {
           <Text variant="body1-strong" color="warning.content" mb="sm">
             {title}
           </Text>
-          <Text color="warning.content">{children}</Text>
+          {children}
         </Column>
       </Row>
     </Box>

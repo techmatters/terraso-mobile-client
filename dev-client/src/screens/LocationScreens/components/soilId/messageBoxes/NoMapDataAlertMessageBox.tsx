@@ -26,7 +26,7 @@ export const NoMapDataAlertMessageBox = () => {
   return (
     <AlertMessageBox title={t('site.soil_id.matches.no_map_data_title')}>
       <Box>
-        <Text variant="body1" mb="sm">
+        <Text variant="body1" mb="sm" color="warning.content">
           {t('site.soil_id.matches.no_map_data_body')}
         </Text>
       </Box>

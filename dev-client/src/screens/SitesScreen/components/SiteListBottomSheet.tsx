@@ -135,7 +135,9 @@ export const SiteListBottomSheet = memo(
           <RestrictByConnectivity offline={true}>
             <View style={styles.alertView}>
               <AlertMessageBox title={t('site.offline.alert_title')}>
-                <TranslatedContent i18nKey="site.offline.alert_body" />
+                <Text color="warning.content">
+                  <TranslatedContent i18nKey="site.offline.alert_body" />
+                </Text>
               </AlertMessageBox>
             </View>
           </RestrictByConnectivity>
