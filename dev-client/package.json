@@ -10,7 +10,7 @@
     "lint-js": "npm run lint",
     "prettier": "prettier --check .",
     "prettier-format": "prettier --write .",
-    "format": "npm run lint -- --fix && npm run prettier-format",
+    "format": "npm run eslint --fix && npm run prettier-format",
     "format-js": "npm run format",
     "start": "expo start --dev-client",
     "test": "jest",
