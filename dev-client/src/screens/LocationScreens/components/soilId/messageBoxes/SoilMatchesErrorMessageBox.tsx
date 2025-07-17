@@ -17,17 +17,16 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {ErrorMessageBox} from 'terraso-mobile-client/components/messages/ErrorMessageBox';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {MessageBox} from 'terraso-mobile-client/components/messages/MessageBox';
 
 export const SoilMatchesErrorMessageBox = () => {
   const {t} = useTranslation();
 
   return (
-    <ErrorMessageBox title={t('site.soil_id.matches.error_generic_title')}>
-      <Text variant="body1" color="error.content">
-        {t('site.soil_id.matches.error_generic_body')}
-      </Text>
-    </ErrorMessageBox>
+    <MessageBox
+      variant="error"
+      title={t('site.soil_id.matches.error_generic_title')}
+      bodyText={t('site.soil_id.matches.error_generic_body')}
+    />
   );
 };

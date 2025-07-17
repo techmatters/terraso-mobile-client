@@ -58,7 +58,6 @@
             "summary": "A site lets you collect and save observations, learn more about the land and its potential, and share with others."
         },
         "offline": {
-            "alert_title": "You are offline",
             "alert_body": "Sites can only be created while online."
         },
         "create": {

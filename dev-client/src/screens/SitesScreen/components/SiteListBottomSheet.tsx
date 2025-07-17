@@ -32,9 +32,7 @@ import {useTheme} from 'native-base';
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
 
-import {TranslatedContent} from 'terraso-mobile-client/components/content/typography/TranslatedContent';
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
-import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
 import {
   Box,
   Column,
@@ -45,6 +43,7 @@ import {
 import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
+import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {EmptySiteMessage} from 'terraso-mobile-client/screens/SitesScreen/components/EmptySiteMessage';
 import {SiteFilterModal} from 'terraso-mobile-client/screens/SitesScreen/components/SiteFilterModal';
 import {getStartingSnapValue} from 'terraso-mobile-client/screens/SitesScreen/utils/getStartingSnapValue';
@@ -134,11 +133,7 @@ export const SiteListBottomSheet = memo(
           </Column>
           <RestrictByConnectivity offline={true}>
             <View style={styles.alertView}>
-              <AlertMessageBox title={t('site.offline.alert_title')}>
-                <Text color="warning.content">
-                  <TranslatedContent i18nKey="site.offline.alert_body" />
-                </Text>
-              </AlertMessageBox>
+              <OfflineMessageBox message={t('site.offline.alert_body')} />
             </View>
           </RestrictByConnectivity>
           {isLoadingData ? (

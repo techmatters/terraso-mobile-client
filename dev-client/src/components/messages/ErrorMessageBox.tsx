@@ -27,6 +27,8 @@ type MessageBoxProps = React.PropsWithChildren<{
   title?: string;
 }>;
 
+// TODO-cknipe: Delete this file
+
 export const ErrorMessageBox = ({title, children}: MessageBoxProps) => {
   return (
     <Box

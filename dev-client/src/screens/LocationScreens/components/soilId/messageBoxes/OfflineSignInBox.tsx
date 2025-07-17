@@ -17,17 +17,16 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {ErrorMessageBox} from 'terraso-mobile-client/components/messages/ErrorMessageBox';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {MessageBox} from 'terraso-mobile-client/components/messages/MessageBox';
 
 export const OfflineSignInBox = () => {
   const {t} = useTranslation();
 
   return (
-    <ErrorMessageBox title={t('general.offline_sign_in_title')}>
-      <Text variant="body1" mb="sm">
-        {t('general.offline_sign_in_body')}
-      </Text>
-    </ErrorMessageBox>
+    <MessageBox
+      variant="error"
+      title={t('general.offline_sign_in_title')}
+      bodyText={t('general.offline_sign_in_body')}
+    />
   );
 };

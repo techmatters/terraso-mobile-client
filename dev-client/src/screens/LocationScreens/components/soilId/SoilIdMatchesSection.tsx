@@ -37,7 +37,7 @@ import {
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
 import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
-import {NoMapDataAlertMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/NoMapDataAlertMessageBox';
+import {NoMapDataWarningMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/NoMapDataWarningMessageBox';
 import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
 import {SoilMatchesErrorMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/SoilMatchesErrorMessageBox';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
@@ -149,7 +149,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
       }
     }
     case 'DATA_UNAVAILABLE':
-      return <NoMapDataAlertMessageBox />;
+      return <NoMapDataWarningMessageBox />;
     case 'error':
     case 'ALGORITHM_FAILURE':
     default:
