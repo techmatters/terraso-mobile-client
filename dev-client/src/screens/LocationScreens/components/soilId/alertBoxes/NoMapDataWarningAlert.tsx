@@ -17,13 +17,13 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {MessageBox} from 'terraso-mobile-client/components/messages/MessageBox';
+import {Alert} from 'terraso-mobile-client/components/messages/Alert';
 
-export const NoMapDataWarningMessageBox = () => {
+export const NoMapDataWarningAlert = () => {
   const {t} = useTranslation();
 
   return (
-    <MessageBox
+    <Alert
       variant="warning"
       title={t('site.soil_id.matches.no_map_data_title')}
       bodyText={t('site.soil_id.matches.no_map_data_body')}

@@ -25,14 +25,14 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type MessageBoxVariant = 'warning' | 'error';
-type MessageBoxProps = React.PropsWithChildren<{
+type AlertVariant = 'warning' | 'error';
+type AlertProps = React.PropsWithChildren<{
   title?: string;
   bodyText: string;
-  variant: MessageBoxVariant;
+  variant: AlertVariant;
 }>;
 
-export const MessageBox = ({title, bodyText, variant}: MessageBoxProps) => {
+export const Alert = ({title, bodyText, variant}: AlertProps) => {
   const boxStyle = boxStyleForVariant(variant);
   return (
     <Box
@@ -42,7 +42,7 @@ export const MessageBox = ({title, bodyText, variant}: MessageBoxProps) => {
       backgroundColor={boxStyle.backgroundColor}
       borderColor={boxStyle.borderColor}>
       <Row>
-        <MessageBoxIcon variant={variant} />
+        <AlertIcon variant={variant} />
         <Column flex={1}>
           <TitleText variant={variant} text={title} />
           <BodyText variant={variant} text={bodyText} />
@@ -52,7 +52,7 @@ export const MessageBox = ({title, bodyText, variant}: MessageBoxProps) => {
   );
 };
 
-const boxStyleForVariant = (variant: MessageBoxVariant) => {
+const boxStyleForVariant = (variant: AlertVariant) => {
   switch (variant) {
     case 'warning':
       return styles.warningBox;
@@ -62,7 +62,7 @@ const boxStyleForVariant = (variant: MessageBoxVariant) => {
   }
 };
 
-const MessageBoxIcon = ({variant}: {variant: MessageBoxVariant}) => {
+const AlertIcon = ({variant}: {variant: AlertVariant}) => {
   const marginRight = 'md';
   const size = 'md';
   switch (variant) {
@@ -89,7 +89,7 @@ const MessageBoxIcon = ({variant}: {variant: MessageBoxVariant}) => {
 };
 
 type VariantTextProps = {
-  variant: MessageBoxVariant;
+  variant: AlertVariant;
   text?: string;
 };
 

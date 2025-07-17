@@ -17,17 +17,17 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {MessageBox} from 'terraso-mobile-client/components/messages/MessageBox';
+import {Alert} from 'terraso-mobile-client/components/messages/Alert';
 
-type OfflineMessageBoxProps = {
+type OfflineAlertProps = {
   message: string;
 };
 
-export const OfflineMessageBox = ({message}: OfflineMessageBoxProps) => {
+export const OfflineAlert = ({message}: OfflineAlertProps) => {
   const {t} = useTranslation();
 
   return (
-    <MessageBox
+    <Alert
       variant="warning"
       title={t('general.offline_title')}
       bodyText={message}
