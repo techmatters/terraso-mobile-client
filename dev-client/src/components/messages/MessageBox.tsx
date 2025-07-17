@@ -121,14 +121,14 @@ const BodyText = ({variant, text}: VariantTextProps) => {
   switch (variant) {
     case 'warning':
       return (
-        <Text variant={textVariant} color="warning.content" mb={marginBottom}>
+        <Text variant={textVariant} color="error.content" mb={marginBottom}>
           {text}
         </Text>
       );
     case 'error':
     default:
       return (
-        <Text variant={textVariant} color="warning.content" mb={marginBottom}>
+        <Text variant={textVariant} color="error.content" mb={marginBottom}>
           {text}
         </Text>
       );
