@@ -34,7 +34,7 @@ import {
 import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {rowsFromSoilIdData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
-import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
+import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {ScoreTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreTile';
 import {SoilPropertiesScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilPropertiesScoreInfoContent';
 
@@ -71,7 +71,7 @@ export function PropertiesScoreDisplay({
         <ScoreTile score={matchInfo.score} />
       </Row>
       <RestrictByConnectivity offline={true}>
-        <OfflineMessageBox
+        <OfflineAlert
           message={t('site.soil_id.soil_properties_score_info.offline')}
         />
       </RestrictByConnectivity>

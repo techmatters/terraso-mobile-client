@@ -17,19 +17,20 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {AlertMessageBox} from 'terraso-mobile-client/components/messages/AlertMessageBox';
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Alert} from 'terraso-mobile-client/components/messages/Alert';
 
-export const NoMapDataAlertMessageBox = () => {
+type OfflineAlertProps = {
+  message: string;
+};
+
+export const OfflineAlert = ({message}: OfflineAlertProps) => {
   const {t} = useTranslation();
 
   return (
-    <AlertMessageBox title={t('site.soil_id.matches.no_map_data_title')}>
-      <Box>
-        <Text variant="body1" mb="sm">
-          {t('site.soil_id.matches.no_map_data_body')}
-        </Text>
-      </Box>
-    </AlertMessageBox>
+    <Alert
+      variant="warning"
+      title={t('general.offline_title')}
+      bodyText={message}
+    />
   );
 };

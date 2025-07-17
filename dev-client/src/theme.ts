@@ -60,7 +60,7 @@ export const theme = extendTheme({
     },
     warning: {
       main: '#ED6C02',
-      content: '#5F2120',
+      content: '#663C00',
     },
     grey: {
       200: '#EEEEEE',
