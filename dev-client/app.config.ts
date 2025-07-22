@@ -162,7 +162,7 @@ const defaultConfig: ExpoConfig = {
       'expo-build-properties',
       {
         android: {
-          compileSdkVersion: 35, // TODO-cknipe: Do we need this? Will it default to the highest if left out?
+          compileSdkVersion: 35,
           targetSdkVersion: 35,
           buildToolsVersion: '35.0.0',
         },
