@@ -20,7 +20,7 @@
     "check-ts": "tsc --noEmit",
     "check-modules": "depcheck",
     "prebuild": "expo prebuild",
-    "clean-watchman": "watchman watch-del-all",
+    "clean-watchman": "watchman watch-del-all && watchman shutdown-server",
     "localization-to-po": "node scripts/localization/transform-to.mjs po",
     "localization-to-json": "node scripts/localization/transform-to.mjs json",
     "localization-check-missing": "node scripts/localization/missing-check.mjs",
