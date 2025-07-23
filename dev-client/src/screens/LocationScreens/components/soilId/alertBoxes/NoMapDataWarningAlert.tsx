@@ -17,17 +17,16 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {ErrorMessageBox} from 'terraso-mobile-client/components/messages/ErrorMessageBox';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Alert} from 'terraso-mobile-client/components/messages/Alert';
 
-export const SoilMatchesErrorMessageBox = () => {
+export const NoMapDataWarningAlert = () => {
   const {t} = useTranslation();
 
   return (
-    <ErrorMessageBox title={t('site.soil_id.matches.error_generic_title')}>
-      <Text variant="body1" color="error.content">
-        {t('site.soil_id.matches.error_generic_body')}
-      </Text>
-    </ErrorMessageBox>
+    <Alert
+      variant="warning"
+      title={t('site.soil_id.matches.no_map_data_title')}
+      bodyText={t('site.soil_id.matches.no_map_data_body')}
+    />
   );
 };

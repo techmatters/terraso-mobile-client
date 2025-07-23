@@ -45,7 +45,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {OfflineSignInBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineSignInBox';
+import {OfflineSignInBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineSignInBox';
 import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {theme} from 'terraso-mobile-client/theme';
