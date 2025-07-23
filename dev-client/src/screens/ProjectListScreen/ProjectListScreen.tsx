@@ -37,7 +37,7 @@ import {
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
+import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -99,7 +99,7 @@ export const ProjectListScreen = () => {
             )
           )}
           {isOffline ? (
-            <OfflineMessageBox message={t('projects.offline_create')} />
+            <OfflineAlert message={t('projects.offline_create')} />
           ) : (
             <Box alignItems="flex-start" pb="md">
               <AddButton

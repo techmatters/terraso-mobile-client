@@ -35,7 +35,7 @@ import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {OfflineMessageBox} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/messageBoxes/OfflineMessageBox';
+import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {PinnedNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/PinnedNoteCard';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -79,7 +79,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
                 pr={4}
                 alignItems={isOffline ? undefined : 'flex-start'}>
                 {isOffline ? (
-                  <OfflineMessageBox message={t('site.notes.offline')} />
+                  <OfflineAlert message={t('site.notes.offline')} />
                 ) : (
                   <ContainedButton
                     size="lg"
