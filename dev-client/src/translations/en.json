@@ -125,7 +125,7 @@
                 "match_score": "{{score}}",
                 "match": "match",
                 "error_generic_title": "Can’t fetch soil map",
-                "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
+                "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try stopping and restarting the app. If the issue continues, try again later or submit a support request through the website landpks.terraso.org.",
                 "no_map_data_title": "No soil map data",
                 "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Observations can still be entered for this site, and if soil map data becomes available in the future, soil matches will appear here.",
                 "offline": "Soil matches will update when you are online.",
