@@ -45,7 +45,7 @@ export const SoilIdStatusDisplay = ({
      * which are Ok to display to the user even in offline mode.
      */
     return isOffline ? offline : loading;
-  } else if (status === 'error') {
+  } else if (status === 'error' || status === 'ALGORITHM_FAILURE') {
     return error;
   } else if (status === 'DATA_UNAVAILABLE') {
     return noData;
