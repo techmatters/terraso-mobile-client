@@ -158,6 +158,16 @@ const defaultConfig: ExpoConfig = {
         return modConfig;
       }) as any,
     ],
+    [
+      'expo-build-properties',
+      {
+        android: {
+          compileSdkVersion: 35,
+          targetSdkVersion: 35,
+          buildToolsVersion: '35.0.0',
+        },
+      },
+    ],
   ],
   extra: ENV_CONFIG,
 };
