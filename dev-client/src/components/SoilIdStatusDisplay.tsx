@@ -17,12 +17,11 @@
 
 import {ReactNode} from 'react';
 
-import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
-
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {ClientSoilIdStatus} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
 export type SoilIdStatusDisplayProps = {
-  status: SoilIdStatus;
+  status: ClientSoilIdStatus;
 
   offline: ReactNode;
   loading: ReactNode;
@@ -45,7 +44,11 @@ export const SoilIdStatusDisplay = ({
      * which are Ok to display to the user even in offline mode.
      */
     return isOffline ? offline : loading;
-  } else if (status === 'error' || status === 'ALGORITHM_FAILURE') {
+  } else if (
+    status === 'error' ||
+    status === 'ALGORITHM_FAILURE' ||
+    status === 'TIMEOUT'
+  ) {
     return error;
   } else if (status === 'DATA_UNAVAILABLE') {
     return noData;

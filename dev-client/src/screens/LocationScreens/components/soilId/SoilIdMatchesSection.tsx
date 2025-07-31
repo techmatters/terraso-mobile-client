@@ -152,6 +152,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
       return <NoMapDataWarningAlert />;
     case 'error':
     case 'ALGORITHM_FAILURE':
+    case 'TIMEOUT':
     default:
       return <SoilMatchesErrorAlert />;
   }

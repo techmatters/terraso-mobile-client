@@ -22,6 +22,7 @@ import {ThunkAPI} from 'terraso-client-shared/store/utils';
 import {Coords} from 'terraso-client-shared/types';
 
 import {
+  ClientSoilIdFailureReason,
   siteEntryForMatches,
   siteEntryForStatus,
   SoilIdEntry,
@@ -30,25 +31,53 @@ import {
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 
+// TODO-cknipe: Should this live here or elsewhere?
+const TIMEOUT_MS = 20000;
+
 export const fetchTempLocationBasedSoilMatchesThunk = async (
   coords: Coords,
   _: User | null,
   __: ThunkAPI,
 ) => fetchTempLocationBasedSoilMatches(coords);
 
+const timeoutError = {
+  __typename: 'SoilIdFailure',
+  reason: 'TIMEOUT' as ClientSoilIdFailureReason,
+};
+type TimeoutError = typeof timeoutError;
+
+type PromiseResult =
+  | Awaited<ReturnType<typeof soilIdService.fetchSoilMatches>>
+  | TimeoutError;
+
 export const fetchTempLocationBasedSoilMatches = async (coords: Coords) => {
-  const result = await soilIdService.fetchSoilMatches(coords, {
+  const timeoutPromise = new Promise<PromiseResult>(resolve => {
+    setTimeout(() => {
+      resolve(timeoutError);
+    }, TIMEOUT_MS);
+  });
+  const apiPromise = soilIdService.fetchSoilMatches(coords, {
     depthDependentData: [],
   });
+
+  const result = await Promise.race([apiPromise, timeoutPromise]);
 
   if (result.__typename === 'SoilIdFailure') {
     return tempLocationEntryForStatus(coords, result.reason);
   } else {
-    return tempLocationEntryForMatches(
-      coords,
-      result.matches,
-      result.dataRegion,
-    );
+    if ('matches' in result && 'dataRegion' in result) {
+      return tempLocationEntryForMatches(
+        coords,
+        result.matches,
+        result.dataRegion,
+      );
+    } else {
+      // Typescript compiler just didn't infer it, but with current types this should never happen
+      // But if we ever do get here, Redux Toolkit will dispatch the rejected action for the thunk
+      throw Error(
+        'Unexpected error: expected non-failure SoilId result to have matches and data region',
+      );
+    }
   }
 };
 

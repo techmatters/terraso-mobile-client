@@ -17,10 +17,11 @@
 
 import {
   SoilIdDataRegionChoices,
+  SoilIdFailureReason,
   SoilIdInputData,
   SoilMatch,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import {SoilIdStatus} from 'terraso-client-shared/soilId/soilIdTypes';
+import {LoadingState} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
@@ -29,14 +30,17 @@ export type CoordsKey = `(${string}, ${string})`;
 
 export type DataRegion = SoilIdDataRegionChoices | undefined;
 
+export type ClientSoilIdFailureReason = SoilIdFailureReason | 'TIMEOUT';
+export type ClientSoilIdStatus = LoadingState | ClientSoilIdFailureReason;
+
 export type SoilIdEntry = {
   dataRegion: DataRegion;
   input: SoilIdInputData | Coords;
   matches: SoilMatch[];
-  status: SoilIdStatus;
+  status: ClientSoilIdStatus;
 };
 
-export const isErrorStatus = (status: SoilIdStatus): boolean => {
+export const isErrorStatus = (status: ClientSoilIdStatus): boolean => {
   return status !== 'loading' && status !== 'ready';
 };
 
@@ -46,7 +50,7 @@ export const coordsKey = (coords: Coords): CoordsKey => {
 
 export const tempLocationEntryForStatus = (
   input: Coords,
-  status: SoilIdStatus,
+  status: ClientSoilIdStatus,
 ): SoilIdEntry => {
   return {
     dataRegion: undefined,
@@ -71,7 +75,7 @@ export const tempLocationEntryForMatches = (
 
 export const siteEntryForStatus = (
   input: SoilIdInputData,
-  status: SoilIdStatus,
+  status: ClientSoilIdStatus,
 ): SoilIdEntry => {
   return {
     dataRegion: undefined,
