@@ -24,9 +24,10 @@ import {
   CoordsKey,
   coordsKey,
   flushErrorEntries,
+  siteEntry,
   siteEntryForStatus,
   SoilIdEntry,
-  tempLocationEntryForMatches,
+  tempLocationEntry,
   tempLocationEntryForStatus,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
@@ -64,26 +65,16 @@ const soilIdMatchSlice = createSlice({
     updateTempMatchesAfterTimeout: (state, action) => {
       const coords = action.payload.coords;
       const key = coordsKey(coords);
-
-      // TODO-cknipe: Move this into soilIdMatchActions.ts?
-      const updatedResult = action.payload.response;
-      let soilIdEntry: SoilIdEntry;
-      if (updatedResult.__typename === 'SoilIdFailure') {
-        soilIdEntry = tempLocationEntryForStatus(coords, updatedResult.reason);
-      } else {
-        if ('matches' in updatedResult && 'dataRegion' in updatedResult) {
-          soilIdEntry = tempLocationEntryForMatches(
-            coords,
-            updatedResult.matches,
-            updatedResult.dataRegion,
-          );
-        } else {
-          console.log('Not supposed to be here');
-          soilIdEntry = tempLocationEntryForStatus(coords, 'error');
-        }
-      }
-
+      const updatedResponse = action.payload.response;
+      const soilIdEntry = tempLocationEntry(coords, updatedResponse);
       state.locationBasedMatches[key] = soilIdEntry;
+    },
+    updateSiteMatchesAfterTimeout: (state, action) => {
+      const siteId = action.payload.siteId;
+      const input = action.payload.input;
+      const updatedResponse = action.payload.response;
+      const soilIdEntry = siteEntry(input, updatedResponse);
+      state.siteDataBasedMatches[siteId] = soilIdEntry;
     },
   },
   extraReducers: builder => {
@@ -142,6 +133,7 @@ export const {
   flushLocationCache,
   flushDataCacheErrors,
   updateTempMatchesAfterTimeout,
+  updateSiteMatchesAfterTimeout,
 } = soilIdMatchSlice.actions;
 
 export const fetchTempLocationBasedSoilMatches = createAsyncThunk(
