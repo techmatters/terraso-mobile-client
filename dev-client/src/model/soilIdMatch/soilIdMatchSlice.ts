@@ -24,8 +24,10 @@ import {
   CoordsKey,
   coordsKey,
   flushErrorEntries,
+  siteEntry,
   siteEntryForStatus,
   SoilIdEntry,
+  tempLocationEntry,
   tempLocationEntryForStatus,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
@@ -59,6 +61,20 @@ const soilIdMatchSlice = createSlice({
     },
     flushDataCacheErrors: state => {
       flushErrorEntries(state.siteDataBasedMatches);
+    },
+    updateTempMatchesAfterTimeout: (state, action) => {
+      const coords = action.payload.coords;
+      const key = coordsKey(coords);
+      const updatedResponse = action.payload.response;
+      const soilIdEntry = tempLocationEntry(coords, updatedResponse);
+      state.locationBasedMatches[key] = soilIdEntry;
+    },
+    updateSiteMatchesAfterTimeout: (state, action) => {
+      const siteId = action.payload.siteId;
+      const input = action.payload.input;
+      const updatedResponse = action.payload.response;
+      const soilIdEntry = siteEntry(input, updatedResponse);
+      state.siteDataBasedMatches[siteId] = soilIdEntry;
     },
   },
   extraReducers: builder => {
@@ -113,8 +129,12 @@ const soilIdMatchSlice = createSlice({
   },
 });
 
-export const {flushLocationCache, flushDataCacheErrors} =
-  soilIdMatchSlice.actions;
+export const {
+  flushLocationCache,
+  flushDataCacheErrors,
+  updateTempMatchesAfterTimeout,
+  updateSiteMatchesAfterTimeout,
+} = soilIdMatchSlice.actions;
 
 export const fetchTempLocationBasedSoilMatches = createAsyncThunk(
   'soilId/fetchLocationBasedSoilMatches',
