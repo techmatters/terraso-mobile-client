@@ -112,7 +112,7 @@ export const TemporaryLocationCallout = ({
             </>
           )}
         </>
-        {elevation.value && (
+        {elevation && (
           <>
             <Divider />
             <CalloutDetail
