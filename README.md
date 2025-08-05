@@ -89,6 +89,10 @@ $ sudo apt install node watchman openjdk-17-jdk
 Do **not** use the `a` or `i` subcommands in `npm run start`, they don't work with our workflow.
 The below commands implicitly call `npm run start` when they are finished, so you shouldn't ordinarily need to call it manually.
 
+## Prebuild
+
+Before building for iOS or Android, run `npm run prebuild` to generate the necessary files for Xcode and gradle.
+
 ## Android
 
 1. Run `npm run android` to load the app on an emulator or connnected physical device.
