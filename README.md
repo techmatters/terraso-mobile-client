@@ -44,7 +44,6 @@ Install NPM and Ruby packages:
 $ npm install
 $ bundle install
 $ cd ios
-$ bundle exec pod install
 ```
 
 If you get this error:
@@ -101,53 +100,6 @@ The below commands implicitly call `npm run start` when they are finished, so yo
 1. Run `npm run ios` to load the app in the simulator.
 2. Run `npm run ios -- --configuration release` to load a release build of the app in the simulator.
 3. Run `npm run ios -- --device "Jane iPhone"` to load the app on a specific device. (Use `xcrun simctl list devices available` to get a list of available simulators.)
-
-# Releases
-
-## Android
-
-### Initial setup
-
-#### Generate a keystore:
-
-```
-keytool -genkey -v -keystore terraso-lpks-key.keystore -alias terraso-lpks -keyalg RSA -keysize 2048 -validity 10000
-```
-
-#### Define confguration variables
-
-Add this to `~/.gradle/gradle.properties`. Use the password you created in “generate a keystore.”
-
-```
-cat << EOF >> ~/.gradle/gradle.properties
-LPKS_UPLOAD_STORE_FILE=terraso-lpks-key.keystore
-LPKS_UPLOAD_KEY_ALIAS=terraso-lpks
-LPKS_UPLOAD_STORE_PASSWORD=XXXXX
-LPKS_UPLOAD_KEY_PASSWORD=XXXXXX
-EOF
-```
-
-#### Move the keystore in to your development folder
-
-```
-mv terraso-lpks-key.keystore mobile-client/dev-client/android/app
-```
-
-### Releasing a build
-
-From `mobile-client/dev-client/android`:
-
-Build the app bundle:
-
-```
-./gradlew bundleRelease
-```
-
-Sign the app bundle:
-
-```
-jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256  -keystore ~/terraso-lpks-key.keystore -signedjar app/build/outputs/bundle/release/terraso-landpks.aab  app/build/outputs/bundle/release/app-release.aab terraso-lpks
-```
 
 # Environment Setup
 
