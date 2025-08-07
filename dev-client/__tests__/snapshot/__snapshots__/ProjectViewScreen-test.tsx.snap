@@ -1514,24 +1514,160 @@ exports[`renders correctly 1`] = `
                                                           </Text>
                                                            Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. 
                                                         </Text>
-                                                        <Text
+                                                        <View
+                                                          accessibilityLabel="Privacy Policy"
                                                           accessibilityRole="link"
-                                                          letterSpacing="0.15px"
-                                                          lineHeight="24px"
-                                                          onPress={[Function]}
-                                                          onPressIn={[Function]}
-                                                          onPressOut={[Function]}
+                                                          accessibilityState={
+                                                            {
+                                                              "busy": undefined,
+                                                              "checked": undefined,
+                                                              "disabled": undefined,
+                                                              "expanded": undefined,
+                                                              "selected": undefined,
+                                                            }
+                                                          }
+                                                          accessibilityValue={
+                                                            {
+                                                              "max": undefined,
+                                                              "min": undefined,
+                                                              "now": undefined,
+                                                              "text": undefined,
+                                                            }
+                                                          }
+                                                          accessible={true}
+                                                          collapsable={false}
+                                                          focusable={true}
+                                                          onBlur={[Function]}
+                                                          onClick={[Function]}
+                                                          onFocus={[Function]}
+                                                          onResponderGrant={[Function]}
+                                                          onResponderMove={[Function]}
+                                                          onResponderRelease={[Function]}
+                                                          onResponderTerminate={[Function]}
+                                                          onResponderTerminationRequest={[Function]}
+                                                          onStartShouldSetResponder={[Function]}
                                                           style={
                                                             {
-                                                              "color": "#028843",
-                                                              "fontSize": 16,
-                                                              "fontWeight": "700",
-                                                              "textDecorationLine": "underline",
+                                                              "alignItems": "center",
+                                                              "alignSelf": "flex-start",
+                                                              "flexDirection": "row",
+                                                              "paddingHorizontal": 12,
+                                                              "paddingVertical": 8,
                                                             }
                                                           }
                                                         >
-                                                          Read more about our data privacy policy.
-                                                        </Text>
+                                                          <Text
+                                                            style={
+                                                              [
+                                                                {
+                                                                  "fontSize": 15,
+                                                                  "fontWeight": "500",
+                                                                  "lineHeight": 26,
+                                                                  "textTransform": "uppercase",
+                                                                },
+                                                                {
+                                                                  "color": "#028843",
+                                                                },
+                                                              ]
+                                                            }
+                                                          >
+                                                            Privacy Policy
+                                                          </Text>
+                                                          <Icon
+                                                            name="open-in-new"
+                                                            size={24}
+                                                            style={
+                                                              [
+                                                                [
+                                                                  {
+                                                                    "marginRight": 8,
+                                                                  },
+                                                                  {
+                                                                    "color": "#028843",
+                                                                  },
+                                                                ],
+                                                                {},
+                                                              ]
+                                                            }
+                                                          />
+                                                        </View>
+                                                        <View
+                                                          accessibilityLabel="Terms of Service"
+                                                          accessibilityRole="link"
+                                                          accessibilityState={
+                                                            {
+                                                              "busy": undefined,
+                                                              "checked": undefined,
+                                                              "disabled": undefined,
+                                                              "expanded": undefined,
+                                                              "selected": undefined,
+                                                            }
+                                                          }
+                                                          accessibilityValue={
+                                                            {
+                                                              "max": undefined,
+                                                              "min": undefined,
+                                                              "now": undefined,
+                                                              "text": undefined,
+                                                            }
+                                                          }
+                                                          accessible={true}
+                                                          collapsable={false}
+                                                          focusable={true}
+                                                          onBlur={[Function]}
+                                                          onClick={[Function]}
+                                                          onFocus={[Function]}
+                                                          onResponderGrant={[Function]}
+                                                          onResponderMove={[Function]}
+                                                          onResponderRelease={[Function]}
+                                                          onResponderTerminate={[Function]}
+                                                          onResponderTerminationRequest={[Function]}
+                                                          onStartShouldSetResponder={[Function]}
+                                                          style={
+                                                            {
+                                                              "alignItems": "center",
+                                                              "alignSelf": "flex-start",
+                                                              "flexDirection": "row",
+                                                              "paddingHorizontal": 12,
+                                                              "paddingVertical": 8,
+                                                            }
+                                                          }
+                                                        >
+                                                          <Text
+                                                            style={
+                                                              [
+                                                                {
+                                                                  "fontSize": 15,
+                                                                  "fontWeight": "500",
+                                                                  "lineHeight": 26,
+                                                                  "textTransform": "uppercase",
+                                                                },
+                                                                {
+                                                                  "color": "#028843",
+                                                                },
+                                                              ]
+                                                            }
+                                                          >
+                                                            Terms of Service
+                                                          </Text>
+                                                          <Icon
+                                                            name="open-in-new"
+                                                            size={24}
+                                                            style={
+                                                              [
+                                                                [
+                                                                  {
+                                                                    "marginRight": 8,
+                                                                  },
+                                                                  {
+                                                                    "color": "#028843",
+                                                                  },
+                                                                ],
+                                                                {},
+                                                              ]
+                                                            }
+                                                          />
+                                                        </View>
                                                       </View>
                                                     </View>
                                                   </View>
