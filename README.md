@@ -38,12 +38,10 @@ All users:
 $ cd dev-client
 ```
 
-Install NPM and Ruby packages:
+Install NPM packages:
 
 ```sh
 $ npm install
-$ bundle install
-$ cd ios
 ```
 
 If you get this error:
