@@ -452,8 +452,9 @@
             "data_portal_link_url": "https://landpks.terraso.org/portal",
             "data_portal_link_text": "Portal de datos LandPKS",
             "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
-            "privacy_policy_link_text": "Lee más acerca de nuestras políticas de privacidad de datos.",
-            "privacy_policy_label": "Política de privacidad"
+            "privacy_policy_link_text": "Política de privacidad",
+            "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+            "terms_of_service_link_text": "Términos de Servicio"
         },
         "character_limit": "{{current}} / {{limit}} caracteres",
         "open_settings": "Ir a configuraciones",
