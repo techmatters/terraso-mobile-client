@@ -29,13 +29,12 @@ import {
   tempLocationEntry,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
-  updateSiteMatchesAfterTimeout,
-  updateTempMatchesAfterTimeout,
+  updateSiteMatches,
+  updateTempMatches,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
 import {AppDispatch, AppState} from 'terraso-mobile-client/store';
 
-// TODO-cknipe: Should this live here or elsewhere? Also, change back to 20000
-const TIMEOUT_MS = 20000;
+const TIMEOUT_MS = 20_000;
 
 export const fetchTempLocationBasedSoilMatchesThunk = async (
   coords: Coords,
@@ -67,7 +66,7 @@ export const fetchTempLocationBasedSoilMatches = async (
       depthDependentData: [],
     })
     .then(response => {
-      dispatch(updateTempMatchesAfterTimeout({coords, response}));
+      dispatch(updateTempMatches({coords, response}));
       return response;
     });
 
@@ -110,7 +109,7 @@ export const fetchSiteBasedSoilMatches = async (
   const apiPromise = soilIdService
     .fetchSoilMatches(coords, input)
     .then(response => {
-      dispatch(updateSiteMatchesAfterTimeout({siteId, input, response}));
+      dispatch(updateSiteMatches({siteId, input, response}));
       return response;
     });
 

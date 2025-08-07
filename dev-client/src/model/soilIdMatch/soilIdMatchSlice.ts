@@ -62,14 +62,14 @@ const soilIdMatchSlice = createSlice({
     flushDataCacheErrors: state => {
       flushErrorEntries(state.siteDataBasedMatches);
     },
-    updateTempMatchesAfterTimeout: (state, action) => {
+    updateTempMatches: (state, action) => {
       const coords = action.payload.coords;
       const key = coordsKey(coords);
       const updatedResponse = action.payload.response;
       const soilIdEntry = tempLocationEntry(coords, updatedResponse);
       state.locationBasedMatches[key] = soilIdEntry;
     },
-    updateSiteMatchesAfterTimeout: (state, action) => {
+    updateSiteMatches: (state, action) => {
       const siteId = action.payload.siteId;
       const input = action.payload.input;
       const updatedResponse = action.payload.response;
@@ -132,8 +132,8 @@ const soilIdMatchSlice = createSlice({
 export const {
   flushLocationCache,
   flushDataCacheErrors,
-  updateTempMatchesAfterTimeout,
-  updateSiteMatchesAfterTimeout,
+  updateTempMatches,
+  updateSiteMatches,
 } = soilIdMatchSlice.actions;
 
 export const fetchTempLocationBasedSoilMatches = createAsyncThunk(
