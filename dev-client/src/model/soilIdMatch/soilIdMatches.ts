@@ -25,7 +25,7 @@ import {LoadingState} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
-import {PromiseResult} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchActions';
+import {SoilIdFetchedResult} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchActions';
 
 export type CoordsKey = `(${string}, ${string})`;
 
@@ -49,7 +49,10 @@ export const coordsKey = (coords: Coords): CoordsKey => {
   return `(${coords.longitude.toFixed(COORDINATE_PRECISION)}, ${coords.latitude.toFixed(COORDINATE_PRECISION)})`;
 };
 
-export const tempLocationEntry = (coords: Coords, result: PromiseResult) => {
+export const tempLocationEntry = (
+  coords: Coords,
+  result: SoilIdFetchedResult,
+) => {
   if (result.__typename === 'SoilIdFailure') {
     return tempLocationEntryForStatus(coords, result.reason);
   } else {
@@ -86,7 +89,10 @@ export const tempLocationEntryForMatches = (
   };
 };
 
-export const siteEntry = (input: SoilIdInputData, result: PromiseResult) => {
+export const siteEntry = (
+  input: SoilIdInputData,
+  result: SoilIdFetchedResult,
+) => {
   if (result.__typename === 'SoilIdFailure') {
     return siteEntryForStatus(input, result.reason);
   } else {
