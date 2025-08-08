@@ -33,11 +33,9 @@ export const getElevation = async (
     const response = await fetch(
       `https://api.open-meteo.com/v1/elevation/?${queryString}`,
     );
-    if (response.status !== 200) {
-      elevation = undefined;
-    } else {
-      const result = await response.text();
-      elevation = parseInt(JSON.parse(result).elevation[0], 10);
+    if (response.status === 200) {
+      const result = await response.json();
+      elevation = parseInt(result.elevation[0], 10);
     }
   } catch (error) {
     console.error(error);
