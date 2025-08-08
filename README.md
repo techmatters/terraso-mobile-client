@@ -44,18 +44,6 @@ Install NPM packages:
 $ npm install
 ```
 
-If you get this error:
-
-```
-xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
-```
-
-Then run this:
-
-```sh
-$ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-```
-
 ## Development Tools
 
 Install [Xcode](https://apps.apple.com/us/app/xcode/id497799835?mt=12) from the App Store. Install the iOS SDK and Simulator.
@@ -102,6 +90,18 @@ Before building for iOS or Android, run `npm run prebuild` to generate the neces
 1. Run `npm run ios` to load the app in the simulator.
 2. Run `npm run ios -- --configuration release` to load a release build of the app in the simulator.
 3. Run `npm run ios -- --device "Jane iPhone"` to load the app on a specific device. (Use `xcrun simctl list devices available` to get a list of available simulators.)
+
+If you get this error:
+
+```
+xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
+```
+
+Then run this:
+
+```sh
+$ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+```
 
 # Environment Setup
 
