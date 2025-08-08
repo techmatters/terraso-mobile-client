@@ -1396,7 +1396,7 @@ exports[`renders correctly 1`] = `
                                             }
                                           }
                                         >
-                                          1.00 m
+                                          1 m
                                         </Text>
                                       </View>
                                       <View
