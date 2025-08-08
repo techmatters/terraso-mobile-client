@@ -21,8 +21,8 @@ export const getElevation = async (
   lat: number,
   lng: number,
 ): Promise<number | undefined> => {
-  // 1. TypeScript requires values passed to URLSearchParams strings,
-  //    which is why we convert the floats to strings.
+  // TypeScript requires values passed to URLSearchParams to be strings,
+  // which is why we convert the floats to strings.
   const queryString = new URLSearchParams({
     longitude: formatCoordinate(lng),
     latitude: formatCoordinate(lat),
