@@ -38,25 +38,10 @@ All users:
 $ cd dev-client
 ```
 
-Install NPM and Ruby packages:
+Install NPM packages:
 
 ```sh
 $ npm install
-$ bundle install
-$ cd ios
-$ bundle exec pod install
-```
-
-If you get this error:
-
-```
-xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
-```
-
-Then run this:
-
-```sh
-$ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 ```
 
 ## Development Tools
@@ -90,6 +75,10 @@ $ sudo apt install node watchman openjdk-17-jdk
 Do **not** use the `a` or `i` subcommands in `npm run start`, they don't work with our workflow.
 The below commands implicitly call `npm run start` when they are finished, so you shouldn't ordinarily need to call it manually.
 
+## Prebuild
+
+Before building for iOS or Android, run `npm run prebuild` to generate the necessary files for Xcode and gradle.
+
 ## Android
 
 1. Run `npm run android` to load the app on an emulator or connnected physical device.
@@ -102,51 +91,16 @@ The below commands implicitly call `npm run start` when they are finished, so yo
 2. Run `npm run ios -- --configuration release` to load a release build of the app in the simulator.
 3. Run `npm run ios -- --device "Jane iPhone"` to load the app on a specific device. (Use `xcrun simctl list devices available` to get a list of available simulators.)
 
-# Releases
-
-## Android
-
-### Initial setup
-
-#### Generate a keystore:
+If you get this error:
 
 ```
-keytool -genkey -v -keystore terraso-lpks-key.keystore -alias terraso-lpks -keyalg RSA -keysize 2048 -validity 10000
+xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
 ```
 
-#### Define confguration variables
+Then run this:
 
-Add this to `~/.gradle/gradle.properties`. Use the password you created in “generate a keystore.”
-
-```
-cat << EOF >> ~/.gradle/gradle.properties
-LPKS_UPLOAD_STORE_FILE=terraso-lpks-key.keystore
-LPKS_UPLOAD_KEY_ALIAS=terraso-lpks
-LPKS_UPLOAD_STORE_PASSWORD=XXXXX
-LPKS_UPLOAD_KEY_PASSWORD=XXXXXX
-EOF
-```
-
-#### Move the keystore in to your development folder
-
-```
-mv terraso-lpks-key.keystore mobile-client/dev-client/android/app
-```
-
-### Releasing a build
-
-From `mobile-client/dev-client/android`:
-
-Build the app bundle:
-
-```
-./gradlew bundleRelease
-```
-
-Sign the app bundle:
-
-```
-jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256  -keystore ~/terraso-lpks-key.keystore -signedjar app/build/outputs/bundle/release/terraso-landpks.aab  app/build/outputs/bundle/release/app-release.aab terraso-lpks
+```sh
+$ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 ```
 
 # Environment Setup
