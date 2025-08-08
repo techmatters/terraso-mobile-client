@@ -82,7 +82,7 @@ export const SiteSlopeDataSection = ({siteId}: Props) => {
         </Box>
 
         <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-          <Box paddingVertical="lg" alignItems="flex-end">
+          <Box paddingVertical="lg" alignItems="flex-start">
             <ContainedButton
               rightIcon="chevron-right"
               onPress={onAddSoilDataPress}
