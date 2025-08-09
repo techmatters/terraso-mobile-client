@@ -4,25 +4,25 @@
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "Capacidades sin conexión",
-            "bullet_2": "Mejoras en la visualización de datos",
-            "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo"
+            "bullet_1": "TK Offline site creation, soil selection, and notes",
+            "bullet_2": "TK Project data download",
+            "bullet_3": "TK Data visualization enhancements",
+            "bullet_4": "TK Additional observations, such as soil limitations"
         },
         "version_includes": {
             "title": "Esta version incluye:",
-            "bullet_1": "Identificación de suelos dentro de los EEUU",
-            "bullet_2": "Observaciones de la pendiente y del suelo",
-            "bullet_3": "Notas acerca del sitio",
-            "bullet_4": "El manejo de projectos",
-            "bullet_5": "Capacidades sin conexión"
+            "bullet_1": "TK Global soil identification",
+            "bullet_2": "TK Bug fixes for changing soil depths",
+            "bullet_3": "TK Bug fixes for Soil ID algorithm"
         },
         "learn_more": "Aprende más acerca del uso de proyectos",
         "link_text": "LandPKS de Terraso",
         "link_url": "https://landpks.terraso.org/",
-        "get_started": "Comenzar",
-        "terms": "Al utilizar LandPKS usted acepta nuestra <privacy /> y <tos />.",
-        "privacy": "Política de privacidad",
-        "tos": "Condiciones de servicio"
+        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_text": "Política de privacidad",
+        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+        "terms_of_service_link_text": "Condiciones de servicio",
+        "get_started": "Comenzar"
     },
     "search": {
         "placeholder": "Buscar en mapa"
