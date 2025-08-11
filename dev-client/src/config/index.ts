@@ -81,4 +81,6 @@ export const APP_CONFIG = {
   googleClientId,
   googleRedirectURI,
   microsoftRedirectURI,
+  posthogApiKey: 'phc_JItUNq4tPzj1S0MNSFIvkqXeQVSKXu0eigpgKGJ9V48',
+  posthogHost: 'https://us.i.posthog.com',
 } as const;
