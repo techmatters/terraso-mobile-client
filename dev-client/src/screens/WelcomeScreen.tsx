@@ -16,15 +16,15 @@
  */
 
 import {useCallback} from 'react';
-import {Trans, useTranslation} from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native-gesture-handler';
 
 import LandPKSTerrasoLogo from 'terraso-mobile-client/assets/LandPKS-from-Terraso-logo.svg';
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {TranslatedBulletList} from 'terraso-mobile-client/components/content/typography/TranslatedBulletList';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
-import {InternalLink} from 'terraso-mobile-client/components/links/InternalLink';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {WELCOME_SCREEN_SEEN_KEY} from 'terraso-mobile-client/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -62,8 +62,6 @@ export const WelcomeScreen = () => {
               'welcome.version_includes.bullet_1',
               'welcome.version_includes.bullet_2',
               'welcome.version_includes.bullet_3',
-              'welcome.version_includes.bullet_4',
-              'welcome.version_includes.bullet_5',
             ]}
           />
 
@@ -76,6 +74,7 @@ export const WelcomeScreen = () => {
               'welcome.next.bullet_1',
               'welcome.next.bullet_2',
               'welcome.next.bullet_3',
+              'welcome.next.bullet_4',
             ]}
           />
 
@@ -86,26 +85,16 @@ export const WelcomeScreen = () => {
             url={t('welcome.link_url')}
           />
 
-          <Text variant="body1">
-            <Trans
-              i18nKey="welcome.terms"
-              components={{
-                tos: (
-                  <InternalLink
-                    label={t('welcome.tos')}
-                    url={t('general.tos.url')}
-                  />
-                ),
-                privacy: (
-                  <InternalLink
-                    label={t('welcome.privacy')}
-                    url={t('general.info.privacy_policy_link_url')}
-                  />
-                ),
-              }}>
-              <Text>first</Text>
-            </Trans>
-          </Text>
+          <TranslatedParagraph i18nKey="welcome.terms" />
+
+          <ExternalLink
+            label={t('welcome.privacy_policy_link_text')}
+            url={t('welcome.privacy_policy_link_url')}
+          />
+          <ExternalLink
+            label={t('welcome.terms_of_service_link_text')}
+            url={t('welcome.terms_of_service_link_url')}
+          />
 
           {/* To leave room for the FAB */}
           <Box height="70px" />
