@@ -3,25 +3,26 @@
         "title": "Welcome to LandPKS Soil ID",
         "version_includes": {
             "title": "This version includes:",
-            "bullet_1": "Soil identification for US locations",
-            "bullet_2": "Slope and soil observations",
-            "bullet_3": "Site notes",
-            "bullet_4": "Project management",
-            "bullet_5": "Offline capabilities"
+            "bullet_1": "Global soil identification",
+            "bullet_2": "Bug fixes for changing soil depths",
+            "bullet_3": "Bug fixes for Soil ID algorithm"
         },
         "next": {
             "title": "What’s next?",
             "subtitle": "Future versions will include:",
-            "bullet_1": "Data visualization enhancements",
-            "bullet_2": "Additional soil properties, such as soil structure and soil organic carbon",
-            "bullet_3": "Site photos"
+            "bullet_1": "Offline site creation, soil selection, and notes",
+            "bullet_2": "Project data download",
+            "bullet_3": "Data visualization enhancements",
+            "bullet_4": "Additional observations, such as soil limitations"
         },
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",
         "link_url": "https://landpks.terraso.org/",
-        "terms": "By using LandPKS you accept our <privacy /> and <tos />.",
-        "privacy": "privacy policy",
-        "tos": "terms of service",
+        "terms": "By using LandPKS you accept our privacy policy and terms of service.",
+        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_text": "Privacy Policy",
+        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+        "terms_of_service_link_text": "Terms of Service",
         "get_started": "Get started"
     },
     "info": {

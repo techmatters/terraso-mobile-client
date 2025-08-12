@@ -42,4 +42,4 @@ export const LOCALE = 'en-US';
 export const MAP_QUERY_MIN_LENGTH = 2;
 export const SEARCH_DEBOUNCE_TIME_MS = 500;
 
-export const WELCOME_SCREEN_SEEN_KEY = 'welcomeScreenAlreadySeen00';
+export const WELCOME_SCREEN_SEEN_KEY = 'welcomeScreenAlreadySeen01';
