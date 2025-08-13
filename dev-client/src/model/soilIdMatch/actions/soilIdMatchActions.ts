@@ -32,6 +32,7 @@ import {
   updateSiteMatches,
   updateTempMatches,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
+import {doPromiseWithTimeoutAndLateReturn} from 'terraso-mobile-client/model/utils/promiseTimeoutUtil';
 import {AppDispatch, AppState} from 'terraso-mobile-client/store';
 
 const TIMEOUT_MS = 20_000;
@@ -50,27 +51,18 @@ export const fetchTempLocationBasedSoilMatches = async (
   coords: Coords,
   dispatch: AppDispatch,
 ) => {
-  let timeoutHappened = false;
-  const timeoutPromise = new Promise<SoilIdEntry>(resolve => {
-    setTimeout(() => {
-      timeoutHappened = true;
-      resolve(tempLocationEntryForStatus(coords, 'TIMEOUT'));
-    }, TIMEOUT_MS);
+  return await doPromiseWithTimeoutAndLateReturn<SoilIdEntry>({
+    timeoutMs: TIMEOUT_MS,
+    promiseToDo: soilIdService
+      .fetchSoilMatches(coords, {
+        depthDependentData: [],
+      })
+      .then(response => tempLocationEntry(coords, response)),
+    doOnTimeout: () => tempLocationEntryForStatus(coords, 'TIMEOUT'),
+    doOnReturnAfterTimeout: (returnedEntry: SoilIdEntry) => {
+      dispatch(updateTempMatches({coords, returnedEntry}));
+    },
   });
-
-  const apiPromise = soilIdService
-    .fetchSoilMatches(coords, {
-      depthDependentData: [],
-    })
-    .then(response => {
-      if (timeoutHappened) {
-        // What is returned by the promise will not be used if the timeout already happened, so need to re-dispatch to update soil id redux state
-        dispatch(updateTempMatches({coords, response}));
-      }
-      return tempLocationEntry(coords, response);
-    });
-
-  return await Promise.race([apiPromise, timeoutPromise]);
 };
 
 export const fetchSiteBasedSoilMatchesThunk = async (
@@ -98,23 +90,16 @@ export const fetchSiteBasedSoilMatches = async (
     return siteEntryForStatus(input, 'error');
   }
 
-  let timeoutHappened = false;
-  const timeoutPromise = new Promise<SoilIdEntry>(resolve => {
-    setTimeout(() => {
-      timeoutHappened = true;
-      resolve(tempLocationEntryForStatus(coords, 'TIMEOUT'));
-    }, TIMEOUT_MS);
-  });
-
   const coords = {latitude: site.latitude, longitude: site.longitude};
-  const apiPromise = soilIdService
-    .fetchSoilMatches(coords, input)
-    .then(response => {
-      if (timeoutHappened) {
-        dispatch(updateSiteMatches({siteId, input, response}));
-      }
-      return siteEntry(input, response);
-    });
 
-  return await Promise.race([apiPromise, timeoutPromise]);
+  return await doPromiseWithTimeoutAndLateReturn<SoilIdEntry>({
+    timeoutMs: TIMEOUT_MS,
+    promiseToDo: soilIdService
+      .fetchSoilMatches(coords, input)
+      .then(response => siteEntry(input, response)),
+    doOnTimeout: () => siteEntryForStatus(input, 'TIMEOUT'),
+    doOnReturnAfterTimeout: (returnedEntry: SoilIdEntry) => {
+      dispatch(updateSiteMatches({siteId, returnedEntry}));
+    },
+  });
 };

@@ -24,10 +24,8 @@ import {
   CoordsKey,
   coordsKey,
   flushErrorEntries,
-  siteEntry,
   siteEntryForStatus,
   SoilIdEntry,
-  tempLocationEntry,
   tempLocationEntryForStatus,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
@@ -65,16 +63,11 @@ const soilIdMatchSlice = createSlice({
     updateTempMatches: (state, action) => {
       const coords = action.payload.coords;
       const key = coordsKey(coords);
-      const updatedResponse = action.payload.response;
-      const soilIdEntry = tempLocationEntry(coords, updatedResponse);
-      state.locationBasedMatches[key] = soilIdEntry;
+      state.locationBasedMatches[key] = action.payload.returnedEntry;
     },
     updateSiteMatches: (state, action) => {
       const siteId = action.payload.siteId;
-      const input = action.payload.input;
-      const updatedResponse = action.payload.response;
-      const soilIdEntry = siteEntry(input, updatedResponse);
-      state.siteDataBasedMatches[siteId] = soilIdEntry;
+      state.siteDataBasedMatches[siteId] = action.payload.returnedEntry;
     },
   },
   extraReducers: builder => {
