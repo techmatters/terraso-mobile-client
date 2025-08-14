@@ -204,6 +204,12 @@ export function ProjectSitesScreen({
     sortNames.push('distanceAsc');
   }
 
+  /*
+      these strings can help automatic detection
+      t("projects.sites.sort.distanceAsc")
+      t("projects.sites.sort.nameAsc")
+      t("projects.sites.sort.updatedAtAsc")
+  */
   const sortingOptions = Object.fromEntries(
     sortNames.map(label => [label, t('projects.sites.sort.' + label)]),
   );

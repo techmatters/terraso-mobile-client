@@ -35,12 +35,12 @@ export const DataPrivacyContent = () => {
       <TranslatedParagraph i18nKey="general.info.privacy_item3" />
       <TranslatedParagraph i18nKey="general.info.privacy_item4" />
       <ExternalLink
-        label={t('general.info.privacy_policy_link_text')}
-        url={t('general.info.privacy_policy_link_url')}
+        label={t('general.privacy_policy_link_text')}
+        url={t('general.privacy_policy_link_url')}
       />
       <ExternalLink
-        label={t('general.info.terms_of_service_link_text')}
-        url={t('general.info.terms_of_service_link_url')}
+        label={t('general.terms_of_service_link_text')}
+        url={t('general.terms_of_service_link_url')}
       />
     </Column>
   );

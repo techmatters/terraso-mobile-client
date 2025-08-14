@@ -19,10 +19,6 @@
         "link_text": "LandPKS from Terraso",
         "link_url": "https://landpks.terraso.org/",
         "terms": "By using LandPKS you accept our privacy policy and terms of service.",
-        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
-        "privacy_policy_link_text": "Privacy Policy",
-        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-        "terms_of_service_link_text": "Terms of Service",
         "get_started": "Get started"
     },
     "info": {
@@ -456,11 +452,7 @@
             "privacy_item3": "<bold>A private site</bold> not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. ",
             "privacy_item4": "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. ",
             "data_portal_link_url": "https://landpks.terraso.org/portal",
-            "data_portal_link_text": "LandPKS Data Portal",
-            "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
-            "privacy_policy_link_text": "Privacy Policy",
-            "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-            "terms_of_service_link_text": "Terms of Service"
+            "data_portal_link_text": "LandPKS Data Portal"
         },
         "required": "Required",
         "character_limit": "{{current}} / {{limit}} characters",
@@ -479,6 +471,10 @@
             "label": "Terms of service",
             "url": "https://terraso.org/terms-of-service/"
         },
+        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_text": "Privacy Policy",
+        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+        "terms_of_service_link_text": "Terms of Service",
         "not_available_offine": "Not available offline",
         "offline_sign_in_title": "Sign in not available offline",
         "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online.",
