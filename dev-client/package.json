@@ -25,7 +25,7 @@
     "localization-to-json": "node scripts/localization/transform-to.mjs json",
     "localization-check-missing": "node scripts/localization/missing-check.mjs",
     "prepare": "cd .. && husky",
-    "check-i18n": "echo '---- English ----' && node find-i18n-keys.mjs . --catalog src/translations/en.json && echo '\n---- Spanish ----' && node find-i18n-keys.mjs . --catalog src/translations/es.json"
+    "check-i18n": "node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/en.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/es.json"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.0.5",

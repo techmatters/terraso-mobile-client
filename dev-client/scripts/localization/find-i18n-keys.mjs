@@ -1,6 +1,23 @@
 #!/usr/bin/env node
-// find-i18n-keys.mjs
-// Usage: node find-i18n-keys.mjs [path1] [path2] ... [--catalog path/to/catalog.json] [--json]
+
+/*
+ * Copyright © 2025 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+// Usage: node find-i18n-keys.mjs [path1] [path2] ... [--catalog path/to/catalog.json] [--json] [--extras]
 
 // easiest way to run: 'npm run check-i18n'
 // todo: run with other linters automatically; maybe add github action too.
@@ -20,6 +37,7 @@ const IGNORE_DIRS = new Set([
 
 const args = process.argv.slice(2);
 const jsonOutput = args.includes('--json');
+const showKeysInFileNotSource = args.includes('--extras');
 
 function popFlagWithValue(flag, arr) {
   const i = arr.indexOf(flag);
@@ -126,6 +144,7 @@ for (const root of roots) {
   }
 }
 
+scanKeys.delete('projects.sites.sort.'); // special case; not really a key
 const sortedScanKeys = Array.from(scanKeys).sort((a, b) => a.localeCompare(b));
 
 // ---------- Catalog JSON extraction ----------
@@ -159,6 +178,7 @@ if (catalogPath) {
     catalogKeys = new Set(
       collectCatalogKeysFromObject(parsed).sort((a, b) => a.localeCompare(b)),
     );
+    console.log(`\n------ translation file ${catalogPath} ------\n`);
   } catch (e) {
     console.error(
       `Failed to read/parse catalog JSON at ${catalogPath}: ${e.message}`,
@@ -179,6 +199,10 @@ const inCatalogNotScan = setDiff(catalogKeys, scanKeys);
 const inScanNotCatalog = setDiff(scanKeys, catalogKeys);
 
 // ---------- Output ----------
+
+console.log('** Warning: these lists may not be complete');
+console.log('** Please use as a secondary check only\n');
+
 if (jsonOutput) {
   const out = {
     scan: {
@@ -204,26 +228,31 @@ if (jsonOutput) {
   };
   console.log(JSON.stringify(out, null, 2));
 } else {
-  console.log(`Found ${sortedScanKeys.length} unique key(s) in scan.`);
+  console.log(`Found ${sortedScanKeys.length} keys in source.`);
   if (catalogPath) {
-    // console.log(
-    //   `Catalog: ${catalogPath} (${catalogKeys.size} key(s) after rules)`
-    // );
-    // console.log(
-    //   `\n=== In catalog but NOT in scan (${inCatalogNotScan.length})===`
-    // );
-    // if (inCatalogNotScan.length === 0) console.log("(none)");
-    // else inCatalogNotScan.forEach((k) => console.log(k));
+    console.log(`Found ${catalogKeys.size} keys in ${catalogPath}`);
+
     console.log(
-      `\n=== In scan but NOT in catalog (${inScanNotCatalog.length})===`,
+      `Found ${inCatalogNotScan.length} keys in ${catalogPath} not in source`,
     );
-    if (inScanNotCatalog.length === 0) console.log('(none)');
-    else inScanNotCatalog.forEach(k => console.log(k));
+    console.log('  to see the list: npm run check-i18n -- --extras ');
+    if (showKeysInFileNotSource) {
+      inCatalogNotScan.forEach(k => console.log(`  '${k}'`));
+    }
+
+    console.log(
+      `Found ${inScanNotCatalog.length} keys in source not in ${catalogPath}`,
+    );
+    inScanNotCatalog.forEach(k => console.log(`  '${k}'`));
+
+    //
   } else {
     console.log(
       '(Tip: pass --catalog path/to/en.json to compare with a catalog)',
     );
   }
+
+  process.exit(inScanNotCatalog.length == 0 ? 0 : 99);
 
   // Also print occurrences at the end for convenience
   // console.log("\nOccurrences:");
