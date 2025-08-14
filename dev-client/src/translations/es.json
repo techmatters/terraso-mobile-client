@@ -19,10 +19,6 @@
         "link_text": "LandPKS de Terraso",
         "link_url": "https://landpks.terraso.org/",
         "terms": "TK By using LandPKS you accept our privacy policy and terms of service.",
-        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
-        "privacy_policy_link_text": "Política de privacidad",
-        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-        "terms_of_service_link_text": "Condiciones de servicio",
         "get_started": "Comenzar"
     },
     "search": {
@@ -450,11 +446,7 @@
             "privacy_item3": "<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo para la persona quien lo creó. Esa persona puede cambiar la privacidad en cualquier momento.",
             "privacy_item4": "<bold>La configuración de privacidad de un proyecto determina la privacidad de sus sitios afiliados.</bold> Los sitios que pertenecen a un proyecto privado son visibles para los miembros del equipo del proyecto. Un administrador de proyectos puede cambiar la privacidad en cualquier momento.",
             "data_portal_link_url": "https://landpks.terraso.org/portal",
-            "data_portal_link_text": "Portal de datos LandPKS",
-            "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
-            "privacy_policy_link_text": "Política de privacidad",
-            "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-            "terms_of_service_link_text": "Términos de Servicio"
+            "data_portal_link_text": "Portal de datos LandPKS"
         },
         "character_limit": "{{current}} / {{limit}} caracteres",
         "open_settings": "Ir a configuraciones",
@@ -476,7 +468,11 @@
         "offline_sign_in_title": "Inicio de sesión no disponible sin conexión",
         "offline_sign_in_body": "Para utilizar LandPKS Soil ID sin conexión, primero debes iniciar sesión en línea.",
         "not_available": "No disponible",
-        "learn_more": "Aprender más"
+        "learn_more": "Aprender más",
+        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_text": "Política de privacidad",
+        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+        "terms_of_service_link_text": "Condiciones de servicio"
     },
     "errors": {
         "generic": "Error al guardar la informacion de la identificación del suelo.",

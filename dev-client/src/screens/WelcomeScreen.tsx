@@ -88,12 +88,12 @@ export const WelcomeScreen = () => {
           <TranslatedParagraph i18nKey="welcome.terms" />
 
           <ExternalLink
-            label={t('welcome.privacy_policy_link_text')}
-            url={t('welcome.privacy_policy_link_url')}
+            label={t('general.privacy_policy_link_text')}
+            url={t('general.privacy_policy_link_url')}
           />
           <ExternalLink
-            label={t('welcome.terms_of_service_link_text')}
-            url={t('welcome.terms_of_service_link_url')}
+            label={t('general.terms_of_service_link_text')}
+            url={t('general.terms_of_service_link_url')}
           />
 
           {/* To leave room for the FAB */}

@@ -20,8 +20,8 @@ import {LinkItem} from 'terraso-mobile-client/screens/UserSettingsScreen/compone
 export const PrivacyItem = () => {
   return (
     <LinkItem
-      labelI18nKey="general.info.privacy_policy_label"
-      urlI18nKey="general.info.privacy_policy_link_url"
+      labelI18nKey="general.privacy_policy_link_text"
+      urlI18nKey="general.privacy_policy_link_url"
     />
   );
 };
