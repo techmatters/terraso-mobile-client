@@ -32,8 +32,8 @@ import {
   updateSiteMatches,
   updateTempMatches,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
-import {doPromiseWithTimeoutAndLateReturn} from 'terraso-mobile-client/model/utils/promiseTimeoutUtil';
 import {AppDispatch, AppState} from 'terraso-mobile-client/store';
+import {doPromiseWithTimeoutAndLateReturn} from 'terraso-mobile-client/utils/promiseTimeoutUtil';
 
 const TIMEOUT_MS = 20_000;
 

@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {doPromiseWithTimeoutAndLateReturn} from 'terraso-mobile-client/model/utils/promiseTimeoutUtil';
+import {doPromiseWithTimeoutAndLateReturn} from 'terraso-mobile-client/utils/promiseTimeoutUtil';
 
 describe('doPromiseWithTimeoutAndLateReturn', () => {
   const timeoutMs = 1000;
