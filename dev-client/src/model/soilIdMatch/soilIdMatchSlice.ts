@@ -60,6 +60,15 @@ const soilIdMatchSlice = createSlice({
     flushDataCacheErrors: state => {
       flushErrorEntries(state.siteDataBasedMatches);
     },
+    updateTempMatches: (state, action) => {
+      const coords = action.payload.coords;
+      const key = coordsKey(coords);
+      state.locationBasedMatches[key] = action.payload.returnedEntry;
+    },
+    updateSiteMatches: (state, action) => {
+      const siteId = action.payload.siteId;
+      state.siteDataBasedMatches[siteId] = action.payload.returnedEntry;
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -113,8 +122,12 @@ const soilIdMatchSlice = createSlice({
   },
 });
 
-export const {flushLocationCache, flushDataCacheErrors} =
-  soilIdMatchSlice.actions;
+export const {
+  flushLocationCache,
+  flushDataCacheErrors,
+  updateTempMatches,
+  updateSiteMatches,
+} = soilIdMatchSlice.actions;
 
 export const fetchTempLocationBasedSoilMatches = createAsyncThunk(
   'soilId/fetchLocationBasedSoilMatches',

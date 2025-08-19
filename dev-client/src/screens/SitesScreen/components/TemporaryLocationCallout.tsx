@@ -40,8 +40,10 @@ import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
-import {SoilIdStatus} from 'terraso-mobile-client/model/soilData/soilDataSlice';
-import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {
+  ClientSoilIdStatus,
+  DataRegion,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
@@ -160,7 +162,7 @@ const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
 };
 
 type SoilIdStatusDisplayTopMatchProps = {
-  status: SoilIdStatus;
+  status: ClientSoilIdStatus;
   topSoilMatch: SoilMatch | undefined;
 };
 type TopSoilMatchDisplayProps = SoilIdStatusDisplayTopMatchProps & {

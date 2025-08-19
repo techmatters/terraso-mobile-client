@@ -22,34 +22,47 @@ import {ThunkAPI} from 'terraso-client-shared/store/utils';
 import {Coords} from 'terraso-client-shared/types';
 
 import {
-  siteEntryForMatches,
+  siteEntry,
   siteEntryForStatus,
   SoilIdEntry,
-  tempLocationEntryForMatches,
+  tempLocationEntry,
   tempLocationEntryForStatus,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
-import {AppState} from 'terraso-mobile-client/store';
+import {
+  updateSiteMatches,
+  updateTempMatches,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
+import {AppDispatch, AppState} from 'terraso-mobile-client/store';
+import {doPromiseWithTimeoutAndLateReturn} from 'terraso-mobile-client/utils/promiseTimeoutUtil';
+
+const TIMEOUT_MS = 20_000;
 
 export const fetchTempLocationBasedSoilMatchesThunk = async (
   coords: Coords,
   _: User | null,
-  __: ThunkAPI,
-) => fetchTempLocationBasedSoilMatches(coords);
+  {dispatch}: ThunkAPI,
+) => fetchTempLocationBasedSoilMatches(coords, dispatch);
 
-export const fetchTempLocationBasedSoilMatches = async (coords: Coords) => {
-  const result = await soilIdService.fetchSoilMatches(coords, {
-    depthDependentData: [],
+export type SoilIdFetchedResult = Awaited<
+  ReturnType<typeof soilIdService.fetchSoilMatches>
+>;
+
+export const fetchTempLocationBasedSoilMatches = async (
+  coords: Coords,
+  dispatch: AppDispatch,
+) => {
+  return await doPromiseWithTimeoutAndLateReturn<SoilIdEntry>({
+    timeoutMs: TIMEOUT_MS,
+    promiseToDo: soilIdService
+      .fetchSoilMatches(coords, {
+        depthDependentData: [],
+      })
+      .then(response => tempLocationEntry(coords, response)),
+    doOnTimeout: () => tempLocationEntryForStatus(coords, 'TIMEOUT'),
+    doOnReturnAfterTimeout: (returnedEntry: SoilIdEntry) => {
+      dispatch(updateTempMatches({coords, returnedEntry}));
+    },
   });
-
-  if (result.__typename === 'SoilIdFailure') {
-    return tempLocationEntryForStatus(coords, result.reason);
-  } else {
-    return tempLocationEntryForMatches(
-      coords,
-      result.matches,
-      result.dataRegion,
-    );
-  }
 };
 
 export const fetchSiteBasedSoilMatchesThunk = async (
@@ -61,12 +74,14 @@ export const fetchSiteBasedSoilMatchesThunk = async (
     params.siteId,
     params.input,
     thunkApi.getState() as AppState,
+    thunkApi.dispatch,
   );
 
 export const fetchSiteBasedSoilMatches = async (
   siteId: string,
   input: SoilIdInputData,
   state: AppState,
+  dispatch: AppDispatch,
 ): Promise<SoilIdEntry> => {
   const site = state.site.sites[siteId];
 
@@ -76,11 +91,15 @@ export const fetchSiteBasedSoilMatches = async (
   }
 
   const coords = {latitude: site.latitude, longitude: site.longitude};
-  const result = await soilIdService.fetchSoilMatches(coords, input);
 
-  if (result.__typename === 'SoilIdFailure') {
-    return siteEntryForStatus(input, result.reason);
-  } else {
-    return siteEntryForMatches(input, result.matches, result.dataRegion);
-  }
+  return await doPromiseWithTimeoutAndLateReturn<SoilIdEntry>({
+    timeoutMs: TIMEOUT_MS,
+    promiseToDo: soilIdService
+      .fetchSoilMatches(coords, input)
+      .then(response => siteEntry(input, response)),
+    doOnTimeout: () => siteEntryForStatus(input, 'TIMEOUT'),
+    doOnReturnAfterTimeout: (returnedEntry: SoilIdEntry) => {
+      dispatch(updateSiteMatches({siteId, returnedEntry}));
+    },
+  });
 };
