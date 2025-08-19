@@ -19,7 +19,6 @@ import {useTranslation} from 'react-i18next';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
-import {InternalLink} from 'terraso-mobile-client/components/links/InternalLink';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 export const DataPrivacyContent = () => {
@@ -35,9 +34,13 @@ export const DataPrivacyContent = () => {
       <TranslatedParagraph i18nKey="general.info.privacy_item2" />
       <TranslatedParagraph i18nKey="general.info.privacy_item3" />
       <TranslatedParagraph i18nKey="general.info.privacy_item4" />
-      <InternalLink
-        label={t('general.info.privacy_policy_link_text')}
-        url={t('general.info.privacy_policy_link_url')}
+      <ExternalLink
+        label={t('general.privacy_policy_link_text')}
+        url={t('general.privacy_policy_link_url')}
+      />
+      <ExternalLink
+        label={t('general.terms_of_service_link_text')}
+        url={t('general.terms_of_service_link_url')}
       />
     </Column>
   );

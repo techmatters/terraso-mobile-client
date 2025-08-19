@@ -81,7 +81,7 @@ if (typeof APP_BUILD === 'string') {
 const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
   slug: 'landpks',
-  version: '1.3',
+  version: '1.3.1',
   orientation: 'portrait',
   splash: {
     image: 'src/assets/splash.png',
@@ -157,6 +157,16 @@ const defaultConfig: ExpoConfig = {
         }
         return modConfig;
       }) as any,
+    ],
+    [
+      'expo-build-properties',
+      {
+        android: {
+          compileSdkVersion: 35,
+          targetSdkVersion: 35,
+          buildToolsVersion: '35.0.0',
+        },
+      },
     ],
   ],
   extra: ENV_CONFIG,

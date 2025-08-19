@@ -17,47 +17,25 @@
 
 import {formatCoordinate} from 'terraso-mobile-client/util';
 
-const isErrorResult = (result: string) => {
-  const OUT_OF_RANGE_MESSAGE = 'Invalid or missing input parameters.';
-  const UNABLE_TO_PROCESS_MESSAGE = 'Unable to complete operation.';
-
-  // Call failed.  [Failed cloud operation: Open, Path: /vsimem/_0000096E.aux.xml]
-  const CALL_FAILED_MESSAGE = 'Call failed.';
-
-  if ([OUT_OF_RANGE_MESSAGE, UNABLE_TO_PROCESS_MESSAGE].includes(result)) {
-    return true;
-  }
-
-  if (result.startsWith(CALL_FAILED_MESSAGE)) {
-    return true;
-  }
-
-  return false;
-};
-
 export const getElevation = async (
   lat: number,
   lng: number,
 ): Promise<number | undefined> => {
-  // 1. TypeScript requires values passed to URLSearchParams strings,
-  //    which is why we convert the floats to strings.
-  // 2. This API uses X for longitude and Y for latitude. That's not a typo.
+  // TypeScript requires values passed to URLSearchParams to be strings,
+  // which is why we convert the floats to strings.
   const queryString = new URLSearchParams({
-    x: formatCoordinate(lng),
-    y: formatCoordinate(lat),
-    units: 'Meters', // TODO: switch based on user preference
+    longitude: formatCoordinate(lng),
+    latitude: formatCoordinate(lat),
   });
   let elevation;
 
   try {
     const response = await fetch(
-      `https://epqs.nationalmap.gov/v1/json/?${queryString}`,
+      `https://api.open-meteo.com/v1/elevation/?${queryString}`,
     );
-    const result = await response.text();
-    if (isErrorResult(result)) {
-      elevation = undefined;
-    } else {
-      elevation = parseFloat(JSON.parse(result).value);
+    if (response.status === 200) {
+      const result = await response.json();
+      elevation = parseInt(result.elevation[0], 10);
     }
   } catch (error) {
     console.error(error);

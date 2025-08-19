@@ -3,25 +3,22 @@
         "title": "Welcome to LandPKS Soil ID",
         "version_includes": {
             "title": "This version includes:",
-            "bullet_1": "Soil identification for US locations",
-            "bullet_2": "Slope and soil observations",
-            "bullet_3": "Site notes",
-            "bullet_4": "Project management",
-            "bullet_5": "Offline capabilities"
+            "bullet_1": "Global soil identification",
+            "bullet_2": "Bug fixes for changing soil depths",
+            "bullet_3": "Bug fixes for Soil ID algorithm"
         },
         "next": {
             "title": "What’s next?",
             "subtitle": "Future versions will include:",
-            "bullet_1": "Data visualization enhancements",
-            "bullet_2": "Additional soil properties, such as soil structure and soil organic carbon",
-            "bullet_3": "Site photos"
+            "bullet_1": "Offline site creation, soil selection, and notes",
+            "bullet_2": "Project data download",
+            "bullet_3": "Data visualization enhancements",
+            "bullet_4": "Additional observations, such as soil limitations"
         },
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",
         "link_url": "https://landpks.terraso.org/",
-        "terms": "By using LandPKS you accept our <privacy /> and <tos />.",
-        "privacy": "privacy policy",
-        "tos": "terms of service",
+        "terms": "By using LandPKS you accept our privacy policy and terms of service.",
         "get_started": "Get started"
     },
     "info": {
@@ -127,7 +124,7 @@
                 "error_generic_title": "Can’t fetch soil map",
                 "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try again later.",
                 "no_map_data_title": "No soil map data",
-                "no_map_data_body": "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Observations can still be entered for this site, and if soil map data becomes available in the future, soil matches will appear here.",
+                "no_map_data_body": "There is no soil map data available for this location, so LandPKS cannot generate soil matches. Observations can still be entered, and if soil map data becomes available in the future, soil matches will appear here.",
                 "offline": "Soil matches will update when you are online.",
                 "selector": "This is the correct soil",
                 "selected": "Selected Soil"
@@ -455,10 +452,7 @@
             "privacy_item3": "<bold>A private site</bold> not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. ",
             "privacy_item4": "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. ",
             "data_portal_link_url": "https://landpks.terraso.org/portal",
-            "data_portal_link_text": "LandPKS Data Portal",
-            "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
-            "privacy_policy_link_text": "Read more about our data privacy policy.",
-            "privacy_policy_label": "Privacy policy"
+            "data_portal_link_text": "LandPKS Data Portal"
         },
         "required": "Required",
         "character_limit": "{{current}} / {{limit}} characters",
@@ -477,6 +471,10 @@
             "label": "Terms of service",
             "url": "https://terraso.org/terms-of-service/"
         },
+        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_text": "Privacy Policy",
+        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+        "terms_of_service_link_text": "Terms of Service",
         "not_available_offine": "Not available offline",
         "offline_sign_in_title": "Sign in not available offline",
         "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online.",
