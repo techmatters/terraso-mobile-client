@@ -86,3 +86,5 @@ buildcache/
 sentry.properties
 .sentry
 
+# Sometimes watchman creates cookie files
+.watchman-cookie-*
