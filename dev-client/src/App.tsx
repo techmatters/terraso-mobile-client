@@ -23,6 +23,7 @@
  */
 
 // react-native-get-random-values needed for uuid - https://github.com/uuidjs/uuid#react-native--expo
+import 'setimmediate';
 import 'react-native-get-random-values';
 
 import {LogBox} from 'react-native';

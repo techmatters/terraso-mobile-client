@@ -134,6 +134,8 @@ const defaultConfig: ExpoConfig = {
     },
   },
   plugins: [
+    ['expo-font'],
+    ['expo-asset'],
     ['expo-apple-authentication'],
     ['expo-localization'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
