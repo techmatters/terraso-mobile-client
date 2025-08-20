@@ -95,6 +95,7 @@ const toPo = () =>
 
 // JSON transform
 const toJsonOptions = {
+  // If you want to include strings marked "fuzzy", make this false
   skipUntranslated: true,
 };
 const toJson = () =>

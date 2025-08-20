@@ -27,6 +27,7 @@ import {
 } from 'terraso-mobile-client/localization';
 import en from 'terraso-mobile-client/translations/en.json';
 import es from 'terraso-mobile-client/translations/es.json';
+import uk from 'terraso-mobile-client/translations/uk.json';
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v4',
@@ -36,6 +37,9 @@ i18n.use(initReactI18next).init({
     },
     es: {
       translation: es,
+    },
+    uk: {
+      translation: uk,
     },
   },
   debug: __DEV__ && process.env.NODE_ENV !== 'test',
