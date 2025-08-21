@@ -32,7 +32,11 @@ import Mapbox from '@rnmapbox/maps';
 import 'terraso-mobile-client/translations';
 import 'terraso-mobile-client/config';
 
+import {useEffect} from 'react';
+import {AppState} from 'react-native';
 import {enableFreeze} from 'react-native-screens';
+
+import {PostHogProvider, usePostHog} from 'posthog-react-native';
 
 import {AppContent} from 'terraso-mobile-client/app/AppContent';
 import {AppWrappers} from 'terraso-mobile-client/app/AppWrappers';
@@ -45,6 +49,20 @@ import {
 } from 'terraso-mobile-client/store/persistence';
 
 enableFreeze(true);
+
+// flush posthog when active state changes
+export function PosthogLifecycle() {
+  const posthog = usePostHog();
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', state => {
+      if (state !== 'active') posthog?.flush();
+    });
+    return () => sub.remove();
+  }, [posthog]);
+
+  return null;
+}
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
@@ -61,7 +79,15 @@ const store = createStore(persistedReduxState);
 const App = () => {
   return (
     <AppWrappers store={store}>
-      <AppContent />
+      <PostHogProvider
+        apiKey={APP_CONFIG.posthogApiKey}
+        options={{
+          host: APP_CONFIG.posthogHost,
+          disabled: false,
+        }}>
+        <PosthogLifecycle />
+        <AppContent />
+      </PostHogProvider>
     </AppWrappers>
   );
 };
