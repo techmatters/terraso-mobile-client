@@ -18,6 +18,7 @@
 import {Trans, useTranslation} from 'react-i18next';
 
 import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {
   Box,
@@ -38,23 +39,9 @@ export const LandPKSInfoContent = () => {
       <Box width={157} height={128} alignSelf="center" mb={1}>
         <InfoSVG />
       </Box>
-      <Text variant="body1">
-        <Trans i18nKey="info.description">
-          <Text bold>first</Text>
-          <Text>second</Text>
-          <Text bold>third</Text>
-        </Trans>
-      </Text>
+      <TranslatedParagraph i18nKey="info.description" />
       <Column>
-        <Text variant="body1">
-          <Trans
-            i18nKey="info.get_started"
-            components={{
-              bold: <Text bold />,
-            }}>
-            <Text bold>first</Text>
-          </Trans>
-        </Text>
+        <TranslatedParagraph i18nKey="info.get_started" />
         <GetStartedMessage />
       </Column>
       <Text variant="body1">
@@ -68,9 +55,8 @@ export const LandPKSInfoContent = () => {
                 url={t('info.link_url')}
               />
             ),
-          }}>
-          <Text bold>first</Text>
-        </Trans>
+          }}
+        />
       </Text>
     </Column>
   );

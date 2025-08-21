@@ -23,7 +23,7 @@
     },
     "info": {
         "title": "Discover your land’s potential",
-        "description": "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.",
+        "description": "<bold>Discover the potential use and value of your land.</bold> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.",
         "description2": "<bold>Find more information and guides</bold> at:\n<icon />",
         "get_started": "<bold>To get started, use the map to create a site:</bold>",
         "link_label": "landpks.terraso.org",
@@ -735,9 +735,9 @@
                 "ribbon_details_4": "If the soil crumbles instead of holding together when you press to form a ribbon, then it does not form a ribbon.",
                 "ribbon_details_5": "Let the ribbon fall naturally due to gravity. Measure the length of the segment, ignoring ragged edges.",
                 "grittyness": "Feel the soil:",
-                "grittyness_details_1": "<0>Gritty</0> means you can feel individual grains in the soil.",
-                "grittyness_details_2": "<0>Smooth</0> means that the wetted soil is slippery or soapy in feel.",
-                "grittyness_details_3": "<0>Not gritty or smooth</0> means that neither of those two textures dominates. You may still feel some sand grains or some soapiness, but the feel of the soil is not predominantly one or the other."
+                "grittyness_details_1": "<bold>Gritty</bold> means you can feel individual grains in the soil.",
+                "grittyness_details_2": "<bold>Smooth</bold> means that the wetted soil is slippery or soapy in feel.",
+                "grittyness_details_3": "<bold>Not gritty or smooth</bold> means that neither of those two textures dominates. You may still feel some sand grains or some soapiness, but the feel of the soil is not predominantly one or the other."
             },
             "guide_intro": "Don’t know the texture class? Use the step-by-step guide.",
             "use_guide_label": "Use Guide",

@@ -25,6 +25,7 @@ import {ScrollView} from 'native-base';
 
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/commonRequirements';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
 import {
@@ -230,13 +231,9 @@ export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
                           <BulletList
                             data={[1, 2, 3]}
                             renderItem={i => (
-                              <Text variant="body1" color="text.primary">
-                                <Trans
-                                  i18nKey={`soil.texture.guide.grittyness_details_${i}`}>
-                                  <Text bold>first</Text>
-                                  <Text>second</Text>
-                                </Trans>
-                              </Text>
+                              <TranslatedParagraph
+                                i18nKey={`soil.texture.guide.grittyness_details_${i}`}
+                              />
                             )}
                           />
                           <Video
