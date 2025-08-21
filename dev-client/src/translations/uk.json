@@ -6,7 +6,8 @@
       "subtitle": "Майбутні версії включатимуть:",
       "bullet_1": "Покращення візуалізації даних",
       "bullet_2": "Додаткові властивості ґрунту, такі як структура ґрунту та органічний вуглець ґрунту",
-      "bullet_3": "Фотографії  ділянки"
+      "bullet_3": "Фотографії  ділянки",
+      "bullet_4": "TK Additional observations, such as soil limitations"
     },
     "version_includes": {
       "title": "Ця версія включає:",
@@ -470,6 +471,10 @@
       "label": "Умови надання послуг",
       "url": "https://terraso.org/terms-of-service/"
     },
+    "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+    "privacy_policy_link_text": "TK Privacy Policy",
+    "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+    "terms_of_service_link_text": "TK Terms of Service",
     "not_available_offine": "Недоступно офлайн",
     "offline_sign_in_title": "Вхід недоступний в режимі офлайн",
     "offline_sign_in_body": "Щоб використовувати LandPKS Soil ID в автономному режимі, ви повинні спочатку увійти в систему, перебуваючи онлайн.",

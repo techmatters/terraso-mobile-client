@@ -6,7 +6,8 @@
             "subtitle": "Versiones futuras incluirán:",
             "bullet_1": "Capacidades sin conexión",
             "bullet_2": "Mejoras en la visualización de datos",
-            "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo"
+            "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
+            "bullet_4": "TK Additional observations, such as soil limitations"
         },
         "version_includes": {
             "title": "Esta version incluye:",
@@ -470,6 +471,10 @@
             "label": "Condiciones de servicio",
             "url": "https://terraso.org/terms-of-service/"
         },
+        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_text": "TK Privacy Policy",
+        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+        "terms_of_service_link_text": "TK Terms of Service",
         "not_available_offine": "No disponible fuera de linea",
         "offline_sign_in_title": "Inicio de sesión no disponible sin conexión",
         "offline_sign_in_body": "Para utilizar LandPKS Soil ID sin conexión, primero debes iniciar sesión en línea.",
