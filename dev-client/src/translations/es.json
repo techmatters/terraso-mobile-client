@@ -4,22 +4,26 @@
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "TK Offline site creation, soil selection, and notes",
-            "bullet_2": "TK Project data download",
-            "bullet_3": "TK Data visualization enhancements",
+            "bullet_1": "Capacidades sin conexión",
+            "bullet_2": "Mejoras en la visualización de datos",
+            "bullet_3": "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo",
             "bullet_4": "TK Additional observations, such as soil limitations"
         },
         "version_includes": {
             "title": "Esta version incluye:",
-            "bullet_1": "TK Global soil identification",
-            "bullet_2": "TK Bug fixes for changing soil depths",
-            "bullet_3": "TK Bug fixes for Soil ID algorithm"
+            "bullet_1": "Identificación de suelos dentro de los EEUU",
+            "bullet_2": "Observaciones de la pendiente y del suelo",
+            "bullet_3": "Notas acerca del sitio",
+            "bullet_4": "El manejo de projectos",
+            "bullet_5": "Capacidades sin conexión"
         },
         "learn_more": "Aprende más acerca del uso de proyectos",
         "link_text": "LandPKS de Terraso",
         "link_url": "https://landpks.terraso.org/",
-        "terms": "TK By using LandPKS you accept our privacy policy and terms of service.",
-        "get_started": "Comenzar"
+        "get_started": "Comenzar",
+        "terms": "Al utilizar LandPKS usted acepta nuestra <privacy /> y <tos />.",
+        "privacy": "Política de privacidad",
+        "tos": "Condiciones de servicio"
     },
     "search": {
         "placeholder": "Buscar en mapa"
@@ -446,7 +450,10 @@
             "privacy_item3": "<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo para la persona quien lo creó. Esa persona puede cambiar la privacidad en cualquier momento.",
             "privacy_item4": "<bold>La configuración de privacidad de un proyecto determina la privacidad de sus sitios afiliados.</bold> Los sitios que pertenecen a un proyecto privado son visibles para los miembros del equipo del proyecto. Un administrador de proyectos puede cambiar la privacidad en cualquier momento.",
             "data_portal_link_url": "https://landpks.terraso.org/portal",
-            "data_portal_link_text": "Portal de datos LandPKS"
+            "data_portal_link_text": "Portal de datos LandPKS",
+            "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+            "privacy_policy_link_text": "Lee más acerca de nuestras políticas de privacidad de datos.",
+            "privacy_policy_label": "Política de privacidad"
         },
         "character_limit": "{{current}} / {{limit}} caracteres",
         "open_settings": "Ir a configuraciones",
@@ -464,15 +471,15 @@
             "label": "Condiciones de servicio",
             "url": "https://terraso.org/terms-of-service/"
         },
+        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_text": "TK Privacy Policy",
+        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
+        "terms_of_service_link_text": "TK Terms of Service",
         "not_available_offine": "No disponible fuera de linea",
         "offline_sign_in_title": "Inicio de sesión no disponible sin conexión",
         "offline_sign_in_body": "Para utilizar LandPKS Soil ID sin conexión, primero debes iniciar sesión en línea.",
         "not_available": "No disponible",
-        "learn_more": "Aprender más",
-        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
-        "privacy_policy_link_text": "Política de privacidad",
-        "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-        "terms_of_service_link_text": "Condiciones de servicio"
+        "learn_more": "Aprender más"
     },
     "errors": {
         "generic": "Error al guardar la informacion de la identificación del suelo.",

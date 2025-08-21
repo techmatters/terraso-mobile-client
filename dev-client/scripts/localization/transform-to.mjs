@@ -95,7 +95,8 @@ const toPo = () =>
 
 // JSON transform
 const toJsonOptions = {
-  skipUntranslated: true,
+  // Setting this to true will skip strings marked "fuzzy"
+  skipUntranslated: false,
 };
 const toJson = () =>
   transform('JSON', '../../locales/po/', (locale, filePath) =>
