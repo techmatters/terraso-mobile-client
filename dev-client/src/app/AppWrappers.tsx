@@ -22,7 +22,10 @@ import {PaperProvider, Portal} from 'react-native-paper';
 import {Provider} from 'react-redux';
 
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
 
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
@@ -32,6 +35,7 @@ import {HeaderHeightProvider} from 'terraso-mobile-client/context/HeaderHeightCo
 import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScreenContext';
 import {SoilIdMatchContextProvider} from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
+import {useDevNavigationVisualizer} from 'terraso-mobile-client/navigation/hooks/useDevNavigationVisualizer';
 import {AppStore} from 'terraso-mobile-client/store';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
@@ -50,13 +54,16 @@ export const AppWrappers = ({store, children}: Props) => {
    *    NB/Paper components.
    */
 
+  const navigationRef = useNavigationContainerRef();
+  useDevNavigationVisualizer(navigationRef); // only does something if __DEV__
+
   return (
     <GestureHandlerRootView style={styles.gestureHandler}>
       <Provider store={store}>
         <NavigationContainer
-        // uncomment to enable screen stack debugging
-        // onStateChange={console.log}
-        >
+          // uncomment to enable screen stack debugging
+          // onStateChange={console.log}
+          ref={navigationRef}>
           <ConnectivityContextProvider>
             <HeaderHeightProvider>
               <BottomSheetModalProvider>

@@ -28,6 +28,7 @@
     "check-i18n": "node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/en.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/es.json"
   },
   "dependencies": {
+    "@bam.tech/react-navigation-visualizer-dev-plugin": "^0.1.9",
     "@craftzdog/react-native-buffer": "^6.0.5",
     "@expo/vector-icons": "^14.1.0",
     "@gorhom/bottom-sheet": "^5.1.4",
