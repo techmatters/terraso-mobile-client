@@ -32,7 +32,7 @@ import {HeaderHeightProvider} from 'terraso-mobile-client/context/HeaderHeightCo
 import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScreenContext';
 import {SoilIdMatchContextProvider} from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
-import {SiteTabJumpProvider} from 'terraso-mobile-client/navigation/components/SiteTabJumpProvider';
+import {SiteTabJumpContextProvider} from 'terraso-mobile-client/navigation/components/SiteTabJumpProvider';
 import {AppStore} from 'terraso-mobile-client/store';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
@@ -54,7 +54,7 @@ export const AppWrappers = ({store, children}: Props) => {
   return (
     <GestureHandlerRootView style={styles.gestureHandler}>
       <Provider store={store}>
-        <SiteTabJumpProvider>
+        <SiteTabJumpContextProvider>
           <NavigationContainer
           // uncomment to enable screen stack debugging
           // onStateChange={console.log}
@@ -85,7 +85,7 @@ export const AppWrappers = ({store, children}: Props) => {
               </HeaderHeightProvider>
             </ConnectivityContextProvider>
           </NavigationContainer>
-        </SiteTabJumpProvider>
+        </SiteTabJumpContextProvider>
       </Provider>
     </GestureHandlerRootView>
   );
