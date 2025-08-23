@@ -32,6 +32,7 @@ import {HeaderHeightProvider} from 'terraso-mobile-client/context/HeaderHeightCo
 import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScreenContext';
 import {SoilIdMatchContextProvider} from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
+import {SiteTabJumpProvider} from 'terraso-mobile-client/navigation/components/SiteTabJumpProvider';
 import {AppStore} from 'terraso-mobile-client/store';
 import {paperTheme, theme} from 'terraso-mobile-client/theme';
 
@@ -53,36 +54,38 @@ export const AppWrappers = ({store, children}: Props) => {
   return (
     <GestureHandlerRootView style={styles.gestureHandler}>
       <Provider store={store}>
-        <NavigationContainer
-        // uncomment to enable screen stack debugging
-        // onStateChange={console.log}
-        >
-          <ConnectivityContextProvider>
-            <HeaderHeightProvider>
-              <BottomSheetModalProvider>
-                <PaperProvider theme={paperTheme}>
-                  <NativeBaseProvider theme={theme}>
-                    <Portal.Host>
-                      <BottomSheetModalProvider>
-                        <GeospatialProvider>
-                          <SitesScreenContextProvider>
-                            <ForegroundPermissionsProvider>
-                              <SyncNotificationContextProvider>
-                                <SoilIdMatchContextProvider>
-                                  {children}
-                                </SoilIdMatchContextProvider>
-                              </SyncNotificationContextProvider>
-                            </ForegroundPermissionsProvider>
-                          </SitesScreenContextProvider>
-                        </GeospatialProvider>
-                      </BottomSheetModalProvider>
-                    </Portal.Host>
-                  </NativeBaseProvider>
-                </PaperProvider>
-              </BottomSheetModalProvider>
-            </HeaderHeightProvider>
-          </ConnectivityContextProvider>
-        </NavigationContainer>
+        <SiteTabJumpProvider>
+          <NavigationContainer
+          // uncomment to enable screen stack debugging
+          // onStateChange={console.log}
+          >
+            <ConnectivityContextProvider>
+              <HeaderHeightProvider>
+                <BottomSheetModalProvider>
+                  <PaperProvider theme={paperTheme}>
+                    <NativeBaseProvider theme={theme}>
+                      <Portal.Host>
+                        <BottomSheetModalProvider>
+                          <GeospatialProvider>
+                            <SitesScreenContextProvider>
+                              <ForegroundPermissionsProvider>
+                                <SyncNotificationContextProvider>
+                                  <SoilIdMatchContextProvider>
+                                    {children}
+                                  </SoilIdMatchContextProvider>
+                                </SyncNotificationContextProvider>
+                              </ForegroundPermissionsProvider>
+                            </SitesScreenContextProvider>
+                          </GeospatialProvider>
+                        </BottomSheetModalProvider>
+                      </Portal.Host>
+                    </NativeBaseProvider>
+                  </PaperProvider>
+                </BottomSheetModalProvider>
+              </HeaderHeightProvider>
+            </ConnectivityContextProvider>
+          </NavigationContainer>
+        </SiteTabJumpProvider>
       </Provider>
     </GestureHandlerRootView>
   );
