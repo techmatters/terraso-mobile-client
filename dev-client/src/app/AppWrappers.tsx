@@ -25,6 +25,7 @@ import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {NavigationContainer} from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
 
+import {PostHog} from 'terraso-mobile-client/app/PostHog';
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
@@ -57,31 +58,33 @@ export const AppWrappers = ({store, children}: Props) => {
         // uncomment to enable screen stack debugging
         // onStateChange={console.log}
         >
-          <ConnectivityContextProvider>
-            <HeaderHeightProvider>
-              <BottomSheetModalProvider>
-                <PaperProvider theme={paperTheme}>
-                  <NativeBaseProvider theme={theme}>
-                    <Portal.Host>
-                      <BottomSheetModalProvider>
-                        <GeospatialProvider>
-                          <SitesScreenContextProvider>
-                            <ForegroundPermissionsProvider>
-                              <SyncNotificationContextProvider>
-                                <SoilIdMatchContextProvider>
-                                  {children}
-                                </SoilIdMatchContextProvider>
-                              </SyncNotificationContextProvider>
-                            </ForegroundPermissionsProvider>
-                          </SitesScreenContextProvider>
-                        </GeospatialProvider>
-                      </BottomSheetModalProvider>
-                    </Portal.Host>
-                  </NativeBaseProvider>
-                </PaperProvider>
-              </BottomSheetModalProvider>
-            </HeaderHeightProvider>
-          </ConnectivityContextProvider>
+          <PostHog>
+            <ConnectivityContextProvider>
+              <HeaderHeightProvider>
+                <BottomSheetModalProvider>
+                  <PaperProvider theme={paperTheme}>
+                    <NativeBaseProvider theme={theme}>
+                      <Portal.Host>
+                        <BottomSheetModalProvider>
+                          <GeospatialProvider>
+                            <SitesScreenContextProvider>
+                              <ForegroundPermissionsProvider>
+                                <SyncNotificationContextProvider>
+                                  <SoilIdMatchContextProvider>
+                                    {children}
+                                  </SoilIdMatchContextProvider>
+                                </SyncNotificationContextProvider>
+                              </ForegroundPermissionsProvider>
+                            </SitesScreenContextProvider>
+                          </GeospatialProvider>
+                        </BottomSheetModalProvider>
+                      </Portal.Host>
+                    </NativeBaseProvider>
+                  </PaperProvider>
+                </BottomSheetModalProvider>
+              </HeaderHeightProvider>
+            </ConnectivityContextProvider>
+          </PostHog>
         </NavigationContainer>
       </Provider>
     </GestureHandlerRootView>

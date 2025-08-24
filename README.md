@@ -22,6 +22,12 @@ style and commit message structure before each commit.
 
 Set `MAPBOX_DOWNLOADS_TOKEN` in your `.env` to a valid Mapbox secret key.
 
+### Posthog token
+
+Optional - if you don't put this in .env, PostHog won't be used.
+
+set `POSTHOG_API_KEY` in your `.env` to a valid PostHog API key.
+
 ### macOS
 
 ```sh
