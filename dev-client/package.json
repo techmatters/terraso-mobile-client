@@ -98,6 +98,8 @@
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-typescript": "^7.27.1",
     "@babel/runtime": "^7.27.1",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
     "@react-native-community/cli-doctor": "^16.0.2",
     "@react-native/babel-preset": "^0.76.6",
