@@ -82,7 +82,7 @@ jobs:
         run: npm run prebuild -- -p android
 
       - name: Set up our JDK environment
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version-file: '.tool-versions'
           distribution: 'temurin'
