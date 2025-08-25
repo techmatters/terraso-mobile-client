@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+cd dev-client
+npx --no-install commitlint --edit "$1"
