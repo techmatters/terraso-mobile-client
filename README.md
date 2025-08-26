@@ -24,9 +24,9 @@ Set `MAPBOX_DOWNLOADS_TOKEN` in your `.env` to a valid Mapbox secret key.
 
 ### Posthog token
 
-Optional - if you don't put this in .env, PostHog won't be used.
-
-set `POSTHOG_API_KEY` in your `.env` to a valid PostHog API key.
+In order to debug PostHog, set `POSTHOG_API_KEY` in your `.env` to a valid PostHog API key.
+Otherwise, leave this value out of `.env` and then PostHog won't be used during development as usage patterns
+from development aren't useful and may even be misleading (a few values for debugging/testing PostHog should be fine).
 
 ### macOS
 
