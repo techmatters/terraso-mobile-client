@@ -59,8 +59,9 @@ export const WelcomeScreen = () => {
           </Text>
           <TranslatedBulletList
             i18nKeys={[
-              'welcome.version_includes.bullet_1',
-              // This ended up not getting into 1.3.1, but we expect to use the string for the next release
+              // We're not promoting global soil id yet, but we expect to use the string for the next release
+              // 'welcome.version_includes.bullet_1',
+              // These both ended up not getting into 1.3.1, but we expect to use the string for the next release
               // 'welcome.version_includes.bullet_2',
               'welcome.version_includes.bullet_3',
             ]}
