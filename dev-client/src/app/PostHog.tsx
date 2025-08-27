@@ -37,7 +37,12 @@ export function PosthogLifecycle() {
 }
 
 export function PostHog({children}: {children: ReactNode}) {
-  if (APP_CONFIG.posthogApiKey && APP_CONFIG.posthogHost) {
+  if (
+    APP_CONFIG.posthogApiKey &&
+    APP_CONFIG.posthogHost &&
+    APP_CONFIG.posthogApiKey !== '' &&
+    APP_CONFIG.posthogApiKey !== 'REPLACE_ME'
+  ) {
     return (
       <PostHogProvider
         apiKey={APP_CONFIG.posthogApiKey}
