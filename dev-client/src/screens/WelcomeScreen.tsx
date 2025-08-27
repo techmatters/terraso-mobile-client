@@ -60,7 +60,8 @@ export const WelcomeScreen = () => {
           <TranslatedBulletList
             i18nKeys={[
               'welcome.version_includes.bullet_1',
-              'welcome.version_includes.bullet_2',
+              // This ended up not getting into 1.3.1, but we expect to use the string for the next release
+              // 'welcome.version_includes.bullet_2',
               'welcome.version_includes.bullet_3',
             ]}
           />
