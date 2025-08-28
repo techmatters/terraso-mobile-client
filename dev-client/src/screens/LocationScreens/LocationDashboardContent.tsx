@@ -39,6 +39,7 @@ import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {updateSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
+import {SiteTabJump} from 'terraso-mobile-client/navigation/components/SiteTabJump';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {LocationSoilIdCard} from 'terraso-mobile-client/screens/LocationScreens/components/LocationSoilIdCard';
 import {PinnedNoteButton} from 'terraso-mobile-client/screens/LocationScreens/components/PinnedNoteButton';
@@ -95,6 +96,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
 
   return (
     <ScrollView backgroundColor="background.default">
+      <SiteTabJump />
       <StaticMapView
         coords={coords}
         style={styles.mapView}
