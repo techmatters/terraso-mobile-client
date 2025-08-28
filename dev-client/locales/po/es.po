@@ -45,7 +45,7 @@ msgstr "Crear sitio"
 
 #: 
 msgid "site##create##description"
-msgstr "Crea un sitio aquí para guardar esta ubicación, recopilar datos y ver informes más detallados."
+msgstr "Crea un sitio aquí para guardar esta ubicación, recopilar observaciones y ver informes más detallados."
 
 #: 
 msgid "site##create##gps"
@@ -801,19 +801,15 @@ msgstr "Esta version incluye:"
 
 #: 
 msgid "welcome##version_includes##bullet_1"
-msgstr "Identificación de suelos dentro de los EEUU"
+msgstr "Identificación global de suelos"
 
 #: 
 msgid "welcome##version_includes##bullet_2"
-msgstr "Observaciones de la pendiente y del suelo"
+msgstr "Corrección de errores al cambiar profundidades de suelo"
 
 #: 
 msgid "welcome##version_includes##bullet_3"
-msgstr "Notas acerca del sitio"
-
-#: 
-msgid "welcome##version_includes##bullet_4"
-msgstr "El manejo de projectos"
+msgstr "Corrección de errores para el algoritmo de identificación de suelos"
 
 #: 
 msgid "welcome##next##bullet_1"
@@ -821,15 +817,15 @@ msgstr "Capacidades sin conexión"
 
 #: 
 msgid "welcome##next##bullet_2"
-msgstr "Mejoras en la visualización de datos"
+msgstr "Descarga de datos del proyecto"
 
 #: 
 msgid "welcome##next##bullet_3"
-msgstr "Propiedades adicionales del suelo, como la estructura y el carbono orgánico del suelo"
+msgstr "Mejoras en la visualización de datos"
 
 #: 
 msgid "welcome##learn_more"
-msgstr "Aprende más acerca del uso de proyectos"
+msgstr "Aprende más y mantente actualizado:"
 
 #: 
 msgid "welcome##link_text"
@@ -1007,13 +1003,13 @@ msgstr "Mejores coincidencias de suelo"
 msgid "site##soil_id##matches##info##description##site"
 msgstr "Los suelos enumerados son los más probables de encontrarse en el sitio, según los mapas de suelos de {{soilMapSource}} para esta ubicación.\n"
 "\n"
-"Ingresa las observaciones recomendadas sobre la pendiente y el suelo para mejorar la precisión de los puntajes de coincidencia. Una vez que se ingresen las observaciones, la lista se actualizará automáticamente."
+"Ingresa las observaciones recomendadas sobre la pendiente y el suelo para mejorar la precisión de las puntuaciones de coincidencia. Una vez que se ingresen las observaciones, la lista se actualizará automáticamente."
 
 #: 
 msgid "site##soil_id##matches##info##description##temp_location"
 msgstr "Los suelos enumerados son los más probables de encontrarse en esta ubicación según los mapas de suelos del {{soilMapSource}}.\n"
 "\n"
-"Crea un sitio aquí e ingresa las observaciones recomendadas para mejorar la precisión de las puntajes de coincidencia."
+"Crea un sitio aquí e ingresa las observaciones recomendadas para mejorar la precisión de las puntuaciones de coincidencia."
 
 #: 
 msgid "site##soil_id##matches##match"
@@ -1025,7 +1021,7 @@ msgstr "No se puede obtener el mapa del suelo"
 
 #: 
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Vuelve a intentarlo más tarde."
+msgstr "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Intente detener y reiniciar la aplicación. Si el problema continúa, vuelva a intentarlo más tarde o envíe una solicitud de soporte a través del sitio web landpks.terraso.org."
 
 #: 
 msgid "site##soil_id##matches##no_map_data_title"
@@ -1033,7 +1029,7 @@ msgstr "Sin datos en el mapa de suelos"
 
 #: 
 msgid "site##soil_id##matches##no_map_data_body"
-msgstr "No hay datos de mapas de suelos disponibles para este sitio, por lo que LandPKS no puede generar coincidencias de suelos en este momento. Aun así, puedes ingresar observaciones para este sitio y, si en el futuro se dispone de datos, las coincidencias de suelos aparecerán aquí."
+msgstr "No hay datos de mapas de suelos disponibles para esta ubicación, por lo que LandPKS no puede generar coincidencias de suelos en este momento. Aun así, puedes ingresar observaciones y, si en el futuro los datos del mapa de suelos están disponibles, las coincidencias de suelos aparecerán aquí."
 
 #: 
 msgid "site##soil_id##site_data##title"
@@ -1129,11 +1125,11 @@ msgstr "Propiedades del suelo"
 
 #: 
 msgid "site##soil_id##location_score_info##header"
-msgstr "Calificación de ubicación"
+msgstr "Puntuación de ubicación"
 
 #: 
 msgid "site##soil_id##location_score_info##p1"
-msgstr "El punaje de la ubicación se basa únicamente en los mapas del suelos y en la ubicación del lugar. No tiene en cuenta los datos que han introducido los usuarios en el lugar."
+msgstr "La puntuación de la ubicación se basa únicamente en los mapas del suelos y en la ubicación del lugar. No tiene en cuenta los datos que han introducido los usuarios en el lugar."
 
 #: 
 msgid "site##soil_id##location_score_info##p2"
@@ -1141,7 +1137,7 @@ msgstr "LandPKS basa las coincidencias de suelos en los mapas creados por {{soil
 
 #: 
 msgid "site##soil_id##location_score_info##p3"
-msgstr "La calificación de ubicación de una coincidencia de suelo se basa en el porcentaje de la unidad cartográfica que el suelo cubre. Luego, se reduce por un valor proporcional a la distancia de la unidad de mapeo desde el sitio. En otras palabras, los suelos en la unidad de mapeo del sitio generalmente reciben un puntaje de ubicación más alto que los suelos en una unidad de mapeo vecina. De manera similar, los suelos que representan un mayor porcentaje de la unidad de mapeo reciben un puntaje de ubicación más alto que los suelos que representan un porcentaje menor de la unidad de mapeo."
+msgstr "La puntuación de ubicación de una coincidencia de suelo se basa en el porcentaje de la unidad cartográfica que el suelo cubre. Luego, se reduce por un valor proporcional a la distancia de la unidad de mapeo desde el sitio. En otras palabras, los suelos en la unidad de mapeo del sitio generalmente reciben un puntaje de ubicación más alto que los suelos en una unidad de mapeo vecina. De manera similar, los suelos que representan un mayor porcentaje de la unidad de mapeo reciben un puntaje de ubicación más alto que los suelos que representan un porcentaje menor de la unidad de mapeo."
 
 #: 
 msgid "site##soil_id##soil_properties_score_info##header"
@@ -1149,19 +1145,19 @@ msgstr "Puntuación de las propiedades del suelo"
 
 #: 
 msgid "site##soil_id##soil_properties_score_info##p1"
-msgstr "El puntaje de las propiedades del suelo refleja la similitud entre el suelo compatible y las observaciones ingresadas para este sitio."
+msgstr "La puntuación de las propiedades del suelo refleja la similitud entre el suelo compatible y las observaciones ingresadas para este sitio."
 
 #: 
 msgid "site##soil_id##soil_properties_score_info##p2"
-msgstr "Un puntaje más alto de Propiedades del suelo significa que las observaciones ingresadas por el usuario son similares a la coincidencia de suelo. Un puntaje bajo significa que los dos son menos similares, y es menos probable que esta coincidencia sea la identificación correcta del suelo para el sitio."
+msgstr "La puntuación más alto de Propiedades del suelo significa que las observaciones ingresadas por el usuario son similares a la coincidencia de suelo. Un puntaje bajo significa que los dos son menos similares, y es menos probable que esta coincidencia sea la identificación correcta del suelo para el sitio."
 
 #: 
 msgid "site##soil_id##soil_properties_score_info##p3"
-msgstr "Cuantas más observaciones ingreses para un sitio, más confiable será el puntaje de propiedades del suelo."
+msgstr "Cuantas más observaciones ingreses para un sitio, más confiable será la puntuación de propiedades del suelo."
 
 #: 
 msgid "site##soil_id##soil_properties_score_info##p4"
-msgstr "LandPKS Soil ID considera las siguientes propiedades en el cálculo del puntaje de las propiedades del suelo:"
+msgstr "LandPKS Soil ID considera las siguientes propiedades en el cálculo de la puntuación de las propiedades del suelo:"
 
 #: 
 msgid "site##soil_id##soil_properties_score_info##bullets##1"
@@ -1457,7 +1453,7 @@ msgstr "Puede visualizar y editar todos los aspectos del proyecto y sus sitios a
 
 #: 
 msgid "projects##manage_member##contributor_help"
-msgstr "Puede visualizar, añadir y editar datos del sitio"
+msgstr "Puede visualizar, añadir y editar observaciones del sitio"
 
 #: 
 msgid "projects##manage_member##viewer_help"
@@ -1477,7 +1473,7 @@ msgstr "¿Eliminar del proyecto?"
 
 #: 
 msgid "projects##manage_member##confirm_removal_body"
-msgstr "Esto eliminará al miembro del proyecto. Conservará los datos que haya aportado sobre el sitio."
+msgstr "Esto eliminará al miembro del proyecto. Conservará los observaciones que haya aportado sobre el sitio."
 
 #: 
 msgid "projects##manage_member##confirm_removal_action"
@@ -1601,7 +1597,7 @@ msgstr "<bold>Sitios públicos</bold> son visibles para cualquier persona en el 
 
 #: 
 msgid "general##info##privacy_item2"
-msgstr "Se incluyen todos los datos ingresados en la aplicación móvil LandPKS Soil ID, excepto la información de identificación personal (IIP)."
+msgstr "Se incluyen todos los observaciones ingresados en la aplicación móvil LandPKS Soil ID, excepto la información de identificación personal (IIP)."
 
 #: 
 msgid "general##info##privacy_item3"
@@ -1618,14 +1614,6 @@ msgstr "https://landpks.terraso.org/portal"
 #: 
 msgid "general##info##data_portal_link_text"
 msgstr "Portal de datos LandPKS"
-
-#: 
-msgid "general##info##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
-
-#: 
-msgid "general##info##privacy_policy_link_text"
-msgstr "Lee más acerca de nuestras políticas de privacidad de datos."
 
 #: 
 msgid "general##character_limit"
@@ -1717,7 +1705,7 @@ msgstr "Lo siguiente no se borrará:"
 
 #: 
 msgid "delete_account##confirm##p4##b0"
-msgstr "datos que contribuiste a un proyecto del que no eres el único responsable"
+msgstr "observaciones que contribuiste a un proyecto del que no eres el único responsable"
 
 #: 
 msgid "delete_account##confirm##p4##b1"
@@ -2146,15 +2134,15 @@ msgstr "Deja que la cinta caiga naturalmente por efecto de la gravedad. Mide la 
 
 #: 
 msgid "soil##texture##guide##grittyness_details_1"
-msgstr "<0>Granulado</0> significa que se pueden sentir granos individuales en el suelo."
+msgstr "<bold>Granulado</bold> significa que se pueden sentir granos individuales en el suelo."
 
 #: 
 msgid "soil##texture##guide##grittyness_details_2"
-msgstr "<0>Liso</0> significa que el suelo mojado se siente resbaladizo o jabonoso al tacto."
+msgstr "<bold>Liso</bold> significa que el suelo mojado se siente resbaladizo o jabonoso al tacto."
 
 #: 
 msgid "soil##texture##guide##grittyness_details_3"
-msgstr "<0>Ni granulado ni suave</0> significa que no predomina ninguna de esas dos texturas. Es posible que aún se perciban algunos granos de arena o algo jabonoso pero al tacto, pero ninguna predomina."
+msgstr "<bold>Ni granulado ni suave</bold> significa que no predomina ninguna de esas dos texturas. Es posible que aún se perciban algunos granos de arena o algo jabonoso pero al tacto, pero ninguna predomina."
 
 #: 
 msgid "soil##texture##guide_intro"
@@ -2519,9 +2507,7 @@ msgstr "Descubre el potencial de tu paisaje"
 
 #: 
 msgid "info##description"
-msgstr "<0>Descubre el uso y el valor potenciales de tu paisaje.</0> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.\n"
-"\n"
-"<2>Hay tres formas de utilizar el mapa:</2>"
+msgstr "<bold>Descubre el uso y el valor potenciales de tu paisaje.</bold> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más."
 
 #: 
 msgid "info##description2"
@@ -2578,20 +2564,8 @@ msgstr "\n"
 "Los administradores de proyecto pueden eliminar el sitio de este proyecto para conservar sus datos."
 
 #: 
-msgid "welcome##version_includes##bullet_5"
-msgstr "Capacidades sin conexión"
-
-#: 
 msgid "welcome##terms"
-msgstr "Al utilizar LandPKS usted acepta nuestra <privacy /> y <tos />."
-
-#: 
-msgid "welcome##privacy"
-msgstr "Política de privacidad"
-
-#: 
-msgid "welcome##tos"
-msgstr "Condiciones de servicio"
+msgstr "Al utilizar LandPKS usted acepta nuestra política de privacidad y términos de servicio."
 
 #: 
 msgid "info##get_started"
@@ -2616,10 +2590,6 @@ msgstr "Introduce las coordenadas, la dirección o el término de búsqueda en l
 #: 
 msgid "site##empty##summary"
 msgstr "Un sitio te permite recopilar y guardar observaciones, aprender más sobre el terreno y su potencial, y compartirlo con los demás."
-
-#: 
-msgid "site##offline##alert_title"
-msgstr "Estás fuera de linea"
 
 #: 
 msgid "site##offline##alert_body"
@@ -2680,10 +2650,6 @@ msgstr "Eliminar"
 #: 
 msgid "general##close"
 msgstr "Cerrar"
-
-#: 
-msgid "general##info##privacy_policy_label"
-msgstr "Política de privacidad"
 
 #: 
 msgid "general##offline_title"
@@ -2757,7 +2723,7 @@ msgstr "LandPKS Soil ID utiliza datos de mapas de suelos y observaciones ingresa
 msgid "site##soil_id##matches##info##description##site_region_unknown"
 msgstr "Los suelos enumerados son los más probables de encontrarse en el sitio, según los mapas de suelos para esta ubicación.\n"
 "\n"
-"Ingresa las observaciones recomendadas sobre la pendiente y el suelo para mejorar la precisión de los puntajes de coincidencia. Una vez que se ingresen las observaciones, la lista se actualizará automáticamente."
+"Ingresa las observaciones recomendadas sobre la pendiente y el suelo para mejorar la precisión de las puntuaciones de coincidencia. Una vez que se ingresen las observaciones, la lista se actualizará automáticamente."
 
 #: 
 msgid "site##soil_id##matches##info##description##temp_location_region_unknown"
@@ -2836,11 +2802,11 @@ msgstr "Debido a que el suelo tiende a ser ácido (tiene un pH bajo) y alto en A
 
 #: 
 msgid "soil##match_info##gleyic_acrisols##name"
-msgstr "Acrisoles Gléyicos"
+msgstr "Acrisoles Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_acrisols##description"
-msgstr "Los Acrisoles Gleyicos son suelos ácidos y relativamente infértiles. Se necesita una fertilización y un encalado suplementarios para crear un suelo productivo para los cultivos. Estos suelos también tienen un alto contenido de aluminio soluble (Al), que es tóxico para las plantas. Los acrisoles gleyicos tienen un nivel freático alto estacional que provoca la saturación durante algunas épocas del año."
+msgstr "Los Acrisoles Gleyicos son suelos ácidos y relativamente infértiles. Se necesita una fertilización y un encalado suplementarios para crear un suelo productivo para los cultivos. Estos suelos también tienen un alto contenido de aluminio soluble (Al), que es tóxico para las plantas. Los Acrisoles Gleyicos tienen un nivel freático alto estacional que provoca la saturación durante algunas épocas del año."
 
 #: 
 msgid "soil##match_info##gleyic_acrisols##management"
@@ -2852,7 +2818,7 @@ msgstr "Acrisoles Húmicos"
 
 #: 
 msgid "soil##match_info##humic_acrisols##description"
-msgstr "Los Acrisoles Húmicos son suelos ácidos y relativamente infértiles. Se necesita una fertilización y un encalado suplementarios para crear un suelo productivo para los cultivos. Estos suelos también tienen un alto contenido de aluminio soluble (Al), que es tóxico para las plantas. Los acrisoles húmicos contienen grandes cantidades de materia orgánica en la capa superior del suelo. Suelen tener una estructura pobre, pero se vuelven más productivos en sistemas que incluyen rotaciones de cultivos, cultivos de cobertura o abonos verdes."
+msgstr "Los Acrisoles Húmicos son suelos ácidos y relativamente infértiles. Se necesita una fertilización y un encalado suplementarios para crear un suelo productivo para los cultivos. Estos suelos también tienen un alto contenido de aluminio soluble (Al), que es tóxico para las plantas. Los Acrisoles Húmicos contienen grandes cantidades de materia orgánica en la capa superior del suelo. Suelen tener una estructura pobre, pero se vuelven más productivos en sistemas que incluyen rotaciones de cultivos, cultivos de cobertura o abonos verdes."
 
 #: 
 msgid "soil##match_info##humic_acrisols##management"
@@ -2864,7 +2830,7 @@ msgstr "Acrisoles Plínticos"
 
 #: 
 msgid "soil##match_info##plinthic_acrisols##description"
-msgstr "Los Acrisoles Plínticos son suelos ácidos y relativamente infértiles. Se necesita una fertilización y un encalado suplementarios para crear un suelo productivo para los cultivos. Estos suelos también tienen un alto contenido de aluminio soluble (Al), que es tóxico para las plantas. Los acrisoles plínticos contienen una capa de arcilla rica en hierro (la \"capa plíntica\") que se endurece cuando se expone al aire y/o se moja repetidamente. Suelen tener una estructura pobre y serán más productivos en sistemas que incluyan rotaciones de cultivos, cultivos de cobertura o abonos verdes."
+msgstr "Los Acrisoles Plínticos son suelos ácidos y relativamente infértiles. Se necesita una fertilización y un encalado suplementarios para crear un suelo productivo para los cultivos. Estos suelos también tienen un alto contenido de aluminio soluble (Al), que es tóxico para las plantas. Los Acrisoles Plínticos contienen una capa de arcilla rica en hierro (la \"capa plíntica\") que se endurece cuando se expone al aire y/o se moja repetidamente. Suelen tener una estructura pobre y serán más productivos en sistemas que incluyan rotaciones de cultivos, cultivos de cobertura o abonos verdes."
 
 #: 
 msgid "soil##match_info##plinthic_acrisols##management"
@@ -2896,7 +2862,7 @@ msgstr "La aplicación de cal (que aumenta el pH del suelo y retiene el aluminio
 
 #: 
 msgid "soil##match_info##gleyic_alisols##name"
-msgstr "Alisoles Gléyicos"
+msgstr "Alisoles Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_alisols##description"
@@ -2932,11 +2898,11 @@ msgstr "La aplicación de cal (que aumenta el pH del suelo y retiene el aluminio
 
 #: 
 msgid "soil##match_info##stagnic_alisols##name"
-msgstr "Alisoles Stágnicos"
+msgstr "Alisoles Estágnicos"
 
 #: 
 msgid "soil##match_info##stagnic_alisols##description"
-msgstr "Los Alisoles Stágnicos son suelos ácidos que suelen encontrarse en zonas de colinas, por lo que son propensos a la erosión. También tienen altos niveles de aluminio soluble, que es tóxico para las plantas. Son suelos poco profundos y, por lo general, poco productivos para el cultivo, por lo que su uso debe limitarse a un pastoreo de bajo volumen o a otros usos con cobertura vegetal continua. Los alisoles estancados presentan evidencias visibles de anegamiento prolongado por aguas superficiales."
+msgstr "Los Alisoles Éstágnicos son suelos ácidos que suelen encontrarse en zonas de colinas, por lo que son propensos a la erosión. También tienen altos niveles de aluminio soluble, que es tóxico para las plantas. Son suelos poco profundos y, por lo general, poco productivos para el cultivo, por lo que su uso debe limitarse a un pastoreo de bajo volumen o a otros usos con cobertura vegetal continua. Los Alisoles Estágnicos presentan evidencias visibles de anegamiento prolongado por aguas superficiales."
 
 #: 
 msgid "soil##match_info##stagnic_alisols##management"
@@ -2960,7 +2926,7 @@ msgstr "Andosoles Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_andosols##description"
-msgstr "Los andosoles háplicos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas."
+msgstr "Los Andosoles Háplicos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas."
 
 #: 
 msgid "soil##match_info##haplic_andosols##management"
@@ -2968,11 +2934,11 @@ msgstr "La preservación del suelo superficial con su materia orgánica es impor
 
 #: 
 msgid "soil##match_info##mollic_andosols##name"
-msgstr "Andosoles mólicos"
+msgstr "Andosoles Mólicos"
 
 #: 
 msgid "soil##match_info##mollic_andosols##description"
-msgstr "Los andosoles mólicos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los andosoles móllicos tienen un horizonte superficial grueso con alto contenido de materia orgánica y nutrientes.  Suelen ser de color oscuro."
+msgstr "Los Andosoles Mólicos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los Andosoles Mólicos tienen un horizonte superficial grueso con alto contenido de materia orgánica y nutrientes.  Suelen ser de color oscuro."
 
 #: 
 msgid "soil##match_info##mollic_andosols##management"
@@ -2980,11 +2946,11 @@ msgstr "La preservación del suelo superficial con su materia orgánica es impor
 
 #: 
 msgid "soil##match_info##umbric_andosols##name"
-msgstr "Andosoles úbricos"
+msgstr "Andosoles Úbricos"
 
 #: 
 msgid "soil##match_info##umbric_andosols##description"
-msgstr "Los andosoles úmbricos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los andosoles úmbricos tienen un horizonte superficial grueso, pero los suelos son más húmedos y tienen menos nutrientes que los andosoles móllicos."
+msgstr "Los Andosoles Úmbricos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los Andosoles Úmbricos tienen un horizonte superficial grueso, pero los suelos son más húmedos y tienen menos nutrientes que los Andosoles Mólicos."
 
 #: 
 msgid "soil##match_info##umbric_andosols##management"
@@ -2992,11 +2958,11 @@ msgstr "La preservación del suelo superficial con su materia orgánica es impor
 
 #: 
 msgid "soil##match_info##vitric_andosols##name"
-msgstr "Andosoles vítricos"
+msgstr "Andosoles Vítricos"
 
 #: 
 msgid "soil##match_info##vitric_andosols##description"
-msgstr "Los andosoles vítricos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los andosoles vítricos tienen texturas ligeramente más gruesas (tienen más arena) y menor retención de agua que otros andosoles."
+msgstr "Los Andosoles Vítricos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los Andosoles Vítricos tienen texturas ligeramente más gruesas (tienen más arena) y menor retención de agua que otros Andosoles."
 
 #: 
 msgid "soil##match_info##vitric_andosols##management"
@@ -3004,11 +2970,11 @@ msgstr "La preservación del suelo superficial con su materia orgánica es impor
 
 #: 
 msgid "soil##match_info##gleyic_andosols##name"
-msgstr "Andosoles gleyicos"
+msgstr "Andosoles Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_andosols##description"
-msgstr "Los andosoles gleyicos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los andosoles gleyicos están saturados con agua subterránea poco profunda por encima de un metro."
+msgstr "Los Andosoles Gleyicos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los Andosoles Gleyicos están saturados con agua subterránea poco profunda por encima de un metro."
 
 #: 
 msgid "soil##match_info##gleyic_andosols##management"
@@ -3016,11 +2982,11 @@ msgstr "La preservación del suelo superficial con su materia orgánica es impor
 
 #: 
 msgid "soil##match_info##gelic_andosols##name"
-msgstr "Andosoles gélicos"
+msgstr "Andosoles Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_andosols##description"
-msgstr "Los andosoles gélicos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los andosoles gélicos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
+msgstr "Los Andosoles Gélicos se forman en materiales volcánicos. Estos suelos son muy erosionables y tienen una alta fijación de P, pero la mayoría tienen una capacidad de retención de agua y una fertilidad del suelo relativamente buenas. Los Andosoles Gélicos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
 
 #: 
 msgid "soil##match_info##gelic_andosols##management"
@@ -3032,7 +2998,7 @@ msgstr "Antrósoles"
 
 #: 
 msgid "soil##match_info##anthrosols##description"
-msgstr "Los antrosoles son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos están muy cultivados con horizontes mezclados en las porciones superiores del suelo."
+msgstr "Los Antrósoles son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos están muy cultivados con horizontes mezclados en las porciones superiores del suelo."
 
 #: 
 msgid "soil##match_info##anthrosols##management"
@@ -3040,11 +3006,11 @@ msgstr "Debido a que estos suelos han tenido una alteración/agotamiento/adició
 
 #: 
 msgid "soil##match_info##aric_anthrosols##name"
-msgstr "Antrósoles áricos"
+msgstr "Antrósoles Áricos"
 
 #: 
 msgid "soil##match_info##aric_anthrosols##description"
-msgstr "Los antrósoles áricos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos están muy cultivados con horizontes mezclados en las porciones superiores del suelo."
+msgstr "Los Antrósoles Áricos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos están muy cultivados con horizontes mezclados en las porciones superiores del suelo."
 
 #: 
 msgid "soil##match_info##aric_anthrosols##management"
@@ -3052,11 +3018,11 @@ msgstr "Debido a que estos suelos han tenido una alteración/agotamiento/adició
 
 #: 
 msgid "soil##match_info##cumulic_anthrosols##name"
-msgstr "Antrósoles cúmulos"
+msgstr "Antrósoles Cúmulos"
 
 #: 
 msgid "soil##match_info##cumulic_anthrosols##description"
-msgstr "Los antrosoles cúmulos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos tienen horizontes superficiales de textura fina (con alto contenido en arcilla) debido a la irrigación y/o adiciones de larga duración."
+msgstr "Los Antrosoles Cúmulos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos tienen horizontes superficiales de textura fina (con alto contenido en arcilla) debido a la irrigación y/o adiciones de larga duración."
 
 #: 
 msgid "soil##match_info##cumulic_anthrosols##management"
@@ -3064,11 +3030,11 @@ msgstr "Debido a que estos suelos han tenido una alteración/agotamiento/adició
 
 #: 
 msgid "soil##match_info##cambic_arenosols##name"
-msgstr "Arenosoles cámbicos"
+msgstr "Arenosoles Cámbicos"
 
 #: 
 msgid "soil##match_info##cambic_arenosols##description"
-msgstr "Los arenosoles cámbicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Los arenosoles cámbicos tienen un horizonte del subsuelo mínimamente desarrollado que puede retener cantidades ligeramente superiores de nutrientes y agua."
+msgstr "Los Arenosoles Cámbicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Los Arenosoles Cámbicos tienen un horizonte del subsuelo mínimamente desarrollado que puede retener cantidades ligeramente superiores de nutrientes y agua."
 
 #: 
 msgid "soil##match_info##cambic_arenosols##management"
@@ -3076,11 +3042,11 @@ msgstr "Dado que estos suelos tienen poca capacidad de retención de agua y nutr
 
 #: 
 msgid "soil##match_info##fimic_anthrosols##name"
-msgstr "Antrósoles fímicos"
+msgstr "Antrósoles Fímicos"
 
 #: 
 msgid "soil##match_info##fimic_anthrosols##description"
-msgstr "Los antrósoles fímicos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos tienen superficies resultantes de abonos de larga duración y adiciones similares. Las concentraciones de fósforo suelen ser elevadas."
+msgstr "Los Antrósoles Fímicos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos tienen superficies resultantes de abonos de larga duración y adiciones similares. Las concentraciones de fósforo suelen ser elevadas."
 
 #: 
 msgid "soil##match_info##fimic_anthrosols##management"
@@ -3088,11 +3054,11 @@ msgstr "Debido a que estos suelos han tenido una alteración/agotamiento/adició
 
 #: 
 msgid "soil##match_info##urbic_anthrosols##name"
-msgstr "Antrósoles úrbicos"
+msgstr "Antrósoles Úrbicos"
 
 #: 
 msgid "soil##match_info##urbic_anthrosols##description"
-msgstr "Los antrosoles úrbicos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Se trata de suelos muy alterados formados a partir de material de relleno procedente de minas, urbanizaciones, eliminación de residuos y otras actividades de uso del suelo. Las propiedades varían y están relacionadas con el origen de los materiales."
+msgstr "Los Antrósoles Úrbicos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Se trata de suelos muy alterados formados a partir de material de relleno procedente de minas, urbanizaciones, eliminación de residuos y otras actividades de uso del suelo. Las propiedades varían y están relacionadas con el origen de los materiales."
 
 #: 
 msgid "soil##match_info##urbic_anthrosols##management"
@@ -3104,7 +3070,7 @@ msgstr "Arenosoles"
 
 #: 
 msgid "soil##match_info##arenosols##description"
-msgstr "Los arenosoles son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua."
+msgstr "Los Arenosoles son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua."
 
 #: 
 msgid "soil##match_info##arenosols##management"
@@ -3112,11 +3078,11 @@ msgstr "Dado que estos suelos tienen poca retención de agua y nutrientes, deben
 
 #: 
 msgid "soil##match_info##haplic_arenosols##name"
-msgstr "Arenosoles háplicos"
+msgstr "Arenosoles Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_arenosols##description"
-msgstr "Los Arenosoles háplicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua."
+msgstr "Los Arenosoles Háplicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua."
 
 #: 
 msgid "soil##match_info##haplic_arenosols##management"
@@ -3124,11 +3090,11 @@ msgstr "Dado que estos suelos tienen poca retención de agua y nutrientes, deben
 
 #: 
 msgid "soil##match_info##luvic_arenosols##name"
-msgstr "Arenosoles lúvicos"
+msgstr "Arenosoles Lúvicos"
 
 #: 
 msgid "soil##match_info##luvic_arenosols##description"
-msgstr "Los arenosoles lúvicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Los arenosoles lúvicos tienen un contenido de arcilla ligeramente mayor con la profundidad y, por tanto, una mayor retención de humedad y nutrientes. "
+msgstr "Los Arenosoles Lúvicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Los Arenosoles Lúvicos tienen un contenido de arcilla ligeramente mayor con la profundidad y, por tanto, una mayor retención de humedad y nutrientes."
 
 #: 
 msgid "soil##match_info##luvic_arenosols##management"
@@ -3136,11 +3102,11 @@ msgstr "Dado que estos suelos tienen poca capacidad de retención de agua y nutr
 
 #: 
 msgid "soil##match_info##ferralic_arenosols##name"
-msgstr "Arenosoles ferrálicos"
+msgstr "Arenosoles Ferrálicos"
 
 #: 
 msgid "soil##match_info##ferralic_arenosols##description"
-msgstr "Los arenosoles ferrálicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Estos suelos tienen un alto contenido en hierro y una baja retención de nutrientes."
+msgstr "Los Arenosoles Ferrálicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Estos suelos tienen un alto contenido en hierro y una baja retención de nutrientes."
 
 #: 
 msgid "soil##match_info##ferralic_arenosols##management"
@@ -3148,11 +3114,11 @@ msgstr "Dado que estos suelos tienen poca capacidad de retención de agua y nutr
 
 #: 
 msgid "soil##match_info##albic_arenosols##name"
-msgstr "Arenosoles álbicos"
+msgstr "Arenosoles Álbicos"
 
 #: 
 msgid "soil##match_info##albic_arenosols##description"
-msgstr "Los arenosoles álbicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Estos suelos están muy lixiviados con pocos nutrientes y agua disponible."
+msgstr "Los Arenosoles Álbicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Estos suelos están muy lixiviados con pocos nutrientes y agua disponible."
 
 #: 
 msgid "soil##match_info##albic_arenosols##management"
@@ -3160,11 +3126,11 @@ msgstr "Dado que estos suelos tienen poca retención de agua y nutrientes, deben
 
 #: 
 msgid "soil##match_info##calcaric_arenosols##name"
-msgstr "Arenosoles calcáreos"
+msgstr "Arenosoles Calcáreos"
 
 #: 
 msgid "soil##match_info##calcaric_arenosols##description"
-msgstr "Los arenosoles calcáricos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Estos suelos tienen carbonatos por encima de los 50 cm."
+msgstr "Los Arenosoles Calcáricos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Estos suelos tienen carbonatos por encima de los 50 cm."
 
 #: 
 msgid "soil##match_info##calcaric_arenosols##management"
@@ -3172,11 +3138,11 @@ msgstr "Dado que estos suelos tienen poca capacidad de retención de agua y nutr
 
 #: 
 msgid "soil##match_info##gleyic_arenosols##name"
-msgstr "Arenosoles gleyicos"
+msgstr "Arenosoles Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_arenosols##description"
-msgstr "Los arenosoles gleyicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Estos suelos están saturados con aguas subterráneas poco profundas por encima de un metro."
+msgstr "Los Arenosoles Gleyicos son suelos arenosos con un desarrollo mínimo del suelo. Son inherentemente bajos en nutrientes y capacidad de retención de agua. Estos suelos están saturados con aguas subterráneas poco profundas por encima de un metro."
 
 #: 
 msgid "soil##match_info##gleyic_arenosols##management"
@@ -3188,7 +3154,7 @@ msgstr "Calcisoles"
 
 #: 
 msgid "soil##match_info##calcisols##description"
-msgstr "Los calcisoles se dan principalmente en climas semiáridos y áridos.  Son suelos calcáreos, con alta saturación de bases, pH y fijación de P. Muchos tienen horizontes superficiales de grava. "
+msgstr "Los Calcisoles se dan principalmente en climas semiáridos y áridos.  Son suelos calcáreos, con alta saturación de bases, pH y fijación de P. Muchos tienen horizontes superficiales de grava. "
 
 #: 
 msgid "soil##match_info##calcisols##management"
@@ -3196,11 +3162,11 @@ msgstr "Estos suelos tienen un bajo contenido en materia orgánica, son secos y 
 
 #: 
 msgid "soil##match_info##haplic_calcisols##name"
-msgstr "Calcisoles háplicos"
+msgstr "Calcisoles Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_calcisols##description"
-msgstr "Los calcisoles háplicos se dan principalmente en climas semiáridos y áridos.  Son suelos calcáreos, con alta saturación de bases, pH y fijación de P. Muchos tienen horizontes superficiales de grava. "
+msgstr "Los Calcisoles Háplicos se dan principalmente en climas semiáridos y áridos.  Son suelos calcáreos, con alta saturación de bases, pH y fijación de P. Muchos tienen horizontes superficiales de grava. "
 
 #: 
 msgid "soil##match_info##haplic_calcisols##management"
@@ -3208,11 +3174,11 @@ msgstr "Estos suelos tienen un bajo contenido en materia orgánica, son secos y 
 
 #: 
 msgid "soil##match_info##luvic_calcisols##name"
-msgstr "Calcisoles lúvicos"
+msgstr "Calcisoles Lúvicos"
 
 #: 
 msgid "soil##match_info##luvic_calcisols##description"
-msgstr "Los calcisoles lúvicos se dan principalmente en climas semiáridos y áridos, y son suelos calcáreos con alta saturación de bases, pH y fijación de P. Muchos tienen horizontes superficiales de grava. Los calcisoles lúvicos tienen un aumento de arcilla con la profundidad y, por tanto, una mayor retención de humedad y nutrientes. "
+msgstr "Los Calcisoles Lúvicos se dan principalmente en climas semiáridos y áridos, y son suelos calcáreos con alta saturación de bases, pH y fijación de P. Muchos tienen horizontes superficiales de grava. Los Calcisoles Lúvicos tienen un aumento de arcilla con la profundidad y, por tanto, una mayor retención de humedad y nutrientes. "
 
 #: 
 msgid "soil##match_info##luvic_calcisols##management"
@@ -3220,11 +3186,11 @@ msgstr "Estos suelos tienen un bajo contenido en materia orgánica, son secos y 
 
 #: 
 msgid "soil##match_info##petric_calcisols##name"
-msgstr "Calcisoles pétreos"
+msgstr "Calcisoles Pétreos"
 
 #: 
 msgid "soil##match_info##petric_calcisols##description"
-msgstr "Los calcisoles pétreos se dan sobre todo en climas semiáridos y áridos y son suelos calcáreos con alta saturación de bases, pH y fijación de P. Muchos tienen horizontes superficiales de grava. Los calcisoles pétreos tienen un horizonte petrocálcico cementado que limita las raíces a menos de 1 m de la superficie del suelo. "
+msgstr "Los Calcisoles Pétricos se dan sobre todo en climas semiáridos y áridos y son suelos calcáreos con alta saturación de bases, pH y fijación de P. Muchos tienen horizontes superficiales de grava. Los Calcisoles Pétricos tienen un horizonte petrocálcico cementado que limita las raíces a menos de 1 m de la superficie del suelo. "
 
 #: 
 msgid "soil##match_info##petric_calcisols##management"
@@ -3240,27 +3206,27 @@ msgstr "Los Cambisoles son suelos de amplia ocurrencia con un desarrollo limitad
 
 #: 
 msgid "soil##match_info##cambisols##management"
-msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes básicos (potasio, calcio y magnesio), mientras que en regiones más húmedas pueden tener niveles más bajos de nutrientes en el suelo. Los cambisoles tendrán una alta saturación de bases, lo que significa que los nutrientes disponibles en el suelo serán predominantemente calcio, potasio y magnesio. Estos suelos son muy adecuados para la producción de cultivos y pueden utilizarse de forma intensiva. La fertilización debe utilizarse para mejorar la productividad, y puede incluirse el riego para aumentar aún más la productividad."
+msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes básicos (potasio, calcio y magnesio), mientras que en regiones más húmedas pueden tener niveles más bajos de nutrientes en el suelo. Los Cambisoles tendrán una alta saturación de bases, lo que significa que los nutrientes disponibles en el suelo serán predominantemente calcio, potasio y magnesio. Estos suelos son muy adecuados para la producción de cultivos y pueden utilizarse de forma intensiva. La fertilización debe utilizarse para mejorar la productividad, y puede incluirse el riego para aumentar aún más la productividad."
 
 #: 
 msgid "soil##match_info##eutric_cambisols##name"
-msgstr "Cambisoles eútricos"
+msgstr "Cambisoles Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_cambisols##description"
-msgstr "Los cambisoles eútricos son suelos que se dan ampliamente con un desarrollo limitado del suelo. Son suelos productivos con alta saturación de bases (Ca, Mg y K) en la parte superior del suelo. "
+msgstr "Los Cambisoles Eutríticos son suelos que se dan ampliamente con un desarrollo limitado del suelo. Son suelos productivos con alta saturación de bases (Ca, Mg y K) en la parte superior del suelo. "
 
 #: 
 msgid "soil##match_info##eutric_cambisols##management"
-msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes básicos (potasio, calcio y magnesio), mientras que en regiones más húmedas pueden tener niveles más bajos de nutrientes en el suelo. Los Cambisoles eútricos tendrán una alta saturación de bases, lo que significa que los nutrientes disponibles en el suelo serán predominantemente calcio, potasio y magnesio. Estos suelos son muy adecuados para la producción de cultivos y pueden utilizarse de forma intensiva. La fertilización debe utilizarse para mejorar la productividad, y puede incluirse el riego para aumentar aún más la productividad."
+msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes básicos (potasio, calcio y magnesio), mientras que en regiones más húmedas pueden tener niveles más bajos de nutrientes en el suelo. Los Cambisoles Eutríticos tendrán una alta saturación de bases, lo que significa que los nutrientes disponibles en el suelo serán predominantemente calcio, potasio y magnesio. Estos suelos son muy adecuados para la producción de cultivos y pueden utilizarse de forma intensiva. La fertilización debe utilizarse para mejorar la productividad, y puede incluirse el riego para aumentar aún más la productividad."
 
 #: 
 msgid "soil##match_info##dystric_cambisols##name"
-msgstr "Cambisoles dístricos"
+msgstr "Cambisoles Dístricos"
 
 #: 
 msgid "soil##match_info##dystric_cambisols##description"
-msgstr "Los cambisoles dístricos son suelos de amplia ocurrencia con un desarrollo limitado del suelo. Son suelos menos productivos con baja saturación de bases en la parte superior del suelo."
+msgstr "Los Cambisoles Dístricos son suelos de amplia ocurrencia con un desarrollo limitado del suelo. Son suelos menos productivos con baja saturación de bases en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##dystric_cambisols##management"
@@ -3268,11 +3234,11 @@ msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes 
 
 #: 
 msgid "soil##match_info##humic_cambisols##name"
-msgstr "Cambisoles húmicos"
+msgstr "Cambisoles Húmicos"
 
 #: 
 msgid "soil##match_info##humic_cambisols##description"
-msgstr "Los Cambisoles húmicos son suelos de amplia ocurrencia con un desarrollo limitado del suelo. Estos suelos tienen más materia orgánica en los horizontes superficiales. Cuando el clima y el paisaje son favorables, estos suelos pueden ser productivos. "
+msgstr "Los Cambisoles Húmicos son suelos de amplia ocurrencia con un desarrollo limitado del suelo. Estos suelos tienen más materia orgánica en los horizontes superficiales. Cuando el clima y el paisaje son favorables, estos suelos pueden ser productivos. "
 
 #: 
 msgid "soil##match_info##humic_cambisols##management"
@@ -3280,11 +3246,11 @@ msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes 
 
 #: 
 msgid "soil##match_info##calcaric_cambisols##name"
-msgstr "Cambisoles calcáreos"
+msgstr "Cambisoles Calcáreos"
 
 #: 
 msgid "soil##match_info##calcaric_cambisols##description"
-msgstr "Los cambisoles calcáreos son suelos muy extendidos con un desarrollo limitado del suelo. Estos suelos son calcáreos en una capa del suelo por debajo de la superficie."
+msgstr "Los Cambisoles Calcáreos son suelos muy extendidos con un desarrollo limitado del suelo. Estos suelos son calcáreos en una capa del suelo por debajo de la superficie."
 
 #: 
 msgid "soil##match_info##calcaric_cambisols##management"
@@ -3292,11 +3258,11 @@ msgstr "En las regiones templadas los suelos tendrán un alto contenido de catio
 
 #: 
 msgid "soil##match_info##chromic_cambisols##name"
-msgstr "Cambisoles crómicos"
+msgstr "Cambisoles Crómicos"
 
 #: 
 msgid "soil##match_info##chromic_cambisols##description"
-msgstr "Los cambisoles crómicos son suelos de amplia ocurrencia con un desarrollo limitado del suelo. Son suelos bien drenados, con un color intenso. Cuando el clima y el paisaje son favorables, pueden ser suelos productivos. "
+msgstr "Los Cambisoles Crómicos son suelos de amplia ocurrencia con un desarrollo limitado del suelo. Son suelos bien drenados, con un color intenso. Cuando el clima y el paisaje son favorables, pueden ser suelos productivos. "
 
 #: 
 msgid "soil##match_info##chromic_cambisols##management"
@@ -3304,11 +3270,11 @@ msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes 
 
 #: 
 msgid "soil##match_info##vertic_cambisols##name"
-msgstr "Cambisoles vérticos"
+msgstr "Cambisoles Vérticos"
 
 #: 
 msgid "soil##match_info##vertic_cambisols##description"
-msgstr "Los cambisoles vérticos son suelos muy extendidos con un desarrollo limitado del suelo. Estos suelos son arcillosos, pegajosos y plásticos cuando están mojados, y tienen malas propiedades físicas. "
+msgstr "Los Cambisoles Vérticos son suelos muy extendidos con un desarrollo limitado del suelo. Estos suelos son arcillosos, pegajosos y plásticos cuando están mojados, y tienen malas propiedades físicas. "
 
 #: 
 msgid "soil##match_info##vertic_cambisols##management"
@@ -3316,11 +3282,11 @@ msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes 
 
 #: 
 msgid "soil##match_info##ferralic_cambisols##name"
-msgstr "Cambisoles ferrálico"
+msgstr "Cambisoles Ferrálico"
 
 #: 
 msgid "soil##match_info##ferralic_cambisols##description"
-msgstr "Los cambisoles ferrálicos son suelos muy extendidos con un desarrollo limitado del suelo. Estos suelos tienen una escasa capacidad para retener nutrientes debido a su baja capacidad de intercambio catiónico.  Como retienen menos nutrientes, suelen ser menos productivos. "
+msgstr "Los Cambisoles Ferrálicos son suelos muy extendidos con un desarrollo limitado del suelo. Estos suelos tienen una escasa capacidad para retener nutrientes debido a su baja capacidad de intercambio catiónico.  Como retienen menos nutrientes, suelen ser menos productivos."
 
 #: 
 msgid "soil##match_info##ferralic_cambisols##management"
@@ -3328,11 +3294,11 @@ msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes 
 
 #: 
 msgid "soil##match_info##gleyic_cambisols##name"
-msgstr "Cambisoles gleyicos"
+msgstr "Cambisoles Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_cambisols##description"
-msgstr "Los cambisoles gleyicos son suelos de amplia ocurrencia con un desarrollo limitado del suelo. Estos suelos están saturados con aguas subterráneas poco profundas por encima de un metro de profundidad."
+msgstr "Los Cambisoles Gleyicos son suelos de amplia ocurrencia con un desarrollo limitado del suelo. Estos suelos están saturados con aguas subterráneas poco profundas por encima de un metro de profundidad."
 
 #: 
 msgid "soil##match_info##gleyic_cambisols##management"
@@ -3340,11 +3306,11 @@ msgstr "En las regiones templadas los suelos tendrán un alto contenido de catio
 
 #: 
 msgid "soil##match_info##gelic_cambisols##name"
-msgstr "Cambisoles gélicos"
+msgstr "Cambisoles Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_cambisols##description"
-msgstr "Los cambisoles gélicos son suelos de amplia presencia con un desarrollo limitado del suelo. Los cambisoles gélicos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
+msgstr "Los Cambisoles Gélicos son suelos de amplia presencia con un desarrollo limitado del suelo. Los Cambisoles Gélicos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
 
 #: 
 msgid "soil##match_info##gelic_cambisols##management"
@@ -3352,11 +3318,11 @@ msgstr "En las regiones templadas los suelos tendrán un alto contenido de catio
 
 #: 
 msgid "soil##match_info##chernozems##name"
-msgstr "Chernozemes"
+msgstr "Chernozems"
 
 #: 
 msgid "soil##match_info##chernozems##description"
-msgstr "Los chernozemes son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas."
+msgstr "Los Chernozems son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas."
 
 #: 
 msgid "soil##match_info##chernozems##management"
@@ -3364,11 +3330,11 @@ msgstr "Son, en general, suelos excelentes para la producción de cultivos. Tien
 
 #: 
 msgid "soil##match_info##haplic_chernozems##name"
-msgstr "Chernozemes háplicos"
+msgstr "Chernozemes Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_chernozems##description"
-msgstr "Los chernozemes háplicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas."
+msgstr "Los Chernozemes Háplicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas."
 
 #: 
 msgid "soil##match_info##haplic_chernozems##management"
@@ -3376,11 +3342,11 @@ msgstr "Son, en general, suelos excelentes para la producción de cultivos. Tien
 
 #: 
 msgid "soil##match_info##calcic_chernozems##name"
-msgstr "Chernozemes cálcicos"
+msgstr "Chernozemes Cálcicos"
 
 #: 
 msgid "soil##match_info##calcic_chernozems##description"
-msgstr "Los chernozemes cálcicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los Chernozems Cálcicos tienen carbonatos y un pH elevado en la parte superior del suelo."
+msgstr "Los Chernozemes Cálcicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los Chernozems Cálcicos tienen carbonatos y un pH elevado en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##calcic_chernozems##management"
@@ -3388,11 +3354,11 @@ msgstr "Son, en general, suelos excelentes para la producción de cultivos. Tien
 
 #: 
 msgid "soil##match_info##luvic_chernozems##name"
-msgstr "Chernozemes lúvicos"
+msgstr "Chernozemes Lúvicos"
 
 #: 
 msgid "soil##match_info##luvic_chernozems##description"
-msgstr "Los chernozemes lúvicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los Luvic Chernozems tienen un aumento de la arcilla con la profundidad y, por tanto, una mayor retención de humedad y nutrientes. "
+msgstr "Los Chernozemes Lúvicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los Luvic Chernozems tienen un aumento de la arcilla con la profundidad y, por tanto, una mayor retención de humedad y nutrientes. "
 
 #: 
 msgid "soil##match_info##luvic_chernozems##management"
@@ -3400,11 +3366,11 @@ msgstr "Son, en general, suelos excelentes para la producción de cultivos. Tien
 
 #: 
 msgid "soil##match_info##glossic_chernozems##name"
-msgstr "Chernozemes glósicos"
+msgstr "Chernozemes Glósicos"
 
 #: 
 msgid "soil##match_info##glossic_chernozems##description"
-msgstr "Los chernozems glósicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los chernozems glosos tienen un alto contenido de materia orgánica, que se extiende a los horizontes subsuperficiales. "
+msgstr "Los Chernozems Glósicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los Chernozems Glósicos tienen un alto contenido de materia orgánica, que se extiende a los horizontes subsuperficiales. "
 
 #: 
 msgid "soil##match_info##glossic_chernozems##management"
@@ -3412,11 +3378,11 @@ msgstr "Son, en general, suelos excelentes para la producción de cultivos. Tien
 
 #: 
 msgid "soil##match_info##gleyic_chernozems##name"
-msgstr "Chernozemes gléyicos"
+msgstr "Chernozemes Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_chernozems##description"
-msgstr "Los chernozemes gleyicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los chernozems gleyicos están saturados de agua subterránea poco profunda por encima de un metro de profundidad del suelo."
+msgstr "Los Chernozemes Gleyicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los Chernozems Gléyicos están saturados de agua subterránea poco profunda por encima de un metro de profundidad del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_chernozems##management"
@@ -3428,7 +3394,7 @@ msgstr "Ferralsoles"
 
 #: 
 msgid "soil##match_info##ferralsols##description"
-msgstr "Los ferralsoles son suelos bien desarrollados en climas húmedos y cálidos en los que predominan los minerales de baja actividad, como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas, pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. "
+msgstr "Los Ferralsoles son suelos bien desarrollados en climas húmedos y cálidos en los que predominan los minerales de baja actividad, como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas, pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. "
 
 #: 
 msgid "soil##match_info##ferralsols##management"
@@ -3436,11 +3402,11 @@ msgstr "suelos son propensos a la fijación de fósforo, y la mayor parte del P 
 
 #: 
 msgid "soil##match_info##haplic_ferralsols##name"
-msgstr "Ferralsoles háplicos"
+msgstr "Ferralsoles Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_ferralsols##description"
-msgstr "Los ferralsoles háplicos son suelos bien desarrollados en climas húmedos y cálidos en los que predominan los minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas pero son ácidos, relativamente infértiles, tienen una alta fijación de P y tienen una capacidad limitada de retener nutrientes. "
+msgstr "Los Ferralsoles Háplicos son suelos bien desarrollados en climas húmedos y cálidos en los que predominan los minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas pero son ácidos, relativamente infértiles, tienen una alta fijación de P y tienen una capacidad limitada de retener nutrientes. "
 
 #: 
 msgid "soil##match_info##haplic_ferralsols##management"
@@ -3448,11 +3414,11 @@ msgstr "Estos suelos son propensos a la fijación de fósforo, y la mayor parte 
 
 #: 
 msgid "soil##match_info##xanthic_ferralsols##name"
-msgstr "Ferralsoles xánticos"
+msgstr "Ferralsoles Xánticos"
 
 #: 
 msgid "soil##match_info##xanthic_ferralsols##description"
-msgstr "Los ferralsoles xánticos son suelos bien desarrollados en climas húmedos y cálidos que están dominados por minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. Los ferraliscos xánticos tienen subsuelos de color amarillo que indican una retención de humedad ligeramente superior. "
+msgstr "Los Ferralsoles Xánticos son suelos bien desarrollados en climas húmedos y cálidos que están dominados por minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. Los ferraliscos xánticos tienen subsuelos de color amarillo que indican una retención de humedad ligeramente superior. "
 
 #: 
 msgid "soil##match_info##xanthic_ferralsols##management"
@@ -3460,11 +3426,11 @@ msgstr "suelos son propensos a la fijación de fósforo, y el P aplicado por los
 
 #: 
 msgid "soil##match_info##rhodic_ferralsols##name"
-msgstr "Ferralsoles ródicos"
+msgstr "Ferralsoles Ródicos"
 
 #: 
 msgid "soil##match_info##rhodic_ferralsols##description"
-msgstr "Los ferralsoles ródicos son suelos bien desarrollados en climas húmedos y cálidos en los que predominan los minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas, pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. Los ferraliscos ródicos tienen subsuelos de color rojo oscuro con una buena estructura de suelo. "
+msgstr "Los Ferralsoles Ródicos son suelos bien desarrollados en climas húmedos y cálidos en los que predominan los minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas, pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. Los Ferraliscos Ródicos tienen subsuelos de color rojo oscuro con una buena estructura de suelo. "
 
 #: 
 msgid "soil##match_info##rhodic_ferralsols##management"
@@ -3472,11 +3438,11 @@ msgstr "suelos son propensos a la fijación de fósforo, y el P aplicado por los
 
 #: 
 msgid "soil##match_info##humic_ferralsols##name"
-msgstr "Ferralsoles húmicos"
+msgstr "Ferralsoles Húmicos"
 
 #: 
 msgid "soil##match_info##humic_ferralsols##description"
-msgstr "Los ferralsoles húmicos son suelos bien desarrollados en climas húmedos y cálidos que están dominados por minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas pero son ácidos, relativamente infértiles, tienen una alta fijación de P y tienen una capacidad limitada para retener nutrientes. Los ferralisoles húmicos tienen una materia orgánica ligeramente superior en las partes superiores del suelo. "
+msgstr "Los Ferralsoles Húmicos son suelos bien desarrollados en climas húmedos y cálidos que están dominados por minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas pero son ácidos, relativamente infértiles, tienen una alta fijación de P y tienen una capacidad limitada para retener nutrientes. Los Ferralisoles Húmicos tienen una materia orgánica ligeramente superior en las partes superiores del suelo. "
 
 #: 
 msgid "soil##match_info##humic_ferralsols##management"
@@ -3484,11 +3450,11 @@ msgstr "suelos son propensos a la fijación de fósforo, y el P aplicado por los
 
 #: 
 msgid "soil##match_info##geric_ferralsols##name"
-msgstr "Ferralsoles géricos"
+msgstr "Ferralsoles Géricos"
 
 #: 
 msgid "soil##match_info##geric_ferralsols##description"
-msgstr "Los ferralsoles gericos son suelos bien desarrollados en climas húmedos y cálidos que están dominados por minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas, pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. Los ferraliscos géricos tienen una capacidad extremadamente limitada de retener nutrientes. "
+msgstr "Los Ferralsoles Géricos son suelos bien desarrollados en climas húmedos y cálidos que están dominados por minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas, pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. Los Ferralsoles Géricos tienen una capacidad extremadamente limitada de retener nutrientes. "
 
 #: 
 msgid "soil##match_info##geric_ferralsols##management"
@@ -3496,11 +3462,11 @@ msgstr "Estos suelos son propensos a la fijación de fósforo, y el P aplicado p
 
 #: 
 msgid "soil##match_info##plinthic_ferralsols##name"
-msgstr "Ferralsoles plínticos"
+msgstr "Ferralsoles Plínticos"
 
 #: 
 msgid "soil##match_info##plinthic_ferralsols##description"
-msgstr "Los ferralsoles plinthicos son suelos bien desarrollados en climas húmedos y cálidos que están dominados por minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas, pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. Los ferraliscos plínticos tienen plinthita, un agregado rico en hierro y pobre en humus, en el subsuelo. La plinthita puede endurecerse irreversiblemente hasta convertirse en ironstone cuando la erosión expone la plinthita en la superficie del suelo. "
+msgstr "Los Ferralsoles Plinthicos son suelos bien desarrollados en climas húmedos y cálidos que están dominados por minerales de baja actividad como la caolinita y los óxidos de hierro y aluminio. Suelen tener buenas propiedades físicas, pero son ácidos, relativamente infértiles, tienen una alta fijación de P y una capacidad limitada para retener nutrientes. Los ferraliscos plínticos tienen plinthita, un agregado rico en hierro y pobre en humus, en el subsuelo. La plinthita puede endurecerse irreversiblemente hasta convertirse en ironstone cuando la erosión expone la plinthita en la superficie del suelo."
 
 #: 
 msgid "soil##match_info##plinthic_ferralsols##management"
@@ -3512,7 +3478,7 @@ msgstr "Fluvisoles"
 
 #: 
 msgid "soil##match_info##fluvisols##description"
-msgstr "Los fluvisoles se encuentran sobre todo en llanuras de inundación y zonas costeras, y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los fluvisoles eútricos son suelos productivos con una alta saturación de bases en la parte superior del suelo. "
+msgstr "Los Fluvisoles se encuentran sobre todo en llanuras de inundación y zonas costeras, y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Eutríticos son suelos productivos con una alta saturación de bases en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##fluvisols##management"
@@ -3520,11 +3486,11 @@ msgstr "Estos suelos son todos naturalmente fértiles y productivos. El drenaje 
 
 #: 
 msgid "soil##match_info##eutric_fluvisols##name"
-msgstr "Fluvisoles eútricos"
+msgstr "Fluvisoles Eútricos"
 
 #: 
 msgid "soil##match_info##eutric_fluvisols##description"
-msgstr "Los fluvisoles eútricos se encuentran principalmente en llanuras de inundación y zonas costeras, y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los fluvisoles eútricos son suelos productivos con una alta saturación de bases en la parte superior del suelo. "
+msgstr "Los Fluvisoles Eutríticos se encuentran principalmente en llanuras de inundación y zonas costeras, y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Eutríticos son suelos productivos con una alta saturación de bases en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##eutric_fluvisols##management"
@@ -3532,11 +3498,11 @@ msgstr "Estos suelos son todos naturalmente fértiles y productivos. El drenaje 
 
 #: 
 msgid "soil##match_info##calcaric_fluvisols##name"
-msgstr "Fluvisoles calcáreos"
+msgstr "Fluvisoles Calcáreos"
 
 #: 
 msgid "soil##match_info##calcaric_fluvisols##description"
-msgstr "Los fluvisoles calcáricos se encuentran sobre todo en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los fluvisoles calcáricos tienen carbonatos y un pH elevado en la parte superior del suelo."
+msgstr "Los Fluvisoles Calcáricos se encuentran sobre todo en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Calcáricos tienen carbonatos y un pH elevado en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##calcaric_fluvisols##management"
@@ -3544,11 +3510,11 @@ msgstr "Estos suelos son todos naturalmente fértiles y productivos. El drenaje 
 
 #: 
 msgid "soil##match_info##dystric_fluvisols##name"
-msgstr "Fluvisoles dístricos"
+msgstr "Fluvisoles Dístricos"
 
 #: 
 msgid "soil##match_info##dystric_fluvisols##description"
-msgstr "Los fluvisoles dístricos se encuentran sobre todo en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los fluvisoles dístricos son suelos menos productivos con una baja saturación de la base en la parte superior del suelo."
+msgstr "Los Fluvisoles Dístricos se encuentran sobre todo en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Dístricos son suelos menos productivos con una baja saturación de la base en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##dystric_fluvisols##management"
@@ -3556,11 +3522,11 @@ msgstr "Estos suelos son todos naturalmente fértiles y productivos. El drenaje 
 
 #: 
 msgid "soil##match_info##mollic_fluvisols##name"
-msgstr "Fluvisoles mólicos"
+msgstr "Fluvisoles Mólicos"
 
 #: 
 msgid "soil##match_info##mollic_fluvisols##description"
-msgstr "Los fluvisoles mólicos se encuentran principalmente en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los fluvisoles móllicos tienen una materia orgánica y nutrientes relativamente altos en los horizontes superficiales."
+msgstr "Los Fluvisoles Mólicos se encuentran principalmente en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Mólicos tienen una materia orgánica y nutrientes relativamente altos en los horizontes superficiales."
 
 #: 
 msgid "soil##match_info##mollic_fluvisols##management"
@@ -3568,11 +3534,11 @@ msgstr "Estos suelos son todos naturalmente fértiles y productivos. El drenaje 
 
 #: 
 msgid "soil##match_info##umbric_fluvisols##name"
-msgstr "Fluvisoles úmbricos"
+msgstr "Fluvisoles Úmbricos"
 
 #: 
 msgid "soil##match_info##umbric_fluvisols##description"
-msgstr "Los fluvisoles úmbricos se encuentran principalmente en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los fluvisoles umbros tienen una materia orgánica relativamente más alta pero menos nutrientes en los horizontes superficiales."
+msgstr "Los Fluvisoles Úmbricos se encuentran principalmente en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Úmbricos tienen una materia orgánica relativamente más alta pero menos nutrientes en los horizontes superficiales."
 
 #: 
 msgid "soil##match_info##umbric_fluvisols##management"
@@ -3580,11 +3546,11 @@ msgstr "Estos suelos son todos naturalmente fértiles y productivos. El drenaje 
 
 #: 
 msgid "soil##match_info##thionic_fluvisols##name"
-msgstr "Fluvisoles tiónicos"
+msgstr "Fluvisoles Tiónicos"
 
 #: 
 msgid "soil##match_info##thionic_fluvisols##description"
-msgstr "Los fluvisoles tiónicos se encuentran sobre todo en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Tiónicos tienen un pH extremadamente bajo (alta acidez) o el potencial de un pH extremadamente bajo si se drena debido a la oxidación de los sulfuros."
+msgstr "Los Fluvisoles Tiónicos se encuentran sobre todo en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Tiónicos tienen un pH extremadamente bajo (alta acidez) o el potencial de un pH extremadamente bajo si se drena debido a la oxidación de los sulfuros."
 
 #: 
 msgid "soil##match_info##thionic_fluvisols##management"
@@ -3592,11 +3558,11 @@ msgstr "Estos suelos son todos naturalmente fértiles y productivos. El drenaje 
 
 #: 
 msgid "soil##match_info##salic_fluvisols##name"
-msgstr "Fluvisoles sálicos"
+msgstr "Fluvisoles Sálicos"
 
 #: 
 msgid "soil##match_info##salic_fluvisols##description"
-msgstr "Los fluvisoles sálicos se encuentran sobre todo en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los fluvisoles salinos tienen una alta salinidad en la parte superior del suelo."
+msgstr "Los Fluvisoles Sálicos se encuentran sobre todo en llanuras de inundación y zonas costeras y tienen un desarrollo de perfil limitado con una serie de propiedades. La gestión hidrológica es esencial para la producción. Los Fluvisoles Sálicos tienen una alta salinidad en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##salic_fluvisols##management"
@@ -3608,7 +3574,7 @@ msgstr "Gleysoles"
 
 #: 
 msgid "soil##match_info##gleysols##description"
-msgstr "Los Ggleysoles tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los gleysoles son suelos productivos con una alta saturación de la base en la parte superior del suelo."
+msgstr "Los Gleysoles tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles son suelos productivos con una alta saturación de la base en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##gleysols##management"
@@ -3616,11 +3582,11 @@ msgstr "Estos suelos están saturados, y si se cultivan se requiere un drenaje s
 
 #: 
 msgid "soil##match_info##eutric_gleysols##name"
-msgstr "Gleysoles eútricos"
+msgstr "Gleysoles Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_gleysols##description"
-msgstr "Los gleysoles eútricos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los gleysoles eutricos son suelos productivos con una alta saturación de la base en la parte superior del suelo."
+msgstr "Los Gleysoles Eutríticos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Eutríticos son suelos productivos con una alta saturación de la base en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##eutric_gleysols##management"
@@ -3628,11 +3594,11 @@ msgstr "Estos suelos están saturados, y si se cultivan se requiere un drenaje s
 
 #: 
 msgid "soil##match_info##calcic_gleysols##name"
-msgstr "Gleysoles cálcicos"
+msgstr "Gleysoles Cálcicos"
 
 #: 
 msgid "soil##match_info##calcic_gleysols##description"
-msgstr "Los gleysoles cálcicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles calcáricos tienen carbonatos y un pH alto en la parte superior del suelo."
+msgstr "Los Gleysoles Cálcicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Calcáricos tienen carbonatos y un pH alto en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##calcic_gleysols##management"
@@ -3640,11 +3606,11 @@ msgstr "Estos suelos están saturados, y si se cultivan se requiere un drenaje s
 
 #: 
 msgid "soil##match_info##dystric_gleysols##name"
-msgstr "Gleysoles dístricos"
+msgstr "Gleysoles Dístricos"
 
 #: 
 msgid "soil##match_info##dystric_gleysols##description"
-msgstr "Los gleysoles dístricos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. Es necesario un drenaje profundo para su cultivo. Los dleysoles dístricos son suelos menos productivos con una baja saturación de la base en la parte superior del suelo."
+msgstr "Los Gleysoles Dístricos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. Es necesario un drenaje profundo para su cultivo. Los Gleysoles Dístricos son suelos menos productivos con una baja saturación de la base en la parte superior del suelo."
 
 #: 
 msgid "soil##match_info##dystric_gleysols##management"
@@ -3652,11 +3618,11 @@ msgstr "Estos suelos están saturados, y si se cultivan se requiere un drenaje s
 
 #: 
 msgid "soil##match_info##andic_gleysols##name"
-msgstr "Gleysoles ándicos"
+msgstr "Gleysoles Ándicos"
 
 #: 
 msgid "soil##match_info##andic_gleysols##description"
-msgstr "Los gleysoles ándicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Andinos tienen una baja densidad aparente y una alta fijación de P."
+msgstr "Los Gleysoles Ándicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Ándicos tienen una baja densidad aparente y una alta fijación de P."
 
 #: 
 msgid "soil##match_info##andic_gleysols##management"
@@ -3668,7 +3634,7 @@ msgstr "Gleysolel mólicos"
 
 #: 
 msgid "soil##match_info##mollic_gleysols##description"
-msgstr "Los gleysolel mólicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles móllicos tienen relativamente más materia orgánica y nutrientes en los horizontes superficiales."
+msgstr "Los Gleysolel Mólicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Mólicos tienen relativamente más materia orgánica y nutrientes en los horizontes superficiales."
 
 #: 
 msgid "soil##match_info##mollic_gleysols##management"
@@ -3676,11 +3642,11 @@ msgstr "Estos suelos están saturados y, si se cultivan, se requiere un drenaje 
 
 #: 
 msgid "soil##match_info##umbric_gleysols##name"
-msgstr "Gleysoles úmbricos"
+msgstr "Gleysoles Úmbricos"
 
 #: 
 msgid "soil##match_info##umbric_gleysols##description"
-msgstr "Los gleysoles úmbricos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los gleysoles úmbricos tienen una materia orgánica relativamente alta, pero menos nutrientes en los horizontes superficiales. "
+msgstr "Los Gleysoles Úmbricos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Úmbricos tienen una materia orgánica relativamente alta, pero menos nutrientes en los horizontes superficiales. "
 
 #: 
 msgid "soil##match_info##umbric_gleysols##management"
@@ -3688,11 +3654,11 @@ msgstr "Estos suelos están saturados y, si se cultivan, se requiere un drenaje 
 
 #: 
 msgid "soil##match_info##thionic_gleysols##name"
-msgstr "Gleysoles tiónicos"
+msgstr "Gleysoles Tiónicos"
 
 #: 
 msgid "soil##match_info##thionic_gleysols##description"
-msgstr "Los gleysoles tiónicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los gleysoles tiónicos tienen un pH extremadamente bajo y una alta acidez o el potencial de un pH extremadamente bajo si se drena debido a la oxidación de los sulfuros."
+msgstr "Los Gleysoles Tiónicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Tiónicos tienen un pH extremadamente bajo y una alta acidez o el potencial de un pH extremadamente bajo si se drena debido a la oxidación de los sulfuros."
 
 #: 
 msgid "soil##match_info##thionic_gleysols##management"
@@ -3700,11 +3666,11 @@ msgstr "Estos suelos están saturados, y si se cultivan se requiere un drenaje s
 
 #: 
 msgid "soil##match_info##gelic_gleysols##name"
-msgstr "Gleysoles gélicos"
+msgstr "Gleysoles Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_gleysols##description"
-msgstr "Los gleysoles gélicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. Es necesario un drenaje profundo para su cultivo. Los gleysoles gélicos tienen permafrost por encima de los dos metros y son generalmente inadecuados para el cultivo."
+msgstr "Los Gleysoles Gélicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. Es necesario un drenaje profundo para su cultivo. Los Gleysoles Gélicos tienen permafrost por encima de los dos metros y son generalmente inadecuados para el cultivo."
 
 #: 
 msgid "soil##match_info##gelic_gleysols##management"
@@ -3724,11 +3690,11 @@ msgstr "Estos suelos son propensos al deterioro estructural, por lo que se neces
 
 #: 
 msgid "soil##match_info##gleyic_greyzems##name"
-msgstr "Greizemes Gléyicos"
+msgstr "Gleyzems Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_greyzems##description"
-msgstr "Los greizemes gleyicos son suelos de transición entre los pastos y las tierras forestales en climas más fríos. Pueden ser suelos relativamente productivos con horizontes superficiales con mucha materia orgánica y nutrientes y subsuelos relativamente arcillosos que pueden retener agua y nutrientes. Los grisines gleyicos están saturados de agua subterránea poco profunda que se encuentra a un metro de la superficie del suelo."
+msgstr "Los Gleyzems Gleyicos son suelos de transición entre los pastos y las tierras forestales en climas más fríos. Pueden ser suelos relativamente productivos con horizontes superficiales con mucha materia orgánica y nutrientes y subsuelos relativamente arcillosos que pueden retener agua y nutrientes. Los Gleyzems Gleyicos están saturados de agua subterránea poco profunda que se encuentra a un metro de la superficie del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_greyzems##management"
@@ -3740,7 +3706,7 @@ msgstr "Gipsisoles"
 
 #: 
 msgid "soil##match_info##gypsisols##description"
-msgstr "Los gipsisoles se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco limita el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. "
+msgstr "Los Gipsisoles se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco limita el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. "
 
 #: 
 msgid "soil##match_info##gypsisols##management"
@@ -3748,11 +3714,11 @@ msgstr "Estos suelos son poco productivos y requieren un riego regular. Sin rieg
 
 #: 
 msgid "soil##match_info##haplic_gypsisols##name"
-msgstr "Gipsisoles háplicos"
+msgstr "Gipsisoles Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_gypsisols##description"
-msgstr "Los gipsisoles háplicos se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco limita el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. "
+msgstr "Los Gipsisoles Háplicos se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco limita el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. "
 
 #: 
 msgid "soil##match_info##haplic_gypsisols##management"
@@ -3760,11 +3726,11 @@ msgstr "Estos suelos son poco productivos y requieren un riego regular. Sin rieg
 
 #: 
 msgid "soil##match_info##calcic_gypsisols##name"
-msgstr "Gipsisoles cálcicos"
+msgstr "Gipsisoles Cálcicos"
 
 #: 
 msgid "soil##match_info##calcic_gypsisols##description"
-msgstr "Los gipsisoles cálcicos se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco restringe el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. Los Gypsisoles cálcicos tienen subsuelos calcáreos. "
+msgstr "Los Gipsisoles Cálcicos se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco restringe el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. Los Gypsisoles Cálcicos tienen subsuelos calcáreos."
 
 #: 
 msgid "soil##match_info##calcic_gypsisols##management"
@@ -3772,11 +3738,11 @@ msgstr "Estos suelos son poco productivos y requieren un riego regular. Sin rieg
 
 #: 
 msgid "soil##match_info##luvic_gypsisols##name"
-msgstr "Gipsisoles lúvicos"
+msgstr "Gipsisoles Lúvicos"
 
 #: 
 msgid "soil##match_info##luvic_gypsisols##description"
-msgstr "Los gipsisoles lúvicos se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco restringe el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. Los gipsisoles lúvicos presentan un aumento de la arcilla con la profundidad y, por tanto, una mayor retención de humedad y nutrientes. "
+msgstr "Los Gipsisoles Lúvicos se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco restringe el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. Los Gipsisoles Lúvicos presentan un aumento de la arcilla con la profundidad y, por tanto, una mayor retención de humedad y nutrientes. "
 
 #: 
 msgid "soil##match_info##luvic_gypsisols##management"
@@ -3784,11 +3750,11 @@ msgstr "Estos suelos son poco productivos y requieren un riego regular. Sin rieg
 
 #: 
 msgid "soil##match_info##petric_gypsisols##name"
-msgstr "Gipsisoles pétreos"
+msgstr "Gipsisoles Pétricos"
 
 #: 
 msgid "soil##match_info##petric_gypsisols##description"
-msgstr "Los gipsisoles pétreos se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco restringe el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. Los gipsisoles pétreos tienen un horizonte petrocálcico cementado que limita las raíces a menos de 1 m de la superficie del suelo. "
+msgstr "Los Gipsisoles Pétricos se dan en climas áridos con acumulaciones de yeso en el subsuelo. Aunque el clima seco restringe el cultivo de estos suelos, pueden ser productivos cuando el contenido de yeso es relativamente bajo en los horizontes superficiales y subsuperficiales y es posible el riego. Los Gipsisoles Pétricos tienen un horizonte petrocálcico cementado que limita las raíces a menos de 1 m de la superficie del suelo. "
 
 #: 
 msgid "soil##match_info##petric_gypsisols##management"
@@ -3800,7 +3766,7 @@ msgstr "Histosoles"
 
 #: 
 msgid "soil##match_info##histosols##description"
-msgstr "Los histosoles son suelos orgánicos que suelen formarse en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. "
+msgstr "Los Histosoles son suelos orgánicos que suelen formarse en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. "
 
 #: 
 msgid "soil##match_info##histosols##management"
@@ -3808,11 +3774,11 @@ msgstr "Estos suelos pueden ser algunos de los más productivos, especialmente p
 
 #: 
 msgid "soil##match_info##folic_histosols##name"
-msgstr "Histosoles fólicos"
+msgstr "Histosoles Fólicos"
 
 #: 
 msgid "soil##match_info##folic_histosols##description"
-msgstr "Los histosoles fólicos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los histosoles fólicos se forman en climas fríos que restringen la productividad. Están bien drenados y nunca se saturan durante más de unos días. "
+msgstr "Los Histosoles Fólicos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los Histosoles Fólicos se forman en climas fríos que restringen la productividad. Están bien drenados y nunca se saturan durante más de unos días. "
 
 #: 
 msgid "soil##match_info##folic_histosols##management"
@@ -3820,11 +3786,11 @@ msgstr "Estos suelos pueden ser algunos de los más productivos, especialmente p
 
 #: 
 msgid "soil##match_info##terric_histosols##name"
-msgstr "Histosoles terrosos"
+msgstr "Histosoles Térricos"
 
 #: 
 msgid "soil##match_info##terric_histosols##description"
-msgstr "Los histosoles térricos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los histosoles térricos se forman en turberas recuperadas (drenadas y cultivadas) y tienen materiales orgánicos altamente descompuestos. Por lo tanto, tienen una densidad aparente ligeramente más alta y un menor contenido de agua. "
+msgstr "Los Histosoles Térricos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los Histosoles Térricos se forman en turberas recuperadas (drenadas y cultivadas) y tienen materiales orgánicos altamente descompuestos. Por lo tanto, tienen una densidad aparente ligeramente más alta y un menor contenido de agua. "
 
 #: 
 msgid "soil##match_info##terric_histosols##management"
@@ -3832,11 +3798,11 @@ msgstr "Estos suelos pueden ser algunos de los más productivos, sobre todo para
 
 #: 
 msgid "soil##match_info##fibric_histosols##name"
-msgstr "Histosoles fíbricos"
+msgstr "Histosoles Fíbricos"
 
 #: 
 msgid "soil##match_info##fibric_histosols##description"
-msgstr "Los histosoles fíbricos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los histosoles fíbricos tienen materiales orgánicos relativamente poco descompuestos. Por lo tanto, tienen una densidad aparente ligeramente inferior y un mayor contenido de agua. "
+msgstr "Los Histosoles Fíbricos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los Histosoles Fíbricos tienen materiales orgánicos relativamente poco descompuestos. Por lo tanto, tienen una densidad aparente ligeramente inferior y un mayor contenido de agua."
 
 #: 
 msgid "soil##match_info##fibric_histosols##management"
@@ -3844,23 +3810,23 @@ msgstr "Estos suelos pueden ser algunos de los más productivos, especialmente p
 
 #: 
 msgid "soil##match_info##thionic_histosols##name"
-msgstr "Histosoles tiónicos"
+msgstr "Histosoles Tiónicos"
 
 #: 
 msgid "soil##match_info##thionic_histosols##description"
-msgstr "Los histosoles tiónicos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los histosoles tiónicos tienen un pH extremadamente bajo y una alta acidez o el potencial de un pH extremadamente bajo si se drena debido a la oxidación de los sulfuros. "
+msgstr "Los Histosoles Tiónicos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los Histosoles Tiónicos tienen un pH extremadamente bajo y una alta acidez o el potencial de un pH extremadamente bajo si se drena debido a la oxidación de los sulfuros. "
 
 #: 
 msgid "soil##match_info##thionic_histosols##management"
-msgstr "Estos suelos pueden ser algunos de los más productivos, especialmente para cultivos especiales como las hortalizas. Sin embargo, deben ser drenados para su uso, y esto conducirá al hundimiento del suelo, ya que la turba expuesta se mineraliza rápidamente, y el contenido de materia orgánica disminuye rápidamente. Esto hará que los suelos sean cada vez más ácidos, por lo que será necesario un encalado regular. Estos suelos orgánicos deben gestionarse de forma diferente a los suelos minerales, y las técnicas que minimizan la degradación de la materia orgánica son una prioridad. Estos suelos son los más propensos de todos los histosoles a tener un pH bajo, si se drenan. Será necesario el encalado."
+msgstr "Estos suelos pueden ser algunos de los más productivos, especialmente para cultivos especiales como las hortalizas. Sin embargo, deben ser drenados para su uso, y esto conducirá al hundimiento del suelo, ya que la turba expuesta se mineraliza rápidamente, y el contenido de materia orgánica disminuye rápidamente. Esto hará que los suelos sean cada vez más ácidos, por lo que será necesario un encalado regular. Estos suelos orgánicos deben gestionarse de forma diferente a los suelos minerales, y las técnicas que minimizan la degradación de la materia orgánica son una prioridad. Estos suelos son los más propensos de todos los Histosoles a tener un pH bajo, si se drenan. Será necesario el encalado."
 
 #: 
 msgid "soil##match_info##gelic_histosols##name"
-msgstr "Histosoles gélicos"
+msgstr "Histosoles Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_histosols##description"
-msgstr "Los histosoles gélicos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los histosoles gélicos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo. "
+msgstr "Los Histosoles Gélicos son suelos orgánicos que se forman típicamente en ambientes húmedos. Sus propiedades dependen en gran medida del tipo y el grado de descomposición de los materiales orgánicos del suelo. Los suelos pueden ser productivos con una gestión intensiva que incluya el drenaje del suelo, pero su naturaleza frágil y su hábitat sugieren que se garantice la preservación de estos suelos cuando sea posible. Cuando se cultivan, el hundimiento y la oxidación de los sulfuros plantean problemas de gestión. Los Histosoles Gélicos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
 
 #: 
 msgid "soil##match_info##gelic_histosols##management"
@@ -3872,7 +3838,7 @@ msgstr "Kastanozems"
 
 #: 
 msgid "soil##match_info##kastanozems##description"
-msgstr "Los suelos de los pastizales de kastanozems se encuentran en climas relativamente secos con un alto contenido de materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems."
+msgstr "Los suelos de los pastizales de Kastanozems se encuentran en climas relativamente secos con un alto contenido de materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems."
 
 #: 
 msgid "soil##match_info##kastanozems##management"
@@ -3884,7 +3850,7 @@ msgstr "Kastanozems Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_kastanozems##description"
-msgstr "Los suelos de pastizales de kastanozems háplicos se encuentran en climas relativamente secos con un alto contenido de materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems."
+msgstr "Los suelos de pastizales de Kastanozems Háplicos se encuentran en climas relativamente secos con un alto contenido de materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems."
 
 #: 
 msgid "soil##match_info##haplic_kastanozems##management"
@@ -3896,7 +3862,7 @@ msgstr "Kastanozems Lúvicos"
 
 #: 
 msgid "soil##match_info##luvic_kastanozems##description"
-msgstr "Los suelos de pastizales de kastanozems lúvicos se encuentran en climas relativamente secos con un alto contenido de materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los chernozems. Los kastenozems lúvicos son cada vez más arcillosos en profundidad, por lo que retienen mejor la humedad y los nutrientes. "
+msgstr "Los suelos de pastizales de Kastanozems Lúvicos se encuentran en climas relativamente secos con un alto contenido de materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems. Los Kastenozems Lúvicos son cada vez más arcillosos en profundidad, por lo que retienen mejor la humedad y los nutrientes. "
 
 #: 
 msgid "soil##match_info##luvic_kastanozems##management"
@@ -3908,7 +3874,7 @@ msgstr "Kastanozems Calcicos"
 
 #: 
 msgid "soil##match_info##calcic_kastanozems##description"
-msgstr "Suelos de pastizales Kastanozems Cálcicos que se encuentran en climas relativamente secos con un alto contenido de materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems. Los Kastanozems cálcicos son calcáreos en una capa del suelo por debajo de la superficie."
+msgstr "Suelos de pastizales Kastanozems Cálcicos que se encuentran en climas relativamente secos con un alto contenido de materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems. Los Kastanozems Cálcicos son calcáreos en una capa del suelo por debajo de la superficie."
 
 #: 
 msgid "soil##match_info##calcic_kastanozems##management"
@@ -3920,11 +3886,11 @@ msgstr "Kastanozems Gípsicos"
 
 #: 
 msgid "soil##match_info##gypsic_kastanozems##description"
-msgstr "Suelos de pastizales Kastanozems Gípsicos que se encuentran en climas relativamente secos, con alta materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems. Los Kastanozems gípsicos tienen yeso (sulfato de calcio) en una capa del suelo por debajo de la superficie."
+msgstr "Suelos de pastizales Kastanozems Gípsicos que se encuentran en climas relativamente secos, con alta materia orgánica en los horizontes superficiales y a menudo subsuelos calcáreos. Los horizontes superficiales son más finos que los de los Chernozems. Los Kastanozems Gípsicos tienen yeso (sulfato de calcio) en una capa del suelo por debajo de la superficie."
 
 #: 
 msgid "soil##match_info##gypsic_kastanozems##management"
-msgstr "Son suelos productivos, con acumulaciones de arcilla y carbonato. La productividad mejorará con la fertilización (especialmente el fósforo) y el riego. "
+msgstr "Son suelos productivos, con acumulaciones de arcilla y carbonato. La productividad mejorará con la fertilización (especialmente el fósforo) y el riego."
 
 #: 
 msgid "soil##match_info##leptosols##name"
@@ -3932,7 +3898,7 @@ msgstr "Leptosoles"
 
 #: 
 msgid "soil##match_info##leptosols##description"
-msgstr "Los Leptosoles tienen un volumen de enraizamiento muy limitado debido a la presencia de rocas continuas, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles que se encuentran en pendientes pronunciadas son muy erosionables. "
+msgstr "Los Leptosoles tienen un volumen de enraizamiento muy limitado debido a la presencia de rocas continuas, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los Leptosoles que se encuentran en pendientes pronunciadas son muy erosionables. "
 
 #: 
 msgid "soil##match_info##leptosols##management"
@@ -3940,11 +3906,11 @@ msgstr "Debido a que estos suelos son poco profundos, rocosos y erosionables, de
 
 #: 
 msgid "soil##match_info##eutric_leptosols##name"
-msgstr "Leptosoles Eútricos"
+msgstr "Leptosoles Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_leptosols##description"
-msgstr "Los Leptosoles Eútricos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles eútricos tienen una alta saturación de la base sobre la capa limitante de las raíces poco profundas. "
+msgstr "Los Leptosoles Eutríticos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los Leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles Eutríticos tienen una alta saturación de la base sobre la capa limitante de las raíces poco profundas. "
 
 #: 
 msgid "soil##match_info##eutric_leptosols##management"
@@ -3956,7 +3922,7 @@ msgstr "Leptosoles Dístricos"
 
 #: 
 msgid "soil##match_info##dystric_leptosols##description"
-msgstr "Los Leptosoles Dístricos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles en pendientes pronunciadas son muy erosionables. Los leptosoles dísticos tienen una baja saturación de la base sobre la capa limitante de las raíces poco profundas. "
+msgstr "Los Leptosoles Dístricos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los Leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles Dísticos tienen una baja saturación de la base sobre la capa limitante de las raíces poco profundas. "
 
 #: 
 msgid "soil##match_info##dystric_leptosols##management"
@@ -3964,11 +3930,11 @@ msgstr "Debido a que estos suelos son poco profundos, rocosos y erosionables, de
 
 #: 
 msgid "soil##match_info##rendzic_leptosols##name"
-msgstr "Leptosoles Rendzicos"
+msgstr "Leptosoles Réndzicos"
 
 #: 
 msgid "soil##match_info##rendzic_leptosols##description"
-msgstr "Los Leptosoles Rendzicos tienen un volumen de enraizamiento muy limitado debido a la roca continua, material altamente calcáreo, horizontes cementados, o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles Rendzic son altamente calcáreos en la superficie del suelo. "
+msgstr "Los Leptosoles Réndzicos tienen un volumen de enraizamiento muy limitado debido a la roca continua, material altamente calcáreo, horizontes cementados, o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los Leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles Réndzicos son altamente calcáreos en la superficie del suelo. "
 
 #: 
 msgid "soil##match_info##rendzic_leptosols##management"
@@ -3976,11 +3942,11 @@ msgstr "Debido a que estos suelos son poco profundos, rocosos y erosionables deb
 
 #: 
 msgid "soil##match_info##mollic_leptosols##name"
-msgstr "Leptosoles Móllicos"
+msgstr "Leptosoles Mólicos"
 
 #: 
 msgid "soil##match_info##mollic_leptosols##description"
-msgstr "Los Leptosoles Móllicos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles móllicos tienen un horizonte superficial grueso con alta materia orgánica y saturación de la base que recubre una capa limitante para las raíces. "
+msgstr "Los Leptosoles Mólicos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los Leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles Mólicos tienen un horizonte superficial grueso con alta materia orgánica y saturación de la base que recubre una capa limitante para las raíces. "
 
 #: 
 msgid "soil##match_info##mollic_leptosols##management"
@@ -3992,7 +3958,7 @@ msgstr "Leptosoles Úbricos"
 
 #: 
 msgid "soil##match_info##umbric_leptosols##description"
-msgstr "Los Leptosoles Úmbricos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles en pendientes pronunciadas son muy erosionables. Los leptosoles umbrosos tienen un horizonte superficial grueso con un alto contenido de materia orgánica y una baja saturación de la base que se superpone a una capa que limita las raíces. "
+msgstr "Los Leptosoles Úmbricos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles Úmbricos tienen un horizonte superficial grueso con un alto contenido de materia orgánica y una baja saturación de la base que se superpone a una capa que limita las raíces. "
 
 #: 
 msgid "soil##match_info##umbric_leptosols##management"
@@ -4004,7 +3970,7 @@ msgstr "Leptosoles Líticos"
 
 #: 
 msgid "soil##match_info##lithic_leptosols##description"
-msgstr "Los leptosoles Líticos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles en pendientes pronunciadas son muy erosionables. Los leptosoles líticos tienen rocas duras a menos de 10 cm de la superficie del suelo. "
+msgstr "Los Leptosoles Líticos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los Leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles Líticos tienen rocas duras a menos de 10 cm de la superficie del suelo. "
 
 #: 
 msgid "soil##match_info##lithic_leptosols##management"
@@ -4016,7 +3982,7 @@ msgstr "Leptosoles Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_leptosols##description"
-msgstr "Los Leptosoles Gélicos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles gélicos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
+msgstr "Los Leptosoles Gélicos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calcáreo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. Los Leptosoles en pendientes pronunciadas son muy erosionables. Los Leptosoles Gélicos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
 
 #: 
 msgid "soil##match_info##gelic_leptosols##management"
@@ -4028,7 +3994,7 @@ msgstr "Lixisoles"
 
 #: 
 msgid "soil##match_info##lixisols##description"
-msgstr "Los Lixisoles se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. "
+msgstr "Los Lixisoles se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta."
 
 #: 
 msgid "soil##match_info##lixisols##management"
@@ -4040,7 +4006,7 @@ msgstr "Lixisoles Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_lixisols##description"
-msgstr "Los Lixisoles Háplicos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. "
+msgstr "Los Lixisoles Háplicos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta."
 
 #: 
 msgid "soil##match_info##haplic_lixisols##management"
@@ -4048,11 +4014,11 @@ msgstr "Estos suelos están fuertemente meteorizados, lo que significa que la fe
 
 #: 
 msgid "soil##match_info##ferric_lixisols##name"
-msgstr "LixisolesFérricos"
+msgstr "Lixisoles Férricos"
 
 #: 
 msgid "soil##match_info##ferric_lixisols##description"
-msgstr "Los Lixisoles Férricos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. Los Lixisoles férricos tienen concentraciones de hierro blandas y cementadas en los subsuelos, y una estructura poco desarrollada entre las concentraciones de hierro que puede ser susceptible de compactación. "
+msgstr "Los Lixisoles Férricos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. Los Lixisoles Férricos tienen concentraciones de hierro blandas y cementadas en los subsuelos, y una estructura poco desarrollada entre las concentraciones de hierro que puede ser susceptible de compactación. "
 
 #: 
 msgid "soil##match_info##ferric_lixisols##management"
@@ -4072,7 +4038,7 @@ msgstr "Estos suelos están fuertemente meteorizados, lo que significa que la fe
 
 #: 
 msgid "soil##match_info##albic_lixisols##name"
-msgstr "Lixisoles albicos"
+msgstr "Lixisoles Álbicos"
 
 #: 
 msgid "soil##match_info##albic_lixisols##description"
@@ -4084,11 +4050,11 @@ msgstr "Estos suelos están muy erosionados, lo que significa que la fertilizaci
 
 #: 
 msgid "soil##match_info##stagnic_lixisols##name"
-msgstr "Lixisoles Stágnicos"
+msgstr "Lixisoles Estágnicos"
 
 #: 
 msgid "soil##match_info##stagnic_lixisols##description"
-msgstr "Los Lixisoles Stágnicos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. Los Lixisoles Estáticos tienen agua estancada y están saturados en y por encima de los horizontes superficiales durante las épocas húmedas del año. "
+msgstr "Los Lixisoles Éstágnicos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. Los Lixisoles Estágnicos tienen agua estancada y están saturados en y por encima de los horizontes superficiales durante las épocas húmedas del año. "
 
 #: 
 msgid "soil##match_info##stagnic_lixisols##management"
@@ -4096,11 +4062,11 @@ msgstr "Estos suelos están fuertemente meteorizados, lo que significa que la fe
 
 #: 
 msgid "soil##match_info##gleyic_lixisols##name"
-msgstr "Lixisoles Gléyicos"
+msgstr "Lixisoles Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_lixisols##description"
-msgstr "Los Lixisoles Gleyicos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. Los Lixisoles Gleyicos están saturados con aguas subterráneas poco profundas por encima de un metro. "
+msgstr "Los Lixisoles Gleyicos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. Los Lixisoles Gléyicos están saturados con aguas subterráneas poco profundas por encima de un metro."
 
 #: 
 msgid "soil##match_info##gleyic_lixisols##management"
@@ -4136,7 +4102,7 @@ msgstr "Luvisoles Férricos"
 
 #: 
 msgid "soil##match_info##ferric_luvisols##description"
-msgstr "Los Luvisoles Férricos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles férricos tienen concentraciones de hierro blandas y cementadas en los subsuelos, y una estructura poco desarrollada entre las concentraciones de hierro que puede ser susceptible de compactación. "
+msgstr "Los Luvisoles Férricos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Férricos tienen concentraciones de hierro blandas y cementadas en los subsuelos, y una estructura poco desarrollada entre las concentraciones de hierro que puede ser susceptible de compactación. "
 
 #: 
 msgid "soil##match_info##ferric_luvisols##management"
@@ -4148,7 +4114,7 @@ msgstr "Luvisoles Crómicos"
 
 #: 
 msgid "soil##match_info##chromic_luvisols##description"
-msgstr "Los Luvisoles Crómicos son suelos productivos con alta saturación de bases y subsuelos relativamente arcillosos. Los Luvisoles crómicos tienen un subsuelo rico en hierro."
+msgstr "Los Luvisoles Crómicos son suelos productivos con alta saturación de bases y subsuelos relativamente arcillosos. Los Luvisoles Crómicos tienen un subsuelo rico en hierro."
 
 #: 
 msgid "soil##match_info##chromic_luvisols##management"
@@ -4160,7 +4126,7 @@ msgstr "Luvisoles Cálcicos"
 
 #: 
 msgid "soil##match_info##calcic_luvisols##description"
-msgstr "Los Luvisoles Cálcicos son suelos productivos con alta saturación de bases y subsuelos relativamente arcillosos. Los Luvisoles cálcicos tienen subsuelos calcáreos."
+msgstr "Los Luvisoles Cálcicos son suelos productivos con alta saturación de bases y subsuelos relativamente arcillosos. Los Luvisoles Cálcicos tienen subsuelos calcáreos."
 
 #: 
 msgid "soil##match_info##calcic_luvisols##management"
@@ -4184,7 +4150,7 @@ msgstr "Luvisoles Álbicos"
 
 #: 
 msgid "soil##match_info##albic_luvisols##description"
-msgstr "Los Luvisoles Álbicos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Albicos tienen horizontes subsuperficiales altamente lixiviados sobre subsuelos arcillosos."
+msgstr "Los Luvisoles Álbicos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Álbicos tienen horizontes subsuperficiales altamente lixiviados sobre subsuelos arcillosos."
 
 #: 
 msgid "soil##match_info##albic_luvisols##management"
@@ -4192,11 +4158,11 @@ msgstr "Estos suelos son fértiles y pueden utilizarse para una amplia gama de p
 
 #: 
 msgid "soil##match_info##stagnic_luvisols##name"
-msgstr "Luvisoles Stágnicos"
+msgstr "Luvisoles Estágnicos"
 
 #: 
 msgid "soil##match_info##stagnic_luvisols##description"
-msgstr "Los Luvisoles Stágnicos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Estálicos están encharcados y saturados en los horizontes superficiales y por encima de ellos durante las épocas húmedas del año."
+msgstr "Los Luvisoles Estágnicos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Estágnicos están encharcados y saturados en los horizontes superficiales y por encima de ellos durante las épocas húmedas del año."
 
 #: 
 msgid "soil##match_info##stagnic_luvisols##management"
@@ -4204,11 +4170,11 @@ msgstr "Estos suelos son fértiles y pueden utilizarse para una amplia gama de p
 
 #: 
 msgid "soil##match_info##gleyic_luvisols##name"
-msgstr "Luvisoles Gléyicos"
+msgstr "Luvisoles Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_luvisols##description"
-msgstr "Los Luvisoles Gleyicos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Gleyicos están saturados con agua subterránea poco profunda en el metro superior del perfil del suelo."
+msgstr "Los Luvisoles Gleyicos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Gléyicos están saturados con agua subterránea poco profunda en el metro superior del perfil del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_luvisols##management"
@@ -4264,11 +4230,11 @@ msgstr "Son suelos productivos y pueden utilizarse para la producción de cultiv
 
 #: 
 msgid "soil##match_info##phaeozems##name"
-msgstr "Phaeozems"
+msgstr "Feozems"
 
 #: 
 msgid "soil##match_info##phaeozems##description"
-msgstr "Los Phaeozems son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción."
+msgstr "Los Feozems son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción."
 
 #: 
 msgid "soil##match_info##phaeozems##management"
@@ -4276,11 +4242,11 @@ msgstr "Estos suelos son altamente productivos y fértiles, y constituyen excele
 
 #: 
 msgid "soil##match_info##haplic_phaeozems##name"
-msgstr "Phaeozems Háplicos"
+msgstr "Feozems Háplicos"
 
 #: 
 msgid "soil##match_info##haplic_phaeozems##description"
-msgstr "Los Phaeozems Háplicos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que se necesite el riego para la producción."
+msgstr "Los Feozems Háplicos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que se necesite el riego para la producción."
 
 #: 
 msgid "soil##match_info##haplic_phaeozems##management"
@@ -4288,11 +4254,11 @@ msgstr "Estos suelos son altamente productivos y fértiles, y constituyen excele
 
 #: 
 msgid "soil##match_info##calcaric_phaeozems##name"
-msgstr "Phaeozemss Calcáreos"
+msgstr "Feozems Calcáreos"
 
 #: 
 msgid "soil##match_info##calcaric_phaeozems##description"
-msgstr "Los Phaeozems Calcáricos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los feozems calcáreos son calcáreos en la parte superior del subsuelo."
+msgstr "Los Feozems Calcáricos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los feozems calcáreos son calcáreos en la parte superior del subsuelo."
 
 #: 
 msgid "soil##match_info##calcaric_phaeozems##management"
@@ -4300,11 +4266,11 @@ msgstr "Estos suelos son altamente productivos y fértiles, y constituyen excele
 
 #: 
 msgid "soil##match_info##luvic_phaeozems##name"
-msgstr "Phaeozems Lúvicos"
+msgstr "Feozems Lúvicos"
 
 #: 
 msgid "soil##match_info##luvic_phaeozems##description"
-msgstr "Los Phaeozemss Lúvicos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los feozems lúvicos tienen un contenido de arcilla relativamente alto en el subsuelo."
+msgstr "Los Feozems Lúvicos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los feozems lúvicos tienen un contenido de arcilla relativamente alto en el subsuelo."
 
 #: 
 msgid "soil##match_info##luvic_phaeozems##management"
@@ -4312,11 +4278,11 @@ msgstr "Estos suelos son muy productivos y fértiles, y constituyen excelentes t
 
 #: 
 msgid "soil##match_info##stagnic_phaeozems##name"
-msgstr "Phaeozems Stágnicos"
+msgstr "Feozems Estágnicos"
 
 #: 
 msgid "soil##match_info##stagnic_phaeozems##description"
-msgstr "Los Phaeozems Stágnicos son suelos fértiles y productivos de praderas con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los Faeozems estancados están encharcados y saturados en y por encima de los horizontes superficiales durante las épocas húmedas del año."
+msgstr "Los Feozems Estágnicos son suelos fértiles y productivos de praderas con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los Faeozems Estágnicos están encharcados y saturados en y por encima de los horizontes superficiales durante las épocas húmedas del año."
 
 #: 
 msgid "soil##match_info##stagnic_phaeozems##management"
@@ -4324,11 +4290,11 @@ msgstr "Estos suelos son altamente productivos y fértiles, y constituyen excele
 
 #: 
 msgid "soil##match_info##gleyic_phaeozems##name"
-msgstr "Phaeozems Gléyicos"
+msgstr "Foazems Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_phaeozems##description"
-msgstr "Los Phaeozems Gléyicos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los feozems gleyicos están saturados de agua subterránea poco profunda a menos de un metro de la superficie del suelo."
+msgstr "Los Foazems Gleyicos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los Feozems Gleyicos están saturados de agua subterránea poco profunda a menos de un metro de la superficie del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_phaeozems##management"
@@ -4348,11 +4314,11 @@ msgstr "Ubicados en terrenos planos, estos suelos son los más adecuados para la
 
 #: 
 msgid "soil##match_info##eutric_planosols##name"
-msgstr "Planosoles Éutricos"
+msgstr "Planosoles Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_planosols##description"
-msgstr "Los Planosoles Éutricos están estacionalmente encharcados o saturados de agua en la parte superior debido a un subsuelo rico en arcilla y lentamente permeable. Estos suelos son propensos a la compactación y requieren drenaje para la producción de cultivos. Los Planosoles Eutricos son suelos relativamente productivos con una alta saturación de base en el subsuelo."
+msgstr "Los Planosoles Eutríticos están estacionalmente encharcados o saturados de agua en la parte superior debido a un subsuelo rico en arcilla y lentamente permeable. Estos suelos son propensos a la compactación y requieren drenaje para la producción de cultivos. Los Planosoles Eutríticos son suelos relativamente productivos con una alta saturación de base en el subsuelo."
 
 #: 
 msgid "soil##match_info##eutric_planosols##management"
@@ -4372,11 +4338,11 @@ msgstr "Situados en terrenos planos, estos suelos son los más adecuados para la
 
 #: 
 msgid "soil##match_info##mollic_planosols##name"
-msgstr "Planosoles Móllicos"
+msgstr "Planosoles Mólicos"
 
 #: 
 msgid "soil##match_info##mollic_planosols##description"
-msgstr "Los Planosoles Móllicos están estacionalmente encharcados o saturados de agua en la parte superior debido a un subsuelo rico en arcilla y lentamente permeable. Estos suelos son propensos a la compactación y requieren de drenaje para la producción de cultivos. Los Planosoles Móllicos tienen mayor materia orgánica y saturación de la base en los horizontes superficiales."
+msgstr "Los Planosoles Mólicos están estacionalmente encharcados o saturados de agua en la parte superior debido a un subsuelo rico en arcilla y lentamente permeable. Estos suelos son propensos a la compactación y requieren de drenaje para la producción de cultivos. Los Planosoles Mólicos tienen mayor materia orgánica y saturación de la base en los horizontes superficiales."
 
 #: 
 msgid "soil##match_info##mollic_planosols##management"
@@ -4388,7 +4354,7 @@ msgstr "Planosoles Úmbricos"
 
 #: 
 msgid "soil##match_info##umbric_planosols##description"
-msgstr "Los Planosoles Úmbricos están estacionalmente encharcados o saturados de agua en la parte superior debido a un subsuelo rico en arcilla y lentamente permeable. Estos suelos son propensos a la compactación y requieren de drenaje para la producción de cultivos. Los Planosoles Umbricos tienen mayor materia orgánica y menor saturación de la base en los horizontes superficiales."
+msgstr "Los Planosoles Úmbricos están estacionalmente encharcados o saturados de agua en la parte superior debido a un subsuelo rico en arcilla y lentamente permeable. Estos suelos son propensos a la compactación y requieren de drenaje para la producción de cultivos. Los Planosoles Úmbricos tienen mayor materia orgánica y menor saturación de la base en los horizontes superficiales."
 
 #: 
 msgid "soil##match_info##umbric_planosols##management"
@@ -4408,11 +4374,11 @@ msgstr "Este suelo no es adecuado para la agricultura. La combinación de hierro
 
 #: 
 msgid "soil##match_info##eutric_plinthosols##name"
-msgstr "Plinthosoles Éutricos"
+msgstr "Plinthosoles Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_plinthosols##description"
-msgstr "Los Plinthosoles Éutricos son suelos relativamente improductivos que se encuentran en regiones subtropicales o tropicales con altas cantidades de concentraciones ricas en hierro y pobres en humus de dureza y cementación variables. Las concentraciones de hierro más blandas se endurecen irreversiblemente cuando se exponen en la superficie. Estos suelos tienen un bajo volumen de enraizamiento y son relativamente ácidos, infértiles, muy erosionables y a menudo húmedos. Los Plinthosoles eútricos tienen una alta saturación de bases en los subsuelos."
+msgstr "Los Plinthosoles Eutríticos son suelos relativamente improductivos que se encuentran en regiones subtropicales o tropicales con altas cantidades de concentraciones ricas en hierro y pobres en humus de dureza y cementación variables. Las concentraciones de hierro más blandas se endurecen irreversiblemente cuando se exponen en la superficie. Estos suelos tienen un bajo volumen de enraizamiento y son relativamente ácidos, infértiles, muy erosionables y a menudo húmedos. Los Plinthosoles Eutríticos tienen una alta saturación de bases en los subsuelos."
 
 #: 
 msgid "soil##match_info##eutric_plinthosols##management"
@@ -4436,7 +4402,7 @@ msgstr "Plinthosoles Húmicos"
 
 #: 
 msgid "soil##match_info##humic_plinthosols##description"
-msgstr "Los Plinthosoles Húmicos son suelos relativamente improductivos que se encuentran en regiones subtropicales o tropicales con altas cantidades de concentraciones ricas en hierro y pobres en humus de dureza y cementación variables. Las concentraciones de hierro más suaves se endurecen irreversiblemente cuando se exponen en la superficie. Estos suelos tienen un bajo volumen de enraizamiento y son relativamente ácidos, infértiles, muy erosionables y a menudo húmedos. Los Cambisoles húmicos tienen mayor materia orgánica en los horizontes superficiales."
+msgstr "Los Plinthosoles Húmicos son suelos relativamente improductivos que se encuentran en regiones subtropicales o tropicales con altas cantidades de concentraciones ricas en hierro y pobres en humus de dureza y cementación variables. Las concentraciones de hierro más suaves se endurecen irreversiblemente cuando se exponen en la superficie. Estos suelos tienen un bajo volumen de enraizamiento y son relativamente ácidos, infértiles, muy erosionables y a menudo Húmedos. Los Cambisoles Húmicos tienen mayor materia orgánica en los horizontes superficiales."
 
 #: 
 msgid "soil##match_info##humic_plinthosols##management"
@@ -4464,7 +4430,7 @@ msgstr "Los Podzoles son suelos de textura gruesa, ácidos e improductivos, con 
 
 #: 
 msgid "soil##match_info##podzols##management"
-msgstr "Los podzoles están muy lixiviados y, como tales, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
+msgstr "Los Podzoles están muy lixiviados y, como tales, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
 
 #: 
 msgid "soil##match_info##haplic_podzols##name"
@@ -4476,7 +4442,7 @@ msgstr "Los Podzoles Háplicos son suelos de textura gruesa, ácidos e improduct
 
 #: 
 msgid "soil##match_info##haplic_podzols##management"
-msgstr "Los podzoles están muy lixiviados y, como tales, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
+msgstr "Los Podzoles están muy lixiviados y, como tales, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
 
 #: 
 msgid "soil##match_info##cambic_podzols##name"
@@ -4488,7 +4454,7 @@ msgstr "Los Podzoles Cámbicos son suelos de textura gruesa, ácidos e improduct
 
 #: 
 msgid "soil##match_info##cambic_podzols##management"
-msgstr "Los podzoles están muy lixiviados y, como tales, tienen una baja fertilidad del suelo. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
+msgstr "Los Podzoles están muy lixiviados y, como tales, tienen una baja fertilidad del suelo. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
 
 #: 
 msgid "soil##match_info##ferric_podzols##name"
@@ -4496,23 +4462,23 @@ msgstr "Podzoles Férricos"
 
 #: 
 msgid "soil##match_info##ferric_podzols##description"
-msgstr "Los Podzoles Férricos son suelos de textura gruesa, ácidos e improductivos, con horizontes superficiales muy lixiviados sobre los que se asientan subsuelos que contienen materia orgánica acumulada y metales (aluminio y hierro).*En los paisajes de llanura costera plana, estos suelos también son húmedos. Los podzoles férricos tienen cantidades relativamente altas de hierro en el subsuelo."
+msgstr "Los Podzoles Férricos son suelos de textura gruesa, ácidos e improductivos, con horizontes superficiales muy lixiviados sobre los que se asientan subsuelos que contienen materia orgánica acumulada y metales (aluminio y hierro).*En los paisajes de llanura costera plana, estos suelos también son húmedos. Los Podzoles Férricos tienen cantidades relativamente altas de hierro en el subsuelo."
 
 #: 
 msgid "soil##match_info##ferric_podzols##management"
-msgstr "Los podzoles son muy lixiviados y, por tanto, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
+msgstr "Los Podzoles son muy lixiviados y, por tanto, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
 
 #: 
 msgid "soil##match_info##carbic_podzols##name"
-msgstr "Podzoles Carbónicos"
+msgstr "Podzoles Cárbicos"
 
 #: 
 msgid "soil##match_info##carbic_podzols##description"
-msgstr "Los Podzoles Carbicos son suelos de textura gruesa, ácidos e improductivos, con horizontes superficiales altamente lixiviados que sobreponen a subsuelos que contienen materia orgánica acumulada y metales (aluminio y hierro).*En los paisajes de llanura costera plana, estos suelos también son húmedos. Los podzoles carbónicos tienen cantidades relativamente altas de materia orgánica en los subsuelos."
+msgstr "Los Podzoles Cárbicos son suelos de textura gruesa, ácidos e improductivos, con horizontes superficiales altamente lixiviados que sobreponen a subsuelos que contienen materia orgánica acumulada y metales (aluminio y hierro).*En los paisajes de llanura costera plana, estos suelos también son húmedos. Los Podzoles carbónicos tienen cantidades relativamente altas de materia orgánica en los subsuelos."
 
 #: 
 msgid "soil##match_info##carbic_podzols##management"
-msgstr "Los podzoles son muy lixiviados y, por tanto, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Aunque no se recomienda, si estos suelos se utilizan para el cultivo, será necesario ararlos en profundidad (para romper las capas del subsuelo), encalarlos y fertilizarlos."
+msgstr "Los Podzoles son muy lixiviados y, por tanto, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Aunque no se recomienda, si estos suelos se utilizan para el cultivo, será necesario ararlos en profundidad (para romper las capas del subsuelo), encalarlos y fertilizarlos."
 
 #: 
 msgid "soil##match_info##gelic_podzols##name"
@@ -4520,11 +4486,11 @@ msgstr "Podzoles Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_podzols##description"
-msgstr "Los Podzoles Gélicos son suelos de textura gruesa, ácidos e improductivos, con horizontes superficiales muy lixiviados sobre los que se asientan subsuelos que contienen materia orgánica acumulada y metales (aluminio y hierro).*En los paisajes de llanura costera plana, estos suelos también son húmedos. Los podzoles gélicos tienen permafrost a menos de 2 metros de la superficie del suelo."
+msgstr "Los Podzoles Gélicos son suelos de textura gruesa, ácidos e improductivos, con horizontes superficiales muy lixiviados sobre los que se asientan subsuelos que contienen materia orgánica acumulada y metales (aluminio y hierro).*En los paisajes de llanura costera plana, estos suelos también son húmedos. Los Podzoles Gélicos tienen permafrost a menos de 2 metros de la superficie del suelo."
 
 #: 
 msgid "soil##match_info##gelic_podzols##management"
-msgstr "Los podzoles están muy lixiviados y, por lo tanto, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Si se utiliza para el cultivo, se debe tener cuidado de mantener la materia orgánica, ya que al abrirse el permafrost se producirá un hundimiento del suelo."
+msgstr "Los Podzoles están muy lixiviados y, por lo tanto, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Si se utiliza para el cultivo, se debe tener cuidado de mantener la materia orgánica, ya que al abrirse el permafrost se producirá un hundimiento del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_podzols##name"
@@ -4532,19 +4498,19 @@ msgstr "Podzoles Gléyicos"
 
 #: 
 msgid "soil##match_info##gleyic_podzols##description"
-msgstr "Los Podzoles Gleyicos son suelos de textura gruesa, ácidos e improductivos, con horizontes superficiales muy lixiviados sobre los que se asientan subsuelos que contienen materia orgánica acumulada y metales (aluminio y hierro).*En los paisajes de llanura costera plana, estos suelos también son húmedos. Los podzoles gleyicos están saturados con aguas subterráneas poco profundas por encima de un metro."
+msgstr "Los Podzoles Gleyicos son suelos de textura gruesa, ácidos e improductivos, con horizontes superficiales muy lixiviados sobre los que se asientan subsuelos que contienen materia orgánica acumulada y metales (aluminio y hierro).*En los paisajes de llanura costera plana, estos suelos también son húmedos. Los Podzoles Gleyicos están saturados con aguas subterráneas poco profundas por encima de un metro."
 
 #: 
 msgid "soil##match_info##gleyic_podzols##management"
-msgstr "Los podzoles están muy lixiviados y, por tanto, son suelos de baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de erosión, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo, necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Aunque no se recomienda, si estos suelos se utilizan para el cultivo, necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Puede ser necesario el drenaje de estos suelos. Sin embargo, al tratarse de una saturación vía aguas subterráneas esto puede no ser posible, sobre todo por la necesidad de arado profundo para romper las capas del subsuelo. Si se fertiliza y no se drena, es posible que se pierda el nitrógeno (N) aplicado por desnitrificación o lixiviación. Esta gestión cuidadosa del N debe ir acompañada del encalado y la gestión del P."
+msgstr "Los Podzoles están muy lixiviados y, por tanto, son suelos de baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de erosión, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo, necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Aunque no se recomienda, si estos suelos se utilizan para el cultivo, necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Puede ser necesario el drenaje de estos suelos. Sin embargo, al tratarse de una saturación vía aguas subterráneas esto puede no ser posible, sobre todo por la necesidad de arado profundo para romper las capas del subsuelo. Si se fertiliza y no se drena, es posible que se pierda el nitrógeno (N) aplicado por desnitrificación o lixiviación. Esta gestión cuidadosa del N debe ir acompañada del encalado y la gestión del P."
 
 #: 
 msgid "soil##match_info##eutric_podzoluvisols##name"
-msgstr "Podzoluvisols Eútricos"
+msgstr "Podzoluvisols Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_podzoluvisols##description"
-msgstr "Los Podzoluvisoles Eútricos son suelos mayoritariamente forestales en climas fríos o frescos que son ácidos e infértiles con horizontes superficiales lixiviados y subsuelos arcillosos. Estos suelos tienen una alta saturación de bases en el subsuelo."
+msgstr "Los Podzoluvisoles Eutríticos son suelos mayoritariamente forestales en climas fríos o frescos que son ácidos e infértiles con horizontes superficiales lixiviados y subsuelos arcillosos. Estos suelos tienen una alta saturación de bases en el subsuelo."
 
 #: 
 msgid "soil##match_info##eutric_podzoluvisols##management"
@@ -4556,7 +4522,7 @@ msgstr "Podzoluvisols Dístricos"
 
 #: 
 msgid "soil##match_info##dystric_podzoluvisols##description"
-msgstr "Los Podzoluvisoles Dístricos son suelos mayoritariamente forestales en climas fríos o frescos que son ácidos e infértiles con horizontes superficiales lixiviados y subsuelos arcillosos. Los podzoluvisoles dístricos tienen una menor saturación de bases en los subsuelos."
+msgstr "Los Podzoluvisoles Dístricos son suelos mayoritariamente forestales en climas fríos o frescos que son ácidos e infértiles con horizontes superficiales lixiviados y subsuelos arcillosos. Los Podzoluvisoles Dístricos tienen una menor saturación de bases en los subsuelos."
 
 #: 
 msgid "soil##match_info##dystric_podzoluvisols##management"
@@ -4564,11 +4530,11 @@ msgstr "Estos suelos tienen un horizonte subterráneo blanqueado que responderá
 
 #: 
 msgid "soil##match_info##stagnic_podzoluvisols##name"
-msgstr "Podzoluvisols Stágnicos"
+msgstr "Podzoluvisoles Estágnicos"
 
 #: 
 msgid "soil##match_info##stagnic_podzoluvisols##description"
-msgstr "Los Podzoluvisoles Stágnicos son, en su mayoría, suelos forestales de climas fríos o frescos, ácidos e infértiles, con horizontes superficiales lixiviados y subsuelos arcillosos. Los podzoluvisoles estancados están encharcados y saturados en los horizontes superficiales y por encima de ellos durante las épocas húmedas del año."
+msgstr "Los Podzoluvisoles Estágnicos son, en su mayoría, suelos forestales de climas fríos o frescos, ácidos e infértiles, con horizontes superficiales lixiviados y subsuelos arcillosos. Los Podzoluvisoles Estágnicos están encharcados y saturados en los horizontes superficiales y por encima de ellos durante las épocas húmedas del año."
 
 #: 
 msgid "soil##match_info##stagnic_podzoluvisols##management"
@@ -4576,11 +4542,11 @@ msgstr "Estos suelos tienen un horizonte subterráneo blanqueado que responderá
 
 #: 
 msgid "soil##match_info##gleyic_podzoluvisols##name"
-msgstr "Podzoluvisols Gléyicos"
+msgstr "Podzoluvisols Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_podzoluvisols##description"
-msgstr "Los Podzoluvisoles Gléyicos son suelos mayoritariamente forestales en climas frescos o fríos que son ácidos e infértiles con horizontes superficiales lixiviados y subsuelos arcillosos. Los podzoluvisoles gleyicos están saturados con aguas subterráneas poco profundas por encima de un metro."
+msgstr "Los Podzoluvisoles Gleyicos son suelos mayoritariamente forestales en climas frescos o fríos que son ácidos e infértiles con horizontes superficiales lixiviados y subsuelos arcillosos. Los Podzoluvisoles Gleyicos están saturados con aguas subterráneas poco profundas por encima de un metro."
 
 #: 
 msgid "soil##match_info##gleyic_podzoluvisols##management"
@@ -4592,7 +4558,7 @@ msgstr "Podzoluvisols Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_podzoluvisols##description"
-msgstr "Los podzoluvisoles gélicos son suelos mayoritariamente forestales en climas fríos o frescos que son ácidos e infértiles con horizontes superficiales lixiviados y subsuelos arcillosos. Estos suelos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
+msgstr "Los Podzoluvisoles Gélicos son suelos mayoritariamente forestales en climas fríos o frescos que son ácidos e infértiles con horizontes superficiales lixiviados y subsuelos arcillosos. Estos suelos tienen permafrost por encima de los dos metros y generalmente no son aptos para el cultivo."
 
 #: 
 msgid "soil##match_info##gelic_podzoluvisols##management"
@@ -4612,11 +4578,11 @@ msgstr "Estos suelos tienen baja capacidad de retención de agua, y son muy sens
 
 #: 
 msgid "soil##match_info##eutric_regosols##name"
-msgstr "Regosoles Éutricos"
+msgstr "Regosoles Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_regosols##description"
-msgstr "Regosoles Éutricos son suelos débilmente desarrollados que comúnmente son demasiado secos, o están en pendientes más pronunciadas que limitan la productividad.*Los Regosoles Eutricos tienen una alta saturación de base en el subsuelo. "
+msgstr "Regosoles Eutríticos son suelos débilmente desarrollados que comúnmente son demasiado secos, o están en pendientes más pronunciadas que limitan la productividad.*Los Regosoles Eutríticos tienen una alta saturación de base en el subsuelo."
 
 #: 
 msgid "soil##match_info##eutric_regosols##management"
@@ -4640,7 +4606,7 @@ msgstr "Regosoles Gípsicos"
 
 #: 
 msgid "soil##match_info##gypsic_regosols##description"
-msgstr "Regosoles Gípsicos son suelos débilmente desarrollados que comúnmente son demasiado secos, o están en pendientes más pronunciadas que limitan la productividad.*Los Regosoles gípsicos tienen yeso en una capa del suelo por debajo de la superficie."
+msgstr "Regosoles Gípsicos son suelos débilmente desarrollados que comúnmente son demasiado secos, o están en pendientes más pronunciadas que limitan la productividad.*Los Regosoles Gípsicos tienen yeso en una capa del suelo por debajo de la superficie."
 
 #: 
 msgid "soil##match_info##gypsic_regosols##management"
@@ -4664,7 +4630,7 @@ msgstr "Regosoles Úmbricos"
 
 #: 
 msgid "soil##match_info##umbric_regosols##description"
-msgstr "Los Regosoles Úmbricos son suelos débilmente desarrollados que comúnmente son demasiado secos, o están en pendientes más pronunciadas que limitan la productividad. Los Regosoles úmbricos tienen mayor materia orgánica y menor saturación de la base en los horizontes superficiales. "
+msgstr "Los Regosoles Úmbricos son suelos débilmente desarrollados que comúnmente son demasiado secos, o están en pendientes más pronunciadas que limitan la productividad. Los Regosoles Úmbricos tienen mayor materia orgánica y menor saturación de la base en los horizontes superficiales. "
 
 #: 
 msgid "soil##match_info##umbric_regosols##management"
@@ -4676,7 +4642,7 @@ msgstr "Regosoles Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_regosols##description"
-msgstr "Los Regosoles Gélicos son suelos débilmente desarrollados que comúnmente son demasiado secos, o están en pendientes más pronunciadas que limitan la productividad. Los regosoles gélicos tienen permafrost a menos de dos metros de la superficie del suelo y generalmente no son aptos para el cultivo."
+msgstr "Los Regosoles Gélicos son suelos débilmente desarrollados que comúnmente son demasiado secos, o están en pendientes más pronunciadas que limitan la productividad. Los Regosoles Gélicos tienen permafrost a menos de dos metros de la superficie del suelo y generalmente no son aptos para el cultivo."
 
 #: 
 msgid "soil##match_info##gelic_regosols##management"
@@ -4712,7 +4678,7 @@ msgstr "Solonchaks Mólicos"
 
 #: 
 msgid "soil##match_info##mollic_solonchaks##description"
-msgstr "Los Solonchaks Mólicos son suelos que contienen sales en la superficie del suelo o cerca de ella y que se forman en desiertos o cerca de las costas. Los Solonchaks móllicos tienen mayor materia orgánica y saturación de bases en los horizontes superficiales."
+msgstr "Los Solonchaks Mólicos son suelos que contienen sales en la superficie del suelo o cerca de ella y que se forman en desiertos o cerca de las costas. Los Solonchaks mólicos tienen mayor materia orgánica y saturación de bases en los horizontes superficiales."
 
 #: 
 msgid "soil##match_info##mollic_solonchaks##management"
@@ -4724,7 +4690,7 @@ msgstr "Solonchaks Cálcicos"
 
 #: 
 msgid "soil##match_info##calcic_solonchaks##description"
-msgstr "Los Solonchaks Cálcicos son suelos que contienen sales en la superficie del suelo o cerca de ella y que se forman en los desiertos o cerca de las costas. Los Solonchaks cálcicos son calcáreos en una capa del suelo por debajo de la superficie."
+msgstr "Los Solonchaks Cálcicos son suelos que contienen sales en la superficie del suelo o cerca de ella y que se forman en los desiertos o cerca de las costas. Los Solonchaks Cálcicos son calcáreos en una capa del suelo por debajo de la superficie."
 
 #: 
 msgid "soil##match_info##calcic_solonchaks##management"
@@ -4736,7 +4702,7 @@ msgstr "Solonchaks Gípsicos"
 
 #: 
 msgid "soil##match_info##gypsic_solonchaks##description"
-msgstr "Los Solonchaks Gípsicos son suelos que contienen sales en la superficie del suelo o cerca de ella y que se forman en los desiertos o cerca de las costas. Los solonchaks gípsicos tienen yeso en una capa del suelo por debajo de la superficie."
+msgstr "Los Solonchaks Gípsicos son suelos que contienen sales en la superficie del suelo o cerca de ella y que se forman en los desiertos o cerca de las costas. Los Solonchaks Gípsicos tienen yeso en una capa del suelo por debajo de la superficie."
 
 #: 
 msgid "soil##match_info##gypsic_solonchaks##management"
@@ -4756,11 +4722,11 @@ msgstr "Estos suelos son típicamente altos en sales totales y tienen sodio acum
 
 #: 
 msgid "soil##match_info##gleyic_solonchaks##name"
-msgstr "Solonchaks Gléyicos"
+msgstr "Solonchaks Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_solonchaks##description"
-msgstr "Los Solonchaks Gléyicos son suelos que contienen sales en la superficie del suelo o cerca de ella y que se forman en los desiertos o cerca de las costas. Estos suelos están saturados con aguas subterráneas poco profundas a un metro de la superficie del suelo."
+msgstr "Los Solonchaks Gleyicos son suelos que contienen sales en la superficie del suelo o cerca de ella y que se forman en los desiertos o cerca de las costas. Estos suelos están saturados con aguas subterráneas poco profundas a un metro de la superficie del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_solonchaks##management"
@@ -4840,7 +4806,7 @@ msgstr "Es probable que tengan un alto nivel de sodio en los horizontes subsuper
 
 #: 
 msgid "soil##match_info##stagnic_solonetz##name"
-msgstr "Solonetz Estático"
+msgstr "Solonetz Estágnicos"
 
 #: 
 msgid "soil##match_info##stagnic_solonetz##description"
@@ -4852,11 +4818,11 @@ msgstr "Es probable que tengan un alto nivel de sodio en los horizontes subsuper
 
 #: 
 msgid "soil##match_info##gleyic_solonetz##name"
-msgstr "Solonetz Gléyicos"
+msgstr "Solonetz Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_solonetz##description"
-msgstr "Los Solonetz Gléyicos tienen subsuelos ricos en arcilla fuertemente estructurados con un alto nivel de sodio intercambiable. La productividad de estos suelos depende de la profundidad de los horizontes superficiales por encima de estos subsuelos. Los Solonetz gleyicos están saturados de aguas subterráneas poco profundas a menos de un metro de la superficie del suelo."
+msgstr "Los Solonetz Gleyicos tienen subsuelos ricos en arcilla fuertemente estructurados con un alto nivel de sodio intercambiable. La productividad de estos suelos depende de la profundidad de los horizontes superficiales por encima de estos subsuelos. Los Solonetz Gleyicos están saturados de aguas subterráneas poco profundas a menos de un metro de la superficie del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_solonetz##management"
@@ -4868,19 +4834,19 @@ msgstr "Vertisoles"
 
 #: 
 msgid "soil##match_info##vertisols##description"
-msgstr "Los Vertisoles son suelos arcillosos que son pegajosos y plásticos cuando están húmedos y duros y masivos cuando están secos. En general, estos suelos tienen propiedades químicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades físicas desafiantes, especialmente en lo que respecta a la gestión del agua.  "
+msgstr "Los Vertisoles son suelos arcillosos que son pegajosos y plásticos cuando están húmedos y duros y masivos cuando están secos. En general, estos suelos tienen propiedades químicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades físicas desafiantes, especialmente en lo que respecta a la gestión del agua."
 
 #: 
 msgid "soil##match_info##vertisols##management"
-msgstr "Los vertisoles pueden ser suelos altamente productivos, pero las características de la arcilla en este suelo pueden hacer que su manejo sea un problema. Debido al tipo de arcilla, estos suelos se hinchan cuando se humedecen y se encogen cuando se secan, lo que crea problemas para el cultivo (evite el laboreo excesivo cuando está húmedo), u otros problemas como la construcción. Su fertilidad los hace aptos para la agricultura, pero se necesitará una fertilización adicional para obtener la mejor productividad. Además, la gestión del agua es clave, y se necesitan prácticas que favorezcan el drenaje y la infiltración del agua."
+msgstr "Los Vertisoles pueden ser suelos altamente productivos, pero las características de la arcilla en este suelo pueden hacer que su manejo sea un problema. Debido al tipo de arcilla, estos suelos se hinchan cuando se humedecen y se encogen cuando se secan, lo que crea problemas para el cultivo (evite el laboreo excesivo cuando está húmedo), u otros problemas como la construcción. Su fertilidad los hace aptos para la agricultura, pero se necesitará una fertilización adicional para obtener la mejor productividad. Además, la gestión del agua es clave, y se necesitan prácticas que favorezcan el drenaje y la infiltración del agua."
 
 #: 
 msgid "soil##match_info##eutric_vertisols##name"
-msgstr "Vertisoles Éutricos"
+msgstr "Vertisoles Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_vertisols##description"
-msgstr "Los Vertisoles Éutricos son suelos arcillosos que son pegajosos y plásticos cuando están húmedos y duros y masivos cuando están secos. En general, estos suelos tienen propiedades químicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades físicas desafiantes, especialmente en lo que respecta a la gestión del agua. Los Vertisoles Eutricos son suelos relativamente productivos con una alta saturación de base en el subsuelo. "
+msgstr "Los Vertisoles Eutríticos son suelos arcillosos que son pegajosos y plásticos cuando están húmedos y duros y masivos cuando están secos. En general, estos suelos tienen propiedades químicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades físicas desafiantes, especialmente en lo que respecta a la gestión del agua. Los Vertisoles Eutríticos son suelos relativamente productivos con una alta saturación de base en el subsuelo. "
 
 #: 
 msgid "soil##match_info##eutric_vertisols##management"
@@ -4896,7 +4862,7 @@ msgstr "Los Vertisoles Dístricos son suelos arcillosos que son pegajosos y plá
 
 #: 
 msgid "soil##match_info##dystric_vertisols##management"
-msgstr "Los vertisoles pueden ser suelos altamente productivos, pero las características de la arcilla en este suelo pueden hacer que su manejo sea un problema. Debido al tipo de arcilla, estos suelos se hinchan cuando se humedecen y se encogen cuando se secan, lo que crea problemas para el cultivo (evite la labranza excesiva cuando está húmedo), u otros problemas como la construcción. Su fertilidad los hace aptos para la agricultura, pero se necesitará una fertilización adicional para obtener la mejor productividad. Además, la gestión del agua es clave, y se necesitan prácticas que favorezcan el drenaje y la infiltración del agua. Es probable que este suelo necesite una fertilización suplementaria cuando se utilice para la producción de cultivos."
+msgstr "Los Vertisoles pueden ser suelos altamente productivos, pero las características de la arcilla en este suelo pueden hacer que su manejo sea un problema. Debido al tipo de arcilla, estos suelos se hinchan cuando se humedecen y se encogen cuando se secan, lo que crea problemas para el cultivo (evite la labranza excesiva cuando está húmedo), u otros problemas como la construcción. Su fertilidad los hace aptos para la agricultura, pero se necesitará una fertilización adicional para obtener la mejor productividad. Además, la gestión del agua es clave, y se necesitan prácticas que favorezcan el drenaje y la infiltración del agua. Es probable que este suelo necesite una fertilización suplementaria cuando se utilice para la producción de cultivos."
 
 #: 
 msgid "soil##match_info##calcic_vertisols##name"
@@ -4904,7 +4870,7 @@ msgstr "Vertisoles Cálcicos"
 
 #: 
 msgid "soil##match_info##calcic_vertisols##description"
-msgstr "Los Vertisoles Cálcicos son suelos arcillosos que son pegajosos y plásticos cuando están húmedos y duros y masivos cuando están secos. En general, estos suelos tienen propiedades químicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades físicas desafiantes, especialmente en lo que respecta a la gestión del agua. Los Vertisoles cálcicos son calcáreos en una capa del suelo por debajo de la superficie. "
+msgstr "Los Vertisoles Cálcicos son suelos arcillosos que son pegajosos y plásticos cuando están húmedos y duros y masivos cuando están secos. En general, estos suelos tienen propiedades químicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades físicas desafiantes, especialmente en lo que respecta a la gestión del agua. Los Vertisoles Cálcicos son Calcáreos en una capa del suelo por debajo de la superficie. "
 
 #: 
 msgid "soil##match_info##calcic_vertisols##management"
@@ -4916,7 +4882,7 @@ msgstr "Vertisoles Gípsicos"
 
 #: 
 msgid "soil##match_info##gypsic_vertisols##description"
-msgstr "Los Vertisoles Gípsicos son suelos arcillosos que son pegajosos y plásticos cuando están húmedos y duros y masivos cuando están secos. Estos suelos tienen generalmente propiedades químicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades físicas desafiantes, especialmente en lo que respecta a la gestión del agua. Los Vertisoles gípsicos tienen un horizonte subterráneo enriquecido en yeso (sulfato de calcio)."
+msgstr "Los Vertisoles Gípsicos son suelos arcillosos que son pegajosos y plásticos cuando están húmedos y duros y masivos cuando están secos. Estos suelos tienen generalmente propiedades químicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades físicas desafiantes, especialmente en lo que respecta a la gestión del agua. Los Vertisoles Gípsicos tienen un horizonte subterráneo enriquecido en yeso (sulfato de calcio)."
 
 #: 
 msgid "soil##match_info##gypsic_vertisols##management"
@@ -4929,4 +4895,24 @@ msgstr "La pendiente es importante para identificar el suelo. También ayuda a d
 #: 
 msgid "slope##info##data_region_text_global_or_unknown"
 msgstr "Las características de la pendiente ayudan a determinar el potencial de erosión del suelo, su capacidad para retener agua, etc."
+
+#: 
+msgid "welcome##next##bullet_4"
+msgstr "Observaciones adicionales, como limitaciones del suelo"
+
+#: 
+msgid "general##privacy_policy_link_url"
+msgstr "https://techmatters.org/privacy-policy/"
+
+#: 
+msgid "general##privacy_policy_link_text"
+msgstr "Política de privacidad"
+
+#: 
+msgid "general##terms_of_service_link_url"
+msgstr "https://terraso.org/terms-of-service/"
+
+#: 
+msgid "general##terms_of_service_link_text"
+msgstr "Condiciones de servicio"
 
