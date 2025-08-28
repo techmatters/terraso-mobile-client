@@ -17,17 +17,19 @@
 
 import React, {createContext, ReactNode, useContext, useState} from 'react';
 
+import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
+
 type SiteTabJumpContextType = {
-  nextSiteTab: string | null;
-  setNextSiteTab: (tab: string | null) => void;
+  nextSiteTab: SiteTabName | null;
+  setNextSiteTab: (tab: SiteTabName | null) => void;
 };
 
 // Create the context (null initially)
 const SiteTabJumpContext = createContext<SiteTabJumpContextType | null>(null);
 
 // Provider component
-export function SiteTabJumpContextProvider({children}: {children: ReactNode}) {
-  const [nextSiteTab, setNextSiteTab] = useState<string | null>(null);
+export function SiteTabJumpProvider({children}: {children: ReactNode}) {
+  const [nextSiteTab, setNextSiteTab] = useState<SiteTabName | null>(null);
 
   return (
     <SiteTabJumpContext.Provider value={{nextSiteTab, setNextSiteTab}}>
