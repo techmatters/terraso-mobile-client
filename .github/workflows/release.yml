@@ -9,7 +9,7 @@ jobs:
     name: Build and sign iOS app
     uses: ./.github/workflows/build-shared-ios.yml
     with:
-      upload: 'true'
+      upload: "true"
       APP_BUILD: ${{ github.ref_name }}
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
@@ -22,12 +22,13 @@ jobs:
       APPLE_APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPLE_APP_STORE_CONNECT_PRIVATE_KEY }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
 
   android-build-release:
     name: Build and sign Android app
     uses: ./.github/workflows/build-shared-android.yml
     with:
-      upload: 'true'
+      upload: "true"
       APP_BUILD: ${{ github.ref_name }}
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
@@ -38,3 +39,4 @@ jobs:
       ANDROID_SERVICE_ACCOUNT_JSON_TEXT: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
