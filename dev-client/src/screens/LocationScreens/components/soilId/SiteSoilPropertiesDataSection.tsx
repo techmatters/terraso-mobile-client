@@ -27,8 +27,8 @@ import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/
 import {rowsFromSiteSoilData} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesData';
 import {SoilPropertiesDataTable} from 'terraso-mobile-client/components/tables/soilProperties/SoilPropertiesDataTable';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {useSiteTabJumpContext} from 'terraso-mobile-client/navigation/components/SiteTabJumpProvider';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SiteTabName} from 'terraso-mobile-client/navigation/navigators/SiteTabNavigator';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
   selectSoilData,
@@ -40,17 +40,18 @@ type Props = {siteId: string};
 export const SiteSoilPropertiesDataSection = ({siteId}: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const {setNextSiteTab} = useSiteTabJumpContext();
 
   const allDepths = useSiteSoilIntervals(siteId);
   const soilData = useSelector(selectSoilData(siteId));
   const dataTableRows = rowsFromSiteSoilData(soilData, allDepths);
 
   const onAddSoilDataPress = useCallback(() => {
-    navigation.push('SITE_TABS', {
+    setNextSiteTab('SOIL');
+    navigation.popTo('SITE_TABS', {
       siteId: siteId,
-      initialTab: 'SOIL' as SiteTabName,
     });
-  }, [navigation, siteId]);
+  }, [navigation, siteId, setNextSiteTab]);
 
   return (
     <>
