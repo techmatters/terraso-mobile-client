@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-07-01T19:41:15.825Z\n"
-"PO-Revision-Date: 2025-07-01T19:41:15.825Z\n"
+"POT-Creation-Date: 2025-08-27T20:24:56.670Z\n"
+"PO-Revision-Date: 2025-08-27T20:24:56.670Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -15,19 +15,13 @@ msgid "welcome##version_includes##title"
 msgstr "This version includes:"
 
 msgid "welcome##version_includes##bullet_1"
-msgstr "Soil identification for US locations"
+msgstr "Global soil identification"
 
 msgid "welcome##version_includes##bullet_2"
-msgstr "Slope and soil observations"
+msgstr "Bug fixes for changing soil depths"
 
 msgid "welcome##version_includes##bullet_3"
-msgstr "Site notes"
-
-msgid "welcome##version_includes##bullet_4"
-msgstr "Project management"
-
-msgid "welcome##version_includes##bullet_5"
-msgstr "Offline capabilities"
+msgstr "Bug fixes for Soil ID algorithm"
 
 msgid "welcome##next##title"
 msgstr "What’s next?"
@@ -36,13 +30,16 @@ msgid "welcome##next##subtitle"
 msgstr "Future versions will include:"
 
 msgid "welcome##next##bullet_1"
-msgstr "Data visualization enhancements"
+msgstr "Offline site creation, soil selection, and notes"
 
 msgid "welcome##next##bullet_2"
-msgstr "Additional soil properties, such as soil structure and soil organic carbon"
+msgstr "Project data download"
 
 msgid "welcome##next##bullet_3"
-msgstr "Site photos"
+msgstr "Data visualization enhancements"
+
+msgid "welcome##next##bullet_4"
+msgstr "Additional observations, such as soil limitations"
 
 msgid "welcome##learn_more"
 msgstr "Learn more and stay updated:"
@@ -54,13 +51,7 @@ msgid "welcome##link_url"
 msgstr "https://landpks.terraso.org/"
 
 msgid "welcome##terms"
-msgstr "By using LandPKS you accept our <privacy /> and <tos />."
-
-msgid "welcome##privacy"
-msgstr "privacy policy"
-
-msgid "welcome##tos"
-msgstr "terms of service"
+msgstr "By using LandPKS you accept our privacy policy and terms of service."
 
 msgid "welcome##get_started"
 msgstr "Get started"
@@ -69,7 +60,7 @@ msgid "info##title"
 msgstr "Discover your land’s potential"
 
 msgid "info##description"
-msgstr "<0>Discover the potential use and value of your land.</0> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more."
+msgstr "<bold>Discover the potential use and value of your land.</bold> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more."
 
 msgid "info##description2"
 msgstr ""
@@ -144,9 +135,6 @@ msgstr "Enter coordinates, address, or search term in the map search bar"
 
 msgid "site##empty##summary"
 msgstr "A site lets you collect and save observations, learn more about the land and its potential, and share with others."
-
-msgid "site##offline##alert_title"
-msgstr "You are offline"
 
 msgid "site##offline##alert_body"
 msgstr "Sites can only be created while online."
@@ -314,13 +302,13 @@ msgid "site##soil_id##matches##error_generic_title"
 msgstr "Can’t fetch soil map"
 
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS was unable to fetch the soil map for this location. Try again later."
+msgstr "LandPKS was unable to fetch the soil map for this location. Try stopping and restarting the app. If the issue continues, try again later or submit a support request through the website landpks.terraso.org."
 
 msgid "site##soil_id##matches##no_map_data_title"
 msgstr "No soil map data"
 
 msgid "site##soil_id##matches##no_map_data_body"
-msgstr "There is no soil map data available for this site, so LandPKS cannot generate soil matches for this site. Observations can still be entered for this site, and if soil map data becomes available in the future, soil matches will appear here."
+msgstr "There is no soil map data available for this location, so LandPKS cannot generate soil matches. Observations can still be entered, and if soil map data becomes available in the future, soil matches will appear here."
 
 msgid "site##soil_id##matches##offline"
 msgstr "Soil matches will update when you are online."
@@ -1042,15 +1030,6 @@ msgstr "https://landpks.terraso.org/portal"
 msgid "general##info##data_portal_link_text"
 msgstr "LandPKS Data Portal"
 
-msgid "general##info##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
-
-msgid "general##info##privacy_policy_link_text"
-msgstr "Read more about our data privacy policy."
-
-msgid "general##info##privacy_policy_label"
-msgstr "Privacy policy"
-
 msgid "general##required"
 msgstr "Required"
 
@@ -1089,6 +1068,18 @@ msgstr "Terms of service"
 
 msgid "general##tos##url"
 msgstr "https://terraso.org/terms-of-service/"
+
+msgid "general##privacy_policy_link_url"
+msgstr "https://techmatters.org/privacy-policy/"
+
+msgid "general##privacy_policy_link_text"
+msgstr "Privacy Policy"
+
+msgid "general##terms_of_service_link_url"
+msgstr "https://terraso.org/terms-of-service/"
+
+msgid "general##terms_of_service_link_text"
+msgstr "Terms of Service"
 
 msgid "general##not_available_offine"
 msgstr "Not available offline"
@@ -1654,13 +1645,13 @@ msgid "soil##texture##guide##grittyness"
 msgstr "Feel the soil:"
 
 msgid "soil##texture##guide##grittyness_details_1"
-msgstr "<0>Gritty</0> means you can feel individual grains in the soil."
+msgstr "<bold>Gritty</bold> means you can feel individual grains in the soil."
 
 msgid "soil##texture##guide##grittyness_details_2"
-msgstr "<0>Smooth</0> means that the wetted soil is slippery or soapy in feel."
+msgstr "<bold>Smooth</bold> means that the wetted soil is slippery or soapy in feel."
 
 msgid "soil##texture##guide##grittyness_details_3"
-msgstr "<0>Not gritty or smooth</0> means that neither of those two textures dominates. You may still feel some sand grains or some soapiness, but the feel of the soil is not predominantly one or the other."
+msgstr "<bold>Not gritty or smooth</bold> means that neither of those two textures dominates. You may still feel some sand grains or some soapiness, but the feel of the soil is not predominantly one or the other."
 
 msgid "soil##texture##guide_intro"
 msgstr "Don’t know the texture class? Use the step-by-step guide."
