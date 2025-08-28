@@ -59,7 +59,6 @@ export const WelcomeScreen = () => {
           </Text>
           <TranslatedBulletList
             i18nKeys={[
-              'welcome.version_includes.bullet_1',
               // This ended up not getting into 1.3.1, but we expect to use the string for the next release
               // 'welcome.version_includes.bullet_2',
               'welcome.version_includes.bullet_3',
@@ -72,6 +71,8 @@ export const WelcomeScreen = () => {
           </Text>
           <TranslatedBulletList
             i18nKeys={[
+              // We're not promoting global soil id yet, figured it was easier to just move this here than to re-do the translations in POEditor
+              'welcome.version_includes.bullet_1',
               'welcome.next.bullet_1',
               'welcome.next.bullet_2',
               'welcome.next.bullet_3',
