@@ -24,6 +24,7 @@ jobs:
       APPLE_MOBILE_PROVISION_BASE64: ${{ secrets.APPLE_MOBILE_PROVISION_BASE64 }}
       APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
 
   android-build-only:
     name: Build Android app
@@ -33,3 +34,4 @@ jobs:
     secrets:
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}

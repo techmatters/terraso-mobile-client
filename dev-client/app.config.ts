@@ -61,6 +61,8 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
   'GOOGLE_OAUTH_IOS_URI_SCHEME',
   'MICROSOFT_OAUTH_CLIENT_ID',
   'MICROSOFT_SIGNATURE_HASH',
+  'POSTHOG_API_KEY',
+  'POSTHOG_HOST',
 ] as const);
 
 let buildNumber = 1;
