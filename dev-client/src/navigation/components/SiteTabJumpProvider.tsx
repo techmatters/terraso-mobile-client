@@ -28,7 +28,7 @@ type SiteTabJumpContextType = {
 const SiteTabJumpContext = createContext<SiteTabJumpContextType | null>(null);
 
 // Provider component
-export function SiteTabJumpProvider({children}: {children: ReactNode}) {
+export function SiteTabJumpContextProvider({children}: {children: ReactNode}) {
   const [nextSiteTab, setNextSiteTab] = useState<SiteTabName | null>(null);
 
   return (
