@@ -32,7 +32,7 @@ export type DepthFormInput = {
 
 const VerticalSpacer = () => <Box marginTop="20px" />;
 
-export const DepthForm = () => {
+export const DepthTextInputs = () => {
   const {t} = useTranslation();
   const {value: label} = useFieldContext('label');
   return (

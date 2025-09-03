@@ -28,9 +28,9 @@ import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/Dele
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
-  DepthForm,
   DepthFormInput,
-} from 'terraso-mobile-client/components/DepthForm';
+  DepthTextInputs,
+} from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
@@ -77,6 +77,7 @@ type Props = {
   requiredInputs: SoilPitMethod[];
 };
 
+// TODO-cknipe: Stop using this, use EditDepthOverlaySheet instead
 export const EditDepthModal = ({
   siteId,
   depthInterval,
@@ -186,7 +187,7 @@ export const EditDepthModal = ({
             {mutable && (
               <>
                 <Box pl="2px" mb="11px">
-                  <DepthForm />
+                  <DepthTextInputs />
                 </Box>
                 <Heading variant="h6" mt="11px" mb="11px">
                   {t('soil.depth.data_inputs_title')}

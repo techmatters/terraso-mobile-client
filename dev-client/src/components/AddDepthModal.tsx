@@ -22,9 +22,9 @@ import {Formik} from 'formik';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
-  DepthForm,
   DepthFormInput,
-} from 'terraso-mobile-client/components/DepthForm';
+  DepthTextInputs,
+} from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
@@ -68,7 +68,7 @@ export const AddDepthModalBody = ({
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting, dirty}) => (
         <>
-          <DepthForm />
+          <DepthTextInputs />
           <Box height="50px" />
           <ContainedButton
             size="lg"

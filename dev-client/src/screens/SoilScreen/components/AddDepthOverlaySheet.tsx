@@ -23,9 +23,9 @@ import {Formik} from 'formik';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
-  DepthForm,
   DepthFormInput,
-} from 'terraso-mobile-client/components/DepthForm';
+  DepthTextInputs,
+} from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
@@ -77,7 +77,7 @@ export const AddDepthOverlaySheet = ({
         onSubmit={onSubmit}>
         {({handleSubmit, isValid, isSubmitting, dirty}) => (
           <>
-            <DepthForm />
+            <DepthTextInputs />
             <Box height="50px" />
             <ContainedButton
               size="lg"

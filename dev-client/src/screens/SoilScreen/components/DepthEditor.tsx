@@ -23,7 +23,7 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {soilPitMethods} from 'terraso-mobile-client/model/soilData/soilDataSlice';
-import {EditDepthModal} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthModal';
+import {EditDepthOverlaySheet} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthOverlaySheet';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {AggregatedInterval} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
@@ -50,7 +50,7 @@ export const DepthEditor = ({
         {renderDepth(t, interval)}
       </Heading>
       <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-        <EditDepthModal
+        <EditDepthOverlaySheet
           siteId={siteId}
           depthInterval={interval.depthInterval}
           requiredInputs={requiredInputs}

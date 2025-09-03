@@ -655,6 +655,7 @@
         },
         "depth": {
             "add_title": "Add depth",
+            "edit_title": "Depth Options",
             "data_inputs_title": "Show/hide soil observations",
             "label_help": "{{max}} characters max",
             "label_placeholder": "Label",
