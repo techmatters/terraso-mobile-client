@@ -26,29 +26,35 @@ import {
   DepthFormInput,
   DepthTextInputs,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
+import {RequiredInputToggles} from 'terraso-mobile-client/components/form/depthInterval/RequiredInputToggles';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
   DepthInterval,
-  LabelledDepthInterval,
+  SoilPitMethod,
+  updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {AddSoilDepthButton} from 'terraso-mobile-client/screens/SoilScreen/components/AddSoilDepthButton';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 type Props = {
-  onSubmit: (_: LabelledDepthInterval) => Promise<void>;
+  siteId: string;
   existingDepths: {depthInterval: DepthInterval}[];
+  requiredInputs: SoilPitMethod[];
 };
 
 export const AddDepthOverlaySheet = ({
-  onSubmit: parentOnSubmit,
+  siteId,
   existingDepths,
+  requiredInputs,
 }: Props) => {
   const {t} = useTranslation();
   // TODO-cknipe: Rename a bunch of modal stuff
   // Do we want to not use ModalHandle type here?
   const modalRef = useRef<ModalHandle>(null);
+  const dispatch = useDispatch();
   const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
 
   const schema = useMemo(
@@ -56,11 +62,21 @@ export const AddDepthOverlaySheet = ({
     [t, existingDepths],
   );
 
-  const onSubmit = async (values: DepthFormInput) => {
-    const {label, ...depthInterval} = schema.cast(values);
-    await parentOnSubmit({label: label ?? '', depthInterval});
-    onClose();
-  };
+  const onSubmit = useCallback(
+    async (values: DepthFormInput) => {
+      // TODO-cknipe: Adding depth doesn't yet respect requiredInput toggles
+      const {label, ...depthInterval} = schema.cast(values);
+      await dispatch(
+        updateSoilDataDepthInterval({
+          siteId,
+          label: label ?? '',
+          depthInterval,
+        }),
+      );
+      onClose();
+    },
+    [siteId, dispatch, onClose, schema],
+  );
 
   return (
     <InfoSheet
@@ -78,6 +94,7 @@ export const AddDepthOverlaySheet = ({
         {({handleSubmit, isValid, isSubmitting, dirty}) => (
           <>
             <DepthTextInputs />
+            <RequiredInputToggles requiredInputs={requiredInputs} />
             <Box height="50px" />
             <ContainedButton
               size="lg"

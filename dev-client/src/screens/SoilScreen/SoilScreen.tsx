@@ -38,11 +38,9 @@ import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
-  LabelledDepthInterval,
   methodRequired,
   soilPitMethods,
   updateSoilData,
-  updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AddDepthOverlaySheet} from 'terraso-mobile-client/screens/SoilScreen/components/AddDepthOverlaySheet';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
@@ -72,13 +70,6 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   );
 
   const dispatch = useDispatch();
-
-  const onAddDepth = useCallback(
-    async (interval: LabelledDepthInterval) => {
-      await dispatch(updateSoilDataDepthInterval({siteId, ...interval}));
-    },
-    [siteId, dispatch],
-  );
 
   const updateSoilDataDepthPreset = useCallback(
     (newDepthPreset: SoilIdSoilDataDepthIntervalPresetChoices) => {
@@ -135,8 +126,9 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
           ))}
           <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
             <AddDepthOverlaySheet
-              onSubmit={onAddDepth}
+              siteId={siteId}
               existingDepths={existingDepths}
+              requiredInputs={projectRequiredInputs}
             />
           </RestrictBySiteRole>
         </ScrollView>
