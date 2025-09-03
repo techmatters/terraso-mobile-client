@@ -21,7 +21,7 @@ import {FormControl} from 'native-base';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {DEPTH_LABEL_MAX_LENGTH} from 'terraso-mobile-client/constants';
 
 export type DepthFormInput = {
@@ -29,6 +29,8 @@ export type DepthFormInput = {
   start: string;
   end: string;
 };
+
+const VerticalSpacer = () => <Box marginTop="20px" />;
 
 export const DepthForm = () => {
   const {t} = useTranslation();
@@ -49,32 +51,32 @@ export const DepthForm = () => {
           })}
         </FormControl.HelperText>
       </FormControl>
-      <Row justifyContent="space-between" space="40px" pt="20px">
-        <Box flex={1}>
-          <FormInput
-            name="start"
-            keyboardType="numeric"
-            placeholder={t('soil.depth.start_label', {
-              units: 'cm',
-            })}
-            textInputLabel={t('soil.depth.start_label', {
-              units: 'cm',
-            })}
-          />
-        </Box>
-        <Box flex={1}>
-          <FormInput
-            name="end"
-            keyboardType="numeric"
-            placeholder={t('soil.depth.end_label', {
-              units: 'cm',
-            })}
-            textInputLabel={t('soil.depth.end_label', {
-              units: 'cm',
-            })}
-          />
-        </Box>
-      </Row>
+      <VerticalSpacer />
+      <Box flex={1}>
+        <FormInput
+          name="start"
+          keyboardType="numeric"
+          placeholder={t('soil.depth.start_label', {
+            units: 'cm',
+          })}
+          textInputLabel={t('soil.depth.start_label', {
+            units: 'cm',
+          })}
+        />
+      </Box>
+      <VerticalSpacer />
+      <Box flex={1}>
+        <FormInput
+          name="end"
+          keyboardType="numeric"
+          placeholder={t('soil.depth.end_label', {
+            units: 'cm',
+          })}
+          textInputLabel={t('soil.depth.end_label', {
+            units: 'cm',
+          })}
+        />
+      </Box>
     </>
   );
 };

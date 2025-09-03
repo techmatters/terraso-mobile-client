@@ -22,7 +22,6 @@ import {ScrollView} from 'native-base';
 
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
@@ -30,7 +29,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
   Heading,
@@ -46,7 +44,7 @@ import {
   updateSoilData,
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
-import {AddSoilDepthButton} from 'terraso-mobile-client/screens/SoilScreen/components/AddSoilDepthButton';
+import {AddDepthOverlaySheet} from 'terraso-mobile-client/screens/SoilScreen/components/AddDepthOverlaySheet';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
@@ -136,16 +134,10 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
             />
           ))}
           <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-            <Modal
-              trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
-              Header={
-                <Heading variant="h6">{t('soil.depth.add_title')}</Heading>
-              }>
-              <AddDepthModalBody
-                onSubmit={onAddDepth}
-                existingDepths={existingDepths}
-              />
-            </Modal>
+            <AddDepthOverlaySheet
+              onSubmit={onAddDepth}
+              existingDepths={existingDepths}
+            />
           </RestrictBySiteRole>
         </ScrollView>
       )}
