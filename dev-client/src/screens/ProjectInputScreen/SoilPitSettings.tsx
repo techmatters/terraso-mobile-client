@@ -18,28 +18,19 @@
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
-import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {
-  Modal,
-  ModalHandle,
-} from 'terraso-mobile-client/components/modals/Modal';
-import {
-  Box,
-  Heading,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   DEPTH_PRESETS,
-  LabelledDepthInterval,
   ProjectDepthIntervalPreset,
-  updateProjectDepthInterval,
   updateProjectSoilSettings,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {AddProjectDepthOverlaySheet} from 'terraso-mobile-client/screens/ProjectInputScreen/AddProjectDepthOverlaySheet';
 import {DepthTable} from 'terraso-mobile-client/screens/ProjectInputScreen/DepthTable';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
@@ -59,13 +50,6 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
   );
 
   const isCustom = settings.depthIntervalPreset === 'CUSTOM';
-
-  const onAddDepth = useCallback(
-    async (interval: LabelledDepthInterval) => {
-      await dispatch(updateProjectDepthInterval({projectId, ...interval}));
-    },
-    [projectId, dispatch],
-  );
 
   const onChangeDepthPreset = useCallback(() => {
     dispatch(
@@ -124,22 +108,10 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
       )}
       {isCustom && (
         <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
-          <Modal
-            trigger={onOpen => (
-              <ContainedButton
-                onPress={onOpen}
-                leftIcon="add"
-                label={t('soil.add_depth_label')}
-              />
-            )}
-            Header={
-              <Heading variant="h6">{t('soil.depth.add_title')}</Heading>
-            }>
-            <AddDepthModalBody
-              onSubmit={onAddDepth}
-              existingDepths={settings.depthIntervals}
-            />
-          </Modal>
+          <AddProjectDepthOverlaySheet
+            projectId={projectId}
+            existingDepths={settings.depthIntervals}
+          />
         </RestrictByProjectRole>
       )}
     </Box>
