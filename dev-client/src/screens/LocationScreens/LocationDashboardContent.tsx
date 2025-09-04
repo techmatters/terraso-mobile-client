@@ -111,12 +111,10 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
           label={t('geo.longitude.title')}
           value={formatCoordinate(coords?.longitude)}
         />
-        {elevation && (
-          <LocationDetail
-            label={t('geo.elevation.title')}
-            value={renderElevation(t, elevation)}
-          />
-        )}
+        <LocationDetail
+          label={t('geo.elevation.title')}
+          value={renderElevation(t, elevation)}
+        />
         {!site && (
           <Box>
             <Box paddingVertical="20px" alignItems="center">

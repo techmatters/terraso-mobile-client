@@ -18,6 +18,6 @@
 import {TFunction} from 'i18next';
 
 export const renderElevation = (t: TFunction, elevation: number | undefined) =>
-  elevation
+  elevation !== undefined
     ? t('site.elevation_value', {value: elevation.toFixed(0), units: 'm'})
     : t('site.elevation_unknown');
