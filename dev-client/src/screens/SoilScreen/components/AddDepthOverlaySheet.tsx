@@ -14,11 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
 import {useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
+import * as yup from 'yup';
+
+import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
+import {fromEntries} from 'terraso-client-shared/utils';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
@@ -26,17 +29,21 @@ import {
   DepthFormInput,
   DepthTextInputs,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
-import {RequiredInputToggles} from 'terraso-mobile-client/components/form/depthInterval/RequiredInputToggles';
+import {EnabledInputToggles} from 'terraso-mobile-client/components/form/depthInterval/EnabledInputToggles';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
   DepthInterval,
+  methodEnabled,
+  SoilDataDepthInterval,
   SoilPitMethod,
+  soilPitMethods,
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {AddSoilDepthButton} from 'terraso-mobile-client/screens/SoilScreen/components/AddSoilDepthButton';
+import {EnabledInputMethodsInput} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthOverlaySheet';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 type Props = {
@@ -44,6 +51,12 @@ type Props = {
   existingDepths: {depthInterval: DepthInterval}[];
   requiredInputs: SoilPitMethod[];
 };
+
+// TODO-cknipe: This is duplicated
+type EditDepthFormInput = DepthFormInput &
+  Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
+    applyToAll: boolean;
+  };
 
 export const AddDepthOverlaySheet = ({
   siteId,
@@ -57,25 +70,52 @@ export const AddDepthOverlaySheet = ({
   const dispatch = useDispatch();
   const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
 
+  //   const schema = useMemo(
+  //     () => depthSchema({t, existingDepths}),
+  //     [t, existingDepths],
+  //   );
+
+  // TODO-cknipe: Duplicated between Add/Edit
   const schema = useMemo(
-    () => depthSchema({t, existingDepths}),
+    () =>
+      depthSchema({t, existingDepths}).shape({
+        applyToAll: yup.boolean().required(),
+        ...fromEntries(
+          soilPitMethods
+            .map(methodEnabled)
+            .map(method => [method, yup.boolean().required()]),
+          // TODO-cknipe: optional would enable the button...?
+        ),
+      }),
     [t, existingDepths],
   );
 
+  const initiallyEnabledInputs = {} as EnabledInputMethodsInput;
+  soilPitMethods.forEach(method => {
+    const enabledName = methodEnabled(method);
+    initiallyEnabledInputs[enabledName] = requiredInputs.includes(method);
+  });
+
+  // TODO-cknipe: Duplicated between Add/Edit
   const onSubmit = useCallback(
     async (values: DepthFormInput) => {
-      // TODO-cknipe: Adding depth doesn't yet respect requiredInput toggles
-      const {label, ...depthInterval} = schema.cast(values);
-      await dispatch(
-        updateSoilDataDepthInterval({
-          siteId,
-          label: label ?? '',
-          depthInterval,
-        }),
-      );
+      // --> TODO-cknipe: Why is isValid false??
+      const {label, start, end, applyToAll, ...enabledInputs} =
+        schema.cast(values);
+
+      const input: SoilDataUpdateDepthIntervalMutationInput = {
+        siteId,
+        applyToIntervals: applyToAll
+          ? existingDepths.map(depth => depth.depthInterval)
+          : undefined,
+        label,
+        ...enabledInputs,
+        depthInterval: {start, end},
+      };
+      await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
-    [siteId, dispatch, onClose, schema],
+    [siteId, dispatch, onClose, schema, existingDepths],
   );
 
   return (
@@ -83,27 +123,32 @@ export const AddDepthOverlaySheet = ({
       ref={modalRef}
       trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
       heading={<TranslatedHeading i18nKey="soil.depth.add_title" />}>
-      <Formik<DepthFormInput>
+      {/* // TODO-cknipe: This used to be DepthFormInput */}
+      <Formik<EditDepthFormInput>
         validationSchema={schema}
         initialValues={{
           label: '',
           start: '',
           end: '',
+          applyToAll: false,
+          ...initiallyEnabledInputs,
         }}
         onSubmit={onSubmit}>
-        {({handleSubmit, isValid, isSubmitting, dirty}) => (
-          <>
-            <DepthTextInputs />
-            <RequiredInputToggles requiredInputs={requiredInputs} />
-            <Box height="50px" />
-            <ContainedButton
-              size="lg"
-              onPress={() => handleSubmit()}
-              disabled={!isValid || isSubmitting || !dirty}
-              label={t('general.add')}
-            />
-          </>
-        )}
+        {({handleSubmit, isValid, isSubmitting, dirty}) => {
+          return (
+            <>
+              <DepthTextInputs />
+              <EnabledInputToggles requiredInputs={requiredInputs} />
+              <Box height="50px" />
+              <ContainedButton
+                size="lg"
+                onPress={() => handleSubmit()}
+                disabled={!isValid || isSubmitting || !dirty}
+                label={t('general.add')}
+              />
+            </>
+          );
+        }}
       </Formik>
     </InfoSheet>
   );

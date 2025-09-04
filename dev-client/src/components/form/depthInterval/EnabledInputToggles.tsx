@@ -42,7 +42,7 @@ type SoilMethodTogglesProps = {
   requiredInputs: SoilPitMethod[];
 };
 
-export const RequiredInputToggles = ({
+export const EnabledInputToggles = ({
   requiredInputs,
 }: SoilMethodTogglesProps) => {
   const {t, i18n} = useTranslation();

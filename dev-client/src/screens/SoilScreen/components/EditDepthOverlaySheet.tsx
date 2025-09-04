@@ -32,7 +32,7 @@ import {
   DepthFormInput,
   DepthTextInputs,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
-import {RequiredInputToggles} from 'terraso-mobile-client/components/form/depthInterval/RequiredInputToggles';
+import {EnabledInputToggles} from 'terraso-mobile-client/components/form/depthInterval/EnabledInputToggles';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
@@ -50,8 +50,13 @@ import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
 
+// TODO-cknipe: Move to common file
+export type EnabledInputMethodsInput = Omit<
+  SoilDataDepthInterval,
+  'label' | 'depthInterval'
+>;
 type EditDepthFormInput = DepthFormInput &
-  Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
+  EnabledInputMethodsInput & {
     applyToAll: boolean;
   };
 
@@ -106,6 +111,7 @@ export const EditDepthOverlaySheet = ({
         start: newStart,
         end: newEnd,
         applyToAll,
+        label,
         ...enabledInputs
       } = schema.cast(values);
 
@@ -114,6 +120,7 @@ export const EditDepthOverlaySheet = ({
         applyToIntervals: applyToAll
           ? existingDepths.map(depth => depth.depthInterval)
           : undefined,
+        label,
         ...enabledInputs,
         depthInterval: {start: newStart, end: newEnd},
       };
@@ -168,7 +175,7 @@ export const EditDepthOverlaySheet = ({
               {mutable && <DepthTextInputs />}
 
               {/* TODO-cknipe: Is it ok to include the "Show/hide soil observations" title if not mutable? */}
-              <RequiredInputToggles requiredInputs={requiredInputs} />
+              <EnabledInputToggles requiredInputs={requiredInputs} />
 
               <Row justifyContent="flex-end" alignItems="center" space={5}>
                 <ConfirmEditingModal
