@@ -15,21 +15,22 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo, useState} from 'react';
+import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
-import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {useModal} from 'terraso-mobile-client/components/modals/Modal';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
   Column,
-  Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {updateSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {
   degreeToPercent,
@@ -47,9 +48,13 @@ type FormInput = {
   slopeSteepnessDegree: string | undefined;
 };
 
-export const ManualSteepnessModal = ({siteId}: Props) => {
+/* For manual steepness entry */
+export const SteepnessFormSheet = ({siteId}: Props) => {
   const {t} = useTranslation();
-  const onClose = useModal()!.onClose;
+  const modalRef = useRef<ModalHandle>(null);
+
+  const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
+
   const soilData = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
   const [lastTouched, setLastTouched] = useState<keyof FormInput | null>(null);
@@ -116,21 +121,26 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
   };
 
   return (
-    <Formik<FormInput>
-      validationSchema={schema}
-      initialValues={{
-        slopeSteepnessPercent: soilData.slopeSteepnessPercent?.toString(),
-        slopeSteepnessDegree: soilData.slopeSteepnessDegree?.toString(),
-      }}
-      onSubmit={onSubmit}
-      validateOnChange>
-      {({handleSubmit, isValid, isSubmitting, handleChange}) => (
-        <Column alignItems="center">
-          <Heading variant="h6" alignSelf="flex-start">
-            {t('slope.steepness.manual_help')}
-          </Heading>
-          <Box height="30px" />
-          <Row justifyContent="space-between" space="40px">
+    <InfoSheet
+      ref={modalRef}
+      trigger={onOpen => (
+        <ContainedButton
+          onPress={onOpen}
+          rightIcon="chevron-right"
+          label={t('slope.steepness.manual_label')}
+        />
+      )}
+      heading={<TranslatedHeading i18nKey="slope.steepness.manual_help" />}>
+      <Formik<FormInput>
+        validationSchema={schema}
+        initialValues={{
+          slopeSteepnessPercent: soilData.slopeSteepnessPercent?.toString(),
+          slopeSteepnessDegree: soilData.slopeSteepnessDegree?.toString(),
+        }}
+        onSubmit={onSubmit}
+        validateOnChange>
+        {({handleSubmit, isValid, isSubmitting, handleChange}) => (
+          <Column>
             <Box flex={1}>
               <FormInput
                 keyboardType="numeric"
@@ -159,6 +169,7 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 }}
               />
             </Box>
+            <Box height="20px" />
             <Box flex={1}>
               <FormInput
                 keyboardType="numeric"
@@ -187,15 +198,18 @@ export const ManualSteepnessModal = ({siteId}: Props) => {
                 }}
               />
             </Box>
-          </Row>
-          <Box height="25px" />
-          <DialogButton
-            onPress={handleSubmit}
-            label={t('general.save')}
-            disabled={!isValid || isSubmitting}
-          />
-        </Column>
-      )}
-    </Formik>
+            <Box height="25px" />
+            <Row justifyContent="flex-end" alignItems="center" space={5}>
+              <ContainedButton
+                size="lg"
+                onPress={handleSubmit}
+                label={t('general.save')}
+                disabled={!isValid || isSubmitting}
+              />
+            </Row>
+          </Column>
+        )}
+      </Formik>
+    </InfoSheet>
   );
 };

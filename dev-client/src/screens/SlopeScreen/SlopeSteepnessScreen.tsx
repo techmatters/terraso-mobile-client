@@ -35,10 +35,7 @@ import {
   radioImage,
 } from 'terraso-mobile-client/components/ImageRadio';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {
-  Modal,
-  ModalHandle,
-} from 'terraso-mobile-client/components/modals/Modal';
+import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
   Column,
@@ -56,7 +53,7 @@ import {updateSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {ManualSteepnessModal} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessModal';
+import {SteepnessFormSheet} from 'terraso-mobile-client/screens/SlopeScreen/components/SteepnessFormSheet';
 import {
   renderSlopeSteepnessSelectInline,
   renderSteepness,
@@ -169,16 +166,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
                   </Text>
                   <Box height="30px" />
                   <Row justifyContent="space-between">
-                    <Modal
-                      trigger={onOpen => (
-                        <ContainedButton
-                          onPress={onOpen}
-                          rightIcon="chevron-right"
-                          label={t('slope.steepness.manual_label')}
-                        />
-                      )}>
-                      <ManualSteepnessModal siteId={siteId} />
-                    </Modal>
+                    <SteepnessFormSheet siteId={siteId} />
                     <ContainedButton
                       rightIcon="chevron-right"
                       onPress={onMeter}
