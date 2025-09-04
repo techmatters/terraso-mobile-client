@@ -654,7 +654,7 @@
             "CUSTOM": "Custom"
         },
         "depth": {
-            "add_title": "Add depth",
+            "add_title": "Add Depth",
             "edit_title": "Depth Options",
             "data_inputs_title": "Show/hide soil observations",
             "label_help": "{{max}} characters max",
