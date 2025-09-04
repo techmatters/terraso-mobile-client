@@ -31,7 +31,7 @@ import {
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {EnabledInputToggles} from 'terraso-mobile-client/components/form/depthInterval/EnabledInputToggles';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
-import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
   DepthInterval,
@@ -139,13 +139,14 @@ export const AddDepthOverlaySheet = ({
             <>
               <DepthTextInputs />
               <EnabledInputToggles requiredInputs={requiredInputs} />
-              <Box height="50px" />
-              <ContainedButton
-                size="lg"
-                onPress={() => handleSubmit()}
-                disabled={!isValid || isSubmitting || !dirty}
-                label={t('general.add')}
-              />
+              <Row justifyContent="flex-end" alignItems="center" space={5}>
+                <ContainedButton
+                  size="lg"
+                  onPress={() => handleSubmit()}
+                  disabled={!isValid || isSubmitting || !dirty}
+                  label={t('general.save')}
+                />
+              </Row>
             </>
           );
         }}

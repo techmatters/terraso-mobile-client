@@ -77,6 +77,7 @@ export const DepthTextInputs = () => {
           })}
         />
       </Box>
+      <Box height="10px" />
     </>
   );
 };
