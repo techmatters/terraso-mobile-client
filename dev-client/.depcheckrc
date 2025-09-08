@@ -4,6 +4,8 @@
     "@babel/preset-env",
     "@babel/preset-typescript",
     "@babel/runtime",
+    "@commitlint/cli",
+    "@commitlint/config-conventional",
     "@ianvs/prettier-plugin-sort-imports",
     "@react-native-community/cli-doctor",
     "@reduxjs/toolkit",
