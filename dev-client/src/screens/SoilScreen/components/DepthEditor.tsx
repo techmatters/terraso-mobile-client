@@ -16,6 +16,7 @@
  */
 import {useTranslation} from 'react-i18next';
 
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
   Heading,
   Row,
@@ -55,6 +56,14 @@ export const DepthEditor = ({
           depthInterval={interval.depthInterval}
           requiredInputs={requiredInputs}
           mutable={!isFromPreset}
+          trigger={onOpen => (
+            <IconButton
+              type="sm"
+              variant="light"
+              name="more-vert"
+              onPress={onOpen}
+            />
+          )}
         />
       </RestrictBySiteRole>
     </Row>

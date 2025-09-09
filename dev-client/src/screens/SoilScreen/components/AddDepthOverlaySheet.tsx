@@ -30,7 +30,10 @@ import {
   DepthTextInputs,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {EnabledInputToggles} from 'terraso-mobile-client/components/form/depthInterval/EnabledInputToggles';
-import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {
+  ModalHandle,
+  ModalTrigger,
+} from 'terraso-mobile-client/components/modals/Modal';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
@@ -42,7 +45,6 @@ import {
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
-import {AddSoilDepthButton} from 'terraso-mobile-client/screens/SoilScreen/components/AddSoilDepthButton';
 import {EnabledInputMethodsInput} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthOverlaySheet';
 import {useDispatch} from 'terraso-mobile-client/store';
 
@@ -50,6 +52,7 @@ type Props = {
   siteId: string;
   existingDepths: {depthInterval: DepthInterval}[];
   requiredInputs: SoilPitMethod[];
+  trigger: ModalTrigger;
 };
 
 // TODO-cknipe: This is duplicated
@@ -62,6 +65,7 @@ export const AddDepthOverlaySheet = ({
   siteId,
   existingDepths,
   requiredInputs,
+  trigger,
 }: Props) => {
   const {t} = useTranslation();
   // TODO-cknipe: Rename a bunch of modal stuff
@@ -121,7 +125,7 @@ export const AddDepthOverlaySheet = ({
   return (
     <InfoSheet
       ref={modalRef}
-      trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
+      trigger={trigger}
       heading={<TranslatedHeading i18nKey="soil.depth.add_title" />}>
       {/* // TODO-cknipe: This used to be DepthFormInput */}
       <Formik<EditDepthFormInput>

@@ -166,7 +166,16 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
                   </Text>
                   <Box height="30px" />
                   <Row justifyContent="space-between">
-                    <SteepnessFormSheet siteId={siteId} />
+                    <SteepnessFormSheet
+                      siteId={siteId}
+                      trigger={onOpen => (
+                        <ContainedButton
+                          onPress={onOpen}
+                          rightIcon="chevron-right"
+                          label={t('slope.steepness.manual_label')}
+                        />
+                      )}
+                    />
                     <ContainedButton
                       rightIcon="chevron-right"
                       onPress={onMeter}

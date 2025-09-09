@@ -24,7 +24,10 @@ import * as yup from 'yup';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {
+  ModalHandle,
+  ModalTrigger,
+} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
   Column,
@@ -41,6 +44,7 @@ import {selectSoilData} from 'terraso-mobile-client/store/selectors';
 
 type Props = {
   siteId: string;
+  trigger: ModalTrigger;
 };
 
 type FormInput = {
@@ -49,7 +53,7 @@ type FormInput = {
 };
 
 /* For manual steepness entry */
-export const SteepnessFormSheet = ({siteId}: Props) => {
+export const SteepnessFormSheet = ({siteId, trigger}: Props) => {
   const {t} = useTranslation();
   const modalRef = useRef<ModalHandle>(null);
 
@@ -123,13 +127,7 @@ export const SteepnessFormSheet = ({siteId}: Props) => {
   return (
     <InfoSheet
       ref={modalRef}
-      trigger={onOpen => (
-        <ContainedButton
-          onPress={onOpen}
-          rightIcon="chevron-right"
-          label={t('slope.steepness.manual_label')}
-        />
-      )}
+      trigger={trigger}
       heading={<TranslatedHeading i18nKey="slope.steepness.manual_help" />}>
       <Formik<FormInput>
         validationSchema={schema}

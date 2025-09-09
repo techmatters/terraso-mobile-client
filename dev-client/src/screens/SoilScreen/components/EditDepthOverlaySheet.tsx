@@ -24,7 +24,6 @@ import * as yup from 'yup';
 import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {fromEntries} from 'terraso-client-shared/utils';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {ConfirmEditingModal} from 'terraso-mobile-client/components/form/depthInterval/ConfirmEditingModal';
 import {DeleteDepthButton} from 'terraso-mobile-client/components/form/depthInterval/DeleteDepthButton';
@@ -33,7 +32,10 @@ import {
   DepthTextInputs,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {EnabledInputToggles} from 'terraso-mobile-client/components/form/depthInterval/EnabledInputToggles';
-import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {
+  ModalHandle,
+  ModalTrigger,
+} from 'terraso-mobile-client/components/modals/Modal';
 import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
@@ -63,8 +65,9 @@ type EditDepthFormInput = DepthFormInput &
 type Props = {
   siteId: string;
   depthInterval: DepthInterval;
-  mutable: boolean;
   requiredInputs: SoilPitMethod[];
+  mutable: boolean;
+  trigger: ModalTrigger;
 };
 
 export const EditDepthOverlaySheet = ({
@@ -72,6 +75,7 @@ export const EditDepthOverlaySheet = ({
   depthInterval,
   requiredInputs,
   mutable,
+  trigger,
 }: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
@@ -151,14 +155,7 @@ export const EditDepthOverlaySheet = ({
   return (
     <InfoSheet
       ref={modalRef}
-      trigger={onOpen => (
-        <IconButton
-          type="sm"
-          variant="light"
-          name="more-vert"
-          onPress={onOpen}
-        />
-      )}
+      trigger={trigger}
       heading={<TranslatedHeading i18nKey="soil.depth.edit_title" />}>
       <Formik
         validationSchema={schema}

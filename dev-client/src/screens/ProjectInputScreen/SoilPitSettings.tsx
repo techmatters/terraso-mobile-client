@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
@@ -111,6 +111,13 @@ export const SoilPitSettings = ({projectId}: {projectId: string}) => {
           <AddProjectDepthOverlaySheet
             projectId={projectId}
             existingDepths={settings.depthIntervals}
+            trigger={onOpen => (
+              <ContainedButton
+                onPress={onOpen}
+                leftIcon="add"
+                label={t('soil.add_depth_label')}
+              />
+            )}
           />
         </RestrictByProjectRole>
       )}

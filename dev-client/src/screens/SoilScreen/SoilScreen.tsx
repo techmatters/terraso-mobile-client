@@ -43,6 +43,7 @@ import {
   updateSoilData,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AddDepthOverlaySheet} from 'terraso-mobile-client/screens/SoilScreen/components/AddDepthOverlaySheet';
+import {AddSoilDepthButton} from 'terraso-mobile-client/screens/SoilScreen/components/AddSoilDepthButton';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
 import {SoilSurfaceStatus} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceStatus';
@@ -129,6 +130,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               siteId={siteId}
               existingDepths={existingDepths}
               requiredInputs={projectRequiredInputs}
+              trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
             />
           </RestrictBySiteRole>
         </ScrollView>

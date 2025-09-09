@@ -25,7 +25,10 @@ import {
   DepthFormInput,
   DepthTextInputs,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
-import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+import {
+  ModalHandle,
+  ModalTrigger,
+} from 'terraso-mobile-client/components/modals/Modal';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
@@ -38,11 +41,13 @@ import {useDispatch} from 'terraso-mobile-client/store';
 type Props = {
   projectId: string;
   existingDepths: {depthInterval: DepthInterval}[];
+  trigger: ModalTrigger;
 };
 
 export const AddProjectDepthOverlaySheet = ({
   projectId,
   existingDepths,
+  trigger,
 }: Props) => {
   const {t} = useTranslation();
   // TODO-cknipe: Rename a bunch of modal stuff
@@ -74,13 +79,7 @@ export const AddProjectDepthOverlaySheet = ({
   return (
     <InfoSheet
       ref={modalRef}
-      trigger={onOpen => (
-        <ContainedButton
-          onPress={onOpen}
-          leftIcon="add"
-          label={t('soil.add_depth_label')}
-        />
-      )}
+      trigger={trigger}
       heading={<TranslatedHeading i18nKey="soil.depth.add_title" />}>
       <Formik<DepthFormInput>
         validationSchema={schema}
