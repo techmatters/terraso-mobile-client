@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
@@ -27,6 +28,7 @@ import {soilPitMethods} from 'terraso-mobile-client/model/soilData/soilDataSlice
 import {EditDepthOverlaySheet} from 'terraso-mobile-client/screens/SoilScreen/components/EditDepthOverlaySheet';
 import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {AggregatedInterval} from 'terraso-mobile-client/store/depthIntervalHelpers';
+import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
 
 export type DepthEditorProps = {
   siteId: string;
@@ -36,10 +38,16 @@ export type DepthEditorProps = {
 
 export const DepthEditor = ({
   siteId,
-  aggregatedInterval: {isFromPreset, interval},
+  aggregatedInterval,
   requiredInputs,
 }: DepthEditorProps) => {
   const {t} = useTranslation();
+
+  const allDepths = useSiteSoilIntervals(siteId);
+  const existingDepths = useMemo(
+    () => allDepths.map(({interval: depthInterval}) => depthInterval),
+    [allDepths],
+  );
 
   return (
     <Row
@@ -48,14 +56,14 @@ export const DepthEditor = ({
       px="12px"
       py="8px">
       <Heading variant="h6" color="primary.contrast">
-        {renderDepth(t, interval)}
+        {renderDepth(t, aggregatedInterval.interval)}
       </Heading>
       <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <EditDepthOverlaySheet
           siteId={siteId}
-          depthInterval={interval.depthInterval}
+          thisInterval={aggregatedInterval}
+          existingDepths={existingDepths}
           requiredInputs={requiredInputs}
-          mutable={!isFromPreset}
           trigger={onOpen => (
             <IconButton
               type="sm"

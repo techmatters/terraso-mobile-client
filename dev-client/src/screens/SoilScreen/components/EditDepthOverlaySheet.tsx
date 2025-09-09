@@ -50,7 +50,7 @@ import {
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {useDispatch} from 'terraso-mobile-client/store';
-import {useSiteSoilIntervals} from 'terraso-mobile-client/store/selectors';
+import {AggregatedInterval} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
 // TODO-cknipe: Move to common file
 export type EnabledInputMethodsInput = Omit<
@@ -64,40 +64,37 @@ type EditDepthFormInput = DepthFormInput &
 
 type Props = {
   siteId: string;
-  depthInterval: DepthInterval;
+  thisInterval: AggregatedInterval;
+  existingDepths: {depthInterval: DepthInterval}[];
   requiredInputs: SoilPitMethod[];
-  mutable: boolean;
   trigger: ModalTrigger;
 };
 
 export const EditDepthOverlaySheet = ({
   siteId,
-  depthInterval,
+  thisInterval,
+  existingDepths,
   requiredInputs,
-  mutable,
   trigger,
 }: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const modalRef = useRef<ModalHandle>(null);
   const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
+  const mutable = !thisInterval.isFromPreset;
+  const thisDepthInterval = thisInterval.interval.depthInterval;
 
-  const allDepths = useSiteSoilIntervals(siteId);
-  const thisDepth = allDepths
-    .map(({interval}) => interval)
-    .find(sameDepth({depthInterval}))!;
-
-  const existingDepths = useMemo(
+  const otherExistingDepths = useMemo(
     () =>
-      allDepths
-        .map(({interval}) => interval)
-        .filter(interval => !sameDepth(thisDepth)(interval)),
-    [allDepths, thisDepth],
+      existingDepths.filter(
+        existingInterval => !sameDepth(thisInterval.interval)(existingInterval),
+      ),
+    [thisInterval, existingDepths],
   );
 
   const schema = useMemo(
     () =>
-      depthSchema({t, existingDepths}).shape({
+      depthSchema({t, existingDepths: otherExistingDepths}).shape({
         applyToAll: yup.boolean().required(),
         ...fromEntries(
           soilPitMethods
@@ -105,12 +102,12 @@ export const EditDepthOverlaySheet = ({
             .map(method => [method, yup.boolean().required()]),
         ),
       }),
-    [t, existingDepths],
+    [t, otherExistingDepths],
   );
 
   const onSubmit = useCallback(
     async (values: EditDepthFormInput) => {
-      const {start, end} = depthInterval;
+      const {start, end} = thisDepthInterval;
       const {
         start: newStart,
         end: newEnd,
@@ -122,7 +119,7 @@ export const EditDepthOverlaySheet = ({
       const input: SoilDataUpdateDepthIntervalMutationInput = {
         siteId,
         applyToIntervals: applyToAll
-          ? existingDepths.map(depth => depth.depthInterval)
+          ? otherExistingDepths.map(depth => depth.depthInterval)
           : undefined,
         label,
         ...enabledInputs,
@@ -132,25 +129,25 @@ export const EditDepthOverlaySheet = ({
         await dispatch(
           deleteSoilDataDepthInterval({
             siteId,
-            depthInterval,
+            depthInterval: thisDepthInterval,
           }),
         );
       }
       await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
-    [schema, dispatch, onClose, siteId, depthInterval, existingDepths],
+    [schema, dispatch, onClose, siteId, thisDepthInterval, otherExistingDepths],
   );
 
   const deleteDepth = useCallback(() => {
     dispatch(
       deleteSoilDataDepthInterval({
         siteId,
-        depthInterval,
+        depthInterval: thisDepthInterval,
       }),
     );
     onClose();
-  }, [dispatch, depthInterval, siteId, onClose]);
+  }, [dispatch, thisDepthInterval, siteId, onClose]);
 
   return (
     <InfoSheet
@@ -160,10 +157,11 @@ export const EditDepthOverlaySheet = ({
       <Formik
         validationSchema={schema}
         initialValues={{
-          ...thisDepth,
-          start: String(depthInterval.start),
-          end: String(depthInterval.end),
+          start: String(thisDepthInterval.start),
+          end: String(thisDepthInterval.end),
           applyToAll: false,
+          // includes label and required methods
+          ...thisInterval.interval,
         }}
         onSubmit={onSubmit}>
         {({handleSubmit, isValid, isSubmitting, dirty}) => {
@@ -178,7 +176,7 @@ export const EditDepthOverlaySheet = ({
                 <ConfirmEditingModal
                   formNotReady={!isValid || isSubmitting || !dirty}
                   handleSubmit={handleSubmit}
-                  interval={depthInterval}
+                  interval={thisDepthInterval}
                 />
               </Row>
 
