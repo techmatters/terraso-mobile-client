@@ -28,8 +28,8 @@ import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/Dele
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
-  DepthFormInput,
-  DepthTextInputs,
+  DepthTextForm,
+  DepthTextFormInput,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
@@ -65,7 +65,7 @@ import {
   SWITCH_VERTICAL_PADDING,
 } from 'terraso-mobile-client/theme';
 
-type EditDepthFormInput = DepthFormInput &
+type EditDepthFormInput = DepthTextFormInput &
   Omit<SoilDataDepthInterval, 'label' | 'depthInterval'> & {
     applyToAll: boolean;
   };
@@ -187,7 +187,7 @@ export const EditDepthModal = ({
             {mutable && (
               <>
                 <Box pl="2px" mb="11px">
-                  <DepthTextInputs />
+                  <DepthTextForm />
                 </Box>
                 <Heading variant="h6" mt="11px" mb="11px">
                   {t('soil.depth.data_inputs_title')}

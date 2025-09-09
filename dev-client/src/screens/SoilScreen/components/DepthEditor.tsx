@@ -62,7 +62,7 @@ export const DepthEditor = ({
         <EditDepthOverlaySheet
           siteId={siteId}
           thisInterval={aggregatedInterval}
-          existingDepths={existingDepths}
+          allExistingDepths={existingDepths}
           requiredInputs={requiredInputs}
           trigger={onOpen => (
             <IconButton

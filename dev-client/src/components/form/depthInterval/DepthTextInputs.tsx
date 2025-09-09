@@ -24,7 +24,7 @@ import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFi
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {DEPTH_LABEL_MAX_LENGTH} from 'terraso-mobile-client/constants';
 
-export type DepthFormInput = {
+export type DepthTextFormInput = {
   label: string;
   start: string;
   end: string;
@@ -32,7 +32,7 @@ export type DepthFormInput = {
 
 const VerticalSpacer = () => <Box marginTop="20px" />;
 
-export const DepthTextInputs = () => {
+export const DepthTextForm = () => {
   const {t} = useTranslation();
   const {value: label} = useFieldContext('label');
   return (

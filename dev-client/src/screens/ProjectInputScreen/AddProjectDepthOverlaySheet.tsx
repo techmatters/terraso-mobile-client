@@ -22,8 +22,8 @@ import {Formik} from 'formik';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
-  DepthFormInput,
-  DepthTextInputs,
+  DepthTextForm,
+  DepthTextFormInput,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {
   ModalHandle,
@@ -50,11 +50,12 @@ export const AddProjectDepthOverlaySheet = ({
   trigger,
 }: Props) => {
   const {t} = useTranslation();
-  // TODO-cknipe: Rename a bunch of modal stuff
-  // Do we want to not use ModalHandle type here?
-  const modalRef = useRef<ModalHandle>(null);
+  const overlayRef = useRef<ModalHandle>(null);
   const dispatch = useDispatch();
-  const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
+  const onClose = useCallback(
+    () => overlayRef.current?.onClose(),
+    [overlayRef],
+  );
 
   const schema = useMemo(
     () => depthSchema({t, existingDepths}),
@@ -62,7 +63,7 @@ export const AddProjectDepthOverlaySheet = ({
   );
 
   const onSubmit = useCallback(
-    async (values: DepthFormInput) => {
+    async (values: DepthTextFormInput) => {
       const {label, ...depthInterval} = schema.cast(values);
       await dispatch(
         updateProjectDepthInterval({
@@ -78,10 +79,10 @@ export const AddProjectDepthOverlaySheet = ({
 
   return (
     <InfoSheet
-      ref={modalRef}
+      ref={overlayRef}
       trigger={trigger}
       heading={<TranslatedHeading i18nKey="soil.depth.add_title" />}>
-      <Formik<DepthFormInput>
+      <Formik<DepthTextFormInput>
         validationSchema={schema}
         initialValues={{
           label: '',
@@ -92,7 +93,7 @@ export const AddProjectDepthOverlaySheet = ({
         {({handleSubmit, isValid, isSubmitting, dirty}) => {
           return (
             <>
-              <DepthTextInputs />
+              <DepthTextForm />
               <Row justifyContent="flex-end" alignItems="center" space={5}>
                 <ContainedButton
                   size="lg"

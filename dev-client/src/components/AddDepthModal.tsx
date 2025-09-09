@@ -22,8 +22,8 @@ import {Formik} from 'formik';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
-  DepthFormInput,
-  DepthTextInputs,
+  DepthTextForm,
+  DepthTextFormInput,
 } from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -51,14 +51,14 @@ export const AddDepthModalBody = ({
     [t, existingDepths],
   );
 
-  const onSubmit = async (values: DepthFormInput) => {
+  const onSubmit = async (values: DepthTextFormInput) => {
     const {label, ...depthInterval} = schema.cast(values);
     await parentOnSubmit({label: label ?? '', depthInterval});
     onClose();
   };
 
   return (
-    <Formik<DepthFormInput>
+    <Formik<DepthTextFormInput>
       validationSchema={schema}
       initialValues={{
         label: '',
@@ -68,7 +68,7 @@ export const AddDepthModalBody = ({
       onSubmit={onSubmit}>
       {({handleSubmit, isValid, isSubmitting, dirty}) => (
         <>
-          <DepthTextInputs />
+          <DepthTextForm />
           <Box height="50px" />
           <ContainedButton
             size="lg"

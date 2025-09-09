@@ -19,18 +19,17 @@ import {useCallback, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
-import * as yup from 'yup';
-
-import {SoilDataUpdateDepthIntervalMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-import {fromEntries} from 'terraso-client-shared/utils';
 
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {ConfirmEditingModal} from 'terraso-mobile-client/components/form/depthInterval/ConfirmEditingModal';
 import {DeleteDepthButton} from 'terraso-mobile-client/components/form/depthInterval/DeleteDepthButton';
 import {
-  DepthFormInput,
-  DepthTextInputs,
-} from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
+  getDepthOverlaySheetSchema,
+  getInitialValuesForSiteEdit,
+  getUpdateDepthActionInputFromFormInput,
+  SiteDepthFormInput,
+} from 'terraso-mobile-client/components/form/depthInterval/depthOverlaySheetHelpers';
+import {DepthTextForm} from 'terraso-mobile-client/components/form/depthInterval/DepthTextInputs';
 import {EnabledInputToggles} from 'terraso-mobile-client/components/form/depthInterval/EnabledInputToggles';
 import {
   ModalHandle,
@@ -41,31 +40,17 @@ import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {
   deleteSoilDataDepthInterval,
   DepthInterval,
-  methodEnabled,
   sameDepth,
-  SoilDataDepthInterval,
   SoilPitMethod,
-  soilPitMethods,
   updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
-import {depthSchema} from 'terraso-mobile-client/schemas/depthSchema';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {AggregatedInterval} from 'terraso-mobile-client/store/depthIntervalHelpers';
-
-// TODO-cknipe: Move to common file
-export type EnabledInputMethodsInput = Omit<
-  SoilDataDepthInterval,
-  'label' | 'depthInterval'
->;
-type EditDepthFormInput = DepthFormInput &
-  EnabledInputMethodsInput & {
-    applyToAll: boolean;
-  };
 
 type Props = {
   siteId: string;
   thisInterval: AggregatedInterval;
-  existingDepths: {depthInterval: DepthInterval}[];
+  allExistingDepths: {depthInterval: DepthInterval}[];
   requiredInputs: SoilPitMethod[];
   trigger: ModalTrigger;
 };
@@ -73,59 +58,37 @@ type Props = {
 export const EditDepthOverlaySheet = ({
   siteId,
   thisInterval,
-  existingDepths,
+  allExistingDepths,
   requiredInputs,
   trigger,
 }: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const modalRef = useRef<ModalHandle>(null);
-  const onClose = useCallback(() => modalRef.current?.onClose(), [modalRef]);
-  const mutable = !thisInterval.isFromPreset;
-  const thisDepthInterval = thisInterval.interval.depthInterval;
+  const overlayRef = useRef<ModalHandle>(null);
+  const onClose = useCallback(
+    () => overlayRef.current?.onClose(),
+    [overlayRef],
+  );
 
+  const thisDepthInterval = thisInterval.interval.depthInterval;
   const otherExistingDepths = useMemo(
     () =>
-      existingDepths.filter(
+      allExistingDepths.filter(
         existingInterval => !sameDepth(thisInterval.interval)(existingInterval),
       ),
-    [thisInterval, existingDepths],
+    [thisInterval, allExistingDepths],
   );
 
-  const schema = useMemo(
-    () =>
-      depthSchema({t, existingDepths: otherExistingDepths}).shape({
-        applyToAll: yup.boolean().required(),
-        ...fromEntries(
-          soilPitMethods
-            .map(methodEnabled)
-            .map(method => [method, yup.boolean().required()]),
-        ),
-      }),
-    [t, otherExistingDepths],
-  );
+  const schema = getDepthOverlaySheetSchema(t, otherExistingDepths);
+  const mutable = !thisInterval.isFromPreset;
 
   const onSubmit = useCallback(
-    async (values: EditDepthFormInput) => {
-      const {start, end} = thisDepthInterval;
-      const {
-        start: newStart,
-        end: newEnd,
-        applyToAll,
-        label,
-        ...enabledInputs
-      } = schema.cast(values);
-
-      const input: SoilDataUpdateDepthIntervalMutationInput = {
-        siteId,
-        applyToIntervals: applyToAll
-          ? otherExistingDepths.map(depth => depth.depthInterval)
-          : undefined,
-        label,
-        ...enabledInputs,
-        depthInterval: {start: newStart, end: newEnd},
-      };
-      if (newStart !== start || newEnd !== end) {
+    async (values: SiteDepthFormInput) => {
+      const {start: newStart, end: newEnd} = schema.cast(values);
+      if (
+        newStart !== thisDepthInterval.start ||
+        newEnd !== thisDepthInterval.end
+      ) {
         await dispatch(
           deleteSoilDataDepthInterval({
             siteId,
@@ -133,6 +96,13 @@ export const EditDepthOverlaySheet = ({
           }),
         );
       }
+
+      const input = getUpdateDepthActionInputFromFormInput(
+        values,
+        schema,
+        siteId,
+        otherExistingDepths,
+      );
       await dispatch(updateSoilDataDepthInterval(input));
       onClose();
     },
@@ -151,27 +121,19 @@ export const EditDepthOverlaySheet = ({
 
   return (
     <InfoSheet
-      ref={modalRef}
+      ref={overlayRef}
       trigger={trigger}
       heading={<TranslatedHeading i18nKey="soil.depth.edit_title" />}>
-      <Formik
+      <Formik<SiteDepthFormInput>
         validationSchema={schema}
-        initialValues={{
-          start: String(thisDepthInterval.start),
-          end: String(thisDepthInterval.end),
-          applyToAll: false,
-          // includes label and required methods
-          ...thisInterval.interval,
-        }}
+        initialValues={getInitialValuesForSiteEdit(thisInterval)}
         onSubmit={onSubmit}>
         {({handleSubmit, isValid, isSubmitting, dirty}) => {
           return (
             <Column>
-              {mutable && <DepthTextInputs />}
+              {mutable && <DepthTextForm />}
 
-              {/* TODO-cknipe: Is it ok to include the "Show/hide soil observations" title if not mutable? */}
               <EnabledInputToggles requiredInputs={requiredInputs} />
-
               <Row justifyContent="flex-end" alignItems="center" space={5}>
                 <ConfirmEditingModal
                   formNotReady={!isValid || isSubmitting || !dirty}
