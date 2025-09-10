@@ -56,13 +56,13 @@ export const SoilIdSelectionSection = ({
         }
         trigger={onOpen => (
           <SoilMatchCard
+            variant="Selected"
             soilName={selectedSoilMatch.soilInfo.soilSeries.name}
             dataRegion={dataRegion}
             score={
               selectedSoilMatch.combinedMatch?.score ??
               selectedSoilMatch.locationMatch.score
             }
-            isSelected={true}
             onPress={onOpen}
           />
         )}>
