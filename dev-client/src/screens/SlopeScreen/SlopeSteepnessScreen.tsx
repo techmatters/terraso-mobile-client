@@ -53,7 +53,7 @@ import {updateSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {SteepnessFormSheet} from 'terraso-mobile-client/screens/SlopeScreen/components/SteepnessFormSheet';
+import {ManualSteepnessOverlaySheet} from 'terraso-mobile-client/screens/SlopeScreen/components/ManualSteepnessOverlaySheet';
 import {
   renderSlopeSteepnessSelectInline,
   renderSteepness,
@@ -166,7 +166,7 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
                   </Text>
                   <Box height="30px" />
                   <Row justifyContent="space-between">
-                    <SteepnessFormSheet
+                    <ManualSteepnessOverlaySheet
                       siteId={siteId}
                       trigger={onOpen => (
                         <ContainedButton

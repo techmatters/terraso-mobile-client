@@ -53,7 +53,7 @@ type FormInput = {
 };
 
 /* For manual steepness entry */
-export const SteepnessFormSheet = ({siteId, trigger}: Props) => {
+export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
   const {t} = useTranslation();
   const modalRef = useRef<ModalHandle>(null);
 
