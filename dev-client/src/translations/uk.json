@@ -542,6 +542,7 @@
       },
       "bounds": "{{start}}–{{end}}{{units}}",
       "add_title": "Додати глибину",
+      "edit_title": "TK Depth Options",
       "data_inputs_title": "Показати/приховати ґрунтові спостереження",
       "label_help": "Максимум {{max}} символів",
       "label_placeholder": "тег",

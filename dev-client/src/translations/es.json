@@ -542,6 +542,7 @@
             },
             "bounds": "{{start}}–{{end}}{{units}}",
             "add_title": "Añadir produndidad",
+            "edit_title": "TK Depth Options",
             "data_inputs_title": "Mostrar/ocultar observaciones del suelo",
             "label_help": "{{max}} caracteres máximo",
             "label_placeholder": "Etiquetar",
