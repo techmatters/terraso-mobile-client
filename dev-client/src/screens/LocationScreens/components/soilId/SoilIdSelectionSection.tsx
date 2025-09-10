@@ -23,7 +23,7 @@ import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleCon
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
-import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
+import {SoilMatchCard} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchCard';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {SoilNameHeading} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilNameHeading';
 
@@ -55,7 +55,7 @@ export const SoilIdSelectionSection = ({
           />
         }
         trigger={onOpen => (
-          <SoilMatchTile
+          <SoilMatchCard
             soilName={selectedSoilMatch.soilInfo.soilSeries.name}
             dataRegion={dataRegion}
             score={

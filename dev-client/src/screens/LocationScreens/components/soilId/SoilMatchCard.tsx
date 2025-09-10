@@ -33,7 +33,7 @@ type Props = {
   onPress: () => void;
 };
 
-export const SoilMatchTile = ({
+export const SoilMatchCard = ({
   soilName,
   dataRegion,
   score,
