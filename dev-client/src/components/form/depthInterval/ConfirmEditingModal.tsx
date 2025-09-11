@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {FormEvent, useMemo} from 'react';
+import {FormEvent, useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -47,9 +47,8 @@ export const ConfirmEditingModal = ({
     return Number(newStart.value) !== start || Number(newEnd.value) !== end;
   }, [start, end, newStart, newEnd]);
 
-  const buttonAction = useMemo(
-    () =>
-      (onOpen: () => void) =>
+  const buttonAction = useCallback(
+    (onOpen: () => void) =>
       (...args: Parameters<typeof handleSubmit>) =>
         showWarningModal ? onOpen() : handleSubmit(...args),
     [handleSubmit, showWarningModal],
