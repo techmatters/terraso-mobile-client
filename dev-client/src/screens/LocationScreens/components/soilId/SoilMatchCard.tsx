@@ -121,7 +121,8 @@ const SelectedSoilDisplayText = () => {
     <Text
       variant="match-tile-selected"
       color="primary.lighter"
-      textAlign="center">
+      textAlign="center"
+      paddingVertical="sm">
       <TranslatedContent i18nKey="site.soil_id.matches.selected" />
     </Text>
   );
