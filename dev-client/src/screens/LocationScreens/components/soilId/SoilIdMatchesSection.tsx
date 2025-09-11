@@ -41,6 +41,7 @@ import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScree
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
 import {SoilMatchCard} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchCard';
+import {RateSoilMatchFabWithSheet} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/RateSoilMatchFormSheet';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {SoilNameHeading} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilNameHeading';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
@@ -119,6 +120,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
                 siteMatch={siteMatch}
               />
             </SiteRoleContextProvider>
+            <RateSoilMatchFabWithSheet />
           </InfoSheet>
         ));
       } else {
