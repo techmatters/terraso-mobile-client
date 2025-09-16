@@ -22,7 +22,6 @@ import {ScrollView} from 'native-base';
 
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {AddDepthModalBody} from 'terraso-mobile-client/components/AddDepthModal';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
@@ -30,7 +29,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {Modal} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
   Heading,
@@ -40,12 +38,11 @@ import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
-  LabelledDepthInterval,
   methodRequired,
   soilPitMethods,
   updateSoilData,
-  updateSoilDataDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {AddDepthOverlaySheet} from 'terraso-mobile-client/screens/SoilScreen/components/AddDepthOverlaySheet';
 import {AddSoilDepthButton} from 'terraso-mobile-client/screens/SoilScreen/components/AddSoilDepthButton';
 import {EditSiteSoilDepthPreset} from 'terraso-mobile-client/screens/SoilScreen/components/EditSiteSoilDepthPreset';
 import {SoilDepthSummary} from 'terraso-mobile-client/screens/SoilScreen/components/SoilDepthSummary';
@@ -74,13 +71,6 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   );
 
   const dispatch = useDispatch();
-
-  const onAddDepth = useCallback(
-    async (interval: LabelledDepthInterval) => {
-      await dispatch(updateSoilDataDepthInterval({siteId, ...interval}));
-    },
-    [siteId, dispatch],
-  );
 
   const updateSoilDataDepthPreset = useCallback(
     (newDepthPreset: SoilIdSoilDataDepthIntervalPresetChoices) => {
@@ -136,16 +126,12 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
             />
           ))}
           <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-            <Modal
+            <AddDepthOverlaySheet
+              siteId={siteId}
+              existingDepths={existingDepths}
+              requiredInputs={projectRequiredInputs}
               trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
-              Header={
-                <Heading variant="h6">{t('soil.depth.add_title')}</Heading>
-              }>
-              <AddDepthModalBody
-                onSubmit={onAddDepth}
-                existingDepths={existingDepths}
-              />
-            </Modal>
+            />
           </RestrictBySiteRole>
         </ScrollView>
       )}
