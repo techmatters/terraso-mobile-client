@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {formatCoordinate} from 'terraso-mobile-client/util';
+import {formatCoordinateInEnglish} from 'terraso-mobile-client/util';
 
 export const getElevation = async (
   lat: number,
@@ -24,8 +24,8 @@ export const getElevation = async (
   // TypeScript requires values passed to URLSearchParams to be strings,
   // which is why we convert the floats to strings.
   const queryString = new URLSearchParams({
-    longitude: formatCoordinate(lng),
-    latitude: formatCoordinate(lat),
+    longitude: formatCoordinateInEnglish(lng),
+    latitude: formatCoordinateInEnglish(lat),
   });
   let elevation;
 
