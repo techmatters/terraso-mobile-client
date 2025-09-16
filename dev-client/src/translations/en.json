@@ -654,7 +654,8 @@
             "CUSTOM": "Custom"
         },
         "depth": {
-            "add_title": "Add depth",
+            "add_title": "Add Depth",
+            "edit_title": "Depth Options",
             "data_inputs_title": "Show/hide soil observations",
             "label_help": "{{max}} characters max",
             "label_placeholder": "Label",
@@ -1762,7 +1763,7 @@
             "long_title": "Slope Steepness",
             "description": "Enter steepness manually, using the slope meter, or selecting from the images below.",
             "manual_label": "Manual",
-            "manual_help": "Enter steepness percentage or degree:",
+            "manual_help": "Enter Steepness Percentage or Degree",
             "confirm_title": "Change slope?",
             "confirm_body": "Are you sure you want to override the slope steepness?",
             "percentage_placeholder": "Percentage",
