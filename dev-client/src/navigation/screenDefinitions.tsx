@@ -28,6 +28,7 @@ import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectSc
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
 import {DeleteAccountScreen} from 'terraso-mobile-client/screens/DeleteAccountScreen/DeleteAccountScreen';
 import {EditPinnedNoteScreen} from 'terraso-mobile-client/screens/EditPinnedNoteScreen';
+import {SoilMatchInfoScreen} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilMatchInfoScreen';
 import {SiteLocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteLocationSoilIdScreen';
 import {SiteTabsScreen} from 'terraso-mobile-client/screens/LocationScreens/SiteTabsScreen';
 import {TemporaryLocationScreen} from 'terraso-mobile-client/screens/LocationScreens/TemporaryLocationScreen';
@@ -80,6 +81,7 @@ export const screenDefinitions = {
   SITE_TABS: SiteTabsScreen,
   SITE_LOCATION_SOIL_ID: SiteLocationSoilIdScreen,
   TEMPORARY_LOCATION_SOIL_ID: TemporaryLocationSoilIdScreen,
+  SOIL_MATCH_INFO: SoilMatchInfoScreen,
   SITE_SETTINGS: SiteSettingsScreen,
   SITE_TEAM_SETTINGS: SiteTeamSettingsScreen,
   ADD_USER_PROJECT: AddUserToProjectScreen,

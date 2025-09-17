@@ -35,20 +35,22 @@ export const RateSoilMatchFabWithSheet = () => {
   const todo = (value: MatchRating) => {
     console.log('swtiched to: ', value);
   };
+
   return (
     <FormOverlaySheet
       trigger={onOpen => (
-        // TODO-cknipe: Why doesn't it float?
-        // Compare to slope steepness, but that's not a bottomsheet
         <View>
-          <Fab label={t('site.soil_id.matches.rate.fab')} onPress={onOpen} />
+          <Fab
+            label={t('site.soil_id.matches.rate.fab')}
+            onPress={onOpen}
+            poisitioning="BottomCenter"
+          />
         </View>
       )}>
-      <View style={rateSoilStyles.contentView}>
+      <View style={styles.contentView}>
         <TranslatedSubHeading i18nKey="site.soil_id.matches.rate.title" />
         <Box height="md" />
         <TranslatedParagraph i18nKey="site.soil_id.matches.rate.description" />
-
         <RadioBlock
           options={{
             YES: {text: t('site.soil_id.matches.rate.yes')},
@@ -66,7 +68,7 @@ export const RateSoilMatchFabWithSheet = () => {
   );
 };
 
-export const rateSoilStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   contentView: {
     padding: theme.space.md,
   },
