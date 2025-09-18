@@ -25,71 +25,105 @@ import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches'
 import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 import {formatPercent} from 'terraso-mobile-client/util';
 
+export type SoilMatchCardVariant = 'Default' | 'Rejected' | 'Selected';
+
 type Props = {
+  variant?: SoilMatchCardVariant;
   soilName: string;
   dataRegion: DataRegion;
   score: number;
-  isSelected?: boolean;
   onPress: () => void;
 };
 
-export const SoilMatchTile = ({
+export const SoilMatchCard = ({
+  variant = 'Default',
   soilName,
   dataRegion,
   score,
-  isSelected,
   onPress,
 }: Props) => {
   const {t, i18n} = useTranslation();
-
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{disabled: !onPress}}
       onPress={onPress}>
       <Box
-        variant="tile"
+        variant={variant === 'Rejected' ? 'rejectedTile' : 'tile'}
         alignItems="center"
         flexDirection="row"
         justifyContent="space-between"
         my="4px"
         py="6px">
         <Box marginHorizontal="16px" width="84px" justifyContent="center">
-          {isSelected ? (
-            <Text
-              variant="match-tile-selected"
-              color="primary.lighter"
-              textAlign="center">
-              <TranslatedContent i18nKey="site.soil_id.matches.selected" />
-            </Text>
-          ) : (
-            <>
-              <Text
-                variant="match-tile-score"
-                color="primary.lighter"
-                textAlign="center">
-                <TranslatedContent
-                  i18nKey="site.soil_id.matches.match_score"
-                  values={{score: formatPercent(score)}}
-                />
-              </Text>
-              <Text
-                variant="body2"
-                color="primary.lighter"
-                textAlign="center"
-                mb="6px">
-                <TranslatedContent i18nKey="site.soil_id.matches.match" />
-              </Text>
-            </>
-          )}
+          <MatchAppraisalDisplayText variant={variant} score={score} />
         </Box>
         <Box flex={1} mr="12px" my="8px" flexDirection="row">
-          <Text variant="match-tile-name" color="primary.contrast">
+          <Text
+            variant="match-tile-name"
+            color={
+              variant === 'Rejected' ? 'text.primary' : 'primary.contrast'
+            }>
             {getSoilNameDisplayText(soilName, dataRegion, t, i18n)}
           </Text>
         </Box>
-        <Icon name="chevron-right" color="primary.contrast" mr="12px" />
+        <Chevron variant={variant} />
       </Box>
     </Pressable>
+  );
+};
+
+type MatchPercentDisplayProps = {
+  variant: SoilMatchCardVariant;
+  score: number;
+};
+
+const MatchAppraisalDisplayText = ({
+  variant,
+  score,
+}: MatchPercentDisplayProps) => {
+  if (variant === 'Selected') return <SelectedSoilDisplayText />;
+  else return <MatchPercentDisplayText variant={variant} score={score} />;
+};
+
+const Chevron = ({variant}: {variant: SoilMatchCardVariant}) => {
+  return (
+    <Icon
+      name="chevron-right"
+      color={variant === 'Rejected' ? 'text.primary' : 'primary.contrast'}
+      mr="12px"
+    />
+  );
+};
+
+const MatchPercentDisplayText = ({
+  variant,
+  score,
+}: MatchPercentDisplayProps) => {
+  const textColor = variant === 'Rejected' ? 'text.primary' : 'primary.lighter';
+  return (
+    <>
+      <Text variant="match-tile-score" color={textColor} textAlign="center">
+        <TranslatedContent
+          i18nKey="site.soil_id.matches.match_score"
+          values={{score: formatPercent(score)}}
+        />
+      </Text>
+      <Text variant="body2" color={textColor} textAlign="center" mb="6px">
+        <TranslatedContent i18nKey="site.soil_id.matches.match" />
+      </Text>
+    </>
+  );
+};
+
+const SelectedSoilDisplayText = () => {
+  return (
+    <Text
+      variant="match-tile-selected"
+      color="primary.lighter"
+      textAlign="center"
+      paddingVertical="sm">
+      <TranslatedContent i18nKey="site.soil_id.matches.selected" />
+    </Text>
   );
 };
