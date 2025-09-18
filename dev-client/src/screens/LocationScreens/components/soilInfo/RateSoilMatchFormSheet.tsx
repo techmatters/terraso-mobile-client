@@ -39,13 +39,11 @@ export const RateSoilMatchFabWithSheet = () => {
   return (
     <FormOverlaySheet
       trigger={onOpen => (
-        <View>
-          <Fab
-            label={t('site.soil_id.matches.rate.fab')}
-            onPress={onOpen}
-            poisitioning="BottomCenter"
-          />
-        </View>
+        <Fab
+          label={t('site.soil_id.matches.rate.fab')}
+          onPress={onOpen}
+          poisitioning="BottomCenter"
+        />
       )}>
       <View style={styles.contentView}>
         <TranslatedSubHeading i18nKey="site.soil_id.matches.rate.title" />
