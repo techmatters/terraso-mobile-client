@@ -88,14 +88,18 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   const onMatchCardPress = useCallback(
     (soilMatch: SoilMatch) => {
       if (isSite) {
-        navigation.navigate('SOIL_MATCH_INFO', {
+        navigation.navigate('SITE_SOIL_MATCH_INFO', {
           siteId,
           coords,
           soilMatch,
           dataRegion,
         });
       } else {
-        // TODO-cknipe
+        navigation.navigate('TEMP_LOCATION_SOIL_MATCH_INFO', {
+          coords,
+          soilMatch,
+          dataRegion,
+        });
       }
     },
     [siteId, isSite, coords, dataRegion, navigation],

@@ -44,7 +44,7 @@ export const SoilIdSelectionSection = ({
 
   const onMatchCardPress = useCallback(
     (soilMatch: SoilMatch) => {
-      navigation.navigate('SOIL_MATCH_INFO', {
+      navigation.navigate('SITE_SOIL_MATCH_INFO', {
         siteId,
         coords,
         soilMatch,

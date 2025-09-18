@@ -34,6 +34,7 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {RateSoilMatchFabWithSheet} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/RateSoilMatchFormSheet';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {SoilNameHeading} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilNameHeading';
+import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
 import {selectSite} from 'terraso-mobile-client/store/selectors';
@@ -43,24 +44,41 @@ type ScreenPropsForTempLocation = {
   soilMatch: SoilMatch;
   dataRegion: DataRegion;
 };
-
 type ScreenPropsForSite = {siteId: string} & ScreenPropsForTempLocation;
 
-// TODO-cknipe: Support site + temp location
-// That might weird out the requirements? Maybe make separate components?
-// const GeneralSoilMatchInfoScreenWrapper =
-// export const SiteSoilMatchInfoScreen =
-// export const TempLocationSoilMatchInfoScreen = ({
+export const TemporaryLocationSoilMatchInfoScreen = ({
+  coords,
+  soilMatch,
+  dataRegion,
+}: ScreenPropsForTempLocation) => {
+  const {t} = useTranslation();
 
-export const SoilMatchInfoScreen = ({
+  return (
+    <ScreenScaffold
+      AppBar={<AppBar title={t('site.dashboard.default_title')} />}>
+      <ScrollView>
+        <ScreenContentSection>
+          <SoilNameHeading
+            soilName={soilMatch.soilInfo.soilSeries.name}
+            dataRegion={dataRegion}
+          />
+          <TempScoreInfoContent
+            coords={coords}
+            dataRegion={dataRegion}
+            tempLocationMatch={soilMatch}
+          />
+        </ScreenContentSection>
+      </ScrollView>
+    </ScreenScaffold>
+  );
+};
+
+export const SiteSoilMatchInfoScreen = ({
   siteId,
   coords,
   soilMatch,
   dataRegion,
 }: ScreenPropsForSite) => {
-  const {t} = useTranslation();
-
-  // TODO-cknipe: Does this work for temp loc?
   const site = useSelector(state => selectSite(siteId)(state)) ?? undefined;
 
   const handleMissingSite = useNavToBottomTabsAndShowSyncError();
@@ -71,10 +89,7 @@ export const SoilMatchInfoScreen = ({
   return (
     <ScreenDataRequirements requirements={requirements}>
       {() => (
-        <ScreenScaffold
-          AppBar={
-            <AppBar title={site?.name ?? t('site.dashboard.default_title')} />
-          }>
+        <ScreenScaffold AppBar={<AppBar title={site.name} />}>
           <ScrollView>
             <ScreenContentSection>
               <SoilNameHeading
