@@ -32,8 +32,8 @@ export const RateSoilMatchFabWithSheet = () => {
   let matchRating = 'UNSURE' as MatchRating;
 
   // TODO-cknipe: Do a real thing
-  const todo = (value: MatchRating) => {
-    console.log('swtiched to: ', value);
+  const onMatchRatingChanged = (value: MatchRating) => {
+    console.log('switched to: ', value);
   };
 
   return (
@@ -60,7 +60,7 @@ export const RateSoilMatchFabWithSheet = () => {
           groupProps={{
             value: matchRating,
             name: 'match-rating',
-            onChange: todo,
+            onChange: onMatchRatingChanged,
           }}
         />
       </View>
