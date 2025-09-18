@@ -25,7 +25,7 @@ import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {SoilMatchCard} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchCard';
+import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 
 type SoilIdSelectionSectionProps = {siteId: string; coords: Coords};
 
@@ -42,7 +42,7 @@ export const SoilIdSelectionSection = ({
   );
   const dataRegion = soilIdOutput.dataRegion;
 
-  const onMatchCardPress = useCallback(
+  const onMatchTilePress = useCallback(
     (soilMatch: SoilMatch) => {
       navigation.navigate('SITE_SOIL_MATCH_INFO', {
         siteId,
@@ -59,7 +59,7 @@ export const SoilIdSelectionSection = ({
   }
   return (
     <ScreenContentSection backgroundColor="grey.200">
-      <SoilMatchCard
+      <SoilMatchTile
         variant="Selected"
         soilName={selectedSoilMatch.soilInfo.soilSeries.name}
         dataRegion={dataRegion}
@@ -67,7 +67,7 @@ export const SoilIdSelectionSection = ({
           selectedSoilMatch.combinedMatch?.score ??
           selectedSoilMatch.locationMatch.score
         }
-        onPress={() => onMatchCardPress(selectedSoilMatch)}
+        onPress={() => onMatchTilePress(selectedSoilMatch)}
       />
     </ScreenContentSection>
   );

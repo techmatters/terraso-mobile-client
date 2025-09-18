@@ -40,7 +40,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/NoMapDataWarningAlert';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
-import {SoilMatchCard} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchCard';
+import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
@@ -85,7 +85,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
 
-  const onMatchCardPress = useCallback(
+  const onMatchTilePress = useCallback(
     (soilMatch: SoilMatch) => {
       if (isSite) {
         navigation.navigate('SITE_SOIL_MATCH_INFO', {
@@ -110,14 +110,14 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
       return isOffline ? <></> : <ActivityIndicator size="small" />;
     case 'ready': {
       return getSortedMatches(soilIdOutput.matches).map(soilMatch => (
-        <SoilMatchCard
+        <SoilMatchTile
           key={soilMatch.soilInfo.soilSeries.name}
           soilName={soilMatch.soilInfo.soilSeries.name}
           dataRegion={dataRegion}
           score={
             soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
           }
-          onPress={() => onMatchCardPress(soilMatch)}
+          onPress={() => onMatchTilePress(soilMatch)}
         />
       ));
     }

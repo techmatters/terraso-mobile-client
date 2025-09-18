@@ -25,17 +25,17 @@ import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches'
 import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 import {formatPercent} from 'terraso-mobile-client/util';
 
-export type SoilMatchCardVariant = 'Default' | 'Rejected' | 'Selected';
+export type SoilMatchTileVariant = 'Default' | 'Rejected' | 'Selected';
 
 type Props = {
-  variant?: SoilMatchCardVariant;
+  variant?: SoilMatchTileVariant;
   soilName: string;
   dataRegion: DataRegion;
   score: number;
   onPress: () => void;
 };
 
-export const SoilMatchCard = ({
+export const SoilMatchTile = ({
   variant = 'Default',
   soilName,
   dataRegion,
@@ -74,7 +74,7 @@ export const SoilMatchCard = ({
 };
 
 type MatchPercentDisplayProps = {
-  variant: SoilMatchCardVariant;
+  variant: SoilMatchTileVariant;
   score: number;
 };
 
@@ -86,7 +86,7 @@ const MatchAppraisalDisplayText = ({
   else return <MatchPercentDisplayText variant={variant} score={score} />;
 };
 
-const Chevron = ({variant}: {variant: SoilMatchCardVariant}) => {
+const Chevron = ({variant}: {variant: SoilMatchTileVariant}) => {
   return (
     <Icon
       name="chevron-right"
