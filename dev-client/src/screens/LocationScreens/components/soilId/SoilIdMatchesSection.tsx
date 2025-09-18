@@ -40,7 +40,7 @@ import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRa
 import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/NoMapDataWarningAlert';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
-import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
+import {SoilMatchCard} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchCard';
 import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
 import {SoilNameHeading} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilNameHeading';
 import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
@@ -101,7 +101,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
               />
             }
             trigger={onOpen => (
-              <SoilMatchTile
+              <SoilMatchCard
                 soilName={siteMatch.soilInfo.soilSeries.name}
                 dataRegion={dataRegion}
                 score={
@@ -132,7 +132,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
               />
             }
             trigger={onOpen => (
-              <SoilMatchTile
+              <SoilMatchCard
                 soilName={locationMatch.soilInfo.soilSeries.name}
                 dataRegion={dataRegion}
                 score={locationMatch.locationMatch.score}

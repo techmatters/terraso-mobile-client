@@ -47,6 +47,7 @@ export const theme = extendTheme({
       default: '#FFFFFF',
       secondary: '#00344D',
       tertiary: '#E0E0E0',
+      rejected: '#9AAFB9',
     },
     secondary: {
       main: '#C05621',
@@ -120,6 +121,10 @@ export const theme = extendTheme({
         tile: {
           borderRadius: '4px',
           backgroundColor: 'background.secondary',
+        },
+        rejectedTile: {
+          borderRadius: '4px',
+          backgroundColor: 'background.rejected',
         },
       },
     },
