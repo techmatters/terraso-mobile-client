@@ -56,6 +56,12 @@ export const formatCoordinate = (value: number) => {
   });
 };
 
+export const formatCoordinateInEnglish = (value: number) => {
+  return value.toLocaleString('en-US', {
+    maximumFractionDigits: COORDINATE_PRECISION,
+  });
+};
+
 export const formatName = (firstName: string, lastName?: string) => {
   return [lastName, firstName].filter(Boolean).join(', ');
 };
