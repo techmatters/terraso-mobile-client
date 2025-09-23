@@ -20,9 +20,9 @@ import {StyleSheet} from 'react-native';
 
 import Checkbox from 'expo-checkbox';
 
-type CircularCheckboxProps = React.ComponentProps<typeof Checkbox>;
+type StandardCheckboxProps = React.ComponentProps<typeof Checkbox>;
 
-export const CircularCheckbox = (props: CircularCheckboxProps) => {
+export const StandardCheckbox = (props: StandardCheckboxProps) => {
   const {value, style, color, ...rest} = props;
 
   return (

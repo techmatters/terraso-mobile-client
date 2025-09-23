@@ -22,10 +22,10 @@ import {
   Props as FormFieldWrapperProps,
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import {CircularCheckbox} from 'terraso-mobile-client/components/inputs/CircularCheckbox';
+import {StandardCheckbox} from 'terraso-mobile-client/components/inputs/StandardCheckbox';
 
 type Props = FormFieldWrapperProps &
-  Omit<React.ComponentProps<typeof CircularCheckbox>, 'value'> & {
+  Omit<React.ComponentProps<typeof StandardCheckbox>, 'value'> & {
     value?: boolean;
   };
 
@@ -34,7 +34,7 @@ export const FormCheckbox = memo(({value: isChecked, ...props}: Props) => {
   const checked = isChecked ?? value;
   return (
     <FormFieldWrapper errorMessage={null} {...props}>
-      <CircularCheckbox value={checked} onValueChange={onChange} {...props} />
+      <StandardCheckbox value={checked} onValueChange={onChange} {...props} />
     </FormFieldWrapper>
   );
 });
