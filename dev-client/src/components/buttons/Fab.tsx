@@ -28,7 +28,7 @@ export type FabProps = {
   leftIcon?: IconName;
   disabled?: boolean;
   onPress?: PressableProps['onPress'];
-  poisitioning?: Positioning;
+  positioning?: Positioning;
 };
 
 export const Fab = ({
@@ -36,10 +36,10 @@ export const Fab = ({
   leftIcon,
   disabled,
   onPress,
-  poisitioning = 'BottomRight',
+  positioning = 'BottomRight',
 }: FabProps) => {
   const surfacePositionStyle =
-    poisitioning === 'BottomCenter'
+    positioning === 'BottomCenter'
       ? styles.surfaceBottomCenter
       : styles.surfaceBottomRight;
 

@@ -107,7 +107,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
 
   switch (status) {
     case 'loading':
-      return isOffline ? <></> : <ActivityIndicator size="small" />;
+      return isOffline ? null : <ActivityIndicator size="small" />;
     case 'ready': {
       return getSortedMatches(soilIdOutput.matches).map(soilMatch => (
         <SoilMatchTile

@@ -55,7 +55,7 @@ export const SoilIdSelectionSection = ({
   );
 
   if (!selectedSoilMatch) {
-    return <></>;
+    return null;
   }
   return (
     <ScreenContentSection backgroundColor="grey.200">

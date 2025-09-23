@@ -42,7 +42,7 @@ export const RateSoilMatchFabWithSheet = () => {
         <Fab
           label={t('site.soil_id.matches.rate.fab')}
           onPress={onOpen}
-          poisitioning="BottomCenter"
+          positioning="BottomCenter"
         />
       )}>
       <View style={styles.contentView}>
