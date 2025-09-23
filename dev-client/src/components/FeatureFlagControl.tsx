@@ -54,6 +54,8 @@ export const FeatureFlagControlPanel = () => {
                   <FeatureFlagControl flag="FF_offline" />
                   <View style={styles.spacer} />
                   <FeatureFlagControl flag="FF_testing" />
+                  <View style={styles.spacer} />
+                  <FeatureFlagControl flag="FF_select_soil" />
                   <Divider />
                 </ScreenContentSection>
               </ScrollView>

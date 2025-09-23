@@ -143,6 +143,14 @@
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
+                "rate": {
+                    "fab": "TK Rate match",
+                    "title": "TK Rate this soil match",
+                    "description": "TK <bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons.",
+                    "yes": "TK Yes, select soil for this site",
+                    "no": "TK No, it's different",
+                    "unsure": "TK Not sure yet"
+                },
                 "match": "coincidencia",
                 "error_generic_title": "No se puede obtener el mapa del suelo",
                 "error_generic_body": "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Intente detener y reiniciar la aplicación. Si el problema continúa, vuelva a intentarlo más tarde o envíe una solicitud de soporte a través del sitio web landpks.terraso.org.",

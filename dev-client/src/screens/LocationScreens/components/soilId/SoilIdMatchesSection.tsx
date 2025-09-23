@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
@@ -29,21 +30,17 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
-import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
-import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
   SoilIdOutput,
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
 import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/NoMapDataWarningAlert';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
-import {SoilMatchCard} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchCard';
-import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
-import {SoilNameHeading} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilNameHeading';
-import {TempScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/TempScoreInfoContent';
+import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
@@ -53,6 +50,7 @@ export const SoilIdMatchesSection = ({
   coords,
 }: SoilIdMatchesSectionProps) => {
   const {t} = useTranslation();
+
   const soilIdInput = siteId ? {siteId} : {coords};
   const soilIdOutput = useSoilIdOutput(soilIdInput);
   const dataRegion = soilIdOutput.dataRegion;
@@ -81,72 +79,47 @@ export const SoilIdMatchesSection = ({
 type MatchTilesProps = SoilIdMatchesSectionProps & {soilIdOutput: SoilIdOutput};
 
 const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
+  const navigation = useNavigation();
   const isOffline = useIsOffline();
   const status = soilIdOutput.status;
   const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
 
+  const onMatchTilePress = useCallback(
+    (soilMatch: SoilMatch) => {
+      if (isSite) {
+        navigation.navigate('SITE_SOIL_MATCH_INFO', {
+          siteId,
+          coords,
+          soilMatch,
+          dataRegion,
+        });
+      } else {
+        navigation.navigate('TEMP_LOCATION_SOIL_MATCH_INFO', {
+          coords,
+          soilMatch,
+          dataRegion,
+        });
+      }
+    },
+    [siteId, isSite, coords, dataRegion, navigation],
+  );
+
   switch (status) {
     case 'loading':
-      return isOffline ? <></> : <ActivityIndicator size="small" />;
+      return isOffline ? null : <ActivityIndicator size="small" />;
     case 'ready': {
-      if (isSite) {
-        return getSortedMatches(soilIdOutput.matches).map(siteMatch => (
-          <InfoSheet
-            key={siteMatch.soilInfo.soilSeries.name}
-            heading={
-              <SoilNameHeading
-                soilName={siteMatch.soilInfo.soilSeries.name}
-                dataRegion={dataRegion}
-              />
-            }
-            trigger={onOpen => (
-              <SoilMatchCard
-                soilName={siteMatch.soilInfo.soilSeries.name}
-                dataRegion={dataRegion}
-                score={
-                  siteMatch.combinedMatch?.score ??
-                  siteMatch.locationMatch.score
-                }
-                onPress={onOpen}
-              />
-            )}>
-            <SiteRoleContextProvider siteId={siteId}>
-              <SiteScoreInfoContent
-                siteId={siteId}
-                coords={coords}
-                dataRegion={dataRegion}
-                siteMatch={siteMatch}
-              />
-            </SiteRoleContextProvider>
-          </InfoSheet>
-        ));
-      } else {
-        return getSortedMatches(soilIdOutput.matches).map(locationMatch => (
-          <InfoSheet
-            key={locationMatch.soilInfo.soilSeries.name}
-            heading={
-              <SoilNameHeading
-                soilName={locationMatch.soilInfo.soilSeries.name}
-                dataRegion={dataRegion}
-              />
-            }
-            trigger={onOpen => (
-              <SoilMatchCard
-                soilName={locationMatch.soilInfo.soilSeries.name}
-                dataRegion={dataRegion}
-                score={locationMatch.locationMatch.score}
-                onPress={onOpen}
-              />
-            )}>
-            <TempScoreInfoContent
-              coords={coords}
-              dataRegion={dataRegion}
-              tempLocationMatch={locationMatch}
-            />
-          </InfoSheet>
-        ));
-      }
+      return getSortedMatches(soilIdOutput.matches).map(soilMatch => (
+        <SoilMatchTile
+          key={soilMatch.soilInfo.soilSeries.name}
+          soilName={soilMatch.soilInfo.soilSeries.name}
+          dataRegion={dataRegion}
+          score={
+            soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
+          }
+          onPress={() => onMatchTilePress(soilMatch)}
+        />
+      ));
     }
     case 'DATA_UNAVAILABLE':
       return <NoMapDataWarningAlert />;

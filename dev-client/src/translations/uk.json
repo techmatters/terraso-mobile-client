@@ -143,6 +143,14 @@
             "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
           }
         },
+        "rate": {
+          "fab": "TK Rate match",
+          "title": "TK Rate this soil match",
+          "description": "TK <bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons.",
+          "yes": "TK Yes, select soil for this site",
+          "no": "TK No, it's different",
+          "unsure": "TK Not sure yet"
+        },
         "match": "співпадати / відповідати чомусь",
         "error_generic_title": "Не вдається отримати ґрунтову карту",
         "error_generic_body": "LandPKS не зміг отримати карту ґрунту для цього місця. Спробуйте зупинити та перезапустити програму. Якщо проблема не зникне, спробуйте пізніше або надішліть запит на підтримку через веб-сайт landpks.terraso.org.",
