@@ -17,26 +17,24 @@
 
 import {memo} from 'react';
 
-import CheckBox from '@react-native-community/checkbox';
-
 import {
   FormFieldWrapper,
   Props as FormFieldWrapperProps,
 } from 'terraso-mobile-client/components/form/FormFieldWrapper';
 import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import {CircularCheckbox} from 'terraso-mobile-client/components/inputs/CircularCheckbox';
 
 type Props = FormFieldWrapperProps &
-  Omit<React.ComponentProps<typeof CheckBox>, 'value'> & {value?: boolean};
+  Omit<React.ComponentProps<typeof CircularCheckbox>, 'value'> & {
+    value?: boolean;
+  };
 
 export const FormCheckbox = memo(({value: isChecked, ...props}: Props) => {
   const {value, onChange} = useFieldContext<boolean>(props.name);
+  const checked = isChecked ?? value;
   return (
     <FormFieldWrapper errorMessage={null} {...props}>
-      <CheckBox
-        value={isChecked ?? value}
-        onValueChange={onChange}
-        {...props}
-      />
+      <CircularCheckbox value={checked} onValueChange={onChange} {...props} />
     </FormFieldWrapper>
   );
 });

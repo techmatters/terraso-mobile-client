@@ -28,7 +28,7 @@ module.exports = api => {
           rootPathSuffix: './src',
         },
       ],
-      'react-native-reanimated/plugin',
+      'react-native-worklets/plugin',
       'react-native-paper/babel',
     ],
   };

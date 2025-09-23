@@ -18,9 +18,9 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import CheckBox from '@react-native-community/checkbox';
 import {FormControl} from 'native-base';
 
+import {CircularCheckbox} from 'terraso-mobile-client/components/inputs/CircularCheckbox';
 import {
   Box,
   Column,
@@ -68,7 +68,7 @@ export const CheckboxGroup = ({
   return (
     <Box>
       <Row>
-        <CheckBox
+        <CircularCheckbox
           id={`select-all-${groupName}`}
           onValueChange={onSelectAll}
           value={selectAllChecked}
@@ -86,7 +86,7 @@ export const CheckboxGroup = ({
             key={id}
             mt={SWITCH_VERTICAL_PADDING}
             mb={SWITCH_VERTICAL_PADDING}>
-            <CheckBox
+            <CircularCheckbox
               id={'checkbox-' + id}
               onValueChange={onChangeValue(groupId, id)}
               value={checked}
