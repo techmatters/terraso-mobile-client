@@ -15,17 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
+
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
-import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
-import {SoilMatchCard} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchCard';
-import {SiteScoreInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SiteScoreInfoContent';
-import {SoilNameHeading} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilNameHeading';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 
 type SoilIdSelectionSectionProps = {siteId: string; coords: Coords};
 
@@ -33,6 +33,7 @@ export const SoilIdSelectionSection = ({
   siteId,
   coords,
 }: SoilIdSelectionSectionProps) => {
+  const navigation = useNavigation();
   const soilIdOutput = useSoilIdOutput({siteId});
   const {selectedSoilId} = useSoilIdSelection(siteId);
   const selectedSoilMatch = findSelectedMatch(
@@ -41,40 +42,33 @@ export const SoilIdSelectionSection = ({
   );
   const dataRegion = soilIdOutput.dataRegion;
 
-  if (!selectedSoilMatch) {
-    return <></>;
-  }
+  const onMatchTilePress = useCallback(
+    (soilMatch: SoilMatch) => {
+      navigation.navigate('SITE_SOIL_MATCH_INFO', {
+        siteId,
+        coords,
+        soilMatch,
+        dataRegion,
+      });
+    },
+    [siteId, coords, dataRegion, navigation],
+  );
 
+  if (!selectedSoilMatch) {
+    return null;
+  }
   return (
     <ScreenContentSection backgroundColor="grey.200">
-      <InfoSheet
-        heading={
-          <SoilNameHeading
-            soilName={selectedSoilMatch.soilInfo.soilSeries.name}
-            dataRegion={dataRegion}
-          />
+      <SoilMatchTile
+        variant="Selected"
+        soilName={selectedSoilMatch.soilInfo.soilSeries.name}
+        dataRegion={dataRegion}
+        score={
+          selectedSoilMatch.combinedMatch?.score ??
+          selectedSoilMatch.locationMatch.score
         }
-        trigger={onOpen => (
-          <SoilMatchCard
-            variant="Selected"
-            soilName={selectedSoilMatch.soilInfo.soilSeries.name}
-            dataRegion={dataRegion}
-            score={
-              selectedSoilMatch.combinedMatch?.score ??
-              selectedSoilMatch.locationMatch.score
-            }
-            onPress={onOpen}
-          />
-        )}>
-        <SiteRoleContextProvider siteId={siteId}>
-          <SiteScoreInfoContent
-            siteId={siteId}
-            coords={coords}
-            dataRegion={soilIdOutput.dataRegion}
-            siteMatch={selectedSoilMatch}
-          />
-        </SiteRoleContextProvider>
-      </InfoSheet>
+        onPress={() => onMatchTilePress(selectedSoilMatch)}
+      />
     </ScreenContentSection>
   );
 };

@@ -32,6 +32,11 @@ export const featureFlags = {
     defaultIsEnabledInDevelopment: true,
     description: 'Enables testing-support controls',
   },
+  FF_select_soil: {
+    defaultIsEnabled: false,
+    defaultIsEnabledInDevelopment: true,
+    description: 'Enhanced soil selection (terraso-product#658)',
+  },
 };
 
 export type FeatureFlagName = keyof typeof featureFlags;

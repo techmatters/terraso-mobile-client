@@ -21,32 +21,54 @@ import {Surface} from 'react-native-paper';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 
+type Positioning = 'BottomRight' | 'BottomCenter';
+
 export type FabProps = {
   label: string;
   leftIcon?: IconName;
   disabled?: boolean;
   onPress?: PressableProps['onPress'];
+  positioning?: Positioning;
 };
 
-export const Fab = ({label, leftIcon, disabled, onPress}: FabProps) => (
-  <Surface style={styles.surface} elevation={2}>
-    <ContainedButton
-      label={label}
-      leftIcon={leftIcon}
-      disabled={disabled}
-      size="lg"
-      onPress={onPress}
-    />
-  </Surface>
-);
+export const Fab = ({
+  label,
+  leftIcon,
+  disabled,
+  onPress,
+  positioning = 'BottomRight',
+}: FabProps) => {
+  const surfacePositionStyle =
+    positioning === 'BottomCenter'
+      ? styles.surfaceBottomCenter
+      : styles.surfaceBottomRight;
+
+  return (
+    <Surface style={[styles.surface, surfacePositionStyle]} elevation={2}>
+      <ContainedButton
+        label={label}
+        leftIcon={leftIcon}
+        disabled={disabled}
+        size="lg"
+        onPress={onPress}
+      />
+    </Surface>
+  );
+};
 
 const styles = StyleSheet.create({
   surface: {
     position: 'absolute',
     margin: 16,
-    right: 0,
-    bottom: 0,
     backgroundColor: 'transparent',
     borderRadius: 4,
+  },
+  surfaceBottomRight: {
+    bottom: 0,
+    right: 0,
+  },
+  surfaceBottomCenter: {
+    bottom: 0,
+    alignSelf: 'center',
   },
 });
