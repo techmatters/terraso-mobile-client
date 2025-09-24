@@ -24,8 +24,9 @@
     "localization-to-po": "node scripts/localization/transform-to.mjs po",
     "localization-to-json": "node scripts/localization/transform-to.mjs json",
     "localization-check-missing": "node scripts/localization/missing-check.mjs",
-    "prepare": "cd .. && husky",
-    "check-i18n": "node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/en.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/es.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/uk.json"
+    "prepare": "cd .. && npx --prefix dev-client husky",
+    "check-i18n": "node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/en.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/es.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/uk.json",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.0.5",
@@ -124,6 +125,7 @@
     "jest-expo": "^52.0.6",
     "lint-staged": "^15.5.2",
     "lodash": "^4.17.21",
+    "patch-package": "^8.0.0",
     "prettier": "^3.5.3",
     "react-devtools": "^6.1.1",
     "react-native-svg-transformer": "^1.5.1",
