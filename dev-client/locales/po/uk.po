@@ -202,7 +202,7 @@ msgstr "NRCS/GSP"
 
 #: 
 msgid "projects##inputs##depths##preset##BLM"
-msgstr "BLM - Bureau of Land Management - Стандарт моніторингу BLM, офіційно затверджені методики та критерії, які використовуються для Моніторингу земель"
+msgstr "Методичні документи і протоколи Бюро з управління землями США"
 
 #: 
 msgid "projects##inputs##depths##preset##CUSTOM"
@@ -242,7 +242,7 @@ msgstr "Додати ділянки"
 
 #: 
 msgid "projects##sites##transfer"
-msgstr "Ділянки, на які поширюють або переносить результати з еталонних/базових ділянок"
+msgstr "Сайти для перенесення даних"
 
 #: 
 msgid "projects##sites##create"
@@ -434,7 +434,7 @@ msgstr "висота"
 
 #: 
 msgid "geo##elevation##title"
-msgstr "Висота над рівнем моря"
+msgstr "Висота н.р.м."
 
 #: 
 msgid "soil##bedrock"
@@ -1950,6 +1950,7 @@ msgid "soil##soil_preset##CUSTOM"
 msgstr "Користувацька"
 
 #: 
+#, fuzzy
 msgid "soil##depth##add_title"
 msgstr "Додати глибину"
 
@@ -1994,6 +1995,7 @@ msgid "soil##depth##update_modal##title"
 msgstr "Змінити глибину?"
 
 #: 
+#, fuzzy
 msgid "soil##depth##update_modal##body"
 msgstr "Спостереження за ґрунтовими розрізами, введені для цієї глибини, будуть видалені. Цю дію не можна скасувати."
 
@@ -2338,6 +2340,7 @@ msgid "slope##steepness##manual_label"
 msgstr "Вручнк"
 
 #: 
+#, fuzzy
 msgid "slope##steepness##manual_help"
 msgstr "Введіть відсоток або градус крутизни:"
 
@@ -4934,4 +4937,38 @@ msgstr "https://terraso.org/terms-of-service/"
 #: 
 msgid "general##terms_of_service_link_text"
 msgstr "Умови надання послуг"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##rate##fab"
+msgstr "Rate match TK"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##rate##title"
+msgstr "Rate this soil match TK"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##rate##description"
+msgstr "<bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons. TK"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##rate##yes"
+msgstr "Yes, select soil for this site TK"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##rate##no"
+msgstr "No, it's different TK"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##rate##unsure"
+msgstr "Not sure yet TK"
+
+#: 
+msgid "soil##depth##edit_title"
+msgstr "Параметри глибини"
 
