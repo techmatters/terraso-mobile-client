@@ -46,6 +46,7 @@ type Props = {
   siteId: string;
   existingDepths: {depthInterval: DepthInterval}[];
   requiredInputs: SoilPitMethod[];
+  siteInProject: boolean;
   trigger: ModalTrigger;
 };
 
@@ -53,6 +54,7 @@ export const AddDepthOverlaySheet = ({
   siteId,
   existingDepths,
   requiredInputs,
+  siteInProject,
   trigger,
 }: Props) => {
   const {t} = useTranslation();
@@ -85,7 +87,10 @@ export const AddDepthOverlaySheet = ({
       heading={<TranslatedHeading i18nKey="soil.depth.add_title" />}>
       <Formik<SiteDepthFormInput>
         validationSchema={schema}
-        initialValues={getInitialValuesForSiteAdd(requiredInputs)}
+        initialValues={getInitialValuesForSiteAdd(
+          requiredInputs,
+          siteInProject,
+        )}
         onSubmit={onSubmit}>
         {({handleSubmit, isValid, isSubmitting, dirty}) => {
           return (
