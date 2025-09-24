@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-08-27T20:24:56.670Z\n"
-"PO-Revision-Date: 2025-08-27T20:24:56.670Z\n"
+"POT-Creation-Date: 2025-09-24T18:44:52.112Z\n"
+"PO-Revision-Date: 2025-09-24T18:44:52.113Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -312,6 +312,24 @@ msgstr "There is no soil map data available for this location, so LandPKS cannot
 
 msgid "site##soil_id##matches##offline"
 msgstr "Soil matches will update when you are online."
+
+msgid "site##soil_id##matches##rate##fab"
+msgstr "Rate match"
+
+msgid "site##soil_id##matches##rate##title"
+msgstr "Rate this soil match"
+
+msgid "site##soil_id##matches##rate##description"
+msgstr "<bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons."
+
+msgid "site##soil_id##matches##rate##yes"
+msgstr "Yes, select soil for this site"
+
+msgid "site##soil_id##matches##rate##no"
+msgstr "No, it's different"
+
+msgid "site##soil_id##matches##rate##unsure"
+msgstr "Not sure yet"
 
 msgid "site##soil_id##matches##selector"
 msgstr "This is the correct soil"
@@ -1442,7 +1460,10 @@ msgid "soil##soil_preset##CUSTOM"
 msgstr "Custom"
 
 msgid "soil##depth##add_title"
-msgstr "Add depth"
+msgstr "Add Depth"
+
+msgid "soil##depth##edit_title"
+msgstr "Depth Options"
 
 msgid "soil##depth##data_inputs_title"
 msgstr "Show/hide soil observations"
@@ -1475,7 +1496,7 @@ msgid "soil##depth##update_modal##title"
 msgstr "Change depth?"
 
 msgid "soil##depth##update_modal##body"
-msgstr "Soil pit observations that has been entered at this depth will be deleted. This action can’t be undone."
+msgstr "Soil pit observations that have been entered at this depth will be deleted. This action can’t be undone."
 
 msgid "soil##depth##update_modal##action"
 msgstr "Change"
@@ -3543,7 +3564,7 @@ msgid "slope##steepness##manual_label"
 msgstr "Manual"
 
 msgid "slope##steepness##manual_help"
-msgstr "Enter steepness percentage or degree:"
+msgstr "Enter Steepness Percentage or Degree"
 
 msgid "slope##steepness##confirm_title"
 msgstr "Change slope?"
