@@ -675,7 +675,7 @@
             "depth_end": "depth end",
             "update_modal": {
                 "title": "Change depth?",
-                "body": "Soil pit observations that has been entered at this depth will be deleted. This action can’t be undone.",
+                "body": "Soil pit observations that have been entered at this depth will be deleted. This action can’t be undone.",
                 "action": "Change"
             },
             "delete_modal": {
