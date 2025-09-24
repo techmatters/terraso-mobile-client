@@ -32,6 +32,8 @@ on:
         required: false
       POSTHOG_API_KEY:
         required: false
+      POSTHOG_EXCLUDED_EMAILS:
+        required: false
 
 jobs:
   android-build:
@@ -58,6 +60,7 @@ jobs:
       SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
       POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
       POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+      POSTHOG_EXCLUDED_EMAILS: ${{ secrets.POSTHOG_EXCLUDED_EMAILS }}
 
     steps:
       - name: Check out git repository

@@ -83,4 +83,5 @@ export const APP_CONFIG = {
   microsoftRedirectURI,
   posthogHost: ENV_CONFIG.POSTHOG_HOST,
   posthogApiKey: ENV_CONFIG.POSTHOG_API_KEY,
+  posthogExcludedEmails: ENV_CONFIG.POSTHOG_EXCLUDED_EMAILS,
 } as const;
