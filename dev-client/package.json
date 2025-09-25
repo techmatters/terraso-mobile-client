@@ -24,7 +24,7 @@
     "localization-to-po": "node scripts/localization/transform-to.mjs po",
     "localization-to-json": "node scripts/localization/transform-to.mjs json",
     "localization-check-missing": "node scripts/localization/missing-check.mjs",
-    "prepare": "cd .. && npx --prefix dev-client husky",
+    "prepare": "cd .. && husky",
     "check-i18n": "node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/en.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/es.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/uk.json",
     "postinstall": "patch-package"
   },
