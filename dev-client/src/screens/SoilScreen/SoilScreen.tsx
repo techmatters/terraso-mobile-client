@@ -130,6 +130,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               siteId={siteId}
               existingDepths={existingDepths}
               requiredInputs={projectRequiredInputs}
+              siteInProject={!!site.projectId}
               trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
             />
           </RestrictBySiteRole>

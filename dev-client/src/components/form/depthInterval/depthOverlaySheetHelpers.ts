@@ -68,11 +68,18 @@ export const getInitialValuesForSiteEdit = (
   };
 };
 
-export const getInitialValuesForSiteAdd = (requiredInputs: SoilPitMethod[]) => {
+export const getInitialValuesForSiteAdd = (
+  requiredInputs: SoilPitMethod[],
+  siteInProject: boolean,
+) => {
   const initiallyEnabledInputs = {} as EnabledInputMethodsInput;
   soilPitMethods.forEach(method => {
     const enabledName = methodEnabled(method);
-    initiallyEnabledInputs[enabledName] = requiredInputs.includes(method);
+    if (siteInProject) {
+      initiallyEnabledInputs[enabledName] = requiredInputs.includes(method);
+    } else {
+      initiallyEnabledInputs[enabledName] = true;
+    }
   });
   return {
     label: '',
