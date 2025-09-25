@@ -143,14 +143,6 @@
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
-                "rate": {
-                    "fab": "TK Rate match",
-                    "title": "TK Rate this soil match",
-                    "description": "TK <bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons.",
-                    "yes": "TK Yes, select soil for this site",
-                    "no": "TK No, it's different",
-                    "unsure": "TK Not sure yet"
-                },
                 "match": "coincidencia",
                 "error_generic_title": "No se puede obtener el mapa del suelo",
                 "error_generic_body": "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Intente detener y reiniciar la aplicación. Si el problema continúa, vuelva a intentarlo más tarde o envíe una solicitud de soporte a través del sitio web landpks.terraso.org.",
@@ -159,7 +151,15 @@
                 "match_score": "{{score}}",
                 "offline": "Las coincidencias de suelo se actualizarán cuando estés conectado.",
                 "selector": "Este es el suelo correcto",
-                "selected": "Suelo seleccionado"
+                "selected": "Suelo seleccionado",
+                "rate": {
+                    "fab": "Rate match TK",
+                    "title": "Rate this soil match TK",
+                    "description": "<bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons. TK",
+                    "yes": "Yes, select soil for this site TK",
+                    "no": "No, it's different TK",
+                    "unsure": "Not sure yet TK"
+                }
             },
             "site_data": {
                 "title": "Observaciones del sitio",
@@ -549,8 +549,7 @@
                 "ordering": "Error de límites de profundidad"
             },
             "bounds": "{{start}}–{{end}}{{units}}",
-            "add_title": "Añadir produndidad",
-            "edit_title": "TK Depth Options",
+            "add_title": "Añadir profundidad",
             "data_inputs_title": "Mostrar/ocultar observaciones del suelo",
             "label_help": "{{max}} caracteres máximo",
             "label_placeholder": "Etiquetar",
@@ -572,7 +571,8 @@
             },
             "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
             "bounds_unitless": "{{start}}–{{end}}",
-            "delete_button": "Eliminar profundidad"
+            "delete_button": "Eliminar profundidad",
+            "edit_title": "Opciones de profundidad"
         },
         "texture": {
             "title": "Textura del suelo",
