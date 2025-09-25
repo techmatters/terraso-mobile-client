@@ -166,7 +166,9 @@ const defaultConfig: ExpoConfig = {
       'expo-build-properties',
       {
         ios: {},
-        android: {},
+        android: {
+          gradleVersion: '8.14.1',
+        },
       },
     ],
   ],
