@@ -143,14 +143,6 @@
             "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
           }
         },
-        "rate": {
-          "fab": "TK Rate match",
-          "title": "TK Rate this soil match",
-          "description": "TK <bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons.",
-          "yes": "TK Yes, select soil for this site",
-          "no": "TK No, it's different",
-          "unsure": "TK Not sure yet"
-        },
         "match": "співпадати / відповідати чомусь",
         "error_generic_title": "Не вдається отримати ґрунтову карту",
         "error_generic_body": "LandPKS не зміг отримати карту ґрунту для цього місця. Спробуйте зупинити та перезапустити програму. Якщо проблема не зникне, спробуйте пізніше або надішліть запит на підтримку через веб-сайт landpks.terraso.org.",
@@ -159,7 +151,15 @@
         "match_score": "{{score}}",
         "offline": "Співпадіння ґрунтів оновлюватимуться, коли ви будете онлайн.",
         "selector": "Це правильно ідентифікований ґрунт",
-        "selected": "Обраний ґрунт"
+        "selected": "Обраний ґрунт",
+        "rate": {
+          "fab": "Rate match TK",
+          "title": "Rate this soil match TK",
+          "description": "<bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons. TK",
+          "yes": "Yes, select soil for this site TK",
+          "no": "No, it's different TK",
+          "unsure": "Not sure yet TK"
+        }
       },
       "site_data": {
         "title": "Спостереження за ділянкою",
@@ -266,7 +266,7 @@
         "title": "Глибина ґрунтових розрізів",
         "preset": {
           "NRCS": "NRCS/GSP",
-          "BLM": "BLM - Bureau of Land Management - Стандарт моніторингу BLM, офіційно затверджені методики та критерії, які використовуються для Моніторингу земель",
+          "BLM": "Методичні документи і протоколи Бюро з управління землями США",
           "CUSTOM": "Користувацький…",
           "NONE": "Не вказано"
         },
@@ -310,7 +310,7 @@
     },
     "sites": {
       "add": "Додати ділянки",
-      "transfer": "Ділянки, на які поширюють або переносить результати з еталонних/базових ділянок",
+      "transfer": "Сайти для перенесення даних",
       "create": "Створити ділянки",
       "search": {
         "placeholder": "Пошук",
@@ -529,7 +529,7 @@
     },
     "elevation": {
       "inline": "висота",
-      "title": "Висота над рівнем моря"
+      "title": "Висота н.р.м."
     }
   },
   "soil": {
@@ -550,7 +550,6 @@
       },
       "bounds": "{{start}}–{{end}}{{units}}",
       "add_title": "Додати глибину",
-      "edit_title": "TK Depth Options",
       "data_inputs_title": "Показати/приховати ґрунтові спостереження",
       "label_help": "Максимум {{max}} символів",
       "label_placeholder": "тег",
@@ -572,7 +571,8 @@
       },
       "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
       "bounds_unitless": "{{start}}–{{end}}",
-      "delete_button": "Видалити глибину"
+      "delete_button": "Видалити глибину",
+      "edit_title": "Параметри глибини"
     },
     "texture": {
       "title": "Гранулометричний склад грунту",
