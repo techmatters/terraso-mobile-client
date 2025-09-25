@@ -56,7 +56,7 @@ function PosthogLifecycle() {
 }
 
 // ---- User exclusion based on email patterns ----
-// these are set in the github settings secrets as C
+// these are set in the github settings secrets in POSTHOG_EXCLUDED_EMAILS
 // e.g. "^$|.*@techmatters\.org$"
 function UserExclusionHandler() {
   const posthog = usePostHog();
