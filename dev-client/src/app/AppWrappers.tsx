@@ -22,7 +22,10 @@ import {PaperProvider, Portal} from 'react-native-paper';
 import {Provider} from 'react-redux';
 
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
 
 import {PostHog} from 'terraso-mobile-client/app/PostHog';
@@ -51,16 +54,18 @@ export const AppWrappers = ({store, children}: Props) => {
    *    PaperProvider/NativeBaseProvider and one above, since some modals can open sheets, and some sheets need
    *    NB/Paper components.
    */
+  const navRef = useNavigationContainerRef();
 
   return (
     <GestureHandlerRootView style={styles.gestureHandler}>
       <Provider store={store}>
         <SiteTabJumpContextProvider>
           <NavigationContainer
-          // uncomment to enable screen stack debugging
-          // onStateChange={console.log}
+            ref={navRef}
+            // uncomment to enable screen stack debugging
+            // onStateChange={console.log}
           >
-            <PostHog>
+            <PostHog navRef={navRef}>
               <ConnectivityContextProvider>
                 <HeaderHeightProvider>
                   <BottomSheetModalProvider>
