@@ -16,7 +16,9 @@
  */
 
 import {ReactNode, useEffect, useRef} from 'react';
-import {AppState} from 'react-native';
+import {AppState, Platform} from 'react-native';
+
+import Constants from 'expo-constants';
 
 import {NavigationContainerRef} from '@react-navigation/native';
 import {PostHogProvider, usePostHog} from 'posthog-react-native';
@@ -112,6 +114,17 @@ export function PostHog({children, navRef}: Props) {
         // batching knobs (tune as you like)
         flushAt: 10,
         flushInterval: 5000,
+        // Provide app version, build, and platform for all events
+        customAppProperties: properties => ({
+          ...properties,
+          $app_version: Constants.expoConfig?.version || 'unknown',
+          $app_build:
+            Platform.OS === 'ios'
+              ? Constants.expoConfig?.ios?.buildNumber
+              : Constants.expoConfig?.android?.versionCode?.toString() ||
+                'unknown',
+          platform: APP_CONFIG.environment || 'development',
+        }),
       }}
       // IMPORTANT: turn off SDK's nav autocapture to avoid nav hook errors
       autocapture={{captureScreens: false}}
