@@ -15,16 +15,94 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ReactNode, useEffect} from 'react';
-import {AppState} from 'react-native';
+import {ReactNode, useEffect, useRef} from 'react';
+import {AppState, Platform} from 'react-native';
 
+import Constants from 'expo-constants';
+
+import {NavigationContainerRef} from '@react-navigation/native';
 import {PostHogProvider, usePostHog} from 'posthog-react-native';
 
 import {APP_CONFIG} from 'terraso-mobile-client/config';
+import {useSelector} from 'terraso-mobile-client/store';
 
-// flush posthog when active state changes
-export function PosthogLifecycle() {
+type Props = {
+  children: ReactNode;
+  navRef: NavigationContainerRef<any>;
+};
+
+// ---- User identification for PostHog ----
+function UserIdentification() {
   const posthog = usePostHog();
+  const currentUser = useSelector(state => state.account.currentUser?.data);
+
+  // Set platform as a super property on mount (applies to all events)
+  useEffect(() => {
+    if (!posthog) return;
+    posthog.register({
+      platform: APP_CONFIG.environment || 'development',
+    });
+  }, [posthog]);
+
+  useEffect(() => {
+    if (!posthog) return;
+
+    if (currentUser?.email) {
+      // User is logged in - identify them with PostHog
+      console.log('[PostHog] Identifying user:', currentUser.email);
+      // Construct full name from firstName and lastName if available
+      const fullName = [currentUser.firstName, currentUser.lastName]
+        .filter(Boolean)
+        .join(' ');
+
+      const userProperties: Record<string, any> = {
+        email: currentUser.email,
+      };
+
+      // Extract email domain
+      const emailDomain = currentUser.email.split('@')[1];
+      if (emailDomain) {
+        userProperties.email_domain = emailDomain;
+      }
+
+      // Only add name if it exists
+      if (fullName) {
+        userProperties.name = fullName;
+      }
+
+      posthog.identify(
+        currentUser.id || currentUser.email, // Use user ID if available, email as fallback
+        userProperties,
+      );
+    } else {
+      // User logged out or no user - reset to anonymous
+      console.log('[PostHog] Resetting to anonymous user');
+      posthog.reset();
+    }
+  }, [
+    currentUser?.email,
+    currentUser?.id,
+    currentUser?.firstName,
+    currentUser?.lastName,
+    posthog,
+  ]);
+
+  return null;
+}
+
+// ---- Background flush on app losing focus ----
+function PosthogLifecycle() {
+  const posthog = usePostHog();
+
+  // Optional: remove this initial test event if you don’t want it
+  useEffect(() => {
+    if (posthog) {
+      console.log('[PostHog] Sending test event');
+      posthog.capture('PostHog Test Event', {
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }, [posthog]);
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', state => {
@@ -36,26 +114,85 @@ export function PosthogLifecycle() {
   return null;
 }
 
-export function PostHog({children}: {children: ReactNode}) {
-  if (
-    APP_CONFIG.posthogApiKey &&
-    APP_CONFIG.posthogHost &&
-    APP_CONFIG.posthogApiKey !== '' &&
-    APP_CONFIG.posthogApiKey !== 'REPLACE_ME'
-  ) {
-    return (
-      <PostHogProvider
-        apiKey={APP_CONFIG.posthogApiKey}
-        options={{
-          host: APP_CONFIG.posthogHost,
-          disabled: false,
-        }}>
-        <PosthogLifecycle />
-        {children}
-      </PostHogProvider>
-    );
-  } else {
+// ---- Manual screen tracking using the NavigationContainer ref ----
+function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
+  const posthog = usePostHog();
+  const prevRouteName = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    const send = () => {
+      const current = navRef.getCurrentRoute();
+      const name = current?.name;
+      if (!name || prevRouteName.current === name) return;
+      prevRouteName.current = name;
+
+      // Map to prettier names if you like:
+      // const pretty = SCREEN_TITLES[name] ?? name;
+      const pretty = name;
+
+      posthog?.screen(pretty, {
+        route: name,
+        // You can also attach params if safe: ...current?.params
+      });
+    };
+
+    // Fire on ready + on each nav state change
+    if ((navRef as any).isReady?.()) send();
+    const unsub = (navRef as any).addListener?.('state', send);
+    return () => {
+      if (unsub) unsub();
+    };
+  }, [navRef, posthog]);
+
+  return null;
+}
+
+export function PostHog({children, navRef}: Props) {
+  const enabled =
+    !!APP_CONFIG.posthogApiKey &&
+    !!APP_CONFIG.posthogHost &&
+    APP_CONFIG.posthogApiKey !== 'REPLACE_ME';
+
+  if (!enabled) {
     console.warn('PostHog API key not set, analytics disabled');
     return <>{children}</>;
   }
+
+  console.log('[PostHog] Initializing with:', {
+    host: APP_CONFIG.posthogHost,
+    captureAppLifecycleEvents: true,
+    autocaptureScreens: false, // <- we’re doing manual screen tracking
+  });
+
+  return (
+    <PostHogProvider
+      apiKey={APP_CONFIG.posthogApiKey}
+      options={{
+        host: APP_CONFIG.posthogHost,
+        disabled: false,
+        captureAppLifecycleEvents: true,
+        // batching knobs (tune as you like)
+        flushAt: 10,
+        flushInterval: 5000,
+        // Provide app version, build, and platform for all events
+        customAppProperties: properties => ({
+          ...properties,
+          $app_version: Constants.expoConfig?.version || 'unknown',
+          $app_build:
+            Platform.OS === 'ios'
+              ? Constants.expoConfig?.ios?.buildNumber
+              : Constants.expoConfig?.android?.versionCode?.toString() ||
+                'unknown',
+          platform: APP_CONFIG.environment || 'development',
+        }),
+      }}
+      // IMPORTANT: turn off SDK's nav autocapture to avoid nav hook errors
+      autocapture={{captureScreens: false}}
+      debug={true}>
+      <PosthogLifecycle />
+      <UserIdentification />
+      <ScreenTracker navRef={navRef} />
+      {children}
+    </PostHogProvider>
+  );
 }
