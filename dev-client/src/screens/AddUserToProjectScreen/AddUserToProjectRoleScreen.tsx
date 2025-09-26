@@ -18,7 +18,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {TabActions} from '@react-navigation/native';
+import {usePostHog} from 'posthog-react-native';
 
 import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
 import {ProjectRole} from 'terraso-client-shared/project/projectTypes';
@@ -43,7 +43,6 @@ import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useRoleCanEditProject} from 'terraso-mobile-client/hooks/permissionHooks';
 import {addUserToProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {TabRoutes} from 'terraso-mobile-client/navigation/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {MinimalUserDisplay} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
 import {ProjectRoleRadioBlock} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/ProjectRoleRadioBlock';
@@ -59,6 +58,7 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const posthog = usePostHog();
 
   const project = useSelector(state => state.project.projects[projectId]);
   const newUser = useSelector(state => state.account.users[userId]);
@@ -77,12 +77,29 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
       dispatch(
         addUserToProject({userId: newUser.id, role: selectedRole, projectId}),
       );
+
+      // Track team member addition in PostHog
+      posthog?.capture('team_member_added', {
+        project_id: projectId,
+        project_name: project?.name,
+        new_member_id: newUser.id,
+        new_member_email: newUser.email,
+        new_member_role: selectedRole,
+      });
     } catch (e) {
       console.error(e);
     }
+    // Navigate back to project view - user will see the team tab they came from
     navigation.popTo('PROJECT_VIEW', {projectId: projectId});
-    navigation.dispatch(TabActions.jumpTo(TabRoutes.TEAM));
-  }, [dispatch, projectId, newUser, selectedRole, navigation]);
+  }, [
+    dispatch,
+    projectId,
+    project,
+    newUser,
+    selectedRole,
+    navigation,
+    posthog,
+  ]);
 
   const userCanEditProject = useRoleCanEditProject(projectId);
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
