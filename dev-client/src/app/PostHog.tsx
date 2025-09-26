@@ -172,8 +172,8 @@ export function PostHog({children, navRef}: Props) {
         disabled: false,
         captureAppLifecycleEvents: true,
         // batching knobs (tune as you like)
-        flushAt: 10,
-        flushInterval: 5000,
+        flushAt: 20, // number of events to queue before flushing (send to server)
+        flushInterval: 10000, // milliseconds between periodic flushes
         // Provide app version, build, and platform for all events
         customAppProperties: properties => ({
           ...properties,
