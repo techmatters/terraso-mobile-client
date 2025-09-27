@@ -36,15 +36,23 @@ import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type FormOverlaySheetProps = React.PropsWithChildren<{
   trigger?: ModalTrigger;
+  onClose?: () => void;
 }>;
 
 /*
  * Half-screen overlay sheet with a top header labeled "done", used for presenting form controls to the user.
  */
 export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
-  ({children, trigger}: FormOverlaySheetProps, ref) => {
+  ({children, trigger, onClose}: FormOverlaySheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
     const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
+
+    const handleClose = () => {
+      if (onClose) {
+        onClose();
+      }
+      handle.onClose();
+    };
 
     return (
       <>
@@ -55,9 +63,14 @@ export const FormOverlaySheet = forwardRef<ModalHandle, FormOverlaySheetProps>(
           topInset={headerHeight}
           backdropComponent={BackdropComponent}
           snapPoints={['50%', '100%']}
-          enableDynamicSizing={false}>
+          enableDynamicSizing={false}
+          onChange={index => {
+            if (index === -1 && onClose) {
+              onClose();
+            }
+          }}>
           <ModalContext.Provider value={handle}>
-            <FormOverlaySheetHeader onDone={handle.onClose} />
+            <FormOverlaySheetHeader onDone={handleClose} />
             <BottomSheetScrollView focusHook={useFocusEffect}>
               {children}
             </BottomSheetScrollView>

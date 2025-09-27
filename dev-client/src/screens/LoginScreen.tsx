@@ -28,6 +28,7 @@ import {
 } from 'expo-apple-authentication';
 
 import {Button} from 'native-base';
+import {usePostHog} from 'posthog-react-native';
 
 import {setHasToken} from 'terraso-client-shared/account/accountSlice';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
@@ -93,6 +94,7 @@ const LoginButtons = ({onPress}: LoginButtonsProps) => {
 export const LoginScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const posthog = usePostHog();
   const loggedIn = useSelector(
     state => state.account.currentUser.data !== null,
   );
@@ -107,15 +109,22 @@ export const LoginScreen = () => {
     async (providerName: AuthProvider) => {
       try {
         setIsLoading(true);
-        await auth(providerName);
+        const result = await auth(providerName);
         dispatch(setHasToken(true));
+
+        // Track login event with new_account flag
+        posthog?.capture('login', {
+          login_provider: providerName,
+          platform: Platform.OS,
+          new_account: result?.is_new_account || false,
+        });
       } catch (e) {
         console.error(e);
       } finally {
         setIsLoading(false);
       }
     },
-    [dispatch],
+    [dispatch, posthog],
   );
 
   const isOffline = useIsOffline();

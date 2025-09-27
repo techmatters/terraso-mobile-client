@@ -19,6 +19,8 @@ import {useCallback, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ScrollView} from 'react-native';
 
+import {usePostHog} from 'posthog-react-native';
+
 import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
 
 import {Accordion} from 'terraso-mobile-client/components/Accordion';
@@ -58,6 +60,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const posthog = usePostHog();
 
   const isOffline = useIsOffline();
   useEffect(() => {
@@ -74,6 +77,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
     ) !== undefined;
 
   const project = useSelector(state => state.project.projects[projectId]);
+  const allProjects = useSelector(state => state.project.projects);
   const {projects, sites, unaffiliatedSites} = useSelector(state =>
     selectProjectsWithTransferrableSites(state, 'MANAGER'),
   );
@@ -204,9 +208,49 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
 
   const onSubmit = useCallback(async () => {
     const payload = {projectId, siteIds: checkedSites};
+
+    // Track each site transfer in PostHog
+    checkedSites.forEach(siteId => {
+      // Find the site info to get more details
+      const site = sitesExcludingCurrent.find(s => s.siteId === siteId);
+
+      // Get the source project details from all projects (not just manageable ones)
+      const fromProject =
+        site?.projectId && site.projectId !== UNAFFILIATED.projectId
+          ? allProjects[site.projectId as string]
+          : null;
+
+      posthog?.capture('site_transfer', {
+        site_id: siteId,
+        site_name: site?.siteName || 'unknown',
+        from_project_id:
+          site?.projectId === UNAFFILIATED.projectId
+            ? 'unaffiliated'
+            : (site?.projectId as string) || 'unknown',
+        from_project_name: site?.projectName || 'unaffiliated',
+        from_project_privacy: fromProject?.privacy || 'none',
+        to_project_id: projectId,
+        to_project_name: project?.name || 'unknown',
+        to_project_privacy: project?.privacy || 'unknown',
+        transfer_type:
+          site?.projectId === UNAFFILIATED.projectId
+            ? 'unaffiliated_to_project'
+            : 'project_to_project',
+      });
+    });
+
     await dispatch(transferSites(payload));
     return navigation.pop();
-  }, [dispatch, navigation, projectId, checkedSites]);
+  }, [
+    dispatch,
+    navigation,
+    projectId,
+    project,
+    allProjects,
+    checkedSites,
+    sitesExcludingCurrent,
+    posthog,
+  ]);
 
   const userCanEditProject = useRoleCanEditProject(projectId);
   const handleMissingProject = useNavToBottomTabsAndShowSyncError();

@@ -76,6 +76,7 @@ export type AuthProvider = keyof typeof configs;
 interface AuthTokens {
   atoken: string;
   rtoken: string;
+  is_new_account?: boolean;
 }
 
 async function exchangeToken(
@@ -98,6 +99,7 @@ async function exchangeToken(
   return {
     atoken: payload.atoken,
     rtoken: payload.rtoken,
+    is_new_account: payload.is_new_account,
   };
 }
 
@@ -167,10 +169,15 @@ export async function auth(provider: AuthProvider) {
         ? 'google-android'
         : 'google-ios';
 
-  let {atoken, rtoken} = await exchangeToken(idToken, platformProvider);
+  let {atoken, rtoken, is_new_account} = await exchangeToken(
+    idToken,
+    platformProvider,
+  );
 
-  return Promise.all([
+  await Promise.all([
     apiConfig.tokenStorage.setToken('atoken', atoken),
     apiConfig.tokenStorage.setToken('rtoken', rtoken),
   ]);
+
+  return {is_new_account};
 }
