@@ -24,7 +24,7 @@
     "localization-to-po": "node scripts/localization/transform-to.mjs po",
     "localization-to-json": "node scripts/localization/transform-to.mjs json",
     "localization-check-missing": "node scripts/localization/missing-check.mjs",
-    "prepare": "cd .. && husky",
+    "prepare": "cd .. && husky ./dev-client/.husky",
     "check-i18n": "node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/en.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/es.json ; node scripts/localization/find-i18n-keys.mjs . --catalog src/translations/uk.json",
     "postinstall": "patch-package"
   },
@@ -98,6 +98,8 @@
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-typescript": "^7.27.1",
     "@babel/runtime": "^7.27.1",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
     "@react-native-community/cli-doctor": "^16.0.2",
     "@react-native/babel-preset": "^0.76.6",
