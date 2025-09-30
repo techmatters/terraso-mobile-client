@@ -20,6 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikProps} from 'formik';
 import {KeyboardAvoidingView, ScrollView} from 'native-base';
+import {usePostHog} from 'posthog-react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Box, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -35,9 +36,18 @@ export const CreateProjectForm = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const posthog = usePostHog();
+
   const onSubmit = async (values: ProjectFormValues) => {
     const {payload} = await dispatch(addProject(values));
     if (payload !== undefined && 'project' in payload) {
+      // Track project creation in PostHog
+      posthog?.capture('project_created', {
+        project_id: payload.project.id,
+        project_name: values.name,
+        project_privacy: values.privacy,
+      });
+
       navigation.replace('PROJECT_VIEW', {projectId: payload.project.id});
     }
   };

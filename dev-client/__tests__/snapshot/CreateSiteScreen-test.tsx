@@ -20,10 +20,13 @@ import {render} from '@testing/integration/utils';
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
 
 test('renders correctly', () => {
-  const screen = render(<CreateSiteScreen />, {
-    route: 'CREATE_SITE',
-    initialState: {},
-  }).toJSON();
+  const screen = render(
+    <CreateSiteScreen coords={{latitude: 0, longitude: 0}} />,
+    {
+      route: 'CREATE_SITE',
+      initialState: {},
+    },
+  ).toJSON();
 
   expect(screen).toMatchSnapshot();
 });
