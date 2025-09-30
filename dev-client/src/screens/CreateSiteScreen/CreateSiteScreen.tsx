@@ -17,6 +17,8 @@
 
 import {useCallback} from 'react';
 
+import {usePostHog} from 'posthog-react-native';
+
 import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
@@ -25,20 +27,17 @@ import {addSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
-type Props =
-  | {
-      coords: Coords;
-    }
-  | {
-      elevation: number;
-    }
-  | {}
-  | undefined;
+type Props = {
+  coords: Coords;
+  elevation?: number;
+};
 
-export const CreateSiteScreen = (props: Props = {}) => {
+export const CreateSiteScreen = (props: Props) => {
   const dispatch = useDispatch();
+  const posthog = usePostHog();
+  const projects = useSelector(state => state.project.projects);
 
   const createSiteCallback = useCallback(
     async (input: SiteAddMutationInput) => {
@@ -48,9 +47,30 @@ export const CreateSiteScreen = (props: Props = {}) => {
         console.error(result.payload.parsedErrors);
         return;
       }
+
+      // Track site creation in PostHog
+      if (result.payload) {
+        const site = result.payload;
+
+        // Get project details from the store if site has a project
+        const project = site.projectId ? projects[site.projectId] : null;
+
+        posthog?.capture('site_created', {
+          site_id: site.id,
+          site_name: site.name,
+          latitude: site.latitude,
+          longitude: site.longitude,
+          project_id: site.projectId || 'none',
+          project_name: project?.name || 'none',
+          // Use project privacy if site is part of a project, otherwise use site's own privacy
+          site_privacy: project?.privacy || site.privacy,
+          project_privacy: project?.privacy || 'none',
+        });
+      }
+
       return result.payload;
     },
-    [dispatch],
+    [dispatch, posthog, projects],
   );
 
   return (
@@ -59,8 +79,8 @@ export const CreateSiteScreen = (props: Props = {}) => {
       AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
       <CreateSiteView
         createSiteCallback={createSiteCallback}
-        sitePin={'coords' in props ? props.coords : undefined}
-        elevation={'elevation' in props ? props.elevation : undefined}
+        sitePin={props.coords}
+        elevation={props.elevation}
       />
     </ScreenScaffold>
   );

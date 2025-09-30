@@ -21,10 +21,23 @@ import {AppState, Platform} from 'react-native';
 import Constants from 'expo-constants';
 
 import {NavigationContainerRef} from '@react-navigation/native';
-import {PostHogProvider, usePostHog} from 'posthog-react-native';
+import {
+  PostHogProvider,
+  PostHog as PostHogType,
+  usePostHog,
+} from 'posthog-react-native';
 
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useSelector} from 'terraso-mobile-client/store';
+
+// ---- Global PostHog instance for use outside React components ----
+let posthogInstance: PostHogType | null = null;
+
+export const setPostHogInstance = (instance: PostHogType) => {
+  posthogInstance = instance;
+};
+
+export const getPostHogInstance = () => posthogInstance;
 
 type Props = {
   children: ReactNode;
@@ -90,11 +103,24 @@ function UserIdentification() {
   return null;
 }
 
+// ---- Set global PostHog instance ----
+function PostHogInstanceSetter() {
+  const posthog = usePostHog();
+
+  useEffect(() => {
+    if (posthog) {
+      setPostHogInstance(posthog);
+    }
+  }, [posthog]);
+
+  return null;
+}
+
 // ---- Background flush on app losing focus ----
 function PosthogLifecycle() {
   const posthog = usePostHog();
 
-  // Optional: remove this initial test event if you don’t want it
+  // Optional: remove this initial test event if you don't want it
   useEffect(() => {
     if (posthog) {
       console.log('[PostHog] Sending test event');
@@ -172,8 +198,8 @@ export function PostHog({children, navRef}: Props) {
         disabled: false,
         captureAppLifecycleEvents: true,
         // batching knobs (tune as you like)
-        flushAt: 10,
-        flushInterval: 5000,
+        flushAt: 20, // number of events to queue before flushing (send to server)
+        flushInterval: 10000, // milliseconds between periodic flushes
         // Provide app version, build, and platform for all events
         customAppProperties: properties => ({
           ...properties,
@@ -189,6 +215,7 @@ export function PostHog({children, navRef}: Props) {
       // IMPORTANT: turn off SDK's nav autocapture to avoid nav hook errors
       autocapture={{captureScreens: false}}
       debug={true}>
+      <PostHogInstanceSetter />
       <PosthogLifecycle />
       <UserIdentification />
       <ScreenTracker navRef={navRef} />
