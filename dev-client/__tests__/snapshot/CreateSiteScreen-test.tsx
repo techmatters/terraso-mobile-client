@@ -21,10 +21,7 @@ import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/C
 
 test('renders correctly', () => {
   const screen = render(
-    <CreateSiteScreen
-      coords={{latitude: 0, longitude: 0}}
-      creationMethod="tap_on_map"
-    />,
+    <CreateSiteScreen coords={{latitude: 0, longitude: 0}} />,
     {
       route: 'CREATE_SITE',
       initialState: {},

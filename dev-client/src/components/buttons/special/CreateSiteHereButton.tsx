@@ -43,7 +43,6 @@ export const CreateSiteHereButton = ({
     navigation.navigate('CREATE_SITE', {
       coords,
       elevation: elevation,
-      creationMethod: 'current_location',
     });
     if (cleanUp) {
       cleanUp();
