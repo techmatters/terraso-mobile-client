@@ -63,7 +63,7 @@ export const RateSoilMatchFabWithSheet = ({siteName, soilMatch}: Props) => {
 
       posthog?.capture('soil_match_rating', {
         rating: matchRating.toLowerCase(),
-        site_name: siteName || 'temporary_location',
+        site_name: siteName ?? 'unknown',
         soil_name: soilMatch?.soilInfo?.soilSeries?.name || 'unknown',
         soil_location_score: locationScore,
         soil_properties_score: propertiesScore,
