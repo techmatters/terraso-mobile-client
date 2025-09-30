@@ -43,6 +43,7 @@ export const CreateSiteButton = ({
     navigation.navigate('CREATE_SITE', {
       coords,
       elevation: elevation,
+      creationMethod: 'tap_on_map',
     });
     if (cleanUp) {
       cleanUp();

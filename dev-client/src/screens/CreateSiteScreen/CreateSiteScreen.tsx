@@ -29,17 +29,13 @@ import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/com
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
-type Props =
-  | {
-      coords: Coords;
-    }
-  | {
-      elevation: number;
-    }
-  | {}
-  | undefined;
+type Props = {
+  coords: Coords;
+  elevation?: number;
+  creationMethod: 'tap_on_map' | 'current_location';
+};
 
-export const CreateSiteScreen = (props: Props = {}) => {
+export const CreateSiteScreen = (props: Props) => {
   const dispatch = useDispatch();
   const posthog = usePostHog();
   const projects = useSelector(state => state.project.projects);
@@ -57,14 +53,6 @@ export const CreateSiteScreen = (props: Props = {}) => {
       if (result.payload) {
         const site = result.payload;
 
-        // Determine creation method based on props
-        let creationMethod = 'manual_entry'; // Default when no coords provided
-        if ('coords' in props && props.coords) {
-          creationMethod = 'tap_on_map';
-        } else if ('elevation' in props && props.elevation !== undefined) {
-          creationMethod = 'current_location';
-        }
-
         // Get project details from the store if site has a project
         const project = site.projectId ? projects[site.projectId] : null;
 
@@ -73,7 +61,7 @@ export const CreateSiteScreen = (props: Props = {}) => {
           site_name: site.name,
           latitude: site.latitude,
           longitude: site.longitude,
-          creation_method: creationMethod,
+          creation_method: props.creationMethod,
           project_id: site.projectId || 'none',
           project_name: project?.name || 'none',
           // Use project privacy if site is part of a project, otherwise use site's own privacy
@@ -93,8 +81,8 @@ export const CreateSiteScreen = (props: Props = {}) => {
       AppBar={<AppBar LeftButton={<ScreenCloseButton />} />}>
       <CreateSiteView
         createSiteCallback={createSiteCallback}
-        sitePin={'coords' in props ? props.coords : undefined}
-        elevation={'elevation' in props ? props.elevation : undefined}
+        sitePin={props.coords}
+        elevation={props.elevation}
       />
     </ScreenScaffold>
   );
