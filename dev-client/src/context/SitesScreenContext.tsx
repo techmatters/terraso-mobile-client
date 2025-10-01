@@ -25,7 +25,7 @@ type SitesScreenRef = {
 };
 
 export const SitesScreenContext =
-  createContext<RefObject<SitesScreenRef> | null>(null);
+  createContext<RefObject<SitesScreenRef | null> | null>(null);
 
 export const SitesScreenContextProvider = memo(
   ({children}: React.PropsWithChildren<{}>) => (

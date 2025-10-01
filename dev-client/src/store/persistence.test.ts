@@ -50,7 +50,7 @@ describe('persistence middleware', () => {
       } = require('terraso-mobile-client/store/persistence');
 
       const store = configureStore({
-        middleware: [persistenceMiddleware],
+        middleware: () => [persistenceMiddleware] as any,
         reducer,
       });
 
@@ -76,7 +76,7 @@ describe('persistence middleware', () => {
 
       kvStorage.setObject('persisted-redux-state', {counter: 1});
       const store = configureStore({
-        middleware: [persistenceMiddleware],
+        middleware: () => [persistenceMiddleware] as any,
         reducer,
         preloadedState: loadPersistedReduxState(),
       });
@@ -102,7 +102,7 @@ describe('persistence middleware', () => {
       } = require('terraso-mobile-client/store/persistence');
 
       const store = configureStore({
-        middleware: [persistenceMiddleware],
+        middleware: () => [persistenceMiddleware] as any,
         reducer,
       });
 

@@ -36,7 +36,7 @@ const withProps = (node: React.ReactNode, props: object | undefined) =>
   !isValidElement(node) || props === undefined
     ? node
     : Children.map(node, child =>
-        cloneElement(child, {...props, ...child.props}),
+        cloneElement(child, {...(props || {}), ...(child.props || {})}),
       );
 
 type ViewProps = NativeBaseProps & RN.ViewProps;

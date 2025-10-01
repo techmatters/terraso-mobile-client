@@ -17,12 +17,11 @@
 
 import {StyleSheet, View} from 'react-native';
 
-import CheckBox from '@react-native-community/checkbox';
-
 import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {DisableableText} from 'terraso-mobile-client/components/content/typography/DisableableText';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
+import {StandardCheckbox} from 'terraso-mobile-client/components/inputs/StandardCheckbox';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
@@ -45,9 +44,7 @@ export const SoilIdMatchSelector = ({
   return (
     <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
       <View style={styles.container}>
-        <CheckBox
-          accessibilityRole="checkbox"
-          accessibilityState={{disabled: isOffline}}
+        <StandardCheckbox
           value={selectedSoilId === matchId}
           disabled={isOffline}
           onValueChange={value => {

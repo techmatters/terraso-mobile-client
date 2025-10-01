@@ -84,6 +84,7 @@ const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
   slug: 'landpks',
   version: '1.3.2',
+  newArchEnabled: true,
   orientation: 'portrait',
   splash: {
     image: 'src/assets/splash.png',
@@ -139,6 +140,7 @@ const defaultConfig: ExpoConfig = {
     ['expo-apple-authentication'],
     ['expo-localization'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
+    ['expo-web-browser'],
     [
       '@rnmapbox/maps',
       {
@@ -163,10 +165,9 @@ const defaultConfig: ExpoConfig = {
     [
       'expo-build-properties',
       {
+        ios: {},
         android: {
-          compileSdkVersion: 35,
-          targetSdkVersion: 35,
-          buildToolsVersion: '35.0.0',
+          gradleVersion: '8.14.1',
         },
       },
     ],

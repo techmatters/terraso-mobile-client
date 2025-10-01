@@ -53,16 +53,21 @@ export const BottomTabsScreen = memo(() => {
 
   useEffect(() => {
     if (locationPermissions?.granted) {
-      locationManager.getLastKnownLocation().then(initCoords => {
-        if (initCoords !== null) {
-          dispatch(
-            updateLocation({
-              coords: initCoords.coords,
-              accuracyM: initCoords.coords.accuracy ?? null,
-            }),
-          );
-        }
-      });
+      locationManager
+        .getLastKnownLocation()
+        .then(initCoords => {
+          if (initCoords !== null) {
+            dispatch(
+              updateLocation({
+                coords: initCoords.coords,
+                accuracyM: initCoords.coords.accuracy ?? null,
+              }),
+            );
+          }
+        })
+        .catch(error => {
+          console.warn('locationManager Error: ', error);
+        });
 
       // add listener to update location on user movement
       const listener = ({coords}: Location) => {

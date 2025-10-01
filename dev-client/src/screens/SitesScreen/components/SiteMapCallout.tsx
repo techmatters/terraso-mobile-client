@@ -16,10 +16,10 @@
  */
 
 import React, {useCallback} from 'react';
+import {FlatList} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import Mapbox from '@rnmapbox/maps';
-import {FlatList} from 'native-base';
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';

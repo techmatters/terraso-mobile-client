@@ -46,7 +46,7 @@ import {
   flushDataCacheErrors,
   flushLocationCache,
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 /**
  * Hook that exposes handles allowing components to indicate via side-effects that they require
@@ -189,7 +189,7 @@ const useSiteFetching = (siteInputs: Record<string, SoilIdInputData>) => {
     if (!isOffline) {
       for (const [siteId, input] of Object.entries(siteInputs)) {
         if (input) {
-          dispatch(siteId, fetchSiteBasedSoilMatches({siteId, input}));
+          dispatch(siteId, fetchSiteBasedSoilMatches({siteId, input}) as any);
         }
       }
     }
@@ -203,7 +203,7 @@ const usePerSiteDispatch = () => {
 
   const dispatch = useDispatch();
   const perSiteDispatch = useCallback(
-    (siteId: string, action: AsyncThunkAction<any, any, any>) => {
+    (siteId: string, action: AsyncThunkAction<any, any, {state: AppState}>) => {
       /* If there's an ongoing previous dispatch, abort it */
       const prevDispatch = siteDispatches.current[siteId];
       if (prevDispatch) {

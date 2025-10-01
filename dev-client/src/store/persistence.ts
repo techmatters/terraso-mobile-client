@@ -23,14 +23,15 @@ import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {AppState} from 'terraso-mobile-client/store';
 
 const PERSISTED_STATE_KEY = 'persisted-redux-state';
-export const persistenceMiddleware: Middleware = store => next => action => {
-  const result = next(action);
-  if (isFlagEnabled('FF_offline')) {
-    const newState = store.getState();
-    kvStorage.setObject(PERSISTED_STATE_KEY, newState);
-  }
-  return result;
-};
+export const persistenceMiddleware: Middleware<{}, AppState> =
+  store => next => action => {
+    const result = next(action);
+    if (isFlagEnabled('FF_offline')) {
+      const newState = store.getState();
+      kvStorage.setObject(PERSISTED_STATE_KEY, newState);
+    }
+    return result;
+  };
 
 export const loadPersistedReduxState = () => {
   if (isFlagEnabled('FF_offline')) {
