@@ -28,7 +28,7 @@ export const repositionCamera = ({
   zoomLevel: number;
   animationDuration: number;
   paddingBottom: number;
-  cameraRef?: React.RefObject<CameraRef>;
+  cameraRef?: React.RefObject<CameraRef | null>;
 }) => {
   if (!feature.geometry || feature.geometry.type !== 'Point') {
     console.error(

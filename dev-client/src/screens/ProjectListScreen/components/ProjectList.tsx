@@ -17,8 +17,7 @@
 
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-
-import {FlatList} from 'native-base';
+import {FlatList} from 'react-native';
 
 import {Project} from 'terraso-client-shared/project/projectTypes';
 
