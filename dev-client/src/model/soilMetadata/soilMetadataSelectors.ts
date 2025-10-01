@@ -15,12 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSelector} from '@reduxjs/toolkit';
-
 import {AppState} from 'terraso-mobile-client/store';
 
-export const selectSoilMetadata = (siteId: string) =>
-  createSelector(
-    (state: AppState) => state.soilMetadata.soilMetadata[siteId],
-    metaData => metaData ?? {},
-  );
+export const selectSoilMetadata = (siteId: string) => (state: AppState) =>
+  state.soilMetadata.soilMetadata[siteId] ?? {};

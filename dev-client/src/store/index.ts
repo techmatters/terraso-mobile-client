@@ -52,8 +52,8 @@ export const createStore = (intialState?: Partial<AppState>) =>
   configureStore({
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware()
-        .concat(handleAbortMiddleware)
-        .concat(persistenceMiddleware),
+        .concat(handleAbortMiddleware as any)
+        .concat(persistenceMiddleware as any),
     reducer: reduceReducers(rootReducer, ...globalReducers),
     preloadedState: intialState,
   });

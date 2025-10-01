@@ -35,7 +35,7 @@ import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 export const useGorhomSheetHandleRef = (
   handleRef: ForwardedRef<ModalHandle>,
 ): {
-  sheetRef: RefObject<GorhomBottomSheetModal>;
+  sheetRef: RefObject<GorhomBottomSheetModal | null>;
   handle: ModalHandle;
 } => {
   const sheetRef = useRef<GorhomBottomSheetModal>(null);
@@ -49,7 +49,7 @@ export const useGorhomSheetHandleRef = (
  * handle's methods.
  */
 export const useGorhomSheetHandle = (
-  sheetRef: RefObject<GorhomBottomSheetModal>,
+  sheetRef: RefObject<GorhomBottomSheetModal | null>,
 ): ModalHandle => {
   return useMemo(
     () => ({
