@@ -60,7 +60,7 @@ export const useUserRating = (
   soilMatchId?: string,
 ): UserMatchRating => {
   const userRatings = useSelector(selectUserRatingsMetadata(siteId));
-  const thisSoilRating = userRatings.find(
+  const thisSoilRating = userRatings?.find(
     soilRatingEntry => soilRatingEntry?.soilMatchId === soilMatchId,
   );
   return thisSoilRating ? thisSoilRating.rating : 'UNSURE';
