@@ -24,3 +24,8 @@ export const selectSoilMetadata = (siteId: string) =>
     (state: AppState) => state.soilMetadata.soilMetadata[siteId],
     metaData => metaData ?? {},
   );
+
+export const selectUserRatingsMetadata = (siteId: string) => {
+  return (state: AppState) =>
+    state.soilMetadata.soilMetadata[siteId]?.userRatings;
+};
