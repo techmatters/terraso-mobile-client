@@ -157,11 +157,12 @@
     "jest"
   ],
   "lint-staged": {
-    "dev-client/**/*.{ts,tsx}": [
-      "sh -c 'cd dev-client && npm run eslint && npm run check-ts'"
+    "**/*.{ts,tsx}": [
+      "npm run eslint",
+      "npm run check-ts"
     ],
-    "dev-client/**/*.{json,ts,tsx,html}": [
-      "sh -c 'cd dev-client && npm run prettier'"
+    "**/*.{json,ts,tsx,html}": [
+      "npm run prettier"
     ]
   },
   "engines": {
