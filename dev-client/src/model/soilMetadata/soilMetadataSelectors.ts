@@ -20,7 +20,8 @@ import {AppState} from 'terraso-mobile-client/store';
 export const selectSoilMetadata = (siteId: string) => (state: AppState) =>
   state.soilMetadata.soilMetadata[siteId] ?? {};
 
-export const selectUserRatingsMetadata = (siteId: string) => {
+export const selectUserRatingsMetadata = (siteId?: string) => {
   return (state: AppState) =>
-    state.soilMetadata.soilMetadata[siteId]?.userRatings;
+    // TODO-cknipe: When do new sites get a soilMetadata entry? If immediately, remove the ?
+    siteId ? state.soilMetadata.soilMetadata[siteId]?.userRatings : undefined;
 };
