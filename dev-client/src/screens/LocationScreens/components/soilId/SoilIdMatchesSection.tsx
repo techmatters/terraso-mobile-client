@@ -36,12 +36,14 @@ import {
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
 import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
+import {selectUserRatingsMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/NoMapDataWarningAlert';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
+import {useSelector} from 'terraso-mobile-client/store';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
 
@@ -105,6 +107,21 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
     [siteId, isSite, coords, dataRegion, navigation],
   );
 
+  // TODO-cknipe: Maybe move this to utils? And the hook could use it?
+  // Only relevant for sites
+  const userRatings = useSelector(selectUserRatingsMetadata(siteId));
+  const getTileVariant = (soilMatch: SoilMatch) => {
+    // TODO-cknipe: Why is soilRatingEntry possibly null?
+    // TODO-cknipe: Function to get the soilInfo.soilSeries.name as the soilMatchID?
+    const thisSoilRating = userRatings?.find(
+      soilRatingEntry =>
+        soilRatingEntry?.soilMatchId === soilMatch.soilInfo.soilSeries.name,
+    );
+    const rating = thisSoilRating ? thisSoilRating.rating : 'UNSURE';
+    if (rating === 'REJECTED') return 'Rejected';
+    return 'Default';
+  };
+
   switch (status) {
     case 'loading':
       return isOffline ? null : <ActivityIndicator size="small" />;
@@ -118,6 +135,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
             soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
           }
           onPress={() => onMatchTilePress(soilMatch)}
+          variant={getTileVariant(soilMatch)}
         />
       ));
     }
