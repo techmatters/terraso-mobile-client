@@ -158,11 +158,10 @@
   ],
   "lint-staged": {
     "**/*.{ts,tsx}": [
-      "npm run eslint",
-      "npm run check-ts"
+      "sh -c 'npm run eslint && npm run check-ts'"
     ],
     "**/*.{json,ts,tsx,html}": [
-      "npm run prettier"
+      "sh -c 'npm run prettier'"
     ]
   },
   "engines": {
