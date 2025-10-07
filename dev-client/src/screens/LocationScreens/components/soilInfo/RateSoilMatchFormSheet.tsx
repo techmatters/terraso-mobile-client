@@ -21,7 +21,11 @@ import {StyleSheet, View} from 'react-native';
 
 import {usePostHog} from 'posthog-react-native';
 
-import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  SoilMatch,
+  UserMatchRating,
+} from 'terraso-client-shared/graphqlSchema/graphql';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
@@ -30,16 +34,18 @@ import {TranslatedSubHeading} from 'terraso-mobile-client/components/content/typ
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
+import {useUserRating} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {useSelector} from 'terraso-mobile-client/store';
-import {selectSoilData} from 'terraso-mobile-client/store/selectors';
+import {
+  selectSite,
+  selectSoilData,
+} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';
 
-type MatchRating = 'YES' | 'NO' | 'UNSURE';
-
 type Props = {
-  siteId?: string;
-  siteName?: string;
-  soilMatch?: SoilMatch;
+  siteId: string;
+  siteName: string;
+  soilMatch: SoilMatch;
 };
 
 type InputCounts = {
@@ -119,16 +125,24 @@ export const RateSoilMatchFabWithSheet = ({
 }: Props) => {
   const {t} = useTranslation();
   const posthog = usePostHog();
-  const [matchRating, setMatchRating] = useState<MatchRating>('UNSURE');
-  const [isClosing, setIsClosing] = useState(false);
+  const site: Site | undefined =
+    useSelector(state => selectSite(siteId)(state)) ?? undefined;
+
+  const existingRating = useUserRating(
+    siteId,
+    soilMatch?.soilInfo.soilSeries.name,
+  );
+  const [matchRating, setMatchRating] =
+    useState<UserMatchRating>(existingRating);
   const soilData = useSelector(
     siteId ? selectSoilData(siteId) : () => undefined,
   );
-
-  const onMatchRatingChanged = (value: MatchRating) => {
+  const onMatchRatingChanged = (value: UserMatchRating) => {
     setMatchRating(value);
+    // TODO-cknipe: Add to the offline transactions
   };
 
+  const [isClosing, setIsClosing] = useState(false);
   const handleSheetClose = () => {
     // Track the rating event when sheet is closed
     if (!isClosing) {
@@ -148,7 +162,7 @@ export const RateSoilMatchFabWithSheet = ({
 
       posthog?.capture('soil_match_rating', {
         rating: matchRating.toLowerCase(),
-        site_name: siteName ?? 'unknown',
+        site_name: site?.name ?? 'unknown',
         soil_name: soilMatch?.soilInfo?.soilSeries?.name || 'unknown',
         soil_location_score: locationScore,
         soil_properties_score: propertiesScore,
@@ -180,8 +194,8 @@ export const RateSoilMatchFabWithSheet = ({
         <TranslatedParagraph i18nKey="site.soil_id.matches.rate.description" />
         <RadioBlock
           options={{
-            YES: {text: t('site.soil_id.matches.rate.yes')},
-            NO: {text: t('site.soil_id.matches.rate.no')},
+            SELECTED: {text: t('site.soil_id.matches.rate.yes')},
+            REJECTED: {text: t('site.soil_id.matches.rate.no')},
             UNSURE: {text: t('site.soil_id.matches.rate.unsure')},
           }}
           groupProps={{
