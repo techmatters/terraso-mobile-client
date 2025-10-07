@@ -18,7 +18,12 @@
 import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 
-import {selectSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
+import {UserMatchRating} from 'terraso-client-shared/graphqlSchema/graphql';
+
+import {
+  selectSoilMetadata,
+  selectUserRatingsMetadata,
+} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 import {updateSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
 
@@ -48,4 +53,15 @@ export const useSoilIdSelection = (
   );
 
   return {selectedSoilId, selectSoilId};
+};
+
+export const useUserRating = (
+  siteId: string,
+  soilMatchId?: string,
+): UserMatchRating => {
+  const userRatings = useSelector(selectUserRatingsMetadata(siteId));
+  const thisSoilRating = userRatings.find(
+    soilRatingEntry => soilRatingEntry?.soilMatchId === soilMatchId,
+  );
+  return thisSoilRating ? thisSoilRating.rating : 'UNSURE';
 };
