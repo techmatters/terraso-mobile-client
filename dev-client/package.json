@@ -127,7 +127,7 @@
     "jest-expo": "^52.0.6",
     "lint-staged": "^15.5.2",
     "lodash": "^4.17.21",
-    "patch-package": "^8.0.0",
+    "patch-package": "^8.0.1",
     "prettier": "^3.5.3",
     "react-devtools": "^6.1.1",
     "react-native-svg-transformer": "^1.5.1",
