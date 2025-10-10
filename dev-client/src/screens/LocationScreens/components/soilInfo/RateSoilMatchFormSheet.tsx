@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 
@@ -23,7 +23,9 @@ import {usePostHog} from 'posthog-react-native';
 
 import {
   SoilMatch,
+  SoilMetadataUpdateMutationInput,
   UserMatchRating,
+  UserRatingInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 
@@ -34,7 +36,8 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
 import {useUserRating} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
-import {useSelector} from 'terraso-mobile-client/store';
+import {localUpdateUserRatings} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectSite} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';
 
@@ -46,19 +49,39 @@ type Props = {
 export const RateSoilMatchFabWithSheet = ({siteId, soilMatch}: Props) => {
   const {t} = useTranslation();
   const posthog = usePostHog();
+  const dispatch = useDispatch();
   const site: Site | undefined =
     useSelector(state => selectSite(siteId)(state)) ?? undefined;
 
-  const existingRating = useUserRating(
-    siteId,
-    soilMatch?.soilInfo.soilSeries.name,
-  );
+  // TODO-cknipe: What if the soilMatch disappears? ScreenDataRequirements?
+  const soilMatchId = soilMatch.soilInfo.soilSeries.name;
+  const existingRating = useUserRating(siteId, soilMatchId);
+
+  // TODO-cknipe: Remove this and use the redux instead... a selector?
+  // TODO-cknipe: Does posthog capture stuff from offline activity?
   const [matchRating, setMatchRating] =
     useState<UserMatchRating>(existingRating);
-  const onMatchRatingChanged = (value: UserMatchRating) => {
-    setMatchRating(value);
-    // TODO-cknipe: Add to the offline transactions
-  };
+
+  const onMatchRatingChanged = useCallback(
+    (value: UserMatchRating) => {
+      setMatchRating(value);
+
+      const newRatings: Array<UserRatingInput> = [
+        {
+          soilMatchId,
+          rating: value,
+        },
+      ];
+      const input: SoilMetadataUpdateMutationInput = {
+        siteId,
+        userRatings: newRatings,
+      };
+      dispatch(localUpdateUserRatings(input));
+      // TODO-cknipe: Add to the offline transactions
+      // TODO-cknipe: Do we need a client mutation id?
+    },
+    [soilMatchId, siteId, dispatch],
+  );
 
   const [isClosing, setIsClosing] = useState(false);
   const handleSheetClose = () => {
