@@ -21,6 +21,8 @@ import {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 import * as soilMetadataService from 'terraso-client-shared/soilId/soilMetadataService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
+import * as localSoilMetadata from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
+
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 
@@ -57,12 +59,22 @@ const soilMetadataSlice = createSlice({
     builder.addCase(updateSoilMetadata.fulfilled, (state, action) => {
       state.soilMetadata[action.meta.arg.siteId] = action.payload;
     });
+    builder.addCase(localUpdateUserRatings.fulfilled, (state, action) => {
+      console.log('ACTION.PAYLOAD: ', action.payload);
+      state.soilMetadata[action.meta.arg.siteId] = action.payload;
+    });
   },
 });
 
 export const updateSoilMetadata = createAsyncThunk(
   'soilId/updateSoilMetadata',
   soilMetadataService.updateSoilMetadata,
+);
+
+// TODO-cknipe: One at a time only ok? Or do we need to support multiple?
+export const localUpdateUserRatings = createAsyncThunk(
+  'soilId/localUpdateUserRatings',
+  localSoilMetadata.updateUserRatingsThunk,
 );
 
 export default soilMetadataSlice.reducer;
