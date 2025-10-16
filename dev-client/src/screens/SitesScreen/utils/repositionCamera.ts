@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {CameraRef} from '@rnmapbox/maps/lib/typescript/src/components/Camera';
+import type {Camera} from '@rnmapbox/maps';
 
 export const repositionCamera = ({
   feature,
@@ -28,7 +28,7 @@ export const repositionCamera = ({
   zoomLevel: number;
   animationDuration: number;
   paddingBottom: number;
-  cameraRef?: React.RefObject<CameraRef | null>;
+  cameraRef?: React.RefObject<Camera | null>;
 }) => {
   if (!feature.geometry || feature.geometry.type !== 'Point') {
     console.error(

@@ -26,17 +26,17 @@ const layerStyles = {
     circleRadius: 15,
     circleColor: mapboxBlue,
     circleOpacity: 0.2,
-    circlePitchAlignment: 'map',
+    circlePitchAlignment: 'map' as const,
   },
   background: {
     circleRadius: 9,
     circleColor: '#fff',
-    circlePitchAlignment: 'map',
+    circlePitchAlignment: 'map' as const,
   },
   foreground: {
     circleRadius: 6,
     circleColor: mapboxBlue,
-    circlePitchAlignment: 'map',
+    circlePitchAlignment: 'map' as const,
   },
 };
 
