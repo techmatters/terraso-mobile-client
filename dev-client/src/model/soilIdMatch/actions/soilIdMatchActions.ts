@@ -21,7 +21,7 @@ import * as soilIdService from 'terraso-client-shared/soilId/soilIdService';
 import {ThunkAPI} from 'terraso-client-shared/store/utils';
 import {Coords} from 'terraso-client-shared/types';
 
-import {getPostHogInstance} from 'terraso-mobile-client/app/PostHog';
+import {getPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
 import {
   siteEntry,
   siteEntryForStatus,

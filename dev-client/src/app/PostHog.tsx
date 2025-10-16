@@ -21,23 +21,11 @@ import {AppState, Platform} from 'react-native';
 import Constants from 'expo-constants';
 
 import {NavigationContainerRef} from '@react-navigation/native';
-import {
-  PostHogProvider,
-  PostHog as PostHogType,
-  usePostHog,
-} from 'posthog-react-native';
+import {PostHogProvider, usePostHog} from 'posthog-react-native';
 
+import {setPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useSelector} from 'terraso-mobile-client/store';
-
-// ---- Global PostHog instance for use outside React components ----
-let posthogInstance: PostHogType | null = null;
-
-export const setPostHogInstance = (instance: PostHogType) => {
-  posthogInstance = instance;
-};
-
-export const getPostHogInstance = () => posthogInstance;
 
 type Props = {
   children: ReactNode;
