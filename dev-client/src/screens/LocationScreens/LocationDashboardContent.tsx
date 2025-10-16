@@ -186,7 +186,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
 };
 
 const styles = StyleSheet.create({
-  mapView: {height: 170},
+  mapView: {height: 170, width: '100%'},
   detailView: {
     flexDirection: 'row',
     alignItems: 'center',
