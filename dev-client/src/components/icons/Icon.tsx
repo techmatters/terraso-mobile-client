@@ -42,11 +42,15 @@ export type IconProps = Omit<
 export type IconName = IconProps['name'];
 
 export const Icon = ({size = 'md', color, ...props}: IconProps) => {
+  const convertedColor = convertColorProp(color);
   return (
     <MaterialIcon
       {...convertNBStyles(props)}
       size={typeof size === 'string' ? theme.components.Icon.sizes[size] : size}
-      color={convertColorProp(color)}
+      // DEFENSIVE FIX: Only pass color prop if it's defined to prevent
+      // React Native SVG "is not a valid color or brush" errors.
+      // See WARNINGS_TO_FIX.md Issue #7.
+      {...(convertedColor !== undefined && {color: convertedColor})}
     />
   );
 };
