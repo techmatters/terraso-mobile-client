@@ -49,8 +49,14 @@ enableFreeze(true);
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
+// Suppress known third-party library warnings that are not actionable:
+// - 'SSRProvider': Native Base includes deprecated SSRProvider from React Aria (no-op in React 18+)
+// - 'is not a valid color or brush': Native Base + React 19 compatibility issue where Radio
+//   components internally pass empty strings to react-native-svg. Defensive code prevents
+//   the error, but warning still appears. See WARNINGS_TO_FIX.md Issue #7.
 LogBox.ignoreLogs([
   'SSRProvider',
+  'is not a valid color or brush',
 ]);
 
 let persistedReduxState = loadPersistedReduxState();
