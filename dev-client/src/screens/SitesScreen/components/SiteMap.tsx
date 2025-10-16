@@ -26,8 +26,14 @@ import {
 import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
 
 import Mapbox, {Camera} from '@rnmapbox/maps';
-import {OnPressEvent} from '@rnmapbox/maps/src/types/OnPressEvent';
 import {useTheme} from 'native-base';
+
+// Extract OnPressEvent type from ShapeSource's onPress prop
+type OnPressEvent = NonNullable<
+  React.ComponentProps<typeof Mapbox.ShapeSource>['onPress']
+> extends (event: infer E) => void
+  ? E
+  : never;
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
