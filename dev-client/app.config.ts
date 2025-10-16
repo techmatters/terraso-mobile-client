@@ -112,6 +112,7 @@ const defaultConfig: ExpoConfig = {
   },
   ios: {
     bundleIdentifier: 'org.terraso.landpks',
+    appleTeamId: '2A8W5MT5NL',
     buildNumber: buildNumber.toString(),
     icon: 'src/assets/landpks-round.png',
     supportsTablet: true,
@@ -141,6 +142,7 @@ const defaultConfig: ExpoConfig = {
     ['expo-localization'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
     ['expo-web-browser'],
+    ['expo-video'],
     [
       '@rnmapbox/maps',
       {
