@@ -28,13 +28,6 @@ import {Keyboard, PixelRatio, StyleSheet} from 'react-native';
 import Mapbox, {Camera} from '@rnmapbox/maps';
 import {useTheme} from 'native-base';
 
-// Extract OnPressEvent type from ShapeSource's onPress prop
-type OnPressEvent = NonNullable<
-  React.ComponentProps<typeof Mapbox.ShapeSource>['onPress']
-> extends (event: infer E) => void
-  ? E
-  : never;
-
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
@@ -56,6 +49,14 @@ import {
 } from 'terraso-mobile-client/screens/SitesScreen/SitesScreenCallout';
 import {repositionCamera} from 'terraso-mobile-client/screens/SitesScreen/utils/repositionCamera';
 import {siteFeatureCollection} from 'terraso-mobile-client/screens/SitesScreen/utils/siteFeatureCollection';
+
+// Extract OnPressEvent type from ShapeSource's onPress prop
+type OnPressEvent =
+  NonNullable<
+    React.ComponentProps<typeof Mapbox.ShapeSource>['onPress']
+  > extends (event: infer E) => void
+    ? E
+    : never;
 
 const DEFAULT_LOCATION = [-98.0, 38.5];
 const MAX_EXPANSION_ZOOM = 15;

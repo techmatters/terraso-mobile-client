@@ -20,9 +20,6 @@ import {StyleProp, ViewStyle} from 'react-native';
 
 import Mapbox, {type Camera} from '@rnmapbox/maps';
 
-// Extract Position type from Camera's fitBounds method (Position is [longitude, latitude])
-type Position = Parameters<Camera['fitBounds']>[0];
-
 import {Coords} from 'terraso-client-shared/types';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
@@ -32,6 +29,9 @@ import {
   LONGITUDE_MAX,
   LONGITUDE_MIN,
 } from 'terraso-mobile-client/constants';
+
+// Extract Position type from Camera's fitBounds method (Position is [longitude, latitude])
+type Position = Parameters<Camera['fitBounds']>[0];
 
 const coordsRegex = /^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/;
 export type CoordsParseErrorReason =

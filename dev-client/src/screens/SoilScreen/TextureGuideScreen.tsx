@@ -19,7 +19,7 @@ import {useEffect, useMemo, useState} from 'react';
 import {Trans, useTranslation} from 'react-i18next';
 import {Image, StyleSheet, View} from 'react-native';
 
-import {VideoView, useVideoPlayer} from 'expo-video';
+import {useVideoPlayer, VideoView} from 'expo-video';
 
 import {ScrollView} from 'native-base';
 
