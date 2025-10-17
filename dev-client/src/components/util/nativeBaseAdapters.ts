@@ -231,7 +231,9 @@ export const convertIconSize = (size: IconSize | number | undefined) =>
  *
  * See WARNINGS_TO_FIX.md Issue #7 for details.
  */
-export const convertColorProp = (color: ColorValue | ThemeColor | undefined) => {
+export const convertColorProp = (
+  color: ColorValue | ThemeColor | undefined,
+) => {
   // Defensive: Return undefined for empty strings to prevent SVG errors
   if (!color || color === '') {
     return undefined;

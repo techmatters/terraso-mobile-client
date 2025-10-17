@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm ls:*)",
+      "Bash(cd:*)",
+      "WebSearch",
+      "Bash(npx expo install:*)",
+      "Bash(npx expo@54 install --fix)",
+      "Bash(npm install:*)",
+      "WebFetch(domain:docs.expo.dev)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run check-ts:*)",
+      "Bash(killall:*)",
+      "Bash(grep:*)",
+      "Bash(rm:*)",
+      "Bash(rmdir:*)",
+      "Bash(cat:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.sentry.io)",
+      "Bash(npx expo-doctor)",
+      "Bash(npx npm-check-updates:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(for video in \"/Users/johannes_schmidt/techmatters/terraso-mobile-client/dev-client/src/assets/texture/guide/ball.mp4\" \"/Users/johannes_schmidt/techmatters/terraso-mobile-client/dev-client/src/assets/texture/guide/ribbon.mp4\" \"/Users/johannes_schmidt/techmatters/terraso-mobile-client/dev-client/src/assets/texture/guide/grittyness.mp4\")",
+      "Bash(ffprobe:*)",
+      "Bash(done)",
+      "Bash(git log:*)",
+      "Bash(git ls-tree:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
