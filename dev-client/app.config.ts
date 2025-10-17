@@ -46,25 +46,28 @@ const BUILD_CONFIG = validateEnvConfig(process.env, [
   'MAPBOX_DOWNLOADS_TOKEN',
 ] as const);
 
-const ENV_CONFIG = validateEnvConfig(process.env, [
-  'APP_BUILD',
-  'CI',
-  'ENV',
-  'PUBLIC_MAPBOX_TOKEN',
-  'SENTRY_DSN',
-  'SENTRY_ENABLED',
-  'SENTRY_ORG',
-  'SENTRY_PROJECT',
-  'TERRASO_BACKEND',
-  'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
-  'GOOGLE_OAUTH_IOS_CLIENT_ID',
-  'GOOGLE_OAUTH_IOS_URI_SCHEME',
-  'MICROSOFT_OAUTH_CLIENT_ID',
-  'MICROSOFT_SIGNATURE_HASH',
-  'POSTHOG_API_KEY',
-  'POSTHOG_HOST',
-  'POSTHOG_DEBUG',
-] as const);
+const ENV_CONFIG = {
+  ...validateEnvConfig(process.env, [
+    'APP_BUILD',
+    'CI',
+    'ENV',
+    'PUBLIC_MAPBOX_TOKEN',
+    'SENTRY_DSN',
+    'SENTRY_ENABLED',
+    'SENTRY_ORG',
+    'SENTRY_PROJECT',
+    'TERRASO_BACKEND',
+    'GOOGLE_OAUTH_ANDROID_CLIENT_ID',
+    'GOOGLE_OAUTH_IOS_CLIENT_ID',
+    'GOOGLE_OAUTH_IOS_URI_SCHEME',
+    'MICROSOFT_OAUTH_CLIENT_ID',
+    'MICROSOFT_SIGNATURE_HASH',
+    'POSTHOG_API_KEY',
+    'POSTHOG_HOST',
+  ] as const),
+  // Optional: defaults to undefined (treated as 'false' in config/index.ts)
+  POSTHOG_DEBUG: process.env.POSTHOG_DEBUG,
+};
 
 let buildNumber = 1;
 const APP_BUILD = process.env.APP_BUILD;
