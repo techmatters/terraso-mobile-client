@@ -54,9 +54,12 @@ Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 // - 'is not a valid color or brush': Native Base + React 19 compatibility issue where Radio
 //   components internally pass empty strings to react-native-svg. Defensive code prevents
 //   the error, but warning still appears. See WARNINGS_TO_FIX.md Issue #7.
+// - 'Invalid size is used for setting the map view': Mapbox timing issue during app startup.
+//   Maps display correctly despite warnings. See WARNINGS_TO_FIX.md Issue #8.
 LogBox.ignoreLogs([
   'SSRProvider',
   'is not a valid color or brush',
+  'Invalid size is used for setting the map view',
 ]);
 
 let persistedReduxState = loadPersistedReduxState();
