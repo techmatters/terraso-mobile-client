@@ -173,7 +173,7 @@ const defaultConfig: ExpoConfig = {
       {
         ios: {},
         android: {
-          gradleVersion: '8.14.1',
+          gradleVersion: '8.14.3',
         },
       },
     ],
