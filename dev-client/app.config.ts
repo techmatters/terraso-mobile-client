@@ -87,7 +87,7 @@ if (typeof APP_BUILD === 'string') {
 const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
   slug: 'landpks',
-  version: '1.3.2',
+  version: '1.3.3',
   newArchEnabled: true,
   orientation: 'portrait',
   splash: {
