@@ -17,8 +17,6 @@
 
 import {useEffect, useRef} from 'react';
 
-import _ from 'lodash';
-
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
@@ -61,7 +59,7 @@ export const PullRequester = () => {
   // Request a pull when most recent push yielded errors
   const sitesWithErrors = useSyncErrorSiteIds();
   useEffect(() => {
-    if (!_.isEmpty(sitesWithErrors)) {
+    if (sitesWithErrors && sitesWithErrors.length > 0) {
       dispatch(setPullRequested(true));
     }
   }, [sitesWithErrors, dispatch]);

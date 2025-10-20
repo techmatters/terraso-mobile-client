@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import '@testing-library/jest-native';
 import 'terraso-mobile-client/translations';
 // include this line for mocking react-native-gesture-handler
 import 'react-native-gesture-handler/jestSetup';
@@ -66,6 +65,16 @@ jest.mock('expo-font', () => {
   return module;
 });
 
+jest.mock('expo-video', () => ({
+  useVideoPlayer: jest.fn(() => ({
+    play: jest.fn(),
+    pause: jest.fn(),
+    release: jest.fn(),
+    replace: jest.fn(),
+  })),
+  VideoView: 'VideoView',
+  VideoPlayer: jest.fn(),
+}));
 
 jest.mock('terraso-mobile-client/config', () => ({
   APP_CONFIG: {},
