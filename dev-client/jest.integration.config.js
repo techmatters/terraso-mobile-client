@@ -20,12 +20,11 @@ module.exports = {
   testMatch: ['**/__tests__/**/*[.-]test.[jt]s?(x)'],
   preset: 'jest-expo',
   setupFilesAfterEnv: [
-    '@testing-library/jest-native/extend-expect',
-    '@rnmapbox/maps/setup-jest',
+    '<rootDir>/node_modules/@rnmapbox/maps/setup-jest.js',
     '<rootDir>/jest/integration/setup.ts',
   ],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|react-native-cookies|uuid|react-native-autocomplete-input|expo(nent)?|@expo(nent)?/.*)|expo-constants|@rnmapbox|@sentry/react-native/)',
+    'node_modules/(?!(.*/)?(@?react-native|react-native-.*|@react-navigation|@react-aria|uuid|immer|expo.*|@expo.*|@rnmapbox|@sentry|@gorhom|react-redux|@reduxjs|native-base))',
   ],
   moduleNameMapper: {
     '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
