@@ -25,7 +25,7 @@ import {LoadingState} from 'terraso-client-shared/soilId/soilIdTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {COORDINATE_PRECISION} from 'terraso-mobile-client/constants';
-import {SoilIdFetchedResult} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchActions';
+import {SoilIdFetchedResult} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
 
 export type CoordsKey = `(${string}, ${string})`;
 
