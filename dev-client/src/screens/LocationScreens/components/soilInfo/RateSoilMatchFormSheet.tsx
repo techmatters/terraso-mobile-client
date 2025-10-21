@@ -15,13 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, View} from 'react-native';
 
 import {usePostHog} from 'posthog-react-native';
 
-import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {
+  SoilMatch,
+  SoilMetadataUpdateMutationInput,
+  UserMatchRating,
+  UserRatingInput,
+} from 'terraso-client-shared/graphqlSchema/graphql';
+import {Site} from 'terraso-client-shared/site/siteTypes';
 
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -29,25 +35,55 @@ import {TranslatedSubHeading} from 'terraso-mobile-client/components/content/typ
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
+import {useUserRating} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
+import {localUpdateUserRatings} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {selectSite} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';
 
-type MatchRating = 'YES' | 'NO' | 'UNSURE';
-
 type Props = {
-  siteName?: string;
-  soilMatch?: SoilMatch;
+  siteId: string;
+  soilMatch: SoilMatch;
 };
 
-export const RateSoilMatchFabWithSheet = ({siteName, soilMatch}: Props) => {
+export const RateSoilMatchFabWithSheet = ({siteId, soilMatch}: Props) => {
   const {t} = useTranslation();
   const posthog = usePostHog();
-  const [matchRating, setMatchRating] = useState<MatchRating>('UNSURE');
+  const dispatch = useDispatch();
+  const site: Site | undefined =
+    useSelector(state => selectSite(siteId)(state)) ?? undefined;
+
+  // TODO-cknipe: What if the soilMatch disappears? ScreenDataRequirements?
+  const soilMatchId = soilMatch.soilInfo.soilSeries.name;
+  const existingRating = useUserRating(siteId, soilMatchId);
+
+  // TODO-cknipe: Remove this and use the redux instead... a selector?
+  // TODO-cknipe: Does posthog capture stuff from offline activity?
+  const [matchRating, setMatchRating] =
+    useState<UserMatchRating>(existingRating);
+
+  const onMatchRatingChanged = useCallback(
+    (value: UserMatchRating) => {
+      setMatchRating(value);
+
+      const newRatings: Array<UserRatingInput> = [
+        {
+          soilMatchId,
+          rating: value,
+        },
+      ];
+      const input: SoilMetadataUpdateMutationInput = {
+        siteId,
+        userRatings: newRatings,
+      };
+      dispatch(localUpdateUserRatings(input));
+      // TODO-cknipe: Add to the offline transactions
+      // TODO-cknipe: Do we need a client mutation id?
+    },
+    [soilMatchId, siteId, dispatch],
+  );
+
   const [isClosing, setIsClosing] = useState(false);
-
-  const onMatchRatingChanged = (value: MatchRating) => {
-    setMatchRating(value);
-  };
-
   const handleSheetClose = () => {
     // Track the rating event when sheet is closed
     if (!isClosing) {
@@ -63,7 +99,7 @@ export const RateSoilMatchFabWithSheet = ({siteName, soilMatch}: Props) => {
 
       posthog?.capture('soil_match_rating', {
         rating: matchRating.toLowerCase(),
-        site_name: siteName ?? 'unknown',
+        site_name: site?.name ?? 'unknown',
         soil_name: soilMatch?.soilInfo?.soilSeries?.name || 'unknown',
         soil_location_score: locationScore,
         soil_properties_score: propertiesScore,
@@ -92,8 +128,8 @@ export const RateSoilMatchFabWithSheet = ({siteName, soilMatch}: Props) => {
         <TranslatedParagraph i18nKey="site.soil_id.matches.rate.description" />
         <RadioBlock
           options={{
-            YES: {text: t('site.soil_id.matches.rate.yes')},
-            NO: {text: t('site.soil_id.matches.rate.no')},
+            SELECTED: {text: t('site.soil_id.matches.rate.yes')},
+            REJECTED: {text: t('site.soil_id.matches.rate.no')},
             UNSURE: {text: t('site.soil_id.matches.rate.unsure')},
           }}
           groupProps={{
