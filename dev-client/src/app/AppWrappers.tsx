@@ -65,8 +65,8 @@ export const AppWrappers = ({store, children}: Props) => {
             // uncomment to enable screen stack debugging
             // onStateChange={console.log}
           >
-            <PostHog navRef={navRef}>
-              <ConnectivityContextProvider>
+            <ConnectivityContextProvider>
+              <PostHog navRef={navRef}>
                 <HeaderHeightProvider>
                   <BottomSheetModalProvider>
                     <PaperProvider theme={paperTheme}>
@@ -90,8 +90,8 @@ export const AppWrappers = ({store, children}: Props) => {
                     </PaperProvider>
                   </BottomSheetModalProvider>
                 </HeaderHeightProvider>
-              </ConnectivityContextProvider>
-            </PostHog>
+              </PostHog>
+            </ConnectivityContextProvider>
           </NavigationContainer>
         </SiteTabJumpContextProvider>
       </Provider>
