@@ -17,7 +17,12 @@
 
 import {forwardRef, useCallback, useImperativeHandle, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 
 import {Formik, FormikProps} from 'formik';
 import * as yup from 'yup';
@@ -87,38 +92,43 @@ export const ScreenFormWrapper = forwardRef(
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Handle platform-specific keyboard avoidance
           style={styles.view}>
-          <Formik
-            innerRef={formikRef}
-            initialValues={initialValues}
-            validationSchema={notesFormSchema}
-            onSubmit={onSubmit}>
-            {children}
-          </Formik>
-          <Row
-            pb={10}
-            paddingHorizontal={5}
-            space={5}
-            justifyContent="flex-end"
-            alignItems="center">
-            <ConfirmModal
-              trigger={onOpen => (
-                <DeleteButton
-                  disabled={isSubmitting}
-                  onPress={() => conditionallyConfirmDelete(onOpen)}
-                />
-              )}
-              title={t('site.notes.confirm_removal_title')}
-              body={t('site.notes.confirm_removal_body')}
-              actionLabel={t('general.delete')}
-              handleConfirm={onDelete}
-            />
-            <ContainedButton
-              onPress={handlePressSubmit}
-              disabled={isSubmitting}
-              size="lg"
-              label={t('general.done')}
-            />
-          </Row>
+          <ScrollView
+            style={styles.view}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled">
+            <Formik
+              innerRef={formikRef}
+              initialValues={initialValues}
+              validationSchema={notesFormSchema}
+              onSubmit={onSubmit}>
+              {children}
+            </Formik>
+            <Row
+              pb={10}
+              paddingHorizontal={5}
+              space={5}
+              justifyContent="flex-end"
+              alignItems="center">
+              <ConfirmModal
+                trigger={onOpen => (
+                  <DeleteButton
+                    disabled={isSubmitting}
+                    onPress={() => conditionallyConfirmDelete(onOpen)}
+                  />
+                )}
+                title={t('site.notes.confirm_removal_title')}
+                body={t('site.notes.confirm_removal_body')}
+                actionLabel={t('general.delete')}
+                handleConfirm={onDelete}
+              />
+              <ContainedButton
+                onPress={handlePressSubmit}
+                disabled={isSubmitting}
+                size="lg"
+                label={t('general.done')}
+              />
+            </Row>
+          </ScrollView>
         </KeyboardAvoidingView>
       </ScreenScaffold>
     );
@@ -127,4 +137,5 @@ export const ScreenFormWrapper = forwardRef(
 
 const styles = StyleSheet.create({
   view: {flex: 1},
+  scrollContent: {flexGrow: 1},
 });
