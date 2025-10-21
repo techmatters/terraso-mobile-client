@@ -58,6 +58,23 @@ exports[`renders correctly 1`] = `
               ]
             }
           >
+            <RNCSafeAreaProvider
+              onInsetsChange={[Function]}
+              style={
+                [
+                  {
+                    "flex": 1,
+                  },
+                  {
+                    "bottom": 0,
+                    "left": 0,
+                    "position": "absolute",
+                    "right": 0,
+                    "top": 0,
+                  },
+                ]
+              }
+            />
             <RNSScreenStack
               style={
                 {
@@ -66,8 +83,8 @@ exports[`renders correctly 1`] = `
               }
             >
               <RNSScreen
-                accessibilityElementsHidden={false}
                 activityState={2}
+                aria-hidden={false}
                 collapsable={false}
                 fullScreenSwipeShadowEnabled={true}
                 gestureResponseDistance={
@@ -79,7 +96,6 @@ exports[`renders correctly 1`] = `
                   }
                 }
                 hasLargeHeader={false}
-                importantForAccessibility="auto"
                 nativeBackButtonDismissalEnabled={false}
                 onAppear={[Function]}
                 onDisappear={[Function]}
@@ -93,6 +109,7 @@ exports[`renders correctly 1`] = `
                 onWillAppear={[Function]}
                 onWillDisappear={[Function]}
                 replaceAnimation="push"
+                screenId="PROJECT_VIEW-stable-nanoid-id"
                 sheetAllowedDetents={
                   [
                     1,
@@ -3636,8 +3653,7 @@ exports[`renders correctly 1`] = `
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "height": 31,
-                                                  "width": 51,
+                                                  "alignSelf": "flex-start",
                                                 }
                                               }
                                               thumbTintColor="#FFFFFF"
@@ -3707,8 +3723,7 @@ exports[`renders correctly 1`] = `
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "height": 31,
-                                                  "width": 51,
+                                                  "alignSelf": "flex-start",
                                                 }
                                               }
                                               thumbTintColor="#FFFFFF"
@@ -3752,8 +3767,7 @@ exports[`renders correctly 1`] = `
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "height": 31,
-                                                  "width": 51,
+                                                  "alignSelf": "flex-start",
                                                 }
                                               }
                                               thumbTintColor="#028843"
@@ -3823,8 +3837,7 @@ exports[`renders correctly 1`] = `
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "height": 31,
-                                                  "width": 51,
+                                                  "alignSelf": "flex-start",
                                                 }
                                               }
                                               thumbTintColor="#028843"
@@ -3868,8 +3881,7 @@ exports[`renders correctly 1`] = `
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "height": 31,
-                                                  "width": 51,
+                                                  "alignSelf": "flex-start",
                                                 }
                                               }
                                               thumbTintColor="#FFFFFF"
@@ -3993,6 +4005,7 @@ exports[`renders correctly 1`] = `
                   disableBackButtonMenu={false}
                   hidden={false}
                   hideBackButton={false}
+                  hideShadow={false}
                   largeTitleFontFamily="System"
                   largeTitleFontWeight="700"
                   largeTitleHideShadow={false}
@@ -4010,7 +4023,7 @@ exports[`renders correctly 1`] = `
                   titleColor="rgb(28, 28, 30)"
                   titleFontFamily="System"
                   titleFontWeight="600"
-                  topInsetEnabled={false}
+                  topInsetEnabled={true}
                   translucent={false}
                 />
               </RNSScreen>
