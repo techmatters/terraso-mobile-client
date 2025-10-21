@@ -54,12 +54,14 @@ type Props = {
   coords: Coords;
   closeCallout: () => void;
   isCurrentLocation: boolean;
+  creationMethod: 'map' | 'address';
 };
 
 export const TemporaryLocationCallout = ({
   coords,
   closeCallout,
   isCurrentLocation,
+  creationMethod,
 }: Props) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
@@ -126,6 +128,8 @@ export const TemporaryLocationCallout = ({
             elevation={elevation.value}
             afterCreate={closeCallout}
             disabled={isOffline}
+            size="sm"
+            creationMethod={creationMethod}
           />
           <Box w="24px" />
           <ContainedButton

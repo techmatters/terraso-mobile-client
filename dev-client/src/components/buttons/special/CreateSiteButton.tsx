@@ -20,6 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Coords} from 'terraso-client-shared/types';
 
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {OutlinedButton} from 'terraso-mobile-client/components/buttons/OutlinedButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
@@ -28,6 +29,11 @@ export type CreateSiteButtonProps = {
   coords: Coords;
   elevation?: number;
   afterCreate?: () => void;
+  creationMethod: 'map' | 'address';
+  label?: string;
+  variant?: 'contained' | 'outlined';
+  showIcon?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 };
 
 export const CreateSiteButton = ({
@@ -35,6 +41,11 @@ export const CreateSiteButton = ({
   coords,
   elevation,
   afterCreate: cleanUp,
+  creationMethod,
+  label,
+  variant = 'outlined',
+  showIcon = false,
+  size,
 }: CreateSiteButtonProps) => {
   const {t} = useTranslation();
 
@@ -43,17 +54,33 @@ export const CreateSiteButton = ({
     navigation.navigate('CREATE_SITE', {
       coords,
       elevation: elevation,
+      creationMethod,
     });
     if (cleanUp) {
       cleanUp();
     }
-  }, [cleanUp, navigation, coords, elevation]);
+  }, [cleanUp, navigation, coords, elevation, creationMethod]);
+
+  const buttonLabel = label || t('site.create.title');
+  const icon = showIcon ? 'add' : undefined;
+
+  if (variant === 'outlined') {
+    return (
+      <OutlinedButton
+        label={buttonLabel}
+        disabled={disabled}
+        onPress={onCreate}
+      />
+    );
+  }
 
   return (
-    <OutlinedButton
-      label={t('site.create.title')}
+    <ContainedButton
+      label={buttonLabel}
+      leftIcon={icon}
       disabled={disabled}
       onPress={onCreate}
+      size={size}
     />
   );
 };

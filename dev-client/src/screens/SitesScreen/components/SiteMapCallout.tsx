@@ -111,12 +111,15 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
     default:
       const isCurrentLocation =
         state.kind === 'location' ? state.isCurrentLocation : false;
+      const creationMethod =
+        state.kind === 'location' ? state.creationMethod : 'map';
       sitesScreen?.collapseBottomSheet();
       return (
         <TemporaryLocationCallout
           coords={coords}
           closeCallout={closeCallout}
           isCurrentLocation={isCurrentLocation}
+          creationMethod={creationMethod}
         />
       );
   }

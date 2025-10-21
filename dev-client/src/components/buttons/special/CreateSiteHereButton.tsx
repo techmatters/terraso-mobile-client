@@ -15,46 +15,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
-import {useTranslation} from 'react-i18next';
+import {
+  CreateSiteButton,
+  CreateSiteButtonProps,
+} from 'terraso-mobile-client/components/buttons/special/CreateSiteButton';
 
-import {Coords} from 'terraso-client-shared/types';
+export type CreateSiteHereButtonProps = CreateSiteButtonProps;
 
-import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-
-export type CreateSiteHereButtonProps = {
-  disabled?: boolean;
-  coords: Coords;
-  elevation?: number;
-  afterCreate?: () => void;
-};
-
+/**
+ * Wrapper around CreateSiteButton with default showIcon=true and variant='contained'.
+ * Requires explicit creationMethod ('map' or 'address') for PostHog tracking.
+ */
 export const CreateSiteHereButton = ({
-  disabled,
-  coords,
-  elevation,
-  afterCreate: cleanUp,
+  showIcon = true,
+  variant = 'contained',
+  ...props
 }: CreateSiteHereButtonProps) => {
-  const {t} = useTranslation();
-
-  const navigation = useNavigation();
-  const onCreate = useCallback(() => {
-    navigation.navigate('CREATE_SITE', {
-      coords,
-      elevation: elevation,
-    });
-    if (cleanUp) {
-      cleanUp();
-    }
-  }, [cleanUp, navigation, coords, elevation]);
-
-  return (
-    <ContainedButton
-      label={t('site.create.button_label')}
-      leftIcon="add"
-      disabled={disabled}
-      onPress={onCreate}
-    />
-  );
+  return <CreateSiteButton {...props} showIcon={showIcon} variant={variant} />;
 };

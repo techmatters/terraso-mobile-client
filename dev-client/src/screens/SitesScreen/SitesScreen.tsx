@@ -114,7 +114,7 @@ export const SitesScreen = memo(() => {
 
   const searchFunction = useCallback(
     (coords: Coords) => {
-      setCalloutState(locationCallout(coords));
+      setCalloutState(locationCallout(coords, false, 'address'));
       mapRef.current?.moveToPoint(coords);
     },
     [setCalloutState, mapRef],

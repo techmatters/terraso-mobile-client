@@ -41,7 +41,7 @@ export const TemporaryLocationSoilIdScreen = ({coords}: TempLocationProps) => {
         <SoilIdDescriptionSection coords={coords} />
         <SoilIdMatchesSection coords={coords} />
         <Box paddingVertical="md" alignItems="center">
-          <CreateSiteHereButton coords={coords} />
+          <CreateSiteHereButton coords={coords} creationMethod="map" />
         </Box>
       </ScrollView>
     </ScreenScaffold>
