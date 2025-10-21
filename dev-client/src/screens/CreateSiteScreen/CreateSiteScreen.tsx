@@ -32,6 +32,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 type Props = {
   coords: Coords;
   elevation?: number;
+  creationMethod?: 'map' | 'address';
 };
 
 export const CreateSiteScreen = (props: Props) => {
@@ -55,7 +56,7 @@ export const CreateSiteScreen = (props: Props) => {
         // Get project details from the store if site has a project
         const project = site.projectId ? projects[site.projectId] : null;
 
-        posthog?.capture('site_created', {
+        const eventData = {
           site_id: site.id,
           site_name: site.name,
           latitude: site.latitude,
@@ -65,12 +66,15 @@ export const CreateSiteScreen = (props: Props) => {
           // Use project privacy if site is part of a project, otherwise use site's own privacy
           site_privacy: project?.privacy || site.privacy,
           project_privacy: project?.privacy || 'none',
-        });
+          creation_method: props.creationMethod || 'unknown',
+        };
+
+        posthog?.capture('site_created', eventData);
       }
 
       return result.payload;
     },
-    [dispatch, posthog, projects],
+    [dispatch, posthog, projects, props.creationMethod],
   );
 
   return (
