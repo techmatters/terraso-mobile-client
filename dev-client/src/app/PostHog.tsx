@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ReactNode, useEffect, useRef} from 'react';
+import React, {ReactNode, useContext, useEffect, useRef} from 'react';
 import {AppState, Platform} from 'react-native';
 
 import Constants from 'expo-constants';
@@ -25,6 +25,7 @@ import {PostHogProvider, usePostHog} from 'posthog-react-native';
 
 import {setPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
+import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
@@ -128,6 +129,41 @@ function PosthogLifecycle() {
   return null;
 }
 
+// ---- Track connectivity status as super property ----
+function ConnectivityTracker() {
+  const posthog = usePostHog();
+  const {isOffline} = useContext(ConnectivityContext);
+
+  // Clean up old is_offline property on mount
+  useEffect(() => {
+    if (!posthog) return;
+
+    // Remove old is_offline property that was previously registered
+    posthog.unregister('is_offline');
+  }, [posthog]);
+
+  useEffect(() => {
+    if (!posthog) return;
+
+    // Map connectivity state to string value
+    // null = unknown, true = offline, false = online
+    const connectivityStatus =
+      isOffline === null ? 'unknown' : isOffline ? 'offline' : 'online';
+
+    console.log('[PostHog] Connectivity status changed:', {
+      isOffline,
+      connectivityStatus,
+    });
+
+    // Register connectivity status as a super property (applies to all events)
+    posthog.register({
+      connectivity_status: connectivityStatus,
+    });
+  }, [posthog, isOffline]);
+
+  return null;
+}
+
 // ---- Manual screen tracking using the NavigationContainer ref ----
 function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
   const posthog = usePostHog();
@@ -208,6 +244,7 @@ export function PostHog({children, navRef}: Props) {
       <PostHogInstanceSetter />
       <PosthogLifecycle />
       <UserIdentification />
+      <ConnectivityTracker />
       <ScreenTracker navRef={navRef} />
       {children}
     </PostHogProvider>
