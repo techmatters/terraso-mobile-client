@@ -50,6 +50,17 @@ if (APP_CONFIG.sentryEnabled) {
       replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
     },
+    beforeSend(event, hint) {
+      // Filter out known library errors that don't affect functionality
+      const message = event.message || hint.originalException?.toString() || '';
+
+      // Mapbox ViewTagResolver errors - timing issues in native bridge, not actionable
+      if (message.includes('ViewTagResolver')) {
+        return null;
+      }
+
+      return event;
+    },
   });
 }
 
