@@ -22,7 +22,6 @@ import {
   CameraType,
   launchCameraAsync,
   launchImageLibraryAsync,
-  MediaTypeOptions,
   useCameraPermissions,
   useMediaLibraryPermissions,
 } from 'expo-image-picker';
@@ -68,7 +67,7 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
 
   const onUseCamera = useCallback(async () => {
     const response = await launchCameraAsync({
-      mediaTypes: MediaTypeOptions.Images,
+      mediaTypes: 'images',
       cameraType: CameraType.back,
     });
     if (!response.canceled) {
@@ -81,7 +80,7 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
 
   const onUseMediaLibrary = useCallback(async () => {
     const response = await launchImageLibraryAsync({
-      mediaTypes: MediaTypeOptions.Images,
+      mediaTypes: 'images',
     });
     if (!response.canceled) {
       onPick(response.assets[0]);
