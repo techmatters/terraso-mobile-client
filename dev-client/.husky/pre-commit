@@ -1,3 +1,17 @@
 #!/usr/bin/env sh
+
+# Prevent committing sensitive environment files
+if git diff --cached --name-only | grep -qE "(^|/)\.env$|(^|/)\.env\.save$"; then
+    echo "❌ ERROR: Attempted to commit sensitive environment files!"
+    echo ""
+    echo "The following files should NOT be committed:"
+    git diff --cached --name-only | grep -E "(^|/)\.env$|(^|/)\.env\.save$" | sed 's/^/  - /'
+    echo ""
+    echo "These files contain secrets and are in .gitignore."
+    echo "To fix: git restore --staged <file>"
+    echo ""
+    exit 1
+fi
+
 cd dev-client
 npx lint-staged
