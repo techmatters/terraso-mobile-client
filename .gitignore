@@ -89,3 +89,4 @@ sentry.properties
 
 # Sometimes watchman creates cookie files
 .watchman-cookie-*
+.claude/settings.local.json
