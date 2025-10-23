@@ -63,6 +63,7 @@ const ENV_CONFIG = validateEnvConfig(process.env, [
   'MICROSOFT_SIGNATURE_HASH',
   'POSTHOG_API_KEY',
   'POSTHOG_HOST',
+  'POSTHOG_DEBUG',
 ] as const);
 
 let buildNumber = 1;

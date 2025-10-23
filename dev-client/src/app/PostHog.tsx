@@ -202,7 +202,9 @@ export function PostHog({children, navRef}: Props) {
       }}
       // IMPORTANT: turn off SDK's nav autocapture to avoid nav hook errors
       autocapture={{captureScreens: false}}
-      debug={true}>
+      // Enable debug logging in development via POSTHOG_DEBUG env var
+      // Set POSTHOG_DEBUG=true in .env to see detailed PostHog capture logs
+      debug={APP_CONFIG.posthogDebug === 'true'}>
       <PostHogInstanceSetter />
       <PosthogLifecycle />
       <UserIdentification />
