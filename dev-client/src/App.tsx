@@ -23,6 +23,7 @@
  */
 
 // react-native-get-random-values needed for uuid - https://github.com/uuidjs/uuid#react-native--expo
+import 'setimmediate';
 import 'react-native-get-random-values';
 
 import {LogBox} from 'react-native';
@@ -48,8 +49,17 @@ enableFreeze(true);
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
+// Suppress known third-party library warnings that are not actionable:
+// - 'SSRProvider': Native Base includes deprecated SSRProvider from React Aria (no-op in React 18+)
+// - 'is not a valid color or brush': Native Base + React 19 compatibility issue where Radio
+//   components internally pass empty strings to react-native-svg. Defensive code prevents
+//   the error, but warning still appears. See WARNINGS_TO_FIX.md Issue #7.
+// - 'Invalid size is used for setting the map view': Mapbox timing issue during app startup.
+//   Maps display correctly despite warnings. See WARNINGS_TO_FIX.md Issue #8.
 LogBox.ignoreLogs([
-  'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
+  'SSRProvider',
+  'is not a valid color or brush',
+  'Invalid size is used for setting the map view',
 ]);
 
 let persistedReduxState = loadPersistedReduxState();

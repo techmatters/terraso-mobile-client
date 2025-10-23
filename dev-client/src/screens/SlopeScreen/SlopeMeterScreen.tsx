@@ -105,14 +105,23 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
           <Row flex={1} alignItems="stretch" px="24px" py="20px">
             <Box flex={1} justifyContent="center">
               {permission?.granted ? (
-                <CameraView style={styles.camera}>
-                  <Column flex={1} alignItems="stretch">
+                <Box flex={1} position="relative">
+                  <CameraView style={styles.camera} />
+                  <Column
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    flex={1}
+                    alignItems="stretch"
+                    pointerEvents="none">
                     <Box flex={1} />
                     <Box height="3px" bg="text.primary" />
                     <Box height="3px" bg="primary.contrast" />
                     <Box flex={1} bg="#00000080" />
                   </Column>
-                </CameraView>
+                </Box>
               ) : (
                 <PermissionsRequestWrapper
                   requestModalTitle={t('permissions.camera_title')}

@@ -45,8 +45,8 @@ npm-debug.log
 yarn-error.log
 
 # prevent accidental addition of files to repo root
-package.json
-package-lock.json
+/package.json
+/package-lock.json
 
 # fastlane
 #
@@ -91,3 +91,4 @@ sentry.properties
 
 # Sometimes watchman creates cookie files
 .watchman-cookie-*
+.claude/settings.local.json

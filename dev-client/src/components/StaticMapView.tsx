@@ -18,8 +18,7 @@
 import {useMemo} from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
 
-import Mapbox from '@rnmapbox/maps';
-import {Position} from '@rnmapbox/maps/lib/typescript/src/types/Position';
+import Mapbox, {type Camera} from '@rnmapbox/maps';
 
 import {Coords} from 'terraso-client-shared/types';
 
@@ -30,6 +29,9 @@ import {
   LONGITUDE_MAX,
   LONGITUDE_MIN,
 } from 'terraso-mobile-client/constants';
+
+// Extract Position type from Camera's fitBounds method (Position is [longitude, latitude])
+type Position = Parameters<Camera['fitBounds']>[0];
 
 const coordsRegex = /^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/;
 export type CoordsParseErrorReason =
@@ -79,9 +81,11 @@ export const coordsToPosition = ({latitude, longitude}: Coords): Position => [
   longitude,
   latitude,
 ];
-export const positionToCoords = ([longitude, latitude]: Position): Coords => ({
-  latitude,
-  longitude,
+export const positionToCoords = (
+  position: Position | GeoJSON.Position,
+): Coords => ({
+  latitude: position[1],
+  longitude: position[0],
 });
 
 const defaultAnchor = {x: 0.5, y: 0};

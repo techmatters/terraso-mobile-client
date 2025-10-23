@@ -221,8 +221,27 @@ export const convertDimensionProp = (
 export const convertIconSize = (size: IconSize | number | undefined) =>
   typeof size === 'string' ? theme.components.Icon.sizes[size] : size;
 
-export const convertColorProp = (color: ColorValue | ThemeColor | undefined) =>
-  typeof color === 'string' ? (getByKey(theme.colors, color) ?? color) : color;
+/**
+ * Converts color prop values from Native Base theme color paths to actual color values.
+ *
+ * DEFENSIVE FIX: Returns undefined for empty strings to prevent React Native SVG
+ * "is not a valid color or brush" errors. This is a workaround for a Native Base + React 19
+ * compatibility issue where Radio components (and potentially other Native Base components)
+ * internally pass empty strings as color values to react-native-svg's extractBrush function.
+ *
+ * See WARNINGS_TO_FIX.md Issue #7 for details.
+ */
+export const convertColorProp = (
+  color: ColorValue | ThemeColor | undefined,
+) => {
+  // Defensive: Return undefined for empty strings to prevent SVG errors
+  if (!color || color === '') {
+    return undefined;
+  }
+  return typeof color === 'string'
+    ? (getByKey(theme.colors, color) ?? color)
+    : color;
+};
 
 const keys = <O extends object>(obj: O) => Object.keys(obj) as (keyof O)[];
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2025 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,20 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {AppState} from 'terraso-mobile-client/store';
+import {PostHog as PostHogType} from 'posthog-react-native';
 
-export const selectSoilMetadata = (siteId: string) => (state: AppState) =>
-  state.soilMetadata.soilMetadata[siteId] ?? {};
+/**
+ * Global PostHog instance management
+ *
+ * This module provides a singleton pattern for accessing the PostHog instance
+ * outside of React components. It's separated from PostHog.tsx to avoid
+ * circular dependencies with the Redux store.
+ */
+
+let posthogInstance: PostHogType | null = null;
+
+export const setPostHogInstance = (instance: PostHogType) => {
+  posthogInstance = instance;
+};
+
+export const getPostHogInstance = () => posthogInstance;

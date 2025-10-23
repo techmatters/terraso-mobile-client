@@ -15,11 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {Trans, useTranslation} from 'react-i18next';
 import {Image, StyleSheet, View} from 'react-native';
 
-import {ResizeMode, Video} from 'expo-av';
+import {useVideoPlayer, VideoView} from 'expo-video';
 
 import {ScrollView} from 'native-base';
 
@@ -52,6 +52,50 @@ export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
   const [ribbon, setRibbon] = useState<'YES' | 'NO'>();
   const [ribbonLength, setRibbonLength] = useState<'SM' | 'MD' | 'LG'>();
   const [grit, setGrit] = useState<'GRITTY' | 'SMOOTH' | 'NEITHER'>();
+
+  const ballPlayer = useVideoPlayer(
+    require('terraso-mobile-client/assets/texture/guide/ball.mp4'),
+    player => {
+      player.loop = true;
+    },
+  );
+
+  const ribbonPlayer = useVideoPlayer(
+    require('terraso-mobile-client/assets/texture/guide/ribbon.mp4'),
+    player => {
+      player.loop = true;
+    },
+  );
+
+  const grittynessPlayer = useVideoPlayer(
+    require('terraso-mobile-client/assets/texture/guide/grittyness.mp4'),
+    player => {
+      player.loop = true;
+    },
+  );
+
+  // Play ball video immediately (always visible)
+  useEffect(() => {
+    ballPlayer.play();
+  }, [ballPlayer]);
+
+  // Play ribbon video only when its section becomes visible
+  useEffect(() => {
+    if (ball === 'YES') {
+      ribbonPlayer.play();
+    } else {
+      ribbonPlayer.pause();
+    }
+  }, [ball, ribbonPlayer]);
+
+  // Play grittyness video only when its section becomes visible
+  useEffect(() => {
+    if (ribbonLength !== undefined) {
+      grittynessPlayer.play();
+    } else {
+      grittynessPlayer.pause();
+    }
+  }, [ribbonLength, grittynessPlayer]);
 
   const result = useMemo<SoilTexture | undefined>(() => {
     if (ball === undefined) return undefined;
@@ -142,11 +186,9 @@ export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
                     </Text>
                   )}
                 />
-                <Video
-                  isLooping
-                  shouldPlay
-                  source={require('terraso-mobile-client/assets/texture/guide/ball.mp4')}
-                  resizeMode={ResizeMode.COVER}
+                <VideoView
+                  player={ballPlayer}
+                  contentFit="cover"
                   style={styles.ballVideo}
                 />
                 <RadioBlock
@@ -174,11 +216,9 @@ export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
                         </Text>
                       )}
                     />
-                    <Video
-                      isLooping
-                      shouldPlay
-                      source={require('terraso-mobile-client/assets/texture/guide/ribbon.mp4')}
-                      resizeMode={ResizeMode.COVER}
+                    <VideoView
+                      player={ribbonPlayer}
+                      contentFit="cover"
                       style={styles.ribbonVideo}
                     />
                     <RadioBlock
@@ -236,11 +276,9 @@ export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
                               />
                             )}
                           />
-                          <Video
-                            isLooping
-                            shouldPlay
-                            source={require('terraso-mobile-client/assets/texture/guide/grittyness.mp4')}
-                            resizeMode={ResizeMode.COVER}
+                          <VideoView
+                            player={grittynessPlayer}
+                            contentFit="cover"
                             style={styles.grittynessVideo}
                           />
                           <RadioBlock

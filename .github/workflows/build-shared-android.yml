@@ -74,13 +74,6 @@ jobs:
         working-directory: dev-client
         run: npm ci
 
-      - name: Restore Android Expo cache
-        uses: actions/cache@v4
-        with:
-          path: dev-client/android
-          key: expo-cache-${{ runner.os }}-android-${{ hashFiles('**/package-lock.json', '**/app.config.ts') }}
-          restore-keys: expo-cache-${{ runner.os }}-android-
-
       - name: Generate android directory
         working-directory: dev-client
         run: npm run prebuild -- -p android
@@ -92,27 +85,13 @@ jobs:
           distribution: "temurin"
           cache: gradle
 
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-wrapper-
-
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-caches-
-
       - name: Build Android app bundle
         working-directory: ./dev-client/android
         run: ./gradlew bundleRelease
 
       - name: Sign Android app bundle
         if: ${{ inputs.upload == 'true' }}
-        uses: r0adkll/sign-android-release@v1
+        uses: r0adkll/sign-android-release@v1.0.4
         with:
           releaseDirectory: ./dev-client/android/app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
