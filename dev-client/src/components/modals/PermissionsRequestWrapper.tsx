@@ -102,7 +102,12 @@ const PermissionsRequestWrapperImpl = ({
   const ref = useRef<ModalHandle>(null);
 
   const onRequestAction = useCallback(async () => {
+    // If permissions haven't loaded yet, request them
     if (permissions === null) {
+      const result = await requestPermissions();
+      if (result.granted && permissionedAction !== undefined) {
+        permissionedAction();
+      }
       return;
     }
 
