@@ -56,8 +56,8 @@ export const Card = ({
   isPopover = false,
   pressableStyle,
   ...boxProps
-}: Props) => (
-  <Pressable onPress={onPress} style={pressableStyle}>
+}: Props) => {
+  const content = (
     <Box
       padding="md"
       margin="0"
@@ -77,5 +77,14 @@ export const Card = ({
       )}
       {children}
     </Box>
-  </Pressable>
-);
+  );
+
+  // Only wrap in Pressable when actually needed
+  return onPress ? (
+    <Pressable onPress={onPress} style={pressableStyle}>
+      {content}
+    </Pressable>
+  ) : (
+    content
+  );
+};
