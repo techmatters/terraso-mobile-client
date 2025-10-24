@@ -109,16 +109,6 @@ function PostHogInstanceSetter() {
 function PosthogLifecycle() {
   const posthog = usePostHog();
 
-  // Optional: remove this initial test event if you don't want it
-  useEffect(() => {
-    if (posthog) {
-      console.log('[PostHog] Sending test event');
-      posthog.capture('PostHog Test Event', {
-        timestamp: new Date().toISOString(),
-      });
-    }
-  }, [posthog]);
-
   useEffect(() => {
     const sub = AppState.addEventListener('change', state => {
       if (state !== 'active') posthog?.flush();
