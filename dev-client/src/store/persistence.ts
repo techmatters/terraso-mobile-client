@@ -16,7 +16,13 @@
  */
 
 import {Middleware} from '@reduxjs/toolkit';
-import {merge} from 'lodash/fp';
+import {merge, omit} from 'lodash/fp';
+
+import type {
+  Maybe,
+  UserRatingEntry,
+} from 'terraso-client-shared/graphqlSchema/graphql';
+import type {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
@@ -41,13 +47,60 @@ export const loadPersistedReduxState = () => {
   }
 };
 
+// TODO-cknipe: Write a test for this
 export const patchPersistedReduxState = (
   state: Partial<AppState>,
 ): Partial<AppState> => {
-  return merge(state, {
+  const tempState = upgradeSoilMetadataOct2025(state);
+  return merge(tempState, {
     soilData: {soilSync: {}},
     soilMetadata: {soilMetadata: {}},
     soilIdMatch: {locationBasedMatches: {}, siteDataBasedMatches: {}},
     sync: {pullRequested: false},
   });
 };
+
+/**
+ * Migrates soil metadata from the old selectedSoilId format to the new userRatings format.
+ * @param state The persisted Redux state to upgrade
+ * @returns The upgraded state with userRatings instead of selectedSoilId
+ */
+function upgradeSoilMetadataOct2025(
+  state: Partial<AppState>,
+): Partial<AppState> {
+  // If there's no soilMetadata state, nothing to upgrade
+  if (!state.soilMetadata?.soilMetadata) {
+    return state;
+  }
+
+  const oldMetadataEntries = state.soilMetadata.soilMetadata;
+  const upgradedEntries: Record<string, SoilMetadata> = {};
+
+  for (const [siteId, siteMetadata] of Object.entries(oldMetadataEntries)) {
+    const selectedSoilId = siteMetadata.selectedSoilId;
+    let userRatings: Maybe<UserRatingEntry>[];
+    if (selectedSoilId && !siteMetadata.userRatings) {
+      // Migrate selectedSoilId to userRatings, and remove selectedSoilId
+      userRatings = [
+        {
+          soilMatchId: selectedSoilId,
+          rating: 'SELECTED',
+        } as UserRatingEntry,
+      ];
+    } else {
+      userRatings = siteMetadata.userRatings ?? [];
+    }
+    upgradedEntries[siteId] = {
+      ...omit('selectedSoilId', siteMetadata),
+      userRatings,
+    };
+  }
+
+  return {
+    ...state,
+    soilMetadata: {
+      ...state.soilMetadata,
+      soilMetadata: upgradedEntries,
+    },
+  };
+}
